@@ -1,2 +1,80 @@
 // English (World English Bible) wording for beats that split a verse — keyed by scene id → beat index.
-export const BEATS_EN = {};
+export const BEATS_EN = {
+  'j13-hour': {
+    1: 'Now before the feast of the Passover,',
+    2: 'Jesus, knowing that his time had come that he would depart from this world to the Father,',
+    3: 'having loved his own who were in the world, he loved them to the end.',
+    4: 'During supper,',
+    5: 'the devil having already put into the heart of Judas Iscariot, Simon’s son, to betray him,',
+  },
+  'j13-towel': {
+    0: 'arose from supper,',
+    1: 'and laid aside his outer garments.',
+    2: 'He took a towel,',
+    3: 'and wrapped a towel around his waist.',
+    4: 'Then he poured water into the basin,',
+  },
+  'j13-wash': {
+    0: 'and began to wash the disciples’ feet,',
+    1: 'and to wipe them with the towel that was wrapped around him.',
+    2: 'Then he came to Simon Peter.',
+    3: 'He said to him, “Lord, do you wash my feet?”',
+  },
+  'j13-peter': {
+    0: 'Peter said to him, “You will never wash my feet!”',
+    1: 'Jesus answered him, “If I don’t wash you, you have no part with me.”',
+    3: 'Jesus said to him, “Someone who has bathed only needs to have his feet washed, but is completely clean.',
+    4: 'You are clean, but not all of you.”',
+  },
+  'j13-example': {
+    0: 'So when he had washed their feet,',
+    1: 'put his outer garment back on, and sat down again, he said to them,',
+    2: '“Do you know what I have done to you?',
+    4: 'If I then, the Lord and the Teacher, have washed your feet,',
+    5: 'you also ought to wash one another’s feet.',
+  },
+  'j13-servant': {
+    0: 'Most certainly I tell you, a servant is not greater than his lord,',
+    1: 'neither one who is sent greater than he who sent him.',
+    3: 'I don’t speak concerning all of you.',
+    4: 'I know whom I have chosen.',
+    5: 'But that the Scripture may be fulfilled, ‘He who eats bread with me has lifted up his heel against me.’',
+    7: 'Most certainly I tell you, he who receives whomever I send, receives me;',
+    8: 'and he who receives me, receives him who sent me.”',
+  },
+  'j13-troubled': {
+    0: 'When Jesus had said this, he was troubled in spirit, and testified,',
+    1: '“Most certainly I tell you that one of you will betray me.”',
+  },
+  'j13-morsel': {
+    0: 'Jesus therefore answered, “It is he to whom I will give this piece of bread when I have dipped it.”',
+    1: 'So when he had dipped the piece of bread,',
+    2: 'he gave it to Judas, the son of Simon Iscariot.',
+    3: 'After the piece of bread, then Satan entered into him.',
+    4: 'Then Jesus said to him, “What you do, do quickly.”',
+  },
+  'j13-night': {
+    1: 'For some thought, because Judas had the money box, that Jesus said to him, “Buy what things we need for the feast,”',
+    2: 'or that he should give something to the poor.',
+    3: 'Therefore having received that morsel, he went out immediately.',
+    4: 'It was night.',
+  },
+  'j13-glory': {
+    0: 'When he had gone out, Jesus said,',
+    1: '“Now the Son of Man has been glorified, and God has been glorified in him.',
+    3: 'Little children, I will be with you a little while longer.',
+    4: 'You will seek me, and as I said to the Jews, ‘Where I am going, you can’t come,’ so now I tell you.',
+  },
+  'j13-commandment': {
+    0: 'A new commandment I give to you, that you love one another.',
+    1: 'Just as I have loved you, you also love one another.',
+  },
+  'j13-rooster': {
+    0: 'Simon Peter said to him, “Lord, where are you going?”',
+    1: 'Jesus answered, “Where I am going, you can’t follow now, but you will follow afterwards.”',
+    2: 'Peter said to him, “Lord, why can’t I follow you now?',
+    3: 'I will lay down my life for you.”',
+    4: 'Jesus answered him, “Will you lay down your life for me?',
+    5: 'Most certainly I tell you, the rooster won’t crow until you have denied me three times.',
+  },
+};
