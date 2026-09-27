@@ -1,2 +1,70 @@
 // English (World English Bible) wording for beats that split a verse — keyed by scene id → beat index.
-export const BEATS_EN = {};
+export const BEATS_EN = {
+  'j16-hour': {
+    0: 'They will put you out of the synagogues.',
+    1: 'Yes, the time comes that whoever kills you will think that he offers service to God.',
+    3: 'But I have told you these things, so that when the time comes, you may remember that I told you about them.',
+    4: 'I didn’t tell you these things from the beginning, because I was with you.',
+  },
+  'j16-going': {
+    0: 'But now I am going to him who sent me,',
+    1: 'and none of you asks me, ‘Where are you going?’',
+    3: 'Nevertheless I tell you the truth: It is to your advantage that I go away,',
+    4: 'for if I don’t go away, the Counselor won’t come to you.',
+    5: 'But if I go, I will send him to you.',
+  },
+  'j16-truth': {
+    0: '“I have yet many things to tell you,',
+    1: 'but you can’t bear them now.',
+    2: 'However when he, the Spirit of truth, has come, he will guide you into all truth,',
+    3: 'for he will not speak from himself; but whatever he hears, he will speak.',
+    4: 'He will declare to you things that are coming.',
+  },
+  'j16-glory': {
+    1: 'All things whatever the Father has are mine;',
+    2: 'therefore I said that he takes of mine, and will declare it to you.',
+  },
+  'j16-while': {
+    0: 'A little while, and you will not see me.',
+    1: 'Again a little while, and you will see me.”',
+    2: 'Some of his disciples therefore said to one another, “What is this that he says to us, ‘A little while, and you won’t see me, and again a little while, and you will see me;’',
+    3: 'and, ‘Because I go to the Father’?”',
+    4: 'They said therefore, “What is this that he says, ‘A little while’?',
+    5: 'We don’t know what he is saying.”',
+    6: 'Therefore Jesus perceived that they wanted to ask him, and he said to them,',
+    7: '“Do you inquire among yourselves concerning this, that I said, ‘A little while, and you won’t see me, and again a little while, and you will see me?’',
+  },
+  'j16-sorrow': {
+    0: 'Most certainly I tell you, that you will weep and lament, but the world will rejoice.',
+    1: 'You will be sorrowful, but your sorrow will be turned into joy.',
+    2: 'A woman, when she gives birth, has sorrow, because her time has come.',
+    3: 'But when she has delivered the child, she doesn’t remember the anguish any more, for the joy that a human being is born into the world.',
+  },
+  'j16-joy': {
+    0: 'Therefore you now have sorrow,',
+    1: 'but I will see you again, and your heart will rejoice,',
+    2: 'and no one will take your joy away from you.',
+    3: '“In that day you will ask me no questions.',
+    4: 'Most certainly I tell you, whatever you may ask of the Father in my name, he will give it to you.',
+    5: 'Until now, you have asked nothing in my name.',
+    6: 'Ask, and you will receive, that your joy may be made full.',
+  },
+  'j16-plainly': {
+    0: 'I have spoken these things to you in figures of speech.',
+    1: 'But the time is coming when I will no more speak to you in figures of speech, but will tell you plainly about the Father.',
+  },
+  'j16-arc': {
+    0: 'I came from the Father, and have come into the world.',
+    1: 'Again, I leave the world, and go to the Father.”',
+    3: 'Now we know that you know all things, and don’t need for anyone to question you.',
+    4: 'By this we believe that you came from God.”',
+  },
+  'j16-overcome': {
+    1: 'Behold, the time is coming, yes, and has now come,',
+    2: 'that you will be scattered, everyone to his own place, and you will leave me alone.',
+    3: 'Yet I am not alone, because the Father is with me.',
+    4: 'I have told you these things, that in me you may have peace.',
+    5: 'In the world you have oppression;',
+    6: 'but cheer up! I have overcome the world.”',
+  },
+};
