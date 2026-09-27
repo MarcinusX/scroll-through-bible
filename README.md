@@ -4,10 +4,13 @@ Scroll through bible: https://marcinusx.github.io/scroll-through-bible/
 
 [![The paper theatre in motion: the crowd gathers by the lake, the sower sows, the lamp is lifted onto its stand, the storm is stilled](docs/demo.gif)](https://marcinusx.github.io/scroll-through-bible/?lang=en)
 
-A scroll-driven, sentence-by-sentence illustrated reading of the **whole Gospel of Mark**, drawn as a
-layered **paper-cut diorama**. All 16 chapters are done: 675 verses in 1,151 animated beats across
-196 scenes, from John the Baptist in the wilderness to the empty tomb at sunrise. Every sentence
-is acted out on its own beat, in Polish and English.
+A scroll-driven, sentence-by-sentence illustrated reading of the Gospels, drawn as a layered
+**paper-cut diorama**. Every sentence is acted out on its own beat, in Polish and English.
+
+* **The Gospel of Mark**: all 16 chapters, from John the Baptist in the wilderness to the empty tomb at sunrise.
+* **The Gospel of John**: all 21 chapters, from "In the beginning was the Word" to a world too small for all the books.
+
+Together that's 1,554 verses in 2,767 animated beats across 480 scenes.
 
 The look is heavily inspired by **Mia's AI Lab**, and in particular her paper-cut diorama
 [*Foxglove Hollow*](https://miaai-lab.github.io/Claude-Opus-5.5-100-HTML-Files/018-paper-cut-diorama.html)
@@ -15,10 +18,9 @@ from her gallery of [100 HTML files made with Claude](https://miaai-lab.github.i
 ([@MiaAI_lab](https://x.com/MiaAI_lab)). Thank you, Mia!
 
 Text:
-* Polish: **Biblia Tysiąclecia** (5th ed.), from biblia.deon.pl, in `data/mark.js`.
-* English: **World English Bible** (public domain), from bolls.life, in `data/mark-en.js`, with sentence
-  splits in `data/beats-en.js`.
-Both files hold all 16 chapters.
+* Polish: **Biblia Tysiąclecia** (5th ed.), from biblia.deon.pl, in `data/mark.js` and `data/john.js`.
+* English: **World English Bible** (public domain), from bolls.life, in `data/<book>-en.js`, with sentence
+  splits in each chapter's `beats-en.js`.
 
 ## Run
 
@@ -66,11 +68,13 @@ Upcoming scenes are pre-built in idle time.
 * `node tools/shot.mjs <outDir> <url> scene:t … [--size=390x844]`: screenshots of chosen moments.
 * `tools/review.sh <chapter> <outDir> [pl|en] [size]`: contact sheets of every beat of a chapter.
 * `node tools/record.mjs <url> docs/demo.gif`: records the README tour GIF (needs ffmpeg).
-* `python3 tools/fetch_mark.py` / `tools/fetch_mark_en.py`: re-download the Polish / English text.
+* `python3 tools/fetch_bt.py <book>` / `tools/fetch_web.py <book>`: re-download the Polish / English text.
+* `node tools/publish.mjs <book> <chapter…>`: publish chapters (adds them to the book's `READY` list).
 
 ## How it was made
 
-Chapter 4 was drawn first, together with the engine and asset library. The other fifteen chapters were
-then drawn in parallel by Claude agents, one per chapter, each working from `docs/SCENES.md`. Every
+Mark 4 was drawn first, together with the engine and asset library. The other 36 chapters of Mark and
+John were then drawn in parallel by Claude agents, one per chapter, four at a time, each working from
+`docs/SCENES.md`. Every
 chapter was reviewed beat by beat from contact sheets (`tools/review.sh`), checked for frame rate, and
 validated against the text before it was published.

@@ -1,2 +1,97 @@
 // English (World English Bible) wording for beats that split a verse — keyed by scene id → beat index.
-export const BEATS_EN = {};
+export const BEATS_EN = {
+  'j20-dark': {
+    1: 'Now on the first day of the week, Mary Magdalene went early, while it was still dark, to the tomb,',
+    2: 'and saw the stone taken away from the tomb.',
+  },
+  'j20-run': {
+    0: 'Therefore she ran and came to Simon Peter, and to the other disciple whom Jesus loved,',
+    1: 'and said to them, “They have taken away the Lord out of the tomb,',
+    2: 'and we don’t know where they have laid him!”',
+    4: 'They both ran together.',
+    5: 'The other disciple outran Peter,',
+    6: 'and came to the tomb first.',
+  },
+  'j20-stoop': {
+    0: 'Stooping and looking in, he saw the linen cloths lying,',
+    1: 'yet he didn’t enter in.',
+    2: 'Then Simon Peter came, following him,',
+    3: 'and entered into the tomb.',
+  },
+  'j20-cloths': {
+    0: 'He saw the linen cloths lying,',
+    1: 'and the cloth that had been on his head,',
+    2: 'not lying with the linen cloths, but rolled up in a place by itself.',
+    3: 'So then the other disciple who came first to the tomb also entered in,',
+    4: 'and he saw and believed.',
+  },
+  'j20-angels': {
+    0: 'But Mary was standing outside at the tomb weeping.',
+    1: 'So, as she wept, she stooped and looked into the tomb,',
+    3: 'They told her, “Woman, why are you weeping?”',
+    4: 'She said to them, “Because they have taken away my Lord, and I don’t know where they have laid him.”',
+  },
+  'j20-gardener': {
+    0: 'When she had said this, she turned around and saw Jesus standing,',
+    1: 'and didn’t know that it was Jesus.',
+    2: 'Jesus said to her, “Woman, why are you weeping?',
+    3: 'Who are you looking for?”',
+    4: 'She, supposing him to be the gardener, said to him,',
+    5: '“Sir, if you have carried him away, tell me where you have laid him, and I will take him away.”',
+  },
+  'j20-rabbuni': {
+    0: 'Jesus said to her, “Mary.”',
+    1: 'She turned and said to him, “Rabboni!”',
+    2: 'which is to say, “Teacher!”',
+    3: 'Jesus said to her, “Don’t hold me,',
+    4: 'for I haven’t yet ascended to my Father;',
+    5: 'but go to my brothers, and tell them,',
+    6: '‘I am ascending to my Father and your Father, to my God and your God.’”',
+  },
+  'j20-news': {
+    0: 'Mary Magdalene came and told the disciples',
+    1: 'that she had seen the Lord, and that he had said these things to her.',
+  },
+  'j20-peace': {
+    0: 'When therefore it was evening, on that day, the first day of the week, and when the doors were locked where the disciples were assembled, for fear of the Jews,',
+    1: 'Jesus came and stood in the middle,',
+    2: 'and said to them, “Peace be to you.”',
+    3: 'When he had said this, he showed them his hands and his side.',
+    4: 'The disciples therefore were glad when they saw the Lord.',
+  },
+  'j20-sent': {
+    0: 'Jesus therefore said to them again, “Peace be to you.',
+    1: 'As the Father has sent me, even so I send you.”',
+    2: 'When he had said this, he breathed on them,',
+    3: 'and said to them, “Receive the Holy Spirit!',
+    4: 'If you forgive anyone’s sins, they have been forgiven them.',
+    5: 'If you retain anyone’s sins, they have been retained.”',
+  },
+  'j20-thomas': {
+    0: 'But Thomas, one of the twelve, called Didymus,',
+    1: 'wasn’t with them when Jesus came.',
+    2: 'The other disciples therefore said to him, “We have seen the Lord!”',
+    3: 'But he said to them, “Unless I see in his hands the print of the nails,',
+    4: 'put my finger into the print of the nails,',
+    5: 'and put my hand into his side,',
+    6: 'I will not believe.”',
+  },
+  'j20-eight': {
+    0: 'After eight days again his disciples were inside, and Thomas was with them.',
+    1: 'Jesus came, the doors being locked, and stood in the middle,',
+    2: 'and said, “Peace be to you.”',
+    3: 'Then he said to Thomas, “Reach here your finger,',
+    4: 'and see my hands.',
+    5: 'Reach here your hand, and put it into my side.',
+    6: 'Don’t be unbelieving, but believing.”',
+  },
+  'j20-blessed': {
+    0: 'Jesus said to him, “Because you have seen me, you have believed.',
+    1: 'Blessed are those who have not seen, and have believed.”',
+  },
+  'j20-book': {
+    1: 'but these are written,',
+    2: 'that you may believe that Jesus is the Christ, the Son of God,',
+    3: 'and that believing you may have life in his name.',
+  },
+};
