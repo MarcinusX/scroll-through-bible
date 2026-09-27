@@ -1,2 +1,97 @@
 // English (World English Bible) wording for beats that split a verse — keyed by scene id → beat index.
-export const BEATS_EN = {};
+// `node tools/check.mjs john 5` verifies these pieces rebuild each WEB verse exactly.
+export const BEATS_EN = {
+  'j5-bethesda': {
+    1: 'After these things, there was a feast of the Jews,',
+    2: 'and Jesus went up to Jerusalem.',
+    3: 'Now in Jerusalem by the sheep gate, there is a pool, which is called in Hebrew, “Bethesda”,',
+    4: 'having five porches.',
+    5: 'In these lay a great multitude of those who were sick, blind, lame, or paralyzed,',
+    6: 'waiting for the moving of the water;',
+    7: 'for an angel went down at certain times into the pool, and stirred up the water.',
+    8: 'Whoever stepped in first after the stirring of the water was healed of whatever disease he had.',
+  },
+  'j5-thirtyeight': {
+    1: 'When Jesus saw him lying there, and knew that he had been sick for a long time,',
+    2: 'he asked him, “Do you want to be made well?”',
+    3: 'The sick man answered him, “Sir, I have no one to put me into the pool when the water is stirred up,',
+    4: 'but while I’m coming, another steps down before me.”',
+  },
+  'j5-rise': {
+    1: 'Immediately, the man was made well,',
+    2: 'and took up his mat and walked.',
+    3: 'Now it was the Sabbath on that day.',
+  },
+  'j5-sabbath': {
+    0: 'So the Jews said to him who was cured,',
+    1: '“It is the Sabbath. It is not lawful for you to carry the mat.”',
+    4: 'But he who was healed didn’t know who it was,',
+    5: 'for Jesus had withdrawn, a crowd being in the place.',
+  },
+  'j5-temple': {
+    0: 'Afterward Jesus found him in the temple, and said to him,',
+    1: '“Behold, you are made well.',
+    2: 'Sin no more, so that nothing worse happens to you.”',
+    5: 'But Jesus answered them,',
+    6: '“My Father is still working, so I am working, too.”',
+    7: 'For this cause therefore the Jews sought all the more to kill him,',
+    8: 'because he not only broke the Sabbath, but also called God his own Father, making himself equal with God.',
+  },
+  'j5-son': {
+    0: 'Jesus therefore answered them, “Most certainly, I tell you,',
+    1: 'the Son can do nothing of himself, but what he sees the Father doing.',
+    2: 'For whatever things he does, these the Son also does likewise.',
+    3: 'For the Father has affection for the Son, and shows him all things that he himself does.',
+    4: 'He will show him greater works than these, that you may marvel.',
+  },
+  'j5-life': {
+    0: 'For as the Father raises the dead and gives them life,',
+    1: 'even so the Son also gives life to whom he desires.',
+    2: 'For the Father judges no one,',
+    3: 'but he has given all judgment to the Son,',
+    4: 'that all may honor the Son, even as they honor the Father.',
+    5: 'He who doesn’t honor the Son doesn’t honor the Father who sent him.',
+  },
+  'j5-passed': {
+    0: '“Most certainly I tell you, he who hears my word, and believes him who sent me, has eternal life,',
+    1: 'and doesn’t come into judgment, but has passed out of death into life.',
+    2: 'Most certainly, I tell you, the hour comes, and now is, when the dead will hear the Son of God’s voice;',
+    3: 'and those who hear will live.',
+  },
+  'j5-tombs': {
+    0: 'Don’t marvel at this,',
+    1: 'for the hour comes, in which all that are in the tombs will hear his voice,',
+    2: 'and will come out; those who have done good, to the resurrection of life;',
+    3: 'and those who have done evil, to the resurrection of judgment.',
+    4: 'I can of myself do nothing.',
+    5: 'As I hear, I judge, and my judgment is righteous;',
+    6: 'because I don’t seek my own will, but the will of my Father who sent me.',
+  },
+  'j5-witness': {
+    1: 'It is another who testifies about me.',
+    2: 'I know that the testimony which he testifies about me is true.',
+    4: 'But the testimony which I receive is not from man.',
+    5: 'However, I say these things that you may be saved.',
+    6: 'He was the burning and shining lamp,',
+    7: 'and you were willing to rejoice for a while in his light.',
+  },
+  'j5-works': {
+    0: 'But the testimony which I have is greater than that of John,',
+    1: 'for the works which the Father gave me to accomplish,',
+    2: 'the very works that I do, testify about me, that the Father has sent me.',
+    3: 'The Father himself, who sent me, has testified about me.',
+    4: 'You have neither heard his voice at any time, nor seen his form.',
+  },
+  'j5-scriptures': {
+    0: '“You search the Scriptures, because you think that in them you have eternal life;',
+    1: 'and these are they which testify about me.',
+    5: 'I have come in my Father’s name, and you don’t receive me.',
+    6: 'If another comes in his own name, you will receive him.',
+  },
+  'j5-moses': {
+    0: '“Don’t think that I will accuse you to the Father.',
+    1: 'There is one who accuses you, even Moses, on whom you have set your hope.',
+    2: 'For if you believed Moses, you would believe me;',
+    3: 'for he wrote about me.',
+  },
+};
