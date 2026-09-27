@@ -323,8 +323,9 @@ export function tombRock(c, w = 380, h = 260) {
   s.x(c.ribbon([[-60, 2], [60, 2]], 5), C.rock3, 'opacity=".6"');
   return s.out();
 }
+/** a round rolling stone; a chiselled rim on the upper left (never under the hub — that reads as a face) */
 export function tombStone(c, r = 62) {
-  return sheet().p(c.cut(c.circ(0, 0, r, 30), 1, 6), C.rock2).x(c.ribbon(c.arc(0, 0, r * 0.62, r * 0.62, 0.4, 2.6, 10), 3), shade(C.rock2, -0.18), 'opacity=".6"').x(c.poly(c.circ(0, 0, 6, 8)), shade(C.rock2, -0.25)).out();
+  return sheet().p(c.cut(c.circ(0, 0, r, 30), 1, 6), C.rock2).x(c.ribbon(c.arc(0, 0, r * 0.8, r * 0.8, 3.5, 5.1, 10), 3), shade(C.rock2, -0.18), 'opacity=".6"').x(c.poly(c.circ(0, 0, 6, 8)), shade(C.rock2, -0.25)).out();
 }
 /** an oar; origin: the grip, blade down along +y */
 export function oar(c, len = 170) {

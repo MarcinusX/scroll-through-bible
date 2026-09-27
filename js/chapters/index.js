@@ -2,7 +2,7 @@
 export const CHAPTER_COUNT = 16;
 // Chapters that are drawn, reviewed and published. Only the chapter being read is loaded,
 // so the page never pays for the other fifteen. (tools/check.mjs keeps this list honest.)
-export const READY = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 16];
+export const READY = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 15, 16];
 // (explicit imports so any static host / bundler can see them)
 const LOADERS = {
   1: () => import('./mark1/index.js'),
