@@ -1,2 +1,71 @@
 // English (World English Bible) wording for beats that split a verse — keyed by scene id → beat index.
-export const BEATS_EN = {};
+export const BEATS_EN = {
+  'm8-hungry': {
+    1: 'In those days, when there was a very great multitude, and they had nothing to eat,',
+    2: 'Jesus called his disciples to himself, and said to them,',
+    4: 'If I send them away fasting to their home, they will faint on the way,',
+    5: 'for some of them have come a long way.”',
+  },
+  'm8-loaves': {
+    0: 'He asked them, “How many loaves do you have?”',
+    1: 'They said, “Seven.”',
+    2: 'He commanded the multitude to sit down on the ground,',
+    3: 'and he took the seven loaves. Having given thanks, he broke them, and gave them to his disciples to serve,',
+    4: 'and they served the multitude.',
+    5: 'They had a few small fish.',
+    6: 'Having blessed them, he said to serve these also.',
+    8: 'Those who had eaten were about four thousand.',
+    9: 'Then he sent them away.',
+  },
+  'm8-sign': {
+    1: 'The Pharisees came out and began to question him,',
+    2: 'seeking from him a sign from heaven, and testing him.',
+    3: 'He sighed deeply in his spirit, and said, “Why does this generation seek a sign?',
+    4: 'Most certainly I tell you, no sign will be given to this generation.”',
+  },
+  'm8-remember': {
+    0: 'Jesus, perceiving it, said to them, “Why do you reason that it’s because you have no bread?',
+    1: 'Don’t you perceive yet, neither understand? Is your heart still hardened?',
+    2: 'Having eyes, don’t you see? Having ears, don’t you hear?',
+    3: 'Don’t you remember?',
+    4: 'When I broke the five loaves among the five thousand, how many baskets full of broken pieces did you take up?”',
+    5: 'They told him, “Twelve.”',
+    6: '“When the seven loaves fed the four thousand, how many baskets full of broken pieces did you take up?”',
+    7: 'They told him, “Seven.”',
+  },
+  'm8-bethsaida': {
+    0: 'He came to Bethsaida.',
+    1: 'They brought a blind man to him, and begged him to touch him.',
+    2: 'He took hold of the blind man by the hand, and brought him out of the village.',
+    3: 'When he had spit on his eyes, and laid his hands on him, he asked him if he saw anything.',
+    5: 'Then again he laid his hands on his eyes.',
+    6: 'He looked intently, and was restored, and saw everyone clearly.',
+  },
+  'm8-caesarea': {
+    0: 'Jesus went out, with his disciples, into the villages of Caesarea Philippi.',
+    1: 'On the way he asked his disciples, “Who do men say that I am?”',
+    3: 'He said to them, “But who do you say that I am?”',
+    4: 'Peter answered, “You are the Christ.”',
+  },
+  'm8-passion': {
+    0: 'He began to teach them that the Son of Man must suffer many things,',
+    1: 'and be rejected by the elders, the chief priests, and the scribes,',
+    2: 'and be killed,',
+    3: 'and after three days rise again.',
+    4: 'He spoke to them openly.',
+    5: 'Peter took him, and began to rebuke him.',
+    6: 'But he, turning around, and seeing his disciples, rebuked Peter, and said,',
+    7: '“Get behind me, Satan! For you have in mind not the things of God, but the things of men.”',
+  },
+  'm8-follow': {
+    0: 'He called the multitude to himself with his disciples, and said to them,',
+    1: '“Whoever wants to come after me, let him deny himself,',
+    2: 'and take up his cross, and follow me.',
+    3: 'For whoever wants to save his life will lose it;',
+    4: 'and whoever will lose his life for my sake and the sake of the Good News will save it.',
+  },
+  'm8-glory': {
+    2: 'For whoever will be ashamed of me and of my words in this adulterous and sinful generation,',
+    3: 'the Son of Man also will be ashamed of him, when he comes in his Father’s glory, with the holy angels.”',
+  },
+};

@@ -3,13 +3,14 @@ import { MARK_EN } from '../data/mark-en.js';
 import { startTheatre } from './core/engine.js';
 import { makeCutter } from './core/paper.js';
 import { LANG, UI } from './core/i18n.js';
-import { CHAPTER_COUNT, loadChapter, readyChapters } from './chapters/index.js';
+import { CHAPTER_COUNT, READY, loadChapter } from './chapters/index.js';
 
-/* ---------- which chapter? ?ch=N, otherwise the first one that is drawn ---------- */
+/* ---------- which chapter? ?ch=N (any chapter that has scenes, so drafts can be previewed), else chapter 1 ---------- */
 const params = new URLSearchParams(location.search);
-const READY = await readyChapters();
-const CH = READY.includes(+params.get('ch')) ? +params.get('ch') : READY[0];
-const { SCENES, BEATS_EN, META } = await loadChapter(CH);
+let CH = +params.get('ch') || READY[0];
+let mod = await loadChapter(CH);
+if (!mod || !mod.SCENES.length) { CH = READY[0]; mod = await loadChapter(CH); }
+const { SCENES, BEATS_EN, META } = mod;
 const meta = META[LANG];
 
 /* ---------- words on the page ---------- */

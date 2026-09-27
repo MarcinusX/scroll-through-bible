@@ -3,7 +3,7 @@
 // Usage: node tools/check.mjs [chapter]
 import { MARK } from '../data/mark.js';
 import { MARK_EN } from '../data/mark-en.js';
-import { CHAPTER_COUNT, loadChapter } from '../js/chapters/index.js';
+import { CHAPTER_COUNT, READY, loadChapter } from '../js/chapters/index.js';
 
 let CH, SCENES, BEATS_EN, META;
 const norm = (s) => s.replace(/\s+/g, ' ').trim();
@@ -51,7 +51,8 @@ const ids = new Set();
 for (let n = 1; n <= CHAPTER_COUNT; n++) {
   if (only && n !== only) continue;
   const mod = await loadChapter(n);
-  if (!mod || !mod.SCENES.length) continue;
+  if (!mod || !mod.SCENES.length) { if (READY.includes(n)) { ok = false; console.log(`✗ Mark ${n} is listed in READY but has no scenes`); } continue; }
+  if (!READY.includes(n)) console.log(`… Mark ${n} has scenes but is not in READY yet (draft)`);
   ({ SCENES, BEATS_EN, META } = mod);
   CH = n;
   console.log(`— Mark ${n}: ${SCENES.length} scenes, ${SCENES.reduce((k, s) => k + s.beats.length, 0)} beats`);

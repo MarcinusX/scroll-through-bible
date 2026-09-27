@@ -1,5 +1,8 @@
-// All chapters of the Gospel. A chapter is "ready" once its folder has scenes.
+// All chapters of the Gospel.
 export const CHAPTER_COUNT = 16;
+// Chapters that are drawn, reviewed and published. Only the chapter being read is loaded,
+// so the page never pays for the other fifteen. (tools/check.mjs keeps this list honest.)
+export const READY = [1, 2, 3, 4, 8];
 // (explicit imports so any static host / bundler can see them)
 const LOADERS = {
   1: () => import('./mark1/index.js'),
@@ -19,8 +22,8 @@ const LOADERS = {
   15: () => import('./mark15/index.js'),
   16: () => import('./mark16/index.js'),
 };
-export const loadChapter = (n) => (LOADERS[n] ? LOADERS[n]() : Promise.resolve(null));
-export async function readyChapters() {
-  const list = await Promise.all(Object.keys(LOADERS).map(async (n) => ((await LOADERS[n]()).SCENES.length ? +n : 0)));
-  return list.filter(Boolean);
+// resolves to the chapter module, or null if it is missing or fails to load
+export async function loadChapter(n) {
+  if (!LOADERS[n]) return null;
+  try { return await LOADERS[n](); } catch (err) { console.error(`Mark ${n} failed to load`, err); return null; }
 }
