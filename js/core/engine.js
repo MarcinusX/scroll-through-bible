@@ -10,7 +10,7 @@ const PAD = 0.5;                      // beats of set-change before/after each s
 const GAP = 0.9;                      // scroll units between two scenes
 const reduceMQ = matchMedia('(prefers-reduced-motion: reduce)');
 
-export function startTheatre({ book, chapter, scenes, root = document }) {
+export function startTheatre({ book, chapter, scenes, ui, beatText = () => undefined, root = document }) {
   const $ = (id) => root.getElementById(id);
   const stageEl = $('scenes');
   const spaceEl = $('scroll-space');
@@ -21,6 +21,7 @@ export function startTheatre({ book, chapter, scenes, root = document }) {
   const coverEl = $('cover');
   const hintEl = $('hint');
   const endEl = $('end');
+  const turnEl = $('turn');
 
   let reduced = reduceMQ.matches;
   reduceMQ.addEventListener?.('change', (e) => (reduced = e.matches));
@@ -44,9 +45,10 @@ export function startTheatre({ book, chapter, scenes, root = document }) {
   const timeline = [];
   let g0 = 0;
   scenes.forEach((sc, si) => {
-    const beats = sc.beats.map((b) => {
+    const beats = sc.beats.map((b, bi) => {
       const vs = Array.isArray(b.v) ? b.v : b.v ? [b.v] : [];
-      const segs = b.cover ? [] : b.text ? [{ v: vs[0], text: b.text, first: !b.cont }] : vs.map((v) => ({ v, text: verseText(v), first: true }));
+      const text = b.text ? beatText(sc.id, bi) ?? b.text : null;
+      const segs = b.cover ? [] : text ? [{ v: vs[0], text, first: !b.cont }] : vs.map((v) => ({ v, text: verseText(v), first: true }));
       const words = segs.reduce((n, s) => n + wordsOf(s.text), 0);
       return { ...b, segs, vs, len: b.cover ? 1.25 : clamp(0.85 + words / 24, 1, 2.3) };
     });
@@ -317,7 +319,7 @@ export function startTheatre({ book, chapter, scenes, root = document }) {
     capText.innerHTML = html.join('');
     capWords = Array.from(capText.querySelectorAll('.w'));
     const vs = b.vs;
-    capRef.textContent = `Mk ${chapter},${vs[0]}${vs.length > 1 ? '–' + vs[vs.length - 1] : ''}`;
+    capRef.textContent = ui.ref(chapter, vs[0], vs[vs.length - 1]);
     capEl.classList.remove('flip'); void capEl.offsetWidth; capEl.classList.add('flip');
   }
   function revealCaption(p) {
@@ -337,9 +339,9 @@ export function startTheatre({ book, chapter, scenes, root = document }) {
     const key = s.sec + parable;
     if (key === tagKey) return;
     tagKey = key;
-    tagKicker.textContent = `Rozdział ${chapter} · ${s.part.toLowerCase()}`;
+    tagKicker.textContent = `${ui.chapter} ${chapter} · ${s.part.toLowerCase()}`;
     tagTitle.textContent = s.sec;
-    tagRef.textContent = `Mk ${chapter},${s.start}–${s.end}`;
+    tagRef.textContent = ui.ref(chapter, s.start, s.end);
     tagEl.classList.toggle('parable', !!parable);
     tagEl.classList.remove('swing'); void tagEl.offsetWidth; tagEl.classList.add('swing');
   }
@@ -358,8 +360,9 @@ export function startTheatre({ book, chapter, scenes, root = document }) {
       btn.type = 'button'; btn.className = 'knot';
       btn.style.top = (target.start / total) * 100 + '%';
       btn.innerHTML = `<span class="lbl">${h.title}</span>`;
-      btn.setAttribute('aria-label', `${h.title} (Mk ${chapter},${h.before})`);
-      btn.addEventListener('click', () => scrollTo({ top: (target.start + 0.02) * unitPx, behavior: reduced ? 'auto' : 'smooth' }));
+      btn.setAttribute('aria-label', `${h.title} (${ui.ref(chapter, h.before)})`);
+      // jump straight to the section with a paper page-turn — no scrolling through everything in between
+      btn.addEventListener('click', (ev) => { ev.stopPropagation(); turnTo(target.start + Math.min(0.55, target.len * 0.5)); });
       railEl.appendChild(btn);
       knots.push({ btn, at: target.start });
     });
@@ -370,7 +373,7 @@ export function startTheatre({ book, chapter, scenes, root = document }) {
     const m = location.hash.match(/^#w(\d+)/);
     if (!m) return false;
     const v = +m[1];
-    for (const e of timeline) for (const b of e.beats) if (b.vs.includes(v)) { scrollTo(0, (b.start + 0.3) * unitPx); g = b.start + 0.3; return true; }
+    for (const e of timeline) for (const b of e.beats) if (b.vs.includes(v)) { scrollTo(0, (b.start + 0.55) * unitPx); g = b.start + 0.55; return true; }
     return false;
   }
 
@@ -391,7 +394,7 @@ export function startTheatre({ book, chapter, scenes, root = document }) {
     timeline.forEach((e, i) => {
       const t = localT(e, g);
       const n = e.beats.length;
-      const active = t > -PAD && t < n + PAD && !(i === 0 && t < -0.01 && false);
+      const active = t > -PAD && (t < n + PAD || i === timeline.length - 1); // the last set stays up behind the closing card
       const near = g > e.start - GAP * 3 && g < e.end + GAP * 3;
       if (active || near) { if (!e.built) build(e); } else if (e.built && (g < e.start - 14 || g > e.end + 14)) destroy(e);
       if (!e.built) return;
@@ -470,5 +473,56 @@ export function startTheatre({ book, chapter, scenes, root = document }) {
     step(); step();
     return target;
   }
-  return { timeline, get g() { return g; }, unitPx: () => unitPx, go, step };
+  /* ---------- page turns & tap-to-turn ---------- */
+  let turning = false;
+  function turnTo(target) {
+    if (turning) return;
+    if (reduced || !turnEl) { scrollTo(0, target * unitPx); g = target; return; }
+    turning = true;
+    const tb = beats.find((b) => b.start <= target && target < b.start + b.len) || beats[0];
+    const sec = sectionOf(tb.vs[0] || 1);
+    turnEl.querySelector('.turn-title').textContent = sec.sec;
+    turnEl.querySelector('.turn-ref').textContent = ui.ref(chapter, sec.start, sec.end);
+    document.body.classList.add('turning');
+    turnEl.classList.add('on'); // a sheet of paper slides in from the right…
+    setTimeout(() => {
+      scrollTo(0, target * unitPx);
+      g = target;
+      step(); step();
+      turnEl.classList.replace('on', 'out'); // …and slides away to the left, revealing the new set
+      setTimeout(() => {
+        turnEl.classList.add('reset'); turnEl.classList.remove('out');
+        void turnEl.offsetWidth; turnEl.classList.remove('reset');
+        turning = false;
+        document.body.classList.remove('turning');
+      }, 520);
+    }, 420);
+  }
+  const beats = timeline.flatMap((e) => e.beats);
+  // move to the next / previous sentence (lands where its words have all appeared)
+  function nextBeat(dir) {
+    const cur = scrollY / unitPx;
+    const rest = (b) => b.start + Math.min(0.55, b.len * 0.5);
+    const list = dir > 0 ? beats.filter((b) => rest(b) > cur + 0.05) : beats.filter((b) => rest(b) < cur - 0.05).reverse();
+    const b = list[0];
+    if (b) scrollTo({ top: rest(b) * unitPx, behavior: reduced ? 'auto' : 'smooth' });
+  }
+  // tap the right third of the stage for the next sentence, the left third for the previous one
+  $('stage').addEventListener('click', (ev) => {
+    const x = ev.clientX / W;
+    if (x > 0.66) nextBeat(1); else if (x < 0.34) nextBeat(-1);
+  });
+  addEventListener('keydown', (ev) => {
+    if (ev.metaKey || ev.ctrlKey || ev.altKey) return;
+    if (ev.key === 'ArrowRight') { ev.preventDefault(); nextBeat(1); }
+    if (ev.key === 'ArrowLeft') { ev.preventDefault(); nextBeat(-1); }
+  });
+  // the verse the reader is on (used to keep the place when switching language)
+  function verse() {
+    let v = 1;
+    for (const b of beats) { if (b.start <= g + 0.01 && b.vs.length) v = b.vs[0]; }
+    return v;
+  }
+
+  return { timeline, get g() { return g; }, unitPx: () => unitPx, go, step, verse, nextBeat, turnTo };
 }

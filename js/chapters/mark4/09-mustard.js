@@ -5,6 +5,7 @@ import { C, person, CAST, blinkAt, pose, lerp, sky, hanging, sheet, shade, mix, 
 import { band, hillsWith, olive, cypress, bush, grass, flowers, rock, sun, cloud, town } from '../../assets/nature.js';
 import { mustardTree, sprout, bird, paperLabel, rays } from '../../assets/things.js';
 import { seg, es, ease, bump, fade, attr } from '../../core/anim.js';
+import { tr } from '../../core/i18n.js';
 
 const PI = Math.PI;
 const BED = 500;            // garden soil surface
@@ -262,19 +263,19 @@ export default {
       { icon: palaceIcon(c), x: 800, y: 235 },
       { icon: mountainIcon(c), x: 1055, y: 300 },
     ].map((d, i) => ({ ...d, i, el: hanging(cards, card(c, 140, 118, d.icon), { x: d.x, y: d.y, len: 700 }) }));
-    const KINDS = [['bean', 'fasola'], ['olive', 'oliwka'], ['wheat', 'pszenica'], ['lentil', 'soczewica'], ['mustard', 'gorczyca']];
+    const KINDS = [['bean', tr('fasola', 'bean')], ['olive', tr('oliwka', 'olive')], ['wheat', tr('pszenica', 'wheat')], ['lentil', tr('soczewica', 'lentil')], ['mustard', tr('gorczyca', 'mustard')]];
     const lineup = KINDS.map(([k, name], i) => {
       const inner = `<g transform="translate(0 -10)">${seedIcon(c, k)}</g><g transform="translate(0 38) scale(.5)">${paperLabel(name, { size: 30, fill: C.parchment })}</g>`;
       return { i, x: 520 + i * 140, y: 285, el: hanging(cards, card(c, 104, 104, inner), { x: 0, y: 0, len: 700 }) };
     });
-    const smallest = hanging(cards, paperLabel('najmniejsze', { size: 26, fill: C.halo }), { x: 0, y: 0, len: 800 });
+    const smallest = hanging(cards, paperLabel(tr('najmniejsze', 'the smallest'), { size: 26, fill: C.halo }), { x: 0, y: 0, len: 800 });
     const mag = hanging(cards, magnifier(c, `<g transform="scale(6.5)">${seedIcon(c, 'mustard')}</g><circle cx="-5" cy="-5" r="4.5" fill="${C.cream}" opacity=".55"/>`), { x: 0, y: 0, len: 800 });
 
     /* ---------- the close-up of the palm ---------- */
     const closeL = S.layer({ par: 0.9, sh: 9 });
     const plate = closeL.add(`<g>${sheet().p(c.cut(c.circ(0, 0, 330, 90), 0.8, 8), C.parchment).p(c.cut(c.circ(0, 0, 316, 90), 0.6, 8), C.cream).out()}</g>`);
     const hand = closeL.add(`<g>${bigHand(c)}<g transform="translate(-4 -12)"><circle r="16" fill="url(#warm-glow)"/>${seedIcon(c, 'mustard')}</g></g>`);
-    const gorLabel = hanging(closeL, paperLabel('ziarnko gorczycy', { size: 28, fill: C.halo }), { x: 0, y: 0, len: 800 });
+    const gorLabel = hanging(closeL, paperLabel(tr('ziarnko gorczycy', 'a mustard seed'), { size: 28, fill: C.halo }), { x: 0, y: 0, len: 800 });
     const bigMag = hanging(closeL, `<g transform="scale(1.25)">${magnifier(c, `<g transform="scale(9)">${seedIcon(c, 'mustard')}</g><circle cx="-7" cy="-7" r="6" fill="${C.cream}" opacity=".55"/>`)}</g>`, { x: 0, y: 0, len: 800 });
 
     return (t, time) => {

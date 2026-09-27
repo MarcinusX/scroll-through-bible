@@ -5,6 +5,7 @@ import { C, person, blinkAt, pose, lerp, sky, hanging, sheet, shade, mix, clamp 
 import { band, hillsWith, olive, cypress, bush, grass, rock, sun, moon, cloud, stars } from '../../assets/nature.js';
 import { bed, oilLamp, sprout, sickle, sheaf, rain, paperLabel } from '../../assets/things.js';
 import { seg, es, ease, bump, fade, attr } from '../../core/anim.js';
+import { tr } from '../../core/i18n.js';
 
 const PI = Math.PI;
 const GY = 545;          // field surface (top of the cut-away earth)
@@ -255,7 +256,7 @@ export default {
     const sitter = S.puppet(folk.add(person(c, { ...FARMER, pose: 'sit' })));
     const qMark = folk.add(paperLabel('?', { size: 44, w: 40 }));
     // tags for the three stages, lowered on strings
-    const tags = [['źdźbło', HX - 60, 478], ['kłos', HX + 72, 372], ['pełne ziarno', HX - 92, 318]].map(([txt, x, y]) => ({ x, y, el: hanging(folk, paperLabel(txt, { size: 21 }), { x, y, len: 500 }) }));
+    const tags = [[tr('źdźbło', 'blade'), HX - 60, 478], [tr('kłos', 'ear'), HX + 72, 372], [tr('pełne ziarno', 'full grain'), HX - 92, 318]].map(([txt, x, y]) => ({ x, y, el: hanging(folk, paperLabel(txt, { size: 21 }), { x, y, len: 500 }) }));
 
     /* ---------- night veil (over land, under the lit room and the sky ornaments) ---------- */
     const veilL = S.layer({ par: 0, sky: true });

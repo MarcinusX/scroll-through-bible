@@ -32,7 +32,19 @@ await send('Page.enable');
 await send('Emulation.setDeviceMetricsOverride', { width: size[0], height: size[1], deviceScaleFactor: 1, mobile: size[0] < 700 });
 await send('Page.navigate', { url });
 await sleep(2200);
+let n = 0;
 for (const spot of spots) {
+  // js=<expression>@<ms> runs code in the page and shoots <ms> later (e.g. mid page-turn)
+  if (spot.startsWith('js=')) {
+    const [expr, ms] = spot.slice(3).split('@');
+    await evaluate(expr);
+    await sleep(+ms || 300);
+    const shot = await send('Page.captureScreenshot', { format: 'jpeg', quality: 82 });
+    const file = join(outDir, `js-${++n}.jpg`);
+    writeFileSync(file, Buffer.from(shot.result.data, 'base64'));
+    console.log(file);
+    continue;
+  }
   const [sc, t] = spot.split(':');
   await evaluate(`__theatre.go('${sc}', ${t})`);
   await sleep(900);

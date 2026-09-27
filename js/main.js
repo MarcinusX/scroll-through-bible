@@ -1,7 +1,18 @@
 import { MARK } from '../data/mark.js';
+import { MARK_EN } from '../data/mark-en.js';
+import { BEATS_EN } from '../data/beats-en.js';
 import { startTheatre } from './core/engine.js';
 import { makeCutter } from './core/paper.js';
+import { LANG, UI } from './core/i18n.js';
 import { SCENES } from './chapters/mark4/index.js';
+
+/* ---------- words on the page ---------- */
+document.documentElement.lang = UI.htmlLang;
+document.title = UI.title;
+document.querySelector('meta[name="description"]').setAttribute('content', UI.description);
+document.querySelectorAll('[data-i18n]').forEach((el) => { el.innerHTML = UI[el.dataset.i18n]; });
+document.getElementById('stage').setAttribute('aria-label', UI.stage);
+document.getElementById('rail').setAttribute('aria-label', UI.rail);
 
 /* ---------- the box frame: dark board + deckle-edged mat ---------- */
 function drawFrame() {
@@ -26,9 +37,54 @@ function drawFrame() {
 drawFrame();
 addEventListener('resize', drawFrame);
 
+/* ---------- the play ---------- */
 // ?only=lamp,measure — render just these scenes (handy while drawing a new one)
 const only = new URLSearchParams(location.search).get('only');
 const scenes = only ? SCENES.filter((s) => only.split(',').includes(s.id)) : SCENES;
-const theatre = startTheatre({ book: MARK, chapter: 4, scenes });
+const theatre = startTheatre({
+  book: LANG === 'en' ? MARK_EN : MARK,
+  chapter: 4,
+  scenes,
+  ui: UI,
+  beatText: LANG === 'en' ? (id, i) => BEATS_EN[id]?.[i] : () => undefined,
+});
 document.getElementById('again').addEventListener('click', () => scrollTo({ top: 0, behavior: 'smooth' }));
 window.__theatre = theatre;
+
+/* ---------- language picker: two little paper flags ---------- */
+function paperFlag(lang) {
+  const c = makeCutter('flag-' + lang);
+  const edge = c.cut([[0, 0], [60, 0], [60, 38], [0, 38]], 0.9, 6);
+  const clipId = 'flagclip-' + lang;
+  let body;
+  if (lang === 'pl') {
+    body = `<rect width="60" height="19" fill="#f8f2e4"/><rect y="19" width="60" height="19" fill="#c9574c"/>`;
+  } else {
+    const blue = '#415f8f', red = '#c9574c', white = '#f8f2e4';
+    body = `<rect width="60" height="38" fill="${blue}"/>
+      <path d="M0 0L60 38M60 0L0 38" stroke="${white}" stroke-width="8"/>
+      <path d="M0 0L60 38M60 0L0 38" stroke="${red}" stroke-width="2.6"/>
+      <path d="M30 0V38M0 19H60" stroke="${white}" stroke-width="11"/>
+      <path d="M30 0V38M0 19H60" stroke="${red}" stroke-width="6.5"/>`;
+  }
+  return `<svg viewBox="-1 -1 62 40" aria-hidden="true" focusable="false"><defs><clipPath id="${clipId}"><path d="${edge}"/></clipPath></defs>
+    <g clip-path="url(#${clipId})">${body}<path d="${edge}" fill="url(#grain)"/></g><path d="${edge}" fill="none" stroke="#b9a684" stroke-width="1.2" opacity=".8"/></svg>`;
+}
+const langNav = document.getElementById('lang');
+langNav.setAttribute('aria-label', UI.langLabel);
+[['pl', 'Polski'], ['en', 'English']].forEach(([code, name]) => {
+  const b = document.createElement('button');
+  b.type = 'button';
+  b.className = 'flag';
+  b.setAttribute('aria-pressed', String(code === LANG));
+  b.setAttribute('aria-label', name);
+  b.innerHTML = `${paperFlag(code)}<span>${code.toUpperCase()}</span>`;
+  b.addEventListener('click', () => {
+    if (code === LANG) return;
+    try { localStorage.setItem('lang', code); } catch (e) { /* storage blocked — the URL still carries it */ }
+    const q = new URLSearchParams(location.search);
+    q.set('lang', code);
+    location.href = `${location.pathname}?${q}#w${theatre.verse()}`; // keep the reader's place
+  });
+  langNav.appendChild(b);
+});
