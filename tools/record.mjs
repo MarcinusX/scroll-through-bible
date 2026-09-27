@@ -1,7 +1,7 @@
 // Records a short tour of the chapter as a GIF (for the README).
 // Usage: node tools/record.mjs <url> <out.gif>   (needs ffmpeg)
 import { spawn, execFileSync } from 'node:child_process';
-import { mkdtempSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, writeFileSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -19,16 +19,17 @@ const TOUR = [
   ['storm', 6.9, 8.95, 30],
 ];
 const frames = mkdtempSync(join(tmpdir(), 'rec-'));
-const PORT = 9500 + Math.floor(Math.random() * 300);
+// port 0: Chrome picks a free port and writes it to DevToolsActivePort (no clashes between parallel runs)
+const PROFILE = mkdtempSync(join(tmpdir(), 'chrome-'));
 const chrome = spawn('/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', [
-  `--remote-debugging-port=${PORT}`, `--user-data-dir=${mkdtempSync(join(tmpdir(), 'rec-prof-'))}`,
+  '--remote-debugging-port=0', `--user-data-dir=${PROFILE}`,
   '--no-first-run', '--no-default-browser-check', `--window-size=${W},${H + 90}`, '--new-window', 'about:blank',
 ], { stdio: 'ignore' });
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 let tab;
 for (let i = 0; i < 50 && !tab; i++) {
   await sleep(200);
-  try { tab = (await (await fetch(`http://127.0.0.1:${PORT}/json`)).json()).find((t) => t.type === 'page'); } catch { /* starting */ }
+  try { const port = readFileSync(join(PROFILE, 'DevToolsActivePort'), 'utf8').split('\n')[0]; tab = (await (await fetch(`http://127.0.0.1:${port}/json`)).json()).find((t) => t.type === 'page'); } catch { /* starting */ }
 }
 const ws = new WebSocket(tab.webSocketDebuggerUrl);
 await new Promise((r) => ws.addEventListener('open', r));

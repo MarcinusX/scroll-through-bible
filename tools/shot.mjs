@@ -1,7 +1,7 @@
 // Screenshots of chosen scene moments in a dedicated Chrome window.
 // Usage: node tools/shot.mjs <outDir> <url> scene:t [scene:t ...] [--size=1440x900]
 import { spawn } from 'node:child_process';
-import { mkdtempSync, writeFileSync, mkdirSync } from 'node:fs';
+import { mkdtempSync, writeFileSync, mkdirSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -9,16 +9,17 @@ const args = process.argv.slice(2);
 const size = (args.find((a) => a.startsWith('--size=')) || '--size=1440x900').slice(7).split('x').map(Number);
 const [outDir, url, ...spots] = args.filter((a) => !a.startsWith('--'));
 mkdirSync(outDir, { recursive: true });
-const PORT = 9800 + Math.floor(Math.random() * 400);
+// port 0: Chrome picks a free port and writes it to DevToolsActivePort (no clashes between parallel runs)
+const PROFILE = mkdtempSync(join(tmpdir(), 'chrome-'));
 const chrome = spawn('/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', [
-  `--remote-debugging-port=${PORT}`, `--user-data-dir=${mkdtempSync(join(tmpdir(), 'shot-'))}`,
+  '--remote-debugging-port=0', `--user-data-dir=${PROFILE}`,
   '--no-first-run', '--no-default-browser-check', `--window-size=${size[0]},${size[1] + 90}`, '--new-window', 'about:blank',
 ], { stdio: 'ignore' });
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 let tab;
 for (let i = 0; i < 50 && !tab; i++) {
   await sleep(200);
-  try { tab = (await (await fetch(`http://127.0.0.1:${PORT}/json`)).json()).find((t) => t.type === 'page'); } catch { /* starting */ }
+  try { const port = readFileSync(join(PROFILE, 'DevToolsActivePort'), 'utf8').split('\n')[0]; tab = (await (await fetch(`http://127.0.0.1:${port}/json`)).json()).find((t) => t.type === 'page'); } catch { /* starting */ }
 }
 const ws = new WebSocket(tab.webSocketDebuggerUrl);
 await new Promise((r) => ws.addEventListener('open', r));

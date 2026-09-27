@@ -2,15 +2,16 @@
 // Usage: node tools/bench.mjs [url] [sceneId:t ...]
 //   node tools/bench.mjs http://localhost:5178/ lake:3.6 sower:1.5 sower:8.7
 import { spawn } from 'node:child_process';
-import { mkdtempSync } from 'node:fs';
+import { mkdtempSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
 const url = process.argv[2] || 'http://localhost:5178/';
 const spots = process.argv.slice(3).length ? process.argv.slice(3) : ['lake:0.5', 'lake:3.6'];
-const PORT = 9333 + Math.floor(Math.random() * 400);
+// port 0: Chrome picks a free port and writes it to DevToolsActivePort (no clashes between parallel runs)
+const PROFILE = mkdtempSync(join(tmpdir(), 'chrome-'));
 const chrome = spawn('/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', [
-  `--remote-debugging-port=${PORT}`, `--user-data-dir=${mkdtempSync(join(tmpdir(), 'bench-'))}`,
+  '--remote-debugging-port=0', `--user-data-dir=${PROFILE}`,
   '--no-first-run', '--no-default-browser-check', '--window-size=1600,1000', '--new-window', 'about:blank',
 ], { stdio: 'ignore' });
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -18,7 +19,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 let tab;
 for (let i = 0; i < 50 && !tab; i++) {
   await sleep(200);
-  try { tab = (await (await fetch(`http://127.0.0.1:${PORT}/json`)).json()).find((t) => t.type === 'page'); } catch { /* not up yet */ }
+  try { const port = readFileSync(join(PROFILE, 'DevToolsActivePort'), 'utf8').split('\n')[0]; tab = (await (await fetch(`http://127.0.0.1:${port}/json`)).json()).find((t) => t.type === 'page'); } catch { /* starting */ }
 }
 const ws = new WebSocket(tab.webSocketDebuggerUrl);
 await new Promise((r) => ws.addEventListener('open', r));
