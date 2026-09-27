@@ -1,2 +1,95 @@
 // English (World English Bible) wording for beats that split a verse — keyed by scene id → beat index.
-export const BEATS_EN = {};
+// `node tools/check.mjs 10` verifies these pieces rebuild each WEB verse exactly.
+export const BEATS_EN = {
+  'm10-judea': {
+    1: 'He arose from there and came into the borders of Judea and beyond the Jordan.',
+    2: 'Multitudes came together to him again.',
+    3: 'As he usually did, he was again teaching them.',
+  },
+  'm10-test': {
+    0: 'Pharisees came to him testing him,',
+    1: 'and asked him, “Is it lawful for a man to divorce his wife?”',
+  },
+  'm10-creation': {
+    2: 'and the two will become one flesh,',
+    3: 'so that they are no longer two, but one flesh.',
+  },
+  'm10-children': {
+    0: 'They were bringing to him little children, that he should touch them,',
+    1: 'but the disciples rebuked those who were bringing them.',
+    2: 'But when Jesus saw it, he was moved with indignation, and said to them,',
+    3: '“Allow the little children to come to me! Don’t forbid them,',
+    4: 'for God’s Kingdom belongs to such as these.',
+  },
+  'm10-rich': {
+    0: 'As he was going out into the way, one ran to him, knelt before him, and asked him,',
+    1: '“Good Teacher, what shall I do that I may inherit eternal life?”',
+    2: 'Jesus said to him, “Why do you call me good?',
+    3: 'No one is good except one — God.',
+    4: 'You know the commandments:',
+    5: '‘Do not murder,’ ‘Do not commit adultery,’ ‘Do not steal,’ ‘Do not give false testimony,’ ‘Do not defraud,’ ‘Honor your father and mother.’”',
+  },
+  'm10-sad': {
+    0: 'Jesus looking at him loved him, and said to him, “One thing you lack.',
+    1: 'Go, sell whatever you have, and give to the poor, and you will have treasure in heaven;',
+    2: 'and come, follow me, taking up the cross.”',
+    3: 'But his face fell at that saying, and he went away sorrowful,',
+    4: 'for he was one who had great possessions.',
+  },
+  'm10-camel': {
+    0: 'Jesus looked around, and said to his disciples,',
+    1: '“How difficult it is for those who have riches to enter into God’s Kingdom!”',
+    2: 'The disciples were amazed at his words.',
+    3: 'But Jesus answered again, “Children, how hard is it for those who trust in riches to enter into God’s Kingdom!',
+    5: 'They were exceedingly astonished, saying to him,',
+    6: '“Then who can be saved?”',
+    7: 'Jesus, looking at them, said,',
+    8: '“With men it is impossible, but not with God, for all things are possible with God.”',
+  },
+  'm10-hundred': {
+    2: 'but he will receive one hundred times more now in this time, houses, brothers, sisters, mothers, children, and land, with persecutions;',
+    3: 'and in the age to come eternal life.',
+  },
+  'm10-ahead': {
+    0: 'They were on the way, going up to Jerusalem; and Jesus was going in front of them, and they were amazed;',
+    1: 'and those who followed were afraid.',
+    2: 'He again took the twelve, and began to tell them the things that were going to happen to him.',
+  },
+  'm10-foretold': {
+    0: '“Behold, we are going up to Jerusalem.',
+    1: 'The Son of Man will be delivered to the chief priests and the scribes.',
+    2: 'They will condemn him to death, and will deliver him to the Gentiles.',
+    3: 'They will mock him, spit on him, scourge him, and kill him.',
+    4: 'On the third day he will rise again.”',
+  },
+  'm10-zebedee': {
+    0: 'James and John, the sons of Zebedee, came near to him, saying,',
+    1: '“Teacher, we want you to do for us whatever we will ask.”',
+    4: 'But Jesus said to them, “You don’t know what you are asking.',
+    5: 'Are you able to drink the cup that I drink, and to be baptized with the baptism that I am baptized with?”',
+    6: 'They said to him, “We are able.”',
+    7: 'Jesus said to them, “You shall indeed drink the cup that I drink, and you shall be baptized with the baptism that I am baptized with;',
+  },
+  'm10-servant': {
+    1: 'Jesus summoned them, and said to them,',
+    2: '“You know that they who are recognized as rulers over the nations lord it over them, and their great ones exercise authority over them.',
+    3: 'But it shall not be so among you,',
+    4: 'but whoever wants to become great among you shall be your servant.',
+    6: 'For the Son of Man also came not to be served, but to serve,',
+    7: 'and to give his life as a ransom for many.”',
+  },
+  'm10-jericho': {
+    0: 'They came to Jericho.',
+    1: 'As he went out from Jericho, with his disciples and a great multitude, the son of Timaeus, Bartimaeus, a blind beggar, was sitting by the road.',
+    2: 'When he heard that it was Jesus the Nazarene, he began to cry out, and say,',
+    3: '“Jesus, you son of David, have mercy on me!”',
+    4: 'Many rebuked him, that he should be quiet,',
+    5: 'but he cried out much more, “You son of David, have mercy on me!”',
+    6: 'Jesus stood still, and said, “Call him.”',
+    7: 'They called the blind man, saying to him, “Cheer up! Get up. He is calling you!”',
+    9: 'Jesus asked him, “What do you want me to do for you?”',
+    10: 'The blind man said to him, “Rabboni, that I may see again.”',
+    11: 'Jesus said to him, “Go your way. Your faith has made you well.”',
+    12: 'Immediately he received his sight, and followed Jesus on the way.',
+  },
+};
