@@ -1,2 +1,111 @@
-// English (World English Bible) wording for beats that split a verse — keyed by scene id → beat index.
-export const BEATS_EN = {};
+// English (World English Bible) wording for beats that split a verse into sentences.
+// Keyed by scene id → beat index. Beats not listed show the whole verse.
+export const BEATS_EN = {
+  'j1-word': {
+    1: 'In the beginning was the Word,',
+    2: 'and the Word was with God,',
+    3: 'and the Word was God.',
+  },
+  'j1-creation': {
+    0: 'All things were made through him.',
+    1: 'Without him was not anything made that has been made.',
+    2: 'In him was life,',
+    3: 'and the life was the light of men.',
+    4: 'The light shines in the darkness,',
+    5: 'and the darkness hasn’t overcome it.',
+  },
+  'j1-witness': {
+    0: 'There came a man, sent from God,',
+    1: 'whose name was John.',
+    3: 'He was not the light,',
+    4: 'but was sent that he might testify about the light.',
+  },
+  'j1-world': {
+    1: 'He was in the world, and the world was made through him,',
+    2: 'and the world didn’t recognize him.',
+    3: 'He came to his own,',
+    4: 'and those who were his own didn’t receive him.',
+    5: 'But as many as received him, to them he gave the right to become God’s children,',
+    6: 'to those who believe in his name:',
+  },
+  'j1-flesh': {
+    0: 'The Word became flesh,',
+    1: 'and lived among us.',
+    2: 'We saw his glory,',
+    3: 'such glory as of the one and only Son of the Father, full of grace and truth.',
+  },
+  'j1-fullness': {
+    0: 'John testified about him. He cried out, saying,',
+    1: '“This was he of whom I said, ‘He who comes after me has surpassed me, for he was before me.’”',
+    2: 'From his fullness we all received',
+    3: 'grace upon grace.',
+    4: 'For the law was given through Moses.',
+    5: 'Grace and truth were realized through Jesus Christ.',
+    6: 'No one has seen God at any time.',
+    7: 'The one and only Son, who is in the bosom of the Father, he has declared him.',
+  },
+  'j1-who': {
+    0: 'This is John’s testimony,',
+    1: 'when the Jews sent priests and Levites from Jerusalem to ask him, “Who are you?”',
+    3: 'They asked him, “What then? Are you Elijah?” He said, “I am not.”',
+    4: '“Are you the prophet?” He answered, “No.”',
+    5: 'They said therefore to him, “Who are you? Give us an answer to take back to those who sent us.',
+    6: 'What do you say about yourself?”',
+  },
+  'j1-baptize': {
+    0: 'He said, “I am the voice of one crying in the wilderness,',
+    1: '‘Make straight the way of the Lord,’ as Isaiah the prophet said.”',
+    4: 'John answered them, “I baptize in water,',
+    5: 'but among you stands one whom you don’t know.',
+  },
+  'j1-lamb': {
+    0: 'The next day, he saw Jesus coming to him, and said,',
+    1: '“Behold, the Lamb of God, who takes away the sin of the world!',
+    3: 'I didn’t know him,',
+    4: 'but for this reason I came baptizing in water: that he would be revealed to Israel.”',
+  },
+  'j1-dove': {
+    0: 'John testified, saying,',
+    1: '“I have seen the Spirit descending like a dove out of heaven, and it remained on him.',
+    2: 'I didn’t recognize him, but he who sent me to baptize in water, he said to me,',
+    3: '‘On whomever you will see the Spirit descending, and remaining on him, the same is he who baptizes in the Holy Spirit.’',
+  },
+  'j1-follow': {
+    3: 'Jesus turned, and saw them following, and said to them, “What are you looking for?”',
+    4: 'They said to him, “Rabbi” (which is to say, being interpreted, Teacher), “where are you staying?”',
+    5: 'He said to them, “Come, and see.”',
+    6: 'They came and saw where he was staying, and they stayed with him that day.',
+    7: 'It was about the tenth hour.',
+  },
+  'j1-cephas': {
+    1: 'He first found his own brother, Simon, and said to him,',
+    2: '“We have found the Messiah!” (which is, being interpreted, Christ ).',
+    3: 'He brought him to Jesus.',
+    4: 'Jesus looked at him, and said, “You are Simon the son of Jonah.',
+    5: 'You shall be called Cephas” (which is by interpretation, Peter).',
+  },
+  'j1-philip': {
+    0: 'On the next day, he was determined to go out into Galilee,',
+    1: 'and he found Philip.',
+    2: 'Jesus said to him, “Follow me.”',
+    4: 'Philip found Nathanael, and said to him,',
+    5: '“We have found him, of whom Moses in the law, and the prophets, wrote: Jesus of Nazareth, the son of Joseph.”',
+    6: 'Nathanael said to him, “Can any good thing come out of Nazareth?”',
+    7: 'Philip said to him, “Come and see.”',
+  },
+  'j1-israelite': {
+    0: 'Jesus saw Nathanael coming to him, and said about him,',
+    1: '“Behold, an Israelite indeed, in whom is no deceit!”',
+    2: 'Nathanael said to him, “How do you know me?”',
+    3: 'Jesus answered him, “Before Philip called you, when you were under the fig tree, I saw you.”',
+    4: 'Nathanael answered him, “Rabbi, you are the Son of God!',
+    5: 'You are King of Israel!”',
+    6: 'Jesus answered him, “Because I told you, ‘I saw you underneath the fig tree,’ do you believe?',
+    7: 'You will see greater things than these!”',
+  },
+  'j1-ladder': {
+    0: 'He said to him, “Most certainly, I tell you,',
+    1: 'hereafter you will see heaven opened,',
+    2: 'and the angels of God ascending and descending on the Son of Man.”',
+  },
+};
