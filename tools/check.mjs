@@ -54,6 +54,8 @@ for (const id of BOOK_ORDER) {
   const EN = await book.text.en();
   PL = await book.text.pl();
   NAME = book.name.en.short;
+  const bad = book.READY.filter((n) => !(Number.isInteger(n) && n >= 1 && n <= book.count));
+  if (bad.length) { ok = false; console.log(`✗ ${NAME}: READY lists chapters that don't exist: ${bad.join(', ')}`); }
   for (let n = 1; n <= book.count; n++) {
     if (onlyCh && n !== onlyCh) continue;
     const mod = await loadChapter(id, n);
