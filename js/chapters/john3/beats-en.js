@@ -1,2 +1,92 @@
-// English (World English Bible) wording for beats that split a verse — keyed by scene id → beat index.
-export const BEATS_EN = {};
+// English (World English Bible) wording for beats that split a verse into sentences.
+// Keyed by scene id → beat index. Beats not listed show the whole verse.
+// `node tools/check.mjs john 3` verifies these pieces rebuild each WEB verse exactly.
+export const BEATS_EN = {
+  'j3-night': {
+    2: 'The same came to him by night, and said to him,',
+    3: '“Rabbi, we know that you are a teacher come from God,',
+    4: 'for no one can do these signs that you do, unless God is with him.”',
+  },
+  'j3-born': {
+    0: 'Jesus answered him,',
+    1: '“Most certainly, I tell you, unless one is born anew, he can’t see God’s Kingdom.”',
+    2: 'Nicodemus said to him,',
+    3: '“How can a man be born when he is old?',
+    4: 'Can he enter a second time into his mother’s womb, and be born?”',
+  },
+  'j3-spirit': {
+    0: 'Jesus answered,',
+    1: '“Most certainly I tell you, unless one is born of water and spirit, he can’t enter into God’s Kingdom.',
+    2: 'That which is born of the flesh is flesh.',
+    3: 'That which is born of the Spirit is spirit.',
+  },
+  'j3-wind': {
+    0: 'The wind blows where it wants to,',
+    1: 'and you hear its sound,',
+    2: 'but don’t know where it comes from and where it is going.',
+    3: 'So is everyone who is born of the Spirit.”',
+  },
+  'j3-teacher': {
+    1: 'Jesus answered him,',
+    2: '“Are you the teacher of Israel, and don’t understand these things?',
+    3: 'Most certainly I tell you, we speak that which we know, and testify of that which we have seen,',
+    4: 'and you don’t receive our witness.',
+    5: 'If I told you earthly things and you don’t believe,',
+    6: 'how will you believe if I tell you heavenly things?',
+  },
+  'j3-serpent': {
+    0: 'As Moses lifted up the serpent in the wilderness,',
+    1: 'even so must the Son of Man be lifted up,',
+  },
+  'j3-loved': {
+    0: 'For God so loved the world,',
+    1: 'that he gave his one and only Son,',
+    2: 'that whoever believes in him should not perish, but have eternal life.',
+    3: 'For God didn’t send his Son into the world to judge the world,',
+    4: 'but that the world should be saved through him.',
+  },
+  'j3-light': {
+    0: 'He who believes in him is not judged.',
+    1: 'He who doesn’t believe has been judged already, because he has not believed in the name of the one and only Son of God.',
+    2: 'This is the judgment, that the light has come into the world,',
+    3: 'and men loved the darkness rather than the light;',
+    4: 'for their works were evil.',
+    5: 'For everyone who does evil hates the light, and doesn’t come to the light,',
+    6: 'lest his works would be exposed.',
+    7: 'But he who does the truth comes to the light,',
+    8: 'that his works may be revealed, that they have been done in God.”',
+  },
+  'j3-aenon': {
+    0: 'After these things, Jesus came with his disciples into the land of Judea.',
+    1: 'He stayed there with them, and baptized.',
+    2: 'John also was baptizing in Enon near Salim, because there was much water there.',
+    3: 'They came, and were baptized.',
+  },
+  'j3-rabbi': {
+    0: 'They came to John, and said to him,',
+    1: '“Rabbi, he who was with you beyond the Jordan, to whom you have testified,',
+    2: 'behold, the same baptizes, and everyone is coming to him.”',
+    3: 'John answered,',
+    4: '“A man can receive nothing, unless it has been given him from heaven.',
+    5: 'You yourselves testify that I said, ‘I am not the Christ,’',
+    6: 'but, ‘I have been sent before him.’',
+  },
+  'j3-bridegroom': {
+    0: 'He who has the bride is the bridegroom;',
+    1: 'but the friend of the bridegroom, who stands and hears him, rejoices greatly because of the bridegroom’s voice.',
+    2: 'This, my joy, therefore is made full.',
+    3: 'He must increase,',
+    4: 'but I must decrease.',
+  },
+  'j3-above': {
+    0: 'He who comes from above is above all.',
+    1: 'He who is from the earth belongs to the earth, and speaks of the earth.',
+    2: 'He who comes from heaven is above all.',
+    3: 'What he has seen and heard, of that he testifies;',
+    4: 'and no one receives his witness.',
+    6: 'For he whom God has sent speaks the words of God;',
+    7: 'for God gives the Spirit without measure.',
+    9: 'One who believes in the Son has eternal life,',
+    10: 'but one who disobeys the Son won’t see life, but the wrath of God remains on him.”',
+  },
+};
