@@ -1,2 +1,82 @@
 // English (World English Bible) wording for beats that split a verse — keyed by scene id → beat index.
-export const BEATS_EN = {};
+export const BEATS_EN = {
+  'm11-approach': {
+    2: 'and said to them, “Go your way into the village that is opposite you.',
+    3: 'Immediately as you enter into it, you will find a young donkey tied, on which no one has sat.',
+    4: 'Untie him, and bring him.',
+    5: 'If anyone asks you, ‘Why are you doing this?’',
+    6: 'say, ‘The Lord needs him;’ and immediately he will send him back here.”',
+  },
+  'm11-colt': {
+    0: 'They went away, and found a young donkey tied at the door outside in the open street,',
+    1: 'and they untied him.',
+    3: 'They said to them just as Jesus had said,',
+    4: 'and they let them go.',
+  },
+  'm11-cloaks': {
+    0: 'They brought the young donkey to Jesus,',
+    1: 'and threw their garments on it,',
+    2: 'and Jesus sat on it.',
+    3: 'Many spread their garments on the way,',
+    4: 'and others were cutting down branches from the trees, and spreading them on the road.',
+  },
+  'm11-hosanna': {
+    0: 'Those who went in front, and those who followed, cried out,',
+    1: '“Hosanna!',
+    2: 'Blessed is he who comes in the name of the Lord!',
+    3: 'Blessed is the kingdom of our father David that is coming in the name of the Lord!',
+    4: 'Hosanna in the highest!”',
+  },
+  'm11-temple': {
+    0: 'Jesus entered into the temple in Jerusalem.',
+    1: 'When he had looked around at everything,',
+    2: 'it being now evening, he went out to Bethany with the twelve.',
+  },
+  'm11-figtree': {
+    1: 'Seeing a fig tree afar off having leaves, he came to see if perhaps he might find anything on it.',
+    2: 'When he came to it, he found nothing but leaves,',
+    3: 'for it was not the season for figs.',
+    4: 'Jesus told it, “May no one ever eat fruit from you again!”',
+    5: 'and his disciples heard it.',
+  },
+  'm11-cleansing': {
+    0: 'They came to Jerusalem,',
+    1: 'and Jesus entered into the temple, and began to throw out those who sold and those who bought in the temple,',
+    2: 'and overthrew the money changers’ tables,',
+    3: 'and the seats of those who sold the doves.',
+  },
+  'm11-prayer': {
+    0: 'He taught, saying to them, “Isn’t it written, ‘My house will be called a house of prayer for all the nations?’',
+    1: 'But you have made it a den of robbers!”',
+    2: 'The chief priests and the scribes heard it, and sought how they might destroy him.',
+    3: 'For they feared him, because all the multitude was astonished at his teaching.',
+  },
+  'm11-withered': {
+    1: 'Peter, remembering,',
+    2: 'said to him, “Rabbi, look! The fig tree which you cursed has withered away.”',
+  },
+  'm11-mountain': {
+    0: 'For most certainly I tell you, whoever may tell this mountain, ‘Be taken up and cast into the sea,’',
+    1: 'and doesn’t doubt in his heart, but believes that what he says is happening; he shall have whatever he says.',
+    2: 'Therefore I tell you, all things whatever you pray and ask for,',
+    3: 'believe that you have received them, and you shall have them.',
+    4: 'Whenever you stand praying, forgive, if you have anything against anyone;',
+    5: 'so that your Father, who is in heaven, may also forgive you your transgressions.',
+  },
+  'm11-authority': {
+    0: 'They came again to Jerusalem,',
+    1: 'and as he was walking in the temple, the chief priests, and the scribes, and the elders came to him,',
+    2: 'and they began saying to him, “By what authority do you do these things?',
+    3: 'Or who gave you this authority to do these things?”',
+    4: 'Jesus said to them, “I will ask you one question.',
+    5: 'Answer me, and I will tell you by what authority I do these things.',
+    6: 'The baptism of John — was it from heaven, or from men?',
+    7: 'Answer me.”',
+  },
+  'm11-answer': {
+    1: 'If we should say, ‘From men’” —',
+    2: 'they feared the people, for all held John to really be a prophet.',
+    3: 'They answered Jesus, “We don’t know.”',
+    4: 'Jesus said to them, “Neither do I tell you by what authority I do these things.”',
+  },
+};
