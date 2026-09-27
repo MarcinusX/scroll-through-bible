@@ -32,7 +32,9 @@ const evaluate = async (expr) => (await send('Runtime.evaluate', { expression: e
 await send('Page.enable');
 await send('Emulation.setDeviceMetricsOverride', { width: size[0], height: size[1], deviceScaleFactor: 1, mobile: size[0] < 700 });
 await send('Page.navigate', { url });
-await sleep(2200);
+// chapters load on demand: wait until the theatre is up, then a moment for fonts and the first frames
+for (let i = 0; i < 100 && !(await evaluate('!!window.__theatre')); i++) await sleep(150);
+await sleep(800);
 let n = 0;
 for (const spot of spots) {
   // js=<expression>@<ms> runs code in the page and shoots <ms> later (e.g. mid page-turn)

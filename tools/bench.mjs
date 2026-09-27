@@ -31,7 +31,9 @@ const evaluate = async (expr) => (await send('Runtime.evaluate', { expression: e
 
 await send('Page.enable');
 await send('Page.navigate', { url });
-await sleep(2500);
+// chapters load on demand: wait until the theatre is up, then a moment for fonts and the first frames
+for (let i = 0; i < 100 && !(await evaluate('!!window.__theatre')); i++) await sleep(150);
+await sleep(800);
 const MEASURE = `(async (ms) => { const ts = []; await new Promise(res => { const st = performance.now(); const f = (n) => { ts.push(n); if (n - st < ms) requestAnimationFrame(f); else res(); }; requestAnimationFrame(f); }); const d = ts.slice(1).map((t, i) => t - ts[i]).sort((a,b)=>a-b); return { fps: +(1000 / d[d.length>>1]).toFixed(0), p95ms: +d[Math.floor(d.length*.95)].toFixed(1), worst: +d[d.length-1].toFixed(1), dpr: devicePixelRatio }; })`;
 for (const spot of spots) {
   const [sc, t] = spot.split(':');

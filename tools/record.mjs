@@ -42,7 +42,9 @@ const evaluate = async (expr) => (await send('Runtime.evaluate', { expression: e
 await send('Page.enable');
 await send('Emulation.setDeviceMetricsOverride', { width: W, height: H, deviceScaleFactor: 1, mobile: false });
 await send('Page.navigate', { url });
-await sleep(2500);
+// chapters load on demand: wait until the theatre is up, then a moment for fonts and the first frames
+for (let i = 0; i < 100 && !(await evaluate('!!window.__theatre')); i++) await sleep(150);
+await sleep(800);
 let n = 0;
 for (const [sc, a, b, count] of TOUR) {
   await evaluate(`__theatre.go('${sc}', ${a})`);

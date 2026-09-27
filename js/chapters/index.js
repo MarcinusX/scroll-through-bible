@@ -20,7 +20,7 @@ export const BOOKS = {
   },
   john: {
     id: 'john', count: 21, prefix: 'j',
-    READY: [],
+    READY: [2],
     text: { pl: () => import('../../data/john.js').then((m) => m.JOHN), en: () => import('../../data/john-en.js').then((m) => m.JOHN_EN) },
     name: {
       pl: { short: 'Jan', abbr: 'J', title: 'Ewangelia <em>według św. Jana</em>', plain: 'Ewangelia według św. Jana' },
