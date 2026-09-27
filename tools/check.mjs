@@ -26,6 +26,8 @@ function check(label, verses, textOf) {
   }
   let good = true;
   for (let v = 1; v <= verses.length; v++) {
+    // verses the Biblia Tysiąclecia omits (Mk 9,44.46; 11,26) are skipped in both languages
+    if (!MARK.chapters[CH - 1].verses[v - 1]) { if (got.has(v)) { good = false; console.log(`✗ [${label}] ${CH},${v} is omitted in BT — leave it out`); } continue; }
     if (!got.has(v)) { console.log(`… [${label}] ${CH},${v} not placed yet`); continue; }
     if (norm(got.get(v)) !== norm(verses[v - 1])) {
       good = false;
@@ -40,7 +42,7 @@ function check(label, verses, textOf) {
       if (!!b.text !== has) { good = false; console.log(`✗ [en] ${sc.id} beat ${i}: ${b.text ? 'needs' : 'has an unneeded'} English split`); }
     });
   }
-  console.log(good ? `✓ [${label}] ${got.size}/${verses.length} verses placed, all text matches` : `✗ [${label}] problems found`);
+  console.log(good ? `✓ [${label}] ${got.size}/${MARK.chapters[CH - 1].verses.filter(Boolean).length} verses placed, all text matches` : `✗ [${label}] problems found`);
   ok = ok && good;
 }
 

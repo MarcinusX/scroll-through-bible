@@ -24,25 +24,36 @@ def parse(page):
     body = page.split('<div class="tresc">', 1)[1]
     body = body.split('<div class="chapter-nav">', 1)[0]
     body = re.split(r'<div class="footnote|<a name="P1"', body, 1)[0]
-    tokens = re.split(r'(<div class=(?:tytul\d|miedzytytul\d)>.*?</div>|<a name="W\d+"></a>)', body, flags=re.S)
-    verses, headings, cur, pending = {}, [], None, []
+    # split on the verse-number markers (some verses have no <a name="W…"> anchor)
+    body = re.sub(r'<a name="W\d+"></a>', '', body)
+    tokens = re.split(r'(<div class=(?:tytul\d|miedzytytul\d)>.*?</div>|<span class="werset">\d+&nbsp;</span>)', body, flags=re.S)
+    verses, headings, cur, pending, pending_bare = {}, [], None, [], []
     for t in tokens:
-        m = re.match(r'<a name="W(\d+)"></a>', t)
+        m = re.match(r'<span class="werset">(\d+)&nbsp;</span>', t)
         h = re.match(r'<div class=(tytul\d|miedzytytul\d)>(.*?)</div>', t, re.S)
         if m:
-            cur = int(m.group(1)); verses[cur] = ''
+            cur = int(m.group(1)); verses[cur] = ''; pending_bare = []
             for kind, title in pending: headings.append({'before': cur, 'kind': kind, 'title': title})
             pending = []
         elif h:
             title = clean(h.group(2))
             kind = "section" if h.group(1).startswith("miedzy") else "part"
             pending.append((kind, title))
+            if cur is not None: pending_bare = pending
         elif cur is not None:
+            # right after a heading a verse number is sometimes plain text ("9 A gdy…", Mk 9,9)
+            bare = re.match(r'^\s*(?:<br\s*/?>\s*)*(\d+)\s+', t) if pending_bare else None
+            if bare and int(bare.group(1)) == cur + 1:
+                cur = int(bare.group(1)); verses[cur] = ''
+                for kind, title in pending_bare: headings.append({'before': cur, 'kind': kind, 'title': title})
+                pending = []
+                t = t[bare.end():]
+            pending_bare = []
             verses[cur] += t
-    out = []
-    for n in sorted(verses):
-        txt = re.sub(r'^<span class="werset">\d+&nbsp;</span>', '', verses[n].strip())
-        out.append(clean(txt))
+    # index = verse number - 1; verses this translation omits (e.g. Mk 9,44; 11,26) stay empty
+    out = [''] * max(verses)
+    for n in verses:
+        out[n - 1] = clean(verses[n])
     return {'verses': out, 'headings': headings}
 
 chapters = []

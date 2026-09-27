@@ -684,7 +684,8 @@ export const MARK = {
     "Wtedy Piotr rzekł do Jezusa: «Rabbi, dobrze, że tu jesteśmy; postawimy trzy namioty: jeden dla Ciebie, jeden dla Mojżesza i jeden dla Eliasza».",
     "Nie wiedział bowiem, co należy mówić, tak byli przestraszeni.",
     "I zjawił się obłok, osłaniający ich, a z obłoku odezwał się głos: «To jest mój Syn umiłowany, Jego słuchajcie!».",
-    "I zaraz potem, gdy się rozejrzeli, nikogo już nie widzieli przy sobie, tylko samego Jezusa. 9 A gdy schodzili z góry, przykazał im, aby nikomu nie rozpowiadali o tym, co widzieli, zanim Syn Człowieczy nie powstanie z martwych.",
+    "I zaraz potem, gdy się rozejrzeli, nikogo już nie widzieli przy sobie, tylko samego Jezusa.",
+    "A gdy schodzili z góry, przykazał im, aby nikomu nie rozpowiadali o tym, co widzieli, zanim Syn Człowieczy nie powstanie z martwych.",
     "Zachowali to polecenie, rozprawiając tylko między sobą, co znaczy \"powstać z martwych\".",
     "I pytali Go: «Czemu uczeni w Piśmie twierdzą, że wpierw musi przyjść Eliasz?»",
     "Rzekł im w odpowiedzi: «Istotnie, Eliasz przyjdzie najpierw i naprawi wszystko. Ale jak jest napisane o Synu Człowieczym? Ma On wiele cierpieć i być wzgardzonym.",
@@ -719,7 +720,9 @@ export const MARK = {
     "Kto wam poda kubek wody do picia, dlatego że należycie do Chrystusa, zaprawdę, powiadam wam, nie utraci swojej nagrody.",
     "Kto by się stał powodem grzechu dla jednego z tych małych, którzy wierzą, temu byłoby lepiej uwiązać kamień młyński u szyi i wrzucić go w morze.",
     "Jeśli twoja ręka jest dla ciebie powodem grzechu, odetnij ją; lepiej jest dla ciebie ułomnym wejść do życia wiecznego, niż z dwiema rękami pójść do piekła w ogień nieugaszony.",
+    "",
     "I jeśli twoja noga jest dla ciebie powodem grzechu, odetnij ją; lepiej jest dla ciebie, chromym wejść do życia, niż z dwiema nogami być wrzuconym do piekła.",
+    "",
     "Jeśli twoje oko jest dla ciebie powodem grzechu, wyłup je; lepiej jest dla ciebie jednookim wejść do królestwa Bożego, niż z dwojgiem oczu być wrzuconym do piekła,",
     "gdzie robak ich nie umiera i ogień nie gaśnie.",
     "Bo każdy ogniem będzie posolony.",
@@ -732,7 +735,7 @@ export const MARK = {
      "title": "Przemienienie Jezusa"
     },
     {
-     "before": 10,
+     "before": 9,
      "kind": "section",
      "title": "Przyjście Eliasza"
     },
@@ -898,6 +901,7 @@ export const MARK = {
     "Zaprawdę, powiadam wam: Kto powie tej górze: \"Podnieś się i rzuć się w morze\", a nie wątpi w duszy, lecz wierzy, że spełni się to, co mówi, tak mu się stanie.",
     "Dlatego powiadam wam: Wszystko, o co w modlitwie prosicie, stanie się wam, tylko wierzcie, że otrzymacie.",
     "A kiedy stajecie do modlitwy, przebaczcie, jeśli macie co przeciw komu, aby także Ojciec wasz, który jest w niebie, przebaczył wam wykroczenia wasze».",
+    "",
     "Przyszli znowu do Jerozolimy. Kiedy chodził po świątyni, przystąpili do Niego arcykapłani, uczeni w Piśmie i starsi",
     "i zapytali Go: «Jakim prawem to czynisz? I kto Ci dał tę władzę, żeby to czynić?»",
     "Jezus im odpowiedział: «Zadam wam jedno pytanie. Odpowiedzcie Mi na nie, a powiem wam, jakim prawem to czynię.",

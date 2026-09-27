@@ -33,11 +33,11 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
   /* ---------- verses, sections ---------- */
   const chap = book.chapters[chapter - 1];
   // a chapter can open mid-way through a part begun in an earlier chapter (e.g. Mk 3)
-  let carryPart = '';
-  book.chapters.slice(0, chapter - 1).forEach((c) => c.headings.forEach((h) => { if (h.kind === 'part') carryPart = h.title; }));
+  let carryPart = '', carrySec = '';
+  book.chapters.slice(0, chapter - 1).forEach((c) => c.headings.forEach((h) => { if (h.kind === 'part') carryPart = h.title; else carrySec = h.title; }));
   const verseText = (v) => chap.verses[v - 1];
   const sectionOf = (v) => {
-    let part = carryPart, sec = '', start = 1;
+    let part = carryPart, sec = carrySec, start = 1;
     for (const h of chap.headings) if (h.before <= v) { if (h.kind === 'part') part = h.title; else { sec = h.title; start = h.before; } }
     const next = chap.headings.find((h) => h.kind === 'section' && h.before > v);
     const end = next ? next.before - 1 : chap.verses.length;

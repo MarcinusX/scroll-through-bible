@@ -21,6 +21,8 @@ Each chapter lives in `js/chapters/markN/`:
 | `meta.js` | Roman plate number and the title-page subtitle / closing-card question, in `pl` and `en`. |
 
 Section titles on the hanging tag come from the translation headings (`data/mark.js`, `data/mark-en.js`).
+Verses the Biblia Tysiąclecia omits (Mk 9,44; 9,46; 11,26 — empty strings in `data/mark.js`) are left out of the beats
+in **both** languages; `tools/check.mjs` enforces it.
 Words drawn *inside* scenes (paper labels) go through `tr('polski', 'English')` from `js/core/i18n.js`.
 
 Run a chapter: <http://localhost:5178/?ch=1> (`&lang=en`, `&only=m1-baptism`, `#w9` = verse 9).

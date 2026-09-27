@@ -408,7 +408,23 @@ export const MARK_EN = {
     "Immediately the girl rose up and walked, for she was twelve years old. They were amazed with great amazement.",
     "He strictly ordered them that no one should know this, and commanded that something should be given to her to eat."
    ],
-   "headings": []
+   "headings": [
+    {
+     "before": 1,
+     "kind": "section",
+     "title": "A Man Freed from Demons"
+    },
+    {
+     "before": 21,
+     "kind": "section",
+     "title": "The Woman with a Haemorrhage"
+    },
+    {
+     "before": 35,
+     "kind": "section",
+     "title": "The Daughter of Jairus"
+    }
+   ]
   },
   {
    "verses": [
@@ -469,7 +485,43 @@ export const MARK_EN = {
     "and ran around that whole region, and began to bring those who were sick, on their mats, to where they heard he was.",
     "Wherever he entered, into villages, or into cities, or into the country, they laid the sick in the marketplaces, and begged him that they might touch just the fringe of his garment; and as many as touched him were made well."
    ],
-   "headings": []
+   "headings": [
+    {
+     "before": 1,
+     "kind": "section",
+     "title": "Jesus in Nazareth"
+    },
+    {
+     "before": 7,
+     "kind": "section",
+     "title": "The Sending of the Twelve"
+    },
+    {
+     "before": 14,
+     "kind": "section",
+     "title": "Herod’s Verdict on Jesus"
+    },
+    {
+     "before": 17,
+     "kind": "section",
+     "title": "The Death of John the Baptist"
+    },
+    {
+     "before": 30,
+     "kind": "section",
+     "title": "The Apostles Return. The First Multiplication of Loaves"
+    },
+    {
+     "before": 45,
+     "kind": "section",
+     "title": "Jesus Walks on the Lake"
+    },
+    {
+     "before": 53,
+     "kind": "section",
+     "title": "Healings in Gennesaret"
+    }
+   ]
   },
   {
    "verses": [
@@ -511,7 +563,38 @@ export const MARK_EN = {
     "He commanded them that they should tell no one, but the more he commanded them, so much the more widely they proclaimed it.",
     "They were astonished beyond measure, saying, “He has done all things well. He makes even the deaf hear, and the mute speak!”"
    ],
-   "headings": []
+   "headings": [
+    {
+     "before": 1,
+     "kind": "section",
+     "title": "The Dispute about Tradition"
+    },
+    {
+     "before": 14,
+     "kind": "section",
+     "title": "True Uncleanness"
+    },
+    {
+     "before": 24,
+     "kind": "part",
+     "title": "THE MINISTRY OF JESUS BEYOND GALILEE"
+    },
+    {
+     "before": 24,
+     "kind": "part",
+     "title": "BEFORE THE JOURNEY TO JERUSALEM"
+    },
+    {
+     "before": 24,
+     "kind": "section",
+     "title": "The Faith of the Syrophoenician Woman"
+    },
+    {
+     "before": 31,
+     "kind": "section",
+     "title": "The Healing of a Deaf Man"
+    }
+   ]
   },
   {
    "verses": [
@@ -554,7 +637,43 @@ export const MARK_EN = {
     "For what will a man give in exchange for his life?",
     "For whoever will be ashamed of me and of my words in this adulterous and sinful generation, the Son of Man also will be ashamed of him, when he comes in his Father’s glory, with the holy angels.”"
    ],
-   "headings": []
+   "headings": [
+    {
+     "before": 1,
+     "kind": "section",
+     "title": "The Second Multiplication of Loaves"
+    },
+    {
+     "before": 10,
+     "kind": "section",
+     "title": "Another Demand for a Sign"
+    },
+    {
+     "before": 14,
+     "kind": "section",
+     "title": "The Leaven of the Pharisees"
+    },
+    {
+     "before": 22,
+     "kind": "section",
+     "title": "The Healing of a Blind Man"
+    },
+    {
+     "before": 27,
+     "kind": "section",
+     "title": "Peter’s Confession"
+    },
+    {
+     "before": 31,
+     "kind": "section",
+     "title": "The First Prediction of the Passion and Resurrection"
+    },
+    {
+     "before": 34,
+     "kind": "section",
+     "title": "The Conditions of Following Jesus"
+    }
+   ]
   },
   {
    "verses": [
@@ -609,7 +728,43 @@ export const MARK_EN = {
     "For everyone will be salted with fire, and every sacrifice will be seasoned with salt.",
     "Salt is good, but if the salt has lost its saltiness, with what will you season it? Have salt in yourselves, and be at peace with one another.”"
    ],
-   "headings": []
+   "headings": [
+    {
+     "before": 2,
+     "kind": "section",
+     "title": "The Transfiguration"
+    },
+    {
+     "before": 9,
+     "kind": "section",
+     "title": "The Coming of Elijah"
+    },
+    {
+     "before": 14,
+     "kind": "section",
+     "title": "The Healing of a Boy with Epilepsy"
+    },
+    {
+     "before": 30,
+     "kind": "section",
+     "title": "The Second Prediction of the Passion and Resurrection"
+    },
+    {
+     "before": 33,
+     "kind": "section",
+     "title": "Who Is the Greatest"
+    },
+    {
+     "before": 38,
+     "kind": "section",
+     "title": "In the Name of Jesus"
+    },
+    {
+     "before": 42,
+     "kind": "section",
+     "title": "Causing Others to Stumble"
+    }
+   ]
   },
   {
    "verses": [
@@ -666,7 +821,58 @@ export const MARK_EN = {
     "Jesus asked him, “What do you want me to do for you?” The blind man said to him, “Rabboni, that I may see again.”",
     "Jesus said to him, “Go your way. Your faith has made you well.” Immediately he received his sight, and followed Jesus on the way."
    ],
-   "headings": []
+   "headings": [
+    {
+     "before": 1,
+     "kind": "part",
+     "title": "THE JOURNEY TO JERUSALEM"
+    },
+    {
+     "before": 1,
+     "kind": "section",
+     "title": "Marriage and Divorce"
+    },
+    {
+     "before": 13,
+     "kind": "section",
+     "title": "Jesus Blesses the Children"
+    },
+    {
+     "before": 17,
+     "kind": "section",
+     "title": "The Rich Young Man"
+    },
+    {
+     "before": 23,
+     "kind": "section",
+     "title": "The Danger of Riches"
+    },
+    {
+     "before": 28,
+     "kind": "section",
+     "title": "The Reward of Leaving Everything"
+    },
+    {
+     "before": 32,
+     "kind": "section",
+     "title": "The Third Prediction of the Passion and Resurrection"
+    },
+    {
+     "before": 35,
+     "kind": "section",
+     "title": "The Sons of Zebedee"
+    },
+    {
+     "before": 41,
+     "kind": "section",
+     "title": "Leadership as Service"
+    },
+    {
+     "before": 46,
+     "kind": "section",
+     "title": "The Blind Man at Jericho"
+    }
+   ]
   },
   {
    "verses": [
@@ -704,7 +910,43 @@ export const MARK_EN = {
     "If we should say, ‘From men’” — they feared the people, for all held John to really be a prophet.",
     "They answered Jesus, “We don’t know.” Jesus said to them, “Neither do I tell you by what authority I do these things.”"
    ],
-   "headings": []
+   "headings": [
+    {
+     "before": 1,
+     "kind": "part",
+     "title": "THE MINISTRY OF JESUS IN JERUSALEM"
+    },
+    {
+     "before": 1,
+     "kind": "part",
+     "title": "TEACHING AND DISPUTES WITH OPPONENTS"
+    },
+    {
+     "before": 1,
+     "kind": "section",
+     "title": "The Triumphal Entry into Jerusalem"
+    },
+    {
+     "before": 12,
+     "kind": "section",
+     "title": "The Barren Fig Tree"
+    },
+    {
+     "before": 15,
+     "kind": "section",
+     "title": "The Cleansing of the Temple"
+    },
+    {
+     "before": 20,
+     "kind": "section",
+     "title": "Faith and Prayer"
+    },
+    {
+     "before": 27,
+     "kind": "section",
+     "title": "The Question of Authority"
+    }
+   ]
   },
   {
    "verses": [
@@ -753,7 +995,43 @@ export const MARK_EN = {
     "He called his disciples to himself, and said to them, “Most certainly I tell you, this poor widow gave more than all those who are giving into the treasury,",
     "for they all gave out of their abundance, but she, out of her poverty, gave all that she had to live on.”"
    ],
-   "headings": []
+   "headings": [
+    {
+     "before": 1,
+     "kind": "section",
+     "title": "The Parable of the Wicked Tenants"
+    },
+    {
+     "before": 13,
+     "kind": "section",
+     "title": "The Question of Taxes"
+    },
+    {
+     "before": 18,
+     "kind": "section",
+     "title": "The Question of the Resurrection"
+    },
+    {
+     "before": 28,
+     "kind": "section",
+     "title": "The Greatest Commandment"
+    },
+    {
+     "before": 35,
+     "kind": "section",
+     "title": "The Messiah, Son of God"
+    },
+    {
+     "before": 38,
+     "kind": "section",
+     "title": "A Warning against the Scribes"
+    },
+    {
+     "before": 41,
+     "kind": "section",
+     "title": "The Widow’s Mite"
+    }
+   ]
   },
   {
    "verses": [
@@ -795,7 +1073,48 @@ export const MARK_EN = {
     "lest coming suddenly he might find you sleeping.",
     "What I tell you, I tell all: Watch.”"
    ],
-   "headings": []
+   "headings": [
+    {
+     "before": 1,
+     "kind": "part",
+     "title": "THE DISCOURSE ON THE END OF JERUSALEM AND THE COMING OF CHRIST"
+    },
+    {
+     "before": 1,
+     "kind": "section",
+     "title": "The Destruction of the Temple"
+    },
+    {
+     "before": 5,
+     "kind": "section",
+     "title": "The Beginning of Sorrows"
+    },
+    {
+     "before": 9,
+     "kind": "section",
+     "title": "The Persecution of the Disciples"
+    },
+    {
+     "before": 14,
+     "kind": "section",
+     "title": "Signs of the Fall of Jerusalem"
+    },
+    {
+     "before": 24,
+     "kind": "section",
+     "title": "The Coming of Christ"
+    },
+    {
+     "before": 28,
+     "kind": "section",
+     "title": "The Lesson of the Fig Tree"
+    },
+    {
+     "before": 33,
+     "kind": "section",
+     "title": "The Need to Keep Watch"
+    }
+   ]
   },
   {
    "verses": [
@@ -872,7 +1191,83 @@ export const MARK_EN = {
     "But he began to curse, and to swear, “I don’t know this man of whom you speak!”",
     "The rooster crowed the second time. Peter remembered the word, how that Jesus said to him, “Before the rooster crows twice, you will deny me three times.” When he thought about that, he wept."
    ],
-   "headings": []
+   "headings": [
+    {
+     "before": 1,
+     "kind": "part",
+     "title": "THE PASSION AND RESURRECTION OF JESUS CHRIST"
+    },
+    {
+     "before": 1,
+     "kind": "section",
+     "title": "The Plot against Jesus"
+    },
+    {
+     "before": 3,
+     "kind": "section",
+     "title": "The Anointing at Bethany"
+    },
+    {
+     "before": 10,
+     "kind": "section",
+     "title": "The Betrayal of Judas"
+    },
+    {
+     "before": 12,
+     "kind": "part",
+     "title": "THE LAST SUPPER"
+    },
+    {
+     "before": 12,
+     "kind": "section",
+     "title": "Preparing the Passover"
+    },
+    {
+     "before": 17,
+     "kind": "section",
+     "title": "The Betrayal Foretold"
+    },
+    {
+     "before": 22,
+     "kind": "section",
+     "title": "The Institution of the Eucharist"
+    },
+    {
+     "before": 26,
+     "kind": "part",
+     "title": "JESUS IN GETHSEMANE"
+    },
+    {
+     "before": 26,
+     "kind": "section",
+     "title": "Peter’s Denial Foretold"
+    },
+    {
+     "before": 32,
+     "kind": "section",
+     "title": "Prayer and Agony"
+    },
+    {
+     "before": 43,
+     "kind": "section",
+     "title": "The Arrest of Jesus"
+    },
+    {
+     "before": 53,
+     "kind": "part",
+     "title": "JESUS BEFORE HIS JUDGES"
+    },
+    {
+     "before": 53,
+     "kind": "section",
+     "title": "Before the Council"
+    },
+    {
+     "before": 66,
+     "kind": "section",
+     "title": "Peter’s Denial"
+    }
+   ]
   },
   {
    "verses": [
@@ -924,7 +1319,58 @@ export const MARK_EN = {
     "He bought a linen cloth, and taking him down, wound him in the linen cloth, and laid him in a tomb which had been cut out of a rock. He rolled a stone against the door of the tomb.",
     "Mary Magdalene and Mary, the mother of Joses, saw where he was laid."
    ],
-   "headings": []
+   "headings": [
+    {
+     "before": 1,
+     "kind": "section",
+     "title": "Jesus before Pilate"
+    },
+    {
+     "before": 6,
+     "kind": "section",
+     "title": "Jesus Rejected by His People"
+    },
+    {
+     "before": 16,
+     "kind": "section",
+     "title": "The King Mocked"
+    },
+    {
+     "before": 21,
+     "kind": "part",
+     "title": "JESUS ON GOLGOTHA"
+    },
+    {
+     "before": 21,
+     "kind": "section",
+     "title": "The Way of the Cross"
+    },
+    {
+     "before": 23,
+     "kind": "section",
+     "title": "The Crucifixion"
+    },
+    {
+     "before": 29,
+     "kind": "section",
+     "title": "Mocked on the Cross"
+    },
+    {
+     "before": 33,
+     "kind": "section",
+     "title": "The Death of Jesus"
+    },
+    {
+     "before": 38,
+     "kind": "section",
+     "title": "After the Death of Jesus"
+    },
+    {
+     "before": 42,
+     "kind": "section",
+     "title": "The Burial of Jesus"
+    }
+   ]
   },
   {
    "verses": [
@@ -949,7 +1395,33 @@ export const MARK_EN = {
     "So then the Lord, after he had spoken to them, was received up into heaven, and sat down at the right hand of God.",
     "They went out, and preached everywhere, the Lord working with them, and confirming the word by the signs that followed. Amen."
    ],
-   "headings": []
+   "headings": [
+    {
+     "before": 1,
+     "kind": "part",
+     "title": "THE RESURRECTION OF JESUS CHRIST"
+    },
+    {
+     "before": 1,
+     "kind": "section",
+     "title": "The Empty Tomb"
+    },
+    {
+     "before": 9,
+     "kind": "section",
+     "title": "Jesus Appears to His Own"
+    },
+    {
+     "before": 15,
+     "kind": "section",
+     "title": "The Final Command"
+    },
+    {
+     "before": 19,
+     "kind": "section",
+     "title": "The Ascension"
+    }
+   ]
   }
  ]
 };
