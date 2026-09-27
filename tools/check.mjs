@@ -38,7 +38,7 @@ function check(label, verses, textOf) {
   // an English override must exist exactly where the Polish scene splits a verse
   if (label === 'en') {
     for (const sc of SCENES) sc.beats.forEach((b, i) => {
-      const has = BEATS_EN[sc.id] && BEATS_EN[sc.id][i] !== undefined;
+      const has = !!(BEATS_EN[sc.id] && BEATS_EN[sc.id][i] !== undefined);
       if (!!b.text !== has) { good = false; console.log(`✗ [en] ${sc.id} beat ${i}: ${b.text ? 'needs' : 'has an unneeded'} English split`); }
     });
   }

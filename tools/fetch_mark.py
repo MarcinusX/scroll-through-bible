@@ -4,6 +4,8 @@ import re, html, json, subprocess, pathlib
 
 IDS = [267, 268] + list(range(302, 316))  # Mk 1..16
 OUT = pathlib.Path(__file__).resolve().parent.parent / 'data' / 'mark.js'
+# obvious typos on the source site, corrected: (chapter, verse): (wrong, right)
+ERRATA = {(3, 27): ('Nie nikt nie może', 'Nikt nie może')}
 
 def fetch(cid):
     url = f'https://biblia.deon.pl/rozdzial.php?id={cid}'
@@ -59,6 +61,8 @@ def parse(page):
 chapters = []
 for i, cid in enumerate(IDS, 1):
     ch = parse(fetch(cid))
+    for (c, v), (wrong, right) in ERRATA.items():
+        if c == i: ch['verses'][v - 1] = ch['verses'][v - 1].replace(wrong, right)
     print(f'Mk {i}: {len(ch["verses"])} wersetów, {len(ch["headings"])} nagłówków')
     chapters.append(ch)
 

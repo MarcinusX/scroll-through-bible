@@ -212,7 +212,7 @@ export const MARK = {
     "Jeśli jakieś królestwo wewnętrznie jest skłócone, takie królestwo nie może się ostać.",
     "I jeśli dom wewnętrznie jest skłócony, to taki dom nie będzie mógł się ostać.",
     "Jeśli więc szatan powstał przeciw sobie i wewnętrznie jest skłócony, to nie może się ostać, lecz koniec z nim.",
-    "Nie nikt nie może wejść do domu mocarza i sprzęt mu zagrabić, jeśli mocarza wpierw nie zwiąże, i wtedy dom jego ograbi.",
+    "Nikt nie może wejść do domu mocarza i sprzęt mu zagrabić, jeśli mocarza wpierw nie zwiąże, i wtedy dom jego ograbi.",
     "Zaprawdę, powiadam wam: wszystkie grzechy i bluźnierstwa, których by się ludzie dopuścili, będą im odpuszczone.",
     "Kto by jednak zbluźnił przeciw Duchowi Świętemu, nigdy nie otrzyma odpuszczenia, lecz winien jest grzechu wiecznego».",
     "Mówili bowiem: «Ma ducha nieczystego».",
