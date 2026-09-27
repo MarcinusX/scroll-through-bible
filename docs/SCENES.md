@@ -9,6 +9,26 @@ Run it: `python3 -m http.server 5178` in the repo root → <http://localhost:517
 Only some scenes: `?only=lamp,measure`. Jump in the console: `__theatre.go('lamp', 1.6)`.
 Check the text: `node tools/check.mjs` (beats must reproduce Biblia Tysiąclecia text exactly).
 
+## A chapter
+
+Each chapter lives in `js/chapters/markN/`:
+
+| file | what |
+| --- | --- |
+| `NN-name.js` | one scene per file, in reading order. **Scene ids are prefixed** `mN-` (e.g. `m1-baptism`) so they are unique across the book. |
+| `index.js` | imports the scenes and exports `SCENES = [...]`, plus `BEATS_EN` and `META` (see mark4). |
+| `beats-en.js` | English (World English Bible) wording for every beat that splits a verse: `{ 'm1-baptism': { 0: '…', 1: '…' } }`. Beats that show a whole verse need no entry. Split English at the same sentence boundaries as the Polish. |
+| `meta.js` | Roman plate number and the title-page subtitle / closing-card question, in `pl` and `en`. |
+
+Section titles on the hanging tag come from the translation headings (`data/mark.js`, `data/mark-en.js`).
+Words drawn *inside* scenes (paper labels) go through `tr('polski', 'English')` from `js/core/i18n.js`.
+
+Run a chapter: <http://localhost:5178/?ch=1> (`&lang=en`, `&only=m1-baptism`, `#w9` = verse 9).
+Check text: `node tools/check.mjs 1` — Polish **and** English must rebuild every verse exactly.
+Look at moments (own Chrome window, safe to run in parallel):
+`node tools/shot.mjs <outDir> "http://localhost:5178/?ch=1" m1-baptism:1.7 m1-baptism:2.4 [--size=390x844]`
+then open the JPGs. Frame times: `node tools/bench.mjs "http://localhost:5178/?ch=1" m1-baptism:1.5` (aim: 120 fps idle).
+
 ## File shape
 
 ```js
@@ -85,3 +105,15 @@ export default {
 * Idle `time` motion is great for small things (a flame, a swinging ornament, blinking, a bird).
   For big things, drive them by `t` (they are still while the reader is not scrolling).
 * Hide things with `o: 0` rather than leaving them transparent-but-moving.
+
+## Lessons from chapter 4 (please follow)
+* Crowds: **no continuous idle sway** of heads/arms for many people — it forces every figure to redraw
+  every frame. Blinking (`blinkAt`) is fine. Move crowds with `t`.
+* Swap puppets quickly (`es(t, a, a + 0.07)`), otherwise two half-transparent cut-outs ghost over each other.
+* Raising a **front** arm high (armF > 110) makes it cover the face. For "hand raised" use `armB` high
+  and `armF` forward (~60–90).
+* People stand *in* boats/behind walls: check feet and robe hems don't poke out below the hull/wall.
+* Lights must follow the story logic (a lamp lit at night only when the text says so, etc.).
+* Keep important things inside x 420–1180 so phones (390×844 portrait) still see them; check one portrait shot.
+* Give each beat a clear, readable picture at `x.75` — the reader pauses there. Don't overload with effects.
+* Everything the sentence says should be visible; Jesus at the centre when he is present.

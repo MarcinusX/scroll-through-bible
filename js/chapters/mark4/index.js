@@ -11,4 +11,7 @@ import mustard from './09-mustard.js';
 import conclusion from './10-conclusion.js';
 import storm from './11-storm.js';
 
+export { BEATS_EN } from './beats-en.js';
+export { META } from './meta.js';
+
 export const SCENES = [lake, sower, ears, secret, explain, lamp, measure, growing, mustard, conclusion, storm].filter((s) => s.beats.length);

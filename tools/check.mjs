@@ -1,12 +1,11 @@
-// Verifies that the scenes' beats reproduce the chapter text exactly, verse by verse, in order —
-// in Polish (Biblia Tysiąclecia, the scenes' own text) and English (World English Bible, data/beats-en.js).
-// Usage: node tools/check.mjs
+// Verifies that the scenes' beats reproduce each chapter's text exactly, verse by verse, in order —
+// in Polish (Biblia Tysiąclecia, the scenes' own text) and English (World English Bible, markN/beats-en.js).
+// Usage: node tools/check.mjs [chapter]
 import { MARK } from '../data/mark.js';
 import { MARK_EN } from '../data/mark-en.js';
-import { BEATS_EN } from '../data/beats-en.js';
-import { SCENES } from '../js/chapters/mark4/index.js';
+import { CHAPTER_COUNT, loadChapter } from '../js/chapters/index.js';
 
-const CH = 4;
+let CH, SCENES, BEATS_EN, META;
 const norm = (s) => s.replace(/\s+/g, ' ').trim();
 let ok = true;
 
@@ -45,6 +44,18 @@ function check(label, verses, textOf) {
   ok = ok && good;
 }
 
-check('pl', MARK.chapters[CH - 1].verses, (sc, b) => b.text);
-check('en', MARK_EN.chapters[CH - 1].verses, (sc, b, i) => BEATS_EN[sc.id]?.[i]);
+const only = +process.argv[2] || 0;
+const ids = new Set();
+for (let n = 1; n <= CHAPTER_COUNT; n++) {
+  if (only && n !== only) continue;
+  const mod = await loadChapter(n);
+  if (!mod || !mod.SCENES.length) continue;
+  ({ SCENES, BEATS_EN, META } = mod);
+  CH = n;
+  console.log(`— Mark ${n}: ${SCENES.length} scenes, ${SCENES.reduce((k, s) => k + s.beats.length, 0)} beats`);
+  for (const sc of SCENES) { if (ids.has(sc.id)) { ok = false; console.log(`✗ scene id "${sc.id}" is used twice`); } ids.add(sc.id); }
+  if (!META.plate || !META.pl.coverSub || !META.en.coverSub || !META.pl.endQ || !META.en.endQ) { ok = false; console.log(`✗ Mark ${n}: meta.js is incomplete`); }
+  check('pl', MARK.chapters[n - 1].verses, (sc, b) => b.text);
+  check('en', MARK_EN.chapters[n - 1].verses, (sc, b, i) => BEATS_EN[sc.id]?.[i]);
+}
 process.exit(ok ? 0 : 1);

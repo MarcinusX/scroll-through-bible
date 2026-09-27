@@ -1,16 +1,50 @@
 import { MARK } from '../data/mark.js';
 import { MARK_EN } from '../data/mark-en.js';
-import { BEATS_EN } from '../data/beats-en.js';
 import { startTheatre } from './core/engine.js';
 import { makeCutter } from './core/paper.js';
 import { LANG, UI } from './core/i18n.js';
-import { SCENES } from './chapters/mark4/index.js';
+import { CHAPTER_COUNT, loadChapter, readyChapters } from './chapters/index.js';
+
+/* ---------- which chapter? ?ch=N, otherwise the first one that is drawn ---------- */
+const params = new URLSearchParams(location.search);
+const READY = await readyChapters();
+const CH = READY.includes(+params.get('ch')) ? +params.get('ch') : READY[0];
+const { SCENES, BEATS_EN, META } = await loadChapter(CH);
+const meta = META[LANG];
 
 /* ---------- words on the page ---------- */
 document.documentElement.lang = UI.htmlLang;
 document.title = UI.title;
 document.querySelector('meta[name="description"]').setAttribute('content', UI.description);
 document.querySelectorAll('[data-i18n]').forEach((el) => { el.innerHTML = UI[el.dataset.i18n]; });
+document.getElementById('cover-kicker').textContent = UI.coverKicker(META.plate);
+document.getElementById('cover-ch').textContent = UI.chapterName(CH);
+document.getElementById('cover-sub').innerHTML = meta.coverSub;
+document.getElementById('end-kicker').textContent = UI.endKicker(CH);
+document.getElementById('end-q').innerHTML = meta.endQ;
+const chapterUrl = (n) => { const q = new URLSearchParams(location.search); q.set('ch', n); q.delete('only'); return `${location.pathname}?${q}`; };
+
+/* ---------- chapter tabs on the title page ---------- */
+const tabs = document.getElementById('chapters');
+tabs.setAttribute('aria-label', UI.chapters);
+for (let n = 1; n <= CHAPTER_COUNT; n++) {
+  const b = document.createElement('button');
+  b.type = 'button';
+  b.className = 'ch-tab';
+  b.textContent = n;
+  b.setAttribute('aria-label', UI.chapterName(n));
+  if (n === CH) b.setAttribute('aria-current', 'true');
+  if (!READY.includes(n)) b.disabled = true;
+  else if (n !== CH) b.addEventListener('click', () => { location.href = chapterUrl(n); });
+  tabs.appendChild(b);
+}
+// the closing card offers the next chapter when it is ready
+const nextBtn = document.getElementById('next');
+if (READY.includes(CH + 1)) {
+  nextBtn.hidden = false;
+  nextBtn.textContent = UI.next(CH + 1);
+  nextBtn.addEventListener('click', () => { location.href = chapterUrl(CH + 1); });
+}
 document.getElementById('stage').setAttribute('aria-label', UI.stage);
 document.getElementById('rail').setAttribute('aria-label', UI.rail);
 
@@ -39,11 +73,11 @@ addEventListener('resize', drawFrame);
 
 /* ---------- the play ---------- */
 // ?only=lamp,measure — render just these scenes (handy while drawing a new one)
-const only = new URLSearchParams(location.search).get('only');
+const only = params.get('only');
 const scenes = only ? SCENES.filter((s) => only.split(',').includes(s.id)) : SCENES;
 const theatre = startTheatre({
   book: LANG === 'en' ? MARK_EN : MARK,
-  chapter: 4,
+  chapter: CH,
   scenes,
   ui: UI,
   beatText: LANG === 'en' ? (id, i) => BEATS_EN[id]?.[i] : () => undefined,
@@ -51,7 +85,7 @@ const theatre = startTheatre({
 // home: the eyelet of the hanging tag (and "From the beginning") turn the page back to the title
 function goHome() {
   if (theatre.g < 0.4) scrollTo({ top: 0, behavior: 'smooth' });
-  else theatre.turnTo(0, { title: UI.homeTitle, ref: UI.homeRef });
+  else theatre.turnTo(0, { title: UI.homeTitle, ref: UI.chapterName(CH) });
 }
 const homeBtn = document.getElementById('home');
 homeBtn.setAttribute('aria-label', UI.home);

@@ -34,10 +34,11 @@
 </header>
 
 <section class="cover" id="cover" aria-label="Strona tytułowa">
-  <p class="cover-kicker" data-i18n="coverKicker">Plansza IV · Papierowy teatr</p>
+  <p class="cover-kicker" id="cover-kicker">Plansza IV · Papierowy teatr</p>
   <h1 data-i18n="coverTitle">Ewangelia <em>według św. Marka</em></h1>
   <span class="rule" aria-hidden="true"></span>
-  <p class="cover-sub" data-i18n="coverSub">Rozdział 4 — przypowieści nad jeziorem<br>i cisza po burzy</p>
+  <p class="cover-sub"><span class="cover-ch" id="cover-ch">Rozdział 4</span><span id="cover-sub"></span></p>
+  <nav class="chapters" id="chapters"></nav>
 </section>
 
 <section class="caption off" id="caption" aria-live="polite">
@@ -53,9 +54,9 @@
 <p class="hint" id="hint"><span data-i18n="hint">Przewijaj powoli</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v14m-6-6 6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></p>
 
 <section class="end" id="end" aria-label="Koniec rozdziału">
-  <p class="end-kicker" data-i18n="endKicker">Koniec rozdziału 4</p>
-  <p class="end-q" data-i18n="endQ">«Kim właściwie On jest?»</p>
-  <button type="button" class="chip" id="again" data-i18n="again">Od początku</button>
+  <p class="end-kicker" id="end-kicker">Koniec rozdziału 4</p>
+  <p class="end-q" id="end-q"></p>
+  <div class="end-actions"><button type="button" class="chip" id="again" data-i18n="again">Od początku</button><button type="button" class="chip next" id="next" hidden></button></div>
 </section>
 
 <svg class="defs" aria-hidden="true" focusable="false">

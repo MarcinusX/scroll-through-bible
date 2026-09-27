@@ -6,6 +6,38 @@ OUT = pathlib.Path(__file__).resolve().parent.parent / 'data' / 'mark-en.js'
 
 # Section headings, mirroring the Biblia Tysiąclecia structure so both languages share the same scenes.
 HEADINGS = {
+    1: [
+        {'before': 1, 'kind': 'part', 'title': 'PREPARING FOR THE MINISTRY OF JESUS'},
+        {'before': 1, 'kind': 'section', 'title': 'John the Baptist'},
+        {'before': 9, 'kind': 'section', 'title': 'The Baptism of Jesus'},
+        {'before': 12, 'kind': 'section', 'title': 'The Temptation of Jesus'},
+        {'before': 14, 'kind': 'part', 'title': 'THE MINISTRY OF JESUS IN GALILEE'},
+        {'before': 14, 'kind': 'part', 'title': 'THE BEGINNING OF THE MINISTRY'},
+        {'before': 14, 'kind': 'section', 'title': 'The First Proclamation'},
+        {'before': 16, 'kind': 'section', 'title': 'The Call of the First Disciples'},
+        {'before': 21, 'kind': 'section', 'title': 'Teaching in Capernaum'},
+        {'before': 23, 'kind': 'section', 'title': 'A Man Set Free'},
+        {'before': 29, 'kind': 'section', 'title': 'In Peter’s House'},
+        {'before': 32, 'kind': 'section', 'title': 'Many Healings'},
+        {'before': 35, 'kind': 'section', 'title': 'Around Capernaum'},
+        {'before': 40, 'kind': 'section', 'title': 'The Healing of a Leper'},
+    ],
+    2: [
+        {'before': 1, 'kind': 'part', 'title': 'FIRST DISPUTES WITH THE LEADERS'},
+        {'before': 1, 'kind': 'section', 'title': 'The Healing of a Paralytic'},
+        {'before': 13, 'kind': 'section', 'title': 'The Call of Levi'},
+        {'before': 18, 'kind': 'section', 'title': 'The Question of Fasting'},
+        {'before': 23, 'kind': 'section', 'title': 'Grain Picked on the Sabbath'},
+    ],
+    3: [
+        {'before': 1, 'kind': 'section', 'title': 'Healing on the Sabbath'},
+        {'before': 7, 'kind': 'part', 'title': 'JESUS, WORKER OF WONDERS AND TEACHER'},
+        {'before': 7, 'kind': 'section', 'title': 'The Crowds Flock to Him'},
+        {'before': 13, 'kind': 'section', 'title': 'The Choosing of the Twelve'},
+        {'before': 20, 'kind': 'section', 'title': 'The Crowd Presses In'},
+        {'before': 22, 'kind': 'section', 'title': 'The Scribes’ Slander'},
+        {'before': 31, 'kind': 'section', 'title': 'The True Family of Jesus'},
+    ],
     4: [
         {'before': 1, 'kind': 'part', 'title': 'TEACHING IN PARABLES'},
         {'before': 1, 'kind': 'section', 'title': 'The Parable of the Sower'},
