@@ -1,2 +1,122 @@
 // English (World English Bible) wording for beats that split a verse — keyed by scene id → beat index.
-export const BEATS_EN = {};
+// `node tools/check.mjs john 6` verifies these pieces rebuild each WEB verse exactly.
+export const BEATS_EN = {
+  'j6-crowd': {
+    2: 'A great multitude followed him,',
+    3: 'because they saw his signs which he did on those who were sick.',
+  },
+  'j6-philip': {
+    0: 'Jesus therefore lifting up his eyes, and seeing that a great multitude was coming to him,',
+    1: 'said to Philip, “Where are we to buy bread, that these may eat?”',
+    2: 'This he said to test him,',
+    3: 'for he himself knew what he would do.',
+  },
+  'j6-boy': {
+    1: '“There is a boy here who has five barley loaves and two fish,',
+    2: 'but what are these among so many?”',
+    3: 'Jesus said, “Have the people sit down.”',
+    4: 'Now there was much grass in that place.',
+    5: 'So the men sat down, in number about five thousand.',
+  },
+  'j6-thanks': {
+    0: 'Jesus took the loaves; and having given thanks, he distributed to the disciples, and the disciples to those who were sitting down;',
+    1: 'likewise also of the fish as much as they desired.',
+    2: 'When they were filled,',
+    3: 'he said to his disciples, “Gather up the broken pieces which are left over, that nothing be lost.”',
+  },
+  'j6-king': {
+    0: 'When therefore the people saw the sign which Jesus did, they said,',
+    1: '“This is truly the prophet who comes into the world.”',
+    2: 'Jesus therefore, perceiving that they were about to come and take him by force, to make him king,',
+    3: 'withdrew again to the mountain by himself.',
+  },
+  'j6-sea': {
+    1: 'and they entered into the boat, and were going over the sea to Capernaum.',
+    2: 'It was now dark, and Jesus had not come to them.',
+    4: 'When therefore they had rowed about twenty-five or thirty stadia,',
+    5: 'they saw Jesus walking on the sea, and drawing near to the boat;',
+    6: 'and they were afraid.',
+    8: 'They were willing therefore to receive him into the boat.',
+    9: 'Immediately the boat was at the land where they were going.',
+  },
+  'j6-boats': {
+    0: 'On the next day, the multitude that stood on the other side of the sea saw that there was no other boat there, except the one in which his disciples had embarked,',
+    1: 'and that Jesus hadn’t entered with his disciples into the boat, but his disciples had gone away alone.',
+    3: 'When the multitude therefore saw that Jesus wasn’t there, nor his disciples,',
+    4: 'they themselves got into the boats, and came to Capernaum, seeking Jesus.',
+    5: 'When they found him on the other side of the sea,',
+    6: 'they asked him, “Rabbi, when did you come here?”',
+  },
+  'j6-perish': {
+    1: 'Don’t work for the food which perishes, but for the food which remains to eternal life, which the Son of Man will give to you.',
+    2: 'For God the Father has sealed him.”',
+    5: 'They said therefore to him, “What then do you do for a sign, that we may see, and believe you?',
+    6: 'What work do you do?',
+  },
+  'j6-manna': {
+    0: 'Our fathers ate the manna in the wilderness.',
+    1: 'As it is written, ‘He gave them bread out of heaven to eat.’”',
+    2: 'Jesus therefore said to them, “Most certainly, I tell you, it wasn’t Moses who gave you the bread out of heaven,',
+    3: 'but my Father gives you the true bread out of heaven.',
+  },
+  'j6-bread': {
+    0: 'Jesus said to them, “I am the bread of life.',
+    1: 'He who comes to me will not be hungry,',
+    2: 'and he who believes in me will never be thirsty.',
+    4: 'All those whom the Father gives me will come to me.',
+    5: 'He who comes to me I will in no way throw out.',
+  },
+  'j6-will': {
+    1: 'This is the will of my Father who sent me, that of all he has given to me I should lose nothing,',
+    2: 'but should raise him up at the last day.',
+    3: 'This is the will of the one who sent me, that everyone who sees the Son, and believes in him, should have eternal life;',
+    4: 'and I will raise him up at the last day.”',
+  },
+  'j6-murmur': {
+    1: 'They said, “Isn’t this Jesus, the son of Joseph, whose father and mother we know?',
+    2: 'How then does he say, ‘I have come down out of heaven?’”',
+    4: 'No one can come to me unless the Father who sent me draws him,',
+    5: 'and I will raise him up in the last day.',
+  },
+  'j6-taught': {
+    0: 'It is written in the prophets, ‘They will all be taught by God.’',
+    1: 'Therefore everyone who hears from the Father, and has learned, comes to me.',
+  },
+  'j6-living': {
+    0: 'I am the living bread which came down out of heaven.',
+    1: 'If anyone eats of this bread, he will live forever.',
+    2: 'Yes, the bread which I will give for the life of the world is my flesh.”',
+    4: 'Jesus therefore said to them, “Most certainly I tell you, unless you eat the flesh of the Son of Man and drink his blood,',
+    5: 'you don’t have life in yourselves.',
+  },
+  'j6-abide': {
+    0: 'He who eats my flesh and drinks my blood has eternal life,',
+    1: 'and I will raise him up at the last day.',
+    4: 'As the living Father sent me, and I live because of the Father;',
+    5: 'so he who feeds on me, he will also live because of me.',
+  },
+  'j6-synagogue': {
+    0: 'This is the bread which came down out of heaven — not as our fathers ate the manna, and died.',
+    1: 'He who eats this bread will live forever.”',
+    3: 'Therefore many of his disciples, when they heard this, said,',
+    4: '“This is a hard saying! Who can listen to it?”',
+  },
+  'j6-spirit': {
+    0: 'But Jesus knowing in himself that his disciples murmured at this, said to them,',
+    1: '“Does this cause you to stumble?',
+    3: 'It is the spirit who gives life. The flesh profits nothing.',
+    4: 'The words that I speak to you are spirit, and are life.',
+  },
+  'j6-away': {
+    0: 'But there are some of you who don’t believe.”',
+    1: 'For Jesus knew from the beginning who they were who didn’t believe, and who it was who would betray him.',
+  },
+  'j6-peter': {
+    0: 'Simon Peter answered him, “Lord, to whom would we go?',
+    1: 'You have the words of eternal life.',
+    3: 'Jesus answered them, “Didn’t I choose you, the twelve,',
+    4: 'and one of you is a devil?”',
+    5: 'Now he spoke of Judas, the son of Simon Iscariot,',
+    6: 'for it was he who would betray him, being one of the twelve.',
+  },
+};
