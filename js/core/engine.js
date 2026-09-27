@@ -323,9 +323,19 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
     const html = [];
     b.segs.forEach((s) => {
       if (s.first) html.push(`<sup class="vn">${s.v}</sup>`);
+      // editorial brackets are dimmed: [added words] and <textual variants> (Mk 9,29 «<i postem>»).
+      // They can span several words, so remember whether a word starts inside one.
+      let closer = '';
       s.text.split(/\s+/).forEach((w) => {
-        const t = w.replace(/\[([^\]]+)\]/g, '<span class="br">[$1]</span>');
-        html.push(`<span class="w">${t}</span> `);
+        let out = closer ? '<span class="br">' : '';
+        for (const ch of w) {
+          const esc = ch === '&' ? '&amp;' : ch === '<' ? '&lt;' : ch === '>' ? '&gt;' : ch;
+          if (!closer && (ch === '[' || ch === '<')) { closer = ch === '[' ? ']' : '>'; out += '<span class="br">' + esc; }
+          else if (closer && ch === closer) { closer = ''; out += esc + '</span>'; }
+          else out += esc;
+        }
+        if (closer) out += '</span>';
+        html.push(`<span class="w">${out}</span> `);
       });
     });
     capText.innerHTML = html.join('');
