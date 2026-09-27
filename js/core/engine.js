@@ -22,6 +22,7 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
   const hintEl = $('hint');
   const endEl = $('end');
   const turnEl = $('turn');
+  const langEl = $('lang');
 
   let reduced = reduceMQ.matches;
   reduceMQ.addEventListener?.('change', (e) => (reduced = e.matches));
@@ -163,15 +164,23 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
       if (!sv.childNodes.length) sv.remove(); else { const b = bboxOf(sv); if (b) fitSheet(sv, b); }
       const b = bboxOf(p); if (b) fitSheet(live, b, 30);
     }
-    // moving pieces: refit when they leave their sheet or it has become far too big for them
+    // Moving pieces: grow the sheet when a piece moves past its edge. Grow-only (the new fit
+    // covers the old one), so a swaying / rocking / spinning piece settles into a sheet that holds
+    // its whole range and is never resized again — every resize means a re-raster, which can blip.
     dirty.forEach((p) => {
       const sv = p.parentNode, f = sv && sv.__fit;
       if (!f || !sv.isConnected) return;
       const b = bboxOf(p);
       if (!b) return;
-      const out = b.x < f.x + 4 || b.y < f.y + 4 || b.x + b.width > f.x2 - 4 || b.y + b.height > f.y2 - 4;
-      const loose = (f.x2 - f.x) * (f.y2 - f.y) > 5 * (b.width + 2 * FIT + 60) * (b.height + 2 * FIT + 60);
-      if (out || loose) fitSheet(sv, b, 30 + Math.min(120, Math.max(b.width, b.height) * 0.25));
+      const [X0, Y0, X1, Y1] = sv.__L.box;
+      // only the part that can be on screen counts (big rays or a sun glow reach past the layer)
+      const bx = Math.max(b.x, X0), by = Math.max(b.y, Y0), bx2 = Math.min(b.x + b.width, X1), by2 = Math.min(b.y + b.height, Y1);
+      if (bx2 <= bx || by2 <= by) return;
+      // an edge already at the layer's own boundary can't grow further, so it never counts as "out"
+      const out = (bx < f.x + 2 && f.x > X0 + 1) || (by < f.y + 2 && f.y > Y0 + 1) || (bx2 > f.x2 - 2 && f.x2 < X1 - 1) || (by2 > f.y2 - 2 && f.y2 < Y1 - 1);
+      if (!out) return;
+      const x = Math.min(bx, f.x + FIT), y = Math.min(by, f.y + FIT), x2 = Math.max(bx2, f.x2 - FIT), y2 = Math.max(by2, f.y2 - FIT);
+      fitSheet(sv, { x, y, width: x2 - x, height: y2 - y }, 40 + Math.min(160, Math.max(bx2 - bx, by2 - by) * 0.3));
     });
     dirty.clear();
   }
@@ -431,6 +440,7 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
     coverEl.style.visibility = c > 0.01 ? 'visible' : 'hidden';
     coverEl.style.transform = `translateY(${(-(1 - c) * 40).toFixed(1)}px)`;
     hintEl.classList.toggle('gone', g > 0.25);
+    langEl?.classList.toggle('gone', g > 0.3); // the language picker lives on the home page only
     endEl.classList.toggle('on', g > total - 0.9);
     liftLive();
   }
@@ -475,14 +485,14 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
   }
   /* ---------- page turns & tap-to-turn ---------- */
   let turning = false;
-  function turnTo(target) {
+  function turnTo(target, label) {
     if (turning) return;
     if (reduced || !turnEl) { scrollTo(0, target * unitPx); g = target; return; }
     turning = true;
     const tb = beats.find((b) => b.start <= target && target < b.start + b.len) || beats[0];
     const sec = sectionOf(tb.vs[0] || 1);
-    turnEl.querySelector('.turn-title').textContent = sec.sec;
-    turnEl.querySelector('.turn-ref').textContent = ui.ref(chapter, sec.start, sec.end);
+    turnEl.querySelector('.turn-title').textContent = label ? label.title : sec.sec;
+    turnEl.querySelector('.turn-ref').textContent = label ? label.ref : ui.ref(chapter, sec.start, sec.end);
     document.body.classList.add('turning');
     turnEl.classList.add('on'); // a sheet of paper slides in from the right…
     setTimeout(() => {

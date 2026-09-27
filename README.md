@@ -1,6 +1,8 @@
 # Ewangelia wg św. Marka — papierowy teatr
 
-**▶ Read it here: https://marcinusx.github.io/scroll-through-bible/** (Polski / English)
+Scroll through bible: https://marcinusx.github.io/scroll-through-bible/
+
+[![The paper theatre in motion: the crowd gathers by the lake, the sower sows, the lamp is lifted onto its stand, the storm is stilled](docs/demo.gif)](https://marcinusx.github.io/scroll-through-bible/?lang=en)
 
 A scroll-driven, sentence-by-sentence illustrated reading of the Gospel of Mark, drawn as a
 layered **paper-cut diorama**. Chapter 4 is done: teaching from the boat, the five parables and
@@ -28,7 +30,8 @@ Reading:
 * Scroll to move through the sentences.
 * Tap the right third of the screen for the next sentence and the left third for the previous one; ← / → do the same.
 * The knots on the thread at the right turn the page straight to a section.
-* Language: the flags at the top right, or `?lang=en` / `?lang=pl`. The choice is remembered and you keep your place.
+* The eyelet on the hanging tag (top left) turns back to the title page.
+* Language: the paper flags on the title page, or `?lang=en` / `?lang=pl`. The choice is remembered.
 * Deep links: `#w35` jumps to verse 35. Draw a single scene: `?only=storm`.
 * Console: `__theatre.go('storm', 7.5)` jumps to scene time 7.5 (beats).
 
@@ -57,6 +60,7 @@ Upcoming scenes are pre-built in idle time.
 * `node tools/check.mjs`: verifies the beats reproduce the Bible text exactly, verse by verse, in both languages.
 * `node tools/bench.mjs <url> scene:t …`: frame-time benchmark in a dedicated Chrome window.
 * `node tools/shot.mjs <outDir> <url> scene:t … [--size=390x844]`: screenshots of chosen moments.
+* `node tools/record.mjs <url> docs/demo.gif`: records the README tour GIF (needs ffmpeg).
 * `python3 tools/fetch_mark.py` / `tools/fetch_mark_en.py`: re-download the Polish / English text.
 
 ## Next chapters

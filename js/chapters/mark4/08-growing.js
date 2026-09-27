@@ -449,7 +449,7 @@ export default {
       pose(qMark, { x: fx + 58 + Math.sin(time * 2) * 3, y: GY - 236 - q * 14, s: q, r: Math.sin(time * 1.6) * 6 - 6, o: q > 0.01 ? 1 : 0 });
 
       /* --- the room: lamp at dusk, sleeping at night, z z z --- */
-      const lamp = t >= 1 && t < 2.05 ? seg(p, 0.47, 0.52) * (1 - seg(p, 0.66, 0.72)) : 0;
+      const lamp = 0; // the lamp stays out: night in the parable is simply dark
       fade(lampGlow, lamp); fade(lampFlame, lamp);
       attr(spill, 'opacity', lamp * 0.8);
       attr(roomWall, 'fill', mix(wallCol, C.lampGlow, lamp * 0.45));

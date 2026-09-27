@@ -31,6 +31,9 @@ export const UI = {
     stage: 'Papierowy teatr: ilustracje do czytanego tekstu',
     rail: 'Części rozdziału',
     langLabel: 'Język',
+    home: 'Strona tytułowa',
+    homeTitle: 'Ewangelia według św. Marka',
+    homeRef: 'Rozdział 4',
     ref: (ch, a, b) => `Mk ${ch},${a}${b && b !== a ? '–' + b : ''}`,
   },
   en: {
@@ -51,6 +54,9 @@ export const UI = {
     stage: 'Paper theatre: illustrations for the text being read',
     rail: 'Parts of the chapter',
     langLabel: 'Language',
+    home: 'Home — title page',
+    homeTitle: 'The Gospel according to Mark',
+    homeRef: 'Chapter 4',
     ref: (ch, a, b) => `Mark ${ch}:${a}${b && b !== a ? '–' + b : ''}`,
   },
 }[LANG];

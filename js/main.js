@@ -48,7 +48,16 @@ const theatre = startTheatre({
   ui: UI,
   beatText: LANG === 'en' ? (id, i) => BEATS_EN[id]?.[i] : () => undefined,
 });
-document.getElementById('again').addEventListener('click', () => scrollTo({ top: 0, behavior: 'smooth' }));
+// home: the eyelet of the hanging tag (and "From the beginning") turn the page back to the title
+function goHome() {
+  if (theatre.g < 0.4) scrollTo({ top: 0, behavior: 'smooth' });
+  else theatre.turnTo(0, { title: UI.homeTitle, ref: UI.homeRef });
+}
+const homeBtn = document.getElementById('home');
+homeBtn.setAttribute('aria-label', UI.home);
+homeBtn.title = UI.home;
+homeBtn.addEventListener('click', goHome);
+document.getElementById('again').addEventListener('click', goHome);
 window.__theatre = theatre;
 
 /* ---------- language picker: two little paper flags ---------- */
@@ -84,7 +93,7 @@ langNav.setAttribute('aria-label', UI.langLabel);
     try { localStorage.setItem('lang', code); } catch (e) { /* storage blocked — the URL still carries it */ }
     const q = new URLSearchParams(location.search);
     q.set('lang', code);
-    location.href = `${location.pathname}?${q}#w${theatre.verse()}`; // keep the reader's place
+    location.href = `${location.pathname}?${q}`; // the picker lives on the home page — reopen it there
   });
   langNav.appendChild(b);
 });
