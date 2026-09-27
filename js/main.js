@@ -117,6 +117,9 @@ const homeBtn = document.getElementById('home');
 homeBtn.setAttribute('aria-label', UI.home);
 homeBtn.title = UI.home;
 homeBtn.addEventListener('click', goHome);
+const backBtn = document.getElementById('back');
+backBtn.title = UI.home;
+backBtn.addEventListener('click', goHome);
 document.getElementById('again').addEventListener('click', goHome);
 window.__theatre = theatre;
 

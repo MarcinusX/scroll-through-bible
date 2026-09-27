@@ -73,11 +73,23 @@ body {
 .tag-hole:hover { transform: scale(1.18); box-shadow: 0 0 0 3.5px var(--terracotta), 0 0 0 5px rgba(90, 56, 24, .35); }
 .tag-hole:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--terracotta), 0 0 0 6px var(--cream), 0 0 0 7.5px var(--terracotta); }
 .grain-fill { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
-.kicker { position: relative; margin: 0 0 6px; font-size: 10.5px; letter-spacing: .2em; text-transform: uppercase; color: #9a5526; line-height: 1.5; }
 .tag-title { position: relative; margin: 0; font-weight: 400; font-size: clamp(21px, 1.9vw, 28px); line-height: 1.05; }
 .tag-ref { position: relative; margin: 8px 0 0; font-size: 14px; font-style: italic; color: var(--ink-soft); }
 .parable-mark { display: none; color: var(--terracotta); }
 .tag-wrap.parable .parable-mark { display: inline; }
+.tag-wrap { transition: opacity .5s ease, visibility 0s 0s; }
+.tag-wrap.gone { opacity: 0; visibility: hidden; transition: opacity .4s ease, visibility 0s .4s; }
+/* a small paper chip beside the eyelet: the same "back to the title page" as the eyelet, but spelled out */
+.tag-back {
+  position: absolute; left: calc(50% + 18px); top: calc(clamp(20px, 4vh, 44px) + 4px); z-index: 1;
+  appearance: none; border: 0; padding: 4px 10px 5px; font: italic 13px/1 var(--serif); color: var(--ink); background: #efe3c7;
+  cursor: pointer; pointer-events: auto;
+  clip-path: polygon(3% 10%, 50% 0, 97% 8%, 100% 55%, 96% 96%, 50% 100%, 2% 92%, 0 45%);
+  transition: transform .3s cubic-bezier(.3, 1.6, .5, 1), background-color .2s;
+}
+.tag-back::before { content: ''; position: absolute; inset: -8px; } /* a finger-sized target */
+.tag-back:hover { transform: translateY(-1px) rotate(-2deg); background: #f6d9b8; }
+.tag-back:focus-visible { outline: 2px dashed var(--terracotta); outline-offset: 2px; }
 
 /* ---------- cover ---------- */
 .cover {
@@ -122,8 +134,8 @@ body {
 .knot:hover .lbl, .knot:focus-visible .lbl { opacity: 1; }
 
 /* ---------- hint & end ---------- */
-.hint { position: fixed; left: 50%; bottom: calc(var(--frame) + 26px); z-index: 11; margin: 0; display: flex; align-items: center; gap: 8px; padding: 8px 16px; translate: -50% 0; font-size: 16px; font-style: italic; color: var(--cream); background: rgba(28, 55, 57, .82); clip-path: polygon(0 8%, 40% 0, 100% 6%, 99% 94%, 55% 100%, 1% 96%); transition: opacity .6s; }
-.hint svg { width: 18px; height: 18px; animation: nudge 1.6s ease-in-out infinite; }
+.hint { position: fixed; left: 50%; bottom: calc(var(--frame) + 26px); z-index: 11; margin: 0; display: flex; align-items: center; gap: 10px; padding: 12px 24px; translate: -50% 0; font-size: 21px; font-style: italic; color: var(--cream); background: rgba(28, 55, 57, .82); clip-path: polygon(0 8%, 40% 0, 100% 6%, 99% 94%, 55% 100%, 1% 96%); transition: opacity .6s; }
+.hint svg { width: 24px; height: 24px; animation: nudge 1.6s ease-in-out infinite; }
 @keyframes nudge { 50% { transform: translateY(4px); } }
 .hint.gone { opacity: 0; pointer-events: none; }
 .end {
@@ -140,12 +152,23 @@ body {
 .chip:focus-visible { outline: none; box-shadow: inset 0 0 0 2px var(--terracotta); }
 
 @media (max-width: 700px) {
-  .tag { width: 196px; padding: 34px 12px 12px; }
-  .tag-title { font-size: 19px; }
-  .kicker { font-size: 9.5px; letter-spacing: .14em; }
-  .tag-ref { font-size: 12.5px; margin-top: 4px; }
+  /* the tag turns into a slim one-line label, hung by its eyelet on the left */
+  .tag-wrap { transform-origin: 19px 0; }
+  .tag-string { margin: 0 0 0 18px; height: clamp(14px, 2.4vh, 24px); }
+  .tag {
+    display: flex; align-items: baseline; gap: 8px; width: auto; max-width: calc(100vw - 2 * var(--frame) - 112px);
+    padding: 8px 14px 9px 34px; text-align: left; white-space: nowrap;
+    clip-path: polygon(0 18%, 9px 0, 100% 0, 100% 100%, 9px 100%, 0 82%);
+  }
+  .tag::after { inset: 4px; clip-path: none; }
+  .tag-hole { left: 12px; top: 50%; width: 12px; height: 12px; margin: -6px 0 0; }
+  .tag-title { font-size: 17px; line-height: 1.2; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  .tag-ref { flex: none; margin: 0; font-size: 13px; }
+  .tag-back { left: calc(100% + 8px); top: calc(clamp(14px, 2.4vh, 24px) + 6px); padding: 6px 10px 7px; font-size: 14px; }
   .caption { padding: 12px 16px 14px; }
-  .cap-text { font-size: 17px; line-height: 1.34; }
+  .cap-ref { font-size: 12px; }
+  .cap-text { font-size: 21px; line-height: 1.34; }
+  .hint { font-size: 19px; padding: 11px 20px; }
   .rail { right: calc(var(--frame) + 4px); top: 24vh; bottom: 30vh; }
   .knot .lbl { display: none; }
 }

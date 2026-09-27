@@ -32,6 +32,7 @@ export const UI = {
     rail: 'Części rozdziału',
     langLabel: 'Język',
     home: 'Strona tytułowa',
+    back: 'Powrót',
     ref: (abbr, ch, a, b) => `${abbr} ${ch},${a}${b && b !== a ? '–' + b : ''}`,
   },
   en: {
@@ -53,6 +54,7 @@ export const UI = {
     rail: 'Parts of the chapter',
     langLabel: 'Language',
     home: 'Home — title page',
+    back: 'Home',
     ref: (abbr, ch, a, b) => `${abbr} ${ch}:${a}${b && b !== a ? '–' + b : ''}`,
   },
 }[LANG];

@@ -16,7 +16,7 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
   const spaceEl = $('scroll-space');
   const defsEl = $('defs');
   const capEl = $('caption'), capText = $('cap-text'), capRef = $('cap-ref');
-  const tagEl = $('tag'), tagKicker = $('tag-kicker'), tagTitle = $('tag-title'), tagRef = $('tag-ref');
+  const tagEl = $('tag'), tagTitle = $('tag-title'), tagRef = $('tag-ref');
   const railEl = $('rail');
   const coverEl = $('cover');
   const hintEl = $('hint');
@@ -363,7 +363,6 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
     const key = s.sec + parable;
     if (key === tagKey) return;
     tagKey = key;
-    tagKicker.textContent = `${ui.chapter} ${chapter} · ${s.part.toLowerCase()}`;
     tagTitle.textContent = s.sec;
     tagRef.textContent = ui.ref(chapter, s.start, s.end);
     tagEl.classList.toggle('parable', !!parable);
@@ -456,6 +455,7 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
     coverEl.style.transform = `translateY(${(-(1 - c) * 40).toFixed(1)}px)`;
     hintEl.classList.toggle('gone', g > 0.25);
     langEl?.classList.toggle('gone', g > 0.3); // the language picker lives on the home page only
+    tagEl.classList.toggle('gone', g < 0.3); // …and the hanging tag only off it
     endEl.classList.toggle('on', g > total - 0.9);
     liftLive();
   }
