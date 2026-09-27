@@ -126,11 +126,16 @@ body {
 .hint svg { width: 18px; height: 18px; animation: nudge 1.6s ease-in-out infinite; }
 @keyframes nudge { 50% { transform: translateY(4px); } }
 .hint.gone { opacity: 0; pointer-events: none; }
-.end { position: fixed; left: 50%; top: 40%; z-index: 12; translate: -50% -50%; text-align: center; opacity: 0; pointer-events: none; transition: opacity 1s ease; color: var(--cream); text-shadow: 0 2px 12px rgba(10, 14, 40, .6); }
+.end {
+  position: fixed; left: 50%; top: 40%; z-index: 12; width: min(520px, 86vw); padding: 26px 28px 24px; translate: -50% -50%;
+  text-align: center; opacity: 0; pointer-events: none; transition: opacity 1s ease; color: var(--ink); background: var(--cream);
+  clip-path: polygon(1% 4%, 32% 0, 66% 3%, 99% 0, 100% 50%, 98% 97%, 60% 100%, 30% 97%, 0 100%, 1% 50%);
+  filter: drop-shadow(0 12px 14px var(--shade));
+}
 .end.on { opacity: 1; pointer-events: auto; }
-.end-kicker { margin: 0; font-size: 13px; letter-spacing: .3em; text-transform: uppercase; }
-.end-q { margin: 8px 0 18px; font-size: clamp(30px, 4vw, 52px); font-style: italic; }
-.chip { appearance: none; border: 0; padding: 10px 20px; font: italic 17px var(--serif); color: var(--ink); background: var(--cream); cursor: pointer; clip-path: polygon(2% 6%, 30% 0, 62% 4%, 99% 1%, 100% 52%, 98% 96%, 64% 100%, 34% 97%, 1% 100%, 0 48%); transition: transform .25s cubic-bezier(.3, 1.6, .5, 1); }
+.end-kicker { margin: 0; font-size: 12px; letter-spacing: .28em; text-transform: uppercase; color: #9a5526; }
+.end-q { margin: 8px 0 18px; font-size: clamp(26px, 3.4vw, 44px); line-height: 1.1; font-style: italic; }
+.chip { appearance: none; border: 0; padding: 10px 20px; font: italic 17px var(--serif); color: var(--ink); background: #efe3c7; cursor: pointer; clip-path: polygon(2% 6%, 30% 0, 62% 4%, 99% 1%, 100% 52%, 98% 96%, 64% 100%, 34% 97%, 1% 100%, 0 48%); transition: transform .25s cubic-bezier(.3, 1.6, .5, 1); }
 .chip:hover { transform: translateY(-2px) rotate(-1deg); }
 .chip:focus-visible { outline: none; box-shadow: inset 0 0 0 2px var(--terracotta); }
 
