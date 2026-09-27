@@ -9,6 +9,13 @@ Run it: `python3 -m http.server 5178` in the repo root → <http://localhost:517
 Only some scenes: `?only=lamp,measure`. Jump in the console: `__theatre.go('lamp', 1.6)`.
 Check the text: `node tools/check.mjs` (beats must reproduce Biblia Tysiąclecia text exactly).
 
+## Books and chapters
+
+The theatre holds several Gospels. `js/chapters/index.js` lists them (`BOOKS`): Mark lives in
+`js/chapters/markN/` (scene ids `mN-…`), John in `js/chapters/johnN/` (scene ids `jN-…`). The text is in
+`data/<book>.js` (Biblia Tysiąclecia) and `data/<book>-en.js` (World English Bible); a book's published
+chapters are its `READY` list. Everything below says "markN", but works the same for every book.
+
 ## A chapter
 
 Each chapter lives in `js/chapters/markN/`:
@@ -25,8 +32,9 @@ Verses the Biblia Tysiąclecia omits (Mk 9,44; 9,46; 11,26 — empty strings in 
 in **both** languages; `tools/check.mjs` enforces it.
 Words drawn *inside* scenes (paper labels) go through `tr('polski', 'English')` from `js/core/i18n.js`.
 
-Run a chapter: <http://localhost:5178/?ch=1> (`&lang=en`, `&only=m1-baptism`, `#w9` = verse 9).
-Check text: `node tools/check.mjs 1` — Polish **and** English must rebuild every verse exactly.
+Run a chapter: <http://localhost:5178/?book=mark&ch=1> (`&lang=en`, `&only=m1-baptism`, `#w9` = verse 9).
+John: <http://localhost:5178/?book=john&ch=3>.
+Check text: `node tools/check.mjs mark 1` / `node tools/check.mjs john 3` — Polish **and** English must rebuild every verse exactly.
 Look at moments (own Chrome window, safe to run in parallel):
 `node tools/shot.mjs <outDir> "http://localhost:5178/?ch=1" m1-baptism:1.7 m1-baptism:2.4 [--size=390x844]`
 then open the JPGs. Frame times: `node tools/bench.mjs "http://localhost:5178/?ch=1" m1-baptism:1.5` (aim: 120 fps idle).

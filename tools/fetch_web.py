@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""Downloads the Gospel of Mark, World English Bible (public domain), into data/mark-en.js."""
-import html, json, pathlib, re, subprocess
+"""Downloads a Gospel from the World English Bible (public domain) into data/<book>-en.js.
+Usage: python3 tools/fetch_web.py mark|john"""
+import html, json, pathlib, re, subprocess, sys
 
-OUT = pathlib.Path(__file__).resolve().parent.parent / 'data' / 'mark-en.js'
 
 # Section headings, mirroring the Biblia Tysiąclecia structure so both languages share the same scenes.
-HEADINGS = {
+MARK_HEADINGS = {
     1: [
         {'before': 1, 'kind': 'part', 'title': 'PREPARING FOR THE MINISTRY OF JESUS'},
         {'before': 1, 'kind': 'section', 'title': 'John the Baptist'},
@@ -169,21 +169,65 @@ HEADINGS = {
     ],
 }
 
+
+def _h(items):
+    return [{'before': b, 'kind': 'part' if k == 'p' else 'section', 'title': t} for b, k, t in items]
+
+# Section headings mirroring the Biblia Tysiąclecia structure, in English.
+JOHN_HEADINGS = {
+    1: _h([(1, 'p', 'JESUS CHRIST AS THE WORD, THE LIGHT AND THE LIFE'), (1, 'p', 'THE WORD'), (1, 's', 'Prologue'),
+           (19, 'p', 'THE FIRST PASSOVER — TESTIMONIES AND SIGNS'), (19, 's', 'The Testimony of John the Baptist'), (35, 's', 'The Testimony of the Disciples')]),
+    2: _h([(1, 's', 'The First Sign at Cana in Galilee'), (13, 's', 'The Sign of the Cleansing of the Temple'), (23, 's', 'Jesus’ Reserve')]),
+    3: _h([(1, 'p', 'THE LIFE-GIVING WATER'), (1, 's', 'Nicodemus'), (22, 's', 'Jesus and John the Baptist')]),
+    4: _h([(1, 's', 'Jesus and the Samaritan Woman'), (43, 's', 'The Return to Galilee'), (46, 's', 'The Official’s Son')]),
+    5: _h([(1, 'p', 'THE SECOND FEAST IN JERUSALEM'), (1, 's', 'The Healing at the Pool'), (19, 's', 'Jesus’ Defence')]),
+    6: _h([(1, 'p', 'THE LIVING BREAD'), (1, 's', 'The Multiplication of the Loaves'), (16, 's', 'Jesus Walks on the Lake'), (22, 's', 'The Bread of Life Discourse')]),
+    7: _h([(1, 'p', 'LIVING WATER AND LIGHT'), (1, 's', 'On the Way to the Feast of Tabernacles'), (14, 's', 'Disputes during the Feast'), (37, 's', 'The Spring of Living Water')]),
+    8: _h([(1, 's', 'The Woman Caught in Adultery'), (12, 's', 'Light against Darkness')]),
+    9: _h([(1, 's', 'The Healing of the Man Born Blind')]),
+    10: _h([(1, 's', 'The Good Shepherd'), (22, 'p', 'AT THE FEAST OF DEDICATION'), (22, 's', 'Christ, One with the Father'), (40, 's', 'Beyond the Jordan')]),
+    11: _h([(1, 'p', 'THE LAST JOURNEY TO JERUSALEM'), (1, 's', 'The Raising of Lazarus'), (45, 's', 'The Council of the Priests'), (54, 's', 'In Ephraim')]),
+    12: _h([(1, 'p', 'THE PASSION AND RESURRECTION OF JESUS CHRIST'), (1, 'p', 'THE EVENTS BEFORE'), (1, 's', 'The Supper at Bethany'),
+            (12, 's', 'The Triumphal Entry into Jerusalem'), (20, 's', 'The Hour of the Son of Man'), (37, 's', 'The Unbelief of the People')]),
+    13: _h([(1, 'p', 'THE LAST SUPPER'), (1, 's', 'The Love and Humility of the Son of God'), (21, 's', 'The Betrayer Revealed'),
+            (31, 'p', 'THE FAREWELL DISCOURSE'), (31, 's', 'Facing the Parting'), (36, 's', 'The Dialogue with Peter')]),
+    14: _h([(1, 's', 'To the Father’s House'), (15, 's', 'The Promise of the Comforter'), (21, 's', 'Love Revealed'), (25, 's', 'The Mission of the Spirit. Peace')]),
+    15: _h([(1, 's', 'Union with Christ'), (12, 's', 'The Laws of Friendship with Christ'), (18, 's', 'The Hatred of the World. The Witness of the Holy Spirit')]),
+    16: _h([(1, 's', 'A Warning'), (5, 's', 'The Judgement of the Holy Spirit'), (16, 's', 'The Promise of His Return')]),
+    17: _h([(1, 'p', 'THE PRIESTLY PRAYER OF CHRIST'), (1, 's', 'The Finished Work'), (6, 's', 'Prayer for the Disciples'), (20, 's', 'Prayer for the Church to Come')]),
+    18: _h([(1, 'p', 'JESUS IN THE GARDEN'), (1, 's', 'The Arrest'), (12, 'p', 'JESUS BEFORE HIS JUDGES'), (12, 's', 'Before Annas. Peter’s Denial'),
+            (28, 's', 'Before Pilate'), (33, 's', 'The Interrogation')]),
+    19: _h([(1, 's', '“Behold the Man”'), (13, 's', 'The Sentence'), (17, 's', 'The Way of the Cross and the Crucifixion'), (25, 's', 'The Testament from the Cross'),
+            (28, 's', 'The Death'), (38, 's', 'The Burial of Jesus')]),
+    20: _h([(1, 'p', 'AFTER THE RESURRECTION'), (1, 's', 'Mary Magdalene, Peter and John at the Tomb'), (19, 's', 'The Risen One Appears to the Apostles'),
+            (24, 's', 'Doubting Thomas'), (30, 's', 'The First Epilogue — the Evangelist’s')]),
+    21: _h([(1, 's', 'The Risen One Appears in Galilee'), (15, 's', 'Peter Receives the Shepherd’s Charge'), (20, 's', 'The Other Lot of the Beloved Disciple'),
+            (24, 's', 'The Second Epilogue — the Gospel’s')]),
+}
+
+BOOKS = {
+    'mark': dict(num=41, chapters=16, var='MARK_EN', title='The Gospel according to Mark', headings=MARK_HEADINGS),
+    'john': dict(num=43, chapters=21, var='JOHN_EN', title='The Gospel according to John', headings=JOHN_HEADINGS),
+}
+BOOK = sys.argv[1] if len(sys.argv) > 1 else 'mark'
+CFG = BOOKS[BOOK]
+OUT = pathlib.Path(__file__).resolve().parent.parent / 'data' / f'{BOOK}-en.js'
+
 def clean(s):
     s = re.sub(r'<[^>]+>', '', s)
     s = html.unescape(s).replace('\xa0', ' ')
     return re.sub(r'\s+', ' ', s).strip()
 
 chapters = []
-for ch in range(1, 17):
-    raw = subprocess.run(['curl', '-sL', f'https://bolls.life/get-text/WEB/41/{ch}/'], capture_output=True, check=True).stdout
+for ch in range(1, CFG['chapters'] + 1):
+    raw = subprocess.run(['curl', '-sL', f'https://bolls.life/get-text/WEB/{CFG["num"]}/{ch}/'], capture_output=True, check=True).stdout
     verses = [clean(v['text']) for v in sorted(json.loads(raw), key=lambda v: v['verse'])]
-    print(f'Mark {ch}: {len(verses)} verses')
-    chapters.append({'verses': verses, 'headings': HEADINGS.get(ch, [])})
+    print(f'{BOOK} {ch}: {len(verses)} verses')
+    chapters.append({'verses': verses, 'headings': CFG['headings'].get(ch, [])})
 
 OUT.write_text(
-    '// The Gospel according to Mark — World English Bible (public domain), via bolls.life\n'
-    '// Generated by tools/fetch_mark_en.py — do not edit by hand.\n'
-    'export const MARK_EN = ' + json.dumps({'book': 'The Gospel according to Mark', 'translation': 'World English Bible', 'chapters': chapters}, ensure_ascii=False, indent=1) + ';\n',
+    f'// {CFG["title"]} — World English Bible (public domain), via bolls.life\n'
+    f'// Generated by tools/fetch_web.py {BOOK} — do not edit by hand.\n'
+    f'export const {CFG["var"]} = ' + json.dumps({'book': CFG['title'], 'translation': 'World English Bible', 'chapters': chapters}, ensure_ascii=False, indent=1) + ';\n',
     encoding='utf-8')
 print('wrote', OUT)

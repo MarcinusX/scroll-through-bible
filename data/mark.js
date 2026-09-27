@@ -1,5 +1,5 @@
-// Ewangelia wg św. Marka — Biblia Tysiąclecia (wyd. V), źródło: biblia.deon.pl
-// Wygenerowane przez tools/fetch_mark.py — nie edytować ręcznie.
+// Ewangelia według św. Marka — Biblia Tysiąclecia (wyd. V), źródło: biblia.deon.pl
+// Wygenerowane przez tools/fetch_bt.py mark — nie edytować ręcznie.
 export const MARK = {
  "book": "Ewangelia według św. Marka",
  "translation": "Biblia Tysiąclecia",

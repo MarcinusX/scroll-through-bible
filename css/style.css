@@ -211,3 +211,15 @@ body {
 .ch-tab:focus-visible { outline: 2px dashed var(--terracotta); outline-offset: 2px; }
 .end-actions { display: flex; gap: 10px; justify-content: center; }
 .chip.next { font-style: normal; background: var(--terracotta); color: var(--cream); }
+
+/* ---------- books: paper tabs above the title ---------- */
+.books { display: flex; justify-content: center; gap: 6px; margin: 0 0 12px; pointer-events: auto; }
+.books:empty { display: none; }
+.book-tab {
+  appearance: none; border: 0; padding: 5px 16px 6px; font: italic 17px var(--serif); color: var(--ink-soft); background: #efe3c7; cursor: pointer;
+  clip-path: polygon(3% 10%, 50% 0, 97% 8%, 100% 55%, 96% 96%, 50% 100%, 2% 92%, 0 45%);
+  transition: transform .3s cubic-bezier(.3, 1.6, .5, 1), background-color .2s;
+}
+.book-tab:hover { transform: translateY(-2px) rotate(-2deg); background: #f6d9b8; }
+.book-tab[aria-current="true"] { background: var(--terracotta); color: var(--cream); }
+.book-tab:focus-visible { outline: 2px dashed var(--terracotta); outline-offset: 2px; }

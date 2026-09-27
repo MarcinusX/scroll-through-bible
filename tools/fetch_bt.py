@@ -1,11 +1,19 @@
 #!/usr/bin/env python3
-"""Pobiera Ewangelię wg św. Marka (Biblia Tysiąclecia, biblia.deon.pl) do data/mark.js."""
-import re, html, json, subprocess, pathlib
+"""Pobiera ewangelię (Biblia Tysiąclecia, biblia.deon.pl) do data/<book>.js.
+Użycie: python3 tools/fetch_bt.py mark|john"""
+import re, html, json, subprocess, pathlib, sys
 
-IDS = [267, 268] + list(range(302, 316))  # Mk 1..16
-OUT = pathlib.Path(__file__).resolve().parent.parent / 'data' / 'mark.js'
-# obvious typos on the source site, corrected: (chapter, verse): (wrong, right)
-ERRATA = {(3, 27): ('Nie nikt nie może', 'Nikt nie może')}
+BOOKS = {
+    # deon.pl chapter page ids, the export name, title, and the site's short name (used in its navigation)
+    'mark': dict(ids=[267, 268] + list(range(302, 316)), var='MARK', title='Ewangelia według św. Marka', abbr='Mk',
+                 # obvious typos on the source site, corrected: (chapter, verse): (wrong, right)
+                 errata={(3, 27): ('Nie nikt nie może', 'Nikt nie może')}),
+    'john': dict(ids=list(range(340, 361)), var='JOHN', title='Ewangelia według św. Jana', abbr='J', errata={}),
+}
+BOOK = sys.argv[1] if len(sys.argv) > 1 else 'mark'
+CFG = BOOKS[BOOK]
+IDS, ERRATA = CFG['ids'], CFG['errata']
+OUT = pathlib.Path(__file__).resolve().parent.parent / 'data' / f'{BOOK}.js'
 
 def fetch(cid):
     url = f'https://biblia.deon.pl/rozdzial.php?id={cid}'
@@ -19,7 +27,7 @@ def clean(s):
     s = html.unescape(s).replace('\xa0', ' ')
     s = re.sub(r'\s+', ' ', s).strip()
     s = re.sub(r'\s+([,.;:!?»])', r'\1', s)
-    s = re.sub(r'\s*«« ?Mk ?\d+ ?»».*$', '', s)
+    s = re.sub(r'\s*«« ?(?:Mk|J) ?\d+ ?»».*$', '', s)
     return s
 
 def parse(page):
@@ -63,12 +71,12 @@ for i, cid in enumerate(IDS, 1):
     ch = parse(fetch(cid))
     for (c, v), (wrong, right) in ERRATA.items():
         if c == i: ch['verses'][v - 1] = ch['verses'][v - 1].replace(wrong, right)
-    print(f'Mk {i}: {len(ch["verses"])} wersetów, {len(ch["headings"])} nagłówków')
+    print(f'{CFG["abbr"]} {i}: {len(ch["verses"])} wersetów, {len(ch["headings"])} nagłówków')
     chapters.append(ch)
 
 OUT.write_text(
-    '// Ewangelia wg św. Marka — Biblia Tysiąclecia (wyd. V), źródło: biblia.deon.pl\n'
-    '// Wygenerowane przez tools/fetch_mark.py — nie edytować ręcznie.\n'
-    'export const MARK = ' + json.dumps({'book': 'Ewangelia według św. Marka', 'translation': 'Biblia Tysiąclecia', 'chapters': chapters}, ensure_ascii=False, indent=1) + ';\n',
+    f'// {CFG["title"]} — Biblia Tysiąclecia (wyd. V), źródło: biblia.deon.pl\n'
+    f'// Wygenerowane przez tools/fetch_bt.py {BOOK} — nie edytować ręcznie.\n'
+    f'export const {CFG["var"]} = ' + json.dumps({'book': CFG['title'], 'translation': 'Biblia Tysiąclecia', 'chapters': chapters}, ensure_ascii=False, indent=1) + ';\n',
     encoding='utf-8')
 print('zapisano', OUT)

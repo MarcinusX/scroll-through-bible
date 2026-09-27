@@ -325,7 +325,9 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
       if (s.first) html.push(`<sup class="vn">${s.v}</sup>`);
       // editorial brackets are dimmed: [added words] and <textual variants> (Mk 9,29 «<i postem>»).
       // They can span several words, so remember whether a word starts inside one.
-      let closer = '';
+      // a bracket may also close a variant that opened in the previous verse (J 5,3–4 «<…»)
+      const firstClose = s.text.search(/[\]>]/), firstOpen = s.text.search(/[\[<]/);
+      let closer = firstClose >= 0 && (firstOpen < 0 || firstClose < firstOpen) ? s.text[firstClose] : '';
       s.text.split(/\s+/).forEach((w) => {
         let out = closer ? '<span class="br">' : '';
         for (const ch of w) {

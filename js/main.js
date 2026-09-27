@@ -1,34 +1,59 @@
-import { MARK } from '../data/mark.js';
-import { MARK_EN } from '../data/mark-en.js';
 import { startTheatre } from './core/engine.js';
 import { makeCutter } from './core/paper.js';
-import { LANG, UI } from './core/i18n.js';
-import { CHAPTER_COUNT, READY, loadChapter } from './chapters/index.js';
+import { LANG, UI as BASE_UI } from './core/i18n.js';
+import { BOOKS, BOOK_ORDER, loadChapter } from './chapters/index.js';
 
-/* ---------- which chapter? ?ch=N (any chapter that has scenes, so drafts can be previewed), else chapter 1 ---------- */
+/* ---------- which book and chapter? ?book=john&ch=N (drafts with scenes can be previewed), else Mark 1 ---------- */
 const params = new URLSearchParams(location.search);
-let CH = +params.get('ch') || READY[0];
-let mod = await loadChapter(CH);
-if (!mod || !mod.SCENES.length) { CH = READY[0]; mod = await loadChapter(CH); }
+let BOOK = BOOKS[params.get('book')] ? params.get('book') : 'mark';
+if (!BOOKS[BOOK].READY.length && !params.get('ch')) BOOK = 'mark';
+const book = BOOKS[BOOK];
+const name = book.name[LANG];
+let CH = +params.get('ch') || book.READY[0] || 1;
+let mod = await loadChapter(BOOK, CH);
+if (!mod || !mod.SCENES.length) {
+  // nothing drawn here yet: fall back to the book's first published chapter, or to Mark 1
+  const fb = book.READY[0] ? [BOOK, book.READY[0]] : ['mark', 1];
+  location.replace(`${location.pathname}?${new URLSearchParams({ ...Object.fromEntries(params), book: fb[0], ch: fb[1] })}`);
+  await new Promise(() => {});
+}
 const { SCENES, BEATS_EN, META } = mod;
 const meta = META[LANG];
+const READY = book.READY;
+const UI = { ...BASE_UI, ref: (ch, a, b) => BASE_UI.ref(name.abbr, ch, a, b) };
 
 /* ---------- words on the page ---------- */
 document.documentElement.lang = UI.htmlLang;
-document.title = UI.title;
+document.title = UI.title(name.plain);
 document.querySelector('meta[name="description"]').setAttribute('content', UI.description);
 document.querySelectorAll('[data-i18n]').forEach((el) => { el.innerHTML = UI[el.dataset.i18n]; });
 document.getElementById('cover-kicker').textContent = UI.coverKicker(META.plate);
+document.getElementById('cover-title').innerHTML = name.title;
 document.getElementById('cover-ch').textContent = UI.chapterName(CH);
 document.getElementById('cover-sub').innerHTML = meta.coverSub;
-document.getElementById('end-kicker').textContent = UI.endKicker(CH);
+document.getElementById('end-kicker').textContent = UI.endKicker(CH, CH === book.count, name.plain);
 document.getElementById('end-q').innerHTML = meta.endQ;
-const chapterUrl = (n) => { const q = new URLSearchParams(location.search); q.set('ch', n); q.delete('only'); return `${location.pathname}?${q}`; };
+const chapterUrl = (n, b = BOOK) => { const q = new URLSearchParams(location.search); q.set('book', b); q.set('ch', n); q.delete('only'); return `${location.pathname}?${q}`; };
+
+/* ---------- book tabs on the title page (only books with a published chapter) ---------- */
+const bookNav = document.getElementById('books');
+bookNav.setAttribute('aria-label', UI.books);
+const shown = BOOK_ORDER.filter((id) => BOOKS[id].READY.length || id === BOOK);
+if (shown.length > 1) shown.forEach((id) => {
+  const b = document.createElement('button');
+  b.type = 'button';
+  b.className = 'book-tab';
+  b.textContent = BOOKS[id].name[LANG].short;
+  b.setAttribute('aria-label', BOOKS[id].name[LANG].plain);
+  if (id === BOOK) b.setAttribute('aria-current', 'true');
+  else b.addEventListener('click', () => { location.href = chapterUrl(BOOKS[id].READY[0] || 1, id); });
+  bookNav.appendChild(b);
+});
 
 /* ---------- chapter tabs on the title page ---------- */
 const tabs = document.getElementById('chapters');
 tabs.setAttribute('aria-label', UI.chapters);
-for (let n = 1; n <= CHAPTER_COUNT; n++) {
+for (let n = 1; n <= book.count; n++) {
   const b = document.createElement('button');
   b.type = 'button';
   b.className = 'ch-tab';
@@ -77,7 +102,7 @@ addEventListener('resize', drawFrame);
 const only = params.get('only');
 const scenes = only ? SCENES.filter((s) => only.split(',').includes(s.id)) : SCENES;
 const theatre = startTheatre({
-  book: LANG === 'en' ? MARK_EN : MARK,
+  book: await book.text[LANG](),
   chapter: CH,
   scenes,
   ui: UI,
@@ -86,7 +111,7 @@ const theatre = startTheatre({
 // home: the eyelet of the hanging tag (and "From the beginning") turn the page back to the title
 function goHome() {
   if (theatre.g < 0.4) scrollTo({ top: 0, behavior: 'smooth' });
-  else theatre.turnTo(0, { title: UI.homeTitle, ref: UI.chapterName(CH) });
+  else theatre.turnTo(0, { title: name.plain, ref: UI.chapterName(CH) });
 }
 const homeBtn = document.getElementById('home');
 homeBtn.setAttribute('aria-label', UI.home);

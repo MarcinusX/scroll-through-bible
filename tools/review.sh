@@ -1,10 +1,11 @@
 #!/bin/sh
 # Contact sheets of every beat of a chapter (at x.75), for review.
-# Usage: tools/review.sh <chapter> <outDir> [lang] [size]
-CH=$1; OUT=$2; LANG=${3:-pl}; SIZE=${4:-1440x900}
+# Usage: tools/review.sh [book:]<chapter> <outDir> [lang] [size]     e.g. tools/review.sh john:3 /tmp/j3
+case "$1" in *:*) BOOK=${1%%:*}; CH=${1##*:};; *) BOOK=mark; CH=$1;; esac
+OUT=$2; LANG=${3:-pl}; SIZE=${4:-1440x900}
 rm -rf "$OUT"; mkdir -p "$OUT"
-node -e "import('./js/chapters/mark$CH/index.js').then(({SCENES})=>console.log(SCENES.flatMap(s=>s.beats.map((b,i)=>s.id+':'+(i+0.75))).join('\n')))" > "$OUT/spots.txt"
-xargs node tools/shot.mjs "$OUT" "http://localhost:5178/?ch=$CH&lang=$LANG" --size=$SIZE < "$OUT/spots.txt" | grep -i error
+node -e "import('./js/chapters/$BOOK$CH/index.js').then(({SCENES})=>console.log(SCENES.flatMap(s=>s.beats.map((b,i)=>s.id+':'+(i+0.75))).join('\n')))" > "$OUT/spots.txt"
+xargs node tools/shot.mjs "$OUT" "http://localhost:5178/?book=$BOOK&ch=$CH&lang=$LANG" --size=$SIZE < "$OUT/spots.txt" | grep -i error
 python3 - "$OUT" <<'PY'
 import sys, glob, os
 from PIL import Image, ImageDraw
