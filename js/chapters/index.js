@@ -5,7 +5,7 @@
 export const BOOKS = {
   mark: {
     id: 'mark', count: 16, prefix: 'm',
-    READY: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
+    READY: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 19],
     text: { pl: () => import('../../data/mark.js').then((m) => m.MARK), en: () => import('../../data/mark-en.js').then((m) => m.MARK_EN) },
     name: {
       pl: { short: 'Marek', abbr: 'Mk', title: 'Ewangelia <em>według św. Marka</em>', plain: 'Ewangelia według św. Marka' },
@@ -20,7 +20,7 @@ export const BOOKS = {
   },
   john: {
     id: 'john', count: 21, prefix: 'j',
-    READY: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
+    READY: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 19],
     text: { pl: () => import('../../data/john.js').then((m) => m.JOHN), en: () => import('../../data/john-en.js').then((m) => m.JOHN_EN) },
     name: {
       pl: { short: 'Jan', abbr: 'J', title: 'Ewangelia <em>według św. Jana</em>', plain: 'Ewangelia według św. Jana' },
