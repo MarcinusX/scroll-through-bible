@@ -1,2 +1,81 @@
 // English (World English Bible) wording for beats that split a verse — keyed by scene id → beat index.
-export const BEATS_EN = {};
+export const BEATS_EN = {
+  'j21-tiberias': {
+    1: 'After these things, Jesus revealed himself again to the disciples at the sea of Tiberias.',
+    2: 'He revealed himself this way.',
+    4: 'Simon Peter said to them, “I’m going fishing.”',
+    5: 'They told him, “We are also coming with you.”',
+  },
+  'j21-night': {
+    0: 'They immediately went out, and entered into the boat.',
+    1: 'That night, they caught nothing.',
+    2: 'But when day had already come, Jesus stood on the beach,',
+    3: 'yet the disciples didn’t know that it was Jesus.',
+  },
+  'j21-children': {
+    0: 'Jesus therefore said to them, “Children, have you anything to eat?”',
+    1: 'They answered him, “No.”',
+    2: 'He said to them, “Cast the net on the right side of the boat, and you will find some.”',
+    3: 'They cast it therefore,',
+    4: 'and now they weren’t able to draw it in for the multitude of fish.',
+  },
+  'j21-lord': {
+    0: 'That disciple therefore whom Jesus loved said to Peter, “It’s the Lord!”',
+    1: 'So when Simon Peter heard that it was the Lord,',
+    2: 'he wrapped his coat around him (for he was naked),',
+    3: 'and threw himself into the sea.',
+  },
+  'j21-fire': {
+    0: 'So when they got out on the land, they saw a fire of coals there,',
+    1: 'and fish laid on it, and bread.',
+    3: 'Simon Peter went up, and drew the net to land, full of great fish,',
+    4: 'one hundred fifty-three;',
+    5: 'and even though there were so many, the net wasn’t torn.',
+  },
+  'j21-breakfast': {
+    0: 'Jesus said to them, “Come and eat breakfast.”',
+    1: 'None of the disciples dared inquire of him, “Who are you?”',
+    2: 'knowing that it was the Lord.',
+    3: 'Then Jesus came and took the bread, gave it to them,',
+    4: 'and the fish likewise.',
+  },
+  'j21-lovest': {
+    0: 'So when they had eaten their breakfast,',
+    1: 'Jesus said to Simon Peter, “Simon, son of Jonah, do you love me more than these?”',
+    2: 'He said to him, “Yes, Lord; you know that I have affection for you.”',
+    3: 'He said to him, “Feed my lambs.”',
+    4: 'He said to him again a second time, “Simon, son of Jonah, do you love me?”',
+    5: 'He said to him, “Yes, Lord; you know that I have affection for you.”',
+    6: 'He said to him, “Tend my sheep.”',
+  },
+  'j21-third': {
+    0: 'He said to him the third time, “Simon, son of Jonah, do you have affection for me?”',
+    1: 'Peter was grieved because he asked him the third time, “Do you have affection for me?”',
+    2: 'He said to him, “Lord, you know everything. You know that I have affection for you.”',
+    3: 'Jesus said to him, “Feed my sheep.',
+  },
+  'j21-gird': {
+    0: 'Most certainly I tell you, when you were young, you dressed yourself, and walked where you wanted to.',
+    1: 'But when you are old, you will stretch out your hands,',
+    2: 'and another will dress you, and carry you where you don’t want to go.”',
+    3: 'Now he said this, signifying by what kind of death he would glorify God.',
+    4: 'When he had said this, he said to him, “Follow me.”',
+  },
+  'j21-beloved': {
+    0: 'Then Peter, turning around, saw a disciple following. This was the disciple whom Jesus loved,',
+    1: 'the one who had also leaned on Jesus’ breast at the supper and asked, “Lord, who is going to betray You?”',
+    3: 'Jesus said to him, “If I desire that he stay until I come, what is that to you?',
+    4: 'You follow me.”',
+  },
+  'j21-rumour': {
+    0: 'This saying therefore went out among the brothers, that this disciple wouldn’t die.',
+    1: 'Yet Jesus didn’t say to him that he wouldn’t die, but, “If I desire that he stay until I come, what is that to you?”',
+  },
+  'j21-books': {
+    0: 'This is the disciple who testifies about these things,',
+    1: 'and wrote these things.',
+    2: 'We know that his witness is true.',
+    3: 'There are also many other things which Jesus did,',
+    4: 'which if they would all be written, I suppose that even the world itself wouldn’t have room for the books that would be written.',
+  },
+};
