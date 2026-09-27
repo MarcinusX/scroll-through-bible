@@ -1,2 +1,99 @@
 // English (World English Bible) wording for beats that split a verse — keyed by scene id → beat index.
-export const BEATS_EN = {};
+export const BEATS_EN = {
+  'j12-supper': {
+    0: 'So they made him a supper there.',
+    1: 'Martha served, but Lazarus was one of those who sat at the table with him.',
+    2: 'Mary, therefore, took a pound of ointment of pure nard, very precious,',
+    3: 'and anointed the feet of Jesus, and wiped his feet with her hair.',
+    4: 'The house was filled with the fragrance of the ointment.',
+  },
+  'j12-judas': {
+    2: 'Now he said this, not because he cared for the poor,',
+    3: 'but because he was a thief, and having the money box, used to steal what was put into it.',
+    4: 'But Jesus said, “Leave her alone.',
+    5: 'She has kept this for the day of my burial.',
+  },
+  'j12-lazarus': {
+    0: 'A large crowd therefore of the Jews learned that he was there,',
+    1: 'and they came, not for Jesus’ sake only, but that they might see Lazarus also, whom he had raised from the dead.',
+  },
+  'j12-palms': {
+    1: 'they took the branches of the palm trees, and went out to meet him,',
+    2: 'and cried out, “Hosanna!',
+    3: 'Blessed is he who comes in the name of the Lord, the King of Israel!”',
+  },
+  'j12-colt': {
+    1: '“Don’t be afraid, daughter of Zion.',
+    2: 'Behold, your King comes, sitting on a donkey’s colt.”',
+  },
+  'j12-world': {
+    0: 'His disciples didn’t understand these things at first,',
+    1: 'but when Jesus was glorified, then they remembered that these things were written about him, and that they had done these things to him.',
+    4: 'The Pharisees therefore said among themselves, “See how you accomplish nothing.',
+    5: 'Behold, the world has gone after him.”',
+  },
+  'j12-greeks': {
+    1: 'These, therefore, came to Philip, who was from Bethsaida of Galilee, and asked him, saying,',
+    2: '“Sir, we want to see Jesus.”',
+    3: 'Philip came and told Andrew,',
+    4: 'and in turn, Andrew came with Philip, and they told Jesus.',
+  },
+  'j12-grain': {
+    0: 'Most certainly I tell you, unless a grain of wheat falls into the earth and dies, it remains by itself alone.',
+    1: 'But if it dies, it bears much fruit.',
+    2: 'He who loves his life will lose it.',
+    3: 'He who hates his life in this world will keep it to eternal life.',
+  },
+  'j12-follow': {
+    0: 'If anyone serves me, let him follow me.',
+    1: 'Where I am, there will my servant also be.',
+    2: 'If anyone serves me, the Father will honor him.',
+    3: '“Now my soul is troubled. What shall I say?',
+    4: '‘Father, save me from this time?’',
+    5: 'But for this cause I came to this time.',
+  },
+  'j12-voice': {
+    0: 'Father, glorify your name!”',
+    1: 'Then there came a voice out of the sky, saying,',
+    2: '“I have both glorified it, and will glorify it again.”',
+    3: 'The multitude therefore, who stood by and heard it, said that it had thundered.',
+    4: 'Others said, “An angel has spoken to him.”',
+  },
+  'j12-lifted': {
+    0: 'Now is the judgment of this world.',
+    1: 'Now the prince of this world will be cast out.',
+    4: 'The multitude answered him, “We have heard out of the law that the Christ remains forever.',
+    5: 'How do you say, ‘The Son of Man must be lifted up?’',
+    6: 'Who is this Son of Man?”',
+  },
+  'j12-light': {
+    0: 'Jesus therefore said to them, “Yet a little while the light is with you.',
+    1: 'Walk while you have the light, that darkness doesn’t overtake you.',
+    2: 'He who walks in the darkness doesn’t know where he is going.',
+    3: 'While you have the light, believe in the light, that you may become children of light.”',
+    4: 'Jesus said these things, and he departed and hid himself from them.',
+  },
+  'j12-isaiah': {
+    1: 'that the word of Isaiah the prophet might be fulfilled, which he spoke,',
+    2: '“Lord, who has believed our report?',
+    3: 'To whom has the arm of the Lord been revealed?”',
+    5: '“He has blinded their eyes and he hardened their heart,',
+    6: 'lest they should see with their eyes, and perceive with their heart, and would turn, and I would heal them.”',
+  },
+  'j12-rulers': {
+    0: 'Nevertheless even of the rulers many believed in him,',
+    1: 'but because of the Pharisees they didn’t confess it, so that they wouldn’t be put out of the synagogue,',
+    3: 'Jesus cried out and said,',
+    4: '“Whoever believes in me, believes not in me, but in him who sent me.',
+  },
+  'j12-word': {
+    0: 'If anyone listens to my sayings, and doesn’t believe, I don’t judge him.',
+    1: 'For I came not to judge the world, but to save the world.',
+    2: 'He who rejects me, and doesn’t receive my sayings, has one who judges him.',
+    3: 'The word that I spoke, the same will judge him in the last day.',
+    4: 'For I spoke not from myself,',
+    5: 'but the Father who sent me, he gave me a commandment, what I should say, and what I should speak.',
+    6: 'I know that his commandment is eternal life.',
+    7: 'The things therefore which I speak, even as the Father has said to me, so I speak.”',
+  },
+};
