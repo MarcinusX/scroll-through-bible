@@ -1,2 +1,106 @@
 // English (World English Bible) wording for beats that split a verse — keyed by scene id → beat index.
-export const BEATS_EN = {};
+export const BEATS_EN = {
+  'm14-plot': {
+    1: "It was now two days before the feast of the Passover and the unleavened bread,",
+    2: "and the chief priests and the scribes sought how they might seize him by deception, and kill him.",
+  },
+  'm14-bethany': {
+    0: "While he was at Bethany, in the house of Simon the leper, as he sat at the table,",
+    1: "a woman came having an alabaster jar of ointment of pure nard — very costly.",
+    2: "She broke the jar, and poured it over his head.",
+    4: "For this might have been sold for more than three hundred denarii, and given to the poor.”",
+    5: "They grumbled against her.",
+    6: "But Jesus said, “Leave her alone. Why do you trouble her?",
+    7: "She has done a good work for me.",
+    9: "She has done what she could.",
+    10: "She has anointed my body beforehand for the burying.",
+  },
+  'm14-judas': {
+    1: "They, when they heard it, were glad, and promised to give him money.",
+    2: "He sought how he might conveniently deliver him.",
+  },
+  'm14-where': {
+    0: "On the first day of unleavened bread, when they sacrificed the Passover,",
+    1: "his disciples asked him, “Where do you want us to go and prepare that you may eat the Passover?”",
+    2: "He sent two of his disciples, and said to them,",
+  },
+  'm14-jar': {
+    0: "“Go into the city, and there you will meet a man carrying a pitcher of water.",
+    1: "Follow him,",
+    3: "He will himself show you a large upper room furnished and ready.",
+    4: "Get ready for us there.”",
+  },
+  'm14-supper': {
+    1: "As they sat and were eating,",
+    2: "Jesus said, “Most certainly I tell you, one of you will betray me — he who eats with me.”",
+    5: "For the Son of Man goes, even as it is written about him,",
+    6: "but woe to that man by whom the Son of Man is betrayed!",
+    7: "It would be better for that man if he had not been born.”",
+  },
+  'm14-eucharist': {
+    0: "As they were eating, Jesus took bread, and when he had blessed,",
+    1: "he broke it, and gave to them, and said, “Take, eat. This is my body.”",
+  },
+  'm14-olives': {
+    1: "Jesus said to them, “All of you will be made to stumble because of me tonight,",
+    2: "for it is written, ‘I will strike the shepherd, and the sheep will be scattered.’",
+    6: "But he spoke all the more, “If I must die with you, I will not deny you.”",
+    7: "They all said the same thing.",
+  },
+  'm14-gethsemane': {
+    0: "They came to a place which was named Gethsemane.",
+    1: "He said to his disciples, “Sit here, while I pray.”",
+  },
+  'm14-abba': {
+    1: "He said, “Abba, Father, all things are possible to you. Please remove this cup from me.",
+    2: "However, not what I desire, but what you desire.”",
+  },
+  'm14-watch': {
+    0: "He came and found them sleeping,",
+    1: "and said to Peter, “Simon, are you sleeping? Couldn’t you watch one hour?",
+    2: "Watch and pray, that you may not enter into temptation.",
+    3: "The spirit indeed is willing, but the flesh is weak.”",
+    5: "Again he returned, and found them sleeping, for their eyes were very heavy,",
+    6: "and they didn’t know what to answer him.",
+    7: "He came the third time, and said to them, “Sleep on now, and take your rest.",
+    8: "It is enough. The hour has come.",
+    9: "Behold, the Son of Man is betrayed into the hands of sinners.",
+  },
+  'm14-arrest': {
+    0: "Immediately, while he was still speaking, Judas, one of the twelve, came —",
+    1: "and with him a multitude with swords and clubs, from the chief priests, the scribes, and the elders.",
+    7: "I was daily with you in the temple teaching, and you didn’t arrest me.",
+    8: "But this is so that the Scriptures might be fulfilled.”",
+  },
+  'm14-linen': {
+    0: "A certain young man followed him, having a linen cloth thrown around himself, over his naked body.",
+    1: "The young men grabbed him,",
+  },
+  'm14-council': {
+    1: "Peter had followed him from a distance, until he came into the court of the high priest.",
+    2: "He was sitting with the officers, and warming himself in the light of the fire.",
+  },
+  'm14-iam': {
+    1: "But he stayed quiet, and answered nothing.",
+    2: "Again the high priest asked him, “Are you the Christ, the Son of the Blessed?”",
+    3: "Jesus said, “I am.",
+    4: "You will see the Son of Man sitting at the right hand of Power, and coming with the clouds of the sky.”",
+    5: "The high priest tore his clothes,",
+    6: "and said, “What further need have we of witnesses?",
+    7: "You have heard the blasphemy! What do you think?”",
+    8: "They all condemned him to be worthy of death.",
+    9: "Some began to spit on him, and to cover his face, and to beat him with fists, and to tell him, “Prophesy!”",
+    10: "The officers struck him with the palms of their hands.",
+  },
+  'm14-denial': {
+    1: "and seeing Peter warming himself, she looked at him,",
+    2: "and said, “You were also with the Nazarene, Jesus!”",
+    3: "But he denied it, saying, “I neither know, nor understand what you are saying.”",
+    4: "He went out on the porch, and the rooster crowed.",
+    6: "But he again denied it.",
+    7: "After a little while again those who stood by said to Peter, “You truly are one of them, for you are a Galilean, and your speech shows it.”",
+    9: "The rooster crowed the second time.",
+    10: "Peter remembered the word, how that Jesus said to him, “Before the rooster crows twice, you will deny me three times.”",
+    11: "When he thought about that, he wept.",
+  },
+};

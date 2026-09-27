@@ -4,9 +4,10 @@ Scroll through bible: https://marcinusx.github.io/scroll-through-bible/
 
 [![The paper theatre in motion: the crowd gathers by the lake, the sower sows, the lamp is lifted onto its stand, the storm is stilled](docs/demo.gif)](https://marcinusx.github.io/scroll-through-bible/?lang=en)
 
-A scroll-driven, sentence-by-sentence illustrated reading of the Gospel of Mark, drawn as a
-layered **paper-cut diorama**. Chapter 4 is done: teaching from the boat, the five parables and
-the calming of the storm. That's 41 verses in 68 animated beats.
+A scroll-driven, sentence-by-sentence illustrated reading of the **whole Gospel of Mark**, drawn as a
+layered **paper-cut diorama**. All 16 chapters are done: 675 verses in 1,151 animated beats across
+196 scenes, from John the Baptist in the wilderness to the empty tomb at sunrise. Every sentence
+is acted out on its own beat, in Polish and English.
 
 The look is heavily inspired by **Mia's AI Lab**, and in particular her paper-cut diorama
 [*Foxglove Hollow*](https://miaai-lab.github.io/Claude-Opus-5.5-100-HTML-Files/018-paper-cut-diorama.html)
@@ -45,7 +46,10 @@ Reading:
   plus the Jesus and disciple presets. `nature.js` has hills, water, plants, sun, moon and towns.
   `things.js` has the boat, lamp, bushel, wheat, mustard tree, birds and effects. The palette is in `palette.js`.
 * `js/chapters/kit.js`: scene helpers (skies, curtains, crowds, hanging ornaments, flocks).
-* `js/chapters/mark4/*.js`: one file per scene. See **docs/SCENES.md** for how to write one.
+* `js/chapters/markN/`: one folder per chapter, with one file per scene, a `lib.js` of the chapter's
+  own drawings, the English sentence splits and the title-page text. The chapters that are published
+  are listed in `js/chapters/index.js` (`READY`); only the chapter being read is loaded.
+  See **docs/SCENES.md** for how to write a scene.
 
 ### Performance model
 
@@ -60,10 +64,13 @@ Upcoming scenes are pre-built in idle time.
 * `node tools/check.mjs`: verifies the beats reproduce the Bible text exactly, verse by verse, in both languages.
 * `node tools/bench.mjs <url> scene:t …`: frame-time benchmark in a dedicated Chrome window.
 * `node tools/shot.mjs <outDir> <url> scene:t … [--size=390x844]`: screenshots of chosen moments.
+* `tools/review.sh <chapter> <outDir> [pl|en] [size]`: contact sheets of every beat of a chapter.
 * `node tools/record.mjs <url> docs/demo.gif`: records the README tour GIF (needs ffmpeg).
 * `python3 tools/fetch_mark.py` / `tools/fetch_mark_en.py`: re-download the Polish / English text.
 
-## Next chapters
+## How it was made
 
-Add `js/chapters/markN/` with scene files and an `index.js`, then point `js/main.js` at the chapter.
-Headings (section titles on the tag) come from the translation automatically.
+Chapter 4 was drawn first, together with the engine and asset library. The other fifteen chapters were
+then drawn in parallel by Claude agents, one per chapter, each working from `docs/SCENES.md`. Every
+chapter was reviewed beat by beat from contact sheets (`tools/review.sh`), checked for frame rate, and
+validated against the text before it was published.
