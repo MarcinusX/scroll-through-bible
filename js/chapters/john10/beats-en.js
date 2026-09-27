@@ -1,2 +1,95 @@
 // English (World English Bible) wording for beats that split a verse — keyed by scene id → beat index.
-export const BEATS_EN = {};
+// `node tools/check.mjs john 10` verifies these pieces rebuild each WEB verse exactly.
+export const BEATS_EN = {
+  'j10-amen': {
+    1: '“Most certainly, I tell you,',
+  },
+  'j10-fold': {
+    0: 'one who doesn’t enter by the door into the sheep fold, but climbs up some other way, the same is a thief and a robber.',
+    2: 'The gatekeeper opens the gate for him,',
+    3: 'and the sheep listen to his voice.',
+    4: 'He calls his own sheep by name, and leads them out.',
+    5: 'Whenever he brings out his own sheep, he goes before them,',
+    6: 'and the sheep follow him, for they know his voice.',
+  },
+  'j10-door': {
+    1: 'Jesus therefore said to them again,',
+    2: '“Most certainly, I tell you, I am the sheep’s door.',
+    4: 'I am the door.',
+    5: 'If anyone enters in by me, he will be saved,',
+    6: 'and will go in and go out, and will find pasture.',
+    7: 'The thief only comes to steal, kill, and destroy.',
+    8: 'I came that they may have life, and may have it abundantly.',
+  },
+  'j10-good': {
+    0: 'I am the good shepherd.',
+    1: 'The good shepherd lays down his life for the sheep.',
+  },
+  'j10-hireling': {
+    0: 'He who is a hired hand, and not a shepherd, who doesn’t own the sheep, sees the wolf coming,',
+    1: 'leaves the sheep, and flees.',
+    2: 'The wolf snatches the sheep, and scatters them.',
+  },
+  'j10-know': {
+    1: 'even as the Father knows me, and I know the Father.',
+    2: 'I lay down my life for the sheep.',
+    3: 'I have other sheep, which are not of this fold.',
+    4: 'I must bring them also, and they will hear my voice.',
+    5: 'They will become one flock with one shepherd.',
+  },
+  'j10-lay': {
+    0: 'Therefore the Father loves me, because I lay down my life,',
+    1: 'that I may take it again.',
+    2: 'No one takes it away from me, but I lay it down by myself.',
+    3: 'I have power to lay it down, and I have power to take it again.',
+    4: 'I received this commandment from my Father.”',
+  },
+  'j10-division': {
+    1: 'Many of them said, “He has a demon, and is insane!',
+    2: 'Why do you listen to him?”',
+    3: 'Others said, “These are not the sayings of one possessed by a demon.',
+    4: 'It isn’t possible for a demon to open the eyes of the blind, is it?”',
+  },
+  'j10-winter': {
+    2: 'The Jews therefore came around him and said to him, “How long will you hold us in suspense?',
+    3: 'If you are the Christ, tell us plainly.”',
+    4: 'Jesus answered them, “I told you, and you don’t believe.',
+    5: 'The works that I do in my Father’s name, these testify about me.',
+  },
+  'j10-hand': {
+    0: 'My sheep hear my voice, and I know them,',
+    1: 'and they follow me.',
+    2: 'I give eternal life to them.',
+    3: 'They will never perish,',
+    4: 'and no one will snatch them out of my hand.',
+    5: 'My Father, who has given them to me, is greater than all.',
+    6: 'No one is able to snatch them out of my Father’s hand.',
+  },
+  'j10-stones': {
+    1: 'Jesus answered them, “I have shown you many good works from my Father.',
+    2: 'For which of those works do you stone me?”',
+    3: 'The Jews answered him, “We don’t stone you for a good work,',
+    4: 'but for blasphemy: because you, being a man, make yourself God.”',
+  },
+  'j10-gods': {
+    0: 'Jesus answered them, “Isn’t it written in your law,',
+    1: '‘I said, you are gods?’',
+    2: 'If he called them gods, to whom the word of God came',
+    3: '(and the Scripture can’t be broken),',
+    4: 'do you say of him whom the Father sanctified and sent into the world, ‘You blaspheme,’',
+    5: 'because I said, ‘I am the Son of God?’',
+  },
+  'j10-believe': {
+    1: 'But if I do them, though you don’t believe me, believe the works;',
+    2: 'that you may know and believe that the Father is in me, and I in the Father.”',
+    3: 'They sought again to seize him,',
+    4: 'and he went out of their hand.',
+  },
+  'j10-jordan': {
+    0: 'He went away again beyond the Jordan into the place where John was baptizing at first,',
+    1: 'and there he stayed.',
+    2: 'Many came to him.',
+    3: 'They said, “John indeed did no sign,',
+    4: 'but everything that John said about this man is true.”',
+  },
+};
