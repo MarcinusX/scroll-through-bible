@@ -5,7 +5,7 @@
 export const BOOKS = {
   matthew: {
     id: 'matthew', count: 28, prefix: 'mt',
-    READY: [1, 2, 3],
+    READY: [1, 2, 3, 4],
     text: { pl: () => import('../../data/matthew.js').then((m) => m.MATTHEW), en: () => import('../../data/matthew-en.js').then((m) => m.MATTHEW_EN) },
     name: {
       pl: { short: 'Mateusz', abbr: 'Mt', title: 'Ewangelia <em>według św. Mateusza</em>', plain: 'Ewangelia według św. Mateusza' },
