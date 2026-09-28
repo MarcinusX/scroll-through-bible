@@ -42,9 +42,15 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
   let carryPart = '', carrySec = '';
   book.chapters.slice(0, chapter - 1).forEach((c) => c.headings.forEach((h) => { if (h.kind === 'part') carryPart = h.title; else carrySec = h.title; }));
   const verseText = (v) => chap.verses[v - 1];
+  // a part that opens before its first section (Mt 5,1–2) names those verses itself, in ordinary case
+  const partAsSec = (t) => {
+    const s = t.toLowerCase();
+    return book.translation === 'Biblia Tysiąclecia' ? s[0].toUpperCase() + s.slice(1)
+      : s.replace(/\S+/g, (w, i) => (i === 0 || w.length > 3 ? w[0].toUpperCase() + w.slice(1) : w));
+  };
   const sectionOf = (v) => {
     let part = carryPart, sec = carrySec, start = 1;
-    for (const h of chap.headings) if (h.before <= v) { if (h.kind === 'part') part = h.title; else { sec = h.title; start = h.before; } }
+    for (const h of chap.headings) if (h.before <= v) { if (h.kind === 'part') { part = h.title; sec = partAsSec(h.title); start = h.before; } else { sec = h.title; start = h.before; } }
     const next = chap.headings.find((h) => h.kind === 'section' && h.before > v);
     const end = next ? next.before - 1 : chap.verses.length;
     return { part, sec, start, end };
