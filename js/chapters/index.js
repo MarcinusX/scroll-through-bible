@@ -3,6 +3,24 @@
 // (Explicit import() calls so any static host / bundler can see them. tools/check.mjs keeps READY honest.)
 
 export const BOOKS = {
+  matthew: {
+    id: 'matthew', count: 28, prefix: 'mt',
+    READY: [],
+    text: { pl: () => import('../../data/matthew.js').then((m) => m.MATTHEW), en: () => import('../../data/matthew-en.js').then((m) => m.MATTHEW_EN) },
+    name: {
+      pl: { short: 'Mateusz', abbr: 'Mt', title: 'Ewangelia <em>według św. Mateusza</em>', plain: 'Ewangelia według św. Mateusza' },
+      en: { short: 'Matthew', abbr: 'Matthew', title: 'The Gospel <em>according to Matthew</em>', plain: 'The Gospel according to Matthew' },
+    },
+    chapters: {
+      1: () => import('./matthew1/index.js'), 2: () => import('./matthew2/index.js'), 3: () => import('./matthew3/index.js'), 4: () => import('./matthew4/index.js'),
+      5: () => import('./matthew5/index.js'), 6: () => import('./matthew6/index.js'), 7: () => import('./matthew7/index.js'), 8: () => import('./matthew8/index.js'),
+      9: () => import('./matthew9/index.js'), 10: () => import('./matthew10/index.js'), 11: () => import('./matthew11/index.js'), 12: () => import('./matthew12/index.js'),
+      13: () => import('./matthew13/index.js'), 14: () => import('./matthew14/index.js'), 15: () => import('./matthew15/index.js'), 16: () => import('./matthew16/index.js'),
+      17: () => import('./matthew17/index.js'), 18: () => import('./matthew18/index.js'), 19: () => import('./matthew19/index.js'), 20: () => import('./matthew20/index.js'),
+      21: () => import('./matthew21/index.js'), 22: () => import('./matthew22/index.js'), 23: () => import('./matthew23/index.js'), 24: () => import('./matthew24/index.js'),
+      25: () => import('./matthew25/index.js'), 26: () => import('./matthew26/index.js'), 27: () => import('./matthew27/index.js'), 28: () => import('./matthew28/index.js'),
+    },
+  },
   mark: {
     id: 'mark', count: 16, prefix: 'm',
     READY: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
@@ -36,7 +54,7 @@ export const BOOKS = {
     },
   },
 };
-export const BOOK_ORDER = ['mark', 'john'];
+export const BOOK_ORDER = ['matthew', 'mark', 'john'];
 
 // resolves to the chapter module, or null if it is missing or fails to load
 export async function loadChapter(book, n) {

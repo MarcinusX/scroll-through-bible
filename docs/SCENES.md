@@ -11,8 +11,9 @@ Check the text: `node tools/check.mjs` (beats must reproduce Biblia Tysiąclecia
 
 ## Books and chapters
 
-The theatre holds several Gospels. `js/chapters/index.js` lists them (`BOOKS`): Mark lives in
-`js/chapters/markN/` (scene ids `mN-…`), John in `js/chapters/johnN/` (scene ids `jN-…`). The text is in
+The theatre holds several Gospels. `js/chapters/index.js` lists them (`BOOKS`): Matthew lives in
+`js/chapters/matthewN/` (scene ids `mtN-…`), Mark in `js/chapters/markN/` (scene ids `mN-…`), John in
+`js/chapters/johnN/` (scene ids `jN-…`). The text is in
 `data/<book>.js` (Biblia Tysiąclecia) and `data/<book>-en.js` (World English Bible); a book's published
 chapters are its `READY` list. Everything below says "markN", but works the same for every book.
 
@@ -28,7 +29,7 @@ Each chapter lives in `js/chapters/markN/`:
 | `meta.js` | Roman plate number and the title-page subtitle / closing-card question, in `pl` and `en`. |
 
 Section titles on the hanging tag come from the translation headings (`data/mark.js`, `data/mark-en.js`).
-Verses the Biblia Tysiąclecia omits (Mk 9,44; 9,46; 11,26 — empty strings in `data/mark.js`) are left out of the beats
+Verses the Biblia Tysiąclecia omits (Mk 9,44; 9,46; 11,26; Mt 23,14 — empty strings in `data/<book>.js`) are left out of the beats
 in **both** languages; `tools/check.mjs` enforces it.
 Words drawn *inside* scenes (paper labels) go through `tr('polski', 'English')` from `js/core/i18n.js`.
 
