@@ -225,7 +225,7 @@ export function pourStream(c, col, len = 100) {
 /** a splash of drops (origin: centre) */
 export function drops(c, col, r = 16, n = 6) {
   let d = '';
-  for (let i = 0; i < n; i++) { const a = PI * (1.1 + (i / (n - 1)) * 0.8); d += c.cut(c.ell(Math.cos(a) * r, Math.sin(a) * r, 2.6, 4.2, 8, a + PI / 2), 0.1, 2); }
+  for (let i = 0; i < n; i++) { const a = PI * (1.1 + (n > 1 ? i / (n - 1) : 0.5) * 0.8); d += c.cut(c.ell(Math.cos(a) * r, Math.sin(a) * r, 2.6, 4.2, 8, a + PI / 2), 0.1, 2); }
   return `<path d="${d}" fill="${col}"/>`;
 }
 /** a hand-washing icon for the purification rites (origin centre) */

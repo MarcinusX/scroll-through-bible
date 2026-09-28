@@ -55,16 +55,27 @@ Reading:
 
 ### Performance model
 
-Every `L.add()` is its own cut-out. Still pieces get a soft SVG shadow and are rasterised once.
-Pieces that move are detected automatically and lifted into small, tightly fitted layers of their own,
-with a cheap geometric shadow, so redrawing them never touches the big sheets. Whole-sheet motion
-(waves, rain, skies, night falling) uses `L.shift()` / `L.fade()`, which run on the compositor.
-Upcoming scenes are pre-built in idle time.
+The theatre has to scroll smoothly in Safari on iPhone and iPad, whose engine paints SVG on the CPU:
+* Every `L.add()` is its own cut-out. Still pieces are rasterised once, and each sheet of them carries a
+  single merged grain path (a pattern fill per part made WebKit allocate a tile buffer for each one).
+* Paper shadows are silhouette copies drawn under each cut-out: plain fills, no filters. `?shadow=soft`
+  (the default), `step`, `none`, or `blur` for the old SVG drop-shadow filter, which costs Safari
+  seconds per scene.
+* Before a scene comes on stage it is built, walked through all its beats off-stage and then reset, so
+  every piece that will move is already lifted into a small layer of its own. When a piece moves as a
+  whole (its outer element slides, turns, grows or fades) the engine moves that layer on the
+  compositor with CSS, and nothing repaints. A change inside a piece repaints only that piece.
+* Whole-sheet motion (waves, rain, skies, night falling) uses `L.shift()` / `L.fade()`, and a soft-focus
+  sheet uses `blur:` on its layer; all three run on the compositor.
+* Upcoming scenes are prepared in idle time (in Safari, which has no idle callback, in pauses between
+  scrolls). Sizes follow the tall viewport, so a phone toolbar sliding in or out never rebuilds a scene.
 
 ## Tools
 
 * `node tools/check.mjs`: verifies the beats reproduce the Bible text exactly, verse by verse, in both languages.
 * `node tools/bench.mjs <url> scene:t …`: frame-time benchmark in a dedicated Chrome window.
+* `node tools/bench-webkit.mjs [--vs=<other build>] book:ch …`: scroll benchmark in WebKit (Safari's engine) at
+  iPhone or iPad resolution, optionally interleaved with a second build (needs `npm i --no-save playwright`).
 * `node tools/shot.mjs <outDir> <url> scene:t … [--size=390x844]`: screenshots of chosen moments.
 * `tools/review.sh <chapter> <outDir> [pl|en] [size]`: contact sheets of every beat of a chapter.
 * `node tools/record.mjs <url> docs/demo.gif`: records the README tour GIF (needs ffmpeg).

@@ -179,7 +179,6 @@ export default {
     [[640, 690, 34, 18], [1020, 640, 26, 14], [1140, 760, 48, 24], [470, 610, 30, 16], [760, 770, 38, 18], [1300, 650, 30, 15], [330, 740, 44, 20], [960, 820, 30, 14]].forEach(([x, y, w, h], i) => {
       so.p(c.cut(c.blob(x, y, w / 2, h / 2, 9, 0.2), 0.8, 5), i % 2 ? C.rock2 : C.rock3);
     });
-    so.x(grass(c, { x0: -600, x1: FIELD[0] - 20, y: GY, n: 18, h: 13, color: C.moss }) + grass(c, { x0: FIELD[1] + 20, x1: 2200, y: GY, n: 18, h: 13, color: C.moss }), C.moss);
     soil.add(so.out());
     // a worm that wriggles by
     const worm = soil.add(`<g>${sheet().p(c.ribbon(c.qbez([0, 0], [14, -8], [30, 0], 10), (t) => 5 - Math.abs(t - 0.5) * 3), C.blush).out()}</g>`);
