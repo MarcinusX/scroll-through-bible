@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Downloads a Gospel from the World English Bible (public domain) into data/<book>-en.js.
-Usage: python3 tools/fetch_web.py mark|john"""
+Usage: python3 tools/fetch_web.py matthew|mark|john"""
 import html, json, pathlib, re, subprocess, sys
 
 
@@ -205,7 +205,78 @@ JOHN_HEADINGS = {
             (24, 's', 'The Second Epilogue — the Gospel’s')]),
 }
 
+MATTHEW_HEADINGS = {
+    1: _h([(1, 'p', 'THE CHILDHOOD OF JESUS'), (1, 's', 'The Genealogy of Jesus'), (18, 's', 'The Birth of Jesus')]),
+    2: _h([(1, 's', 'The Magi from the East'), (13, 's', 'The Flight into Egypt'), (16, 's', 'The Massacre of the Infants'), (19, 's', 'The Return to Nazareth')]),
+    3: _h([(1, 'p', 'PREPARING FOR THE MINISTRY OF JESUS'), (1, 's', 'John the Baptist'), (13, 's', 'The Baptism of Jesus')]),
+    4: _h([(1, 's', 'The Temptation of Jesus'), (12, 'p', 'THE MINISTRY OF JESUS IN GALILEE'), (12, 'p', 'THE BEGINNING OF THE MINISTRY'),
+           (12, 's', 'The Field of His Work'), (18, 's', 'The Call of the First Disciples'), (23, 's', 'Jesus’ Further Ministry')]),
+    5: _h([(1, 'p', 'THE SERMON ON THE MOUNT'), (3, 's', 'The Eight Beatitudes'), (13, 's', 'The Task of the Disciples'), (17, 's', 'Jesus and the Law'),
+           (21, 's', 'The Fifth Commandment'), (27, 's', 'The Sixth Commandment'), (33, 's', 'The Eighth Commandment'), (38, 's', 'The Law of Retaliation'),
+           (43, 's', 'Love of Enemies')]),
+    6: _h([(1, 's', 'Purity of Intention'), (2, 's', 'Almsgiving'), (5, 's', 'Prayer'), (16, 's', 'Fasting'), (19, 's', 'Lasting Treasure'),
+           (25, 's', 'Excessive Anxiety')]),
+    7: _h([(1, 's', 'Restraint in Judging. Hypocrisy'), (7, 's', 'Persistence in Prayer'), (12, 's', 'The Golden Rule'), (13, 's', 'The Narrow Gate'),
+           (15, 's', 'A Warning against False Prophets'), (21, 's', 'Self-Deception'), (24, 's', 'Building Well or Badly')]),
+    8: _h([(1, 'p', 'JESUS THE WORKER OF WONDERS'), (1, 's', 'The Healing of a Leper'), (5, 's', 'The Centurion of Capernaum'),
+           (14, 's', 'In Peter’s House. Many Healings'), (18, 's', 'The Cost of Following'), (23, 's', 'The Calming of the Storm'), (28, 's', 'Two Men Possessed')]),
+    9: _h([(1, 's', 'The Healing of a Paralytic'), (9, 's', 'The Call of Matthew'), (14, 's', 'The Question of Fasting'),
+           (18, 's', 'Jairus’ Daughter and the Woman with a Haemorrhage'), (27, 's', 'The Healing of Two Blind Men'), (32, 's', 'A Man Freed from a Demon, and the Sick Healed')]),
+    10: _h([(1, 'p', 'THE SENDING OF THE TWELVE APOSTLES'), (1, 's', 'The Choosing of the Twelve'), (5, 's', 'The Missionary Discourse'),
+            (17, 's', 'Persecutions Foretold'), (24, 's', 'Courage under Trial'), (34, 's', 'For Jesus or against Him. Renunciation'),
+            (40, 's', 'The Reward for Giving Oneself to Jesus')]),
+    11: _h([(2, 's', 'The Message of John the Baptist'), (7, 's', 'Jesus’ Testimony about John'), (16, 's', 'Jesus’ Verdict on His Generation'),
+            (20, 's', 'Woe to the Unrepentant Towns'), (25, 's', 'The Revelation of the Father and the Son'), (28, 's', 'The Call to the Weary')]),
+    12: _h([(1, 's', 'Plucking Grain on the Sabbath'), (9, 's', 'Healing on the Sabbath'), (15, 's', 'Jesus, “the Servant of the Lord”'),
+            (22, 's', 'The Pharisees’ Charge and Jesus’ Defence'), (31, 's', 'The Sin against the Holy Spirit'), (38, 's', 'The Sign of Jonah'),
+            (43, 's', 'Relapse into Sin'), (46, 's', 'The True Family of Jesus')]),
+    13: _h([(1, 'p', 'TEACHING IN PARABLES'), (1, 's', 'The Parable of the Sower'), (10, 's', 'The Purpose of the Parables'), (18, 's', 'The Sower Explained'),
+            (24, 's', 'The Parable of the Weeds'), (31, 's', 'The Parables of the Mustard Seed and the Yeast'), (36, 's', 'The Weeds Explained'),
+            (44, 's', 'The Parables of the Treasure and the Pearl'), (47, 's', 'The Parable of the Net'), (53, 's', 'Jesus in Nazareth')]),
+    14: _h([(1, 'p', 'FORMING THE APOSTLES IN GALILEE AND ON ITS BORDERS'), (1, 's', 'The Beheading of John the Baptist'),
+            (13, 's', 'The First Multiplication of Loaves'), (22, 's', 'Jesus Walks on the Lake'), (34, 's', 'Healings in Gennesaret')]),
+    15: _h([(1, 's', 'The Dispute about Tradition'), (10, 's', 'True Uncleanness'), (21, 's', 'The Faith of the Canaanite Woman'),
+            (29, 's', 'Healings by the Lake'), (32, 's', 'The Second Multiplication of Loaves')]),
+    16: _h([(1, 's', 'Another Demand for a Sign'), (5, 's', 'The Leaven of the Pharisees and Sadducees'), (13, 's', 'Peter’s Confession'),
+            (21, 's', 'The First Prediction of the Passion and Resurrection'), (24, 's', 'The Conditions of Following Jesus')]),
+    17: _h([(1, 's', 'The Transfiguration'), (9, 's', 'The Coming of Elijah'), (14, 's', 'The Healing of a Boy with Epilepsy'),
+            (22, 's', 'The Second Prediction of the Passion and Resurrection'), (24, 's', 'The Temple Tax')]),
+    18: _h([(1, 's', 'Who Is the Greatest'), (6, 's', 'Causing Others to Stumble'), (12, 's', 'The Lost Sheep'), (15, 's', 'Correcting a Brother'),
+            (21, 's', 'The Duty to Forgive'), (23, 's', 'The Unmerciful Servant')]),
+    19: _h([(1, 'p', 'THE MINISTRY OF JESUS IN JUDEA AND JERUSALEM'), (1, 'p', 'THE LAST JOURNEY TO JERUSALEM'), (1, 's', 'Marriage Cannot Be Dissolved'),
+            (10, 's', 'Celibacy Freely Chosen'), (13, 's', 'Jesus Blesses the Children'), (16, 's', 'The Rich Young Man'), (23, 's', 'The Danger of Riches'),
+            (27, 's', 'The Reward of Poverty Freely Chosen')]),
+    20: _h([(1, 's', 'The Parable of the Labourers in the Vineyard'), (17, 's', 'The Third Prediction of the Passion and Resurrection'),
+            (20, 's', 'The Sons of Zebedee'), (24, 's', 'Leadership as Service'), (29, 's', 'The Blind Men at Jericho')]),
+    21: _h([(1, 'p', 'THE MINISTRY OF JESUS IN JERUSALEM'), (1, 's', 'The Triumphal Entry into Jerusalem'), (12, 's', 'Jesus in the Temple'),
+            (18, 's', 'The Barren Fig Tree'), (23, 'p', 'DISPUTES WITH OPPONENTS IN THE TEMPLE'), (23, 's', 'The Question of Authority'),
+            (28, 's', 'The Parable of the Two Sons'), (33, 's', 'The Parable of the Wicked Tenants')]),
+    22: _h([(1, 's', 'The Parable of the Royal Wedding Feast'), (15, 's', 'The Question of Taxes'), (23, 's', 'The Question of the Resurrection'),
+            (34, 's', 'The Greatest Commandment'), (41, 's', 'The Messiah, Son of God')]),
+    23: _h([(1, 'p', 'THE DISCOURSE AGAINST THE SCRIBES AND PHARISEES'), (1, 's', 'A Warning against the Scribes'), (13, 's', 'Woe to the Hypocrites'),
+            (37, 's', 'Jesus Turns Away from the City')]),
+    24: _h([(1, 'p', 'THE DISCOURSE ON THE END OF JERUSALEM AND THE COMING OF CHRIST'), (1, 's', 'The Destruction of the Temple'),
+            (4, 's', 'The Beginning of Sorrows'), (9, 's', 'The Persecution of the Disciples'), (15, 's', 'Signs of the Fall of Jerusalem'),
+            (23, 's', 'The Coming of Christ'), (32, 's', 'The Lesson of the Fig Tree'), (36, 's', 'The Unknown Hour of His Coming'),
+            (42, 's', 'The Need to Keep Watch'), (45, 's', 'The Parable of the Faithful and Unfaithful Servant')]),
+    25: _h([(1, 's', 'The Parable of the Wise and Foolish Virgins'), (14, 's', 'The Parable of the Talents'), (31, 's', 'The Last Judgement')]),
+    26: _h([(1, 's', 'The Last Prediction of the Passion'), (3, 's', 'The Decision of the Council'), (6, 's', 'The Anointing at Bethany'),
+            (14, 's', 'The Betrayal of Judas'), (17, 'p', 'THE LAST SUPPER'), (17, 's', 'Preparing the Passover'), (20, 's', 'The Betrayer Revealed'),
+            (26, 's', 'The Institution of the Eucharist'), (31, 's', 'Peter’s Denial Foretold'), (36, 'p', 'JESUS IN GETHSEMANE'),
+            (36, 's', 'Prayer and Agony'), (47, 's', 'The Arrest of Jesus'), (57, 'p', 'JESUS BEFORE HIS JUDGES'), (57, 's', 'Before the Council'),
+            (69, 's', 'Peter’s Denial')]),
+    27: _h([(1, 's', 'Jesus Handed Over to Pilate'), (3, 's', 'The End of the Betrayer'), (11, 's', 'Jesus before Pilate'),
+            (15, 's', 'Jesus Rejected by His People'), (27, 's', 'The King Mocked'), (32, 'p', 'JESUS ON GOLGOTHA'), (32, 's', 'The Way of the Cross'),
+            (35, 's', 'The Crucifixion'), (39, 's', 'Mocked on the Cross'), (45, 's', 'The Death of Jesus'), (51, 's', 'After the Death of Jesus'),
+            (57, 's', 'The Burial of Jesus'), (62, 's', 'The Guard at the Tomb')]),
+    28: _h([(1, 'p', 'THE RESURRECTION OF JESUS CHRIST'), (1, 's', 'The Empty Tomb'), (9, 's', 'Jesus Appears to the Women'),
+            (11, 's', 'The Guards Bribed'), (16, 'p', 'JESUS APPEARS TO THE DISCIPLES'), (16, 's', 'The Final Command')]),
+}
+
 BOOKS = {
+    'matthew': dict(num=40, chapters=28, var='MATTHEW_EN', title='The Gospel according to Matthew', headings=MATTHEW_HEADINGS,
+                    # WEB numbers Mt 23,13–14 as the KJV does; the Biblia Tysiąclecia's 23,13 is WEB's 23,14 (and it omits the other)
+                    swap={23: (13, 14)}),
     'mark': dict(num=41, chapters=16, var='MARK_EN', title='The Gospel according to Mark', headings=MARK_HEADINGS),
     'john': dict(num=43, chapters=21, var='JOHN_EN', title='The Gospel according to John', headings=JOHN_HEADINGS),
 }
@@ -222,6 +293,9 @@ chapters = []
 for ch in range(1, CFG['chapters'] + 1):
     raw = subprocess.run(['curl', '-sL', f'https://bolls.life/get-text/WEB/{CFG["num"]}/{ch}/'], capture_output=True, check=True).stdout
     verses = [clean(v['text']) for v in sorted(json.loads(raw), key=lambda v: v['verse'])]
+    if ch in CFG.get('swap', {}):
+        a, b = CFG['swap'][ch]
+        verses[a - 1], verses[b - 1] = verses[b - 1], verses[a - 1]
     print(f'{BOOK} {ch}: {len(verses)} verses')
     chapters.append({'verses': verses, 'headings': CFG['headings'].get(ch, [])})
 

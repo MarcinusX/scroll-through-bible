@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
 """Pobiera ewangelię (Biblia Tysiąclecia, biblia.deon.pl) do data/<book>.js.
-Użycie: python3 tools/fetch_bt.py mark|john"""
+Użycie: python3 tools/fetch_bt.py matthew|mark|john"""
 import re, html, json, subprocess, pathlib, sys
 
 BOOKS = {
+    'matthew': dict(ids=list(range(244, 267)) + [269] + list(range(361, 365)), var='MATTHEW', title='Ewangelia według św. Mateusza', abbr='Mt',
+                    errata={(12, 8): ('szabatu». Uzdrowienie w szabat', 'szabatu».')},
+                    # a heading the source site printed outside its heading box: (chapter, verse before): title
+                    heading_errata={(12, 9): 'Uzdrowienie w szabat'}),
     # deon.pl chapter page ids, the export name, title, and the site's short name (used in its navigation)
     'mark': dict(ids=[267, 268] + list(range(302, 316)), var='MARK', title='Ewangelia według św. Marka', abbr='Mk',
                  # obvious typos on the source site, corrected: (chapter, verse): (wrong, right)
@@ -27,7 +31,7 @@ def clean(s):
     s = html.unescape(s).replace('\xa0', ' ')
     s = re.sub(r'\s+', ' ', s).strip()
     s = re.sub(r'\s+([,.;:!?»])', r'\1', s)
-    s = re.sub(r'\s*«« ?(?:Mk|J) ?\d+ ?»».*$', '', s)
+    s = re.sub(r'\s*«« ?(?:Mt|Mk|J) ?\d+ ?»».*$', '', s)
     return s
 
 def parse(page):
@@ -71,6 +75,10 @@ for i, cid in enumerate(IDS, 1):
     ch = parse(fetch(cid))
     for (c, v), (wrong, right) in ERRATA.items():
         if c == i: ch['verses'][v - 1] = ch['verses'][v - 1].replace(wrong, right)
+    for (c, v), title in CFG.get('heading_errata', {}).items():
+        if c == i:
+            for h in ch['headings']:
+                if h['before'] == v and not h['title']: h['title'] = title
     print(f'{CFG["abbr"]} {i}: {len(ch["verses"])} wersetów, {len(ch["headings"])} nagłówków')
     chapters.append(ch)
 
