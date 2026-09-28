@@ -47,7 +47,7 @@ export default {
     const standL = S.layer({ par: 0.31, sh: 3 });
     const standMem = [];
     for (let i = 0; i < 60; i++) { const x = c.rr(200, 1500), dy = c.rr(10, 80); standMem.push({ x, y: sfn(x) + dy, s: 0.3 + dy * 0.002, flip: x > JX, o: folk(c) }); }
-    const standing = standL.add(`<g>${group(c, standMem)}</g>`);
+    standL.add(`<g>${group(c, standMem)}</g>`);
 
     /* the near crowd, the crown bearers, Jesus */
     const L = S.layer({ par: 0.5, sh: 5 });
@@ -107,7 +107,7 @@ export default {
       const surge = es(t, 2.2, 2.8);
       M.L.fade(1 - rise);
       standL.fade(rise);
-      pose(standing, { y: -surge * 6, o: 1 });
+      standL.shift(0, -surge * 6); // the whole standing crowd surges on the compositor
       NEAR.forEach((m) => {
         const x = m.x + (JX - m.x) * surge * 0.22 * (1 - es(t, 3.3, 3.7) * 0.5);
         const grab = surge * (1 - es(t, 3.2, 3.5));

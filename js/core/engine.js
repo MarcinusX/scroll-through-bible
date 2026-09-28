@@ -139,6 +139,23 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
     sv.setAttribute('width', ((x2 - x) * K).toFixed(1));
     sv.setAttribute('height', ((y2 - y) * K).toFixed(1));
     sv.style.transform = `translate(${((x - X0) * K).toFixed(1)}px,${((y - Y0) * K).toFixed(1)}px)`;
+    if (sv.__sprite) { sv.__sprite.key = ''; placeSprite(sv); }
+  }
+  // a sprite's sheet is fitted around it at its home spot (bx, by); moving it is a CSS transform
+  function placeSprite(sv) {
+    const sp = sv.__sprite, f = sv.__fit;
+    if (!f) return;
+    const [X0, Y0] = sv.__L.box;
+    const tx = ((f.x - X0) + (sp.x - sp.bx)) * K, ty = ((f.y - Y0) + (sp.y - sp.by)) * K;
+    const tr = `translate(${tx.toFixed(1)}px,${ty.toFixed(1)}px) scale(${sp.s.toFixed(4)})`;
+    const o = sp.o.toFixed(3);
+    const key = tr + o;
+    if (key === sp.key) return;
+    sp.key = key;
+    sv.style.transformOrigin = `${((sp.bx - f.x) * K).toFixed(1)}px ${((sp.by - f.y) * K).toFixed(1)}px`;
+    sv.style.transform = tr;
+    sv.style.opacity = o;
+    sv.style.visibility = sp.o > 0.001 ? '' : 'hidden';
   }
   const bboxOf = (node) => { try { return node.getBBox(); } catch (err) { return null; } };
   function fitAll(e) {
@@ -152,7 +169,7 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
     while (promote.length) {
       const p = promote.pop();
       const sv = p.parentNode;
-      if (!sv || !sv.parentNode || sv.classList.contains('live')) continue;
+      if (!sv || !sv.parentNode || sv.classList.contains('live') || sv.__sprite) continue;
       const div = sv.parentNode;
       const mk = () => { const n = sv.cloneNode(false); n.__L = sv.__L; return n; };
       const live = mk();
@@ -226,9 +243,32 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
           if (filt) g.setAttribute('filter', `url(#${shadowFilter(L.sh)})`);
           g.innerHTML = markup;
           let host = L.el.lastElementChild;
-          if (host.classList.contains('live')) { host = host.cloneNode(false); host.classList.remove('live'); host.__L = L; L.el.appendChild(host); }
+          if (host.classList.contains('live') || host.__sprite) { host = host.cloneNode(false); host.removeAttribute('class'); host.removeAttribute('style'); host.__L = L; L.el.appendChild(host); }
           host.appendChild(g);
           return g.firstElementChild;
+        };
+        // A sprite: a heavy cut-out (a whole crowd) that only moves, scales and fades. It is drawn once
+        // into its own <svg> at (x, y) and set({x, y, s, o}) moves it on the compositor, so it is never
+        // repainted. Draw it at the largest size it is shown: s ≤ 1 keeps it sharp.
+        L.sprite = (markup, x = 800, y = 500) => {
+          const sv = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+          sv.setAttribute('preserveAspectRatio', 'none');
+          sv.setAttribute('class', 'sprite');
+          sv.__L = L;
+          const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+          g.setAttribute('class', 'piece');
+          if (filt) g.setAttribute('filter', `url(#${shadowFilter(L.sh)})`);
+          g.setAttribute('transform', `translate(${x} ${y})`);
+          g.innerHTML = markup;
+          sv.appendChild(g);
+          L.el.appendChild(sv);
+          const sp = { bx: x, by: y, x, y, s: 1, o: 1, sv, key: '' };
+          sp.set = ({ x = sp.bx, y = sp.by, s = 1, o = 1 } = {}) => {
+            Object.assign(sp, { x, y, s, o: clamp(o) });
+            placeSprite(sv);
+          };
+          sv.__sprite = sp;
+          return sp;
         };
         // slide the whole sheet on the compositor (world units) — for waves, drifting clouds, shakes
         L.shift = (x = 0, y = 0) => { L.sx = x; L.sy = y; };

@@ -29,7 +29,9 @@ export default {
     const GR = Array.from({ length: 13 }, (_, i) => {
       const x = 250 + i * 95 + c.rr(-24, 24);
       const mem = Array.from({ length: 5 }, (_, k) => ({ x: (k - 2) * 24 + c.rr(-6, 6), y: c.rr(-10, 10), s: 1, flip: x > JX, o: folk(c) }));
-      return { i, x, el: crowdL.add(`<g>${group(c, mem)}</g>`), d: c.rr(0, 0.3), dy: (i % 2) * 34 + c.rr(14, 30) };
+      const dy = (i % 2) * 34 + c.rr(14, 30), s1 = 0.34 + dy * 0.0024;
+      // drawn at the size they arrive at; they walk down on the compositor (never repainted)
+      return { i, x, d: c.rr(0, 0.3), dy, s1, sp: crowdL.sprite(`<g transform="scale(${s1.toFixed(4)})">${group(c, mem)}</g>`, x + (JX - x) * 0.08, sfn(x) + dy) };
     });
     // the ones who get a crumb, and the question marks of those who don't
     const fx0 = S.layer({ par: 0.32, sh: 4 });
@@ -67,8 +69,7 @@ export default {
       GR.forEach((g) => {
         const k = es(t, 0.1 + g.d, 0.85 + g.d, ease.out);
         const y = lerp(sfn(g.x) - 10, sfn(g.x) + g.dy, k);
-        const s = lerp(0.26, 0.34 + g.dy * 0.0024, k);
-        pose(g.el, { x: g.x + (JX - g.x) * 0.08 * k, y: y + (k > 0 && k < 1 ? -Math.abs(Math.sin(k * 30 + g.i)) * 2 : 0), s, o: seg(t, 0.08 + g.d, 0.2 + g.d) });
+        g.sp.set({ x: g.x + (JX - g.x) * 0.08 * k, y: y + (k > 0 && k < 1 ? -Math.abs(Math.sin(k * 30 + g.i)) * 2 : 0), s: lerp(0.26, g.s1, k) / g.s1, o: seg(t, 0.08 + g.d, 0.2 + g.d) });
       });
 
       /* v5b — He turns to Philip */

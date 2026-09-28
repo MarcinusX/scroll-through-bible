@@ -29,11 +29,13 @@ export default {
     const crowdL = S.layer({ par: 0.3, sh: 3 });
     const farMem = [];
     for (let i = 0; i < 70; i++) { const x = c.rr(-300, 1900); farMem.push({ x, y: sfn(x) - c.rr(0, 8), s: 0.2, flip: x > JX, o: folk(c) }); }
-    const farCrowd = crowdL.add(`<g>${group(c, farMem)}</g>`);
+    // the crowds are sprites: drawn once, then moved and faded on the compositor (never repainted)
+    const farCrowd = crowdL.sprite(group(c, farMem), 0, 0);
     const STAND = Array.from({ length: 12 }, (_, i) => {
       const x = 250 + i * 100 + c.rr(-20, 20), dy = (i % 2) * 34 + c.rr(14, 28);
       const mem = Array.from({ length: 5 }, (_, k) => ({ x: (k - 2) * 24 + c.rr(-6, 6), y: c.rr(-10, 10), s: 1, flip: x > JX, o: folk(c) }));
-      return { i, x, y: sfn(x) + dy, s: 0.34 + dy * 0.0024, el: crowdL.add(`<g>${group(c, mem)}</g>`) };
+      const y = sfn(x) + dy;
+      return { i, x, y, sp: crowdL.sprite(`<g transform="scale(${(0.34 + dy * 0.0024).toFixed(4)})">${group(c, mem)}</g>`, x, y) };
     });
     // the seated rows (men in front, as John counts them)
     const ROWS = [];
@@ -42,7 +44,8 @@ export default {
         const x = 200 + (i + 0.5 + (r % 2) * 0.4) * (1300 / n);
         if (r === 2 && Math.abs(x - JX) < 120) continue;
         const mem = Array.from({ length: 5 }, (_, k) => ({ x: (k - 2) * 30 + c.rr(-5, 5), y: c.rr(-4, 4), s: 1, flip: x > JX, o: { ...folk(c, k !== 2), pose: 'sit' } }));
-        ROWS.push({ r, x, y: sfn(x) + dy, s, i: ROWS.length, el: crowdL.add(`<g>${group(c, mem)}</g>`) });
+        const y = sfn(x) + dy;
+        ROWS.push({ r, x, y, i: ROWS.length, sp: crowdL.sprite(`<g transform="scale(${s})">${group(c, mem)}</g>`, x, y) });
       }
     });
     // much grass: strips of tall blades that grow up in front of each row
@@ -121,7 +124,7 @@ export default {
       });
 
       /* v9b — but what is that for so many? */
-      pose(farCrowd, { o: es(t, 2.05, 2.4) });
+      farCrowd.set({ o: es(t, 2.05, 2.4) });
       const qk = es(t, 2.1, 2.3, ease.back) * (1 - es(t, 2.95, 3.05));
       pose(q, { x: ahx - 6, y: ahy - 20, s: qk, o: qk > 0.01 ? 1 : 0 });
 
@@ -143,10 +146,10 @@ export default {
 
       /* standing groups → seated rows; the grass grows */
       const sat = es(t, 5.05, 5.4);
-      STAND.forEach((g) => pose(g.el, { x: g.x, y: g.y + Math.sin(T * 1.2 + g.i) * 0 - bump(t, 3.4, 3.9) * 3, s: g.s, o: 1 - es(t, 5.05 + (g.i % 4) * 0.05, 5.2 + (g.i % 4) * 0.05) }));
+      STAND.forEach((g) => g.sp.set({ y: g.y - bump(t, 3.4, 3.9) * 3, o: 1 - es(t, 5.05 + (g.i % 4) * 0.05, 5.2 + (g.i % 4) * 0.05) }));
       ROWS.forEach((r) => {
         const k = es(t, 5.05 + (r.i % 12) * 0.025, 5.25 + (r.i % 12) * 0.025);
-        pose(r.el, { x: r.x, y: r.y + (1 - k) * 8, s: r.s, o: k });
+        r.sp.set({ y: r.y + (1 - k) * 8, o: k });
       });
       const grow = es(t, 4.05, 4.5, ease.out);
       strips.forEach((g) => pose(g.el, { y: g.base, sy: 0.05 + grow * 0.95, oy: g.base, o: grow > 0.01 ? 1 : 0 }));
