@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Pobiera ewangelię (Biblia Tysiąclecia, biblia.deon.pl) do data/<book>.js.
-Użycie: python3 tools/fetch_bt.py matthew|mark|john"""
+Użycie: python3 tools/fetch_bt.py matthew|mark|luke|john"""
 import re, html, json, subprocess, pathlib, sys
 
 BOOKS = {
@@ -12,6 +12,7 @@ BOOKS = {
     'mark': dict(ids=[267, 268] + list(range(302, 316)), var='MARK', title='Ewangelia według św. Marka', abbr='Mk',
                  # obvious typos on the source site, corrected: (chapter, verse): (wrong, right)
                  errata={(3, 27): ('Nie nikt nie może', 'Nikt nie może')}),
+    'luke': dict(ids=list(range(316, 340)), var='LUKE', title='Ewangelia według św. Łukasza', abbr='Łk', errata={}),
     'john': dict(ids=list(range(340, 361)), var='JOHN', title='Ewangelia według św. Jana', abbr='J', errata={}),
 }
 BOOK = sys.argv[1] if len(sys.argv) > 1 else 'mark'
@@ -29,9 +30,9 @@ def clean(s):
     s = re.sub(r'<br\s*/?>', ' ', s)
     s = re.sub(r'<[^>]+>', '', s)
     s = html.unescape(s).replace('\xa0', ' ')
+    s = re.sub(r'\s*««\s*' + CFG['abbr'] + r'\s*\d+\s*»».*$', '', s, flags=re.S)  # the site's chapter navigation
     s = re.sub(r'\s+', ' ', s).strip()
     s = re.sub(r'\s+([,.;:!?»])', r'\1', s)
-    s = re.sub(r'\s*«« ?(?:Mt|Mk|J) ?\d+ ?»».*$', '', s)
     return s
 
 def parse(page):

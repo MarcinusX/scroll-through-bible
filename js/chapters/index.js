@@ -36,6 +36,23 @@ export const BOOKS = {
       13: () => import('./mark13/index.js'), 14: () => import('./mark14/index.js'), 15: () => import('./mark15/index.js'), 16: () => import('./mark16/index.js'),
     },
   },
+  luke: {
+    id: 'luke', count: 24, prefix: 'lk',
+    READY: [],
+    text: { pl: () => import('../../data/luke.js').then((m) => m.LUKE), en: () => import('../../data/luke-en.js').then((m) => m.LUKE_EN) },
+    name: {
+      pl: { short: 'Łukasz', abbr: 'Łk', title: 'Ewangelia <em>według św. Łukasza</em>', plain: 'Ewangelia według św. Łukasza' },
+      en: { short: 'Luke', abbr: 'Luke', title: 'The Gospel <em>according to Luke</em>', plain: 'The Gospel according to Luke' },
+    },
+    chapters: {
+      1: () => import('./luke1/index.js'), 2: () => import('./luke2/index.js'), 3: () => import('./luke3/index.js'), 4: () => import('./luke4/index.js'),
+      5: () => import('./luke5/index.js'), 6: () => import('./luke6/index.js'), 7: () => import('./luke7/index.js'), 8: () => import('./luke8/index.js'),
+      9: () => import('./luke9/index.js'), 10: () => import('./luke10/index.js'), 11: () => import('./luke11/index.js'), 12: () => import('./luke12/index.js'),
+      13: () => import('./luke13/index.js'), 14: () => import('./luke14/index.js'), 15: () => import('./luke15/index.js'), 16: () => import('./luke16/index.js'),
+      17: () => import('./luke17/index.js'), 18: () => import('./luke18/index.js'), 19: () => import('./luke19/index.js'), 20: () => import('./luke20/index.js'),
+      21: () => import('./luke21/index.js'), 22: () => import('./luke22/index.js'), 23: () => import('./luke23/index.js'), 24: () => import('./luke24/index.js'),
+    },
+  },
   john: {
     id: 'john', count: 21, prefix: 'j',
     READY: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21],
@@ -54,7 +71,7 @@ export const BOOKS = {
     },
   },
 };
-export const BOOK_ORDER = ['matthew', 'mark', 'john'];
+export const BOOK_ORDER = ['matthew', 'mark', 'luke', 'john'];
 
 // resolves to the chapter module, or null if it is missing or fails to load
 export async function loadChapter(book, n) {
