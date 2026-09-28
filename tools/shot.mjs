@@ -1,4 +1,4 @@
-// Screenshots of chosen scene moments in a dedicated Chrome window.
+// Screenshots of chosen scene moments in a dedicated headless Chrome (no window; --window to watch it).
 // Usage: node tools/shot.mjs <outDir> <url> scene:t [scene:t ...] [--size=1440x900]
 import { spawn } from 'node:child_process';
 import { mkdtempSync, writeFileSync, mkdirSync, readFileSync } from 'node:fs';
@@ -13,6 +13,7 @@ mkdirSync(outDir, { recursive: true });
 const PROFILE = mkdtempSync(join(tmpdir(), 'chrome-'));
 const chrome = spawn('/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', [
   '--remote-debugging-port=0', `--user-data-dir=${PROFILE}`,
+  ...(args.includes('--window') ? [] : ['--headless=new', '--hide-scrollbars']),
   '--no-first-run', '--no-default-browser-check', `--window-size=${size[0]},${size[1] + 90}`, '--new-window', 'about:blank',
 ], { stdio: 'ignore' });
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
