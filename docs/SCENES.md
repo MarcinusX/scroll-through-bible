@@ -37,7 +37,8 @@ John: <http://localhost:5178/?book=john&ch=3>.
 Check text: `node tools/check.mjs mark 1` / `node tools/check.mjs john 3` — Polish **and** English must rebuild every verse exactly.
 Look at moments (own Chrome window, safe to run in parallel):
 `node tools/shot.mjs <outDir> "http://localhost:5178/?ch=1" m1-baptism:1.7 m1-baptism:2.4 [--size=390x844]`
-then open the JPGs. Frame times: `node tools/bench.mjs "http://localhost:5178/?ch=1" m1-baptism:1.5` (aim: 120 fps idle).
+then open the JPGs. Frame times: `node tools/bench.mjs "http://localhost:5178/?ch=1" m1-baptism:1.5` (aim: 120 fps idle), and in
+Safari's engine: `node tools/bench-webkit.mjs mark:1` (see the Performance section).
 
 ## File shape
 
@@ -105,9 +106,16 @@ export default {
 * When `time` is 0 (reduced motion) the scene must still read correctly.
 
 ## Performance (keep it smooth — this matters)
-* Each `L.add(markup)` becomes one cut-out with its own baked shadow. Static cut-outs are rasterised
-  once and cached; anything you `pose()` every frame re-renders **only its own bounds**.
-  So: add each moving thing with its **own** `L.add()` call, and never animate a huge element
+Safari (every iPhone and iPad browser) is the tightest target: it paints SVG on the CPU and redoes
+filters and pattern fills whenever something repaints, so check new chapters with `tools/bench-webkit.mjs`.
+* Each `L.add(markup)` becomes one cut-out with its own shadow. Static cut-outs are rasterised
+  once and cached. Give every `L.add()` **one outer element** (`<g>…</g>`): that element is the handle
+  the engine moves.
+* **Moving a whole cut-out is free.** When you `pose()` the element `L.add()` returned — x, y, s, sx,
+  sy, r, o — the engine moves its layer on the compositor, and nothing repaints. Changing anything
+  *inside* it (an arm, a nested group, a path's `d`, a colour) repaints the whole cut-out, grain
+  included, so keep inner motion for what the sentence needs.
+* So: add each moving thing with its **own** `L.add()` call, and never animate a huge element
   (a whole ground band, a full-width wave strip) with `pose()` every frame.
 * To slide a whole sheet (waves, drifting mist, a shaking set) use `L.shift(x, y)` — the layer moves on
   the compositor with zero repaint. Give such layers `pad: <max shift>` so their edges never show.
@@ -115,6 +123,12 @@ export default {
 * Idle `time` motion is great for small things (a flame, a swinging ornament, blinking, a bird).
   For big things, drive them by `t` (they are still while the reader is not scrolling).
 * Hide things with `o: 0` rather than leaving them transparent-but-moving.
+* The update function should depend only on `t` and `time`. Before a scene comes on stage the engine
+  runs it through all its beats off-stage (to find what moves) and then undoes every write; state kept
+  in closures between calls would survive that.
+* No SVG `filter`s or CSS `filter`s inside scenes: WebKit re-runs them on the CPU at every repaint.
+  Glows are radial gradients (`url(#warm-glow)`, `url(#halo-glow)`); a soft-focus sheet (a blurred
+  view, a haze) is a layer option, `S.layer({ …, blur: 6 })`, which blurs on the compositor.
 
 ## Lessons from chapter 4 (please follow)
 * Crowds: **no continuous idle sway** of heads/arms for many people — it forces every figure to redraw

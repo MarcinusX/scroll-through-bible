@@ -5,10 +5,13 @@ import { BOOKS, BOOK_ORDER, loadChapter } from './chapters/index.js';
 
 // the box frame goes up first, so the loading screen already sits inside the theatre
 drawFrame();
-addEventListener('resize', drawFrame);
+let frameRaf = 0;
+addEventListener('resize', () => { cancelAnimationFrame(frameRaf); frameRaf = requestAnimationFrame(drawFrame); });
 
 /* ---------- which book and chapter? ?book=john&ch=N (drafts with scenes can be previewed), else Mark 1 ---------- */
 const params = new URLSearchParams(location.search);
+// paper shadows: soft (the default) / step / none, or blur — the old svg-filter shadows, very slow to paint in Safari
+document.documentElement.dataset.shadow = ['blur', 'soft', 'step', 'none'].includes(params.get('shadow')) ? params.get('shadow') : 'soft';
 let BOOK = BOOKS[params.get('book')] ? params.get('book') : 'mark';
 if (!BOOKS[BOOK].READY.length && !params.get('ch')) BOOK = 'mark';
 const book = BOOKS[BOOK];

@@ -75,15 +75,15 @@ export default {
     fg.add(bush(c, 60, 900, 220, C.sage, C.moss) + rock(c, 1560, 920, 240, 90, C.rock2) + bush(c, 1700, 900, 180, C.moss));
 
     /* ---------- through his eyes: the hazy view, and the clear one ---------- */
-    const povHaze = S.layer({ par: 0, sh: 1, flat: true });
-    povHaze.add(`<rect x="-3000" y="-3000" width="8000" height="8000" fill="#d9d6cb"/><g filter="url(#soft)">${sheet().p(c.ridge(c.wave(560, [14, 5], [500, 160]), -900, 2500, 1700, 20, 2), '#c3c6ae').p(c.ridge(c.wave(630, [8, 3], [400, 130]), -900, 2500, 1700, 20, 2), '#d2c7a8').out(false)}</g>`);
+    const povHaze = S.layer({ par: 0, sh: 1, flat: true, blur: 6 });
+    povHaze.add(`<rect x="-3000" y="-3000" width="8000" height="8000" fill="#d9d6cb"/><g>${sheet().p(c.ridge(c.wave(560, [14, 5], [500, 160]), -900, 2500, 1700, 20, 2), '#c3c6ae').p(c.ridge(c.wave(630, [8, 3], [400, 130]), -900, 2500, 1700, 20, 2), '#d2c7a8').out(false)}</g>`);
     const walkers = [[470, 1.25, 1], [640, 1.0, -1], [950, 1.05, 1], [1110, 1.3, -1]].map(([x, s, dir], i) => {
-      const el = povHaze.add(`<g filter="url(#soft)"><g data-k="tw${i}">${treeWalker(c, { h: 210, leaf: ['#7f9470', '#8c9c78', '#74886a'][i % 3], trunk: ['#86705a', '#7a6650', '#8f765c'][i % 3] })}</g></g>`);
+      const el = povHaze.add(`<g><g data-k="tw${i}">${treeWalker(c, { h: 210, leaf: ['#7f9470', '#8c9c78', '#74886a'][i % 3], trunk: ['#86705a', '#7a6650', '#8f765c'][i % 3] })}</g></g>`);
       const g = S.$('tw' + i);
       return { i, g, legF: g.querySelector('.legF'), legB: g.querySelector('.legB'), x, s, dir, y: 640 + (i % 2) * 20 };
     });
-    povHaze.add(`<g filter="url(#soft)"><g transform="translate(790 960) scale(2.4)">${person(c, { ...CAST.jesus })}</g></g>`);
-    povHaze.add(`<g filter="url(#soft)"><path d="${c.cut(c.blob(560, 430, 260, 70, 12, 0.2), 1, 12)}" fill="#e9e6dc" opacity=".6"/><path d="${c.cut(c.blob(1080, 520, 300, 80, 12, 0.2), 1, 12)}" fill="#e9e6dc" opacity=".55"/></g>`);
+    povHaze.add(`<g><g transform="translate(790 960) scale(2.4)">${person(c, { ...CAST.jesus })}</g></g>`);
+    povHaze.add(`<g><path d="${c.cut(c.blob(560, 430, 260, 70, 12, 0.2), 1, 12)}" fill="#e9e6dc" opacity=".6"/><path d="${c.cut(c.blob(1080, 520, 300, 80, 12, 0.2), 1, 12)}" fill="#e9e6dc" opacity=".55"/></g>`);
     const povClear = S.layer({ par: 0, sh: 3 });
     povClear.add(`<rect x="-3000" y="-3000" width="8000" height="8000" fill="#bfe0e2"/>`);
     povClear.add(sheet().p(c.ridge(c.wave(540, [18, 6], [500, 160]), -900, 2500, 1700, 12, 1), C.hillNear).out());

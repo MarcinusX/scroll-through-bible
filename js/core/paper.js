@@ -140,6 +140,23 @@ export function makeCutter(seed) {
   return { r, rr, ri, pick, chance, cut, hole, poly, line, circ, ell, blob, arc, wave, ridge, qbez, cbez, ribbon, star, rect, tr, q };
 }
 
+/* ---------- paper shadows ----------
+   Every sheet carries silhouette copies of itself: a light rim just above, and dark copies spread
+   around a point below it. Placed per layer depth (--k) by the rules below, the dark copies add up
+   to the soft penumbra of a blurred drop shadow, but paint as plain fills (no filters). */
+const SOFT = [[0.33, 1.13], [-0.33, 1.13], [-0.33, 0.47], [0.33, 0.47], [1.08, 0.8], [0.54, 1.74], [-0.54, 1.74], [-1.08, 0.8], [-0.54, -0.14], [0.54, -0.14]];
+const COPIES = {
+  soft: ['r', ...SOFT.map((_, i) => 's' + i)],
+  step: ['r', 's0', 's1'],
+  blur: ['s0', 's1'], // still pieces use the svg filter; these are the stepped fallback while a piece moves
+  none: [],
+};
+let GSH = COPIES.soft;
+export const setShadowMode = (m) => { GSH = COPIES[m] || COPIES.soft; };
+export const shadowCss = () =>
+  `.gsh.r { fill: #fffaec; opacity: .5; transform: translate(0, -.8px); }\n` +
+  SOFT.map(([x, y], i) => `[data-shadow="soft"] .gsh.s${i} { transform: translate(calc(var(--k) * ${x}px), calc(var(--k) * ${y}px)); }`).join('\n');
+
 /* ---------- a sheet: collects coloured paper pieces and lays grain over all of them ---------- */
 export function sheet() {
   const parts = [], ds = [];
@@ -150,8 +167,8 @@ export function sheet() {
     raw(s) { parts.push(s); return api; },
     out(grain = true) {
       const all = ds.join('');
-      // geometric shadow: two offset silhouettes, only shown when the piece moves (see .live in css)
-      const sh = all ? `<path class="gsh" d="${all}" transform="translate(0 2.2)"/><path class="gsh g2" d="${all}" transform="translate(.5 4.6)"/>` : '';
+      // geometric shadow: offset silhouettes (a light rim above, soft dark copies below); css places them per layer depth
+      const sh = all ? GSH.map((k) => `<path class="gsh ${k}" d="${all}"/>`).join('') : '';
       return sh + parts.join('') + (grain && all ? `<path class="grain" d="${all}"/>` : '');
     },
   };

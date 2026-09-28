@@ -1,8 +1,8 @@
 // The paper theatre: turns scroll position into scene time, stacks paper layers,
 // swaps sets between scenes and keeps the caption / tag / progress thread in sync.
 
-import { makeCutter, makeGrain, clamp } from './paper.js';
-import { ease, hooks } from './anim.js';
+import { makeCutter, makeGrain, clamp, shadowCss, setShadowMode } from './paper.js';
+import { ease, hooks, rollback } from './anim.js';
 import { Puppet } from '../assets/people.js';
 
 const CY = 470;                       // world y that sits at the centre of the screen
@@ -24,8 +24,14 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
   const turnEl = $('turn');
   const langEl = $('lang');
 
+  const SHADOW = document.documentElement.dataset.shadow || 'soft';
   let reduced = reduceMQ.matches;
   reduceMQ.addEventListener?.('change', (e) => (reduced = e.matches));
+
+  setShadowMode(SHADOW);
+  const shStyle = document.createElement('style');
+  shStyle.textContent = shadowCss();
+  document.head.appendChild(shStyle);
 
   /* ---------- paper grain ---------- */
   try { $('grain-img').setAttribute('href', makeGrain()); } catch (e) { /* grain is decoration */ }
@@ -75,24 +81,32 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
   }
 
   /* ---------- geometry ---------- */
-  let W = 0, H = 0, K = 1, portrait = false, unitPx = 800;
+  // Phone browsers resize the window whenever their toolbar slides in or out. That mustn't rescale
+  // the theatre or move the reader, so sizes and scroll length follow the tall ("large") viewport
+  // HL, and the live height H only centres the layers.
+  let W = 0, H = 0, HL = 0, K = 1, portrait = false, unitPx = 800;
+  const lvh = document.createElement('div');
+  lvh.style.cssText = 'position:fixed;left:0;top:0;width:0;height:100vh;height:100lvh;visibility:hidden;pointer-events:none';
+  document.body.appendChild(lvh);
+  const tallH = () => Math.max(innerHeight, lvh.offsetHeight || 0);
   function measure() {
-    W = innerWidth; H = innerHeight;
-    portrait = H > W * 1.05;
+    W = innerWidth; H = innerHeight; HL = tallH();
+    portrait = HL > W * 1.05;
     const safe = portrait ? { w: 760, h: 860 } : { w: 1020, h: 760 };
-    K = Math.min(W / safe.w, H / safe.h);
-    unitPx = Math.max(520, H * 0.85);
-    spaceEl.style.height = Math.round(total * unitPx + H) + 'px';
+    K = Math.min(W / safe.w, HL / safe.h);
+    unitPx = Math.max(520, HL * 0.85);
+    spaceEl.style.height = Math.round(total * unitPx + HL) + 'px';
   }
 
-  /* ---------- per-piece paper shadows ---------- */
+  /* ---------- per-piece paper shadows ----------
+     Each cut-out casts its own shadow onto whatever lies behind it. By default ("soft") that is a
+     set of silhouette copies drawn under it (see sheet() in paper.js and shadowCss()): plain fills,
+     cheap to paint in every browser. ?shadow=blur brings back the old SVG drop-shadow filter on
+     still pieces, which WebKit re-runs on the CPU at every repaint — seconds per scene on a phone. */
   const shadows = new Set();
-  // Still pieces get a true soft (blurred) shadow — rendered once and cached.
-  // Moving pieces get a "stepped" shadow: three offset silhouettes, no blur, so redrawing them
-  // every frame stays cheap while reading the same at paper scale.
-  function shadowFilter(sh, live = false) {
+  function shadowFilter(sh) {
     const k = Math.max(1, Math.min(14, Math.round(sh)));
-    const id = (live ? 'paper-shl-' : 'paper-sh-') + k;
+    const id = 'paper-sh-' + k;
     if (!shadows.has(id)) {
       shadows.add(id);
       const f = document.createElementNS('http://www.w3.org/2000/svg', 'filter');
@@ -100,11 +114,7 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
       ['x', 'y', 'width', 'height'].forEach((a, i) => f.setAttribute(a, ['-12%', '-12%', '124%', '130%'][i]));
       f.setAttribute('color-interpolation-filters', 'sRGB');
       const dy = k * 0.8;
-      f.innerHTML = live
-        ? `<feDropShadow dx="0" dy="-0.8" stdDeviation="0" flood-color="#fffaec" flood-opacity=".5"/>` +
-          `<feDropShadow dx="0" dy="${(dy * 0.5).toFixed(1)}" stdDeviation="0" flood-color="#3a2612" flood-opacity=".17"/>` +
-          `<feDropShadow dx="0" dy="${(dy * 0.8).toFixed(1)}" stdDeviation="0" flood-color="#3a2612" flood-opacity=".12"/>`
-        : `<feDropShadow dx="0" dy="-0.8" stdDeviation="0" flood-color="#fffaec" flood-opacity=".5"/><feDropShadow dx="0" dy="${dy.toFixed(1)}" stdDeviation="${(k * 0.62).toFixed(2)}" flood-color="#3a2612" flood-opacity=".32"/>`;
+      f.innerHTML = `<feDropShadow dx="0" dy="-0.8" stdDeviation="0" flood-color="#fffaec" flood-opacity=".5"/><feDropShadow dx="0" dy="${dy.toFixed(1)}" stdDeviation="${(k * 0.62).toFixed(2)}" flood-color="#3a2612" flood-opacity=".32"/>`;
       defsEl.appendChild(f);
     }
     return id;
@@ -113,7 +123,8 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
   /* ---------- live pieces ----------
      A piece that changes in two different frames is "live": it is lifted into its own <svg>
      (its own compositor layer, same stacking order), so re-drawing it never re-rasterises
-     the big still sheets around it. */
+     the big still sheets around it. Scenes are walked through off-stage before they enter (see
+     ready()), so nearly every piece that will ever move is lifted before the reader gets there. */
   // Every <svg> sheet is fitted tightly around what it holds, so no layer is a screen-sized
   // mostly-transparent texture; live pieces refit themselves as they move.
   let frameNo = 0;
@@ -125,21 +136,22 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
     if (p === undefined) { p = node.closest('g.piece'); node.__piece = p || null; }
     if (!p) return;
     if (p.__live) { dirty.add(p); return; }
+    if (p.__grain !== undefined) grainDirty.add(p);
     if (p.__f !== frameNo) { p.__f = frameNo; p.__frames = (p.__frames || 0) + 1; }
     if (p.__frames >= 2) { p.__live = true; promote.push(p); }
   };
-  function fitSheet(sv, bb, grow = 0) {
+  // (free: a carried sheet is placed by the compositor, so it covers its piece wherever that is, not only inside the layer)
+  function fitSheet(sv, bb, grow = 0, free = false) {
     const L = sv.__L;
     const [X0, Y0, X1, Y1] = L.box;
     let x = bb.x - FIT - grow, y = bb.y - FIT - grow, x2 = bb.x + bb.width + FIT + grow, y2 = bb.y + bb.height + FIT + grow;
-    x = Math.max(x, X0); y = Math.max(y, Y0); x2 = Math.min(x2, X1); y2 = Math.min(y2, Y1);
+    if (!free) { x = Math.max(x, X0); y = Math.max(y, Y0); x2 = Math.min(x2, X1); y2 = Math.min(y2, Y1); }
     if (!(x2 > x && y2 > y) || !isFinite(x + y + x2 + y2)) { x = X0; y = Y0; x2 = X0 + 1; y2 = Y0 + 1; }
     sv.__fit = { x, y, x2, y2 };
     sv.setAttribute('viewBox', `${x.toFixed(1)} ${y.toFixed(1)} ${(x2 - x).toFixed(1)} ${(y2 - y).toFixed(1)}`);
     sv.setAttribute('width', ((x2 - x) * K).toFixed(1));
     sv.setAttribute('height', ((y2 - y) * K).toFixed(1));
-    sv.style.transform = `translate(${((x - X0) * K).toFixed(1)}px,${((y - Y0) * K).toFixed(1)}px)`;
-    if (sv.__sprite) { sv.__sprite.key = ''; placeSprite(sv); }
+    if (sv.__sprite) { sv.__sprite.key = ''; placeSprite(sv); } else sheetTransform(sv);
   }
   // a sprite's sheet is fitted around it at its home spot (bx, by); moving it is a CSS transform
   function placeSprite(sv) {
@@ -158,14 +170,218 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
     sv.style.visibility = sp.o > 0.001 ? '' : 'hidden';
   }
   const bboxOf = (node) => { try { return node.getBBox(); } catch (err) { return null; } };
+
+  /* ---------- whole-piece motion on the compositor ----------
+     Most motion moves a cut-out as a whole: it slides, rises, turns, grows or fades. When that is
+     all that changes, a live piece is drawn once and carried by its own <svg>'s CSS transform and
+     opacity, so it doesn't repaint (or rebuild its grain) while it travels; only a change inside it
+     (an arm, a step, a blink) repaints it. Its outer element is drawn at a raster transform R, and
+     the sheet adds D = T·R⁻¹ on the compositor for the element's current transform T. */
+  const mul = (m, n) => [m[0] * n[0] + m[2] * n[1], m[1] * n[0] + m[3] * n[1], m[0] * n[2] + m[2] * n[3], m[1] * n[2] + m[3] * n[3], m[0] * n[4] + m[2] * n[5] + m[4], m[1] * n[4] + m[3] * n[5] + m[5]];
+  const inv = (m) => { const q = m[0] * m[3] - m[1] * m[2]; return [m[3] / q, -m[1] / q, -m[2] / q, m[0] / q, (m[2] * m[5] - m[3] * m[4]) / q, (m[1] * m[4] - m[0] * m[5]) / q]; };
+  // the most any direction is stretched by m (its largest singular value)
+  const stretch = (m) => { const p = (m[0] * m[0] + m[1] * m[1] + m[2] * m[2] + m[3] * m[3]) / 2, q = m[0] * m[3] - m[1] * m[2]; return Math.sqrt(p + Math.sqrt(Math.max(0, p * p - q * q))); };
+  const TF = /(\w+)\s*\(([^)]*)\)/g;
+  // an SVG transform list as a matrix [a b c d e f], or null for anything unexpected
+  function parseT(v) {
+    let m = [1, 0, 0, 1, 0, 0], r;
+    TF.lastIndex = 0;
+    while ((r = TF.exec(v))) {
+      const a = r[2].trim().split(/[\s,]+/).map(Number);
+      const rad = (a[0] * Math.PI) / 180;
+      let t;
+      if (r[1] === 'translate') t = [1, 0, 0, 1, a[0], a.length > 1 ? a[1] : 0];
+      else if (r[1] === 'scale') t = [a[0], 0, 0, a.length > 1 ? a[1] : a[0], 0, 0];
+      else if (r[1] === 'rotate') {
+        t = [Math.cos(rad), Math.sin(rad), -Math.sin(rad), Math.cos(rad), 0, 0];
+        if (a.length > 2) t = mul(mul([1, 0, 0, 1, a[1], a[2]], t), [1, 0, 0, 1, -a[1], -a[2]]);
+      } else if (r[1] === 'matrix') t = a;
+      else if (r[1] === 'skewX') t = [1, 0, Math.tan(rad), 1, 0, 0];
+      else if (r[1] === 'skewY') t = [1, Math.tan(rad), 0, 1, 0, 0];
+      else return null;
+      if (t.length !== 6 || !t.every(isFinite)) return null;
+      m = mul(m, t);
+    }
+    return v.replace(TF, '').trim() ? null : m;
+  }
+  function sheetTransform(sv) {
+    const f = sv.__fit, [X0, Y0] = sv.__L.box;
+    if (!f) return; // not fitted yet: fitSheet() places it
+    const sx = (f.x - X0) * K, sy = (f.y - Y0) * K;
+    const c = sv.__carrier && sv.__carrier.__carried;
+    if (!c) { sv.style.transform = `translate(${sx.toFixed(1)}px,${sy.toFixed(1)}px)`; return; }
+    // a drawn point u (sheet px) lands at A·(u + s) + K·(A·O + t − O) in the layer, for D = [A | t] and O the layer's world origin
+    const [a, b, cc, d, tx, ty] = mul(c.T, c.Ri);
+    const e = a * sx + cc * sy + K * (a * X0 + cc * Y0 + tx - X0), f2 = b * sx + d * sy + K * (b * X0 + d * Y0 + ty - Y0);
+    sv.style.transform = `matrix(${a.toFixed(5)},${b.toFixed(5)},${cc.toFixed(5)},${d.toFixed(5)},${e.toFixed(2)},${f2.toFixed(2)})`;
+  }
+  // draw the carried element at a transform close to T, but never squashed: an axis shrunk towards
+  // nothing (a piece growing from 0, a crack unrolling from sy 0.01) is drawn at full length; placed by fitLive()
+  function rasterAt(el, T) {
+    const c = el.__carried;
+    let [a, b, cc, d] = T, l1 = Math.hypot(a, b), l2 = Math.hypot(cc, d);
+    if (l1 < 1e-6 && l2 < 1e-6) { a = 1; b = 0; cc = 0; d = 1; l1 = l2 = 1; }
+    else if (l1 < 1e-6) { a = d / l2; b = -cc / l2; l1 = 1; }
+    else if (l2 < 1e-6) { cc = -b / l1; d = a / l1; l2 = 1; }
+    const k1 = l1 < 0.2 ? 1 / l1 : 1, k2 = l2 < 0.2 ? 1 / l2 : 1;
+    c.R = [a * k1, b * k1, cc * k2, d * k2, T[4], T[5]];
+    c.Ri = inv(c.R);
+    el.setAttribute('transform', `matrix(${c.R.map((x) => +x.toFixed(5)).join(' ')})`);
+  }
+  function carryPiece(sv, p) {
+    const el = p.childElementCount === 1 ? p.firstElementChild : null;
+    const v = el && (el.getAttribute('transform') || ''), T = el && parseT(v);
+    if (!T) return;
+    const o = el.getAttribute('opacity'), hidden = el.getAttribute('visibility') === 'hidden';
+    el.__carried = { sv, T, v, o: o === null ? 1 : +o, hidden };
+    sv.__carrier = el;
+    el.removeAttribute('opacity'); el.removeAttribute('visibility');
+    sv.style.opacity = el.__carried.o; sv.style.visibility = hidden ? 'hidden' : '';
+    rasterAt(el, T);
+  }
+  // hand a carried element back to its svg: it moves by repainting again
+  function uncarry(el) {
+    const c = el.__carried, sv = c.sv;
+    el.__carried = null; sv.__carrier = null;
+    el.setAttribute('transform', c.v);
+    if (c.o !== 1) el.setAttribute('opacity', c.o);
+    if (c.hidden) el.setAttribute('visibility', 'hidden');
+    sv.style.opacity = ''; sv.style.visibility = '';
+    liveGrain(sv.firstElementChild);
+  }
+  // A carried piece is drawn whole, wherever it is parked (the compositor may bring any part of it
+  // into view). One much bigger than its layer (a full-width ground band) goes back to repainting,
+  // rather than taking a huge texture.
+  const tooBig = (sv, b) => {
+    const [X0, Y0, X1, Y1] = sv.__L.box, m = FIT + 40, w = b.width + 2 * m, h = b.height + 2 * m, lw = X1 - X0, lh = Y1 - Y0;
+    return w > 2 * lw || h > 2 * lh || w * h > 1.2 * lw * lh;
+  };
+  function fitLive(sv) {
+    const p = sv.firstElementChild;
+    let b = bboxOf(p);
+    if (b && sv.__carrier && tooBig(sv, b)) { uncarry(sv.__carrier); b = bboxOf(p); }
+    if (b) fitSheet(sv, b, 30, !!sv.__carrier);
+  }
+  const refit = new Set();
+  hooks.carry = (el, attr, v) => {
+    const c = el.__carried, sv = c.sv;
+    if (attr === 'opacity') { c.o = +v; sv.style.opacity = v; return true; }
+    if (attr === 'visibility') { c.hidden = v === 'hidden'; sv.style.visibility = c.hidden ? 'hidden' : ''; return true; }
+    if (attr !== 'transform') return false;
+    const T = parseT(v);
+    // something we can't read: hand the element back (the write goes on to set it)
+    if (!T) { uncarry(el); refit.add(sv); return false; }
+    c.T = T; c.v = v;
+    // grown well past the scale it was drawn at: draw it again, a little larger, so it stays crisp
+    if (stretch(mul(T, c.Ri)) > 1.15) { rasterAt(el, mul(T, [1.25, 0, 0, 1.25, 0, 0])); refit.add(sv); }
+    else sheetTransform(sv);
+    return true;
+  };
   function fitAll(e) {
     e.built.layers.forEach((L) => L.sheets().forEach((sv) => {
-      if (sv.classList.contains('live')) { const b = bboxOf(sv.firstElementChild); if (b) fitSheet(sv, b, 30); }
-      else { const b = bboxOf(sv); if (b) fitSheet(sv, b); }
+      if (sv.classList.contains('live')) fitLive(sv);
+      else { const b = bboxOf(sv); if (b) fitSheet(sv, b); for (const p of sv.children) if (p !== sv.__gall) pieceGrain(p); mergeSheet(sv); }
     }));
     e.built.fitted = true;
   }
-  function liftLive() {
+
+  /* ---------- merged grain ----------
+     WebKit gives every pattern-filled element its own tile buffer, rebuilt whenever the element or
+     anything around it moves, so hundreds of per-part grain paths cost more to paint than all the
+     paper they sit on. So a still sheet lays one grain path over everything it holds, and a moving
+     piece one over itself: each part's outline, carried into the sheet's coordinates (same
+     texture, same place). The parts' own grain paths stay in the DOM, hidden (.gm). */
+  const grainDirty = new Set(), sheetDirty = new Set();
+  // a part whose grain can't be lifted out: under a clip / mask / filter, or not drawn at all
+  const KEEP = new Set(['defs', 'clipPath', 'mask', 'pattern', 'symbol', 'marker', 'svg', 'use', 'foreignObject']);
+  // a part's outline as flat [x, y, …] arrays per subpath, parsed once; null unless it is plain M/L/Z polylines
+  function outline(g) {
+    const d = g.getAttribute('d') || '';
+    if (g.__od === d) return g.__op;
+    g.__od = d; g.__op = null;
+    const tk = d.match(/-?\d*\.?\d+(?:e[-+]?\d+)?|[a-z]/gi);
+    if (!tk || tk[0] !== 'M') return null;
+    const subs = [];
+    let cur = null;
+    for (const t of tk) {
+      const c = t.charCodeAt(0);
+      if (c === 77) subs.push((cur = []));
+      else if (c === 76 || c === 90) continue;
+      else if (c > 64) return null;
+      else cur.push(+t);
+    }
+    return (g.__op = subs.every((p) => p.length % 2 === 0) ? subs : null);
+  }
+  // an element's own transform attribute as a matrix (identity if none, null if unreadable), cached per value
+  function ownT(n) {
+    const v = n.getAttribute('transform');
+    if (!v) return I;
+    if (n.__tv !== v) { n.__tv = v; n.__tm = parseT(v); }
+    return n.__tm;
+  }
+  const I = [1, 0, 0, 1, 0, 0];
+  // the grain outlines of piece p, in its own coordinates or (inSheet) its sheet's — a sprite's group is
+  // placed with a transform; parts it can't take (half-faded, clipped, unreadable) keep their own grain
+  function grainOf(p, inSheet = false) {
+    const tp = inSheet ? ownT(p) : I;
+    let d = '';
+    for (const g of p.getElementsByClassName('grain')) {
+      if (g === p.__lg) continue;
+      let own = g.tagName !== 'path' || g.hasAttribute('opacity'), o = 1, m = ownT(g);
+      for (let n = g.parentNode; !own && n !== p; n = n.parentNode) {
+        const a = n.getAttribute('opacity');
+        if (a !== null) o *= +a;
+        if (n.getAttribute('visibility') === 'hidden' || n.getAttribute('display') === 'none') o = 0;
+        if (n.hasAttribute('clip-path') || n.hasAttribute('mask') || n.hasAttribute('filter') || KEEP.has(n.tagName)) own = true;
+        const t = ownT(n);
+        if (!t || !m) own = true; else if (t !== I) m = mul(t, m);
+      }
+      if (!tp || !m) own = true; else if (tp !== I) m = mul(tp, m);
+      const pts = !own && o > 0.999 && outline(g);
+      if (pts) {
+        const flip = m[0] * m[3] - m[1] * m[2] < 0, r = (v) => Math.round(v * 10) / 10;
+        for (const q of pts) {
+          const n = q.length >> 1;
+          for (let i = 0; i < n; i++) { const j = 2 * (flip ? n - 1 - i : i), x = q[j], y = q[j + 1]; d += (i ? 'L' : 'M') + r(m[0] * x + m[2] * y + m[4]) + ' ' + r(m[1] * x + m[3] * y + m[5]); }
+          d += 'Z';
+        }
+      } else if (!own && o > 0.999) own = true; // not a plain outline
+      else if (o >= 0.001) own = true; // half-faded: its grain has to fade with it
+      g.classList.toggle('gm', !own);
+    }
+    return d;
+  }
+  function pieceGrain(p) {
+    p.__grain = grainOf(p, true);
+    grainDirty.delete(p);
+    sheetDirty.add(p.parentNode);
+  }
+  // a moving piece's single grain path, the last thing in its group (whole-piece motion on the
+  // compositor leaves it be; a change inside the piece redraws it)
+  function liveGrain(p) {
+    const d = grainOf(p);
+    let lg = p.__lg;
+    if (!d) { if (lg) { lg.remove(); p.__lg = null; } return; }
+    if (!lg) { lg = p.__lg = document.createElementNS('http://www.w3.org/2000/svg', 'path'); lg.setAttribute('class', 'grain'); }
+    if (lg.__d !== d) { lg.setAttribute('d', d); lg.__d = d; }
+    if (p.lastChild !== lg) p.appendChild(lg);
+  }
+  function mergeSheet(sv) {
+    sheetDirty.delete(sv);
+    sv.__merged = true;
+    let d = '';
+    for (const p of sv.children) if (p.__grain) d += p.__grain;
+    let gall = sv.__gall;
+    if (!d) { if (gall) { gall.remove(); sv.__gall = null; } return; }
+    if (!gall) { gall = sv.__gall = document.createElementNS('http://www.w3.org/2000/svg', 'path'); gall.setAttribute('class', 'grain'); }
+    if (gall.__d !== d) { gall.setAttribute('d', d); gall.__d = d; }
+    if (sv.lastChild !== gall) sv.appendChild(gall);
+  }
+  function flushGrain() {
+    grainDirty.forEach((p) => { if (p.isConnected && !p.__live) pieceGrain(p); else grainDirty.delete(p); });
+    sheetDirty.forEach((sv) => { if (sv.isConnected && !sv.classList.contains('live')) mergeSheet(sv); else sheetDirty.delete(sv); });
+  }
+  function liftLive(batch = false) {
     while (promote.length) {
       const p = promote.pop();
       const sv = p.parentNode;
@@ -176,22 +392,41 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
       live.classList.add('live');
       // moving pieces drop the (costly to redraw) blur filter and show their geometric shadows instead
       if (p.hasAttribute('filter')) { p.removeAttribute('filter'); p.classList.add('gs'); }
+      // …and take their own grain out of the sheet's merged grain
+      p.__grain = undefined;
+      grainDirty.delete(p);
+      if (sv.__gall) { sv.__gall.remove(); sv.__gall = null; }
       const rest = mk();
       while (p.nextSibling) rest.appendChild(p.nextSibling);
       live.appendChild(p);
       div.insertBefore(live, sv.nextSibling);
-      if (rest.childNodes.length) { div.insertBefore(rest, live.nextSibling); const b = bboxOf(rest); if (b) fitSheet(rest, b); }
-      if (!sv.childNodes.length) sv.remove(); else { const b = bboxOf(sv); if (b) fitSheet(sv, b); }
-      const b = bboxOf(p); if (b) fitSheet(live, b, 30);
+      if (rest.childNodes.length) div.insertBefore(rest, live.nextSibling);
+      if (!sv.childNodes.length) sv.remove();
+      carryPiece(live, p);
+      liveGrain(p);
+      if (batch) continue; // a scene being made ready off-stage is fitted as a whole afterwards
+      if (rest.parentNode) { const b = bboxOf(rest); if (b) fitSheet(rest, b); mergeSheet(rest); }
+      if (sv.parentNode) { const b = bboxOf(sv); if (b) fitSheet(sv, b); mergeSheet(sv); }
+      fitLive(live);
     }
+    if (batch) { dirty.clear(); refit.clear(); return; }
     // Moving pieces: grow the sheet when a piece moves past its edge. Grow-only (the new fit
     // covers the old one), so a swaying / rocking / spinning piece settles into a sheet that holds
     // its whole range and is never resized again — every resize means a re-raster, which can blip.
     dirty.forEach((p) => {
       const sv = p.parentNode, f = sv && sv.__fit;
       if (!f || !sv.isConnected) return;
+      liveGrain(p);
       const b = bboxOf(p);
       if (!b) return;
+      if (sv.__carrier) {
+        // a carried sheet covers all of its piece: grow it (anywhere) when a part moves out
+        if (b.x >= f.x && b.y >= f.y && b.x + b.width <= f.x2 && b.y + b.height <= f.y2) return;
+        const x = Math.min(b.x, f.x + FIT), y = Math.min(b.y, f.y + FIT), x2 = Math.max(b.x + b.width, f.x2 - FIT), y2 = Math.max(b.y + b.height, f.y2 - FIT);
+        const u = { x, y, width: x2 - x, height: y2 - y };
+        if (tooBig(sv, u)) { uncarry(sv.__carrier); fitLive(sv); } else fitSheet(sv, u, 40, true);
+        return;
+      }
       const [X0, Y0, X1, Y1] = sv.__L.box;
       // only the part that can be on screen counts (big rays or a sun glow reach past the layer)
       const bx = Math.max(b.x, X0), by = Math.max(b.y, Y0), bx2 = Math.min(b.x + b.width, X1), by2 = Math.min(b.y + b.height, Y1);
@@ -203,6 +438,9 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
       fitSheet(sv, { x, y, width: x2 - x, height: y2 - y }, 40 + Math.min(160, Math.max(bx2 - bx, by2 - by) * 0.3));
     });
     dirty.clear();
+    refit.forEach((sv) => { if (sv.isConnected) { liveGrain(sv.firstElementChild); fitLive(sv); } });
+    refit.clear();
+    flushGrain();
   }
 
   /* ---------- building scenes ---------- */
@@ -211,7 +449,9 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
     const el = document.createElement('div');
     el.className = 'scene';
     el.dataset.id = sc.id;
-    el.style.display = 'none'; // shown (and positioned) by the frame loop once it's on stage
+    // hidden but laid out, so it can be made ready off-stage and shown without rebuilding its
+    // renderers; shown (and positioned) by the frame loop once it's on stage
+    el.style.visibility = 'hidden';
     const layers = [];
     const defs = [];
     const cam = { x: 0, y: 0, z: 1 };
@@ -225,9 +465,11 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
         g.innerHTML = markup; defsEl.appendChild(g); defs.push(g);
       },
       layer(o = {}) {
-        const L = { par: o.par ?? 0.5, sh: o.sh ?? 4, sky: !!o.sky, rise: o.rise ?? 1, pad: o.pad ?? 0, sx: 0, sy: 0 };
+        // blur: a soft-focus sheet (world units of blur), done on the compositor rather than as an svg filter
+        const L = { par: o.par ?? 0.5, sh: o.sh ?? 4, sky: !!o.sky, rise: o.rise ?? 1, pad: o.pad ?? 0, blur: o.blur ?? 0, sx: 0, sy: 0 };
         L.el = document.createElement('div');
-        L.el.className = 'layer' + (L.sky ? ' sky' : ' cut');
+        L.el.className = 'layer' + (L.sky ? ' sky' : o.flat ? ' flat' : ' cut');
+        L.el.style.setProperty('--k', Math.max(1, Math.min(14, Math.round(L.sh))));
         L.svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
         L.svg.setAttribute('preserveAspectRatio', 'none');
         L.svg.__L = L;
@@ -240,11 +482,12 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
         L.add = (markup) => {
           const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
           g.setAttribute('class', 'piece');
-          if (filt) g.setAttribute('filter', `url(#${shadowFilter(L.sh)})`);
+          if (filt && SHADOW === 'blur') g.setAttribute('filter', `url(#${shadowFilter(L.sh)})`);
           g.innerHTML = markup;
           let host = L.el.lastElementChild;
           if (host.classList.contains('live') || host.__sprite) { host = host.cloneNode(false); host.removeAttribute('class'); host.removeAttribute('style'); host.__L = L; L.el.appendChild(host); }
           host.appendChild(g);
+          if (host.__merged) grainDirty.add(g);
           return g.firstElementChild;
         };
         // A sprite: a heavy cut-out (a whole crowd) that only moves, scales and fades. It is drawn once
@@ -257,7 +500,7 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
           sv.__L = L;
           const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
           g.setAttribute('class', 'piece');
-          if (filt) g.setAttribute('filter', `url(#${shadowFilter(L.sh)})`);
+          if (filt && SHADOW === 'blur') g.setAttribute('filter', `url(#${shadowFilter(L.sh)})`);
           g.setAttribute('transform', `translate(${x} ${y})`);
           g.innerHTML = markup;
           sv.appendChild(g);
@@ -282,7 +525,7 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
       $$: (k) => Array.from(el.querySelectorAll(`[data-k="${k}"]`)),
       puppet: (node) => new Puppet(node),
       // visible world rect of a par-0 layer (at camera rest)
-      view: () => ({ x0: 800 - W / 2 / K, x1: 800 + W / 2 / K, y0: CY - H / 2 / K, y1: CY + H / 2 / K }),
+      view: () => ({ x0: 800 - W / 2 / K, x1: 800 + W / 2 / K, y0: CY - HL / 2 / K, y1: CY + HL / 2 / K }),
     };
     const update = sc.build(S) || (() => {});
     stageEl.appendChild(el);
@@ -301,24 +544,18 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
     const zmin = Math.min(1, camR.z[0]);
     for (const L of layers) {
       const p = L.par, m = 90 / K + L.pad;
-      const hw = W / 2 / (K * zmin) + m, hh = H / 2 / (K * zmin) + m;
+      const hw = W / 2 / (K * zmin) + m, hh = HL / 2 / (K * zmin) + m;
       const x0 = 800 + p * camR.x[0] - hw, x1 = 800 + p * camR.x[1] + hw;
       const y0 = CY + p * camR.y[0] - hh, y1 = CY + p * camR.y[1] + hh + (L.sky ? 0 : 120 / K);
       L.box = [x0, y0, x1, y1];
       const w = (x1 - x0) * K, h = (y1 - y0) * K;
       L.el.style.width = w + 'px';
       L.el.style.height = h + 'px';
+      if (L.blur) L.el.style.filter = `blur(${(L.blur * K).toFixed(2)}px)`;
       L.lastT = '';
     }
     e.built.fitted = false;
   }
-
-  /* ---------- pointer parallax ---------- */
-  const ptr = { x: 0, y: 0, tx: 0, ty: 0 };
-  addEventListener('pointermove', (ev) => {
-    if (ev.pointerType === 'touch') return;
-    ptr.tx = (ev.clientX / W - 0.5) * 2; ptr.ty = (ev.clientY / H - 0.5) * 2;
-  }, { passive: true });
 
   function place(e, t, time) {
     const { layers, cam, sc } = { ...e.built, sc: e.sc };
@@ -341,8 +578,8 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
       const p = Ly.par, zl = 1 + (cam.z - 1) * p;
       const cx = 800 + cam.x * p, cy = CY + cam.y * p;
       const [x0, y0] = Ly.box;
-      const tx = W / 2 - (cx - x0 - Ly.sx) * K * zl - ptr.x * p * 14;
-      const ty = H / 2 - (cy - y0 - Ly.sy) * K * zl - ptr.y * p * 8 + dy;
+      const tx = W / 2 - (cx - x0 - Ly.sx) * K * zl;
+      const ty = H / 2 - (cy - y0 - Ly.sy) * K * zl + dy;
       const s = `translate3d(${tx.toFixed(1)}px,${ty.toFixed(1)}px,0) scale(${zl.toFixed(4)})`;
       if (s !== Ly.lastT) { Ly.el.style.transform = s; Ly.lastT = s; }
       const os = (o * Ly.alpha).toFixed(3);
@@ -449,8 +686,6 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
     const target = scrollY / unitPx;
     g = reduced ? target : g + (target - g) * (1 - Math.exp(-dt * 6.5));
     if (Math.abs(target - g) < 0.0005) g = target;
-    ptr.x += (ptr.tx - ptr.x) * (1 - Math.exp(-dt * 3));
-    ptr.y += (ptr.ty - ptr.y) * (1 - Math.exp(-dt * 3));
     const time = reduced ? 0 : now / 1000;
 
     let capE = null, capB = -1, capP = 0;
@@ -458,14 +693,14 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
       const t = localT(e, g);
       const n = e.beats.length;
       const active = t > -PAD && (t < n + PAD || i === timeline.length - 1); // the last set stays up behind the closing card
-      const near = g > e.start - GAP * 3 && g < e.end + GAP * 3;
-      if (active || near) { if (!e.built) build(e); } else if (e.built && (g < e.start - 14 || g > e.end + 14)) destroy(e);
-      if (!e.built) return;
       const vis = active || (i === 0 && t <= 0);
-      if (vis !== e.built.shown) { e.built.el.style.display = vis ? '' : 'none'; e.built.shown = vis; }
+      // normally prebuild() has the scene ready long before; build it here only if the reader outran it
+      if (vis) { if (!e.built) build(e); } else if (e.built && (g < e.start - 14 || g > e.end + 14)) destroy(e);
+      if (!e.built) return;
+      if (vis !== e.built.shown) { e.built.el.style.visibility = vis ? '' : 'hidden'; e.built.shown = vis; }
       if (!vis) return;
       e.built.update(clamp(t, -PAD, n + PAD), time);
-      if (!e.built.fitted) fitAll(e);
+      if (!e.built.fitted) ready(e);
       place(e, t, time);
       if (t >= 0 && t < n) { capE = e; capB = Math.floor(t); capP = (t - capB) / 0.5; }
     });
@@ -500,21 +735,60 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
     liftLive();
   }
 
-  // build the next scenes while the reader is idle, so crossing into them never stalls a frame
-  const idle = window.requestIdleCallback || ((fn) => setTimeout(() => fn({ timeRemaining: () => 8 }), 60));
-  function prebuild(deadline) {
-    const next = timeline.find((e) => !e.built && e.start < g + 12 && e.end > g - 6);
-    if (next && deadline.timeRemaining() > 4) build(next);
-    idle(prebuild, { timeout: 800 });
+  /* ---------- getting scenes ready off-stage ----------
+     The scenes around the reader are built, posed at their entrance, fitted and their grain
+     merged while nothing else is going on, one step per slot, so crossing into a scene costs no
+     more than its first paint. Safari has no requestIdleCallback: there a step waits for a pause
+     in scrolling, unless the scene is about to come on stage. */
+  let lastScroll = -1e9;
+  addEventListener('scroll', () => { lastScroll = performance.now(); }, { passive: true });
+  const idle = window.requestIdleCallback
+    ? (fn) => requestIdleCallback(fn, { timeout: 1000 })
+    : (fn) => setTimeout(() => fn({ timeRemaining: () => (performance.now() - lastScroll > 200 ? 12 : 0), didTimeout: false }), 70);
+  // Walk the scene through its beats (and a little idle time) off-stage, so every piece that will move
+  // is marked to be lifted into its own layer in one batch, instead of splitting a sheet on stage
+  // mid-scroll. Everything the walk writes is then undone: the scene starts exactly as it would have.
+  function walk(e) {
+    const B = e.built, n = e.beats.length, now = reduced ? 0 : performance.now() / 1000;
+    const journal = (hooks.journal = []), cam = { ...B.cam }, lay = B.layers.map((L) => [L.sx, L.sy, L.alpha]);
+    const sprites = [...B.el.querySelectorAll('svg.sprite')].map((sv) => [sv, { ...sv.__sprite }]);
+    try { for (let t = -PAD; t <= n + PAD + 1e-6; t += 0.25) { B.update(t, reduced ? 0 : now + (t + PAD) * 0.37); frameNo++; } }
+    finally { hooks.journal = null; }
+    rollback(journal);
+    Object.assign(B.cam, cam);
+    B.layers.forEach((L, i) => { [L.sx, L.sy, L.alpha] = lay[i]; });
+    sprites.forEach(([sv, sp]) => { Object.assign(sv.__sprite, sp, { key: '' }); placeSprite(sv); });
+    B.walked = true;
   }
-  idle(prebuild, { timeout: 800 });
+  // pose it where it enters, lift what moves, fit every sheet and merge the grain
+  function ready(e) {
+    const B = e.built;
+    if (!B.walked) walk(e);
+    B.update(clamp(localT(e, g), -PAD, e.beats.length + PAD), reduced ? 0 : performance.now() / 1000); frameNo++;
+    liftLive(true);
+    fitAll(e);
+  }
+  function prebuild(deadline) {
+    // nearest first, looking ahead more than behind
+    const next = timeline.filter((e) => !(e.built && e.built.fitted) && e.start < g + 12 && e.end > g - 6)
+      .sort((a, b) => Math.abs(a.start - g - 1) - Math.abs(b.start - g - 1))[0];
+    if (next) {
+      const soon = next.start - g < 2.5 && next.end > g - 1.5;
+      // one step per slot: build, walk, then ready
+      if (soon || deadline.didTimeout || deadline.timeRemaining() > 4) { if (!next.built) build(next); else if (!next.built.walked) walk(next); else ready(next); }
+    }
+    idle(prebuild);
+  }
+  idle(prebuild);
 
   measure();
   buildRail();
   let rT = 0;
   addEventListener('resize', () => {
+    H = innerHeight; // re-centre straight away (compositor only)
     clearTimeout(rT);
     rT = setTimeout(() => {
+      if (innerWidth === W && tallH() === HL) return; // only a toolbar moved: nothing to rebuild, and no scroll jump
       const wasPortrait = portrait;
       const keep = g;
       measure();
