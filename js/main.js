@@ -3,6 +3,10 @@ import { makeCutter } from './core/paper.js';
 import { LANG, UI as BASE_UI } from './core/i18n.js';
 import { BOOKS, BOOK_ORDER, loadChapter } from './chapters/index.js';
 
+// the box frame goes up first, so the loading screen already sits inside the theatre
+drawFrame();
+addEventListener('resize', drawFrame);
+
 /* ---------- which book and chapter? ?book=john&ch=N (drafts with scenes can be previewed), else Mark 1 ---------- */
 const params = new URLSearchParams(location.search);
 let BOOK = BOOKS[params.get('book')] ? params.get('book') : 'mark';
@@ -94,8 +98,6 @@ function drawFrame() {
   svg.innerHTML = `<path d="${outer}${mat}" fill="#efe3c9"/><path d="${outer}${mat}" class="grain"/><path d="${outer}${board}" fill="#1f3a3c"/><path d="${outer}${board}" class="grain" opacity=".5"/>`;
   document.documentElement.style.setProperty('--frame', f + 7 + 'px');
 }
-drawFrame();
-addEventListener('resize', drawFrame);
 
 /* ---------- the play ---------- */
 // ?only=lamp,measure — render just these scenes (handy while drawing a new one)
@@ -160,3 +162,7 @@ langNav.setAttribute('aria-label', UI.langLabel);
   });
   langNav.appendChild(b);
 });
+
+/* ---------- everything is filled in: lift the loading state ---------- */
+document.documentElement.classList.remove('loading');
+document.documentElement.classList.add('ready');

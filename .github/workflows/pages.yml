@@ -36,7 +36,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Assemble site
-        run: mkdir _site && cp -r index.html css js data _site/ && touch _site/.nojekyll
+        run: mkdir _site && cp -r index.html favicon.svg favicon.ico apple-touch-icon.png css js data _site/ && touch _site/.nojekyll
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

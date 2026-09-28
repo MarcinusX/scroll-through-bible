@@ -1,11 +1,14 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="pl" class="loading">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Ewangelia wg św. Marka — papierowy teatr</title>
-<meta name="description" content="Ewangelia według św. Marka jako przewijany papierowy teatr: każde zdanie rozdziału 4 — przypowieści nad jeziorem i uciszenie burzy — ożywa w wycinance.">
+<title>Ewangelie — papierowy teatr</title>
+<meta name="description" content="Ewangelie jako przewijany papierowy teatr: każde zdanie ożywa w wycinance.">
 <meta name="theme-color" content="#1f3a3c">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon.ico" sizes="32x32">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="stylesheet" href="css/style.css">
 <script>window.__errs=[];addEventListener("error",e=>__errs.push(e.message+" @"+(e.filename||"").split("/").pop()+":"+e.lineno));addEventListener("unhandledrejection",e=>__errs.push(String(e.reason)));</script>
 </head>
@@ -15,6 +18,7 @@
 <main class="stage" id="stage" aria-label="Papierowy teatr: ilustracje do czytanego tekstu">
   <div id="scenes"></div>
   <div class="vignette" aria-hidden="true"></div>
+  <div class="loader" aria-hidden="true"><i></i><i></i><i></i></div>
   <div class="turn" id="turn" aria-hidden="true">
     <svg class="grain-fill"><rect width="100%" height="100%" fill="url(#grain)"/></svg>
     <p class="turn-title"></p><p class="turn-ref"></p>
@@ -34,11 +38,11 @@
 </header>
 
 <section class="cover" id="cover" aria-label="Strona tytułowa">
-  <p class="cover-kicker" id="cover-kicker">Plansza IV · Papierowy teatr</p>
+  <p class="cover-kicker" id="cover-kicker"></p>
   <nav class="books" id="books"></nav>
-  <h1 id="cover-title">Ewangelia <em>według św. Marka</em></h1>
+  <h1 id="cover-title"></h1>
   <span class="rule" aria-hidden="true"></span>
-  <p class="cover-sub"><span class="cover-ch" id="cover-ch">Rozdział 4</span><span id="cover-sub"></span></p>
+  <p class="cover-sub"><span class="cover-ch" id="cover-ch"></span><span id="cover-sub"></span></p>
   <nav class="chapters" id="chapters"></nav>
 </section>
 
@@ -55,7 +59,7 @@
 <p class="hint" id="hint"><span data-i18n="hint">Przewijaj powoli</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v14m-6-6 6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></p>
 
 <section class="end" id="end" aria-label="Koniec rozdziału">
-  <p class="end-kicker" id="end-kicker">Koniec rozdziału 4</p>
+  <p class="end-kicker" id="end-kicker"></p>
   <p class="end-q" id="end-q"></p>
   <div class="end-actions"><button type="button" class="chip" id="again" data-i18n="again">Od początku</button><button type="button" class="chip next" id="next" hidden></button></div>
 </section>
