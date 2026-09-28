@@ -217,7 +217,7 @@ export const MATTHEW = {
     "Nie zapala się też światła i nie stawia pod korcem, ale na świeczniku, aby świeciło wszystkim, którzy są w domu.",
     "Tak niech świeci wasze światło przed ludźmi, aby widzieli wasze dobre uczynki i chwalili Ojca waszego, który jest w niebie.",
     "Nie sądźcie, że przyszedłem znieść Prawo albo Proroków. Nie przyszedłem znieść, ale wypełnić.",
-    "Zaprawdę. bowiem powiadam wam: Dopóki niebo i ziemia nie przeminą, ani jedna jota, ani jedna kreska nie zmieni się w Prawie, aż się wszystko spełni.",
+    "Zaprawdę bowiem powiadam wam: Dopóki niebo i ziemia nie przeminą, ani jedna jota, ani jedna kreska nie zmieni się w Prawie, aż się wszystko spełni.",
     "Ktokolwiek więc zniósłby jedno z tych przykazań, choćby najmniejszych, i uczyłby tak ludzi, ten będzie najmniejszy w królestwie niebieskim. A kto je wypełnia i uczy wypełniać, ten będzie wielki w królestwie niebieskim.",
     "Bo powiadam wam: Jeśli wasza sprawiedliwość nie będzie większa niż uczonych w Piśmie i faryzeuszów, nie wejdziecie do królestwa niebieskiego.",
     "Słyszeliście, że powiedziano przodkom: Nie zabijaj!; a kto by się dopuścił zabójstwa, podlega sądowi.",

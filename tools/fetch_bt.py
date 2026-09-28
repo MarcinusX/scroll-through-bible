@@ -5,7 +5,7 @@ import re, html, json, subprocess, pathlib, sys
 
 BOOKS = {
     'matthew': dict(ids=list(range(244, 267)) + [269] + list(range(361, 365)), var='MATTHEW', title='Ewangelia według św. Mateusza', abbr='Mt',
-                    errata={(12, 8): ('szabatu». Uzdrowienie w szabat', 'szabatu».')},
+                    errata={(5, 18): ('Zaprawdę. bowiem', 'Zaprawdę bowiem'), (12, 8): ('szabatu». Uzdrowienie w szabat', 'szabatu».')},
                     # a heading the source site printed outside its heading box: (chapter, verse before): title
                     heading_errata={(12, 9): 'Uzdrowienie w szabat'}),
     # deon.pl chapter page ids, the export name, title, and the site's short name (used in its navigation)
