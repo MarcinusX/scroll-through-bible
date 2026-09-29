@@ -38,7 +38,7 @@ export const BOOKS = {
   },
   luke: {
     id: 'luke', count: 24, prefix: 'lk',
-    READY: [1, 2, 3, 4, 5, 6],
+    READY: [1, 2, 3, 4, 5, 6, 7],
     text: { pl: () => import('../../data/luke.js').then((m) => m.LUKE), en: () => import('../../data/luke-en.js').then((m) => m.LUKE_EN) },
     name: {
       pl: { short: 'Łukasz', abbr: 'Łk', title: 'Ewangelia <em>według św. Łukasza</em>', plain: 'Ewangelia według św. Łukasza' },
