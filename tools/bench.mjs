@@ -2,7 +2,7 @@
 // Usage: node tools/bench.mjs [url] [sceneId:t ...]
 //   node tools/bench.mjs http://localhost:5178/ lake:3.6 sower:1.5 sower:8.7
 import { spawn } from 'node:child_process';
-import { mkdtempSync, readFileSync } from 'node:fs';
+import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -47,5 +47,8 @@ await evaluate('scrollTo(0,0)');
 await sleep(500);
 const scroll = await evaluate(`(async () => { const total = document.body.scrollHeight - innerHeight; const run = (async () => { for (let y = 0; y < total; y += 14) { scrollTo(0, y); await new Promise(r => requestAnimationFrame(r)); } })(); const m = await ${MEASURE}(8000); return { ...m, errs: window.__errs }; })()`);
 console.log('scroll-through  ', JSON.stringify(scroll));
+// quit Chrome and delete its throwaway profile (hundreds of MB each; they used to fill the disk)
 chrome.kill();
+await new Promise((r) => { chrome.once('exit', r); setTimeout(r, 3000); });
+try { rmSync(PROFILE, { recursive: true, force: true }); } catch { /* best effort */ }
 process.exit(0);
