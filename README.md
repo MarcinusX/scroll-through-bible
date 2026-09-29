@@ -1,4 +1,4 @@
-# Ewangelia wg św. Marka — papierowy teatr
+# Ewangelie — papierowy teatr
 
 Scroll through bible: https://marcinusx.github.io/scroll-through-bible/
 
@@ -7,10 +7,11 @@ Scroll through bible: https://marcinusx.github.io/scroll-through-bible/
 A scroll-driven, sentence-by-sentence illustrated reading of the Gospels, drawn as a layered
 **paper-cut diorama**. Every sentence is acted out on its own beat, in Polish and English.
 
+* **The Gospel of Matthew**: all 28 chapters, from the genealogy of Jesus to "I am with you always, to the end of the age".
 * **The Gospel of Mark**: all 16 chapters, from John the Baptist in the wilderness to the empty tomb at sunrise.
 * **The Gospel of John**: all 21 chapters, from "In the beginning was the Word" to a world too small for all the books.
 
-Together that's 1,554 verses in 2,767 animated beats across 480 scenes.
+Together that's 2,624 verses in 4,526 animated beats across 948 scenes.
 
 The look is heavily inspired by **Mia's AI Lab**, and in particular her paper-cut diorama
 [*Foxglove Hollow*](https://miaai-lab.github.io/Claude-Opus-5.5-100-HTML-Files/018-paper-cut-diorama.html)
@@ -18,7 +19,7 @@ from her gallery of [100 HTML files made with Claude](https://miaai-lab.github.i
 ([@MiaAI_lab](https://x.com/MiaAI_lab)). Thank you, Mia!
 
 Text:
-* Polish: **Biblia Tysiąclecia** (5th ed.), from biblia.deon.pl, in `data/mark.js` and `data/john.js`.
+* Polish: **Biblia Tysiąclecia** (5th ed.), from biblia.deon.pl, in `data/matthew.js`, `data/mark.js` and `data/john.js`.
 * English: **World English Bible** (public domain), from bolls.life, in `data/<book>-en.js`, with sentence
   splits in each chapter's `beats-en.js`.
 
@@ -76,16 +77,16 @@ The theatre has to scroll smoothly in Safari on iPhone and iPad, whose engine pa
 * `node tools/bench.mjs <url> scene:t …`: frame-time benchmark in a dedicated Chrome window.
 * `node tools/bench-webkit.mjs [--vs=<other build>] book:ch …`: scroll benchmark in WebKit (Safari's engine) at
   iPhone or iPad resolution, optionally interleaved with a second build (needs `npm i --no-save playwright`).
-* `node tools/shot.mjs <outDir> <url> scene:t … [--size=390x844]`: screenshots of chosen moments.
-* `tools/review.sh <chapter> <outDir> [pl|en] [size]`: contact sheets of every beat of a chapter.
+* `node tools/shot.mjs <outDir> <url> scene:t … [--size=390x844]`: screenshots of chosen moments, in headless Chrome (`--window` to watch).
+* `[PORT=5178] tools/review.sh [book:]<chapter> <outDir> [pl|en] [size]`: contact sheets of every beat of a chapter.
 * `node tools/record.mjs <url> docs/demo.gif`: records the README tour GIF (needs ffmpeg).
 * `python3 tools/fetch_bt.py <book>` / `tools/fetch_web.py <book>`: re-download the Polish / English text.
 * `node tools/publish.mjs <book> <chapter…>`: publish chapters (adds them to the book's `READY` list).
 
 ## How it was made
 
-Mark 4 was drawn first, together with the engine and asset library. The other 36 chapters of Mark and
-John were then drawn in parallel by Claude agents, one per chapter, four at a time, each working from
+Mark 4 was drawn first, together with the engine and asset library. The other 64 chapters of Matthew, Mark
+and John were then drawn in parallel by Claude agents, one per chapter, four at a time, each working from
 `docs/SCENES.md`. Every
 chapter was reviewed beat by beat from contact sheets (`tools/review.sh`), checked for frame rate, and
 validated against the text before it was published.
