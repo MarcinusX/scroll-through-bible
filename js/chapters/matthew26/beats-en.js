@@ -1,2 +1,110 @@
 // English (World English Bible) wording for beats that split a verse — keyed by scene id → beat index.
-export const BEATS_EN = {};
+export const BEATS_EN = {
+  'mt26-twodays': {
+    2: '“You know that after two days the Passover is coming,',
+    3: 'and the Son of Man will be delivered up to be crucified.”',
+  },
+  'mt26-bethany': {
+    1: 'a woman came to him having an alabaster jar of very expensive ointment,',
+    2: 'and she poured it on his head as he sat at the table.',
+    5: 'However, knowing this, Jesus said to them, “Why do you trouble the woman?',
+    6: 'Because she has done a good work for me.',
+  },
+  'mt26-silver': {
+    1: 'and said, “What are you willing to give me, that I should deliver him to you?”',
+    2: 'They weighed out for him thirty pieces of silver.',
+  },
+  'mt26-prepare': {
+    1: 'He said, “Go into the city to a certain person, and tell him,',
+    2: '‘The Teacher says, “My time is at hand. I will keep the Passover at your house with my disciples.”’”',
+  },
+  'mt26-woe': {
+    0: 'The Son of Man goes, even as it is written of him,',
+    1: 'but woe to that man through whom the Son of Man is betrayed!',
+    2: 'It would be better for that man if he had not been born.”',
+    3: 'Judas, who betrayed him, answered, “It isn’t me, is it, Rabbi?”',
+    4: 'He said to him, “You said it.”',
+  },
+  'mt26-bread': {
+    0: 'As they were eating, Jesus took bread,',
+    1: 'gave thanks for it,',
+    2: 'and broke it.',
+    3: 'He gave to the disciples, and said,',
+    4: '“Take, eat; this is my body.”',
+  },
+  'mt26-cup': {
+    0: 'He took the cup,',
+    1: 'gave thanks,',
+    2: 'and gave to them, saying, “All of you drink it,',
+    4: 'But I tell you that I will not drink of this fruit of the vine from now on,',
+    5: 'until that day when I drink it anew with you in my Father’s Kingdom.”',
+  },
+  'mt26-olives': {
+    1: 'Then Jesus said to them, “All of you will be made to stumble because of me tonight,',
+    2: 'for it is written, ‘I will strike the shepherd, and the sheep of the flock will be scattered.’',
+    6: 'Peter said to him, “Even if I must die with you, I will not deny you.”',
+    7: 'All of the disciples also said likewise.',
+  },
+  'mt26-gethsemane': {
+    0: 'Then Jesus came with them to a place called Gethsemane,',
+    1: 'and said to his disciples, “Sit here, while I go there and pray.”',
+  },
+  'mt26-prayer': {
+    0: 'He went forward a little, fell on his face, and prayed, saying,',
+    1: '“My Father, if it is possible, let this cup pass away from me;',
+    2: 'nevertheless, not what I desire, but what you desire.”',
+  },
+  'mt26-watch': {
+    0: 'He came to the disciples, and found them sleeping,',
+    1: 'and said to Peter, “What, couldn’t you watch with me for one hour?',
+    2: 'Watch and pray, that you don’t enter into temptation.',
+    3: 'The spirit indeed is willing, but the flesh is weak.”',
+    7: 'Then he came to his disciples, and said to them, “Sleep on now, and take your rest.',
+    8: 'Behold, the hour is at hand, and the Son of Man is betrayed into the hands of sinners.',
+    9: 'Arise, let’s be going.',
+    10: 'Behold, he who betrays me is at hand.”',
+  },
+  'mt26-kiss': {
+    3: 'Jesus said to him, “Friend, why are you here?”',
+    4: 'Then they came and laid hands on Jesus, and took him.',
+  },
+  'mt26-sword': {
+    1: 'Then Jesus said to him, “Put your sword back into its place,',
+    2: 'for all those who take the sword will die by the sword.',
+  },
+  'mt26-flee': {
+    0: 'In that hour Jesus said to the multitudes, “Have you come out as against a robber with swords and clubs to seize me?',
+    1: 'I sat daily in the temple teaching, and you didn’t arrest me.',
+    2: 'But all this has happened, that the Scriptures of the prophets might be fulfilled.”',
+    3: 'Then all the disciples left him, and fled.',
+  },
+  'mt26-council': {
+    1: 'But Peter followed him from a distance, to the court of the high priest,',
+    2: 'and entered in and sat with the officers, to see the end.',
+    4: 'and they found none. Even though many false witnesses came forward, they found none.',
+    5: 'But at last two false witnesses came forward,',
+  },
+  'mt26-adjure': {
+    1: 'But Jesus held his peace.',
+    2: 'The high priest answered him, “I adjure you by the living God, that you tell us whether you are the Christ, the Son of God.”',
+    3: 'Jesus said to him, “You have said it.',
+    4: 'Nevertheless, I tell you, after this you will see the Son of Man sitting at the right hand of Power, and coming on the clouds of the sky.”',
+    5: 'Then the high priest tore his clothing, saying, “He has spoken blasphemy!',
+    6: 'Why do we need any more witnesses?',
+    7: 'Behold, now you have heard his blasphemy.',
+    8: 'What do you think?”',
+    9: 'They answered, “He is worthy of death!”',
+  },
+  'mt26-denial': {
+    0: 'Now Peter was sitting outside in the court,',
+    1: 'and a maid came to him, saying, “You were also with Jesus, the Galilean!”',
+    3: 'When he had gone out onto the porch, someone else saw him,',
+    4: 'and said to those who were there, “This man also was with Jesus of Nazareth.”',
+    6: 'After a little while those who stood by came and said to Peter,',
+    7: '“Surely you are also one of them, for your speech makes you known.”',
+    8: 'Then he began to curse and to swear, “I don’t know the man!”',
+    9: 'Immediately the rooster crowed.',
+    10: 'Peter remembered the word which Jesus had said to him, “Before the rooster crows, you will deny me three times.”',
+    11: 'He went out and wept bitterly.',
+  },
+};
