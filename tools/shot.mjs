@@ -1,7 +1,7 @@
 // Screenshots of chosen scene moments in a dedicated headless Chrome (no window; --window to watch it).
 // Usage: node tools/shot.mjs <outDir> <url> scene:t [scene:t ...] [--size=1440x900]
 import { spawn } from 'node:child_process';
-import { mkdtempSync, writeFileSync, mkdirSync, readFileSync } from 'node:fs';
+import { mkdtempSync, writeFileSync, mkdirSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -59,5 +59,8 @@ for (const spot of spots) {
 }
 const errs = await evaluate('window.__errs');
 if (errs && errs.length) console.log('ERRORS:', errs);
+// quit Chrome and delete its throwaway profile (hundreds of MB each; they used to fill the disk)
 chrome.kill();
+await new Promise((r) => { chrome.once('exit', r); setTimeout(r, 3000); });
+try { rmSync(PROFILE, { recursive: true, force: true }); } catch { /* best effort */ }
 process.exit(0);

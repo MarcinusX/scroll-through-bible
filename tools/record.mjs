@@ -1,7 +1,7 @@
 // Records a short tour of the chapter as a GIF (for the README).
 // Usage: node tools/record.mjs <url> <out.gif>   (needs ffmpeg)
 import { spawn, execFileSync } from 'node:child_process';
-import { mkdtempSync, writeFileSync, readFileSync } from 'node:fs';
+import { mkdtempSync, writeFileSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -57,7 +57,10 @@ for (const [sc, a, b, count] of TOUR) {
     writeFileSync(join(frames, `f${String(n++).padStart(4, '0')}.png`), Buffer.from(shot.result.data, 'base64'));
   }
 }
+// quit Chrome and delete its throwaway profile (hundreds of MB each; they used to fill the disk)
 chrome.kill();
+await new Promise((r) => { chrome.once('exit', r); setTimeout(r, 3000); });
+try { rmSync(PROFILE, { recursive: true, force: true }); } catch { /* best effort */ }
 console.log(n, 'frames');
 const pal = join(frames, 'palette.png');
 const scale = 'scale=640:-1:flags=lanczos';
