@@ -62,7 +62,7 @@ export default {
     for (let x = -1400; x <= 3200; x += 40) { const d = Math.max(0, Math.abs(x - HX) - 250); top.push([x, 422 + Math.pow(d / 420, 2) * 260 + c.rr(-2, 2)]); }
     hs.p(c.cut([...top, [3200, 1800], [-1400, 1800]], 0.8, 14), mix(C.hillNear, C.indigo, 0.52));
     const PATH = [...c.cbez([800, 752], [590, 736], [580, 640], [790, 614], 18), ...c.cbez([790, 614], [1010, 592], [1000, 498], [800, 428], 18).slice(1)];
-    hs.p(c.ribbon(PATH, (u) => 64 - u * 50), mix(C.sand, C.halo, 0.35));
+    hs.p(c.ribbon([[850, 784], ...PATH], (u) => 64 - u * 50), mix(C.sand, C.halo, 0.35)); // its near end goes under the front ground
     hs.x(c.ribbon(PATH, (u) => 20 - u * 16), '#fff3cf', 'opacity=".55"');
     hs.p(c.cut([[-1400, 742], [3200, 742], [3200, 1800], [-1400, 1800]], 0.8, 18), mix(C.hillNear, C.indigo, 0.64));
     const tree = (x, y, sc) => olive(c, x, y, sc, { leaf: mix(C.olive, C.night, 0.5), leaf2: mix(C.sage, C.night, 0.5), trunk: mix(C.wood2, C.night, 0.45) });

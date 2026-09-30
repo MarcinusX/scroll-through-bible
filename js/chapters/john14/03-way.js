@@ -73,14 +73,16 @@ export default {
     const sparks = [0, 1, 2].map(() => fx.add(`<g>${soulLight(c, 8)}</g>`));
     const tagL = S.layer({ par: 0.5, sh: 4 });
     const plaque = hanging(tagL, iAm(c, tr('JA JESTEM', 'I AM'), { size: 36 }), { x: JX, y: 196, len: 700 });
-    const tagWay = hanging(tagL, nameTag(c, tr('drogą', 'the way'), { size: 20 }), { x: JX - 175, y: 540, len: 700 });
-    const tagTruth = hanging(tagL, nameTag(c, tr('prawdą', 'the truth'), { size: 20 }), { x: LX, y: 380, len: 700 });
-    const tagLife = hanging(tagL, nameTag(c, tr('życiem', 'the life'), { size: 20 }), { x: TX, y: 380, len: 700 });
+    const tagWay = hanging(tagL, nameTag(c, tr('drogą', 'the way'), { size: 20 }), { x: JX - 175, y: 540, len: 1200 });
+    const tagTruth = hanging(tagL, nameTag(c, tr('prawdą', 'the truth'), { size: 20 }), { x: LX, y: 380, len: 1200 });
+    const tagLife = hanging(tagL, nameTag(c, tr('życiem', 'the life'), { size: 20 }), { x: TX, y: 380, len: 1200 });
     // the disciples looking on
     const faceL = S.layer({ par: 0.6, sh: 0, flat: true });
     const faceGlow = [0, 1, 2, 3].map(() => faceL.add(`<g>${glowDisc(110, 'warm-glow', 0.7)}</g>`));
     const front = S.layer({ par: 0.6, sh: 6 });
     const D = [['thomas', 470, false], ['philip', 580, false], ['peter', 1020, true], ['john', 1130, true]].map(([k, x, flip], i) => ({ k, x, flip, seed: c.rr(0, 9), p: S.puppet(front.add(person(c, TW[k]))) }));
+
+    const UP = S.portrait ? 1150 : 700; // phone: the tall screen shows the flies, so the tags lift further
 
     return (t, time) => {
       const T = time;
@@ -90,9 +92,10 @@ export default {
       const way = es(t, 0.2, 0.42), truth = es(t, 0.36, 0.56), life = es(t, 0.5, 0.72);
       fade(roadGlow, way * 0.9 + es(t, 1.1, 1.4) * 0.1);
       dashes.forEach((d, i) => { const k = es(t, 0.2 + i * 0.035, 0.26 + i * 0.035); const s = lerp(1.6, 0.4, d.u); vis(d.el, { x: JX, y: d.y + ((T ? T * 0.3 : 0) % 1) * 0, s: s * k, o: k }); });
-      swing(tagWay, JX - 170, 540 - (1 - way) * 700 - es(t, 1.05, 1.3, ease.in) * 700, way > 0.001 ? T : 0, 1, 0.8, 3);
-      swing(tagTruth, LX, 380 - (1 - truth) * 700 * (1 - es(t, 1.05, 1.3) * 0) - es(t, 1.05, 1.3, ease.in) * 700, truth > 0.001 ? T : 0, 1, 0.8, 1);
-      swing(tagLife, TX, 380 - (1 - life) * 700 - es(t, 1.05, 1.3, ease.in) * 700, life > 0.001 ? T : 0, 1, 0.8, 2);
+      const off = es(t, 1.05, 1.3, ease.in);
+      swing(tagWay, JX - 170, 540 - (1 - way) * UP - off * UP, way > 0.001 ? T : 0, 1, 0.8, 3); fade(tagWay, way > 0.001 && off < 1 ? 1 : 0);
+      swing(tagTruth, LX, 380 - (1 - truth) * UP - off * UP, truth > 0.001 ? T : 0, 1, 0.8, 1); fade(tagTruth, truth > 0.001 && off < 1 ? 1 : 0);
+      swing(tagLife, TX, 380 - (1 - life) * UP - off * UP, life > 0.001 ? T : 0, 1, 0.8, 2); fade(tagLife, life > 0.001 && off < 1 ? 1 : 0);
       pose(lamp, { x: LX - 2, y: FL + 4 - 136 });
       const lf = truth * (1 + (T ? Math.sin(T * 7) * 0.06 : 0));
       pose(lampFl, { x: 35, y: -16, s: lf });

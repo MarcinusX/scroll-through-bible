@@ -28,7 +28,7 @@ export default {
     { v: 26, text: 'A Pocieszyciel, Duch Święty, którego Ojciec pośle w moim imieniu,' },
     { v: 26, cont: true, text: 'On was wszystkiego nauczy i przypomni wam wszystko, co Ja wam powiedziałem.' },
   ],
-  cam: { x: [-40, 40], y: [-80, 100], z: [1, 1.2] },
+  cam: { x: [-40, 40], y: [-80, 100], z: [0.98, 1.2] },
   build(S) {
     const c = S.c;
     const R = nightRoom(S);
@@ -38,10 +38,11 @@ export default {
     // the garland of sayings
     const gL = S.layer({ par: 0.36, sh: 4, pad: 500 });
     gL.add(garlandString(c, 400, 1200, 300, 60));
-    const pts = SAY.map((_, i) => { const x = 470 + i * 132; const u = (x - 400) / 800; return [x, 300 + Math.sin(u * PI) * 60]; });
+    // phone: the six sayings hang closer together, in two rows, so none is cut by the screen edge
+    const pts = SAY.map((_, i) => { const x = S.portrait ? 530 + i * 108 : 470 + i * 132; const u = (x - 400) / 800; return [x, 300 + Math.sin(u * PI) * 60]; });
     const scrolls = SAY.map(([pl, en], i) => {
       const [x, y] = pts[i];
-      const dy = i % 2 ? 56 : 30;
+      const dy = i % 2 ? (S.portrait ? 112 : 56) : 30;
       const rolled = gL.add(`<g><path d="M0 ${-dy}V-27" stroke="${C.rope}" stroke-width="1.4"/>${rolledSaying(c, 54)}</g>`);
       const open = gL.add(`<g><path d="M0 ${-dy}V-26" stroke="${C.rope}" stroke-width="1.4"/>${sayingScroll(c, tr(pl, en), { w: 138, size: 14 })}</g>`);
       return { i, x, y: y + dy, rolled, open };
@@ -102,7 +103,7 @@ export default {
 
       S.cam.x = 0;
       S.cam.y = kf(t, [[0, 20], [1, 0], [1.4, -50], [2, -20], [3, -20]]);
-      S.cam.z = kf(t, [[0, 1.08], [1, 1.04], [2, 1.02], [3, 1.06]]);
+      S.cam.z = kf(t, S.portrait ? [[0, 1.08], [1, 1.04], [2, 0.98], [3, 0.98]] : [[0, 1.08], [1, 1.04], [2, 1.02], [3, 1.06]]);
     };
   },
 };

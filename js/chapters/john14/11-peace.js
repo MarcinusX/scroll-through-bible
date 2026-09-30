@@ -93,8 +93,9 @@ export default {
       const fly = seg(t, 1.1, 1.85);
       const home = es(t, 1.85, 2.0);
       let dx = JX + 40, dy = 520, face = 1;
-      if (fly > 0) { const a = fly * PI * 2; dx = JX + Math.sin(a) * 330; dy = 440 - Math.sin(a * 0.5) * 60 + Math.cos(a) * 30; face = Math.cos(a) > 0 ? 1 : -1; }
-      if (fly >= 1) { dx = lerp(JX, 1080, home); dy = lerp(440, 300, home); face = 1; }
+      // phone: the dove's flight and landing stay inside the narrow screen
+      if (fly > 0) { const a = fly * PI * 2; dx = JX + Math.sin(a) * (S.portrait ? 280 : 330); dy = 440 - Math.sin(a * 0.5) * 60 + Math.cos(a) * 30; face = Math.cos(a) > 0 ? 1 : -1; }
+      if (fly >= 1) { dx = lerp(JX, S.portrait ? 1000 : 1080, home); dy = lerp(440, 300, home); face = 1; }
       const dvo = es(t, 1.05, 1.15);
       vis(dv, { x: dx, y: dy + (T ? Math.sin(T * 2) * 3 : 0), s: 1, sx: face, o: dvo });
       if (dvo > 0.01) flapWings(bird, T || t * 3, 28, 7);

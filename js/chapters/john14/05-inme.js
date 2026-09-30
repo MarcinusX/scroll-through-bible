@@ -102,7 +102,8 @@ export default {
       const come = es(t, 4.1, 4.6, ease.inOut);
       plates.forEach((p) => {
         const k = es(t, 2.1 + p.i * 0.09, 2.3 + p.i * 0.09, ease.back);
-        const [tx, ty] = [[450, 575], [570, 560], [800, 300], [1030, 560], [1150, 575]][p.i];
+        // phone: the outer plates stay inside the narrow screen
+        const [tx, ty] = (S.portrait ? [[545, 590], [640, 480], [800, 300], [960, 480], [1055, 590]] : [[450, 575], [570, 560], [800, 300], [1030, 560], [1150, 575]])[p.i];
         const x = lerp(p.x, tx, come), y = lerp(p.y, ty, come);
         vis(p.el, { x, y, s: k * (0.95 + come * 0.25) * (1 + pulse * 0.05), r: T ? Math.sin(T * 0.8 + p.i) * 3 : 0, o: k > 0.01 ? 1 : 0 });
         const r = es(t, 2.15 + p.i * 0.09, 2.35 + p.i * 0.09) * (1 - come);

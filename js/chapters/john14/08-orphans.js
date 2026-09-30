@@ -66,7 +66,7 @@ export default {
     const mid = ringL.add(`<g>${eternityRing(c, 120, 6, 20, C.halo)}</g>`);
     // people
     const act = S.layer({ par: 0.5, sh: 5 });
-    const D = [['peter', 420], ['john', 490], ['andrew', 560]].map(([k, x], i) => ({ k, x, i, seed: c.rr(0, 9), p: S.puppet(act.add(person(c, TW[k]))) }));
+    const D = (S.portrait ? [['peter', 490], ['john', 552], ['andrew', 614]] : [['peter', 420], ['john', 490], ['andrew', 560]]).map(([k, x], i) => ({ k, x, i, seed: c.rr(0, 9), p: S.puppet(act.add(person(c, TW[k]))) }));
     const childSitEl = act.add(withFace(person(c, { ...CHILD, pose: 'sit' }), faceBits(c)));
     const childSit = S.puppet(childSitEl);
     const childSad = childSitEl.querySelector('[data-part="sad"]');
@@ -119,7 +119,7 @@ export default {
       D.forEach((m) => { const x = m.x - (1 - enter) * 260; m.x_ = x; m.p.set({ x, y: G + 10, s: 0.95, o: enter > 0 ? 1 : 0, walk: enter > 0 && enter < 1 ? t * 28 + m.i : undefined, armF: 16 + look * 30, armB: 8, head: -look * 6, blink: blinkAt(T, m.seed) }); });
       const ringK = es(t, 4.05, 4.5);
       drawRing(big, ringK); drawRing(mid, es(t, 4.2, 4.55));
-      vis(big, { x: 790, y: 520, s: 1, sx: 1.32, o: ringK > 0 ? 1 : 0 });
+      vis(big, { x: S.portrait ? 775 : 790, y: 520, s: 1, sx: S.portrait ? 1 : 1.32, o: ringK > 0 ? 1 : 0 }); // phone: the whole ring in view
       const jhx = jxs + 2, jhy = G + 6 - 130 * 1.08;
       vis(mid, { x: jhx, y: jhy - 14, s: 1, o: ringK > 0 ? 1 : 0 });
       vis(glowJ, { x: jhx, y: jhy - 30, s: 0.6 + see * 0.4 + ringK * 0.3, o: es(t, 1.2, 1.5) * 0.6 + see * 0.4 });
