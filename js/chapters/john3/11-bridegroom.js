@@ -113,7 +113,8 @@ export default {
       const joy = es(t, 1.4, 1.7);
       const lift = es(t, 2.05, 2.3) * (1 - es(t, 2.95, 3.1));
       const back = es(t, 4.05, 4.8, ease.sine);
-      const jx = lerp(560, 470, back), jy = lerp(GY + 6, GY - 36, back), js = lerp(1.0, 0.7, back);
+      // phone: he steps back, but stays in sight
+      const jx = lerp(560, S.portrait ? 525 : 470, back), jy = lerp(GY + 6, GY - 36, back), js = lerp(1.0, 0.7, back);
       const bounce = Math.abs(Math.sin(T * 5)) * 5 * joy * (1 - es(t, 2.9, 3.1));
       john.set({ x: jx, y: jy - bounce, s: js, walk: back > 0 && back < 1 ? jx * 0.08 : undefined, flip: false, armF: 20 + lift * 110 + joy * 10, armB: 20 + listen * 150 + back * 30, head: -listen * 10 - joy * 6 + es(t, 4.6, 4.9) * 14, lean: es(t, 4.6, 4.9) * 10, blink: blinkAt(T, 5) });
       const [hx, hy] = headAt(JX, GY, 1.05 + grow * 0.1, false);
@@ -137,7 +138,7 @@ export default {
 
       /* v30 — He must increase, I must decrease */
       vpose(incT, { x: JX, y: 250, s: es(t, 3.35, 3.6, ease.back), o: seg(t, 3.35, 3.4) });
-      vpose(decT, { x: jx - 20, y: jy - 250 * js, s: es(t, 4.4, 4.6, ease.back) * 0.9, o: seg(t, 4.4, 4.45) });
+      vpose(decT, { x: jx + (S.portrait ? 40 : -20), y: jy - 250 * js, s: es(t, 4.4, 4.6, ease.back) * 0.9, o: seg(t, 4.4, 4.45) });
       const dim = 1 - es(t, 4.3, 4.9) * 0.75;
       vpose(lampFl, { x: 27, y: -12, s: dim });
       fade(lampGl, dim * 0.9);

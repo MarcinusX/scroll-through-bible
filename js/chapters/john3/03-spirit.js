@@ -6,13 +6,13 @@ import { C, person, CAST, blinkAt, pose, lerp, hanging, swing, sheet, shade, mix
 import { seg, es, ease, bump, fade } from '../../core/anim.js';
 import { doll } from '../mark10/lib.js';
 import {
-  roofSet, ROOF, ROOFCAM, flicker, nicodemus, roundel, bud, voiceRings, headAt, hang2, kingdomGate, gateDoor,
+  roofSet, ROOF, ROOFCAM, roofX, flicker, nicodemus, roundel, bud, voiceRings, headAt, hang2, kingdomGate, gateDoor,
   soulLight, spark, bang, word, tr, PI, hangAt,
   vpose,
 } from './lib.js';
 
 const F = ROOF.FLOOR, JX = ROOF.JX, NX = ROOF.NX;
-const BX = 935, BY = 318, BW = 350, BH = 220;   // the hanging board (top-centre at BX, BY)
+const BY = 318, BW = 350, BH = 220;   // the hanging board (top-centre at BX, BY)
 
 export default {
   id: 'j3-spirit',
@@ -23,14 +23,17 @@ export default {
     { v: 6, cont: true, text: 'a to, co się z Ducha narodziło, jest duchem.' },
     { v: 7 },
   ],
-  cam: { x: [-60, 60], y: [100, 180], z: [1, 1.6] },
+  cam: { x: [-100, 60], y: [100, 180], z: [1, 1.6] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;
+    // phone: the board and the two plates hang further in
+    const BX = PH ? 850 : 935, FX = PH ? 650 : 700, SX = PH ? 930 : 1000, MX = PH ? 760 : 820;
     const R = roofSet(S);
 
     /* ---------- buds along the parapet (v7) ---------- */
     const B = S.layer({ par: 0.5, sh: 3 });
-    const buds = [250, 390, 520, 980, 1080, 1180, 1300].map((x, i) => {
+    const buds = (PH ? [250, 390, 530, 720, 950, 1015, 1300] : [250, 390, 520, 980, 1080, 1180, 1300]).map((x, i) => {
       const el = B.add(`<g>${bud(c, { h: 34, col: i % 2 ? C.roseRobe : C.peach, col2: shade(i % 2 ? C.roseRobe : C.peach, -0.1) })}</g>`);
       return { el, x, i, pl: el.querySelector('.petL'), pr: el.querySelector('.petR'), core: el.querySelector('.core') };
     });
@@ -67,11 +70,11 @@ export default {
 
     /* ---------- flesh and spirit ---------- */
     const clay = mix(C.clay, C.pot, 0.5);
-    const fleshP = hanging(X, roundel(c, '', { r: 70, face: mix(C.parchment, C.sand2, 0.4) }), { x: 700, y: 380, len: 700 });
+    const fleshP = hanging(X, roundel(c, '', { r: 70, face: mix(C.parchment, C.sand2, 0.4) }), { x: FX, y: 380, len: 700 });
     const bigDoll = X.add(`<g>${doll(c, clay, { woman: true, h: 70, skin: shade(clay, 0.25) })}</g>`);
     const smallDoll = X.add(`<g>${doll(c, shade(clay, 0.1), { h: 40, skin: shade(clay, 0.3) })}</g>`);
     const fTag = X.add(`<g>${word(c, tr('ciało', 'flesh'), { size: 15 })}</g>`);
-    const spiritP = hanging(X, roundel(c, '', { r: 70, face: mix(C.night, C.indigo, 0.4), rim: C.haloRim }), { x: 1000, y: 380, len: 700 });
+    const spiritP = hanging(X, roundel(c, '', { r: 70, face: mix(C.night, C.indigo, 0.4), rim: C.haloRim }), { x: SX, y: 380, len: 700 });
     const bigLight = X.add(`<g>${soulLight(c, 20)}</g>`);
     const smallLight = X.add(`<g>${soulLight(c, 13)}</g>`);
     const jump = X.add(`<g>${spark(c, 8)}</g>`);
@@ -120,24 +123,24 @@ export default {
       const fk = es(t, 1.95, 2.3, ease.out), sk = es(t, 2.05, 2.4, ease.out), up2 = es(t, 3.85, 4.1, ease.in);
       const fy = lerp(-400, 380, fk) - up2 * 900, sy = lerp(-400, 380, sk) - up2 * 900;
       const fo = fk > 0 && up2 < 1 ? 1 : 0, so = sk > 0 && up2 < 1 ? 1 : 0;
-      hangAt(fleshP, 700, fy, T, fo, 1.2, 0.8, 1);
-      hangAt(spiritP, 1000, sy, T, so, 1.2, 0.8, 2);
-      vpose(bigDoll, { x: 680, y: fy + 42, o: fo });
+      hangAt(fleshP, FX, fy, T, fo, 1.2, 0.8, 1);
+      hangAt(spiritP, SX, sy, T, so, 1.2, 0.8, 2);
+      vpose(bigDoll, { x: FX - 20, y: fy + 42, o: fo });
       const kid = es(t, 2.4, 2.7, ease.back);
-      vpose(smallDoll, { x: 725, y: fy + 42, s: kid, o: fo * seg(t, 2.4, 2.45) });
-      vpose(fTag, { x: 700, y: fy + 92, o: fo });
-      vpose(bigLight, { x: 975, y: sy + 2, s: 1 + Math.sin(T * 5) * 0.05, o: so });
+      vpose(smallDoll, { x: FX + 25, y: fy + 42, s: kid, o: fo * seg(t, 2.4, 2.45) });
+      vpose(fTag, { x: FX, y: fy + 92, o: fo });
+      vpose(bigLight, { x: SX - 25, y: sy + 2, s: 1 + Math.sin(T * 5) * 0.05, o: so });
       const jk = seg(t, 3.25, 3.55);
-      vpose(jump, { x: lerp(975, 1030, jk), y: sy - 10 - Math.sin(jk * PI) * 34, o: so * bump(t, 3.22, 3.58) });
+      vpose(jump, { x: lerp(SX - 25, SX + 30, jk), y: sy - 10 - Math.sin(jk * PI) * 34, o: so * bump(t, 3.22, 3.58) });
       const lk = es(t, 3.5, 3.75, ease.back);
-      vpose(smallLight, { x: 1030, y: sy + 16, s: lk * (1 + Math.sin(T * 6 + 1) * 0.06), o: so * seg(t, 3.5, 3.55) });
-      vpose(dTag, { x: 1000, y: sy + 92, o: so });
+      vpose(smallLight, { x: SX + 30, y: sy + 16, s: lk * (1 + Math.sin(T * 6 + 1) * 0.06), o: so * seg(t, 3.5, 3.55) });
+      vpose(dTag, { x: SX, y: sy + 92, o: so });
 
       /* v7 — don't marvel; you all must be born anew */
       const [nx, ny] = headAt(NX, F + 2, 1.02, false, 62);
       vpose(bangEl, { x: nx + 20, y: ny - 56, s: startle * (1 - calm) * 1.2, r: Math.sin(T * 9) * 6, o: startle * (1 - calm) });
       const mk = es(t, 4.35, 4.6, ease.out);
-      vpose(must, { x: 820, y: lerp(160, 405, mk), r: Math.sin(T * 0.9) * 1.2, o: mk });
+      vpose(must, { x: MX, y: lerp(160, 405, mk), r: Math.sin(T * 0.9) * 1.2, o: mk });
       buds.forEach((b) => {
         const k = es(t, 4.45 + b.i * 0.05, 4.7 + b.i * 0.05, ease.back);
         vpose(b.el, { x: b.x, y: F - 124, s: 0.55 * seg(t, 4.3 + b.i * 0.03, 4.4 + b.i * 0.03), o: seg(t, 4.3, 4.4) });
@@ -145,7 +148,7 @@ export default {
         vpose(b.core, { y: -k * 8, o: k });
       });
 
-      S.cam.x = 30 * es(t, 0.3, 0.8) * (1 - es(t, 1.9, 2.3));
+      S.cam.x = roofX(S) + 30 * es(t, 0.3, 0.8) * (1 - es(t, 1.9, 2.3)) * (PH ? 0.4 : 1);
       S.cam.y = ROOFCAM.y;
       S.cam.z = ROOFCAM.z;
     };

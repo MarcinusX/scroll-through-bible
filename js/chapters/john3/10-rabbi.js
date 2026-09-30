@@ -27,9 +27,11 @@ export default {
     { v: 28, text: 'Wy sami jesteście mi świadkami, że powiedziałem: Ja nie jestem Mesjaszem,' },
     { v: 28, cont: true, text: 'ale zostałem przed Nim posłany.' },
   ],
-  cam: { x: [-60, 140], y: [-20, 80], z: [1, 1.25] },
+  cam: { x: [-60, 200], y: [-20, 80], z: [1, 1.25] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;
+    const DSX = PH ? [545, 615, 475] : [500, 570, 420];   // phone: the disciples closer to John
     sky(S, DAY);
     const hangL = S.layer({ par: 0.04, sh: 4 });
     const sunEl = hanging(hangL, sun(c, 46), { x: 1230, y: 150, len: 700 });
@@ -101,11 +103,11 @@ export default {
 
       /* v26 — the disciples come */
       DS.forEach((d) => {
-        const k = [[-0.2, [-120 - d.i * 90, GY]], [0.75 + d.i * 0.05, [[500, 570, 420][d.i], GY + (d.i % 2) * 10]]];
+        const k = [[-0.2, [-120 - d.i * 90, GY]], [0.75 + d.i * 0.05, [DSX[d.i], GY + (d.i % 2) * 10]]];
         const [x, y] = kf(t, k, ease.sine);
         d.p.set({ x, y, s: 0.95, walk: moving(t, k, 1) ? x * 0.05 : undefined, armF: 20 + bump(t, 0.8, 1.9) * 40 * (d.i === 0 ? 1 : 0.4) + bump(t, 2.1, 2.9) * (d.i === 1 ? 110 : 40) + bump(t, 1.2, 1.8) * 20, armB: 10 + bump(t, 2.2, 2.8) * 60 * (d.i === 0 ? 1 : 0), head: -bump(t, 2.2, 2.9) * 6 + bump(t, 3.9, 5) * -8, blink: blinkAt(T, d.seed) });
       });
-      vpose(b1, { x: 580, y: GY - 200, s: es(t, 0.6, 0.8, ease.back) * 0.9, o: seg(t, 0.6, 0.65) * (1 - es(t, 1.3, 1.45)) });
+      vpose(b1, { x: DSX[0] + 80, y: GY - 200, s: es(t, 0.6, 0.8, ease.back) * 0.9, o: seg(t, 0.6, 0.65) * (1 - es(t, 1.3, 1.45)) });
 
       /* the memory-plate */
       const mk = es(t, 1.05, 1.4, ease.out), mu = es(t, 1.95, 2.15, ease.in);
@@ -136,14 +138,16 @@ export default {
       const cd = es(t, 5.05, 5.35, ease.out), cf = es(t, 5.8, 6.25);
       const ccx = lerp(jhx, HX, cf), ccy = lerp(lerp(-200, jhy - 90, cd), 400, cf) - Math.sin(cf * PI) * 120;
       hangAt(crownEl, ccx, ccy, T, cd > 0 ? 1 - es(t, 6.2, 6.3) : 0, 2, 1.2, 1);
-      vpose(messT, { x: jhx - 180, y: jhy - 70, s: es(t, 5.4, 5.6, ease.back), r: -3, o: seg(t, 5.4, 5.45) * (1 - es(t, 6.0, 6.1)) });
+      vpose(messT, { x: jhx - (PH ? 95 : 180), y: jhy - 70, s: es(t, 5.4, 5.6, ease.back), r: -3, o: seg(t, 5.4, 5.45) * (1 - es(t, 6.0, 6.1)) });
 
       /* v28b — sent before Him */
       vpose(sentT, { x: 930, y: 360, s: es(t, 6.35, 6.55, ease.back), r: 3, o: seg(t, 6.35, 6.4) });
 
-      S.cam.x = es(t, 1.9, 2.4) * 110 * (1 - es(t, 3.0, 3.4)) + es(t, 5.5, 6.2) * 90 - (S.portrait ? 60 * (1 - es(t, 1.9, 2.4)) : 0);
+      // phone: look further right (and from a little further away) whenever the One on the hill matters
+      const hillK = Math.max(es(t, 1.9, 2.4) * (1 - es(t, 3.0, 3.4)), es(t, 5.9, 6.4));
+      S.cam.x = PH ? lerp(-60, 190, hillK) : es(t, 1.9, 2.4) * 110 * (1 - es(t, 3.0, 3.4)) + es(t, 5.5, 6.2) * 90;
       S.cam.y = 20;
-      S.cam.z = 1.08 + es(t, 3.9, 4.3) * 0.06 * (1 - es(t, 5.0, 5.3));
+      S.cam.z = 1.08 + es(t, 3.9, 4.3) * 0.06 * (1 - es(t, 5.0, 5.3)) - (PH ? hillK * 0.08 : 0);
     };
   },
 };

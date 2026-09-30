@@ -27,9 +27,10 @@ export default {
     { v: 21, text: 'Kto spełnia wymagania prawdy, zbliża się do światła,' },
     { v: 21, cont: true, text: 'aby się okazało, że jego uczynki są dokonane w Bogu».' },
   ],
-  cam: { x: [-60, 60], y: [0, 120], z: [1, 1.3] },
+  cam: { x: [-60, 100], y: [0, 120], z: [1, 1.3] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;
     const NIGHT = ['#191c3e', '#2b3160', '#474a78'];
     sky(S, NIGHT);
     const H = S.layer({ par: 0.03, sh: 3 });
@@ -75,7 +76,8 @@ export default {
     const nameT = P.add(`<g>${word(c, tr('Syn Boży', 'the Son of God'), { size: 17 })}</g>`);
     // v19: those who shrink back into the dark, with their deeds
     const DEEDS = [purse(c, { col: shade(C.leather, -0.2) }), `<g transform="rotate(20)">${club(c)}</g>`, `<g transform="translate(0 10)">${scrap(c, 14)}</g>`, `<g transform="translate(0 10)">${scrap(c, 16)}</g>`];
-    const SH = [[600, 360], [660, 440], [960, 1180], [1020, 1250]].map(([x0, x1], i) => {
+    // phone: they step back, but stay in sight
+    const SH = (PH ? [[600, 530], [660, 595], [960, 1030], [1020, 1095]] : [[600, 360], [660, 440], [960, 1180], [1020, 1250]]).map(([x0, x1], i) => {
       const o = mk({}, i % 2 ? { hairStyle: 'short', beard: 'short' } : {});
       return { x0, x1, i, seed: c.rr(0, 9), p: S.puppet(P.add(person(c, { ...o, holdF: `<g class="deed" opacity="0"><g transform="scale(1.35)">${DEEDS[i]}</g></g>` }))) };
     });
@@ -129,7 +131,7 @@ export default {
 
       /* v18b — B turns his back and goes, under his own small cloud */
       const bw = es(t, 1.15, 1.8);
-      const bx = lerp(960, 1230, bw);
+      const bx = lerp(960, PH ? 1075 : 1230, bw);
       Bp.set({ x: bx, y: GY + 6, s: 0.98, flip: !(bw > 0), walk: bw > 0 && bw < 1 ? bx * 0.05 : undefined, armF: 10, head: bw > 0 ? 8 : 0, o: 1 - es(t, 2.5, 2.8), blink: blinkAt(T, 3) });
       const [bhx, bhy] = headAt(bx, GY + 6, 0.98, false);
       vpose(bCloud, { x: bhx, y: bhy - 48 + Math.sin(T * 1.5) * 3, s: es(t, 1.3, 1.6, ease.back), o: seg(t, 1.3, 1.35) * (1 - es(t, 2.5, 2.8)) });
@@ -141,7 +143,7 @@ export default {
         const x = lerp(s.x0, s.x1, back);
         const right = s.x0 > JX;
         const show = es(t, 4.05 + s.i * 0.06, 4.25 + s.i * 0.06);
-        s.p.set({ x, y: GY + 10 + (s.i % 2) * 14, s: 0.95, flip: back > 0 && back < 1 ? !right : right, walk: back > 0 && back < 1 ? x * 0.05 : undefined, armF: 20 + show * 50, armB: 20 + bump(t, 3.1, 3.6) * 60, head: back * 12 - show * 4, lean: back * 6, o: seg(t, 2.6, 2.8) * (1 - es(t, 6.9, 7.2)), blink: blinkAt(T, s.seed) });
+        s.p.set({ x, y: GY + 10 + (s.i % 2) * 14, s: 0.95, flip: back > 0 && back < 1 ? !right : right, walk: back > 0 && back < 1 ? x * 0.05 : undefined, armF: 20 + show * 50, armB: 20 + bump(t, 3.1, 3.6) * 60, head: back * 12 - show * 4, lean: back * 6, o: seg(t, 2.6, 2.8) * (1 - (PH ? es(t, 4.9, 5.05) : es(t, 6.9, 7.2))), blink: blinkAt(T, s.seed) });   // phone: they make room for the one who hides
         fade(s.deed, show);
       });
       scraps.forEach((sp) => {
@@ -150,14 +152,14 @@ export default {
         vpose(sp.el, { x: s.x1 + Math.sin(k * PI * 2 + sp.i) * 20, y: GY - 150 - k * 140, r: k * 200, s: 0.8 + k * 0.4, o: Math.sin(k * PI) * (1 - es(t, 6.8, 7)) });
       });
 
-      vpose(evilT, { x: 470, y: GY - 290, s: es(t, 4.1, 4.3, ease.back), r: 3, o: seg(t, 4.1, 4.15) * (1 - es(t, 4.95, 5.1)) });
+      vpose(evilT, { x: PH ? 570 : 470, y: GY - 290, s: es(t, 4.1, 4.3, ease.back), r: 3, o: seg(t, 4.1, 4.15) * (1 - es(t, 4.95, 5.1)) });
 
       /* v20 — the evildoer hates the light: shields his eyes, hides his sack, slips inside and shuts the door */
       const gIn = es(t, 5.0, 5.3), shield = es(t, 5.3, 5.5) * (1 - es(t, 6.2, 6.4));
       const gGo = es(t, 6.2, 6.7);
       const gx = lerp(980, 1100, gIn) + gGo * 30;
       G.p.set({ x: gx, y: GY - 18, s: 0.92, flip: !(gGo > 0), walk: (gIn > 0 && gIn < 1) || (gGo > 0 && gGo < 1) ? gx * 0.05 : undefined, armF: 30 + shield * 110, armB: 20 + es(t, 6.0, 6.2) * 20, head: shield * 16, lean: -shield * 6, o: seg(t, 4.95, 5.0) * (1 - es(t, 6.6, 6.8)), blink: blinkAt(T, 7) });
-      vpose(hateEl, { x: 1060, y: GY - 300, s: es(t, 5.3, 5.5, ease.back), r: -4, o: seg(t, 5.3, 5.35) * (1 - es(t, 6.8, 7)) });
+      vpose(hateEl, { x: PH ? 1040 : 1060, y: GY - 300, s: es(t, 5.3, 5.5, ease.back), r: -4, o: seg(t, 5.3, 5.35) * (1 - es(t, 6.8, 7)) });
       const shut = es(t, 6.65, 6.9);
       vpose(door, { x: hx + 40, y: GY - 20, sx: 0.08 + shut * 0.92 });
 
@@ -177,7 +179,7 @@ export default {
         vpose(sp.el, { x: wx + Math.cos(a) * 34, y: wy + Math.sin(a) * 22, s: es(t, 8.2, 8.4) * (0.7 + Math.sin(T * 4 + sp.i) * 0.3), o: seg(t, 8.2, 8.25) });
       });
 
-      S.cam.x = -es(t, 0, 0.5) * 40 * (1 - es(t, 1.1, 1.5)) + es(t, 1.1, 1.5) * 40 * (1 - es(t, 2, 2.4)) + es(t, 5, 5.4) * 50 * (1 - es(t, 6.8, 7.1));
+      S.cam.x = -es(t, 0, 0.5) * 40 * (1 - es(t, 1.1, 1.5)) + es(t, 1.1, 1.5) * 40 * (1 - es(t, 2, 2.4)) + es(t, 5, 5.4) * (PH ? 90 : 50) * (1 - es(t, 6.8, 7.1));
       S.cam.y = 60;
       S.cam.z = 1.14 - es(t, 2.0, 2.5) * 0.08 + es(t, 7.9, 8.5) * 0.06;
     };

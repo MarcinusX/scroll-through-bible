@@ -7,7 +7,7 @@
 import { C, person, CAST, blinkAt, pose, lerp, sheet, shade, mix } from '../kit.js';
 import { seg, es, ease, bump, fade } from '../../core/anim.js';
 import {
-  roofSet, ROOF, ROOFCAM, flicker, nicodemus, headAt, hand, voiceRings, streamer, blowStreamer, leaf, windStroke,
+  roofSet, ROOF, ROOFCAM, roofX, flicker, nicodemus, headAt, hand, voiceRings, streamer, blowStreamer, leaf, windStroke,
   lightSeed, word, question, tr, PI,
   vpose,
 } from './lib.js';
@@ -25,9 +25,10 @@ export default {
     { v: 8, cont: true, text: 'lecz nie wiesz, skąd przychodzi i dokąd podąża.' },
     { v: 8, cont: true, text: 'Tak jest z każdym, który narodził się z Ducha».' },
   ],
-  cam: { x: [-60, 60], y: [60, 180], z: [1, 1.6] },
+  cam: { x: [-90, 60], y: [60, 180], z: [1, 1.6] },
   build(S) {
     const c = S.c;
+    const WX = S.portrait ? 985 : 1080, QX = S.portrait ? 550 : 520;   // "where to?", "where from?" (phone: inside the screen)
     const R = roofSet(S);
 
     /* ---------- the cord with streamers, a pole, chimes on the awning ---------- */
@@ -116,10 +117,10 @@ export default {
 
       /* where from? where to? */
       const wk = es(t, 2.08, 2.3, ease.back), wk2 = es(t, 2.45, 2.65, ease.back), gone = es(t, 3.0, 3.2);
-      vpose(whence, { x: 520, y: 330 + Math.sin(T * 1.3) * 5, s: wk, r: -5, o: seg(t, 2.08, 2.12) * (1 - gone) });
-      vpose(qL, { x: 470, y: 270, s: wk * 0.9, r: Math.sin(T * 2) * 8, o: seg(t, 2.08, 2.12) * (1 - gone) });
-      vpose(whither, { x: 1080, y: 330 + Math.sin(T * 1.3 + 1) * 5, s: wk2, r: 5, o: seg(t, 2.45, 2.5) * (1 - gone) });
-      vpose(qR, { x: 1130, y: 270, s: wk2 * 0.9, r: Math.sin(T * 2 + 1) * 8, o: seg(t, 2.45, 2.5) * (1 - gone) });
+      vpose(whence, { x: QX, y: 330 + Math.sin(T * 1.3) * 5, s: wk, r: -5, o: seg(t, 2.08, 2.12) * (1 - gone) });
+      vpose(qL, { x: QX - 50, y: 270, s: wk * 0.9, r: Math.sin(T * 2) * 8, o: seg(t, 2.08, 2.12) * (1 - gone) });
+      vpose(whither, { x: WX, y: 330 + Math.sin(T * 1.3 + 1) * 5, s: wk2, r: 5, o: seg(t, 2.45, 2.5) * (1 - gone) });
+      vpose(qR, { x: WX + 50, y: 270, s: wk2 * 0.9, r: Math.sin(T * 2 + 1) * 8, o: seg(t, 2.45, 2.5) * (1 - gone) });
 
       /* everyone born of the Spirit: little lights on the wind */
       seeds.forEach((sd) => {
@@ -131,7 +132,7 @@ export default {
         vpose(sd.el, { x, y, r: Math.sin(T * 2 + sd.ph) * 14, s: 0.7 + e * 0.35, o: so });
       });
 
-      S.cam.x = 0;
+      S.cam.x = roofX(S);
       S.cam.y = ROOFCAM.y - es(t, 0, 0.6) * 60 + es(t, 3.0, 3.6) * 0 ;
       S.cam.z = ROOFCAM.z - es(t, 0, 0.6) * 0.2;
     };

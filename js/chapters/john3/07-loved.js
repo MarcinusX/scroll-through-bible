@@ -35,6 +35,7 @@ export default {
   cam: { x: [-40, 40], y: [-80, 40], z: [0.95, 1.25] },
   build(S) {
     const c = S.c;
+    const SONX = S.portrait ? 990 : 1060, CLX = S.portrait ? 985 : 1060;   // phone: the tag and the cloud inside the screen
     const NIGHT = ['#141735', '#232a57', '#3a3f72'];
     const DAWN = ['#6f79b0', '#e8b79c', '#f6dcbc'];
     const sk = sky(S, NIGHT);
@@ -101,7 +102,7 @@ export default {
     const cloudEl = hanging(P, `<g>${stormCloud(c, 300)}<g class="bolt" transform="translate(-10 20) scale(.5)">${lightning(c, 300)}</g></g>`, { x: 1300, y: 230, len: 800 });
     const bolt = cloudEl.querySelector('.bolt');
     const T1 = S.layer({ par: 0.3, sh: 5 });
-    const tagSon = hanging(T1, word(c, tr('Syn Jednorodzony', 'the one and only Son'), { size: 18 }), { x: 1060, y: 270, len: 700 });
+    const tagSon = hanging(T1, word(c, tr('Syn Jednorodzony', 'the one and only Son'), { size: 18 }), { x: SONX, y: 270, len: 700 });
     const tagLove = hanging(T1, word(c, tr('umiłował', 'so loved'), { size: 20 }), { x: 560, y: 250, len: 700 });
 
     return (t, time) => {
@@ -121,7 +122,7 @@ export default {
       vpose(hR, { x: GX, y: GY - 34, s: hb, o: seg(t, 0.2, 0.25) });
       vpose(heartGlow, { x: GX, y: GY, s: 0.6 + draw * 0.4, o: draw * 0.55 });
       const lk = es(t, 0.45, 0.75, ease.out);
-      hangAt(tagLove, 520, lerp(-300, 230, lk) - es(t, 1.9, 2.1) * 700, T, lk > 0 && t < 2.1 ? 1 : 0, 1.2, 0.8, 1);
+      hangAt(tagLove, S.portrait ? 545 : 520, lerp(-300, 230, lk) - es(t, 1.9, 2.1) * 700, T, lk > 0 && t < 2.1 ? 1 : 0, 1.2, 0.8, 1);
 
       vpose(landEl, { x: GX - 250 - ((t * 60) % 700), y: GY });
 
@@ -133,7 +134,7 @@ export default {
       const stop = es(t, 3.4, 3.55) * (1 - es(t, 3.95, 4.1));
       jesus.set({ x: GX, y: lerp(60, GY - GR + 4, come), s: 0.8, o: seg(t, 1.05, 1.15), armF: 20 + come * 10 + bump(t, 2.05, 2.8) * 50 + stop * 70 + open * 70, armB: 10 + bump(t, 2.05, 2.8) * 60 + stop * 20 + open * 110, head: -come * 2 + bump(t, 2.1, 2.8) * 8, blink: blinkAt(T, 2) });
       const sk2 = es(t, 1.5, 1.8, ease.out);
-      hangAt(tagSon, 1060, lerp(-300, 260, sk2) - es(t, 2.9, 3.1) * 700, T, sk2 > 0 && t < 3.1 ? 1 : 0, 1.2, 0.8, 2);
+      hangAt(tagSon, SONX, lerp(-300, 260, sk2) - es(t, 2.9, 3.1) * 700, T, sk2 > 0 && t < 3.1 ? 1 : 0, 1.2, 0.8, 2);
 
       /* v16c — whoever believes: hearts light up over the world, then rise as a ring of stars */
       hearts.forEach((h) => {
@@ -149,7 +150,7 @@ export default {
 
       /* v17a — not to condemn: the storm cloud comes, and is sent back without striking */
       const cin = es(t, 3.05, 3.45), cout = es(t, 3.6, 4.0, ease.in);
-      const cx = lerp(1350, 1060, cin) + cout * 500;
+      const cx = lerp(1350, CLX, cin) + cout * 500;
       hangAt(cloudEl, cx, 220 - cout * 60, T, cin > 0 && cout < 1 ? 1 - cout * 0.5 : 0, 1.5, 1.2, 3);
       fade(bolt, bump(t, 3.3, 3.6) * 0.5);
 

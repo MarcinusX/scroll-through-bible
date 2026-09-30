@@ -5,15 +5,13 @@
 import { C, person, CAST, blinkAt, pose, lerp, hanging, swing, sheet, shade, mix } from '../kit.js';
 import { seg, es, ease, bump, fade } from '../../core/anim.js';
 import {
-  roofSet, ROOF, ROOFCAM, flicker, nicodemus, roundel, bud, beamGrad, lightBeam, lightCrown, question, voiceRings, headAt,
+  roofSet, ROOF, ROOFCAM, roofX, flicker, nicodemus, roundel, bud, beamGrad, lightBeam, lightCrown, question, voiceRings, headAt,
   cradle, cane, OLDMAN, word, tr, PI,
   hangAt,
   vpose,
 } from './lib.js';
 
 const F = ROOF.FLOOR, JX = ROOF.JX, NX = ROOF.NX;
-const PX = 1000, PY = 405;        // the plate of "born from above"
-const TX = 545, TY = 398;         // Nicodemus' thought cloud
 
 export default {
   id: 'j3-born',
@@ -24,9 +22,12 @@ export default {
     { v: 4, cont: true, text: '«Jakżeż może się człowiek narodzić będąc starcem?' },
     { v: 4, cont: true, text: 'Czyż może powtórnie wejść do łona swej matki i narodzić się?»' },
   ],
-  cam: { x: [-60, 60], y: [100, 180], z: [1, 1.6] },
+  cam: { x: [-110, 60], y: [100, 180], z: [1, 1.6] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;
+    const PX = PH ? 925 : 1000, PY = 405;        // the plate of "born from above" (phone: further in)
+    const TX = PH ? 700 : 545, TY = 398;         // Nicodemus' thought cloud
     const R = roofSet(S);
     const P = S.layer({ par: 0.5, sh: 5 });
     const jesus = S.puppet(P.add(person(c, { ...CAST.jesus, pose: 'sit' })));
@@ -72,7 +73,7 @@ export default {
 
       /* the plate of the new birth */
       const pk = es(t, 0.9, 1.25, ease.out);
-      const pUp = es(t, 2.9, 3.2, ease.in);
+      const pUp = PH ? es(t, 2.76, 2.96, ease.in) : es(t, 2.9, 3.2, ease.in);   // phone: gone before the thought cloud opens beside it
       const py = lerp(-400, PY, pk) - pUp * 800;
       const sw = Math.sin(T * 0.8) * 1.2;
       hangAt(plateEl, PX, py, T, pk > 0 && pUp < 1 ? 1 : 0, 1.2, 0.8);
@@ -86,7 +87,7 @@ export default {
       const ck = es(t, 1.65, 1.95, ease.back);
       vpose(crownEl, { x: PX, y: py - 58, s: ck * 0.9, r: sw, o: on * ck });
       vpose(kTag, { x: PX, y: py + 122, s: es(t, 1.7, 1.9, ease.back), o: on * es(t, 1.7, 1.8) });
-      vpose(upTag, { x: PX + 120, y: py - 80, r: 8, s: es(t, 1.3, 1.5, ease.back), o: on * es(t, 1.3, 1.4) });
+      vpose(upTag, { x: PH ? PX - 125 : PX + 120, y: py - 80, r: PH ? -8 : 8, s: es(t, 1.3, 1.5, ease.back), o: on * es(t, 1.3, 1.4) });
 
       /* Nicodemus: "How?" */
       const puzzle = es(t, 2.05, 2.3);
@@ -96,7 +97,7 @@ export default {
 
       /* the thought: an old man and a cradle */
       const ck2 = es(t, 2.85, 3.15, ease.back);
-      vpose(cloudEl, { x: TX, y: TY, s: ck2, o: seg(t, 2.85, 2.95) });
+      vpose(cloudEl, { x: TX, y: TY, sx: PH ? -ck2 : ck2, sy: ck2, o: seg(t, 2.85, 2.95) });   // phone: mirrored, its bubbles rise from Nicodemus
       const qo = seg(t, 2.95, 3.1);
       const rock = Math.sin(T * 3) * 6 * es(t, 4.35, 4.5);
       vpose(cradleEl, { x: TX + 60, y: TY + 68, s: 0.8 * ck2, r: rock, o: qo });
@@ -111,7 +112,8 @@ export default {
         vpose(q, { x: TX + 20 + Math.cos(ang) * 110, y: TY - 30 + Math.sin(ang) * 40 - (i === 1 ? 30 : 0), s: k * (0.7 + i * 0.1), r: Math.sin(T * 2 + i) * 10, o: qo * seg(t, 3.6 + i * 0.4, 3.7 + i * 0.4) });
       });
 
-      S.cam.x = -es(t, 2.6, 3.2) * 50 + es(t, 0.8, 1.3) * 50 * (1 - es(t, 2.6, 3.2));
+      const pan = -es(t, 2.6, 3.2) * 50 + es(t, 0.8, 1.3) * 50 * (1 - es(t, 2.6, 3.2));
+      S.cam.x = PH ? roofX(S) + pan * 0.4 : pan;
       S.cam.y = ROOFCAM.y;
       S.cam.z = ROOFCAM.z;
     };

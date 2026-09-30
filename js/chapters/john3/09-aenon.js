@@ -27,9 +27,13 @@ export default {
     { v: 24 },
     { v: 25 },
   ],
-  cam: { x: [-80, 80], y: [-20, 80], z: [1, 1.25] },
+  cam: { x: [-210, 80], y: [-20, 80], z: [1, 1.25] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;
+    const SALX = PH ? 1060 : 1250;                       // phone: Salim in sight
+    const DX = PH ? [575, 510, 450, 985, 1050] : [480, 405, 330, 1010, 1085];   // where the disciples stop
+    const QX = PH ? 90 : 0;                              // phone: the dispute closer to John
     const sk = sky(S, DAY);
     const hangL = S.layer({ par: 0.04, sh: 4 });
     const sunEl = hanging(hangL, sun(c, 48), { x: 1200, y: 160, len: 700 });
@@ -67,8 +71,8 @@ export default {
     lay(B, { par: 0.08, sh: 2 }).add(band(c, { y: 430, amps: [24, 10, 3], lens: [1000, 340, 130], color: mix(C.hillFar, C.duskViolet, 0.25) }).markup);
     const bH = lay(B, { par: 0.2, sh: 3 });
     const bh = hillsWith(c, { y: 500, amps: [22, 8, 3], lens: [900, 300, 110], color: C.hillMid, trees: 20, treeColor: C.sage, treeH: 24 });
-    bH.add(bh.markup + town(c, { x: 1250, y: bh.fn(1250) + 8, n: 7, spread: 220, sc: 0.5 }));
-    const salim = hanging(bH, `<g transform="translate(0 30)">${nameTag(c, 'Salim', { size: 16 })}</g>`, { x: 1250, y: 330, len: 600 });
+    bH.add(bh.markup + town(c, { x: SALX, y: bh.fn(SALX) + 8, n: 7, spread: 220, sc: 0.5 }));
+    const salim = hanging(bH, `<g transform="translate(0 30)">${nameTag(c, 'Salim', { size: 16 })}</g>`, { x: SALX, y: 330, len: 600 });
     const bG = lay(B, { par: 0.5, sh: 3 });
     bG.add(sheet().p(c.ridge(c.wave(600, [5, 2], [600, 160]), -900, 2500, 1700, 12, 1), mix(C.sage3, C.sand, 0.3)).out());
     bG.add(grass(c, { x0: -900, x1: 2500, y: 600, n: 50, h: 14, color: C.moss }) + palm(c, 230, 606, 210) + palm(c, 1400, 610, 190));
@@ -121,7 +125,7 @@ export default {
       jesus.set({ x: jx, y: jy, s: 1, walk: moving(t, JK, 1) ? jx * 0.05 : undefined, armF: 20 + pour * 80 + es(t, 1.05, 1.2) * 20, armB: 10 + pour * 20, head: pour * 8, blink: blinkAt(T, 2) });
       fade(S.$('shA'), es(t, 1.0, 1.1));
       disc.forEach((d) => {
-        const k = [[-0.2, [-260 - d.i * 70, 600]], [0.85 + d.i * 0.03, [[480, 405, 330, 1010, 1085][d.i], 628 + (d.i % 2) * 8]]];
+        const k = [[-0.2, [-260 - d.i * 70, 600]], [0.85 + d.i * 0.03, [DX[d.i], 628 + (d.i % 2) * 8]]];
         const [x, y] = kf(t, k, ease.sine);
         d.p.set({ x, y, s: 0.9, flip: d.i > 2 && t > 0.9, walk: moving(t, k, 1) ? x * 0.05 : undefined, armF: 10 + bump(t, 1.3, 1.9) * 30 * (d.i % 2), blink: blinkAt(T, d.i + 3) });
       });
@@ -138,7 +142,7 @@ export default {
       springs.forEach((sp) => vpose(sp.jet, { x: 0, y: -45, sy: (0.4 + es(t, 2.2 + sp.i * 0.05, 2.5 + sp.i * 0.05) * 0.6) * (1 + Math.sin(T * 7 + sp.i) * 0.07), o: es(t, 2.2 + sp.i * 0.05, 2.3 + sp.i * 0.05) }));
       const ak = es(t, 2.3, 2.6, ease.out), sk2 = es(t, 2.45, 2.75, ease.out);
       hangAt(aenon, 560, lerp(-300, 300, ak), T, ak > 0 && t < 4 ? 1 - es(t, 3.8, 4) : 0, 1.2, 0.8, 2);
-      hangAt(salim, 1250, lerp(-300, 330, sk2), T, sk2 > 0 ? 1 : 0, 1.2, 0.8, 3);
+      hangAt(salim, SALX, lerp(-300, 330, sk2), T, sk2 > 0 ? 1 : 0, 1.2, 0.8, 3);
       vpose(much, { x: 600, y: 540, s: es(t, 2.6, 2.8, ease.back), r: -3, o: seg(t, 2.6, 2.65) * (1 - es(t, 3.3, 3.5)) });
       // John pours water; a line of people come and kneel one after another
       const bap = (k) => bump(t, 3.1 + k * 0.28, 3.34 + k * 0.28);
@@ -165,14 +169,14 @@ export default {
       vpose(notYet, { x: 1010, y: 300, r: 4, s: es(t, 4.45, 4.6, ease.back), o: seg(t, 4.45, 4.5) * (1 - es(t, 4.95, 5.05)) });
 
       /* v25 — the dispute about purification */
-      vpose(jars, { x: 450, y: 640, s: 0.9, o: dispute });
-      jd.forEach((d) => d.p.set({ x: 540 + d.i * 70, y: 646 - d.i * 6, s: 0.9, flip: true, o: dispute, armF: 40 + bump(t, 5.2 + d.i * 0.2, 5.6 + d.i * 0.2) * 70 + Math.sin(T * 5 + d.i) * 8 * dispute, armB: 20 + d.i * 40, head: -4, blink: blinkAt(T, d.i + 9) }));
-      jew.set({ x: 360, y: 648, s: 0.9, flip: false, o: dispute, armF: 40 + bump(t, 5.45, 5.9) * 70, armB: 30 + bump(t, 5.3, 5.7) * 60, head: -4, blink: blinkAt(T, 11) });
-      vpose(argL, { x: 560, y: 470, s: es(t, 5.2, 5.35, ease.back) * 0.9, o: seg(t, 5.2, 5.25) });
-      vpose(argR, { x: 380, y: 470, s: es(t, 5.45, 5.6, ease.back), o: seg(t, 5.45, 5.5) });
-      vpose(bangEl, { x: 470, y: 400, s: es(t, 5.6, 5.75, ease.back), r: Math.sin(T * 8) * 8, o: seg(t, 5.6, 5.65) });
+      vpose(jars, { x: 450 + QX, y: 640, s: 0.9, o: dispute });
+      jd.forEach((d) => d.p.set({ x: 540 + QX + d.i * 70, y: 646 - d.i * 6, s: 0.9, flip: true, o: dispute, armF: 40 + bump(t, 5.2 + d.i * 0.2, 5.6 + d.i * 0.2) * 70 + Math.sin(T * 5 + d.i) * 8 * dispute, armB: 20 + d.i * 40, head: -4, blink: blinkAt(T, d.i + 9) }));
+      jew.set({ x: 360 + QX, y: 648, s: 0.9, flip: false, o: dispute, armF: 40 + bump(t, 5.45, 5.9) * 70, armB: 30 + bump(t, 5.3, 5.7) * 60, head: -4, blink: blinkAt(T, 11) });
+      vpose(argL, { x: 560 + QX, y: 470, s: es(t, 5.2, 5.35, ease.back) * 0.9, o: seg(t, 5.2, 5.25) });
+      vpose(argR, { x: 380 + QX, y: 470, s: es(t, 5.45, 5.6, ease.back), o: seg(t, 5.45, 5.5) });
+      vpose(bangEl, { x: 470 + QX, y: 400, s: es(t, 5.6, 5.75, ease.back), r: Math.sin(T * 8) * 8, o: seg(t, 5.6, 5.65) });
 
-      S.cam.x = -es(t, 4.95, 5.3) * 140;
+      S.cam.x = PH ? -60 * (1 - es(t, 1.9, 2.3)) - es(t, 4.95, 5.3) * 200 : -es(t, 4.95, 5.3) * 140;
       S.cam.y = 20 + es(t, 4.0, 4.3) * -20 * (1 - es(t, 4.9, 5.1));
       S.cam.z = 1.05 + es(t, 4.95, 5.3) * 0.1;
     };

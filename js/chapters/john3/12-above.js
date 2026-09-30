@@ -36,6 +36,7 @@ export default {
   cam: { x: [-60, 60], y: [-200, 80], z: [0.95, 1.3] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;
     const HEAV = ['#f3dcae', '#f6e6c6', '#eef0dc'];
     const sk = sky(S, DAY);
     /* ---------- heaven: golden clouds and the light above (never a figure) ---------- */
@@ -58,10 +59,11 @@ export default {
     const jesus = S.puppet(P.add(person(c, { ...CAST.jesus })));
     const eartherO = { robe: C.clay, mantle: C.wood3, hairStyle: 'short', hair: C.hair3, beard: 'full', skin: C.skin3, belt: C.rope };
     const earther = S.puppet(P.add(person(c, eartherO)));
-    const PEOPLE = [[460, false], [560, false], [1030, true], [1130, true], [1290, true], [360, false]].map(([x, flip], i) => {
+    const PEOPLE = [[460, false], [560, false], [PH ? 1005 : 1030, true], [PH ? 1095 : 1130, true], [1290, true], [360, false]].map(([x, flip], i) => {
       const o = crowdPerson(c);
       return { x, flip, i, seed: c.rr(0, 9), p: S.puppet(P.add(person(c, o))) };
     });
+    const RW = PH ? 15 : 25;   // how far the one who refuses walks off (phone: he stays in sight)
     const believer = PEOPLE[1], sealer = PEOPLE[2], refuser = PEOPLE[3];
     const voice = voiceRings(P, c, { n: 3, color: C.halo, r: 30, w: 5 });
 
@@ -125,7 +127,7 @@ export default {
         }
         if (m === refuser) {
           const k = es(t, 10.05, 10.5);
-          flip = !(k > 0.02); x = lerp(m.x, m.x + 25, k); if (k > 0 && k < 1) walk = x * 0.05;
+          flip = !(k > 0.02); x = lerp(m.x, m.x + RW, k); if (k > 0 && k < 1) walk = x * 0.05;
           head = -12 + k * 22;
         }
         if (m.i < 4 && m !== sealer && m !== believer) { const turn = es(t, 4.35, 4.5) * (1 - es(t, 5.9, 6.1)); flip = turn > 0.5 ? !m.flip : flip; head = head + turn * 14; }
@@ -190,13 +192,13 @@ export default {
       const [bhx, bhy] = headAt(650, GY, 0.95, false);
       vpose(bHeart, { x: bhx, y: bhy - 40, s: es(t, 9.45, 9.65, ease.back) * (1 + Math.sin(T * 3) * 0.06), o: seg(t, 9.45, 9.5) });
       vpose(lifeT, { x: 560, y: GY - 330, s: es(t, 9.5, 9.7, ease.back), o: seg(t, 9.5, 9.55) });
-      vpose(wither, { x: refuser.x + 90, y: GY + 10, s: es(t, 10.2, 10.4), o: seg(t, 10.2, 10.25) });
-      const [rhx, rhy] = headAt(refuser.x + 25, GY, 0.95, false);
-      vpose(storm, { x: rhx, y: lerp(rhy - 220, rhy - 80, es(t, 10.2, 10.6)) + Math.sin(T * 1.2) * 3, s: 0.9, o: es(t, 10.2, 10.4) * 0.95 });
+      vpose(wither, { x: refuser.x + (PH ? 62 : 90), y: GY + 10, s: es(t, 10.2, 10.4), o: seg(t, 10.2, 10.25) });
+      const [rhx, rhy] = headAt(refuser.x + RW, GY, 0.95, false);
+      vpose(storm, { x: rhx - (PH ? 15 : 0), y: lerp(rhy - 220, rhy - 80, es(t, 10.2, 10.6)) + Math.sin(T * 1.2) * 3, s: PH ? 0.8 : 0.9, o: es(t, 10.2, 10.4) * 0.95 });
 
       S.cam.x = -es(t, 0.95, 1.3) * 50 * (1 - es(t, 2.0, 2.3)) + es(t, 10.0, 10.4) * 60;
       S.cam.y = -es(t, 2.0, 2.4) * 110 * (1 - es(t, 2.9, 3.2)) - es(t, 7.0, 7.4) * 100 * (1 - es(t, 8.7, 9.1)) + 20;
-      S.cam.z = 1.05 - es(t, 2.0, 2.4) * 0.05 * (1 - es(t, 2.9, 3.2));
+      S.cam.z = 1.05 - es(t, 2.0, 2.4) * 0.05 * (1 - es(t, 2.9, 3.2)) - (PH ? es(t, 10.0, 10.4) * 0.07 : 0);
     };
   },
 };

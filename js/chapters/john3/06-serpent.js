@@ -66,7 +66,9 @@ export default {
     const poleGlow = poleEl.querySelector('.glow');
     const moses = S.puppet(P.add(person(c, { ...MOSES, robe: sep(MOSES.robe, 0.2), mantle: sep(MOSES.mantle, 0.3) })));
     // the bitten, lying — then standing
-    const SPOTS = [[420, 0.9, false], [320, 0.95, false], [1060, 0.95, true], [1170, 0.9, true], [1290, 0.85, true], [215, 0.85, false]];
+    const SPOTS = S.portrait
+      ? [[760, 0.9, true], [320, 0.95, false], [865, 0.95, true], [965, 0.9, true], [1060, 0.85, true], [215, 0.85, false]]   // phone: the bitten lie closer to the pole
+      : [[420, 0.9, false], [320, 0.95, false], [1060, 0.95, true], [1170, 0.9, true], [1290, 0.85, true], [215, 0.85, false]];
     const folk = SPOTS.map(([x, s, flip], i) => {
       const o = crowdPerson(c);
       if (i === 1) Object.assign(o, { hairStyle: 'veil', beard: 'none' });
@@ -126,7 +128,7 @@ export default {
       /* v15 — eternal life: the desert flowers */
       flowers.forEach((fl) => vpose(fl.el, { x: fl.x, y: fl.y, s: 1.7 * es(t, 2.35 + fl.i * 0.025, 2.6 + fl.i * 0.025, ease.back), o: seg(t, 2.35 + fl.i * 0.025, 2.4 + fl.i * 0.025) }));
 
-      S.cam.x = rise * 100;
+      S.cam.x = S.portrait ? -30 + rise * 50 : rise * 100;
       S.cam.y = -rise * 30 + es(t, 2, 2.5) * 40;
       S.cam.z = 1.04 + es(t, 2, 2.5) * 0.06;
     };

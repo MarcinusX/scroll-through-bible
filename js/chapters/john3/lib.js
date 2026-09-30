@@ -59,6 +59,8 @@ export const DAY = ['#cfe0da', '#efe6cd', '#f6e8cf'];
 export const ROOF = { FLOOR: 700, JX: 840, NX: 600, LAMP: 722 };
 /** the camera on the rooftop: close on the two of them */
 export const ROOFCAM = { x: 0, y: 150, z: 1.45 };
+/** on a phone the camera sits a little to the left, so Nicodemus is not pressed against the edge */
+export const roofX = (S) => (S.portrait ? -80 : 0);
 /**
  * Night sky, the moon on a string, sleeping Jerusalem, the neighbouring roofs, the parapet and a lamp.
  * Returns { sk, hang, moon, lamp: {glow, flame}, fg, city }.

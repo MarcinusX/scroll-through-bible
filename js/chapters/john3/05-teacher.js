@@ -8,7 +8,7 @@
 import { C, person, CAST, blinkAt, pose, lerp, hanging, swing, sheet, shade, mix } from '../kit.js';
 import { seg, es, ease, bump, fade } from '../../core/anim.js';
 import {
-  roofSet, ROOF, ROOFCAM, flicker, nicodemus, headAt, hand, voiceRings, bigQuestion, nameTag, scrollRolled, scrollOpen,
+  roofSet, ROOF, ROOFCAM, roofX, flicker, nicodemus, headAt, hand, voiceRings, bigQuestion, nameTag, scrollRolled, scrollOpen,
   roundel, speech, spark, pharisee, shadowPerson, heavenPanel, lightCrown, ladder, leaf, cradle, word, seal, soulLight, tr, PI,
   hangAt,
   vpose,
@@ -28,9 +28,12 @@ export default {
     { v: 12, cont: true, text: 'to jakżeż uwierzycie temu, co wam powiem o sprawach niebieskich?' },
     { v: 13 },
   ],
-  cam: { x: [-60, 60], y: [-40, 180], z: [1, 1.6] },
+  cam: { x: [-90, 60], y: [-40, 180], z: [1, 1.6] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;
+    // phone: the scrolls, the tag and the two sheets of v. 12 further in
+    const SCX = PH ? 512 : 470, TGX = PH ? 560 : 470, EAX = PH ? 620 : 700, HVX = PH ? 840 : 960;
     const R = roofSet(S);
 
     /* ---------- the neighbours who do not receive it (on the next roof, behind our parapet) ---------- */
@@ -56,7 +59,7 @@ export default {
     /* ---------- words and plates ---------- */
     const X = S.layer({ par: 0.5, sh: 5 });
     const bigQ = X.add(`<g>${bigQuestion(c, 46)}</g>`);
-    const tTag = hanging(X, nameTag(c, tr(['nauczyciel', 'Izraela'], ['the teacher', 'of Israel']), { size: 16 }), { x: 470, y: 420, len: 600 });
+    const tTag = hanging(X, nameTag(c, tr(['nauczyciel', 'Izraela'], ['the teacher', 'of Israel']), { size: 16 }), { x: TGX, y: 420, len: 600 });
     const eye = (() => {
       const s = sheet();
       s.p(c.cut([...c.arc(0, 0, 34, 18, PI, 2 * PI, 12), ...c.arc(0, 0, 34, 18, 0, PI, 12)], 0.3, 3), C.cream);
@@ -102,8 +105,8 @@ export default {
       const [hx, hy] = headAt(JX, F + 2, 1.05, true, 62);
       voice(hx - 26, hy + 4, bump(t, 1.05, 2.0) + testify * 0.8, T, { spread: 1.6, dir: -1 });
       const sk = es(t, 2.1, 2.4, ease.out), su = es(t, 2.95, 3.15, ease.in);
-      vpose(scrolls, { x: 470, y: F + 4, s: es(t, 2.05, 2.3, ease.back), o: seg(t, 2.05, 2.1) * (1 - es(t, 7.0, 7.2)) });
-      hangAt(tTag, 470, lerp(-300, 440, sk) - su * 800, T, sk > 0 && su < 1 ? 1 : 0, 1.4, 0.9, 1);
+      vpose(scrolls, { x: SCX, y: F + 4, s: es(t, 2.05, 2.3, ease.back), o: seg(t, 2.05, 2.1) * (1 - es(t, 7.0, 7.2)) });
+      hangAt(tTag, TGX, lerp(-300, 440, sk) - su * 800, T, sk > 0 && su < 1 ? 1 : 0, 1.4, 0.9, 1);
 
       /* v11 — what we have seen, we testify; you do not receive it */
       const ek = es(t, 3.05, 3.35, ease.out), mk = es(t, 3.2, 3.5, ease.out), eu = es(t, 4.9, 5.1, ease.in);
@@ -126,12 +129,12 @@ export default {
       /* v12 — earthly things, heavenly things */
       const ak = es(t, 5.05, 5.35, ease.out), au = es(t, 6.9, 7.1, ease.in);
       const ay = lerp(-300, 420, ak) - au * 800;
-      hangAt(earthP, 700, ay, T, ak > 0 && au < 1 ? 1 : 0, 1.2, 0.8, 3);
-      vpose(earthT, { x: 700, y: ay + 84, o: ak > 0 && au < 1 ? seg(t, 5.3, 5.4) : 0 });
+      hangAt(earthP, EAX, ay, T, ak > 0 && au < 1 ? 1 : 0, 1.2, 0.8, 3);
+      vpose(earthT, { x: EAX, y: ay + 84, o: ak > 0 && au < 1 ? seg(t, 5.3, 5.4) : 0 });
       const hk = es(t, 6.05, 6.5, ease.out), hu = es(t, 7.0, 7.3, ease.in);
       const hy2 = lerp(-500, 150, hk) - hu * 700;
-      hangAt(heaven, 960, hy2, T, hk > 0 && hu < 1 ? 1 : 0, 0.8, 0.6, 4);
-      vpose(heavT, { x: 960, y: hy2 + 222, o: hk > 0 && hu < 1 ? seg(t, 6.4, 6.5) : 0 });
+      hangAt(heaven, HVX, hy2, T, hk > 0 && hu < 1 ? 1 : 0, 0.8, 0.6, 4);
+      vpose(heavT, { x: HVX, y: hy2 + 222, o: hk > 0 && hu < 1 ? seg(t, 6.4, 6.5) : 0 });
 
       /* v13 — the ladder, and the One who came down */
       const lk = es(t, 7.0, 7.35);
@@ -141,7 +144,7 @@ export default {
       const st = es(t, 7.6, 7.9, ease.back);
       vpose(sonT, { x: JX, y: hy - 100, s: st, o: seg(t, 7.6, 7.65) });
 
-      S.cam.x = 0;
+      S.cam.x = roofX(S);
       S.cam.y = ROOFCAM.y - es(t, 6.0, 6.5) * 120 * (1 - es(t, 7.35, 7.8) * 0.4);
       S.cam.z = ROOFCAM.z - es(t, 6.0, 6.5) * 0.25;
     };
