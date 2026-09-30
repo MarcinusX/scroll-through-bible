@@ -12,8 +12,8 @@ Check the text: `node tools/check.mjs` (beats must reproduce Biblia Tysiąclecia
 ## Books and chapters
 
 The theatre holds several Gospels. `js/chapters/index.js` lists them (`BOOKS`): Matthew lives in
-`js/chapters/matthewN/` (scene ids `mtN-…`), Mark in `js/chapters/markN/` (scene ids `mN-…`), John in
-`js/chapters/johnN/` (scene ids `jN-…`). The text is in
+`js/chapters/matthewN/` (scene ids `mtN-…`), Mark in `js/chapters/markN/` (scene ids `mN-…`), Luke in
+`js/chapters/lukeN/` (scene ids `lkN-…`), John in `js/chapters/johnN/` (scene ids `jN-…`). The text is in
 `data/<book>.js` (Biblia Tysiąclecia) and `data/<book>-en.js` (World English Bible); a book's published
 chapters are its `READY` list. Everything below says "markN", but works the same for every book.
 

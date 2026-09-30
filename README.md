@@ -9,9 +9,10 @@ A scroll-driven, sentence-by-sentence illustrated reading of the Gospels, drawn 
 
 * **The Gospel of Matthew**: all 28 chapters, from the genealogy of Jesus to "I am with you always, to the end of the age".
 * **The Gospel of Mark**: all 16 chapters, from John the Baptist in the wilderness to the empty tomb at sunrise.
+* **The Gospel of Luke**: all 24 chapters, from Gabriel at the altar of incense to the road to Emmaus and the Ascension.
 * **The Gospel of John**: all 21 chapters, from "In the beginning was the Word" to a world too small for all the books.
 
-Together that's 2,624 verses in 4,526 animated beats across 948 scenes.
+Together that's 3,775 verses in 6,257 animated beats across 1,427 scenes.
 
 The look is heavily inspired by **Mia's AI Lab**, and in particular her paper-cut diorama
 [*Foxglove Hollow*](https://miaai-lab.github.io/Claude-Opus-5.5-100-HTML-Files/018-paper-cut-diorama.html)
@@ -19,7 +20,7 @@ from her gallery of [100 HTML files made with Claude](https://miaai-lab.github.i
 ([@MiaAI_lab](https://x.com/MiaAI_lab)). Thank you, Mia!
 
 Text:
-* Polish: **Biblia Tysiąclecia** (5th ed.), from biblia.deon.pl, in `data/matthew.js`, `data/mark.js` and `data/john.js`.
+* Polish: **Biblia Tysiąclecia** (5th ed.), from biblia.deon.pl, in `data/matthew.js`, `data/mark.js`, `data/luke.js` and `data/john.js`.
 * English: **World English Bible** (public domain), from bolls.life, in `data/<book>-en.js`, with sentence
   splits in each chapter's `beats-en.js`.
 
@@ -85,8 +86,8 @@ The theatre has to scroll smoothly in Safari on iPhone and iPad, whose engine pa
 
 ## How it was made
 
-Mark 4 was drawn first, together with the engine and asset library. The other 64 chapters of Matthew, Mark
-and John were then drawn in parallel by Claude agents, one per chapter, four at a time, each working from
+Mark 4 was drawn first, together with the engine and asset library. The other 88 chapters of Matthew, Mark,
+Luke and John were then drawn in parallel by Claude agents, one per chapter, four at a time, each working from
 `docs/SCENES.md`. Every
 chapter was reviewed beat by beat from contact sheets (`tools/review.sh`), checked for frame rate, and
 validated against the text before it was published.
