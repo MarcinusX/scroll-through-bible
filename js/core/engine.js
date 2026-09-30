@@ -66,7 +66,7 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
       const text = b.text ? beatText(sc.id, bi) ?? b.text : null;
       const segs = b.cover ? [] : text ? [{ v: vs[0], text, first: !b.cont }] : vs.map((v) => ({ v, text: verseText(v), first: true }));
       const words = segs.reduce((n, s) => n + wordsOf(s.text), 0);
-      return { ...b, segs, vs, len: b.cover ? 1.25 : clamp(0.85 + words / 24, 1, 2.3) };
+      return { ...b, sid: sc.id, bi, segs, vs, len: b.cover ? 1.25 : clamp(0.85 + words / 24, 1, 2.3) };
     });
     const entry = { sc, si, beats, start: 0, end: 0, built: null };
     if (si > 0) g0 += GAP;
@@ -631,13 +631,16 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
     capRef.textContent = ui.ref(chapter, vs[0], vs[vs.length - 1]);
     capEl.classList.remove('flip'); void capEl.offsetWidth; capEl.classList.add('flip');
   }
-  function revealCaption(p) {
+  function revealCaption(p, now = -1) {
     const n = capWords.length;
     if (!n) return;
     const shown = reduced ? n : p * n;
     for (let i = 0; i < n; i++) {
       const o = clamp(shown - i + 0.6).toFixed(2);
       if (capWords[i]._o !== o) { capWords[i]._o = o; capWords[i].style.opacity = o; capWords[i].style.transform = `translateY(${((1 - o) * 6).toFixed(1)}px)`; }
+      // the word being read aloud, when the narrator is on
+      const on = i === now;
+      if (capWords[i]._now !== on) { capWords[i]._now = on; capWords[i].classList.toggle('now', on); }
     }
   }
 
@@ -686,6 +689,7 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
   }
 
   /* ---------- the loop ---------- */
+  const narrator = {}; // hooks for the read-aloud narrator (voice.js): reveal(beat, p) and nav(dir)
   let g = 0, lastNow = performance.now();
   function frame(now) { step(now); requestAnimationFrame(frame); }
   function step(now = performance.now()) {
@@ -720,10 +724,12 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
       else if (next) { capE = null; }
     }
     setCaption(capE, capB);
-    revealCaption(clamp(capP));
+    const cur = capE && capE.beats[capB];
+    // the narrator (voice.js) may take over the word reveal, so the words appear as they are spoken
+    const vr = narrator.reveal && cur ? narrator.reveal(cur, clamp(capP)) : null;
+    revealCaption(vr ? vr.p : clamp(capP), vr ? vr.word : -1);
     capEl.classList.toggle('dim', !timeline.some((e) => g >= e.start && g < e.end));
 
-    const cur = capE && capE.beats[capB];
     const tagE = capE || timeline.find((e) => g < e.start) || timeline[timeline.length - 1];
     const v = cur && cur.vs.length ? cur.vs[0] : (tagE.beats.find((b) => b.vs.length)?.vs[0] ?? 1);
     setTag(v, tagE.sc.parable);
@@ -749,7 +755,8 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
      more than its first paint. Safari has no requestIdleCallback: there a step waits for a pause
      in scrolling, unless the scene is about to come on stage. */
   let lastScroll = -1e9;
-  addEventListener('scroll', () => { lastScroll = performance.now(); }, { passive: true });
+  // (the narrator's slow, steady drive is not the reader scrolling: preparing scenes may go on under it)
+  addEventListener('scroll', () => { if (!narrator.driving) lastScroll = performance.now(); }, { passive: true });
   const idle = window.requestIdleCallback
     ? (fn) => requestIdleCallback(fn, { timeout: 1000 })
     : (fn) => setTimeout(() => fn({ timeRemaining: () => (performance.now() - lastScroll > 200 ? 12 : 0), didTimeout: false }), 70);
@@ -855,6 +862,7 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
   }
   // move to the next / previous sentence (lands where its words have all appeared)
   function nextBeat(dir) {
+    if (narrator.nav && narrator.nav(dir)) return; // while the narrator reads, taps and arrows skip sentences in the reading
     const cur = scrollY / unitPx;
     const rest = (b) => b.start + Math.min(0.55, b.len * 0.5);
     const list = dir > 0 ? beats.filter((b) => rest(b) > cur + 0.05) : beats.filter((b) => rest(b) < cur - 0.05).reverse();
@@ -878,5 +886,9 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
     return v;
   }
 
-  return { timeline, get g() { return g; }, unitPx: () => unitPx, go, step, verse, nextBeat, turnTo, enter, seek };
+  // the beat under position g (between scenes: the one about to start), and its resting point
+  const beatAt = (at) => beats.find((b) => at < b.start + b.len) || beats[beats.length - 1];
+  const setNarrator = (h) => Object.assign(narrator, h);
+
+  return { timeline, beats, total, beatAt, setNarrator, get g() { return g; }, unitPx: () => unitPx, go, step, verse, nextBeat, turnTo, enter, seek };
 }
