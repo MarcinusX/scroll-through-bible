@@ -53,7 +53,10 @@ export default {
     ground.add(mannaField(c, { x0: -600, x1: 2200, y0: 700, y1: 1000, n: 260, r: 4 }));
     const P = S.layer({ par: 0.45, sh: 4 }); flash.push(P);
     const moses = S.puppet(P.add(person(c, { ...sepia(MOSES), holdB: `<g transform="rotate(20)"><path d="${c.ribbon([[0, -150], [1, 0], [0, 70]], 5)}" fill="${SEP(C.wood2)}"/></g>` })));
-    const GAT = [[380, 0], [480, 1], [1060, 2], [1170, 3], [1270, 4]].map(([x, i]) => {
+    // phone: the gatherers, the psalm scroll and the globe stand inside the narrow screen (none sliced by its edge)
+    const PH = S.portrait;
+    const SX = PH ? 890 : 1080, WX = PH ? 1000 : 1080;
+    const GAT = (PH ? [[300, 0], [520, 1], [990, 2], [1085, 3], [1300, 4]] : [[380, 0], [480, 1], [1060, 2], [1170, 3], [1270, 4]]).map(([x, i]) => {
       const o = sepia(folk(c, i % 2 === 0));
       const kneel = i % 2 === 1;
       return { x, i, seed: c.rr(0, 9), kneel, p: S.puppet(P.add(person(c, { ...o, pose: kneel ? 'kneel' : 'stand', holdF: `<g transform="translate(-36 13) rotate(70)">${basket(c, { w: 36, h: 20, full: true }).replace(/fill="#[0-9a-f]{6}"/g, (m) => `fill="${SEP(m.slice(6, 13))}"`)}</g>` }))) };
@@ -82,9 +85,9 @@ export default {
       /* v31b — "He gave them bread from heaven to eat" */
       const sc = es(t, 1.05, 1.35, ease.out) * (1 - es(t, 2.0, 2.2));
       const un = es(t, 1.3, 1.6);
-      pose(rodT, { x: 1080, y: lerp(-500, 150, sc), o: sc > 0.01 ? 1 : 0 });
-      pose(scrollG, { x: 1080, y: lerp(-500, 150, sc), sy: Math.max(0.02, un), o: sc > 0.01 ? 1 : 0 });
-      pose(rodB, { x: 1080, y: lerp(-500, 150, sc) + V.h * un, o: sc > 0.01 ? 1 : 0 });
+      pose(rodT, { x: SX, y: lerp(-500, 150, sc), o: sc > 0.01 ? 1 : 0 });
+      pose(scrollG, { x: SX, y: lerp(-500, 150, sc), sy: Math.max(0.02, un), o: sc > 0.01 ? 1 : 0 });
+      pose(rodB, { x: SX, y: lerp(-500, 150, sc) + V.h * un, o: sc > 0.01 ? 1 : 0 });
       /* v32a — "It was not Moses…": Moses turns and points up */
       const up = es(t, 2.05, 2.3);
       moses.set({ x: 640, y: 764, s: 1.0, flip: false, armF: 30 + bump(t, 0.1, 1.9) * 40 + up * 100, armB: 30 - up * 10, head: -up * 18, blink: blinkAt(T, 3) });
@@ -100,11 +103,11 @@ export default {
       const life = es(t, 4.5, 4.8);
       pose(jGlow, { x: JX, y: FEET - 130, s: 0.6 + life * 0.8, o: 0.2 + life * 0.7 });
       const wk = es(t, 4.4, 4.7, ease.out);
-      pose(world, { x: 1080, y: lerp(-500, 260, wk), r: Math.sin(T * 0.7) * 2, o: wk > 0.01 ? 1 : 0 });
+      pose(world, { x: WX, y: lerp(-500, 260, wk), r: Math.sin(T * 0.7) * 2, o: wk > 0.01 ? 1 : 0 });
       sparks.forEach((sp, i) => {
         const k = es(t, 4.6 + i * 0.05, 4.8 + i * 0.05);
         const a = (i / 6) * PI * 2 + T * 0.5;
-        pose(sp, { x: 1080 + Math.cos(a) * 80, y: 260 + Math.sin(a) * 80, s: k * 0.8, r: T * 40, o: k * (0.7 + Math.sin(T * 3 + i) * 0.3) });
+        pose(sp, { x: WX + Math.cos(a) * 80, y: 260 + Math.sin(a) * 80, s: k * 0.8, r: T * 40, o: k * (0.7 + Math.sin(T * 3 + i) * 0.3) });
       });
       jesus.set({ x: JX, y: FEET, s: 1.06, armF: 20 + es(t, 3.05, 3.3) * 60 + life * 20, armB: 10 + bump(t, 3.0, 4.0) * 130 + life * 60, head: -bump(t, 3.0, 4.2) * 10, blink: blinkAt(T, 1) });
 

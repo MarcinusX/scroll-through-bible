@@ -22,11 +22,14 @@ export default {
     { v: 25, text: 'Gdy zaś odnaleźli Go na przeciwległym brzegu,' },
     { v: 25, cont: true, text: 'rzekli do Niego: «Rabbi, kiedy tu przybyłeś?»' },
   ],
-  cam: { x: [-40, 40], y: [-20, 60], z: [1, 1.14] },
+  cam: { x: [-40, 40], y: [-20, 60], z: [0.94, 1.14] },
   build(S) {
     const c = S.c;
+    // phone: the sun, Tiberias, the hill with the empty place and the people all stand inside the narrow screen
+    const P = S.portrait;
+    const TX = P ? 570 : 330, HX = P ? 1050 : 1180;
     /* underneath: the Capernaum shore (revealed at v25) */
-    const K = capShore(S, { skyCols: MORNING, sunAt: [420, 190], beachY: 650 });
+    const K = capShore(S, { skyCols: MORNING, sunAt: [P ? 560 : 420, P ? 40 : 190], beachY: 650 });
     const capLayers = [K.hangL, K.far, K.lakeL, K.townL, K.beachL];
 
     /* on top: the far shore where they ate — green hill, trampled grass, an empty beach */
@@ -34,14 +37,14 @@ export default {
     const sk = sky(S, MORNING, { name: 'far' }); top.push(sk.layer);
     const far = S.layer({ par: 0.08, sh: 2 }); top.push(far);
     const fb = band(c, { y: 400, amps: [16, 7, 3], lens: [1100, 380, 130], color: mix(C.hillFar, C.duskViolet, 0.1) });
-    far.add(fb.markup + town(c, { x: 330, y: fb.fn(330) + 14, n: 7, spread: 220, sc: 0.44 }));
+    far.add(fb.markup + town(c, { x: TX, y: fb.fn(TX) + 14, n: 7, spread: 220, sc: 0.44 }));
     const tib = far.add(`<g>${labelTag(tr('Tyberiada', 'Tiberias'), 15)}</g>`);
     const lake = S.layer({ par: 0.12, sh: 1 }); top.push(lake);
     lake.add(waterBand(c, { y: 426, color: mix(C.lake, C.skyBlue, 0.3), foamN: 20, bottom: 1200 }).markup);
     const hillL = S.layer({ par: 0.3, sh: 3 }); top.push(hillL);
-    const hfn = (x) => 640 - Math.max(0, 1 - Math.abs(x - 1180) / 520) ** 1.4 * 190;
-    hillL.add(sheet().p(c.ridge(hfn, 600, 2500, 1700, 12, 1), mix(C.hillNear, C.sage2, 0.3)).out() + olive(c, 1400, hfn(1400) + 20, 0.7));
-    hillL.add(rock(c, 1180, hfn(1180) + 22, 120, 30, C.rock2) + grass(c, { x0: 700, x1: 2400, y: 600, fn: hfn, n: 40, h: 16, color: C.leaf }));
+    const hfn = (x) => 640 - Math.max(0, 1 - Math.abs(x - HX) / 520) ** 1.4 * 190;
+    hillL.add(sheet().p(c.ridge(hfn, HX - 580, 2500, 1700, 12, 1), mix(C.hillNear, C.sage2, 0.3)).out() + olive(c, 1400, hfn(1400) + 20, 0.7));
+    hillL.add(rock(c, HX, hfn(HX) + 22, 120, 30, C.rock2) + grass(c, { x0: HX - 480, x1: 2400, y: 600, fn: hfn, n: 40, h: 16, color: C.leaf }));
     const empty = hillL.add(`<g><circle r="70" fill="url(#halo-glow)" opacity=".7"/><path d="${c.ribbon(c.arc(0, -40, 26, 44, 0, PI * 2, 24), 2)}" fill="${C.sun}" opacity=".7"/></g>`);
     const beachL = S.layer({ par: 0.4, sh: 3 }); top.push(beachL);
     const bfn = (x) => 650 + Math.sin(x * 0.006) * 5;
@@ -59,7 +62,7 @@ export default {
     /* the people (the same ones on both shores), Jesus at Capernaum */
     const L = S.layer({ par: 0.5, sh: 5 });
     const jesus = S.puppet(L.add(person(c, { ...CAST.jesus })));
-    const PEO = [[380, true], [470, false], [560, true], [650, false], [980, true], [1070, false], [1160, true], [1250, false]].map(([x, man], i) => ({ i, x, seed: c.rr(0, 9), p: S.puppet(L.add(person(c, folk(c, man)))) }));
+    const PEO = (P ? [[480, true], [540, false], [600, true], [660, false], [960, true], [1015, false], [1070, true], [1125, false]] : [[380, true], [470, false], [560, true], [650, false], [980, true], [1070, false], [1160, true], [1250, false]]).map(([x, man], i) => ({ i, x, seed: c.rr(0, 9), p: S.puppet(L.add(person(c, folk(c, man)))) }));
 
     /* the memory card, question marks, the question */
     const fx = S.layer({ par: 0.56, sh: 5 });
@@ -87,7 +90,7 @@ export default {
       const cross = es(t, 4.85, 5.15);
       top.forEach((Ly) => Ly.fade(1 - cross));
       capLayers.forEach((Ly) => Ly.fade(seg(t, 4.8, 4.85)));
-      pose(tib, { x: 330, y: 360, o: 1 - cross });
+      pose(tib, { x: TX, y: 360, o: 1 - cross });
 
       /* v22a — only one boat was there (a memory card) */
       const ck = es(t, 0.1, 0.4, ease.out) * (1 - es(t, 1.9, 2.1));
@@ -114,7 +117,7 @@ export default {
 
       /* v24a — no Jesus there, nor His disciples */
       const look = es(t, 3.05, 3.3) * (1 - es(t, 4.0, 4.2));
-      pose(empty, { x: 1180, y: hfn(1180) + 6, o: look * (0.6 + Math.sin(T * 2) * 0.2) });
+      pose(empty, { x: HX, y: hfn(HX) + 6, o: look * (0.6 + Math.sin(T * 2) * 0.2) });
 
       /* the people: on the beach, into the boats; at Capernaum they gather round Him */
       const board = es(t, 4.05, 4.3);
@@ -127,7 +130,8 @@ export default {
         let o = 1 - seg(t, 4.25, 4.32);
         let flip = t < 0.2 ? !left : (turn ? left : !left);
         if (t > 5.2) {
-          const tx = left ? JX - 150 - (3 - m.i) * 80 : JX + 140 + (m.i - 4) * 80;
+          const gap = P ? 55 : 80;
+          const tx = left ? JX - 150 - (3 - m.i) * gap : JX + 140 + (m.i - 4) * gap;
           x = lerp(1250 + m.i * 40, tx, cap); y = 712 + (m.i % 2) * 10; o = seg(t, 5.3, 5.35); flip = tx > JX;
         }
         const walking = (board > 0.02 && board < 0.98) || (cap > 0.02 && cap < 0.98);
@@ -149,7 +153,7 @@ export default {
       const rk = es(t, 6.2, 6.4, ease.back);
       pose(rabbi, { x: ax - 50, y: ay - 90, s: rk, r: -6, o: rk > 0.01 ? 1 : 0 });
 
-      S.cam.z = kf(t, [[0, 1.02], [0.5, 1.02], [2.0, 1.0], [3.0, 1.04], [4.6, 1.0], [5.3, 1.08], [6.3, 1.12]]);
+      S.cam.z = kf(t, [[0, 1.02], [0.5, 1.02], [2.0, 1.0], [3.0, 1.04], [4.6, 1.0], [5.3, 1.08], [6.3, 1.12]]) * (P ? 0.94 : 1);
       S.cam.y = kf(t, [[0, 10], [0.5, -10], [1.9, -10], [2.3, 20], [4.6, 20], [5.3, 40], [6.3, 50]]);
       S.cam.x = kf(t, [[0, 0], [3.0, 30], [3.6, 30], [4.2, 0]]);
     };

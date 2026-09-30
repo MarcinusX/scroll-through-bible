@@ -30,7 +30,9 @@ export default {
     const cong = I.congregation(L);
     const lights = cong.map(() => L.add(`<g>${soulLight(c, 8)}</g>`));
     // the wider circle of disciples standing along the sides
-    const DIS = [[330, 0], [410, 1], [490, 2], [1110, 3], [1190, 4], [1270, 5]].map(([x, i]) => ({ x, i, seed: c.rr(0, 9), p: S.puppet(L.add(person(c, folk(c, i % 3 !== 1)))) }));
+    // phone: the disciples stand further in, so those who speak are on the screen
+    const P = S.portrait;
+    const DIS = (P ? [[500, 0], [565, 1], [630, 2], [970, 3], [1035, 4], [1100, 5]] : [[330, 0], [410, 1], [490, 2], [1110, 3], [1190, 4], [1270, 5]]).map(([x, i]) => ({ x, i, seed: c.rr(0, 9), p: S.puppet(L.add(person(c, folk(c, i % 3 !== 1)))) }));
     const jGlow = L.add(`<g>${glowDisc(160, 'halo-glow', 1)}</g>`);
     const jesus = S.puppet(L.add(person(c, { ...CAST.jesus })));
     I.addColumns();
@@ -44,7 +46,8 @@ export default {
 
     /* the street drop in front: Capernaum and the synagogue from outside */
     const drop = S.layer({ par: 0.3, sh: 8, pad: 1500 });
-    drop.add(synagogueFacade(S, { signText: tr('Kafarnaum', 'Capernaum') }));
+    const facade = synagogueFacade(S, { signText: tr('Kafarnaum', 'Capernaum') });
+    drop.add(P ? facade.replace('translate(420 700)', 'translate(505 700)') : facade);   // phone: the signpost whole, not sliced by the edge
     const topL = S.layer({ par: 0.6, sh: 5 });
     const place = topL.add(hungWord(c, tr('w synagodze w Kafarnaum', 'in the synagogue in Capernaum'), { size: 22 }));
 
@@ -57,7 +60,7 @@ export default {
       const dk = es(t, 0.1, 0.6, ease.out);
       pose(loaf, { x: 960, y: lerp(160, 330, dk), o: seg(t, 0.1, 0.2) * (1 - es(t, 1.9, 2.1)) });
       const pk = es(t, 0.3, 0.6, ease.out) * (1 - es(t, 0.95, 1.1));
-      pose(plate, { x: 600, y: lerp(-500, 300, pk), r: Math.sin(T * 0.8), o: pk > 0.01 ? 1 - es(t, 0.8, 1.1) : 0 });
+      pose(plate, { x: P ? 640 : 600, y: lerp(-500, 300, pk), r: Math.sin(T * 0.8), o: pk > 0.01 ? 1 - es(t, 0.8, 1.1) : 0 });
       /* v58b — whoever eats this bread will live forever */
       drawRing(ring, es(t, 1.05, 1.5));
       pose(ring, { x: 960, y: 330, r: t * 20, o: seg(t, 1.05, 1.1) * (1 - es(t, 1.9, 2.1)) });

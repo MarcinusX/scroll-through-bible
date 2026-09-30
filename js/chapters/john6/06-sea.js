@@ -35,7 +35,7 @@ export default {
     { v: 21, text: 'Chcieli Go zabrać do łodzi,' },
     { v: 21, cont: true, text: 'ale łódź znalazła się natychmiast przy brzegu, do którego zdążali.' },
   ],
-  cam: { x: [-40, 60], y: [-20, 60], z: [1, 1.18] },
+  cam: { x: [-40, 100], y: [-20, 60], z: [1, 1.18] },
   build(S) {
     const c = S.c;
     const sk = sky(S, DUSK, { name: 'dusk' });
@@ -105,6 +105,9 @@ export default {
     const tint = S.layer({ par: 0, sh: 1, flat: true });
     tint.add(`<rect x="-3000" y="-3000" width="8000" height="8000" fill="#141a40"/>`);
 
+    // phone: the camera follows further right and the far lights of Capernaum stand closer, so Jesus on the
+    // water, the golden words and the town are inside the narrow screen
+    const P = S.portrait;
     return (t, time) => {
       const T = time;
       /* dusk → dark */
@@ -128,9 +131,9 @@ export default {
       const alone = es(t, 2.1, 2.4) * (1 - es(t, 3.1, 3.4));
       farJ.set({ x: 480, y: 322, s: 0.14, flip: false, armF: 60, armB: 120, head: -10, o: 1 - es(t, 3.1, 3.4), blink: 0 });
       pose(farGlow, { x: 482, y: 302, s: 0.6 + alone * 0.6, o: 0.4 + alone * 0.6 });
-      pose(capLights, { o: 0.3 + dark * 0.7 });
+      pose(capLights, { x: P ? -190 : 0, o: 0.3 + dark * 0.7 });
       const ck = es(t, 1.1, 1.4, ease.back) * (1 - es(t, 1.95, 2.1));
-      pose(capName, { x: 1250, y: 410, s: ck, o: ck > 0.01 ? 1 : 0 });
+      pose(capName, { x: P ? 1035 : 1250, y: 410, s: ck, o: ck > 0.01 ? 1 : 0 });
 
       /* v16 — they go down to the sea; v17a — into the boat and away */
       const push = es(t, 1.05, 1.9);
@@ -179,7 +182,7 @@ export default {
       pose(stadia, { x: 800, y: lerp(-500, 250, stk), r: Math.sin(T) * 1.5, o: stk > 0.01 ? 1 : 0 });
 
       /* v19b — Jesus comes walking on the sea */
-      const jKeys = [[5.05, 1500], [5.9, 1080], [7.9, 1040], [8.4, 960], [8.95, BX + 190]];
+      const jKeys = [[5.05, P ? 1400 : 1500], [P ? 5.7 : 5.9, 1080], [7.9, 1040], [8.4, 960], [8.95, BX + 190]];
       const jx = kf(t, jKeys, (u) => u);
       const inK = seg(t, 8.92, 8.98);
       const speak = bump(t, 7.05, 7.95);
@@ -201,7 +204,7 @@ export default {
       });
       /* v20 — "It is I; do not be afraid" */
       const ik = es(t, 7.1, 7.45, ease.out) * (1 - es(t, 8.0, 8.2));
-      pose(iam, { x: 1000, y: lerp(-500, 250, ik), r: Math.sin(T * 0.8) * 1.2, o: ik > 0.01 ? 1 : 0 });
+      pose(iam, { x: P ? 900 : 1000, y: lerp(-500, 250, ik), r: Math.sin(T * 0.8) * 1.2, o: ik > 0.01 ? 1 : 0 });
       const nk = es(t, 7.35, 7.55, ease.back) * (1 - es(t, 7.95, 8.05));
       pose(noFear, { x: jx - 20, y: JY - 210, s: nk, o: nk > 0.01 ? 1 : 0 });
       /* v21a — they want to take Him in */
@@ -210,7 +213,7 @@ export default {
         pose(h, { x: BX + 150 + i * 30, y: BY - 190 - i * 14 + Math.sin(T * 2 + i) * 4, s: k, o: k > 0.01 ? 1 : 0 });
       });
 
-      S.cam.x = kf(t, [[0, -30], [1.0, 0], [4.9, 0], [5.4, 40], [8.9, 40], [9.4, 20]]);
+      S.cam.x = kf(t, [[0, -30], [1.0, 0], [4.9, 0], [5.4, P ? 95 : 40], [8.9, P ? 95 : 40], [9.4, 20]]);
       S.cam.z = kf(t, [[0, 1.04], [1.9, 1.02], [3.2, 1.06], [5.3, 1.04], [6.2, 1.12], [7.1, 1.06], [8.2, 1.1], [9.4, 1.04]]);
       S.cam.y = kf(t, [[0, 30], [2.0, 20], [6.2, 40], [9.4, 30]]);
     };

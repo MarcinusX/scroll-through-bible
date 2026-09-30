@@ -22,10 +22,13 @@ export default {
     { v: 30, text: 'Rzekli do Niego: «Jakiego więc dokonasz znaku, abyśmy go widzieli i Tobie uwierzyli?' },
     { v: 30, cont: true, text: 'Cóż zdziałasz?' },
   ],
-  cam: { x: [-30, 30], y: [-40, 60], z: [1, 1.14] },
+  cam: { x: [-30, 30], y: [-40, 60], z: [0.94, 1.14] },
   build(S) {
     const c = S.c;
-    const K = capShore(S, { skyCols: MORNING, sunAt: [420, 190], beachY: 650 });
+    // phone: the people stand closer to Him, the two plates hang further in, the sun hangs inside the screen
+    const P = S.portrait;
+    const SUNX = P ? 560 : 420, SUNY = P ? 40 : 190, PLX = P ? 610 : 560, PRX = P ? 990 : 1040;
+    const K = capShore(S, { skyCols: MORNING, sunAt: [SUNX, SUNY], beachY: 650 });
 
     /* the Father's light above (never a figure), the seal */
     const hi = S.layer({ par: 0.06, sh: 4 });
@@ -34,7 +37,7 @@ export default {
 
     /* the crowd and Jesus */
     const L = S.layer({ par: 0.5, sh: 5 });
-    const PEO = [[420, true], [510, false], [590, true], [660, false], [940, true], [1020, false], [1100, true], [1180, false]].map(([x, man], i) => ({ i, x, seed: c.rr(0, 9), p: S.puppet(L.add(person(c, folk(c, man)))) }));
+    const PEO = (P ? [[485, true], [543, false], [601, true], [659, false], [941, true], [999, false], [1057, true], [1115, false]] : [[420, true], [510, false], [590, true], [660, false], [940, true], [1020, false], [1100, true], [1180, false]]).map(([x, man], i) => ({ i, x, seed: c.rr(0, 9), p: S.puppet(L.add(person(c, folk(c, man)))) }));
     const jGlow = L.add(`<g><circle r="120" fill="url(#halo-glow)"/></g>`);
     const jesus = S.puppet(L.add(person(c, { ...CAST.jesus })));
     const mark = L.add(`<g>${sealMark(c, 11)}</g>`);
@@ -63,7 +66,8 @@ export default {
 
     return (t, time) => {
       const T = time;
-      K.update(T);
+      // (phone) the sun is drawn up on its string while the Father's light shines beside it
+      K.update(T, P ? { sunY: SUNY - (es(t, 1.9, 2.2) * (1 - es(t, 3.0, 3.3)) + es(t, 3.9, 4.2) * (1 - es(t, 4.9, 5.2))) * 700 } : undefined);
       const [jhx, jhy] = headAt(JX, JY, 1.08, false);
 
       /* v26 — signs unnoticed; loaves in every head */
@@ -80,19 +84,19 @@ export default {
       /* v27a — the food that perishes / the food that endures */
       const pk = es(t, 1.05, 1.35, ease.out) * (1 - es(t, 2.0, 2.2));
       const PY = lerp(-500, 320, pk);
-      pose(pL, { x: 560, y: PY, r: Math.sin(T * 0.8) * 1.2, o: pk > 0.01 ? 1 : 0 });
-      pose(pR, { x: 1040, y: PY, r: Math.sin(T * 0.8 + 1) * 1.2, o: pk > 0.01 ? 1 : 0 });
+      pose(pL, { x: PLX, y: PY, r: Math.sin(T * 0.8) * 1.2, o: pk > 0.01 ? 1 : 0 });
+      pose(pR, { x: PRX, y: PY, r: Math.sin(T * 0.8 + 1) * 1.2, o: pk > 0.01 ? 1 : 0 });
       const rot = es(t, 1.3, 1.7);
-      pose(stale, { x: 560, y: PY + 16, o: pk > 0.01 ? (1 - rot) * (1 - es(t, 1.7, 1.8)) : 0 });
-      pose(staleGrey, { x: 560, y: PY + 16, sx: 1 - es(t, 1.65, 1.85) * 0.6, sy: 1 - es(t, 1.65, 1.85) * 0.7, oy: 0, o: pk > 0.01 ? rot * (1 - es(t, 1.8, 1.9)) : 0 });
+      pose(stale, { x: PLX, y: PY + 16, o: pk > 0.01 ? (1 - rot) * (1 - es(t, 1.7, 1.8)) : 0 });
+      pose(staleGrey, { x: PLX, y: PY + 16, sx: 1 - es(t, 1.65, 1.85) * 0.6, sy: 1 - es(t, 1.65, 1.85) * 0.7, oy: 0, o: pk > 0.01 ? rot * (1 - es(t, 1.8, 1.9)) : 0 });
       bits.forEach((b) => {
         const k = es(t, 1.7 + b.i * 0.02, 1.95 + b.i * 0.02, ease.in);
-        pose(b.el, { x: 560 + b.dx, y: PY + 10 + k * 160, r: k * 180, s: 0.8, o: k > 0.01 && k < 0.98 ? (1 - k) : 0 });
+        pose(b.el, { x: PLX + b.dx, y: PY + 10 + k * 160, r: k * 180, s: 0.8, o: k > 0.01 && k < 0.98 ? (1 - k) : 0 });
       });
       const lk = es(t, 1.25, 1.5);
-      pose(lightLoaf, { x: 1040, y: PY + 4, s: 0.6 + lk * 0.4, o: pk > 0.01 ? lk : 0 });
+      pose(lightLoaf, { x: PRX, y: PY + 4, s: 0.6 + lk * 0.4, o: pk > 0.01 ? lk : 0 });
       drawRing(ring, es(t, 1.35, 1.9));
-      pose(ring, { x: 1040, y: PY, r: t * 20, o: pk > 0.01 ? 1 : 0 });
+      pose(ring, { x: PRX, y: PY, r: t * 20, o: pk > 0.01 ? 1 : 0 });
 
       /* v27b — God the Father has set His seal on Him */
       const rk = es(t, 2.05, 2.3) * (1 - es(t, 3.0, 3.2)) + es(t, 4.05, 4.3) * (1 - es(t, 4.9, 5.1));
@@ -142,7 +146,7 @@ export default {
       const teach = es(t, 1.05, 1.3);
       jesus.set({ x: JX, y: JY, s: 1.08, armF: 20 + teach * 50 + bump(t, 1.4, 2.0) * 30 - es(t, 2.1, 2.3) * 40 + bump(t, 4.1, 4.95) * 40, armB: 10 + bump(t, 1.2, 1.9) * 100 + bump(t, 2.1, 3.0) * 60 + bump(t, 4.1, 4.95) * 120, head: -bump(t, 2.1, 3.0) * 12 - bump(t, 4.1, 4.95) * 8, blink: blinkAt(T, 1) });
 
-      S.cam.z = kf(t, [[0, 1.1], [1.0, 1.08], [2.0, 1.08], [2.6, 1.12], [3.1, 1.12], [5.0, 1.1], [6.0, 1.14]]);
+      S.cam.z = kf(t, [[0, 1.1], [1.0, 1.08], [2.0, 1.08], [2.6, 1.12], [3.1, 1.12], [5.0, 1.1], [6.0, 1.14]]) * (P ? 0.93 : 1);
       S.cam.y = kf(t, [[0, 40], [1.0, 20], [2.0, 20], [2.6, 40], [3.1, 50], [6.0, 50]]);
     };
   },

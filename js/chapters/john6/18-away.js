@@ -19,18 +19,22 @@ export default {
     { v: 66 },
     { v: 67 },
   ],
-  cam: { x: [-20, 30], y: [-30, 40], z: [1, 1.1] },
+  cam: { x: [-20, 90], y: [-30, 40], z: [0.88, 1.1] },
   build(S) {
     const c = S.c;
     const R = roadSet(S, { skyCols: GOLDEN, sunAt: [300, 300] });
     const hiL = S.layer({ par: 0.2, sh: 4 });
     const rad = hiL.add(`<g><circle r="200" fill="url(#halo-glow)"/>${radiance(c, 44)}</g>`);
 
+    // phone: the Twelve stand closer together and the camera looks a little further right, so Judas at the far
+    // end (and the shadow over him) is on the screen
+    const P = S.portrait;
     const L = S.layer({ par: 0.5, sh: 5 });
     // the followers who will leave (they stand in front, left of the road start)
-    const GO = Array.from({ length: 7 }, (_, i) => ({ i, x: 470 + i * 56 + (i % 2) * 10, y: 772 + (i % 2) * 14, seed: c.rr(0, 9), p: S.puppet(L.add(person(c, folk(c, i % 3 !== 2)))) }));
+    const GO = Array.from({ length: 7 }, (_, i) => ({ i, x: P ? 505 + i * 50 + (i % 2) * 8 : 470 + i * 56 + (i % 2) * 10, y: 772 + (i % 2) * 14, seed: c.rr(0, 9), p: S.puppet(L.add(person(c, folk(c, i % 3 !== 2)))) }));
     // the Twelve round Jesus, on the right; Judas at the far end
-    const SP = [[790, 748], [990, 744], [1050, 752], [740, 756], [1110, 748], [690, 750], [1160, 754], [1000, 780], [1060, 784], [1120, 786], [1180, 780], [1250, 770]];
+    const SP = P ? [[790, 748], [975, 744], [1020, 752], [740, 756], [1065, 748], [690, 750], [1110, 754], [1000, 780], [1042, 784], [1084, 786], [1122, 780], [1156, 770]] : [[790, 748], [990, 744], [1050, 752], [740, 756], [1110, 748], [690, 750], [1160, 754], [1000, 780], [1060, 784], [1120, 786], [1180, 780], [1250, 770]];
+    const SCX = P ? 700 : 620;
     const TW = TWELVE.map((m, i) => ({ ...m, i, x: SP[i][0], y: SP[i][1], seed: c.rr(0, 9), p: S.puppet(L.add(person(c, m.o))) }));
     const shId = S.id('shade');
     S.defs(`<radialGradient id="${shId}"><stop offset="0" stop-color="#2a2038" stop-opacity=".55"/><stop offset="1" stop-color="#2a2038" stop-opacity="0"/></radialGradient>`);
@@ -64,9 +68,9 @@ export default {
       /* v64b — He knew from the beginning; the one who would hand Him over */
       const sk = es(t, 1.05, 1.35, ease.out) * (1 - es(t, 1.95, 2.1));
       const un = es(t, 1.3, 1.6);
-      pose(rodT, { x: 620, y: lerp(-500, 170, sk), o: sk > 0.01 ? 1 : 0 });
-      pose(scrollG, { x: 620, y: lerp(-500, 170, sk), sy: Math.max(0.02, un), o: sk > 0.01 ? 1 : 0 });
-      pose(rodB, { x: 620, y: lerp(-500, 170, sk) + V.h * un, o: sk > 0.01 ? 1 : 0 });
+      pose(rodT, { x: SCX, y: lerp(-500, 170, sk), o: sk > 0.01 ? 1 : 0 });
+      pose(scrollG, { x: SCX, y: lerp(-500, 170, sk), sy: Math.max(0.02, un), o: sk > 0.01 ? 1 : 0 });
+      pose(rodB, { x: SCX, y: lerp(-500, 170, sk) + V.h * un, o: sk > 0.01 ? 1 : 0 });
       const J = TW[11];
       pose(shadow, { x: J.x, y: J.y, o: es(t, 1.5, 1.8) * (1 - es(t, 2.2, 2.5) * 0.6) });
 
@@ -101,8 +105,8 @@ export default {
       const ak = es(t, 4.1, 4.3, ease.back);
       pose(ask, { x: jhx + 24, y: jhy - 18, s: ak, o: ak > 0.01 ? 1 : 0 });
 
-      S.cam.x = kf(t, [[0, 10], [3.0, 10], [3.8, -20], [4.1, 20]]);
-      S.cam.z = kf(t, [[0, 1.04], [1.0, 1.06], [3.0, 1.02], [3.9, 1.0], [4.3, 1.08]]);
+      S.cam.x = P ? kf(t, [[0, 90], [3.0, 90], [3.8, 30], [4.1, 90]]) : kf(t, [[0, 10], [3.0, 10], [3.8, -20], [4.1, 20]]);
+      S.cam.z = kf(t, [[0, 1.04], [1.0, 1.06], [3.0, 1.02], [3.9, 1.0], [4.3, 1.08]]) * (P ? 0.88 : 1);
       S.cam.y = kf(t, [[0, 30], [3.0, 20], [3.9, 0], [4.3, 30]]);
     };
   },

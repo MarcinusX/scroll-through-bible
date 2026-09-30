@@ -399,7 +399,8 @@ export function roadSet(S, { skyCols = GOLDEN, sunAt = [300, 300] } = {}) {
   const g = sheet().p(c.ridge(gfn, -900, 2500, 1700, 12, 1), mix(C.sage2, C.sand, 0.35));
   G.add(g.out());
   // the road, widening towards us
-  G.add(sheet().p(c.cut([[ROAD[0][0] - 160, 1700], ...ROAD.map(([x, y]) => [x - 6 - (y - 494) * 0.55, y]), ...ROAD.slice().reverse().map(([x, y]) => [x + 6 + (y - 494) * 0.55, y]), [ROAD[0][0] + 180, 1700]], 0.6, 8), mix(C.sand, C.cream, 0.3)).out());
+  // (the road keeps widening towards us below the figures: a phone shows it far down the screen)
+  G.add(sheet().p(c.cut([[ROAD[0][0] - 560, 1700], ...ROAD.map(([x, y]) => [x - 6 - (y - 494) * 0.55, y]), ...ROAD.slice().reverse().map(([x, y]) => [x + 6 + (y - 494) * 0.55, y]), [ROAD[0][0] + 580, 1700]], 0.6, 8), mix(C.sand, C.cream, 0.3)).out());
   G.add(grass(c, { x0: -800, x1: 2400, y: 520, fn: gfn, n: 40, h: 10, color: C.moss }) + olive(c, 1180, 640, 0.9) + olive(c, 250, 700, 0.8) + bush(c, 1420, 700, 120, C.sage, C.moss));
   return {
     sk, hangL, sunEl, cl, G, gfn,

@@ -19,7 +19,7 @@ export default {
     { v: 10, cont: true, text: 'A w miejscu tym było wiele trawy.' },
     { v: 10, cont: true, text: 'Usiedli więc mężczyźni, a liczba ich dochodziła do pięciu tysięcy.' },
   ],
-  cam: { x: [-30, 30], y: [-40, 60], z: [0.94, 1.16] },
+  cam: { x: [-30, 30], y: [-40, 60], z: [0.86, 1.16] },
   build(S) {
     const c = S.c;
     const H = hillSet(S, { skyCols: SPRING });
@@ -64,7 +64,9 @@ export default {
 
     /* Jesus and the disciples on the knoll; Andrew and the boy */
     const L = S.layer({ par: 0.5, sh: 5 });
-    const SEAT = [[-340, TW.james, false], [260, LOOK.philip, true], [340, TW.john, true]];
+    // phone: the disciples sit closer in, so none of them is sliced by the screen edge
+    const P = S.portrait;
+    const SEAT = P ? [[-310, TW.james, false], [200, LOOK.philip, true], [275, TW.john, true]] : [[-340, TW.james, false], [260, LOOK.philip, true], [340, TW.john, true]];
     const seated = SEAT.map(([dx, o, fl], i) => ({ i, x: JX + dx, fl, seed: c.rr(0, 9), st: S.puppet(L.add(person(c, o))), si: S.puppet(L.add(person(c, { ...o, pose: 'sit' }))) }));
     const peter = S.puppet(L.add(person(c, { ...TW.peter, pose: 'sit' })));
     const andrew = S.puppet(L.add(person(c, { ...TW.andrew })));
@@ -85,6 +87,7 @@ export default {
     const t5000 = hanging(fx, `<g transform="scale(1.25)">${labelTag(tr('ok. 5000 mężczyzn', 'about 5000 men'), 22)}</g>`, { x: 0, y: 0, len: 800 });
 
     const BK = [[0.7, 330], [1.25, 690]];
+    const PEX = P ? 556 : 540;
     return (t, time) => {
       const T = time;
       H.update(T);
@@ -94,7 +97,7 @@ export default {
       const ax = lerp(560, 620, aUp);
       const wide = es(t, 2.05, 2.3) * (1 - es(t, 2.95, 3.1));
       andrew.set({ x: ax, y: gfn(ax) + 16, s: 1.0, flip: false, armF: 20 + bump(t, 0.3, 1.0) * 60 + es(t, 1.05, 1.3) * 30 * (1 - es(t, 1.9, 2.05)) + wide * 60, armB: wide * 140 + bump(t, 0.35, 0.9) * 30, head: wide * -6, o: aUp > 0.01 ? 1 : 1, blink: blinkAt(T, 2) });
-      peter.set({ x: 540, y: gfn(540) + 16, s: 0.94, flip: false, armF: 30 + bump(t, 0.3, 1.0) * 30, armB: 10, head: bump(t, 0.3, 1.0) * 6, blink: blinkAt(T, 4) });
+      peter.set({ x: PEX, y: gfn(PEX) + 16, s: 0.94, flip: false, armF: 30 + bump(t, 0.3, 1.0) * 30, armB: 10, head: bump(t, 0.3, 1.0) * 6, blink: blinkAt(T, 4) });
       const tk = es(t, 0.15, 0.45, ease.out) * (1 - es(t, 0.95, 1.15));
       const [ahx, ahy] = headAt(ax, gfn(ax) + 16, 1.0, false);
       pose(aTag, { x: ahx, y: lerp(-500, ahy - 150, tk), r: Math.sin(T * 1.1) * 2, o: tk > 0.01 ? 1 : 0 });
@@ -138,7 +141,7 @@ export default {
       seated.forEach((d) => {
         const up = es(t, 3.2 + d.i * 0.05, 3.3 + d.i * 0.05) * (1 - es(t, 5.4, 5.5));
         const dir = d.fl ? 1 : -1;
-        const x = d.x + dir * go * 60;
+        const x = d.x + dir * go * (P ? 24 : 60);
         const o = { x, y: gfn(x) + 14, s: 0.94, blink: blinkAt(T, d.seed) };
         d.st.set({ ...o, flip: !d.fl, o: up, armF: 60 + Math.sin(T * 3 + d.i) * 20 * go, armB: 100 + Math.sin(T * 3 + d.i + 1) * 30 * go, walk: go > 0.02 && go < 0.98 ? x * 0.06 : undefined });
         d.si.set({ ...o, x: d.x, y: gfn(d.x) + 14, flip: d.fl, o: 1 - up, armF: 20, armB: 10, head: -es(t, 2.05, 2.3) * 6 });
@@ -160,7 +163,7 @@ export default {
       const k5 = es(t, 5.3, 5.55, ease.back);
       pose(t5000, { x: 800, y: lerp(-500, 250, k5), r: Math.sin(T * 1.1) * 2, o: k5 > 0.01 ? 1 : 0 });
 
-      S.cam.z = kf(t, [[0, 1.1], [0.9, 1.12], [1.3, 1.14], [2.0, 1.12], [2.4, 0.98], [3.0, 0.98], [3.3, 1.02], [4.0, 1.0], [4.5, 0.96], [5.5, 0.94]]);
+      S.cam.z = kf(t, [[0, 1.1], [0.9, 1.12], [1.3, 1.14], [2.0, 1.12], [2.4, 0.98], [3.0, 0.98], [3.3, 1.02], [4.0, 1.0], [4.5, 0.96], [5.5, 0.94]]) * (P ? 0.92 : 1);
       S.cam.y = kf(t, [[0, 50], [1.3, 60], [2.0, 50], [2.4, 0], [3.3, 10], [4.5, -20], [5.5, -30]]);
       S.cam.x = kf(t, [[0, -20], [1.0, -10], [1.5, 0], [2.4, 0]]);
     };

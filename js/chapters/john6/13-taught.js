@@ -81,6 +81,9 @@ export default {
     const wither = fx.add(`<g><path d="${c.ribbon(c.qbez([0, 0], [4, -30], [22, -40], 8), 3)}" fill="${C.olive}"/><path d="${c.cut(c.blob(24, -40, 7, 5, 8, 0.2), 0.2, 3)}" fill="${C.wood3}"/></g>`);
     const bloom = fx.add(`<g><path d="${c.ribbon([[0, 0], [0, -64]], 4)}" fill="${C.moss}"/><path d="${c.cut(c.ell(-12, -34, 12, 5, 10, -0.5), 0.2, 3) + c.cut(c.ell(12, -44, 12, 5, 10, 0.5), 0.2, 3)}" fill="${C.leaf}"/>${flowers(c, { x0: -2, x1: 2, y: -58, n: 1, h: 10 })}<path d="${c.cut(c.star(0, -70, 16, 8, 8, 0), 0.3, 3)}" fill="${C.jesusMantle}"/><path d="${c.poly(c.circ(0, -70, 5, 8))}" fill="${C.sun}"/></g>`);
 
+    // phone: the prophet's scroll hangs further in (below the light), the manna picture further right
+    const P = S.portrait;
+    const SX = P ? 905 : 1060, SY = P ? 262 : 140, MX = P ? 622 : 560;
     return (t, time) => {
       const T = time;
       I.flicker(T);
@@ -88,9 +91,9 @@ export default {
       /* v45a — "They shall all be taught by God" */
       const sk = es(t, 0.05, 0.35, ease.out) * (1 - es(t, 1.9, 2.05));
       const un = es(t, 0.3, 0.6);
-      pose(rodT, { x: 1060, y: lerp(-500, 140, sk), o: sk > 0.01 ? 1 : 0 });
-      pose(scrollG, { x: 1060, y: lerp(-500, 140, sk), sy: Math.max(0.02, un), o: sk > 0.01 ? 1 : 0 });
-      pose(rodB, { x: 1060, y: lerp(-500, 140, sk) + V.h * un, o: sk > 0.01 ? 1 : 0 });
+      pose(rodT, { x: SX, y: lerp(-500, SY, sk), o: sk > 0.01 ? 1 : 0 });
+      pose(scrollG, { x: SX, y: lerp(-500, SY, sk), sy: Math.max(0.02, un), o: sk > 0.01 ? 1 : 0 });
+      pose(rodB, { x: SX, y: lerp(-500, SY, sk) + V.h * un, o: sk > 0.01 ? 1 : 0 });
       /* the light above; v45b — the Father's voice in rings */
       const rk = es(t, 0.4, 0.8) * (1 - es(t, 2.05, 2.4) * 0.6) + es(t, 2.9, 3.2) * 0.4;
       pose(rad, { x: JX, y: 170, s: 0.8 + rk * 0.2, r: T * 3, o: Math.min(1, rk) });
@@ -138,7 +141,7 @@ export default {
 
       /* v49 — your fathers ate the manna in the wilderness, and they died */
       const pk = es(t, 5.05, 5.35, ease.out);
-      pose(plate, { x: 560, y: lerp(-500, 300, pk), r: Math.sin(T * 0.8) * 1, o: pk > 0.01 ? 1 : 0 });
+      pose(plate, { x: MX, y: lerp(-500, 300, pk), r: Math.sin(T * 0.8) * 1, o: pk > 0.01 ? 1 : 0 });
       if (grey) grey.setAttribute('opacity', String(es(t, 5.4, 5.8) * 0.55));
       /* v50 — the bread that comes down from heaven, that whoever eats of it may not die */
       const come = es(t, 6.05, 6.5);

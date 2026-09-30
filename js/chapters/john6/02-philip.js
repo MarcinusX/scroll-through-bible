@@ -60,6 +60,7 @@ export default {
     const loaves = [0, 1, 2, 3, 4, 5].map((i) => ({ i, el: fx.add(`<g>${barleyLoaf(c, 14)}</g>`) }));
     const say7 = fx.add(`<g>${speech(c, `<g transform="translate(-14 4)">${coin(c, 9)}</g><path d="${c.ribbon([[-2, 2], [8, 2]], 2.4)}" fill="${C.ink}"/><path d="M8 -3L14 2L8 7Z" fill="${C.ink}"/><g transform="translate(24 10)">${crumb(c, 6)}</g>`, { w: 80, h: 48, flip: true })}</g>`);
 
+    const CX = S.portrait ? 985 : 1080;   // phone: the counting stays inside the screen
     return (t, time) => {
       const T = time;
       H.update(T);
@@ -103,15 +104,15 @@ export default {
       const sayK = es(t, 4.05, 4.25, ease.back) * (1 - es(t, 4.75, 4.9));
       pose(say7, { x: phx - 26, y: phy - 18, s: sayK, o: sayK > 0.01 ? 1 : 0 });
       const cz = es(t, 4.08, 4.3, ease.out);
-      coins.forEach((co) => pose(co.el, { x: 1080 + co.x, y: lerp(120, 250, es(t, 4.08 + co.i * 0.03, 4.28 + co.i * 0.03, ease.out)), s: 1.1, o: cz }));
-      pose(d200, { x: 1080, y: 282, s: cz, o: cz > 0.01 ? 1 : 0 });
+      coins.forEach((co) => pose(co.el, { x: CX + co.x, y: lerp(120, 250, es(t, 4.08 + co.i * 0.03, 4.28 + co.i * 0.03, ease.out)), s: 1.1, o: cz }));
+      pose(d200, { x: CX, y: 282, s: cz, o: cz > 0.01 ? 1 : 0 });
       const lv = es(t, 4.28, 4.4, ease.back);
-      loaves.forEach((l) => pose(l.el, { x: 1080 + (l.i - 2.5) * 30, y: 336 - (l.i % 2) * 6, s: lv, o: lv > 0.01 ? 1 - es(t, 4.4 + l.i * 0.03, 4.46 + l.i * 0.03) * 0.75 : 0 }));
+      loaves.forEach((l) => pose(l.el, { x: CX + (l.i - 2.5) * 30, y: 336 - (l.i % 2) * 6, s: lv, o: lv > 0.01 ? 1 - es(t, 4.4 + l.i * 0.03, 4.46 + l.i * 0.03) * 0.75 : 0 }));
       crumbs.forEach((cb, i) => {
         const a = 4.38 + i * 0.025, k = es(t, a, a + 0.14);
         const got = i % 4 === 1;
         const g = cb.g, gy = sfn(g.x) + g.dy - 36;
-        pose(cb.el, { x: lerp(1080, g.x + (JX - g.x) * 0.08, k), y: lerp(336, gy, k) - Math.sin(k * PI) * 60, s: 0.8, r: k * 200, o: got && k > 0 ? 1 : 0 });
+        pose(cb.el, { x: lerp(CX, g.x + (JX - g.x) * 0.08, k), y: lerp(336, gy, k) - Math.sin(k * PI) * 60, s: 0.8, r: k * 200, o: got && k > 0 ? 1 : 0 });
         const q = es(t, 4.52 + i * 0.015, 4.62 + i * 0.015, ease.back);
         pose(qs[i], { x: g.x + (JX - g.x) * 0.08, y: gy - 14, s: got ? 0 : q * 0.9, r: Math.sin(T * 2 + i) * 8, o: !got && q > 0.01 ? 1 : 0 });
       });

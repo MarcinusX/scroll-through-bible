@@ -21,19 +21,21 @@ export default {
     { v: 71, text: 'Mówił zaś o Judaszu, synu Szymona Iskarioty.' },
     { v: 71, cont: true, text: 'Ten bowiem - jeden z Dwunastu - miał Go wydać.' },
   ],
-  cam: { x: [-20, 30], y: [-30, 50], z: [1, 1.12] },
+  cam: { x: [-20, 100], y: [-30, 50], z: [0.88, 1.12] },
   build(S) {
     const c = S.c;
     const R = roadSet(S, { skyCols: DUSK, sunAt: [300, 460] });
     const tint = S.layer({ par: 0, sh: 1, flat: true });
     tint.add(`<rect x="-3000" y="-3000" width="8000" height="8000" fill="#3a2a4a"/>`);
 
+    // phone: the Twelve stand closer together, so Judas at the far end, his shadow and his name are on the screen
+    const PH = S.portrait;
     const L = S.layer({ par: 0.5, sh: 5 });
     // the signpost at the road with no other way to point
-    const post = L.add(`<g transform="translate(455 770)">${sheet().p(c.ribbon([[0, 0], [0, -150]], 7), C.wood2).out()}<g class="arm">${sheet().p(c.cut([[-4, -150], [70, -150], [84, -138], [70, -126], [-4, -126]], 0.4, 5), C.wood3).out()}</g></g>`);
+    const post = L.add(`<g transform="translate(${PH ? 250 : 455} 770)">${sheet().p(c.ribbon([[0, 0], [0, -150]], 7), C.wood2).out()}<g class="arm">${sheet().p(c.cut([[-4, -150], [70, -150], [84, -138], [70, -126], [-4, -126]], 0.4, 5), C.wood3).out()}</g></g>`);
     const arm = post.querySelector('.arm');
     // the Twelve (Peter steps forward), a soft shadow at the far end over Judas
-    const SP = [[690, 756], [980, 750], [1040, 758], [620, 764], [1100, 752], [560, 760], [1160, 758], [940, 786], [1000, 790], [1060, 792], [1130, 786], [1250, 772]];
+    const SP = PH ? [[690, 756], [945, 750], [990, 758], [622, 764], [1035, 752], [556, 760], [1080, 758], [912, 786], [957, 790], [1002, 792], [1047, 786], [1135, 772]] : [[690, 756], [980, 750], [1040, 758], [620, 764], [1100, 752], [560, 760], [1160, 758], [940, 786], [1000, 790], [1060, 792], [1130, 786], [1250, 772]];
     const shId = S.id('shade');
     S.defs(`<radialGradient id="${shId}"><stop offset="0" stop-color="#1e1830" stop-opacity=".6"/><stop offset="1" stop-color="#1e1830" stop-opacity="0"/></radialGradient>`);
     const shadow = L.add(`<g><ellipse rx="90" ry="140" cy="-100" fill="url(#${shId})"/></g>`);
@@ -109,20 +111,20 @@ export default {
         }
       });
       const k12 = es(t, 3.2, 3.45, ease.back) * (1 - es(t, 3.95, 4.1));
-      pose(n12, { x: 1000, y: 560, s: k12, o: k12 > 0.01 ? 1 : 0 });
+      pose(n12, { x: PH ? 990 : 1000, y: 560, s: k12, o: k12 > 0.01 ? 1 : 0 });
       const J = TW[11];
       pose(shadow, { x: J.x, y: J.y, o: dark * (0.7 + es(t, 6.05, 6.4) * 0.3) });
 
       /* v71a — Judas, son of Simon Iscariot */
       const tk = es(t, 5.05, 5.4, ease.out);
-      pose(jTag, { x: J.x - 10, y: lerp(-500, 470, tk), r: Math.sin(T * 0.9) * 2, o: tk > 0.01 ? 1 : 0 });
+      pose(jTag, { x: J.x - (PH ? 62 : 10), y: lerp(-500, 470, tk), r: Math.sin(T * 0.9) * 2, o: tk > 0.01 ? 1 : 0 });
 
       const bless = es(t, 3.05, 3.35) * (1 - es(t, 4.1, 4.3));
       jesus.set({ x: JX, y: JY, s: 1.08, flip: false, armF: 20 + bump(t, 0.2, 1.0) * 20 + bump(t, 2.1, 2.95) * 50 + bless * 70, armB: 10 + bless * 110 + bump(t, 2.1, 2.95) * 40, head: es(t, 4.1, 4.4) * 8 * (1 - es(t, 6.2, 6.6) * 0.5), blink: blinkAt(T, 1) });
       pose(jGlow, { x: JX, y: JY - 130, s: 0.8 + bump(t, 1.1, 2.9) * 0.5, o: 0.3 + bump(t, 1.1, 2.9) * 0.5 });
 
-      S.cam.x = kf(t, [[0, -10], [1.0, 0], [3.0, 10], [5.0, 30], [6.5, 20]]);
-      S.cam.z = kf(t, [[0, 1.08], [1.0, 1.06], [2.1, 1.04], [3.1, 1.02], [5.1, 1.08], [6.5, 1.04]]);
+      S.cam.x = kf(t, [[0, -10], [1.0, 0], [3.0, 10], [5.0, 30], [6.5, 20]]) + (PH ? 70 : 0);
+      S.cam.z = kf(t, [[0, 1.08], [1.0, 1.06], [2.1, 1.04], [3.1, 1.02], [5.1, 1.08], [6.5, 1.04]]) * (PH ? 0.88 : 1);
       S.cam.y = kf(t, [[0, 40], [1.0, 20], [2.1, 30], [3.1, 20], [5.1, 40], [6.5, 30]]);
     };
   },

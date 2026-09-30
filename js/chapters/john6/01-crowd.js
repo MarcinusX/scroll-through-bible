@@ -97,7 +97,11 @@ export default {
     const cur = curtains(S);
 
     // Jesus' path: out of the boat on the right shore, up to the top of the knoll
-    const JK = [[4.05, 1200], [4.6, KX]];
+    // phone: the boat lands inside the narrow screen, and the crowd is already in view during its own sentence
+    const P = S.portrait;
+    const LAND = P ? 1040 : 1190;
+    const PX = P ? 960 : 1040;
+    const JK = [[4.05, P ? 1050 : 1200], [4.6, KX]];
     return (t, time) => {
       const T = time;
       cur.set(es(t, 0.05, 0.85), T);
@@ -107,7 +111,7 @@ export default {
 
       /* v1 — across the sea */
       const cross = es(t, 1.0, 1.85, ease.io);
-      const bx = lerp(250, 1190, cross), by = lerp(470, 640, cross), bs = lerp(0.34, 0.5, cross);
+      const bx = lerp(250, LAND, cross), by = lerp(470, 640, cross), bs = lerp(0.34, 0.5, cross);
       pose(boat, { x: bx, y: by + Math.sin(T * 1.2) * 2, s: bs, r: Math.sin(T * 0.9) * 1.4 });
       pose(wake, { x: bx - 70 * bs * 2, y: by + 2, s: bs * 1.6, r: 8, o: cross > 0.02 && cross < 0.98 ? 0.8 : 0 });
       const nk = es(t, 1.1, 1.4, ease.out) * (1 - es(t, 1.95, 2.15));
@@ -116,7 +120,7 @@ export default {
       /* v2a — a great crowd follows along the shore road */
       const flow = es(t, 2.0, 4.9, (u) => u);
       GROUPS.forEach((g) => {
-        const x = g.x0 + flow * 1500;
+        const x = P ? g.x0 + 690 + kf(t, [[2.0, 0], [2.7, 560], [4.9, 810]], (u) => u) : g.x0 + flow * 1500;
         const walking = t > 2.0 && t < 4.9;
         pose(g.el, { x, y: rfn(x) - (walking ? Math.abs(Math.sin(x * 0.05 + g.g)) * 3 : 0), o: x > -300 && x < 1900 ? 1 : 0 });
       });
@@ -145,7 +149,7 @@ export default {
       dis.forEach((d) => {
         const k = es(t, 4.1 + d.i * 0.04, 4.62 + d.i * 0.03);
         const sx = KX + d.dx;
-        const x = lerp(1200 + d.i * 30, sx, k);
+        const x = lerp(P ? 1050 + d.i * 10 : 1200 + d.i * 30, sx, k);
         const sk_ = es(t, 4.66 + d.i * 0.02, 4.74 + d.i * 0.02);
         const turn = sx > KX;
         d.w.set({ x, y: hfn(x) + 10, s: 0.74, flip: true, walk: k > 0 && k < 1 ? x * 0.07 + d.i : undefined, o: onShore * (1 - sk_), blink: blinkAt(T, d.seed) });
@@ -155,11 +159,11 @@ export default {
 
       /* v4 — Passover is near */
       const pk = es(t, 5.05, 5.4, ease.out);
-      pose(plate, { x: 1040, y: lerp(-480, 250, pk), r: Math.sin(T * 0.8) * 1.6, o: pk > 0.01 ? 1 : 0 });
+      pose(plate, { x: PX, y: lerp(-480, 250, pk), r: Math.sin(T * 0.8) * 1.6, o: pk > 0.01 ? 1 : 0 });
       sparks.forEach((sp, i) => {
         const k = es(t, 5.3 + i * 0.06, 5.5 + i * 0.06);
         const a = i * 1.6 + T * 0.4;
-        pose(sp, { x: 1040 + Math.cos(a) * 90, y: 250 + Math.sin(a) * 60, s: k * (0.7 + Math.sin(T * 2 + i) * 0.2), r: T * 40, o: k * 0.9 });
+        pose(sp, { x: PX + Math.cos(a) * 90, y: 250 + Math.sin(a) * 60, s: k * (0.7 + Math.sin(T * 2 + i) * 0.2), r: T * 40, o: k * 0.9 });
       });
       blooms.forEach((b) => {
         const k = es(t, 5.1 + b.i * 0.07, 5.35 + b.i * 0.07, ease.back);

@@ -84,7 +84,8 @@ export default {
       pose(ring, { x: MX + 4, y: mhy + 20, r: t * 30, o: seg(t, 0.55, 0.6) * (1 - es(t, 1.0, 1.15)) });
       /* v54b — raised up on the last day */
       const lk = es(t, 1.05, 1.35, ease.out) * (1 - es(t, 1.95, 2.1));
-      pose(last, { x: 1060, y: lerp(-500, 240, lk), r: Math.sin(T * 0.8) * 1.4, o: lk > 0.01 ? 1 : 0 });
+      pose(last, { x: S.portrait ? 975 : 1060,   // phone: inside the screen, clear of the thread
+         y: lerp(-500, 240, lk), r: Math.sin(T * 0.8) * 1.4, o: lk > 0.01 ? 1 : 0 });
       const mg = Math.max(es(t, 1.2, 1.5) * (1 - es(t, 2.0, 2.3)), es(t, 5.2, 5.6));
       pose(mGlow, { x: MX, y: FEET - 110, s: 0.8 + mg * 0.6, o: mg });
 

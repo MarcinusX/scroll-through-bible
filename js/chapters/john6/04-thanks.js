@@ -53,7 +53,8 @@ export default {
     const glowEl = L.add(`<g><circle r="110" fill="url(#halo-glow)"/></g>`);
     const BASK = Array.from({ length: 12 }, (_, i) => {
       const side = i < 6 ? -1 : 1, k = i % 6;
-      const x = side < 0 ? 440 + k * 46 : 930 + k * 46;
+      // phone: the twelve baskets stand closer together, all twelve inside the screen
+      const x = S.portrait ? (side < 0 ? 480 + k * 38 : 930 + k * 38) : side < 0 ? 440 + k * 46 : 930 + k * 46;
       return { i, x, y: gfn(x) + 40 + (k % 2) * 6, e: L.add(`<g>${basket(c, { w: 42, h: 26 })}</g>`), f: L.add(`<g>${basket(c, { w: 42, h: 26, full: true })}</g>`) };
     });
 

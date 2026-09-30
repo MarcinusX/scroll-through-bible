@@ -19,7 +19,7 @@ export default {
     { v: 63, text: 'Duch daje życie; ciało na nic się nie przyda.' },
     { v: 63, cont: true, text: 'Słowa, które Ja wam powiedziałem, są duchem i są życiem.' },
   ],
-  cam: { x: [-20, 20], y: [-30, 40], z: [1, 1.12] },
+  cam: { x: [-20, 20], y: [-30, 40], z: [0.96, 1.12] },
   build(S) {
     const c = S.c;
     const back = S.layer({ par: 0.25, sh: 3 });
@@ -29,7 +29,9 @@ export default {
 
     const L = S.layer({ par: 0.5, sh: 5 });
     const stone = L.add(`<g>${rock(c, 0, 0, 56, 26, C.rock2)}</g>`);
-    const DIS = [[390, 0], [470, 1], [560, 2], [1060, 3], [1150, 4], [1240, 5]].map(([x, i]) => ({ x, i, seed: c.rr(0, 9), p: S.puppet(L.add(person(c, folk(c, i % 3 !== 1)))) }));
+    // phone: the nearer disciples stand inside the screen, whole
+    const P = S.portrait;
+    const DIS = (P ? [[380, 0], [495, 1], [570, 2], [1040, 3], [1110, 4], [1260, 5]] : [[390, 0], [470, 1], [560, 2], [1060, 3], [1150, 4], [1240, 5]]).map(([x, i]) => ({ x, i, seed: c.rr(0, 9), p: S.puppet(L.add(person(c, folk(c, i % 3 !== 1)))) }));
     const jGlow = L.add(`<g>${glowDisc(150, 'halo-glow', 1)}</g>`);
     const jesus = S.puppet(L.add(person(c, { ...CAST.jesus })));
     // the bare sprig in a pot by the door
@@ -71,7 +73,7 @@ export default {
       pose(stumble, { x: 610, y: FEET - 190, s: sk, o: sk > 0.01 ? 1 : 0 });
       /* v62 — the Son of Man going up where He was before */
       const ak = es(t, 2.05, 2.4, ease.out) * (1 - es(t, 2.95, 3.1));
-      pose(ascEl, { x: 1000, y: lerp(-500, 260, ak), r: Math.sin(T * 0.8), o: ak > 0.01 ? 1 : 0 });
+      pose(ascEl, { x: P ? 965 : 1000, y: lerp(-500, 260, ak), r: Math.sin(T * 0.8), o: ak > 0.01 ? 1 : 0 });
       pose(riseEl, { y: -es(t, 2.3, 2.9) * 40 });
       /* v63a — the Spirit gives life: a dove passes, the sprig bursts into leaf */
       const fly = es(t, 3.05, 3.7, (u) => u);
@@ -98,7 +100,7 @@ export default {
 
       jesus.set({ x: JX, y: FEET, s: 1.08, flip: know > 0.5 && t < 1.0 ? true : false, armF: 20 + es(t, 0.9, 1.2) * 50 + bump(t, 2.05, 2.95) * 30 + bump(t, 3.05, 3.9) * 40 + es(t, 4.05, 4.3) * 40, armB: 10 + bump(t, 2.05, 2.95) * 140 + es(t, 4.05, 4.3) * 90, head: -bump(t, 2.05, 2.95) * 12, blink: blinkAt(T, 1) });
 
-      S.cam.z = kf(t, [[0, 1.04], [1.0, 1.08], [2.0, 1.04], [3.0, 1.02], [4.0, 1.06]]);
+      S.cam.z = kf(t, [[0, 1.04], [1.0, 1.08], [2.0, 1.04], [3.0, 1.02], [4.0, 1.06]]) * (P ? 0.95 : 1);
       S.cam.y = kf(t, [[0, 20], [1.0, 30], [2.0, 0], [3.0, 10], [4.0, 10]]);
     };
   },

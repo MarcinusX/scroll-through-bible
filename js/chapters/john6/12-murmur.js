@@ -37,9 +37,12 @@ export default {
     const jesus = S.puppet(L.add(person(c, { ...CAST.jesus })));
     I.addColumns();
 
+    // phone: the family portrait and the plate of the last day hang inside the narrow screen
+    const P = S.portrait;
+    const FX = P ? 955 : 1060, DX = P ? 975 : 1070;
     const fx = S.layer({ par: 0.6, sh: 5 });
     const quote = fx.add(hungWord(c, tr('«Jam jest chleb, który z nieba zstąpił»', '“I am the bread which came down out of heaven”'), { size: 20 }));
-    const MUR = [0, 2, 3, 5, 7, 8].map((ci, i) => ({ m: cong[ci], i, el: fx.add(`<g>${murmur(c, { side: cong[ci].x > JX ? -1 : 1 })}</g>`) }));
+    const MUR = (P ? cong.map((m, i) => i).filter((i) => i !== 6).sort((a, b) => Math.abs(cong[a].x - JX) - Math.abs(cong[b].x - JX)).slice(0, 6) : [0, 2, 3, 5, 7, 8]).map((ci, i) => ({ m: cong[ci], i, el: fx.add(`<g>${murmur(c, { side: cong[ci].x > JX ? -1 : 1 })}</g>`) }));
     const fam = fx.add(`<g>${familyPlate(S)}</g>`);
     const famTag = fx.add(`<g>${labelTag(tr('syn Józefa', 'son of Joseph'), 18)}</g>`);
     const how = fx.add(`<g>${speech(c, `<g transform="translate(-18 -2) scale(.26)">${cloud(c, 120)}</g><path d="${c.ribbon([[4, -14], [4, 8]], 3)}" fill="${C.ink}"/><path d="M-2 4L4 14L10 4Z" fill="${C.ink}"/><g transform="translate(24 0) scale(.7)">${GLYPH.q(c)}</g>`, { w: 88, h: 52, flip: true })}</g>`);
@@ -64,9 +67,9 @@ export default {
 
       /* v42a — "the son of Joseph; we know his father and mother" */
       const fk = es(t, 1.05, 1.4, ease.out) * (1 - es(t, 2.95, 3.15));
-      pose(fam, { x: 1060, y: lerp(-500, 150, fk), r: Math.sin(T * 0.8) * 1.2, o: fk > 0.01 ? 1 : 0 });
+      pose(fam, { x: FX, y: lerp(-500, 150, fk), r: Math.sin(T * 0.8) * 1.2, o: fk > 0.01 ? 1 : 0 });
       const tk = es(t, 1.3, 1.5, ease.back) * (1 - es(t, 2.95, 3.1));
-      pose(famTag, { x: 1060, y: 420, s: tk, r: -3, o: tk > 0.01 ? 1 : 0 });
+      pose(famTag, { x: FX, y: 420, s: tk, r: -3, o: tk > 0.01 ? 1 : 0 });
       /* v42b — "how can He say: I came down from heaven?" */
       const m0 = cong[6];
       const hk = es(t, 2.1, 2.3, ease.back) * (1 - es(t, 2.9, 3.05));
@@ -100,8 +103,8 @@ export default {
       });
       /* v44b — I will raise him up on the last day */
       const lk = es(t, 5.1, 5.4, ease.out);
-      pose(last, { x: 1070, y: lerp(-500, 230, lk), r: Math.sin(T * 0.8) * 1.4, o: lk > 0.01 ? 1 : 0 });
-      pose(lastW, { x: 1070, y: lerp(-500, 330, lk), r: Math.sin(T + 1) * 2, o: lk > 0.01 ? 1 : 0 });
+      pose(last, { x: DX, y: lerp(-500, 230, lk), r: Math.sin(T * 0.8) * 1.4, o: lk > 0.01 ? 1 : 0 });
+      pose(lastW, { x: DX, y: lerp(-500, 330, lk), r: Math.sin(T + 1) * 2, o: lk > 0.01 ? 1 : 0 });
       const warm = es(t, 5.2, 5.6);
       pose(jGlow, { x: JX, y: FEET - 130, s: 0.8 + warm * 0.8, o: 0.25 + warm * 0.6 });
 

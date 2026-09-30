@@ -43,14 +43,18 @@ export default {
     const jesus = S.puppet(L.add(person(c, { ...CAST.jesus })));
     I.addColumns();
 
+    // phone: the plate of the last day hangs further in; the signs appear over the people who are on the screen
+    const P = S.portrait;
+    const DX = P ? 975 : 1080;
     const fx = S.layer({ par: 0.6, sh: 4 });
     const N = 12;
     const souls = Array.from({ length: N }, (_, i) => ({ i, a: (i / N) * PI * 2, el: fx.add(`<g>${soulLight(c, 10)}</g>`) }));
     const lastDay = hanging(fx, `${dawnDisc(c, 52)}<text x="0" y="82" text-anchor="middle" font-family="EB Garamond, Georgia, serif" font-size="19" font-style="italic" fill="${C.ink}"></text>`, { x: 0, y: 0, len: 900 });
     const dayWord = fx.add(hungWord(c, tr('dzień ostateczny', 'the last day'), { size: 20 }));
-    const rings = [0, 3, 6, 8].map((ci, i) => ({ m: cong[ci], i, el: fx.add(`<g>${eternityRing(c, 34, 3, 18)}</g>`) }));
-    const eyes = [0, 3, 6, 8].map((ci, i) => ({ m: cong[ci], i, el: fx.add(`<g>${eyeIcon(c, true, 10)}</g>`) }));
-    const hearts = [0, 3, 6, 8].map((ci) => fx.add(`<g>${heart(c, 8)}</g>`));
+    const WHO = P ? cong.map((m, i) => i).sort((a, b) => Math.abs(cong[a].x - JX) - Math.abs(cong[b].x - JX)).slice(0, 4) : [0, 3, 6, 8];
+    const rings = WHO.map((ci, i) => ({ m: cong[ci], i, el: fx.add(`<g>${eternityRing(c, 34, 3, 18)}</g>`) }));
+    const eyes = WHO.map((ci, i) => ({ m: cong[ci], i, el: fx.add(`<g>${eyeIcon(c, true, 10)}</g>`) }));
+    const hearts = WHO.map((ci) => fx.add(`<g>${heart(c, 8)}</g>`));
 
     return (t, time) => {
       const T = time;
@@ -76,7 +80,7 @@ export default {
         let x = JX + Math.cos(a) * r, y = FEET - 150 + Math.sin(a) * r * 0.55;
         if (s === gone) {
           const stray = bump(t, 1.5, 2.0);
-          x += stray * 330; y -= stray * 60;
+          x += stray * (P ? 190 : 330); y -= stray * 60;
         }
         /* v39b — raised up on the last day */
         const rise = es(t, 2.2, 2.7);
@@ -84,8 +88,8 @@ export default {
         pose(s.el, { x: sx, y: sy, s: 0.8 + rise * 0.4, o: seg(t, 1.05, 1.12) * (1 - es(t, 2.9, 3.05)) });
       });
       const dk = es(t, 2.1, 2.4, ease.out) * (1 - es(t, 2.95, 3.1)) + es(t, 4.1, 4.4, ease.out);
-      pose(lastDay, { x: 1080, y: lerp(-500, 240, Math.min(1, dk)), r: Math.sin(T * 0.8) * 1.4, o: dk > 0.01 ? 1 : 0 });
-      pose(dayWord, { x: 1080, y: lerp(-500, 350, Math.min(1, dk)), r: Math.sin(T * 1.1 + 1) * 2, o: dk > 0.01 ? 1 : 0 });
+      pose(lastDay, { x: DX, y: lerp(-500, 240, Math.min(1, dk)), r: Math.sin(T * 0.8) * 1.4, o: dk > 0.01 ? 1 : 0 });
+      pose(dayWord, { x: DX, y: lerp(-500, 350, Math.min(1, dk)), r: Math.sin(T * 1.1 + 1) * 2, o: dk > 0.01 ? 1 : 0 });
 
       /* v40a — everyone who sees the Son and believes: eternal life */
       const see = es(t, 3.05, 3.3);

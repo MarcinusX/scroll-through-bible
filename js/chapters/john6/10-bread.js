@@ -35,7 +35,8 @@ export default {
     const L = S.layer({ par: I.P, sh: 4 });
     const cong = I.congregation(L);
     // on the front benches: people holding out empty bowls and cups
-    const HOLD = [[330, 'bowl'], [430, 'cup'], [1180, 'bowl'], [1280, 'cup'], [1380, 'bowl']].map(([x, kind], i) => {
+    // (phone: they sit at the inner ends of the benches, so the bowls and cups that fill are on the screen)
+    const HOLD = (S.portrait ? [[505, 'bowl'], [585, 'cup'], [1015, 'bowl'], [1095, 'cup'], [1380, 'bowl']] : [[330, 'bowl'], [430, 'cup'], [1180, 'bowl'], [1280, 'cup'], [1380, 'bowl']]).map(([x, kind], i) => {
       const el = L.add(person(c, { ...folk(c, i % 2 === 0), pose: 'sit', holdF: `<g transform="rotate(${kind === 'bowl' ? 80 : 84}) translate(0 -2)">${kind === 'bowl' ? fillBowl(c, { w: 30 }) : waterCup(c)}</g>` }));
       const fillEl = el.querySelector(kind === 'bowl' ? '.fill' : '.water');
       return { x, i, kind, seed: c.rr(0, 9), p: S.puppet(el), fillEl };

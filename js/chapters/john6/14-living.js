@@ -30,7 +30,9 @@ export default {
     const cross = crossL.add(`<g><path d="${c.poly([[-16, -330], [16, -330], [16, 120], [-16, 120]])}" fill="#fff4d0"/><path d="${c.poly([[-150, -210], [150, -210], [150, -180], [-150, -180]])}" fill="#fff4d0"/></g>`);
     const L = S.layer({ par: I.P, sh: 4 });
     const cong = I.congregation(L);
-    const ARG = [[340, true], [430, true], [1180, true], [1280, false]].map(([x, man], i) => ({ x, i, seed: c.rr(0, 9), p: S.puppet(L.add(person(c, folk(c, man)))) }));
+    // phone: those who argue stand at the inner ends of the benches, on the screen
+    const P = S.portrait;
+    const ARG = (P ? [[500, true], [585, true], [1015, true], [1100, false]] : [[340, true], [430, true], [1180, true], [1280, false]]).map(([x, man], i) => ({ x, i, seed: c.rr(0, 9), p: S.puppet(L.add(person(c, folk(c, man)))) }));
     const jGlow = L.add(`<g>${glowDisc(160, 'halo-glow', 1)}</g>`);
     const jesus = S.puppet(L.add(person(c, { ...CAST.jesus })));
     I.addColumns();
@@ -48,6 +50,7 @@ export default {
     const cup = fx.add(`<g>${cupOfLight(c, 46)}</g>`);
     const greys = ARG.map(() => fx.add(`<g><path d="${c.cut([[0, -12], [7, -2], [5, 6], [-5, 6], [-7, -2]], 0.2, 3)}" fill="${C.stone2}"/></g>`));
 
+    const NEAR = cong.slice().sort((a, b) => Math.abs(a.x - JX) - Math.abs(b.x - JX))[0];
     return (t, time) => {
       const T = time;
       I.flicker(T);
@@ -63,7 +66,7 @@ export default {
       const wk = es(t, 0.3, 0.6, ease.out) * (1 - es(t, 0.95, 1.1));
       pose(word, { x: JX, y: lerp(-500, 170, wk), r: Math.sin(T * 0.8), o: wk > 0.01 ? 1 : 0 });
       /* v51b — whoever eats of this bread will live forever */
-      const m = cong[3];
+      const m = P ? NEAR : cong[3];
       const [mx, my] = headAt(m.x, m.y, m.s, m.x > JX, 62);
       const gk = es(t, 1.05, 1.4);
       pose(gift, { x: lerp(LX, mx, gk), y: lerp(LY, my + 30, gk) - Math.sin(gk * PI) * 60, s: 1, o: seg(t, 1.05, 1.1) * (1 - es(t, 1.9, 2.1)) });
