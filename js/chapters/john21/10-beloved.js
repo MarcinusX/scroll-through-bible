@@ -81,9 +81,10 @@ export default {
       pose(K.sunPath, { x: 1300, y: 450, o: 0.4 });
 
       /* walking along the shore; Peter turns and sees John following */
-      const jKeys = [[0, JX - 60], [0.5, JX], [4.3, JX], [5.0, JX + 260]];
-      const pKeys = [[0, PX - 60], [0.5, PX], [4.35, PX], [5.0, PX + 230]];
-      const oKeys = [[0, JOX - 240], [0.8, JOX], [4.5, JOX], [5.0, JOX + 180]];
+      const far = S.portrait ? 0.6 : 1;      // phone: they set off, but stay inside the narrow screen
+      const jKeys = [[0, JX - 60], [0.5, JX], [4.3, JX], [5.0, JX + 260 * far]];
+      const pKeys = [[0, PX - 60], [0.5, PX], [4.35, PX], [5.0, PX + 230 * far]];
+      const oKeys = [[0, JOX - 240], [0.8, JOX], [4.5, JOX], [5.0, JOX + 180 * far]];
       const jx = kf(t, jKeys), px = kf(t, pKeys), ox = kf(t, oKeys);
       const ask = bump(t, 2.05, 2.95);
       const say = bump(t, 3.05, 3.95), say2 = bump(t, 4.05, 4.6);
@@ -119,7 +120,7 @@ export default {
       vis(follow, { x: jhx - 16, y: jhy - 24, s: fl, o: fl > 0.01 ? 1 : 0 });
       steps.forEach((el, i) => fade(el, es(t, 4.3 + i * 0.05, 4.4 + i * 0.05) * 0.9));
 
-      S.cam.x = kf(t, [[0, 0], [0.5, -20], [1, -20], [2, 0], [3, 10], [4, 20], [5, 120]]);
+      S.cam.x = kf(t, [[0, 0], [0.5, -20], [1, -20], [2, 0], [3, 10], [4, 20], [5, S.portrait ? 190 : 120]]);
       S.cam.y = kf(t, [[0, 60], [1, 20], [2, 70], [3, 20], [4, 60], [5, 80]]);
       S.cam.z = kf(t, [[0, 1.1], [1, 1.08], [2, 1.16], [3, 1.08], [4, 1.14], [5, 1.08]]);
     };

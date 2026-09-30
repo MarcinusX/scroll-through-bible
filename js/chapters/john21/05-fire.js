@@ -11,6 +11,7 @@ import {
 
 const GY = 686;                                 // where the disciples stand
 const SPOTS = { peter: 910, john: 980, james: 1050, nathanael: 1120, thomas: 1190, other1: 1260, other2: 1330 };
+const SPOTS_P = { peter: 905, john: 961, james: 1017, nathanael: 1073, thomas: 1129, other1: 1185, other2: 1241 };   // phone: closer together
 const NET0 = [1230, 650], NET1 = [860, 742];    // the net: at the water's edge → up on the sand (its left end)
 
 export default {
@@ -26,13 +27,16 @@ export default {
   cam: { x: [-40, 200], y: [0, 160], z: [1, 1.4] },
   build(S) {
     const c = S.c;
+    const PT = S.portrait;
+    const SP = PT ? SPOTS_P : SPOTS;
+    const N0 = PT ? [1170, 650] : NET0;      // phone: Peter and the net stay inside the narrow screen
     const BS = beachSet(S, { skyCols: SUNRISE, sunY: 300 });
     const { K } = BS;
 
     /* the net on the sand (in front of the people) */
     const PL = S.layer({ par: 0.55, sh: 5 });
     const jesus = S.puppet(PL.add(person(c, JESUS)));
-    const M = SEVEN.map((m, i) => ({ ...m, i, x: SPOTS[m.k], seed: c.rr(0, 9) }));
+    const M = SEVEN.map((m, i) => ({ ...m, i, x: SP[m.k], seed: c.rr(0, 9) }));
     [...M].sort((a, b) => b.x - a.x).forEach((m) => { m.p = S.puppet(PL.add(withFace(person(c, m.k === 'peter' ? PETER : m.o), faceBits(c)))); });
     const P = M[0];
     const netL = S.layer({ par: 0.62, sh: 4 });
@@ -65,7 +69,7 @@ export default {
       M.forEach((m) => {
         const a = 0.02 + m.i * 0.05;
         let keys = [[a, m.x + 260], [a + 0.5, m.x]];
-        if (m.k === 'peter') keys = [[a, m.x + 260], [a + 0.5, m.x], [3.05, m.x], [3.3, 1250], [3.45, 1250], [3.95, 1180]];
+        if (m.k === 'peter') keys = [[a, m.x + 260], [a + 0.5, m.x], [3.05, m.x], [3.3, PT ? 1190 : 1250], [3.45, PT ? 1190 : 1250], [3.95, PT ? 1130 : 1180]];
         const x = kf(t, keys);
         const walking = moving(t, keys);
         const isP = m.k === 'peter';
@@ -101,7 +105,7 @@ export default {
 
       /* v11a — Peter drags the net up the sand */
       const drag = es(t, 3.45, 3.95);
-      const nx = lerp(NET0[0], NET1[0], drag), ny = lerp(NET0[1], NET1[1], drag);
+      const nx = lerp(N0[0], NET1[0], drag), ny = lerp(N0[1], NET1[1], drag);
       const ns = lerp(0.62, 0.86, drag);
       vis(net, { x: nx, y: ny, s: ns, o: 1 });
       const px = P.cx, [hx, hy] = [px + 30, GY - 90];
@@ -124,11 +128,13 @@ export default {
         vis(k2, { x: nx + (30 + i * 60) * ns, y: ny - 4 + (i % 2) * 40 * ns, s: kk * 1.1, r: T * 40, o: kk });
       });
       const okk = es(t, 5.35, 5.55, ease.back);
-      vis(ok, { x: 1030, y: 530, s: okk, o: okk > 0.01 ? 1 : 0 });
+      // the tick hangs beside the card, clear of the disciples' faces
+      vis(ok, { x: 1124, y: 452, s: okk, o: okk > 0.01 ? 1 : 0 });
 
-      S.cam.x = kf(t, [[0, 120], [0.8, 60], [1.2, 20], [1.9, 20], [2.2, 40], [3.1, 110], [4.1, 100], [5, 90], [6, 80]]);
+      // phone: further right, so the Lord by the fire and the disciples (then Peter with the net) are in view together
+      S.cam.x = kf(t, PT ? [[0, 190], [0.8, 170], [1.2, 20], [1.9, 20], [2.2, 150], [3.1, 190], [4.1, 170], [5, 170], [6, 170]] : [[0, 120], [0.8, 60], [1.2, 20], [1.9, 20], [2.2, 40], [3.1, 110], [4.1, 100], [5, 90], [6, 80]]);
       S.cam.y = kf(t, [[0, 100], [0.8, 120], [1.2, 140], [1.9, 140], [2.2, 120], [3.1, 120], [4.1, 110], [6, 120]]);
-      S.cam.z = kf(t, [[0, 1.08], [0.8, 1.14], [1.2, 1.3], [1.9, 1.3], [2.2, 1.14], [3.1, 1.12], [4.1, 1.1], [6, 1.14]]);
+      S.cam.z = kf(t, PT ? [[0, 1.04], [0.8, 1.04], [1.2, 1.3], [1.9, 1.3], [2.2, 1.04], [3.1, 1.04], [4.1, 1.04], [6, 1.04]] : [[0, 1.08], [0.8, 1.14], [1.2, 1.3], [1.9, 1.3], [2.2, 1.14], [3.1, 1.12], [4.1, 1.1], [6, 1.14]]);
     };
   },
 };

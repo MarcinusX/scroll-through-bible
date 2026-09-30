@@ -5,7 +5,7 @@
 // the shore — the third time the Risen One showed Himself to His disciples.
 import { es, ease, bump, seg } from '../../core/anim.js';
 import {
-  beachSet, FIRE, RING, JMID, SEVEN, JESUS, PETER, MORNING, thought, hungGold, hungPlate, numeral, doorIcon, handsIcon, coalFire, onTheCoals,
+  beachSet, FIRE, ringFor, JMID, SEVEN, JESUS, PETER, MORNING, thought, hungGold, hungPlate, numeral, doorIcon, handsIcon, coalFire, onTheCoals,
   breadBit, fishBit, flatLoaf, rayBurst, heart, skyKeys, kf, moving, headAt, hand, vis, pose, fade, person, sheet, shade, mix, C, lerp, blinkAt, tr, FONT, PI,
 } from './lib.js';
 
@@ -21,7 +21,7 @@ export default {
     { v: 13, cont: true, text: 'podobnie i rybę.' },
     { v: 14 },
   ],
-  cam: { x: [-40, 60], y: [-60, 160], z: [1, 1.3] },
+  cam: { x: [-40, 70], y: [-60, 160], z: [1, 1.3] },
   build(S) {
     const c = S.c;
     const BS = beachSet(S, { skyCols: MORNING, sunY: 240, deferFire: true });
@@ -29,7 +29,7 @@ export default {
 
     const PL = S.layer({ par: 0.55, sh: 5 });
     const burst = PL.add(`<g>${rayBurst(c, { n: 16, r0: 60, r1: 280, spread: 0.03, o: 0.3 })}</g>`);
-    const M = SEVEN.map((m, i) => ({ ...m, i, ...RING[m.k], seed: c.rr(0, 9), look: m.k === 'peter' ? PETER : m.o }));
+    const M = SEVEN.map((m, i) => ({ ...m, i, ...ringFor(S)[m.k], seed: c.rr(0, 9), look: m.k === 'peter' ? PETER : m.o }));
     // standing (at the start) and sitting puppets
     M.forEach((m) => { m.st = S.puppet(PL.add(person(c, m.look))); });
     const jesus = S.puppet(PL.add(person(c, { ...JESUS, holdF: `<g transform="translate(0 4)">${breadBit(c)}</g>` })));
@@ -114,7 +114,9 @@ export default {
 
       S.cam.x = kf(t, [[0, 0], [1, 0], [1.2, -20], [2, -10], [3, 0], [5, 0], [6, 10]]);
       S.cam.y = kf(t, [[0, 120], [1, 120], [2, 100], [3, 120], [5, 120], [5.2, 20], [6, 10]]);
-      S.cam.z = kf(t, [[0, 1.1], [1, 1.14], [2, 1.12], [3, 1.16], [5, 1.14], [5.3, 1.04], [6, 1.04]]);
+      // phone: a little wider, so all seven round the fire are in view
+      S.cam.z = kf(t, S.portrait ? [[0, 1.04], [1, 1.06], [2, 1.05], [3, 1.06], [5, 1.06], [5.3, 1.02], [6, 1.02]] : [[0, 1.1], [1, 1.14], [2, 1.12], [3, 1.16], [5, 1.14], [5.3, 1.04], [6, 1.04]]);
+      if (S.portrait) S.cam.x += 28;
     };
   },
 };

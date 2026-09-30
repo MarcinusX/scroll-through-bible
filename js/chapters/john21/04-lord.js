@@ -10,7 +10,8 @@ import {
 } from './lib.js';
 
 const B0 = { x: SHORE.bx, y: SHORE.by, s: SHORE.bs };
-const B1 = { x: 1050, y: 640, s: 0.78 };      // the boat come in close
+const B1L = { x: 1050, y: 640, s: 0.78 };     // the boat come in close
+const B1P = { x: 1010, y: 640, s: 0.72 };     // phone: a little nearer, so the net it drags is in view
 const WET = [830, 742];                       // where Peter stands up in the shallows
 
 export default {
@@ -22,9 +23,10 @@ export default {
     { v: 7, cont: true, text: 'i rzucił się w morze.' },
     { v: 8 },
   ],
-  cam: { x: [0, 240], y: [-20, 90], z: [1, 1.6] },
+  cam: { x: [0, 320], y: [-20, 90], z: [1, 1.6] },
   build(S) {
     const c = S.c;
+    const B1 = S.portrait ? B1P : B1L;
     const peterM = `<g data-k="peterM">${withFace(person(c, PETER), faceBits(c))}</g>`;
     const D = dawnSet(S, { skyCols: SUNRISE, sunY: 330, boatOpts: { extra: peterM }, burst: true });
     const { K, B, jesus, jGlow, fx, boatL } = D;
@@ -169,9 +171,10 @@ export default {
       const tk = es(t, 4.3, 4.55, ease.back);
       vis(cubits, { x: 930, y: 520, s: tk, r: T ? Math.sin(T * 1.2) * 2 : 0, o: tk > 0.01 ? 1 : 0 });
 
-      S.cam.x = kf(t, [[0, 90], [0.9, 90], [1.2, 220], [2.9, 220], [3.3, 130], [4.1, 70], [5, 60]]);
+      // phone: further right and less close, so the Lord on the shore and the whole boat are both in view
+      S.cam.x = kf(t, S.portrait ? [[0, 185], [0.9, 185], [1.2, 240], [2.9, 240], [3.3, 200], [4.1, 260], [5, 300]] : [[0, 90], [0.9, 90], [1.2, 220], [2.9, 220], [3.3, 130], [4.1, 70], [5, 60]]);
       S.cam.y = kf(t, [[0, 40], [1.2, -10], [2.9, -10], [3.4, 40], [5, 50]]);
-      S.cam.z = kf(t, [[0, 1.08], [0.9, 1.08], [1.2, 1.55], [2.9, 1.55], [3.3, 1.16], [4.1, 1.06], [5, 1.08]]);
+      S.cam.z = kf(t, S.portrait ? [[0, 1.05], [0.9, 1.05], [1.2, 1.12], [2.9, 1.12], [3.3, 1.08], [4.1, 1.03], [5, 1.02]] : [[0, 1.08], [0.9, 1.08], [1.2, 1.55], [2.9, 1.55], [3.3, 1.16], [4.1, 1.06], [5, 1.08]]);
     };
   },
 };

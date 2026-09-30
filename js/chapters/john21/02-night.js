@@ -20,10 +20,11 @@ export default {
     { v: 4, text: 'A gdy ranek zaświtał, Jezus stanął na brzegu.' },
     { v: 4, cont: true, text: 'Jednakże uczniowie nie wiedzieli, że to był Jezus.' },
   ],
-  cam: { x: [-40, 80], y: [-20, 80], z: [1, 1.2] },
+  cam: { x: [-40, 190], y: [-20, 80], z: [1, 1.2] },
   build(S) {
     const c = S.c;
-    const K = shoreSet(S, { skyCols: DUSK, night: true, sunAt: [1250, 520], moonAt: [420, 200], cloudAt: [980, 140], beach: false });
+    const MX = S.portrait ? 600 : 420;       // phone: the moon inside the narrow screen
+    const K = shoreSet(S, { skyCols: DUSK, night: true, sunAt: [1250, 520], moonAt: [MX, 200], cloudAt: [980, 140], beach: false });
 
     /* the beach they leave (slides away to the left) */
     const dep = S.layer({ par: 0.45, sh: 4, pad: 1300 });
@@ -129,9 +130,10 @@ export default {
       const [qx, qy] = headAt(bx - 40 * bs, by, bs * 0.8, true);
       vis(qb, { x: qx - 10, y: qy - 30, s: qk * 0.95, o: qk > 0.01 ? 1 : 0 });
 
-      S.cam.x = kf(t, [[0, -20], [0.5, 0], [1.0, 10], [2.0, 10], [2.6, 50], [4, 50]]);
+      // phone: pan right at dawn so the Man on the shore and the whole boat are both in view
+      S.cam.x = kf(t, [[0, -20], [0.5, 0], [1.0, 10], [2.0, 10], [2.6, S.portrait ? 175 : 50], [4, S.portrait ? 175 : 50]]);
       S.cam.y = kf(t, [[0, 40], [1.0, 50], [2.0, 50], [2.6, 30], [4, 30]]);
-      S.cam.z = kf(t, [[0, 1.04], [1.0, 1.14], [2.0, 1.16], [2.6, 1.0], [3.2, 1.04], [4, 1.06]]);
+      S.cam.z = kf(t, [[0, 1.04], [1.0, 1.14], [2.0, 1.16], [2.6, 1.0], [3.2, S.portrait ? 1.02 : 1.04], [4, S.portrait ? 1.03 : 1.06]]);
     };
   },
 };

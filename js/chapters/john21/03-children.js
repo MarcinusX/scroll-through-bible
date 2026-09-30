@@ -25,7 +25,7 @@ export default {
     { v: 6, cont: true, text: 'Zarzucili więc' },
     { v: 6, cont: true, text: 'i z powodu mnóstwa ryb nie mogli jej wyciągnąć.' },
   ],
-  cam: { x: [0, 180], y: [0, 80], z: [1, 1.26] },
+  cam: { x: [0, 260], y: [0, 80], z: [1, 1.26] },
   build(S) {
     const c = S.c;
     const D = dawnSet(S, { sunY: 400 });
@@ -145,9 +145,10 @@ export default {
         vis(el, { x: BX + 20 + i * 70, y: BY - 200 * BS - 30 - i * 10, s: k * 0.9, r: T ? Math.sin(T * 10 + i) * 6 : 0, o: k > 0.01 ? 1 : 0 });
       });
 
-      S.cam.x = kf(t, [[0, 30], [0.9, 40], [1.2, 110], [1.9, 110], [2.2, 50], [2.9, 60], [3.2, 140], [5, 150]]);
+      // phone: further right and a little wider, so Jesus on the shore and the whole boat are both in view
+      S.cam.x = kf(t, S.portrait ? [[0, 175], [0.9, 180], [1.2, 230], [1.9, 230], [2.2, 185], [2.9, 190], [3.2, 240], [5, 245]] : [[0, 30], [0.9, 40], [1.2, 110], [1.9, 110], [2.2, 50], [2.9, 60], [3.2, 140], [5, 150]]);
       S.cam.y = kf(t, [[0, 40], [1.2, 30], [2.2, 40], [3.2, 30], [5, 36]]);
-      S.cam.z = kf(t, [[0, 1.04], [1.2, 1.14], [2.2, 1.04], [3.2, 1.16], [4.2, 1.22], [5, 1.22]]);
+      S.cam.z = kf(t, S.portrait ? [[0, 1.03], [1.2, 1.1], [2.2, 1.03], [3.2, 1.1], [4.2, 1.14], [5, 1.14]] : [[0, 1.04], [1.2, 1.14], [2.2, 1.04], [3.2, 1.16], [4.2, 1.22], [5, 1.22]]);
     };
   },
 };

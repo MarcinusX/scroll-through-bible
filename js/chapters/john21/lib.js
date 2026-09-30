@@ -451,7 +451,8 @@ export function crewBoat(S, L, { peterBare = true, lantern = true, extra = '', s
     const o = m.k === 'peter' && peterBare ? PETER_BARE : look.o;
     return `<g data-k="crew${i}">${withFace3(person(c, o), faceBits3(c))}</g>`;
   }).join('');
-  const el = L.add(`<g>${fishingBoat(c, slots + extra, { lantern })}</g>`);
+  // the crew show only above the gunwale: no feet or hems below the hull or past its slanting ends
+  const el = L.add(`<g>${fishingBoat(c, clipAbove(S, slots + extra, -50, { x0: -700, x1: 700, y0: -900 }), { lantern })}</g>`);
   const crew = CREW.map((m, i) => {
     if (skip.includes(m.k)) return { ...m, i, p: null };
     const g = S.$('crew' + i).firstElementChild;
@@ -573,6 +574,12 @@ export const RING = {
   other2: { x: 470, y: 722, flip: false }, other1: { x: 548, y: 712, flip: false }, thomas: { x: 626, y: 704, flip: false },
   peter: { x: 930, y: 704, flip: true }, john: { x: 1004, y: 712, flip: true }, james: { x: 1078, y: 720, flip: true }, nathanael: { x: 1150, y: 728, flip: true },
 };
+/** phone: the ring drawn in a little, so the outermost two are not sliced by the screen edges */
+export const RING_P = {
+  other2: { x: 508, y: 722, flip: false }, other1: { x: 574, y: 712, flip: false }, thomas: { x: 640, y: 704, flip: false },
+  peter: { x: 930, y: 704, flip: true }, john: { x: 994, y: 712, flip: true }, james: { x: 1058, y: 720, flip: true }, nathanael: { x: 1122, y: 728, flip: true },
+};
+export const ringFor = (S) => (S.portrait ? RING_P : RING);
 export const JMID = { x: 800, y: 686 };          // Jesus behind the fire, in the middle
 /** a closed door with light at its edges (upper room, J 20,19) — for a small plate; origin centre */
 export function doorIcon(c, r = 30) {
@@ -606,7 +613,7 @@ export function lovestSet(S, { skyCols = MORNING, sunY = 200 } = {}) {
   const c = S.c;
   const BS = beachSet(S, { skyCols, sunY, deferFire: true, fishOn: false });
   const PL = S.layer({ par: 0.55, sh: 5 });
-  const sitters = SEVEN.filter((m) => m.k !== 'peter').map((m, i) => ({ ...m, i, ...RING[m.k], seed: c.rr(0, 9) }));
+  const sitters = SEVEN.filter((m) => m.k !== 'peter').map((m, i) => ({ ...m, i, ...ringFor(S)[m.k], seed: c.rr(0, 9) }));
   sitters.sort((a, b) => a.y - b.y).forEach((m) => { m.p = S.puppet(PL.add(withFace3(person(c, { ...m.o, pose: 'sit' }), faceBits3(c)))); });
   const sheepL = S.layer({ par: 0.58, sh: 4 });
   const flock = [

@@ -7,7 +7,7 @@
 // footprints of light appear on the sand, and Peter, staff in hand, follows.
 import { es, ease, bump, seg } from '../../core/anim.js';
 import {
-  beachSet, RING, SEVEN, JESUS, PETER, PETER_OLD, OTHER, MORNING, pictureFrame, girdle, farWalls, lightSteps, lightCrown, speech, rayBurst,
+  beachSet, ringFor, SEVEN, JESUS, PETER, PETER_OLD, OTHER, MORNING, pictureFrame, girdle, farWalls, lightSteps, lightCrown, speech, rayBurst,
   withFace, faceBits, skyKeys, kf, moving, headAt, vis, pose, fade, attr, person, sheet, shade, mix, C, lerp, blinkAt, tr, FONT, PI,
 } from './lib.js';
 
@@ -28,10 +28,11 @@ export default {
   cam: { x: [-40, 200], y: [-80, 160], z: [1, 1.3] },
   build(S) {
     const c = S.c;
+    const PT = S.portrait;
     const BS = beachSet(S, { skyCols: MORNING, sunY: 170, deferFire: true, fishOn: false });
     const { K } = BS;
     const PL = S.layer({ par: 0.55, sh: 5 });
-    const sitters = SEVEN.filter((m) => m.k !== 'peter').map((m) => ({ ...m, ...RING[m.k], seed: c.rr(0, 9) }));
+    const sitters = SEVEN.filter((m) => m.k !== 'peter').map((m) => ({ ...m, ...ringFor(S)[m.k], seed: c.rr(0, 9) }));
     sitters.sort((a, b) => a.y - b.y).forEach((m) => { m.p = S.puppet(PL.add(person(c, { ...m.o, pose: 'sit' }))); });
     BS.makeFire();
 
@@ -85,8 +86,9 @@ export default {
       /* the frames */
       const f1k = es(t, 0.1, 0.45, ease.out) * (1 - es(t, 4.0, 4.3, ease.in));
       const f2k = es(t, 1.05, 1.4, ease.out) * (1 - es(t, 4.05, 4.35, ease.in));
-      vis(frame1, { x: 620, y: lerp(-500, 150, f1k), r: T ? Math.sin(T * 0.7) * 1 : 0, s: 1 - es(t, 1.05, 1.4) * 0.12, o: f1k > 0.01 ? 1 - es(t, 1.2, 1.5) * 0.35 : 0 });
-      vis(frame2, { x: 980, y: lerp(-500, 150, f2k), r: T ? Math.sin(T * 0.7 + 2) * 1 : 0, o: f2k > 0.01 ? 1 : 0 });
+      vis(frame1, { x: PT ? lerp(700, 640, es(t, 1.05, 1.4)) : 620,   // phone: both pictures inside the narrow screen
+        y: lerp(-500, 150, f1k), r: T ? Math.sin(T * 0.7) * 1 : 0, s: 1 - es(t, 1.05, 1.4) * 0.12, o: f1k > 0.01 ? 1 - es(t, 1.2, 1.5) * 0.35 : 0 });
+      vis(frame2, { x: PT ? 962 : 980, y: lerp(-500, 150, f2k), r: T ? Math.sin(T * 0.7 + 2) * 1 : 0, o: f2k > 0.01 ? 1 : 0 });
 
       /* 1 — young: he girds himself and walks where he wants */
       const tie = es(t, 0.35, 0.55);
@@ -133,9 +135,9 @@ export default {
       vis(follow, { x: jx - 10, y: jhy - 30, s: fk, o: fk > 0.01 ? 1 : 0 });
       steps.forEach((el, i) => fade(el, es(t, 4.35 + i * 0.04, 4.45 + i * 0.04) * 0.9));
 
-      S.cam.x = kf(t, [[0, -20], [1, -10], [1.4, 30], [3, 40], [4, 30], [4.4, 80], [5, 140]]);
+      S.cam.x = kf(t, PT ? [[0, 10], [1, 10], [1.4, 24], [3, 24], [4, 24], [4.4, 90], [5, 170]] : [[0, -20], [1, -10], [1.4, 30], [3, 40], [4, 30], [4.4, 80], [5, 140]]);
       S.cam.y = kf(t, [[0, 0], [1, 0], [3, 0], [4, 10], [4.4, 80], [5, 100]]);
-      S.cam.z = kf(t, [[0, 1.12], [1, 1.12], [1.4, 1.1], [3, 1.14], [4, 1.1], [4.4, 1.06], [5, 1.08]]);
+      S.cam.z = kf(t, PT ? [[0, 1.1], [1, 1.1], [1.4, 1.05], [3, 1.06], [4, 1.06], [4.4, 1.06], [5, 1.08]] : [[0, 1.12], [1, 1.12], [1.4, 1.1], [3, 1.14], [4, 1.1], [4.4, 1.06], [5, 1.08]]);
     };
   },
 };

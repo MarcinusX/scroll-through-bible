@@ -13,6 +13,7 @@ import {
 
 const GY = 706;                      // where they stand on the beach
 const POS = [940, 600, 680, 760, 840, 450, 525];   // x by SEVEN index (Peter nearest the boat)
+const POS_P = [1016, 728, 800, 872, 944, 584, 656]; // phone: closer together, so all seven and their tags fit
 const BOAT = [1210, 700];
 
 export default {
@@ -25,7 +26,7 @@ export default {
     { v: 3, text: 'Szymon Piotr powiedział do nich: «Idę łowić ryby».' },
     { v: 3, cont: true, text: 'Odpowiedzieli mu: «Idziemy i my z tobą».' },
   ],
-  cam: { x: [-40, 80], y: [-80, 120], z: [1, 1.28] },
+  cam: { x: [-40, 110], y: [-80, 120], z: [1, 1.28] },
   build(S) {
     const c = S.c;
     const K = shoreSet(S, { skyCols: EVENING, sunAt: [420, 300], cloudAt: [1120, 160], beachFn: c.wave(640, [5, 2], [600, 170]) });
@@ -45,7 +46,8 @@ export default {
 
     /* the seven */
     const PL = S.layer({ par: 0.5, sh: 5 });
-    const M = SEVEN.map((m, i) => ({ ...m, i, x: POS[i], seed: c.rr(0, 9), from: -260 - i * 70 }));
+    const XS = S.portrait ? POS_P : POS;
+    const M = SEVEN.map((m, i) => ({ ...m, i, x: XS[i], seed: c.rr(0, 9), from: -260 - i * 70 }));
     const order = [...M].sort((a, b) => a.x - b.x);
     order.forEach((m) => { m.p = S.puppet(PL.add(person(c, m.o))); });
     // Peter with the net over his shoulder (swap)
@@ -54,7 +56,8 @@ export default {
     /* name tags */
     const tagL = S.layer({ par: 0.52, sh: 4 });
     const TG = TAGS();
-    const tagAt = [[940], [600], [680], [760, 840], [450, 525]];
+    const tagAt = [[XS[0]], [XS[1]], [XS[2]], [XS[3], XS[4]], [XS[5], XS[6]]];
+    const tagStep = 58;   // neighbouring tags hang on two clear levels, the lower one clear of the heads
     const tags = TG.map((txt, i) => {
       const xs = tagAt[i];
       const x = xs.reduce((a, b) => a + b, 0) / xs.length;
@@ -110,7 +113,7 @@ export default {
 
       tags.forEach((g) => {
         const k = es(t, 3.05 + g.i * 0.14, 3.35 + g.i * 0.14, ease.back) * (1 - es(t, 4.05, 4.35, ease.in));
-        vis(g.el, { x: g.x, y: lerp(-200, GY - 250 - (g.i % 2) * 34, k), r: T ? Math.sin(T * 0.9 + g.i) * 2 : 0, o: k > 0.01 ? 1 : 0 });
+        vis(g.el, { x: g.x, y: lerp(-200, GY - 262 - (g.i % 2) * tagStep, k), r: T ? Math.sin(T * 0.9 + g.i) * 2 : 0, o: k > 0.01 ? 1 : 0 });
       });
 
       /* v3a — "I am going fishing" */
@@ -119,9 +122,10 @@ export default {
       vis(say1, { x: px + 16, y: py - 20, s: s1, o: s1 > 0.01 ? 1 : 0 });
       /* v3b — "we are coming with you" */
       const s2 = es(t, 5.12, 5.35, ease.back);
-      vis(say2, { x: 700, y: GY - 200, s: s2, o: s2 > 0.01 ? 1 : 0 });
+      vis(say2, { x: S.portrait ? 800 : 700, y: GY - 200, s: s2, o: s2 > 0.01 ? 1 : 0 });
 
-      S.cam.x = kf(t, [[0, 0], [1, 0], [2.2, 0], [3.2, -10], [4.2, 40], [5.2, 10]]);
+      // phone: towards Peter while he speaks, so his bubble is clear of the screen edge
+      S.cam.x = kf(t, [[0, 0], [1, 0], [2.2, 0], [3.2, S.portrait ? 10 : -10], [4.2, S.portrait ? 100 : 40], [5.2, S.portrait ? 30 : 10]]);
       S.cam.y = kf(t, [[0, 10], [1.0, -60], [2.0, -50], [2.6, 80], [4.2, 110], [5.2, 100]]);
       S.cam.z = kf(t, [[0, 1.0], [1.0, 1.03], [2.2, 1.02], [3.2, 1.14], [4.2, 1.26], [5.2, 1.2]]);
     };
