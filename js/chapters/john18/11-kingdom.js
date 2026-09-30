@@ -13,7 +13,6 @@ import {
 } from './lib.js';
 
 const { FLOOR, DOOR, JX } = PR;
-const PXI = 1110;
 
 export default {
   id: 'j18-kingdom',
@@ -40,6 +39,7 @@ export default {
     const kingdom = visL.add(`<g><circle r="230" fill="url(#halo-glow)"/>${radiance(c, 70)}<g transform="translate(0 6)">${lightCrown(c, 34)}</g></g>`);
     const ghosts = [0, 1, 2, 3, 4].map((i) => ({ i, el: visL.add(`<g opacity=".55">${bandSil(c, { kind: 'sword', arm: 84, roman: i % 2 === 1, i }).replace(/fill="#[0-9a-f]{6}"/g, 'fill="#efe4cc"')}</g>`) }));
     const K = praetoriumCast(S, R);
+    const PXI = S.portrait ? 1080 : 1110;   // phone: Pilate a step nearer, clear of the screen edge
 
     const fx = S.layer({ par: PR.P, sh: 4 });
     const askK = fx.add(`<g>${say(c, [tr('Czy Ty jesteś', 'Are You'), tr('Królem Żydowskim?', 'the King of the Jews?')], { size: 17, side: -1 })}</g>`);
@@ -57,7 +57,8 @@ export default {
       const vision = es(t, 6.05, 6.4) * (1 - es(t, 8.4, 8.9) * 0.6);
       lampSet(R.lamp, 0.5 + vision * 0.4, T);
       dimL.fade(vision * 0.9);
-      K.poseLead(T, (m) => (m.k === 'cai' || m.k === 'p1' ? { armF: 16 + bump(t, 2.1, 2.9) * 50, head: -bump(t, 2.1, 2.9) * 4 } : {}));
+      // phone: the leaders stand close up to the door, so they and Pilate fit one frame
+      K.poseLead(T, (m) => ({ ...(S.portrait ? { x: m.x + es(t, 0.3, 1.0) * 50 } : {}), ...(m.k === 'cai' || m.k === 'p1' ? { armF: 16 + bump(t, 2.1, 2.9) * 50, head: -bump(t, 2.1, 2.9) * 4 } : {}) }));
       K.poseSols(T);
 
       /* Pilate goes back in, calls Jesus */
@@ -85,7 +86,7 @@ export default {
       const jk = es(t, 3.1, 3.3, ease.back) * (1 - es(t, 3.9, 4.0));
       vis(jew, { x: phx - 14, y: phy - 20, s: jk, o: jk > 0.01 ? 1 : 0 });
       const nk = es(t, 4.1, 4.4, ease.out) * (1 - es(t, 4.9, 5.05, ease.in));
-      vis(nation, { x: 420, y: 330 - (1 - nk) * 800, r: T ? Math.sin(T * 0.9) * 1.4 : 0, o: nk > 0.01 ? 1 : 0 });
+      vis(nation, { x: S.portrait ? 560 : 420, y: 330 - (1 - nk) * 800, r: T ? Math.sin(T * 0.9) * 1.4 : 0, o: nk > 0.01 ? 1 : 0 });
       const wk = es(t, 5.1, 5.3, ease.back) * (1 - es(t, 5.9, 6.0));
       vis(what, { x: (jx + px) / 2, y: 380, s: 1.3 * wk, o: wk > 0.01 ? 1 : 0 });
 
@@ -103,9 +104,11 @@ export default {
         vis(g.el, { x: [820, 880, 1060, 1160, 1230][g.i], y: FLOOR - 26, s: 0.86, sy: 0.86 * rise * (1 - fold), o: rise > 0.01 && fold < 0.99 ? 0.6 : 0, flip: g.i >= 2 });
       });
 
-      S.cam.x = kf(t, [[0, -60], [0.8, 200], [2, 220], [2.1, 40], [2.9, 40], [3.05, 240], [4.05, 60], [4.9, 60], [5.05, 240], [6, 220], [6.4, 160], [9, 180]]);
+      // phone: when the talk turns to those outside, the door and the leaders are in the frame
+      const OUT = S.portrait ? 10 : 40, OUT2 = S.portrait ? 10 : 60, ZO = S.portrait ? 1.0 : 1.06;
+      S.cam.x = kf(t, [[0, -60], [0.8, 200], [2, 220], [2.1, OUT], [2.9, OUT], [3.05, 240], [4.05, OUT2], [4.9, OUT2], [5.05, 240], [6, 220], [6.4, 160], [9, 180]]);
       S.cam.y = kf(t, [[0, 0], [1, 0], [6, 10], [6.4, -90], [8, -80], [8.6, -120], [9, -120]]);
-      S.cam.z = kf(t, [[0, 1.06], [0.8, 1.24], [2, 1.28], [2.1, 1.06], [2.9, 1.06], [3.05, 1.3], [4.05, 1.06], [4.9, 1.06], [5.05, 1.3], [6, 1.26], [6.4, 1.06], [9, 1.06]]);
+      S.cam.z = kf(t, [[0, 1.06], [0.8, 1.24], [2, 1.28], [2.1, ZO], [2.9, ZO], [3.05, 1.3], [4.05, ZO], [4.9, ZO], [5.05, 1.3], [6, 1.26], [6.4, 1.06], [9, 1.06]]);
     };
   },
 };

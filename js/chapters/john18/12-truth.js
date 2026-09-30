@@ -12,7 +12,7 @@ import {
 } from './lib.js';
 
 const { FLOOR, DOOR } = PR;
-const JX = 970, PXI = 1110;
+const JX = 970;
 
 export default {
   id: 'j18-truth',
@@ -34,10 +34,10 @@ export default {
     const visL = S.layer({ par: PR.P, sh: 4 });
     const world = hanging(visL, `<circle r="100" fill="url(#halo-glow)" opacity=".35"/>${globe(c, 50)}`, { x: 0, y: 0, len: 900 });
     const star = visL.add(`<g><circle r="70" fill="url(#halo-glow)"/>${sheet().p(c.cut(c.star(0, 0, 26, 10, 8, 0), 0.3, 3), C.halo).p(c.cut(c.circ(0, 0, 7, 10), 0.2, 2), C.star).out()}</g>`);
-    const thread = visL.add(`<g><path d="M0 0L0 1" stroke="${C.haloRim}" stroke-width="2.4" fill="none"/></g>`);
-    const threadP = thread.querySelector('path');
+    const thread = visL.add(`<g><path d="M0 0L0 100" stroke="${C.haloRim}" stroke-width="2.4" fill="none"/></g>`);
     const lights = Array.from({ length: 14 }, (_, i) => ({ i, x: c.rr(420, 1440), y: c.rr(240, 620), el: visL.add(`<g>${spark(c, 8)}</g>`) }));
     const K = praetoriumCast(S, R);
+    const PXI = 1110;
 
     const fx = S.layer({ par: PR.P, sh: 4 });
     const ask = fx.add(`<g>${say(c, tr('A więc jesteś królem?', 'Are you a king then?'), { size: 18, side: -1 })}</g>`);
@@ -83,14 +83,14 @@ export default {
       vis(crownQ, { x: (JX + PXI) / 2, y: 330 - (1 - cq) * 800, r: T ? Math.sin(T * 0.9) * 1.6 : 0, o: cq > 0.01 ? 1 : 0 });
 
       /* v37 — born to testify to the truth */
-      const wk = es(t, 2.05, 2.4, ease.out) * (1 - es(t, 3.9, 4.2) * 0.8);
+      const wk = es(t, 2.05, 2.4, ease.out) * (1 - es(t, 3.9, 4.2));   // lifts right out (a phone sees high above the roof)
       vis(world, { x: 700, y: 440 - (1 - wk) * 800, r: T ? Math.sin(T * 0.7) * 2 : 0, o: wk > 0.01 ? 1 : 0 });
       const sd = es(t, 2.15, 2.65, ease.sine);
       const sx = lerp(760, 700, sd), sy = lerp(60, 380, sd);
       vis(star, { x: sx, y: sy, s: 0.9 + (T ? Math.sin(T * 3) * 0.05 : 0), o: es(t, 2.1, 2.2) * (1 - es(t, 3.9, 4.2)) });
       const th = es(t, 2.1, 2.2) * (1 - es(t, 3.9, 4.2));
-      pose(thread, { o: th });
-      threadP.setAttribute('d', `M760 0L${sx.toFixed(1)} ${sy.toFixed(1)}`);
+      // the thread is one straight strip, turned and stretched from its peg to the star
+      pose(thread, { x: 760, y: 0, r: (Math.atan2(760 - sx, sy) * 180) / PI, sy: Math.hypot(sx - 760, sy) / 100, o: th });
       const tk = es(t, 2.4, 2.7, ease.out) * (1 - es(t, 3.9, 4.1, ease.in));
       vis(truth, { x: 860, y: 220 - (1 - tk) * 800, r: T ? Math.sin(T * 0.8) * 1.2 : 0, o: tk > 0.01 ? 1 : 0 });
 

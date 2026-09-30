@@ -97,13 +97,13 @@ export default {
       const mk = es(t, 3.05, 3.4, ease.out);
       // fx layer is par 0.3: centre of screen there is 800 + camX * 0.3
       const cx = 800 + camX * 0.3;
-      vis(memory, { x: cx + 10, y: 250 - (1 - mk) * 720, r: T ? Math.sin(T * 0.7) * 1.2 : 0, o: mk > 0.01 ? 1 : 0 });
+      vis(memory, { x: cx + (S.portrait ? -30 : 10), y: 250 - (1 - mk) * 720, r: T ? Math.sin(T * 0.7) * 1.2 : 0, o: mk > 0.01 ? 1 : 0 });
       moons.forEach((m) => {
         const k = es(t, 3.3 + m.i * 0.12, 3.45 + m.i * 0.12, ease.back);
-        vis(m.el, { x: cx - 90 + m.i * 100, y: 178 - (1 - mk) * 720, s: k, o: k > 0.01 ? 1 : 0 });
+        vis(m.el, { x: cx - (S.portrait ? 130 : 90) + m.i * 100, y: 178 - (1 - mk) * 720, s: k, o: k > 0.01 ? 1 : 0 });
       });
       const jk = es(t, 3.5, 3.75, ease.out);
-      vis(judasMed, { x: cx + 250, y: 300 - (1 - jk) * 720, r: T ? Math.sin(T * 0.9 + 2) * 2 : 0, o: jk > 0.01 ? 1 : 0 });
+      vis(judasMed, { x: cx + (S.portrait ? 225 : 250), y: 300 - (1 - jk) * 720, r: T ? Math.sin(T * 0.9 + 2) * 2 : 0, o: jk > 0.01 ? 1 : 0 });
 
       S.cam.x = camX;
       S.cam.y = kf(t, [[0, 10], [1, 30], [2, 30], [3, 0], [4, -40]]);

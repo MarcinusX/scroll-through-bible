@@ -15,7 +15,7 @@ import { crowdPerson } from '../kit.js';
 import { medallion } from '../john11/lib.js';
 
 const { FLOOR, DOOR } = PR;
-const JX = 930, PX_OUT = 560;
+const PX_OUT = 560;
 
 export default {
   id: 'j18-barabbas',
@@ -43,6 +43,8 @@ export default {
       return { i, x: 40 + i * 50 + c.rr(-8, 8), y: -30 + (i % 2) * 8, s: 0.82 + (i % 3) * 0.03, seed: c.rr(0, 9), p: S.puppet(el), angry: el.querySelector('[data-part="angry"]') };
     });
     const K = praetoriumCast(S, R);
+    // phone: He stands nearer the threshold, so Pilate, the crowd and He fit one narrow frame
+    const JX = S.portrait ? 870 : 930;
 
     const fx = S.layer({ par: PR.P, sh: 4 });
     const none = fx.add(`<g>${say(c, tr('Ja nie znajduję w Nim żadnej winy', 'I find no basis for a charge against Him'), { size: 16, side: -1 })}</g>`);
@@ -111,11 +113,16 @@ export default {
       vis(shout, { x: chx + 16, y: chy - 20, s: sk, o: sk > 0.01 ? 1 : 0, r: T ? Math.sin(T * 12) * 1.5 * sk : 0 });
       noise(300, FLOOR - 190, cry * (1 - es(t, 4.95, 5.1)), T, { spread: 3 });
       const bb = es(t, 5.1, 5.45, ease.out);
-      vis(barabbas, { x: 360, y: 290 - (1 - bb) * 800, r: T ? Math.sin(T * 0.9) * 1.4 : 0, o: bb > 0.01 ? 1 : 0 });
+      // phone: the closing card hangs in the sky, so the plate hangs below it, further in
+      vis(barabbas, { x: S.portrait ? 600 : 360, y: (S.portrait ? 300 : 290) - (1 - bb) * 800, r: T ? Math.sin(T * 0.9) * 1.4 : 0, o: bb > 0.01 ? 1 : 0 });
 
-      S.cam.x = kf(t, [[0, -60], [0.7, -300], [2, -320], [3, -200], [3.5, -140], [4, -360], [5, -380], [6, -300]]);
+      S.cam.x = kf(t, S.portrait
+        ? [[0, -60], [0.7, -400], [6, -400]]
+        : [[0, -60], [0.7, -300], [2, -320], [3, -200], [3.5, -140], [4, -360], [5, -380], [6, -300]]);
       S.cam.y = kf(t, [[0, 0], [1, -20], [2, -30], [4, 0], [5, -20], [6, -40]]);
-      S.cam.z = kf(t, [[0, 1.1], [0.7, 1.12], [2, 1.12], [3, 1.06], [3.5, 1.02], [4, 1.06], [5, 1.08], [6, 1.0]]);
+      S.cam.z = kf(t, S.portrait
+        ? [[0, 1.1], [0.7, 1.04], [6, 1.04]]
+        : [[0, 1.1], [0.7, 1.12], [2, 1.12], [3, 1.06], [3.5, 1.02], [4, 1.06], [5, 1.08], [6, 1.0]]);
     };
   },
 };

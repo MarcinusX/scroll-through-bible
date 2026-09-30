@@ -72,10 +72,11 @@ export default {
 
       /* the hall */
       an.set({ x: ANX, y: HALL, s: 0.92, flip: true, armF: 30, armB: 20, head: 4, blink: blinkAt(T, 5) });
-      hg.set({ x: JXH - 100, y: HALL, s: 0.9, flip: false, armF: 16, armB: 6, blink: blinkAt(T, 7) });
+      hg.set({ x: JXH - 100 + (S.portrait ? es(t, 6.95, 7.1) * 90 : 0), y: HALL,   // phone: not left half-cut at the edge of the fire's frame
+        s: 0.9, flip: false, armF: 16, armB: 6, blink: blinkAt(T, 7) });
 
       /* v15 — Jesus led in and up into the hall; Peter and the other disciple follow */
-      const jK = [[-0.5, [-120, YARD]], [1.0, [300, YARD]], [2.1, [770, YARD]], [2.5, [880, HALL]], [2.9, [JXH, HALL]]];
+      const jK = [[-0.5, [-120, YARD]], [S.portrait ? 1.15 : 1.0, [300, YARD]], [2.1, [770, YARD]], [2.5, [880, HALL]], [2.9, [JXH, HALL]]];
       const [jx, jy] = kf(t, jK, ease.sine);
       jesus.set({ x: jx, y: jy, s: jy < YARD - 10 ? 0.94 : 1.0, flip: false, walk: moving(t, jK, 1) ? jx * 0.05 : undefined, amt: 0.7, armF: 26, armB: 12, head: 6 - es(t, 6.1, 6.5) * 4 * (1 - es(t, 6.9, 7.1)), blink: blinkAt(T) });
       fade(jEl.querySelector('[data-part="sad"]'), 0.3);
@@ -88,12 +89,15 @@ export default {
         g.set({ x: lerp(gx, fin[0], k2), y: lerp(gy, fin[1], k2), s: gy < YARD - 10 ? 0.92 : 0.98, flip: i === 0 && k2 > 0.5, o: 1 - es(t, 3.0, 3.2), walk: moving(t, gK, 1) ? gx * 0.05 : undefined, armF: 30, armB: 8, blink: blinkAt(T, 4 + i) });
       });
       // John: follows, is known, goes in; comes back for Peter; stays near the steps
-      const oK = [[-0.5, [-330, YARD]], [1.0, [110, YARD + 4]], [1.9, [110, YARD + 4]], [2.8, [520, YARD + 4]], [4.05, [520, YARD + 4]], [4.35, [MX + 50, YARD + 4]], [4.8, [MX + 50, YARD + 4]], [5.6, [830, YARD + 2]]];
+      const OW = S.portrait ? 160 : 110;                                     // phone: the two wait nearer the gate
+      const oK = [[-0.5, [-330, YARD]], [1.0, [OW, YARD + 4]], [1.9, [OW, YARD + 4]], [2.8, [520, YARD + 4]], [4.05, [520, YARD + 4]], [4.35, [MX + 50, YARD + 4]], [4.8, [MX + 50, YARD + 4]], [5.6, [830, YARD + 2]]];
       const [ox, oy] = kf(t, oK, ease.sine);
       const oBack = (t > 4.05 && t < 4.8);
       johnP.set({ x: ox, y: oy, s: 0.9, flip: oBack, o: 1, walk: moving(t, oK, 1) ? ox * 0.06 : undefined, armF: 18 + bump(t, 4.35, 4.75) * 50, armB: 8, head: bump(t, 1.2, 1.9) * -4, blink: blinkAt(T, 1) });
       // Peter: behind John; stops outside; is let in; at the fire
-      const pK = [[-0.5, [-420, YARD]], [1.0, [-40, YARD + 6]], [2.3, [-40, YARD + 6]], [2.95, [200, YARD + 6]], [4.5, [200, YARD + 6]], [4.95, [PIN, YARD + 6]], [7.0, [PIN, YARD + 6]], [7.4, [470, YARD + 8]], [8.0, [470, YARD + 8]], [8.45, [FIRE - 64, YARD + 12]]];
+      // he waits in the street clear of the gate pillar (OUT); phone: close behind the other disciple, so both are in view
+      const PW = S.portrait ? 95 : -40, OUT = 130;
+      const pK = [[-0.5, [S.portrait ? -370 : -420, YARD]], [1.0, [PW, YARD + 6]], [2.3, [PW, YARD + 6]], [2.95, [OUT, YARD + 6]], [4.5, [OUT, YARD + 6]], [4.95, [PIN, YARD + 6]], [7.0, [PIN, YARD + 6]], [7.4, [470, YARD + 8]], [8.0, [470, YARD + 8]], [8.45, [FIRE - 64, YARD + 12]]];
       const [px, py] = kf(t, pK, ease.sine);
       const alone = es(t, 3.05, 3.4) * (1 - es(t, 4.5, 4.7));
       const deny = es(t, 6.05, 6.25) * (1 - es(t, 6.9, 7.05));
@@ -124,7 +128,7 @@ export default {
 
       /* words */
       const kn = es(t, 1.1, 1.4, ease.out) * (1 - es(t, 1.9, 2.1, ease.in));
-      vis(known, { x: 110, y: 450 - (1 - kn) * 700, r: T ? Math.sin(T * 0.9) * 1.4 : 0, o: kn > 0.01 ? 1 : 0 });
+      vis(known, { x: S.portrait ? 170 : 110, y: 450 - (1 - kn) * 700, r: T ? Math.sin(T * 0.9) * 1.4 : 0, o: kn > 0.01 ? 1 : 0 });
       const [ohx, ohy] = headAt(ox, oy, 0.9, oBack);
       const tk = es(t, 4.4, 4.55, ease.back) * (1 - es(t, 4.75, 4.85));
       vis(talk, { x: ohx - 12, y: ohy - 20, s: tk, o: tk > 0.01 ? 1 : 0 });
@@ -134,11 +138,16 @@ export default {
       const nk = es(t, 6.1, 6.35, ease.out) * (1 - es(t, 6.95, 7.1, ease.in));
       vis(no, { x: PIN + 10, y: 440 - (1 - nk) * 700, r: T ? Math.sin(T * 1.1) * 2 : 0, o: nk > 0.01 ? 1 : 0 });
       const amk = es(t, 6.2, 6.45, ease.out) * (1 - es(t, 6.95, 7.1, ease.in));
-      vis(am, { x: JXH, y: 300 - (1 - amk) * 700, r: T ? Math.sin(T * 0.8) * 1.2 : 0, o: amk > 0.01 ? 1 : 0 });
+      vis(am, { x: S.portrait ? JXH - 40 : JXH, y: 300 - (1 - amk) * 700, r: T ? Math.sin(T * 0.8) * 1.2 : 0, o: amk > 0.01 ? 1 : 0 });
 
-      S.cam.x = kf(t, [[0, -1000], [1, -960], [1.9, -900], [2.9, -560], [3.05, -900], [4, -920], [4.9, -760], [6.05, -760], [6.2, -120], [6.95, -120], [7.1, -500], [8, -500], [9, -480]]);
+      // phone: both followers and the gate in view; at the fire the hall's corner is shown whole, not as a stray block
+      S.cam.x = kf(t, S.portrait
+        ? [[0, -1060], [1, -980], [1.6, -770], [1.9, -770], [2.9, -640], [3.05, -900], [4, -920], [4.9, -760], [6.05, -760], [6.2, -120], [6.95, -120], [7.1, -400], [9, -400]]
+        : [[0, -1000], [1, -960], [1.9, -900], [2.9, -560], [3.05, -900], [4, -920], [4.9, -760], [6.05, -760], [6.2, -120], [6.95, -120], [7.1, -500], [8, -500], [9, -480]]);
       S.cam.y = kf(t, [[0, 120], [2, 110], [2.9, 40], [3.05, 120], [4.9, 130], [6.05, 130], [6.2, 40], [6.95, 40], [7.1, 120], [9, 120]]);
-      S.cam.z = kf(t, [[0, 1.2], [2, 1.24], [2.9, 1.06], [3.05, 1.3], [4.9, 1.32], [5.1, 1.42], [6.05, 1.42], [6.2, 1.0], [6.95, 1.0], [7.1, 1.24], [9, 1.3]]);
+      S.cam.z = kf(t, S.portrait
+        ? [[0, 1.2], [1, 1.16], [1.6, 1.0], [1.9, 1.0], [2.9, 1.14], [3.05, 1.3], [4.9, 1.32], [5.1, 1.42], [6.05, 1.42], [6.2, 1.0], [6.95, 1.0], [7.1, 1.1], [9, 1.12]]
+        : [[0, 1.2], [2, 1.24], [2.9, 1.06], [3.05, 1.3], [4.9, 1.32], [5.1, 1.42], [6.05, 1.42], [6.2, 1.0], [6.95, 1.0], [7.1, 1.24], [9, 1.3]]);
     };
   },
 };

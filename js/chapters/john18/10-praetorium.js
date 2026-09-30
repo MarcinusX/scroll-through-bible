@@ -62,6 +62,8 @@ export default {
     const clip = S.id('lift');
     const lifted = hanging(fx, `${sheet().p(c.cut(c.rect(-120, -2, 240, 150), 0.5, 8), C.wood3).out()}<defs><clipPath id="${clip}"><rect x="-112" y="6" width="224" height="134"/></clipPath></defs><g clip-path="url(#${clip})"><rect x="-112" y="6" width="224" height="134" fill="${mix(C.dawn, C.cream, 0.4)}"/><circle cx="0" cy="70" r="90" fill="url(#halo-glow)"/><path d="${c.cut([[-120, 150], [-120, 116], [-40, 100], [0, 92], [40, 100], [120, 118], [120, 150]], 0.8, 8)}" fill="${mix(C.rock2, C.dune, 0.4)}"/><path d="${c.cut([[-2.5, 96], [-2.5, 54], [-15, 54], [-15, 48], [-2.5, 48], [-2.5, 34], [2.5, 34], [2.5, 48], [15, 48], [15, 54], [2.5, 54], [2.5, 96]], 0.2, 3)}" fill="${mix(C.wood2, C.ink, 0.3)}"/></g><g transform="translate(0 150)">${nameTag(c, tr('«…gdy zostanę wywyższony…»', '“…when I am lifted up…”'), { size: 15 })}</g>`, { x: 0, y: 0, len: 800 });
 
+    // phone: He stands nearer the threshold, so the leaders outside and He inside fit one narrow frame
+    const JXP = S.portrait ? 860 : JX;
     return (t, time) => {
       const T = time;
       const day = es(t, 1.0, 1.9);
@@ -71,16 +73,17 @@ export default {
       R.beamL.fade(0.4 + day * 0.6);
 
       /* v28 — led from Caiaphas into the praetorium */
-      const jK = [[-0.5, [-160, FLOOR + 6]], [0.9, [440, FLOOR + 6]], [2.05, [470, FLOOR + 6]], [2.6, [JX, FLOOR]]];
+      // He waits ahead of the leaders, not behind Caiaphas
+      const jK = [[-0.5, [-160, FLOOR + 6]], [0.9, [525, FLOOR + 6]], [2.05, [540, FLOOR + 6]], [2.6, [JXP, FLOOR]]];
       const [jx, jy] = kf(t, jK, ease.sine);
       jesus.set({ x: jx, y: jy, s: 1.0, flip: false, walk: moving(t, jK, 1) ? jx * 0.05 : undefined, amt: 0.7, armF: 26, armB: 12, head: 6 - es(t, 8.05, 8.4) * 10, blink: blinkAt(T) });
       fade(jEl.querySelector('[data-part="sad"]'), 0.3);
-      const gK = [[-0.5, [-70, FLOOR + 10]], [0.9, [530, FLOOR + 10]], [2.3, [540, FLOOR + 10]], [3.0, [130, FLOOR - 12]]];
+      const gK = [[-0.5, [-70, FLOOR + 10]], [0.9, [596, FLOOR + 10]], [2.3, [600, FLOOR + 10]], [3.0, [130, FLOOR - 12]]];
       const [gx, gy] = kf(t, gK, ease.sine);
       const handOver = es(t, 2.05, 2.3);
       guide.set({ x: gx, y: gy, s: 0.94, flip: t > 2.3, walk: moving(t, gK, 1) ? gx * 0.05 : undefined, armF: 30, armB: 8, blink: blinkAt(T, 12) });
       sols.forEach((so, i) => {
-        const x = i === 0 ? lerp(760, JX + 110, handOver) : JX - 120;
+        const x = i === 0 ? lerp(760, S.portrait ? 1010 : JX + 110, handOver) : JXP - (S.portrait ? 106 : 120);
         so.set({ x, y: FLOOR + (i ? -8 : 2), s: 0.96, flip: i === 1 ? false : true, armF: 34, armB: 8, blink: blinkAt(T, 20 + i) });
       });
       lead.forEach((m) => {
@@ -113,11 +116,15 @@ export default {
       const rk = es(t, 7.1, 7.4, ease.out) * (1 - es(t, 7.9, 8.05, ease.in));
       vis(rome, { x: PX_OUT + 20, y: 330 - (1 - rk) * 800, r: T ? Math.sin(T * 0.9) * 1.4 : 0, o: rk > 0.01 ? 1 : 0 });
       const wk = es(t, 8.1, 8.45, ease.out);
-      vis(lifted, { x: 700, y: 220 - (1 - wk) * 800, r: T ? Math.sin(T * 0.7) * 1 : 0, o: wk > 0.01 ? 1 : 0 });
+      vis(lifted, { x: S.portrait ? 770 : 700, y: 220 - (1 - wk) * 800, r: T ? Math.sin(T * 0.7) * 1 : 0, o: wk > 0.01 ? 1 : 0 });
 
-      S.cam.x = kf(t, [[0, -380], [1, -320], [2, -300], [2.6, -220], [3, -60], [3.8, -300], [5, -360], [6, -320], [7, -300], [8, -300], [8.4, -160], [9, -160]]);
+      S.cam.x = kf(t, S.portrait
+        ? [[0, -380], [1, -340], [2.9, -340], [3.1, -60], [3.8, -380], [8, -380], [8.4, -120], [9, -120]]
+        : [[0, -380], [1, -320], [2, -300], [2.6, -220], [3, -60], [3.8, -300], [5, -360], [6, -320], [7, -300], [8, -300], [8.4, -160], [9, -160]]);
       S.cam.y = kf(t, [[0, 40], [1, -40], [2, 20], [3, 10], [4, 20], [8, 20], [8.4, -30], [9, -40]]);
-      S.cam.z = kf(t, [[0, 1.04], [1, 1.02], [2, 1.08], [2.6, 1.04], [3, 1.1], [3.8, 1.14], [5, 1.18], [6, 1.14], [7, 1.16], [8, 1.12], [8.4, 1.04], [9, 1.06]]);
+      S.cam.z = kf(t, S.portrait
+        ? [[0, 1.04], [1, 1.02], [2, 1.04], [8, 1.04], [9, 1.06]]
+        : [[0, 1.04], [1, 1.02], [2, 1.08], [2.6, 1.04], [3, 1.1], [3.8, 1.14], [5, 1.18], [6, 1.14], [7, 1.16], [8, 1.12], [8.4, 1.04], [9, 1.06]]);
     };
   },
 };

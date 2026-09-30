@@ -23,7 +23,7 @@ export default {
     { v: 23, cont: true, text: 'A jeżeli dobrze, to dlaczego Mnie bijesz?»' },
     { v: 24 },
   ],
-  cam: { x: [300, 720], y: [-160, 40], z: [1, 1.5] },
+  cam: { x: [300, 780], y: [-160, 40], z: [1, 1.5] },
   build(S) {
     const c = S.c;
     const R = courtyard(S);
@@ -98,9 +98,9 @@ export default {
       const wk = es(t, 3.1, 3.3, ease.back) * (1 - es(t, 3.9, 4.0));
       vis(why, { x: JXH - 60, y: HTOP + 150, s: 1.4 * wk, o: wk > 0.01 ? 1 : 0 });
       const ck = es(t, 4.3, 4.6, ease.out);
-      vis(toC, { x: JXH + 420, y: 300 - (1 - ck) * 800, r: T ? Math.sin(T * 0.9) * 1.4 : 0, o: ck > 0.01 ? 1 : 0 });
+      vis(toC, { x: JXH + (S.portrait ? 340 : 420), y: 300 - (1 - ck) * 800, r: T ? Math.sin(T * 0.9) * 1.4 : 0, o: ck > 0.01 ? 1 : 0 });
 
-      S.cam.x = kf(t, [[0, 460], [0.5, 380], [1, 380], [2, 520], [3, 480], [4, 480], [5, 700]]);
+      S.cam.x = kf(t, [[0, 460], [0.5, 380], [1, 380], [2, 520], [3, 480], [4, 480], [5, S.portrait ? 770 : 700]]);
       S.cam.y = kf(t, [[0, -90], [0.5, -110], [2, -100], [4, -100], [5, -90]]);
       S.cam.z = kf(t, [[0, 1.3], [0.5, 1.42], [1, 1.36], [2, 1.2], [3, 1.3], [4, 1.24], [5, 1.16]]);
     };

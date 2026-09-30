@@ -104,7 +104,7 @@ export default {
       const sk = es(t, 4.1, 4.4, ease.out) * (1 - es(t, 4.95, 5.15, ease.in));
       vis(scroll, { x: JX, y: 250 - (1 - sk) * 700, r: T ? Math.sin(T * 0.8) * 1.2 : 0, o: sk > 0.01 ? 1 : 0 });
       const nk = es(t, 5.4, 5.7, ease.out);
-      vis(none, { x: 1040, y: 290 - (1 - nk) * 700, r: T ? Math.sin(T * 0.8 + 1) * 1.2 : 0, o: nk > 0.01 ? 1 : 0 });
+      vis(none, { x: S.portrait ? 1000 : 1040, y: 290 - (1 - nk) * 700, r: T ? Math.sin(T * 0.8 + 1) * 1.2 : 0, o: nk > 0.01 ? 1 : 0 });
 
       S.cam.x = kf(t, [[0, -40], [1, -40], [2, 0], [3, 0], [3.3, 60], [4, 40], [5, 40], [5.3, 90], [6, 100]]);
       S.cam.y = kf(t, [[0, 10], [2, 0], [4, -20], [5, -10], [6, 0]]);
