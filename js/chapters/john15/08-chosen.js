@@ -32,7 +32,9 @@ export default {
       const rad = upL.add(`<g><circle r="220" fill="url(#halo-glow)"/>${radiance(c, 56)}</g>`);
       // the roads going out from the vineyard over the hills
       const rL = S.layer({ par: 0.3, sh: 2 });
-      const roads = [[560, 606, -560, -170], [680, 604, -230, -150], [920, 604, 230, -150], [1040, 606, 560, -170], [800, 604, 0, -140]].map(([x, y, dx, dy]) => ({ el: rL.add(`<g opacity=".85">${roadStrip(c, dx, dy, 50, 8, mix(C.sand, C.halo, 0.35))}</g>`), x, y }));
+      // phone: the roads fan out inside the screen (and none stands up behind His head)
+      const roads = (S.portrait ? [[590, 606, -170, -180], [690, 604, -100, -165], [910, 604, 100, -165], [1010, 606, 170, -180]]
+        : [[560, 606, -560, -170], [680, 604, -230, -150], [920, 604, 230, -150], [1040, 606, 560, -170], [800, 604, 0, -140]]).map(([x, y, dx, dy]) => ({ el: rL.add(`<g opacity=".85">${roadStrip(c, dx, dy, 50, 8, mix(C.sand, C.halo, 0.35))}</g>`), x, y }));
       return { cone, rad, roads };
     } });
     const { ms, jesus, JX, JY } = tb;

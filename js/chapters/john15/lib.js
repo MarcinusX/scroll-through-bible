@@ -67,7 +67,8 @@ export const headOf = (m, lift = 0, sit = false) => [m.x + (m.flip ? -2 : 2) * m
 export function eleven(S, L, { lamps = LAMPS, only = ORDER, extra = {} } = {}) {
   const c = makeCutter('j15-eleven');
   return ORDER.filter((k) => only.includes(k)).map((k, i) => {
-    const [x, y, s] = SPOTS[k];
+    const [x0, y, s] = SPOTS[k];
+    const x = S.portrait ? 800 + (x0 - 800) * 0.85 : x0;   // phone: the outer disciples stand inside the screen
     const holdB = lamps.includes(k) ? `<g class="lampU">${lanternHeld(c, 0)}</g>` : '';
     const el = L.add(person(c, { ...LOOKS[k], holdB, ...(extra[k] || {}) }));
     return { k, i, x, y, s, flip: x > 800, p: S.puppet(el), el, lampU: el.querySelector('.lampU'), glow: el.querySelector('.lampU .glow'), seed: c.rr(0, 9), name: nameOf(k), o: LOOKS[k] };
@@ -95,6 +96,7 @@ export function vineyardNight(S, { skyCols = NIGHT, moonAt = [1180, 150], city =
   const starL = S.layer({ par: 0.02, sh: 1, flat: true });
   starL.add(stars(c, { x0: -800, x1: 2400, y0: -700, y1: 400, n: starsN }));
   const hangL = S.layer({ par: 0.05, sh: 4 });
+  if (S.portrait) moonAt = [Math.min(moonAt[0], 1050), moonAt[1] - 120];   // phone: the moon whole, inside the right edge, clear of the hung words
   const moonEl = hanging(hangL, `<circle r="130" fill="url(#halo-glow)" opacity=".45"/>${moon(c, 40)}`, { x: moonAt[0], y: moonAt[1], len: 700 });
 
   const far = S.layer({ par: 0.08, sh: 2 });
@@ -137,6 +139,13 @@ export function vineyardNight(S, { skyCols = NIGHT, moonAt = [1180, 150], city =
   for (let x = -640; x < 2300; x += 150) if (Math.abs(x - 800) > 120) wv += `<g transform="translate(${x} ${GY - 18}) scale(.72)">${vineStock(c, 96)}</g>`;
   ground.add(tint(wv, C.indigo, 0.34));
   ground.add(grass(c, { x0: -600, x1: 2200, y: GY + 10, fn: (x) => gfn(x) + 10, n: 40, h: 12, color: N(C.moss, 0.4) }));
+  if (S.portrait) {
+    // phone: much more of the floor shows, and the straight-edged patch reads as a slab — a trodden path instead,
+    // winding down the terrace from under their feet
+    const pl = [], pr = [];
+    for (let i = 0; i <= 32; i++) { const u = i / 32, y = 716 + u * 984, mx = 800 + Math.sin(u * 5.2) * 50 * u, w = 64 + u * 330; pl.push([mx - w, y]); pr.push([mx + w, y]); }
+    ground.add(`<path d="${c.cut([...pl, ...pr.reverse()], 1.6, 14)}" fill="${N(C.sand, 0.36)}" opacity=".55"/>`);
+  } else
   ground.add(`<path d="${c.cut([[520, 760], [1080, 760], [1180, 1700], [420, 1700]], 1, 14)}" fill="${N(C.sand, 0.36)}" opacity=".55"/>`);
 
   return {
@@ -398,8 +407,10 @@ export function pruneHook(c, len = 64) {
 export function shoot(c, col = mix(C.leaf, C.wheatGreen, 0.3)) {
   return sheet().p(c.ribbon([[-8, 4], [0, 0], [8, -6]], 2), mix(WOOD, C.wood3, 0.4)).p(c.cut(c.star(9, -8, 6, 4, 5, c.rr(0, 6)), 0.3, 2), col).out();
 }
-/** light pouring down from above (the Father's light): a soft cone; origin at the top */
-export function lightCone(c, { w0 = 60, w1 = 360, h = 700, col = GOLD_L, o = 0.35 } = {}) {
+/** light pouring down from above (the Father's light): a soft cone; origin at the top. The cone keeps its slope
+ *  (w0 → w1 over h) but runs on below h, so that its lower end never shows on a tall (portrait) screen */
+export function lightCone(c, { w0: a0 = 60, w1: a1 = 360, h: h0 = 700, col = GOLD_L, o = 0.35, ext = 2.1 } = {}) {
+  const w0 = a0, w1 = a0 + (a1 - a0) * ext, h = h0 * ext;
   return `<path d="${c.poly([[-w0, 0], [w0, 0], [w1, h], [-w1, h]])}" fill="${col}" opacity="${o}"/><path d="${c.poly([[-w0 * 0.5, 0], [w0 * 0.5, 0], [w1 * 0.45, h], [-w1 * 0.45, h]])}" fill="${col}" opacity="${o * 0.8}"/>`;
 }
 

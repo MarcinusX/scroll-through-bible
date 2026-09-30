@@ -102,7 +102,8 @@ export default {
         vis(sp, { x: FX + Math.sin(u * 6 + i) * 12, y: GND - 40 - u * 110 * (0.5 + burn * 0.5), o: (1 - u) * (0.3 + burn * 0.7) });
       });
       S.cam.y = kf(t, [[0, -40], [1, -60], [2, -60], [3, -50]]);
-      S.cam.z = kf(t, [[0, 1.06], [0.6, 1.16], [1.5, 1.2], [2.2, 1.18], [3, 1.14]]);
+      // phone: no zoom, so the whole shadow screen with its frame stays inside the picture
+      S.cam.z = S.portrait ? 1.0 : kf(t, [[0, 1.06], [0.6, 1.16], [1.5, 1.2], [2.2, 1.18], [3, 1.14]]);
     };
   },
 };

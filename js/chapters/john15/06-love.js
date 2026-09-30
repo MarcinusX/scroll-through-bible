@@ -33,7 +33,8 @@ export default {
     } });
     const { vine, ms, jesus, JX, JY } = tb;
     const { cone, rad } = tb.pre;
-    const ring = tb.glowL.add(`<g><g transform="scale(1 .2)">${eternityRing(c, 450, 14, 36, C.haloRim)}</g></g>`);
+    // phone: a smaller ring, whole inside the screen, round the eleven (who stand closer together there)
+    const ring = tb.glowL.add(S.portrait ? `<g><g transform="scale(1 .27)">${eternityRing(c, 345, 12, 36, C.haloRim)}</g></g>` : `<g><g transform="scale(1 .2)">${eternityRing(c, 450, 14, 36, C.haloRim)}</g></g>`);
     const ringGlow = tb.glowL.add(`<g><ellipse rx="470" ry="110" fill="url(#halo-glow)" opacity=".7"/></g>`);
     const fx = S.layer({ par: P, sh: 4 });
     const bigHeart = fx.add(`<g>${heartLight(c, 34, C.jesusMantle)}</g>`);

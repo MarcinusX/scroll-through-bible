@@ -27,7 +27,7 @@ export default {
     const tb = tableau(S, { skyCols: COLD, beadsN: 1, before: () => {
       const upL = S.layer({ par: 0.1, sh: 0, flat: true });
       return {
-        rays: upL.add(`<g>${rayBurst(c, { n: 24, r0: 70, r1: 800, spread: 0.04, o: 0.3 })}</g>`),
+        rays: upL.add(`<g>${rayBurst(c, { n: 24, r0: 70, r1: S.portrait ? 1400 : 800, spread: 0.04, o: 0.3 })}</g>`),
         cone: upL.add(`<g>${lightCone(c, { w0: 60, w1: 300, h: 720, o: 0.22 })}</g>`),
         rad: upL.add(`<g><circle r="220" fill="url(#halo-glow)"/>${radiance(c, 58)}</g>`),
       };
@@ -86,7 +86,8 @@ export default {
       lampsAll(ms, 0.55 + es(t, 0.3, 1.2) * 0.3 + es(t, 3.1, 3.4) * 0.15);
       /* v27b — the first day, by the Jordan */
       const pk = es(t, 4.05, 4.35, ease.out);
-      vis(pic, { x: 620, y: 176 - (1 - pk) * 600 + (T ? Math.sin(T * 0.8) * 2 : 0), r: T ? Math.sin(T * 0.6) * 1 : 0, o: pk > 0.001 ? 1 : 0 });
+      // phone: a little smaller, so the whole frame is inside the left edge
+      vis(pic, { x: S.portrait ? 632 : 620, s: S.portrait ? 0.86 : 1, y: 176 - (1 - pk) * 600 + (T ? Math.sin(T * 0.8) * 2 : 0), r: T ? Math.sin(T * 0.6) * 1 : 0, o: pk > 0.001 ? 1 : 0 });
       S.cam.y = kf(t, [[0, -50], [1, -60], [2, -30], [3, -10], [3.5, 10], [4, 0], [5, -30]]);
       S.cam.z = kf(t, [[0, 1.0], [1, 1.02], [2, 1.1], [3, 1.08], [3.5, 1.1], [4, 1.02], [5, 0.95]]);
     };

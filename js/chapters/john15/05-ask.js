@@ -25,7 +25,7 @@ export default {
     const tb = tableau(S, { beadsN: 1, before: () => {
       const upL = S.layer({ par: 0.1, sh: 0, flat: true });
       return {
-        glory: upL.add(`<g>${rayBurst(c, { n: 26, r0: 80, r1: 900, spread: 0.045, o: 0.34 })}</g>`),
+        glory: upL.add(`<g>${rayBurst(c, { n: 26, r0: 80, r1: S.portrait ? 1500 : 900, spread: 0.045, o: 0.34 })}</g>`),
         cone: upL.add(`<g>${lightCone(c, { w0: 70, w1: 460, h: 760, o: 0.16 })}</g>`),
         rad: upL.add(`<g><circle r="220" fill="url(#halo-glow)"/>${radiance(c, 60)}</g>`),
       };

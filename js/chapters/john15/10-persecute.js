@@ -42,6 +42,8 @@ export default {
       { from: [1700, 452], to: [960, 470], k: 0 }, { from: [1700, 520], to: [1000, 530], k: 0 },
       { from: [-100, 480], to: [420, 500], k: 1 }, { from: [-100, 560], to: [360, 570], k: 1 }, { from: [1700, 590], to: [1230, 590], k: 1 }, { from: [1700, 490], to: [1180, 500], k: 1 },
     ];
+    // phone: the hands that reach for the disciples come inside the screen
+    if (S.portrait) [[470, 500], [440, 570], [1160, 590], [1130, 500]].forEach((to, i) => { HANDS[i + 2].to = to; });
     HANDS.forEach((h) => { h.el = tb.vineL.add(`<g>${shadowArm(c, '#231c30')}</g>`); h.dir = h.from[0] > 800 ? -1 : 1; });
     const seals = ms.map(() => fx.add(`<g><circle r="16" fill="url(#warm-glow)"/><path d="${c.cut(c.star(0, 0, 9, 7, 12, 0), 0.2, 2)}" fill="${C.sun}"/><path d="${c.poly(c.star(0, 0, 4.4, 1.8, 5, 0))}" fill="${C.star}"/></g>`));
     // the sepia picture from the upper room
