@@ -17,7 +17,7 @@ export default {
     { v: 6, cont: true, text: 'a on rzekł do Niego: «Panie, Ty chcesz mi umyć nogi?»' },
     { v: 7 },
   ],
-  cam: { x: [-680, 40], y: [60, 260], z: [1, 1.7] },
+  cam: { x: [-900, 40], y: [60, 260], z: [1, 1.7] },
   build(S) {
     const c = S.c;
     const W = washSet(S, { skyCols: EVE });
@@ -100,7 +100,10 @@ export default {
       vis(card, { x: 780, y: 372 - (1 - ck) * 700, r: T ? Math.sin(T * 0.7) * 1.2 : 0, o: ck > 0.01 ? 1 : 0 });
       pose(later, { sx: Math.max(0.03, es(t, 4.5, 4.85)) });
 
-      S.cam.x = kf(t, [[0, -620], [1.4, -600], [1.7, -330], [2.1, -330], [2.7, -40], [4, -40], [4.2, -40], [5, -30]]);
+      // phone: the disciple whose feet He washes stays in view with Him
+      S.cam.x = S.portrait
+        ? kf(t, [[0, -860], [1.4, -850], [1.7, -450], [2.1, -450], [2.7, -60], [4, -60], [4.2, -40], [5, -30]])
+        : kf(t, [[0, -620], [1.4, -600], [1.7, -330], [2.1, -330], [2.7, -40], [4, -40], [4.2, -40], [5, -30]]);
       S.cam.y = kf(t, [[0, 230], [1.7, 230], [2.7, 230], [3.2, 220], [4.1, 200], [5, 200]]);
       S.cam.z = kf(t, [[0, 1.6], [1.7, 1.6], [2.7, 1.5], [3.2, 1.6], [4.1, 1.32], [5, 1.32]]);
     };

@@ -39,12 +39,12 @@ export default {
     const bagIcon = `<g transform="translate(-30 -18) scale(.5)">${moneybag(c)}</g>`;
     const poorIcon = `<g transform="translate(-6 20)">${mini(c, poorOpts(0), { pose: 'kneel', sc: 0.22 })}</g><g transform="translate(16 -6)">${denar(c, 6)}</g>`;
     const th = [
-      { k: 'philip', inner: `${bagIcon}${feast}`, a: 1.1, b: 2.05 },
+      { k: S.portrait ? 'andrew' : 'philip', inner: `${bagIcon}${feast}`, a: 1.1, b: 2.05 },   // phone: thinkers nearer the middle
       { k: 'thomas', inner: `${bagIcon}${feast}`, a: 1.25, b: 2.05 },
-      { k: 'bartholomew', inner: poorIcon, a: 2.1, b: 2.95 },
-      { k: 'andrew', inner: poorIcon, a: 2.25, b: 2.95 },
+      { k: S.portrait ? 'james' : 'bartholomew', inner: poorIcon, a: 2.1, b: 2.95 },
+      { k: S.portrait ? 'peter' : 'andrew', inner: poorIcon, a: 2.25, b: 2.95 },
     ].map((o) => ({ ...o, m: by[o.k], el: fx.add(`<g>${thought(c, o.inner, { w: 86, h: 60 })}</g>`) }));
-    const puzzled = ['james', 'peter', 'matthew', 'simonZ'].map((k) => ({ m: by[k], el: fx.add(`<g>${thought(c, `<g transform="scale(.9)">${GLYPH.q(c)}</g>`, { w: 50, h: 42 })}</g>`) }));
+    const puzzled = (S.portrait ? ['james', 'peter', 'thomas', 'philip'] : ['james', 'peter', 'matthew', 'simonZ']).map((k) => ({ m: by[k], el: fx.add(`<g>${thought(c, `<g transform="scale(.9)">${GLYPH.q(c)}</g>`, { w: 50, h: 42 })}</g>`) }));
     /* the night */
     const nightL = S.layer({ par: 0.56, sh: 0, flat: true });
     nightL.add(darkPool(S, { cx: JX, cy: SEAT - 90, r0: 70, r1: 520, col: '#07081a', name: 'night' }));
