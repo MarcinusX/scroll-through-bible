@@ -10,6 +10,7 @@
 <link rel="icon" href="favicon.ico" sizes="32x32">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="stylesheet" href="css/style.css">
+<script>try{if(sessionStorage.getItem("autostart")&&/[?&]book=/.test(location.search))document.documentElement.classList.add("entering")}catch(e){}</script>
 <script>window.__errs=[];addEventListener("error",e=>__errs.push(e.message+" @"+(e.filename||"").split("/").pop()+":"+e.lineno));addEventListener("unhandledrejection",e=>__errs.push(String(e.reason)));</script>
 </head>
 <body>
@@ -18,6 +19,7 @@
 <main class="stage" id="stage" aria-label="Papierowy teatr: ilustracje do czytanego tekstu">
   <div id="scenes"></div>
   <div class="vignette" aria-hidden="true"></div>
+  <div class="drape" id="drape" aria-hidden="true"><div class="dr-half dr-l"></div><div class="dr-half dr-r"></div><div class="dr-val"></div></div>
   <div class="loader" aria-hidden="true"><i></i><i></i><i></i></div>
   <div class="turn" id="turn" aria-hidden="true">
     <svg class="grain-fill"><rect width="100%" height="100%" fill="url(#grain)"/></svg>
@@ -26,7 +28,7 @@
   <svg class="frame" id="frame" aria-hidden="true" focusable="false"></svg>
 </main>
 
-<header class="tag-wrap" id="tag">
+<header class="tag-wrap gone" id="tag">
   <span class="tag-string" aria-hidden="true"></span>
   <div class="tag">
     <svg class="grain-fill" aria-hidden="true" focusable="false"><rect width="100%" height="100%" fill="url(#grain)"/></svg>
@@ -39,12 +41,13 @@
 
 <section class="cover" id="cover" aria-label="Strona tytułowa">
   <p class="cover-kicker" id="cover-kicker"></p>
-  <nav class="books" id="books"></nav>
   <h1 id="cover-title"></h1>
   <span class="rule" aria-hidden="true"></span>
   <p class="cover-sub"><span class="cover-ch" id="cover-ch"></span><span id="cover-sub"></span></p>
-  <nav class="chapters" id="chapters"></nav>
+  <button type="button" class="chip cover-toc" id="cover-toc" data-i18n="toc">Spis rozdziałów</button>
 </section>
+
+<section class="library" id="library" aria-label="Księgi" inert></section>
 
 <section class="caption off" id="caption" aria-live="polite">
   <svg class="grain-fill" aria-hidden="true" focusable="false"><rect width="100%" height="100%" fill="url(#grain)"/></svg>

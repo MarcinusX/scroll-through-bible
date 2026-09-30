@@ -32,11 +32,15 @@ open http://localhost:5178/
 ```
 
 Reading:
+* Home (no `?book=`) is the library: one paper card per book in front of the curtains. Tap a card and its
+  page of chapters unfolds; tap a chapter and it starts playing by itself. The book and chapter being read
+  carry a ribbon.
 * Scroll to move through the sentences.
 * Tap the right third of the screen for the next sentence and the left third for the previous one; ← / → do the same.
 * The knots on the thread at the right turn the page straight to a section.
-* The eyelet on the hanging tag (top left) turns back to the title page.
-* Language: the paper flags on the title page, or `?lang=en` / `?lang=pl`. The choice is remembered.
+* The eyelet on the hanging tag (top left), its "Home" chip and "All chapters" on a chapter's title card
+  lead back to the library, with that book open. The browser's back button returns to the same place.
+* Language: the paper flags on the home page, or `?lang=en` / `?lang=pl`. The choice is remembered.
 * Deep links: `#w35` jumps to verse 35. Draw a single scene: `?only=storm`.
 * Console: `__theatre.go('storm', 7.5)` jumps to scene time 7.5 (beats).
 
@@ -45,6 +49,8 @@ Reading:
 * `js/core/engine.js`: the theatre. Scroll position becomes scene time `t` (1 beat = 1 sentence).
   It stacks paper layers, swaps sets between scenes, and drives the caption (word-by-word reveal),
   the hanging section tag, the progress thread and the camera (pan/zoom with per-layer parallax).
+* `js/core/library.js`: the home page (book cards, the unfolding chapter list). The cards' creatures are
+  in `js/assets/emblems.js`; each book's colours, and the shelves (`GROUPS`), are in `js/chapters/index.js`.
 * `js/core/paper.js`: the seeded "scissors" (hand-cut polygon edges), paper grain and colour helpers.
 * `js/assets/`: reusable cut-outs. `people.js` has puppets with hinged arms, walk, kneel and sit poses,
   plus the Jesus and disciple presets. `nature.js` has hills, water, plants, sun, moon and towns.

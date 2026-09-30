@@ -4,12 +4,13 @@
 
 export const BOOKS = {
   matthew: {
+    look: { emblem: 'angel', sky: ['#f1c794', '#f8e6c4'], sun: '#fbeed2', hills: ['#e6c48e', '#cf9a63'], accent: '#a8572a' },
     id: 'matthew', count: 28, prefix: 'mt',
     READY: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28],
     text: { pl: () => import('../../data/matthew.js').then((m) => m.MATTHEW), en: () => import('../../data/matthew-en.js').then((m) => m.MATTHEW_EN) },
     name: {
-      pl: { short: 'Mateusz', abbr: 'Mt', title: 'Ewangelia <em>według św. Mateusza</em>', plain: 'Ewangelia według św. Mateusza' },
-      en: { short: 'Matthew', abbr: 'Matthew', title: 'The Gospel <em>according to Matthew</em>', plain: 'The Gospel according to Matthew' },
+      pl: { short: 'Mateusz', abbr: 'Mt', title: 'Ewangelia <em>według św. Mateusza</em>', plain: 'Ewangelia według św. Mateusza', card: ['Ewangelia według św.', 'Mateusza'] },
+      en: { short: 'Matthew', abbr: 'Matthew', title: 'The Gospel <em>according to Matthew</em>', plain: 'The Gospel according to Matthew', card: ['The Gospel according to', 'Matthew'] },
     },
     chapters: {
       1: () => import('./matthew1/index.js'), 2: () => import('./matthew2/index.js'), 3: () => import('./matthew3/index.js'), 4: () => import('./matthew4/index.js'),
@@ -22,12 +23,13 @@ export const BOOKS = {
     },
   },
   mark: {
+    look: { emblem: 'lion', sky: ['#d98e7c', '#f1cfae'], sun: '#f6dcb4', hills: ['#e2bf8a', '#bf8a57'], accent: '#a34a32' },
     id: 'mark', count: 16, prefix: 'm',
     READY: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
     text: { pl: () => import('../../data/mark.js').then((m) => m.MARK), en: () => import('../../data/mark-en.js').then((m) => m.MARK_EN) },
     name: {
-      pl: { short: 'Marek', abbr: 'Mk', title: 'Ewangelia <em>według św. Marka</em>', plain: 'Ewangelia według św. Marka' },
-      en: { short: 'Mark', abbr: 'Mark', title: 'The Gospel <em>according to Mark</em>', plain: 'The Gospel according to Mark' },
+      pl: { short: 'Marek', abbr: 'Mk', title: 'Ewangelia <em>według św. Marka</em>', plain: 'Ewangelia według św. Marka', card: ['Ewangelia według św.', 'Marka'] },
+      en: { short: 'Mark', abbr: 'Mark', title: 'The Gospel <em>according to Mark</em>', plain: 'The Gospel according to Mark', card: ['The Gospel according to', 'Mark'] },
     },
     chapters: {
       1: () => import('./mark1/index.js'), 2: () => import('./mark2/index.js'), 3: () => import('./mark3/index.js'), 4: () => import('./mark4/index.js'),
@@ -37,12 +39,13 @@ export const BOOKS = {
     },
   },
   luke: {
+    look: { emblem: 'ox', sky: ['#abcfcb', '#e4ecd6'], sun: '#f6efd6', hills: ['#b9cfa9', '#7c9f6b'], accent: '#4f7249' },
     id: 'luke', count: 24, prefix: 'lk',
     READY: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24],
     text: { pl: () => import('../../data/luke.js').then((m) => m.LUKE), en: () => import('../../data/luke-en.js').then((m) => m.LUKE_EN) },
     name: {
-      pl: { short: 'Łukasz', abbr: 'Łk', title: 'Ewangelia <em>według św. Łukasza</em>', plain: 'Ewangelia według św. Łukasza' },
-      en: { short: 'Luke', abbr: 'Luke', title: 'The Gospel <em>according to Luke</em>', plain: 'The Gospel according to Luke' },
+      pl: { short: 'Łukasz', abbr: 'Łk', title: 'Ewangelia <em>według św. Łukasza</em>', plain: 'Ewangelia według św. Łukasza', card: ['Ewangelia według św.', 'Łukasza'] },
+      en: { short: 'Luke', abbr: 'Luke', title: 'The Gospel <em>according to Luke</em>', plain: 'The Gospel according to Luke', card: ['The Gospel according to', 'Luke'] },
     },
     chapters: {
       1: () => import('./luke1/index.js'), 2: () => import('./luke2/index.js'), 3: () => import('./luke3/index.js'), 4: () => import('./luke4/index.js'),
@@ -54,12 +57,13 @@ export const BOOKS = {
     },
   },
   john: {
+    look: { emblem: 'eagle', sky: ['#3d437e', '#a893bd'], sun: '#efe0c4', hills: ['#6c6795', '#44466f'], accent: '#3d437e', stars: true },
     id: 'john', count: 21, prefix: 'j',
     READY: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21],
     text: { pl: () => import('../../data/john.js').then((m) => m.JOHN), en: () => import('../../data/john-en.js').then((m) => m.JOHN_EN) },
     name: {
-      pl: { short: 'Jan', abbr: 'J', title: 'Ewangelia <em>według św. Jana</em>', plain: 'Ewangelia według św. Jana' },
-      en: { short: 'John', abbr: 'John', title: 'The Gospel <em>according to John</em>', plain: 'The Gospel according to John' },
+      pl: { short: 'Jan', abbr: 'J', title: 'Ewangelia <em>według św. Jana</em>', plain: 'Ewangelia według św. Jana', card: ['Ewangelia według św.', 'Jana'] },
+      en: { short: 'John', abbr: 'John', title: 'The Gospel <em>according to John</em>', plain: 'The Gospel according to John', card: ['The Gospel according to', 'John'] },
     },
     chapters: {
       1: () => import('./john1/index.js'), 2: () => import('./john2/index.js'), 3: () => import('./john3/index.js'), 4: () => import('./john4/index.js'),
@@ -72,6 +76,15 @@ export const BOOKS = {
   },
 };
 export const BOOK_ORDER = ['matthew', 'mark', 'luke', 'john'];
+// the shelves of the home page, in order (more books join as they are drawn)
+export const GROUPS = [
+  { id: 'gospels', name: { pl: 'Ewangelie', en: 'The Gospels' }, books: ['matthew', 'mark', 'luke', 'john'] },
+];
+
+// what a chapter is about (its meta.js: the title-page line and the closing words), without its scenes
+export async function loadMeta(book, n) {
+  try { return (await import(`./${book}${n}/meta.js`)).META; } catch { return null; }
+}
 
 // resolves to the chapter module, or null if it is missing or fails to load
 export async function loadChapter(book, n) {
