@@ -139,6 +139,9 @@ filters and pattern fills whenever something repaints, so check new chapters wit
   and `armF` forward (~60–90).
 * People stand *in* boats/behind walls: check feet and robe hems don't poke out below the hull/wall.
 * Lights must follow the story logic (a lamp lit at night only when the text says so, etc.).
-* Keep important things inside x 420–1180 so phones (390×844 portrait) still see them; check one portrait shot.
+* Keep important things inside **x 450–1150** so phones (390×844 portrait) still see them (the frame and the
+  progress thread eat the rest), and check portrait contact sheets: `tools/review.sh john:3 /tmp/j3p pl 390x844`.
+  Phone-only corrections go in `S.portrait` branches; park hidden things at y ≤ −500; draw indoor ceilings as a
+  band, not a sheet from −1200. See **docs/PHONE-REVIEW.md** for the whole audit procedure.
 * Give each beat a clear, readable picture at `x.75` — the reader pauses there. Don't overload with effects.
 * Everything the sentence says should be visible; Jesus at the centre when he is present.

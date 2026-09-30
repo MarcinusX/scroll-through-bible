@@ -79,7 +79,9 @@ The theatre has to scroll smoothly in Safari on iPhone and iPad, whose engine pa
 * `node tools/bench-webkit.mjs [--vs=<other build>] book:ch …`: scroll benchmark in WebKit (Safari's engine) at
   iPhone or iPad resolution, optionally interleaved with a second build (needs `npm i --no-save playwright`).
 * `node tools/shot.mjs <outDir> <url> scene:t … [--size=390x844]`: screenshots of chosen moments, in headless Chrome (`--window` to watch).
-* `[PORT=5178] tools/review.sh [book:]<chapter> <outDir> [pl|en] [size]`: contact sheets of every beat of a chapter.
+* `[PORT=5178] tools/review.sh [book:]<chapter> <outDir> [pl|en] [size]`: contact sheets of every beat of a chapter
+  (`390x844` for phone sheets; **docs/PHONE-REVIEW.md** describes the phone audit).
+* `tools/compare.sh [book:]<chapter> <outDir> <urlA> <urlB> [size]`: pixel comparison of every beat between two builds.
 * `node tools/record.mjs <url> docs/demo.gif`: records the README tour GIF (needs ffmpeg).
 * `python3 tools/fetch_bt.py <book>` / `tools/fetch_web.py <book>`: re-download the Polish / English text.
 * `node tools/publish.mjs <book> <chapter…>`: publish chapters (adds them to the book's `READY` list).

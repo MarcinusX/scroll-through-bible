@@ -1,6 +1,7 @@
 #!/bin/sh
 # Contact sheets of every beat of a chapter (at x.75), for review.
 # Usage: [PORT=5178] tools/review.sh [book:]<chapter> <outDir> [lang] [size]     e.g. tools/review.sh john:3 /tmp/j3
+# Phone: tools/review.sh john:3 /tmp/j3p pl 390x844   (portrait sheets, 8 shots each; see docs/PHONE-REVIEW.md)
 case "$1" in *:*) BOOK=${1%%:*}; CH=${1##*:};; *) BOOK=mark; CH=$1;; esac
 OUT=$2; LANG=${3:-pl}; SIZE=${4:-1440x900}
 rm -rf "$OUT"; mkdir -p "$OUT"
@@ -11,9 +12,11 @@ import sys, glob, os
 from PIL import Image, ImageDraw
 S = sys.argv[1]
 files = sorted(glob.glob(S + '/*.jpg'), key=os.path.getmtime)
-tw, th, cols = 640, 400, 3
-for k in range(0, len(files), 9):
-    chunk = files[k:k + 9]; rows = (len(chunk) + cols - 1) // cols
+w0, h0 = Image.open(files[0]).size if files else (1440, 900)
+# landscape shots: 3 x 3 per sheet; phone (portrait) shots: 4 x 2, tall tiles
+tw, th, cols, per = (640, 400, 3, 9) if w0 > h0 else (360, 780, 4, 8)
+for k in range(0, len(files), per):
+    chunk = files[k:k + per]; rows = (len(chunk) + cols - 1) // cols
     sheet = Image.new('RGB', (tw * cols, th * rows), 'white'); d = ImageDraw.Draw(sheet)
     for i, f in enumerate(chunk):
         sheet.paste(Image.open(f).resize((tw, th)), ((i % cols) * tw, (i // cols) * th))
