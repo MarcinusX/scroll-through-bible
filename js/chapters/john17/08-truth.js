@@ -30,6 +30,7 @@ export default {
   cam: { x: [-20, 20], y: [-70, 30], z: [0.96, 1.14] },
   build(S) {
     const c = S.c;
+    const dx = S.portrait ? -50 : 0;   // phone: the globe clear of the screen edge
     const P = slopeSet(S, { skyCols: HOLY });
     const hiL = S.layer({ par: 0.08, sh: 3 });
     const high = hiL.add(`<g>${fatherLight(c, 54)}</g>`);
@@ -81,20 +82,20 @@ export default {
 
       /* v18a — sent into the world: the globe, the star coming down to it */
       const gk = es(t, 2.05, 2.4, ease.out) * (1 - es(t, 4.0, 4.3, ease.in));
-      lower(world, gk, GW[0], GW[1], { len: 700 });
+      lower(world, gk, GW[0] + dx, GW[1], { len: 700 });
       const off = (1 - gk) * 700;
       const sd = es(t, 2.35, 2.75);
-      const [sx, sy] = [lerp(JX, JER[0], sd), lerp(RY + 40, JER[1], sd)];
+      const [sx, sy] = [lerp(JX, JER[0] + dx, sd), lerp(RY + 40, JER[1], sd)];
       vis(jerStar, { x: sx, y: sy - off, r: T * 10, s: 0.8 + sd * 0.3, o: sd > 0.01 && gk > 0.01 ? 1 : 0 });
-      const rdx = JER[0] - JX, rdy = JER[1] - RY - 40;
+      const rdx = JER[0] + dx - JX, rdy = JER[1] - RY - 40;
       vis(ray, { x: JX, y: RY + 40, r: (-Math.atan2(rdx, rdy) * 180) / PI, sy: Math.max(1, Math.hypot(rdx, rdy) * es(t, 2.1, 2.4)), sx: 2, o: gk * (1 - es(t, 3.0, 3.3)) * es(t, 2.1, 2.3) });
       /* v18b — roads out from the star; eleven lights along them */
       ROADS.forEach(([x, y], i) => {
         const k = es(t, 3.05 + (i % 4) * 0.05, 3.5 + (i % 4) * 0.05);
-        vis(roadEls[i], { x: JER[0], y: JER[1] - off, o: gk > 0.01 && k > 0.001 ? 1 : 0 });
+        vis(roadEls[i], { x: JER[0] + dx, y: JER[1] - off, o: gk > 0.01 && k > 0.001 ? 1 : 0 });
         drawPath(roadPs[i], k);
         const [tx, ty] = arcAt(JER, [x, y], 18, k);
-        vis(travellers[i], { x: tx, y: ty - off, o: k > 0.02 && gk > 0.01 ? 1 : 0 });
+        vis(travellers[i], { x: tx + dx, y: ty - off, o: k > 0.02 && gk > 0.01 ? 1 : 0 });
       });
 
       /* v19a — He consecrates Himself: the cross of light, He bows */

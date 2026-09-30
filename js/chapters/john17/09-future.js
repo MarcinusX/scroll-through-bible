@@ -25,6 +25,7 @@ const HUD = [['andrew', 590, 18], ['james', 628, 4], ['thomas', 664, 24], ['john
   .map(([k, x, dy]) => ({ k, x, y: rimY(x) + 12 + dy }));
 // believers of later ages along the curve
 const AGE_X = [530, 420, 312, 1082, 1200];
+const AGE_XP = [538, 460, 384, 1080, 1180];   // phone: all five inside the screen
 const RIBBON_L = Array.from({ length: 30 }, (_, i) => { const x = lerp(590, 250, i / 29); return [x, rimY(x) + 6]; });
 const RIBBON_R = Array.from({ length: 30 }, (_, i) => { const x = lerp(1040, 1290, i / 29); return [x, rimY(x) + 6]; });
 
@@ -67,7 +68,7 @@ export default {
     const ribs = [RIBBON_L, RIBBON_R].map((pts) => ribL.add(`<g>${lightPath(lineD(pts), { w: 4, col: C.halo })}</g>`).firstElementChild);
     const ageL = S.layer({ par: 1, sh: 4 });
     const ages = AGES.map((a, i) => {
-      const x = AGE_X[i], y = rimY(x) + 4, r = angAt(x);
+      const x = (S.portrait ? AGE_XP : AGE_X)[i], y = rimY(x) + 4, r = angAt(x);
       const reader = a.k === 'reader';
       const inner0 = (reader ? `<g transform="translate(0 -4)">${readerNook(c)}</g>` : '') + believer(c, a, reader ? { pose: 'sit' } : {});
       const inner = x > 800 ? `<g transform="scale(-1 1)">${inner0}</g>` : inner0;

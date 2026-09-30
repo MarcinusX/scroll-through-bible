@@ -107,7 +107,7 @@ export default {
 
       /* v11b — keep them in Your name: the ring and the Name */
       const rk = es(t, 1.1, 1.7);
-      vis(ringB, { x: JX, y: 664, o: rk > 0.01 ? 1 - es(t, 7.0, 7.3) * 0.5 : 0 });
+      vis(ringB, { x: JX, y: 664, sx: S.portrait ? 0.84 : 1, o: rk > 0.01 ? 1 - es(t, 7.0, 7.3) * 0.5 : 0 });
       drawRing(ringB, rk);
       lower(name, es(t, 1.05, 1.4, ease.out) * (1 - es(t, 2.9, 3.15, ease.in)), JX, 318, { len: 600, r: T ? Math.sin(T * 0.7) * 0.8 : 0 });
 

@@ -59,6 +59,8 @@ export default {
     darkRL.add(`<g transform="translate(1600 470)">${darkSheet(c, 1, { col: '#171a3a' })}</g>`);
 
     const JHand = hand(JX, JY, 1.05, false, 60);
+    const reach = S.portrait ? 760 : 560;   // phone: the darkness has further to come before it shows
+    const narrow = S.portrait ? 0.8 : 1;
     return (t, time) => {
       const T = time;
       P.update(T);
@@ -73,8 +75,8 @@ export default {
       if (cold > 0.001) P.sky.blend(NIGHT, COLD, cold);
       else P.sky.blend(NIGHT, HOLY, es(t, 3.4, 4.5) * 0.5);
       const push = es(t, 1.05, 1.6) * (1 - shield * 0.45) - bump(t, 3.3, 3.7) * 0.12 - es(t, 4.05, 4.6) * 0.5;
-      darkLL.shift(-320 + push * 560, 0);
-      darkRL.shift(320 - push * 560, 0);
+      darkLL.shift(-320 + push * reach, 0);
+      darkRL.shift(320 - push * reach, 0);
       darkLL.fade(push > 0.01 ? 0.95 : 0);
       darkRL.fade(push > 0.01 ? 0.95 : 0);
       const wind = cold * (1 - shield * 0.6);
@@ -105,7 +107,7 @@ export default {
       vis(leaf, { x: DOOR[0] - 44 * (0.8 + dk * 0.2), y: DOOR[1], s: 0.8 + dk * 0.2, sx: (0.8 + dk * 0.2) * (1 - bump(t, 2.3, 2.7) * 0.1), o: dk });
 
       /* v15b — kept from the evil one: the dome */
-      vis(dome, { x: JX, y: 676 - (1 - es(t, 3.05, 3.4, ease.out)) * 500, sy: 0.4 + es(t, 3.05, 3.45) * 0.6, o: shield * (1 - es(t, 4.4, 4.9) * 0.4) });
+      vis(dome, { x: JX, y: 676 - (1 - es(t, 3.05, 3.4, ease.out)) * 500, sx: narrow, sy: 0.4 + es(t, 3.05, 3.45) * 0.6, o: shield * (1 - es(t, 4.4, 4.9) * 0.4) });
 
       /* v16 — not of the world */
       const sj = es(t, 4.05, 4.35, ease.back);

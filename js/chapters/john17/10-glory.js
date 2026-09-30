@@ -123,7 +123,7 @@ export default {
 
       /* v23d — loved as He is loved: the great heart */
       const gk = es(t, 5.05, 5.5, ease.out);
-      vis(bh, { x: JX, y: 440 - (1 - gk) * 300, s: 0.7 + gk * 0.3, o: gk });
+      vis(bh, { x: JX, y: 440 - (1 - gk) * 300, s: (0.7 + gk * 0.3) * (S.portrait ? 0.88 : 1), o: gk });   // phone: the whole heart in view
 
       put(J, T, { head: PRAY.head + bump(t, 0.05, 0.9) * 20 + bump(t, 3.1, 3.9) * 22, armF: PRAY.armF + bump(t, 0.1, 0.9) * 10 + bump(t, 4.05, 4.9) * 20, armB: PRAY.armB });
 

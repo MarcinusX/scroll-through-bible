@@ -72,7 +72,7 @@ export default {
         vis(gold[i], { x, y: y - 6, s: 0.9, o: o * es(t, 1.35, 1.6) });
         strings(i, [JX + (x - JX) * 0.3, RY + 30], [x, y - 6], -10, u, o * 0.8);
       });
-      lower(world, es(t, 1.05, 1.4, ease.out) * (1 - es(t, 2.0, 2.3)), 1090, 330, { len: 600, r: T ? Math.sin(T * 0.6) * 1.2 : 0 });
+      lower(world, es(t, 1.05, 1.4, ease.out) * (1 - es(t, 2.0, 2.3)), S.portrait ? 1040 : 1090, 330, { len: 600, r: T ? Math.sin(T * 0.6) * 1.2 : 0 });
 
       /* v10a — all Mine is Yours, all Yours is Mine: the figure of eight */
       const lk = es(t, 2.1, 2.6);

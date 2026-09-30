@@ -80,6 +80,7 @@ export default {
     const hearts = D.map(() => fx.add(`<g><circle r="26" fill="url(#halo-glow)"/>${heart(c, 9, C.jesusMantle)}</g>`));
 
     const JH = [JX + 2, JY - 176];
+    const PLX = S.portrait ? 995 : 1030;   // phone: the plate clear of the screen edge
     return (t, time) => {
       const T = time;
       P.update(T);
@@ -100,9 +101,9 @@ export default {
       vis(glowOut, { x: DOOR[0], y: DOOR[1] - 60, o: gl });
       /* v24c — loved before the world: the plate */
       const pk = es(t, 2.05, 2.4, ease.out) * (1 - es(t, 2.95, 3.2, ease.in));
-      lower(plate, pk, 1030, 290, { len: 700, r: T ? Math.sin(T * 0.7) : 0 });
+      lower(plate, pk, PLX, 290, { len: 700, r: T ? Math.sin(T * 0.7) : 0 });
       const wk = es(t, 2.45, 2.7, ease.back);
-      vis(plWorld, { x: 1030, y: 290 - (1 - pk) * 700 + 60, s: wk, o: wk > 0.01 && pk > 0.01 ? 1 : 0 });
+      vis(plWorld, { x: PLX, y: 290 - (1 - pk) * 700 + 60, s: wk, o: wk > 0.01 && pk > 0.01 ? 1 : 0 });
 
       /* v25a — the world has not known You: mist */
       mistL.fade(dim + es(t, 4.1, 4.5) * 0.35 * (1 - es(t, 6.05, 6.5)));

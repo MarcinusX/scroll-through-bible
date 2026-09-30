@@ -29,7 +29,8 @@ export default {
     const word = hiL.add(`<g>${goldWord(c, tr('życie wieczne', 'eternal life'), { size: 22 })}</g>`);
     // the idols
     const idL = S.layer({ par: 0.12, sh: 4 });
-    const IDOLS = [[420, 300, 0], [1170, 280, 1], [1010, 360, 2], [560, 380, 1]];
+    const IDOLS = S.portrait ? [[500, 290, 0], [1070, 270, 1], [985, 375, 2], [590, 385, 1]]   // phone: all four in view
+      : [[420, 300, 0], [1170, 280, 1], [1010, 360, 2], [560, 380, 1]];
     const idols = IDOLS.map(([x, y, k]) => ({ x, y, str: idL.add(`<g><path d="M0 -1600V${k === 1 ? -34 : -62}" stroke="rgba(233,210,160,.4)" stroke-width="1.2" fill="none"/></g>`), el: idL.add(`<g>${idol(c, k)}</g>`) }));
     // the threads
     const thL = S.layer({ par: 0.3, sh: 0, flat: true });

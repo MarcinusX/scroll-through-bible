@@ -75,7 +75,11 @@ export function lantern(c, { glowR = 70 } = {}) {
  */
 export function eleven(S, L, { pos = SIT, s = 0.8, pose: P = 'sit', eyes = 'open', lamps = true, face = true } = {}) {
   const c = S.c;
-  const D = pos.slice().sort((a, b) => a.y - b.y).map((d, i) => {
+  // phone: the Eleven sit a little closer to the rock, so the outermost are not sliced by the screen edge
+  const near = S.portrait && (pos === SIT || pos === STAND);
+  if (near) s *= 0.92;
+  const D = pos.slice().sort((a, b) => a.y - b.y).map((d0, i) => {
+    const d = near ? { ...d0, x: JX + (d0.x - JX) * (d0.x < JX ? 0.82 : 0.74) } : d0;
     const o = { ...TW[d.k], pose: P, eyes };
     const mk = person(c, o);
     const el = L.add(face ? withFace(mk, faceBits(c)) : mk);

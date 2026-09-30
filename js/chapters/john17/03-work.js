@@ -94,9 +94,9 @@ export default {
       const fold = es(t, 2.3, 3.4);
       P.fold(fold);
       dL.fade(1 - es(t, 2.4, 3.0));
-      dL.shift(0, fold * 300);
+      dL.shift(0, fold * 370);   // with the ground they sit on
       fx.fade(1 - es(t, 2.3, 2.8));
-      fx.shift(0, fold * 300);
+      fx.shift(0, fold * 370);
       flames(1, T);
       D.forEach((m) => { put(m, T, { head: -12 - es(t, 1.1, 1.5) * 6 }); lampK(m, 0.85 * (1 - fold)); });
       const hk = 1 - es(t, 2.8, 3.2);
