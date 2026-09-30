@@ -27,7 +27,7 @@ export default {
     { v: 34, text: 'Na to dali mu taką odpowiedź: «Cały urodziłeś się w grzechach, a śmiesz nas pouczać?»' },
     { v: 34, cont: true, text: 'I precz go wyrzucili.' },
   ],
-  cam: { x: [-60, 200], y: [-110, 40], z: [1, 1.25] },
+  cam: { x: [-60, 350], y: [-110, 40], z: [1, 1.25] },
   build(S) {
     const c = S.c;
     const hall = hallSet(S);
@@ -77,6 +77,7 @@ export default {
     const fromGod = hanging(hangL, `<g transform="translate(0 -260)">${lightBeam(bId, 30, 150, 260)}</g>` + hungPlate(c, `<g transform="translate(0 -2)">${jMed}</g>`, { r: 60 }), { x: 0, y: 0, len: 900 });
 
     hall.front();
+    const P = S.portrait;
 
     return (t, time) => {
       const T = time;
@@ -136,9 +137,11 @@ export default {
       /* v33 — from God */
       drop(fromGod, 960, 330, es(t, 4.1, 4.45, ease.out) * (1 - es(t, 4.92, 5.15, ease.in)), T, { amp: 0.8 });
 
-      S.cam.x = kf(t, [[0, 40], [1, 40], [2, 60], [2.2, 100], [3, 100], [3.2, 40], [4, 40], [4.2, 100], [5, 100], [5.2, 80], [6, 60], [6.3, 0], [7, -20]]);
+      // phone: further right and wider for the man and the whole bench; then left, to the whole barred door
+      S.cam.x = P ? kf(t, [[0, 340], [6, 340], [6.45, -40], [7, -60]])
+        : kf(t, [[0, 40], [1, 40], [2, 60], [2.2, 100], [3, 100], [3.2, 40], [4, 40], [4.2, 100], [5, 100], [5.2, 80], [6, 60], [6.3, 0], [7, -20]]);
       S.cam.y = kf(t, [[0, 0], [1, 0], [2, 0], [2.2, -100], [3, -100], [3.2, -90], [4, -90], [4.2, -70], [5, -70], [5.2, 0], [7, 0]]);
-      S.cam.z = kf(t, [[0, 1.1], [1, 1.14], [2, 1.14], [2.2, 1.02], [4, 1.02], [5, 1.04], [5.2, 1.1], [6, 1.1], [7, 1.02]]);
+      S.cam.z = P ? kf(t, [[0, 1], [6, 1], [7, 1.02]]) : kf(t, [[0, 1.1], [1, 1.14], [2, 1.14], [2.2, 1.02], [4, 1.02], [5, 1.04], [5.2, 1.1], [6, 1.1], [7, 1.02]]);
     };
   },
 };

@@ -27,7 +27,7 @@ export default {
     { v: 17, text: 'Ponownie więc zwrócili się do niewidomego: «A ty, co o Nim myślisz w związku z tym, że ci otworzył oczy?»' },
     { v: 17, cont: true, text: 'Odpowiedział: «To prorok».' },
   ],
-  cam: { x: [-40, 200], y: [-80, 40], z: [1, 1.25] },
+  cam: { x: [-40, 390], y: [-80, 40], z: [1, 1.25] },
   build(S) {
     const c = S.c;
     const hall = hallSet(S);
@@ -53,6 +53,7 @@ export default {
     const prophet = hanging(hangL, hungPlate(c, iconWord(prophetIcon(c), tr('prorok', 'a prophet'), { y: 42 }), { r: 64 }), { x: 0, y: 0, len: 900 });
 
     hall.front();
+    const P = S.portrait;
 
     return (t, time) => {
       const T = time;
@@ -68,7 +69,7 @@ export default {
       nb.forEach((n) => {
         const k = es(t, 0.02 + n.i * 0.08, 0.6 + n.i * 0.08, ease.out);
         const back = es(t, 0.75, 1.1);
-        const x = lerp(H.DOORX + 40 - n.i * 10, MX - 110 - n.i * 60, k) - back * 40;
+        const x = lerp(H.DOORX + 40 - n.i * 10, MX - 110 - n.i * 60, k) - back * (P ? 100 : 40);   // phone: they step right out of the picture
         const y = lerp(H.BASE - 2, H.FLOOR + 4 - n.i * 8, k), s = lerp(0.8, 0.96 - n.i * 0.03, k);
         n.p.set({ x, y, s, o: seg(t, 0.02 + n.i * 0.08, 0.1 + n.i * 0.08), walk: k > 0.01 && k < 0.99 || (back > 0 && back < 1) ? x * 0.07 : undefined, armF: 20 + (n.i === 0 ? 50 * bump(t, 0.2, 0.9) : 0), head: 4, blink: blinkAt(T, n.seed) });
       });
@@ -115,9 +116,12 @@ export default {
       /* v17b — "He is a prophet" */
       drop(prophet, MX + 20, 250, es(t, 8.12, 8.45, ease.out), T, { amp: 1.2 });
 
-      S.cam.x = kf(t, [[0, -20], [0.9, 40], [1.9, 120], [2.1, 160], [3, 60], [3.3, 40], [4, 160], [6.1, 180], [7, 180], [7.3, 140], [8.1, 60], [9, 40]]);
+      // phone: the camera stays further right and wider, so the man and the whole bench are in view
+      S.cam.x = P ? kf(t, [[0, -20], [0.9, 40], [1.3, 200], [1.9, 240], [2.2, 340], [6, 340], [6.4, 380], [8, 380], [8.3, 220], [9, 200]])
+        : kf(t, [[0, -20], [0.9, 40], [1.9, 120], [2.1, 160], [3, 60], [3.3, 40], [4, 160], [6.1, 180], [7, 180], [7.3, 140], [8.1, 60], [9, 40]]);
       S.cam.y = kf(t, [[0, 0], [1, -40], [2, -40], [2.2, 0], [7, 0], [8.1, -60], [9, -60]]);
-      S.cam.z = kf(t, [[0, 1.02], [1, 1.04], [2.2, 1.12], [4, 1.14], [6.1, 1.08], [7, 1.12], [8.1, 1.04], [9, 1.04]]);
+      S.cam.z = P ? kf(t, [[0, 1.02], [1, 1.04], [2.2, 1], [8, 1], [8.3, 1.04], [9, 1.04]])
+        : kf(t, [[0, 1.02], [1, 1.04], [2.2, 1.12], [4, 1.14], [6.1, 1.08], [7, 1.12], [8.1, 1.04], [9, 1.04]]);
     };
   },
 };

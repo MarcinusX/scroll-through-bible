@@ -70,6 +70,7 @@ export default {
     const decision = hanging(hangL, framed(S, decInner, { w: 330, h: 190, bg: mix(C.parchment, C.cream, 0.4), k: 'dec' }), { x: 0, y: 0, len: 900 });
 
     hall.front();
+    const P = S.portrait;
 
     return (t, time) => {
       const T = time;
@@ -127,9 +128,12 @@ export default {
       drop(decision, 800, 150, es(t, 7.12, 7.5, ease.out) * (1 - es(t, 8.05, 8.35, ease.in)), T, { amp: 0.9 });
       hall.door(open, 0);
 
-      S.cam.x = kf(t, [[0, 120], [0.4, 40], [1.1, 20], [2, 20], [2.2, 60], [3, 20], [5, 20], [6, 60], [7, 60], [7.2, 40], [8, 40], [8.2, 20], [9, 20]]);
+      // phone: the camera keeps left and wider, so the parents stay in view when they shrink back
+      S.cam.x = P ? kf(t, [[0, 120], [0.4, 40], [1.1, 20], [2, 20], [2.2, 60], [3, 20], [5, 20], [5.4, -30], [7, -30], [7.2, 0], [8, 0], [8.3, -60], [9, -60]])
+        : kf(t, [[0, 120], [0.4, 40], [1.1, 20], [2, 20], [2.2, 60], [3, 20], [5, 20], [6, 60], [7, 60], [7.2, 40], [8, 40], [8.2, 20], [9, 20]]);
       S.cam.y = kf(t, [[0, 0], [1.1, -40], [2, -40], [2.2, 0], [7, 0], [7.2, -70], [8, -70], [8.2, 0], [9, 0]]);
       S.cam.z = kf(t, [[0, 1.08], [1.1, 1.02], [3, 1.1], [5, 1.14], [6, 1.06], [7.2, 1.0], [8.2, 1.12], [9, 1.12]]);
+      if (P) S.cam.z = Math.min(S.cam.z, 1.04);
     };
   },
 };

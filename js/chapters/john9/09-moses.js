@@ -21,7 +21,7 @@ export default {
     { v: 29, text: 'My wiemy, że Bóg przemówił do Mojżesza.' },
     { v: 29, cont: true, text: 'Co do Niego zaś nie wiemy, skąd pochodzi».' },
   ],
-  cam: { x: [-40, 200], y: [-110, 40], z: [1, 1.25] },
+  cam: { x: [-40, 350], y: [-110, 40], z: [1, 1.25] },
   build(S) {
     const c = S.c;
     const hall = hallSet(S);
@@ -51,6 +51,7 @@ export default {
     const beams = voiceL.add(`<g opacity="0">${rayBurst(c, { n: 14, r0: 14, r1: 110, spread: 0.05, color: '#fff1c4', o: 0.8 })}</g>`);
 
     hall.front();
+    const P = S.portrait;
 
     return (t, time) => {
       const T = time;
@@ -92,9 +93,10 @@ export default {
       /* v29b — whence? */
       drop(whence, 1000, 170, es(t, 3.1, 3.45, ease.out), T, { amp: 0.9 });
 
-      S.cam.x = kf(t, [[0, 120], [1, 120], [1.2, 60], [1.6, 120], [2, 140], [3, 140], [4, 120]]);
+      // phone: the camera stays further right and wider, so the man and the whole bench are in view
+      S.cam.x = P ? 340 : kf(t, [[0, 120], [1, 120], [1.2, 60], [1.6, 120], [2, 140], [3, 140], [4, 120]]);
       S.cam.y = kf(t, [[0, 0], [1, 0], [1.2, -50], [2.0, -100], [3, -100], [3.2, -70], [4, -70]]);
-      S.cam.z = kf(t, [[0, 1.12], [1, 1.12], [1.2, 1.04], [2, 1.02], [3, 1.06], [4, 1.06]]);
+      S.cam.z = P ? 1 : kf(t, [[0, 1.12], [1, 1.12], [1.2, 1.04], [2, 1.02], [3, 1.06], [4, 1.06]]);
     };
   },
 };

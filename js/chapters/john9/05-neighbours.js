@@ -36,6 +36,8 @@ export default {
   cam: { x: [-40, 80], y: [-90, 30], z: [1, 1.2] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;
+    const NX = P ? [570, 632, 960, 1026, 1088] : NB.map((o) => o.x);   // phone: both groups inside the screen
     const set = gateSet(S, { skyCols: DAY });
 
     const act = S.layer({ par: 0.52, sh: 5 });
@@ -84,7 +86,7 @@ export default {
       /* neighbours: gather (v8), take sides (v9), lean in (v10), look around (v12) */
       nb.forEach((n) => {
         const k = es(t, -0.2 + n.i * 0.06, 0.55 + n.i * 0.06, ease.out);
-        const x = lerp(n.from, n.x, k);
+        const x = lerp(n.from, NX[n.i], k);
         const walking = k > 0.02 && k < 0.98;
         const pointMat = n.i === 2 ? bump(t, 0.4, 0.98) : 0;
         const pointHim = n.i === 3 ? bump(t, 0.5, 0.98) : 0;
@@ -96,7 +98,7 @@ export default {
         const facing = n.side === 0 ? false : true;
         const turn = around > 0.4 && (n.i % 2 === 0);
         n.p.set({
-          x, y: n.y, s: n.s, flip: walking ? n.from > n.x : turn ? !facing : facing, walk: walking ? x * 0.07 : undefined,
+          x, y: n.y, s: n.s, flip: walking ? n.from > NX[n.i] : turn ? !facing : facing, walk: walking ? x * 0.07 : undefined,
           armF: 16 + pointMat * 40 + pointHim * 70 + yesK * 40 + noK * 30 + lean * 30, armB: 8 + noK * 50 + startle * 60,
           head: (noK ? Math.sin(T * 7) * 6 * noK : 0) + yesK * 6 * Math.sin(T * 6) - lean * 4 - around * 8, lean: lean * 5 - startle * 5,
           blink: blinkAt(T, n.seed),
@@ -110,10 +112,10 @@ export default {
       drop(memory, 960, 250, mk, T, { amp: 1.2 });
 
       /* v9 — yes / only like him / it is I */
-      const [lx, ly] = headAt(626, G.FLOOR + 2, 0.94, false);
+      const [lx, ly] = headAt(NX[1], G.FLOOR + 2, 0.94, false);
       const yk = es(t, 1.15, 1.35, ease.back) * (1 - es(t, 1.95, 2.05));
       vis(yes, { x: lx + 16, y: ly - 26, s: yk, o: yk > 0.01 ? 1 : 0 });
-      const [rx, ry] = headAt(1040, G.FLOOR + 12, 1.0, true);
+      const [rx, ry] = headAt(NX[3], G.FLOOR + 12, 1.0, true);
       const lk = es(t, 2.15, 2.35, ease.back) * (1 - es(t, 2.95, 3.05));
       vis(like, { x: rx - 16, y: ry - 26, s: lk, o: lk > 0.01 ? 1 : 0 });
       const mek = es(t, 3.12, 3.32, ease.back) * (1 - es(t, 3.95, 4.05));
@@ -125,7 +127,7 @@ export default {
       vis(how, { x: rx - 16, y: ry - 26, s: hk, o: hk > 0.01 ? 1 : 0 });
 
       /* v11 — the story in four cards */
-      const xs = [650, 790, 930, 1070];
+      const xs = P ? [605, 735, 865, 995] : [650, 790, 930, 1070];   // phone: all four cards in view
       tiles.forEach((el, i) => {
         const a = i < 3 ? 5.1 + i * 0.25 : 6.12;
         const k = es(t, a, a + 0.3, ease.out) * (1 - es(t, 8.1 + i * 0.05, 8.5 + i * 0.05, ease.in));
@@ -141,6 +143,7 @@ export default {
       S.cam.x = kf(t, [[0, 0], [1, 40], [2, 0], [3, 60], [4.1, 30], [5, 30], [5.3, 20], [7, 20], [7.3, 20], [9, 0]]);
       S.cam.y = kf(t, [[0, -10], [0.5, -40], [1.1, 0], [4.9, 0], [5.3, -80], [7, -80], [7.4, 0], [9, 10]]);
       S.cam.z = kf(t, [[0, 1.04], [1.1, 1.1], [3, 1.14], [4.9, 1.1], [5.3, 1.02], [7, 1.02], [7.4, 1.1], [9, 1.12]]);
+      if (P) S.cam.z = 1 + (S.cam.z - 1) * 0.4;   // phone: a closer view would cut the neighbours at the edges
     };
   },
 };

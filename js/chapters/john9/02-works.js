@@ -24,7 +24,8 @@ export default {
   cam: { x: [-40, 80], y: [-80, 30], z: [1, 1.2] },
   build(S) {
     const c = S.c;
-    const set = gateSet(S, { skyCols: DAY, starsN: 90, moonAt: [470, 170] });
+    const MOON = S.portrait ? [600, 40] : [470, 170];   // phone: the moon clear of the screen edge and the cloud
+    const set = gateSet(S, { skyCols: DAY, starsN: 90, moonAt: MOON });
 
     /* night over the street (flat, faded on the compositor), and the light around Him */
     const nightL = S.layer({ par: 0.48, sh: 0, flat: true });
@@ -70,7 +71,7 @@ export default {
       const sunY = lerp(150, 620, es(t, 2.95, 3.7, ease.in));
       set.update(T, { sunY, sunO: 1 - seg(t, 3.6, 3.75) });
       set.starsL.fade(es(t, 3.5, 4.0));
-      if (set.moonEl) { drop(set.moonEl, 470, 170, es(t, 3.55, 4.1, ease.out), T, { amp: 0.8 }); }
+      if (set.moonEl) { drop(set.moonEl, MOON[0], MOON[1], es(t, 3.55, 4.1, ease.out), T, { amp: 0.8 }); }
       nightL.fade(es(t, 3.2, 3.9) * (1 - es(t, 4.2, 4.7) * 0.45));
       glowL.fade(es(t, 4.1, 4.6));
       pose(jGlow, { x: G.JX + 2, y: G.FLOOR - 120, s: 0.8 + es(t, 4.1, 4.7) * 0.5 });

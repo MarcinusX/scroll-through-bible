@@ -407,11 +407,12 @@ export function siloamNear(c) {
     s.p(c.cut([[x0, y0], [x0 + 60, y0], [x0 + 60, 1700], [x0, 1700]], 0.4, 8), shade(col, -0.03 - k * 0.025));
     s.x(c.ribbon([[x0 + 1, y0 + 2], [x0 + 58, y0 + 2]], 2.4), shade(col, 0.2), 'opacity=".8"');
   }
-  // the near lip of the pool (we look over it)
-  s.p(c.cut([[800, 744], [3100, 744], [3100, 1700], [800, 1700]], 0.5, 16), shade(col, -0.08));
-  s.x(c.ribbon([[800, 746], [3100, 746]], 3), shade(col, 0.2), 'opacity=".8"');
+  // the near lip of the pool (we look over it); it runs in front of the foot of the steps too, so on a tall
+  // screen the steps do not run on down the picture as stripes
+  s.p(c.cut([[560, 744], [3100, 744], [3100, 1700], [560, 1700]], 0.5, 16), shade(col, -0.08));
+  s.x(c.ribbon([[560, 746], [3100, 746]], 3), shade(col, 0.2), 'opacity=".8"');
   let joints = '';
-  for (let x = 860; x < 3100; x += 120) joints += c.ribbon([[x, 748], [x + 4, 800]], 1.2);
+  for (let x = 620; x < 3100; x += 120) joints += c.ribbon([[x, 748], [x + 4, 800]], 1.2);
   s.x(joints, shade(col, -0.2), 'opacity=".45"');
   return s.out();
 }
@@ -510,7 +511,8 @@ export function hallSet(S, { beamO = 1 } = {}) {
       const F = S.layer({ par: 0.9, sh: 7 });
       const col = mix(C.cream, C.stone, 0.4);
       const s = sheet();
-      [150, 1470].forEach((x) => {
+      // phone: the camera goes further right to show the whole bench, so the right pillar stands further off
+      [150, S.portrait ? 1760 : 1470].forEach((x) => {
         s.p(c.cut([[x - 50, 1100], [x - 46, -600], [x + 46, -600], [x + 50, 1100]], 0.5, 12), col);
         let fl = '';
         for (let k = -3; k <= 3; k++) fl += c.ribbon([[x + k * 12, 1080], [x + k * 11.5, -580]], 2.4);

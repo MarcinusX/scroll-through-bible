@@ -38,7 +38,9 @@ export default {
     /* ---------- the world in colour (under the night sheet) ---------- */
     const sk = sky(S, NOON);
     const hangL = S.layer({ par: 0.04, sh: 5 });
-    const sunEl = hanging(hangL, sun(c, 50), { x: 1190, y: 150, len: 900 });
+    const SUNX = S.portrait ? 1020 : 1190, SUNY = S.portrait ? 270 : 150;        // phone: the sun and the women inside the screen
+    const WX = S.portrait ? 1072 : 1130, WGAP = S.portrait ? 50 : 64;
+    const sunEl = hanging(hangL, sun(c, 50), { x: SUNX, y: SUNY, len: 900 });
     const cl1 = hanging(hangL, cloud(c, 200), { x: 480, y: 140, len: 700 });
     const cl2 = hanging(hangL, cloud(c, 140), { x: 900, y: 96, len: 700 });
     const birds = flock(S, hangL, 5, (cc) => bird(cc, { color: C.bird }), { y: 250, speed: 70, scale: 0.55 });
@@ -58,7 +60,7 @@ export default {
     const farL = S.layer({ par: 0.32, sh: 4 });
     farL.add(siloamBack(c));
     const women = [0, 1].map((i) => ({ i, p: S.puppet(farL.add(person(c, { ...neighbour(c, 1), hairStyle: 'veil', beard: 'none', holdB: i ? '' : `<g transform="translate(0 16) rotate(180)">${hydria4(c, { sc: 0.55 })}</g>` }))), seed: c.rr(0, 9) }));
-    const jarDown = farL.add(`<g transform="translate(1092 668)">${hydria4(c, { sc: 0.6 })}</g>`);
+    const jarDown = farL.add(`<g transform="translate(${S.portrait ? 1046 : 1092} 668)">${hydria4(c, { sc: 0.6 })}</g>`);
     const OX = 1000;
     const out = farL.add(`<g transform="translate(${OX} 640)">${outlet(c)}</g>`);
     const pour = farL.add(`<g><path d="${c.ribbon(c.qbez([OX, 648], [OX + 8, 676], [OX + 12, 708], 10), (u) => 12 - u * 4)}" fill="#bfe3ea" opacity=".9"/></g>`);
@@ -120,7 +122,7 @@ export default {
       glareL.fade(glare * 0.85);
       const live = colour > 0.01 || lift > 0;
       if (live) {
-        swing(sunEl, 1190, 150, T, 1.1, 0.6);
+        swing(sunEl, SUNX, SUNY, T, 1.1, 0.6);
         swing(cl1, 480 + Math.sin(T * 0.1) * 26, 140, T, 1.3, 0.6, 1);
         swing(cl2, 900 + Math.sin(T * 0.08 + 2) * 26, 96, T, 1.2, 0.7, 2);
       }
@@ -183,7 +185,7 @@ export default {
       const dark = 1 - es(t, 1.05, 1.3);
       waterR(OX + 10, 704, dark, T, { sy: 0.45, speed: 0.7, spread: 3.2 });
       birdR(880, 470, dark * (Math.sin(T * 1.7) > 0.2 ? 1 : 0), T, { speed: 1.6, spread: 2.2 });
-      voiceR(1150, 540, dark * bump(t, 0.15, 0.95), T, { speed: 0.8, spread: 2.6 });
+      voiceR(WX + 20, 540, dark * bump(t, 0.15, 0.95), T, { speed: 0.8, spread: 2.6 });
 
       /* the world in colour: the pour, the glints, the flowers opening, the women turning */
       const pw = 1 + Math.sin(T * 7) * 0.04;
@@ -194,7 +196,7 @@ export default {
         vis(f.el, { x: f.x, y: f.y, s: 0.25 + k * 0.85, r: k * 40, o: 1 });
       });
       const look = es(t, 1.45, 1.6);
-      women.forEach((w) => w.p.set({ x: 1130 + w.i * 64, y: 668 - w.i * 16, s: 0.66, flip: look > 0.5 || w.i === 1, armF: 20 + look * (w.i ? 60 : 30), armB: w.i ? 10 : 160, head: -look * 6, blink: blinkAt(T, w.seed) }));
+      women.forEach((w) => w.p.set({ x: WX + w.i * WGAP, y: 668 - w.i * 16, s: 0.66, flip: look > 0.5 || w.i === 1, armF: 20 + look * (w.i ? 60 : 30), armB: w.i ? 10 : 160, head: -look * 6, blink: blinkAt(T, w.seed) }));
 
       S.cam.x = kf(t, [[-0.3, -40], [0.55, 0], [1.05, 0], [1.5, 20], [2, -20]]);
       S.cam.y = kf(t, [[-0.3, 60], [0.55, 110], [1.05, 120], [1.5, 80], [2, 80]]);

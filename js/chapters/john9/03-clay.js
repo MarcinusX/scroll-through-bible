@@ -47,6 +47,7 @@ export default {
     const flipper = tag.querySelector('.flipper'), nS = tag.querySelector('.n'), mS = tag.querySelector('.m');
 
     set.front();
+    const P = S.portrait;
 
     return (t, time) => {
       const T = time;
@@ -96,13 +97,15 @@ export default {
 
       /* the disciples watch */
       dis.forEach((d) => {
-        const x = 690 - d.i * 58;
-        d.p.set({ x, y: G.FLOOR + 12 - d.i * 6, s: 0.96 - d.i * 0.03, armF: 18 + bump(t, 0.3, 1.2) * (d.i === 1 ? 26 : 0), head: 8 * es(t, 0.1, 0.4) * (1 - es(t, 2.1, 2.4)) - bump(t, 2.4, 3.0) * 10, lean: 3 * es(t, 0.1, 0.4), blink: blinkAt(T, d.seed) });
+        // phone: the close-up is too narrow for them, so they wait just out of view and step up as the camera pulls back
+        const wait = P ? 1 - es(t, 1.95, 2.35) : 0;
+        const x = 690 - d.i * 58 - wait * 100;
+        d.p.set({ x, y: G.FLOOR + 12 - d.i * 6, s: 0.96 - d.i * 0.03, walk: wait > 0.01 && wait < 0.99 ? x * 0.07 : undefined, armF: 18 + bump(t, 0.3, 1.2) * (d.i === 1 ? 26 : 0), head: 8 * es(t, 0.1, 0.4) * (1 - es(t, 2.1, 2.4)) - bump(t, 2.4, 3.0) * 10, lean: 3 * es(t, 0.1, 0.4), blink: blinkAt(T, d.seed) });
       });
 
       /* v7 — the tag comes down with the name; it turns over: "which means: Sent" */
       const tk = es(t, 2.15, 2.5, ease.out);
-      drop(tag, 1080, 330, tk, T, { amp: 1.1 });
+      drop(tag, P ? 1010 : 1080, 330, tk, T, { amp: 1.1 });   // phone: the whole tag inside the screen
       const fl = es(t, 2.55, 2.8);
       const sx = Math.cos(fl * PI);
       pose(flipper, { sx: Math.max(0.02, Math.abs(sx)) });

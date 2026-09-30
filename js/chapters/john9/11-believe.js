@@ -23,7 +23,7 @@ export default {
     { v: 38, text: 'On zaś odpowiedział: «Wierzę, Panie!»' },
     { v: 38, cont: true, text: 'i oddał Mu pokłon.' },
   ],
-  cam: { x: [-80, 120], y: [-80, 60], z: [1, 1.3] },
+  cam: { x: [-220, 120], y: [-80, 60], z: [1, 1.3] },
   build(S) {
     const c = S.c;
     const set = gateSet(S, { skyCols: EVE, sunAt: [1290, 300], sunR: 50 });
@@ -52,13 +52,14 @@ export default {
     const son = hanging(hangL, hungGold(c, tr('Syn Człowieczy', 'the Son of God'), { size: 28 }), { x: 0, y: 0, len: 900 });
 
     set.front();
+    const P = S.portrait, DX = P ? 50 : 0;   // phone: Jesus and the disciples start nearer to the man
 
     return (t, time) => {
       const T = time;
       set.update(T, { sunY: 300 + es(t, 0, 6) * 60 });
 
       /* v35a — John tells Him; He turns to go */
-      const JK = [[0, 470], [0.75, 470], [1.45, JX]];
+      const JK = [[0, 470 + DX], [0.75, 470 + DX], [1.45, JX]];
       const jx = kf(t, JK, ease.io);
       const jw = moving(t, JK, 1);
       const ask = bump(t, 1.4, 1.98), speak37 = bump(t, 3.05, 3.95), bless = es(t, 5.15, 5.5);
@@ -67,11 +68,11 @@ export default {
       rings(jhx + 18, jhy + 6, Math.max(ask, speak37), T, { speed: 0.7, spread: 2.4 });
       vis(jGlow, { x: jhx, y: jhy, s: 1 + speak37 * 0.4 + bless * 0.6, o: Math.max(speak37, bless) * 0.9 });
       dis.forEach((d) => {
-        const x = 380 - d.i * 64 + (d.i === 0 ? 0 : 0);
+        const x = 380 - d.i * 64 + (d.i === 0 ? 0 : 0) + DX;
         const tell = d.i === 1 ? bump(t, 0.05, 0.75) : 0;
-        d.p.set({ x: d.i === 1 ? 410 : x, y: G.FLOOR + 12 - d.i * 6, s: 0.96 - d.i * 0.03, armF: 18 + tell * 50, head: -tell * 4 + bless * 10, lean: bless * 4, blink: blinkAt(T, d.seed) });
+        d.p.set({ x: d.i === 1 ? 410 + DX : x, y: G.FLOOR + 12 - d.i * 6, s: 0.96 - d.i * 0.03, armF: 18 + tell * 50, head: -tell * 4 + bless * 10, lean: bless * 4, blink: blinkAt(T, d.seed) });
       });
-      const [dhx, dhy] = headAt(410, G.FLOOR + 6, 0.93, false);
+      const [dhx, dhy] = headAt(410 + DX, G.FLOOR + 6, 0.93, false);
       const wk = es(t, 0.12, 0.32, ease.back) * (1 - es(t, 0.85, 0.95));
       vis(whisper, { x: dhx + 16, y: dhy - 26, s: wk, o: wk > 0.01 ? 1 : 0 });
 
@@ -109,9 +110,10 @@ export default {
       lightL.fade(es(t, 5.15, 5.6));
       pose(pour, { x: (JX + MANX) / 2 - 20, y: 60, s: 0.9 + es(t, 5.15, 5.9) * 0.2 });
 
-      S.cam.x = kf(t, [[0, -60], [0.8, -60], [1.5, 40], [2, 60], [2.2, 80], [3, 70], [4, 70], [5, 60], [6, 50]]);
+      // phone: the scene opens further left and wider, so Jesus, the disciples who tell Him and the man are all in view
+      S.cam.x = kf(t, [[0, P ? -215 : -60], [0.8, P ? -215 : -60], [1.5, 40], [2, 60], [2.2, 80], [3, 70], [4, 70], [5, 60], [6, 50]]);
       S.cam.y = kf(t, [[0, 20], [1.4, 10], [1.6, -40], [2.1, 20], [4, 40], [5, 40], [5.2, 0], [6, -10]]);
-      S.cam.z = kf(t, [[0, 1.06], [1.4, 1.08], [2.2, 1.18], [4, 1.26], [5, 1.24], [5.3, 1.08], [6, 1.06]]);
+      S.cam.z = kf(t, [[0, P ? 1 : 1.06], [0.8, P ? 1 : 1.07], [1.4, 1.08], [2.2, 1.18], [4, 1.26], [5, 1.24], [5.3, 1.08], [6, 1.06]]);
     };
   },
 };
