@@ -23,9 +23,10 @@ export default {
     { v: 7, cont: true, text: 'bo sam siebie uczynił Synem Bożym».' },
     { v: 8 },
   ],
-  cam: { x: [-60, 60], y: [-110, 60], z: [1, 1.3] },
+  cam: { x: [-60, 100], y: [-110, 60], z: [1, 1.3] },
   build(S) {
     const c = S.c;
+    const ph = S.portrait;
     const H = squareSet(S, { pal: J19.noon });
     const door = H.cellIn.add(`<g transform="translate(${JX} ${PLAT})">${doorway(c, 104, 170)}</g>`);
     const gl = H.cellIn.add(`<g>${glory(c, 300, 16)}</g>`);
@@ -55,7 +56,7 @@ export default {
       H.sunEl && pose(H.sunEl, { x: 1230, y: 150 });
 
       /* Pilate: out of the doorway, speaking; aside for "Behold"; pushing it back; drawing back afraid */
-      const pK = [[0.25, [JX, PLAT - 4]], [0.75, [980, PLAT]], [3.0, [980, PLAT]], [3.3, [1040, PLAT]], [8.05, [1040, PLAT]], [8.6, [1110, PLAT]]];
+      const pK = [[0.25, [JX, PLAT - 4]], [0.75, [980, PLAT]], [3.0, [980, PLAT]], [3.3, [1040, PLAT]], [8.05, [1040, PLAT]], [8.6, [ph ? 1065 : 1110, PLAT]]];
       const [px, py] = kf(t, pK);
       const pIn = es(t, 0.02, 0.22);
       const speak = es(t, 0.55, 0.85) * (1 - es(t, 1.9, 2.05));
@@ -101,24 +102,24 @@ export default {
 
       /* v6a — "Crucify! Crucify!" */
       const c1 = es(t, 4.1, 4.3, ease.back) * (1 - es(t, 4.95, 5.1));
-      pose(cry1, { x: 480, y: 580, s: c1, r: -3, o: c1 > 0.02 ? 1 : 0 });
+      pose(cry1, { x: ph ? 570 : 480, y: 580, s: c1, r: -3, o: c1 > 0.02 ? 1 : 0 });
       const c2 = es(t, 4.25, 4.45, ease.back) * (1 - es(t, 4.95, 5.1));
-      pose(cry2, { x: 1160, y: 584, s: c2, r: 3, o: c2 > 0.02 ? 1 : 0 });
+      pose(cry2, { x: ph ? 1070 : 1160, y: 584, s: c2, r: 3, o: c2 > 0.02 ? 1 : 0 });
       /* v6b — "Take Him yourselves" */
       const tk = es(t, 5.1, 5.3, ease.back) * (1 - es(t, 5.9, 6.05));
       pose(take, { x: phx - 26, y: phy - 20, s: tk, o: tk > 0.02 ? 1 : 0 });
       /* v7 — the Law, and "the Son of God" in gold */
-      pose(law, { x: 500, y: lerp(760, 520, lawUp), s: 0.5 + lawUp * 0.5, r: -2, o: lawUp > 0.02 ? 1 : 0 });
+      pose(law, { x: ph ? 640 : 500, y: lerp(760, 520, lawUp), s: 0.5 + lawUp * 0.5, r: -2, o: lawUp > 0.02 ? 1 : 0 });
       const sk2 = es(t, 7.1, 7.4) * (1 - es(t, 8.1, 8.4));
-      pose(son, { x: 500, y: 524, s: sk2, o: sk2 > 0.02 ? 1 : 0 });
+      pose(son, { x: ph ? 640 : 500, y: 524, s: sk2, o: sk2 > 0.02 ? 1 : 0 });
       /* v8 — Pilate hears it and is more afraid */
       const fk = es(t, 8.15, 8.4, ease.back);
       pose(fear, { x: phx + 6, y: phy - 10, s: fk, o: fk > 0.02 ? 1 : 0 });
       fade(door, 1);
 
-      S.cam.x = hush * 0 + es(t, 5.0, 5.4) * -30 * (1 - es(t, 7.9, 8.2)) + es(t, 7.9, 8.3) * 40;
+      S.cam.x = hush * 0 + es(t, 5.0, 5.4) * -30 * (1 - es(t, 7.9, 8.2)) + es(t, 7.9, 8.3) * (ph ? 90 : 40);   // phone: follow Pilate as he draws back
       S.cam.y = -20 - hush * 80 + es(t, 5.9, 6.3) * 40 * (1 - es(t, 7.9, 8.2));
-      S.cam.z = 1.04 + hush * 0.22 + es(t, 7.9, 8.3) * 0.08;
+      S.cam.z = 1.04 + hush * 0.22 + es(t, 7.9, 8.3) * (ph ? 0.02 : 0.08);
     };
   },
 };

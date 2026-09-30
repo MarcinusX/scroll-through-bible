@@ -7,8 +7,8 @@ import { C, person, crowdPerson, blinkAt, pose, lerp, sheet, shade } from '../ki
 import { es, ease, bump, fade } from '../../core/anim.js';
 import { kf, moving, hand, headAt, pilate, priest, golgothaSet, setCrosses, clearClouds, lightClouds, glory, titleBoard, miniTitle, waxSeal, strip, taunt, crossHead, swing, tr, GOL, J19 } from './lib.js';
 
-const RY = 704, PX = 1130;
-const BX = 995, BY = 140, BS = 0.6, BW = 560, BH = 168;
+const RY = 704;
+const BW = 560, BH = 168;
 
 export default {
   id: 'j19-title',
@@ -24,6 +24,10 @@ export default {
   cam: { x: [-60, 60], y: [-40, 40], z: [1, 1.14] },
   build(S) {
     const c = S.c;
+    // phone: the board hangs in the middle above the crosses, a little larger; Pilate, the priests and the readers stand closer in
+    const ph = S.portrait;
+    const PX = ph ? 1050 : 1130, PRX = ph ? 860 : 930, PRD = ph ? 85 : 90;
+    const BX = ph ? 800 : 995, BY = ph ? 36 : 140, BS = ph ? 0.74 : 0.6;
     const G = golgothaSet(S, { pal: J19.gold });
     clearClouds(G);
     const gl = G.hangL.add(`<g>${glory(c, 380, 18)}</g>`);
@@ -32,7 +36,7 @@ export default {
 
     /* people from the city, Pilate at his writing stand, the chief priests */
     const P = G.P;
-    const readers = [0, 1, 2, 3, 4].map((i) => ({ i, p: S.puppet(P.add(person(c, crowdPerson(c)))), x: [300, 390, 470, 560, 640][i], d: i * 0.12 }));
+    const readers = [0, 1, 2, 3, 4].map((i) => ({ i, p: S.puppet(P.add(person(c, crowdPerson(c)))), x: (ph ? [490, 545, 600, 655, 710] : [300, 390, 470, 560, 640])[i], d: i * (ph ? 0.03 : 0.12) }));
     const pr = [0, 1].map((i) => S.puppet(P.add(priest(c, i))));
     const stand = P.add(sheet().p(c.cut([[-6, 0], [-4, -96], [4, -96], [6, 0]], 0.3, 5) + c.cut([[-22, 2], [22, 2], [18, -6], [-18, -6]], 0.3, 4), C.wood2).p(c.cut([[-30, -92], [28, -104], [30, -96], [-28, -84]], 0.3, 4), C.wood3).p(c.cut([[-24, -94], [22, -104], [23, -99], [-23, -89]], 0.2, 3), '#fbf6ea').out());
     const pil = S.puppet(P.add(pilate(c)));
@@ -78,7 +82,7 @@ export default {
       /* v20b — Hebrew, Latin, Greek */
       langs.forEach((el, i) => {
         const k = es(t, 3.1 + i * 0.22, 3.3 + i * 0.22) * (1 - es(t, 3.95, 4.1));
-        pose(el, { x: 640, y: by + (BH / 3) * (i + 0.5) * BS, s: k, o: k > 0.02 ? 1 : 0 });
+        pose(el, { x: ph ? 520 : 640, y: by + (BH / 3) * (i + 0.5) * BS, s: k, o: k > 0.02 ? 1 : 0 });
         fade(lines[i], wr(i) * (1 - bump(t, 3.1, 4.0) * 0.5 + (bump(t, 3.1 + i * 0.22, 3.5 + i * 0.22) * 0.5)));
       });
 
@@ -98,24 +102,24 @@ export default {
       });
 
       /* v21 — the chief priests hurry to Pilate */
-      const prK = (i) => [[4.0 + i * 0.1, [150 - i * 80, RY + 6]], [4.8 + i * 0.1, [930 - i * 90, RY + 6]]];
+      const prK = (i) => [[4.0 + i * 0.1, [150 - i * 80, RY + 6]], [4.8 + i * 0.1, [PRX - i * PRD, RY + 6]]];
       pr.forEach((p, i) => {
         const k = prK(i), [x, y] = kf(t, k);
         const hold = es(t, 5.05, 5.3) * (1 - es(t, 6.2, 6.4));
         p.set({ x, y, s: 0.82, walk: moving(t, k) ? x * 0.06 : undefined, armF: 30 + (i === 0 ? hold * 110 : bump(t, 4.8, 5.8) * 60), armB: 10 + hold * 60, head: -hold * 8, blink: blinkAt(T, 5 + i), o: es(t, 4.0, 4.2) });
       });
       const ak = es(t, 4.85, 5.05, ease.back) * (1 - es(t, 5.4, 5.6));
-      const [qx, qy] = headAt(930, RY + 6, 0.82, false);
+      const [qx, qy] = headAt(PRX, RY + 6, 0.82, false);
       pose(ask, { x: qx + 14, y: qy - 6, s: ak, o: ak > 0.02 ? 1 : 0 });
       const up = es(t, 5.1, 5.5);
       const drop = es(t, 6.1, 6.6, ease.in);
-      const [sx0, sy0] = hand(930, RY + 6, 0.82, false, 140);
+      const [sx0, sy0] = hand(PRX, RY + 6, 0.82, false, 140);
       pose(slip, { x: lerp(sx0 + 40, BX, up), y: lerp(sy0 - 10, by + (BH / 3) * 1.5 * BS + 16, up) + drop * 520, r: lerp(-8, -3, up) + drop * 40, s: lerp(0.7, 0.9, up), o: up > 0.01 ? 1 - es(t, 6.45, 6.7) : 0 });
       /* v22 — "What I have written, I have written": the seal */
       const st = es(t, 6.3, 6.5, ease.back);
       pose(seal, { x: BW / 2 - 34, y: BH - 10, s: 1.5 - st * 0.5, o: st > 0.01 ? 1 : 0 });
 
-      S.cam.x = es(t, 0, 0.3) * 30 * (1 - es(t, 1.9, 2.3)) - es(t, 1.9, 2.4) * 40 * (1 - es(t, 3.9, 4.4)) + es(t, 4.6, 5.2) * 40;
+      S.cam.x = ph ? 0 : es(t, 0, 0.3) * 30 * (1 - es(t, 1.9, 2.3)) - es(t, 1.9, 2.4) * 40 * (1 - es(t, 3.9, 4.4)) + es(t, 4.6, 5.2) * 40;
       S.cam.y = -30;
       S.cam.z = 1.02 + es(t, 5.9, 6.4) * 0.04;
     };

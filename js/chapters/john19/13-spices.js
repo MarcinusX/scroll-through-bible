@@ -19,6 +19,7 @@ export default {
   cam: { x: [-40, 80], y: [-40, 40], z: [1, 1.14] },
   build(S) {
     const c = S.c;
+    const ph = S.portrait;   // phone: the hanging pictures inside the screen
     const G = golgothaSet(S, { pal: J19.eve });
     clearClouds(G);
     const gl = G.hangL.add(`<g>${glory(c, 340, 14)}</g>`);
@@ -67,7 +68,7 @@ export default {
       const tg = es(t, 1.05, 1.3) * (1 - es(t, 1.95, 2.1));
       swing(nTag, nx - 6, 330 - (1 - tg) * 700, T, 1.2, 0.9, 1);
       const nk = es(t, 1.2, 1.5) * (1 - es(t, 1.95, 2.15));
-      swing(night, 1080, 205 - (1 - nk) * 700, T, 1, 0.7, 2);
+      swing(night, ph ? 1045 : 1080, (ph ? 150 : 205) - (1 - nk) * 700, T, 1, 0.7, 2);
 
       /* v39b — myrrh and aloes, about a hundred pounds */
       jars.forEach((j) => {
@@ -80,7 +81,7 @@ export default {
         pose(cu.el, { x: 850 - cu.i * 30 + Math.sin(T + cu.i) * 4, y: RY - 44 - k * 30, s: 0.8 + k * 0.3, o: on * Math.sin(k * PI) * 0.9 });
       });
       const wk = es(t, 2.2, 2.55);
-      swing(weight, 1110, 235 - (1 - wk) * 700, T, 1, 0.8, 3);
+      swing(weight, ph ? 1030 : 1110, 235 - (1 - wk) * 700, T, 1, 0.8, 3);
 
       S.cam.x = es(t, 0.8, 1.6) * 60;
       S.cam.y = -10 - es(t, 0, 0.6) * 20 * (1 - es(t, 0.8, 1.4)) + es(t, 2.0, 2.5) * 20;

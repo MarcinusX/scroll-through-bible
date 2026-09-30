@@ -28,6 +28,8 @@ export default {
   cam: { x: [-40, 80], y: [-60, 40], z: [1, 1.16] },
   build(S) {
     const c = S.c;
+    const ph = S.portrait;
+    const bx = ph ? 940 : BX;   // phone: the whole balance and the coin inside the screen
     const H = hallSet(S);
     const props = H.props;
     const shaft = props.add(`<g>${lightShaft(c, { w0: 70, w1: 250, h: 760 })}</g>`);
@@ -98,14 +100,14 @@ export default {
       /* v10b — the balance: release · crucify */
       const bIn = es(t, 3.05, 3.4) * (1 - es(t, 6.05, 6.4));
       const hy = BY - (1 - bIn) * 700;
-      pose(hook, { x: BX, y: hy });
+      pose(hook, { x: bx, y: hy });
       fade(lit, es(t, 4.1, 4.5) * (1 - es(t, 6.0, 6.3)));
       const tilt = Math.sin(Math.max(0, t - 3.3) * 6) * 8 * bump(t, 3.3, 4.0) + es(t, 5.1, 5.5) * 16;
       const r = (tilt * PI) / 180;
       const py0 = hy + 44;
-      pose(beam, { x: BX, y: py0, r: tilt });
-      pose(panL, { x: BX - Math.cos(r) * ARM, y: py0 - Math.sin(r) * ARM });
-      pose(panR, { x: BX + Math.cos(r) * ARM, y: py0 + Math.sin(r) * ARM });
+      pose(beam, { x: bx, y: py0, r: tilt });
+      pose(panL, { x: bx - Math.cos(r) * ARM, y: py0 - Math.sin(r) * ARM });
+      pose(panR, { x: bx + Math.cos(r) * ARM, y: py0 + Math.sin(r) * ARM });
       const swap = es(t, 5.05, 5.25);
       pa.forEach(([a, b]) => { fade(a, 1 - swap); fade(b, swap); });
 
@@ -116,12 +118,12 @@ export default {
 
       /* v12b–c — the cry from outside; Caesar's coin comes down */
       const cn = es(t, 7.1, 7.6);
-      pose(coin, { x: 1160, y: lerp(-700, 130, cn) + Math.sin(T * 0.7) * 3 * cn, r: Math.sin(T * 0.6) * 1.2 * cn, s: 1 + es(t, 8.05, 8.6) * 0.12 });
+      pose(coin, { x: ph ? 990 : 1160, y: lerp(-700, 130, cn) + Math.sin(T * 0.7) * 3 * cn, r: Math.sin(T * 0.6) * 1.2 * cn, s: 1 + es(t, 8.05, 8.6) * 0.12 });
       const ca = es(t, 7.1, 7.35, ease.back) * (1 - es(t, 7.9, 8.05));
-      pose(cryA, { x: 1110, y: 450, s: ca, r: 2, o: ca > 0.02 ? 1 : 0 });
+      pose(cryA, { x: ph ? 1085 : 1110, y: 450, s: ca, r: 2, o: ca > 0.02 ? 1 : 0 });
       const cb = es(t, 8.1, 8.35, ease.back) * (1 - es(t, 8.9, 9.1));
-      pose(cryB, { x: 1110, y: 450, s: cb, r: 2, o: cb > 0.02 ? 1 : 0 });
-      rings(1290, 560, bump(t, 7.05, 7.9) + bump(t, 8.05, 8.9), T, { dir: -1, spread: 2 });
+      pose(cryB, { x: ph ? 1085 : 1110, y: 450, s: cb, r: 2, o: cb > 0.02 ? 1 : 0 });
+      rings(ph ? 1150 : 1290, 560, bump(t, 7.05, 7.9) + bump(t, 8.05, 8.9), T, { dir: -1, spread: 2 });
 
       S.cam.x = es(t, 3.0, 3.4) * 50 * (1 - es(t, 6.0, 6.4)) + es(t, 7.0, 7.5) * 70;
       S.cam.y = -20 + es(t, 3.0, 3.4) * -30 * (1 - es(t, 6.0, 6.4));

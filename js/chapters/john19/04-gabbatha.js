@@ -26,6 +26,7 @@ export default {
   cam: { x: [-40, 80], y: [-60, 60], z: [1, 1.16] },
   build(S) {
     const c = S.c;
+    const ph = S.portrait;
     const H = squareSet(S, { pal: J19.noon });
     H.cellIn.add(`<g transform="translate(${JX} ${PLAT})">${doorway(c, 104, 170)}</g>`);
     const gl = H.cellIn.add(`<g>${glory(c, 260, 14)}</g>`);
@@ -71,7 +72,7 @@ export default {
 
       /* Jesus: out, in the middle, then led away */
       const jIn = es(t, 0.15, 0.35);
-      const jK = [[0.2, [JX, PLAT - 8]], [0.7, [JX, PLAT + 2]], [8.1, [JX, PLAT + 2]], [8.9, [340, PLAT + 2]]];
+      const jK = [[0.2, [JX, PLAT - 8]], [0.7, [JX, PLAT + 2]], [8.1, [JX, PLAT + 2]], [8.9, [ph ? 600 : 340, PLAT + 2]]];
       const [jx, jy] = kf(t, jK);
       const js = lerp(0.8, DS, es(t, 0.2, 0.7));
       const quiet = es(t, 4.05, 4.12) * (1 - es(t, 5.0, 5.1)) + es(t, 6.05, 6.12) * (1 - es(t, 8.0, 8.1));
@@ -83,8 +84,8 @@ export default {
       pose(gl, { x: jx, y: PLAT - 100, s: 0.5 + kingK * 0.25, r: T * 1.5, o: jo * (0.06 + kingK * 0.35) });
 
       /* soldiers flank Him, then take Him (v16) */
-      const aK = [[7.2, [640, PLAT]], [7.8, [JX - 100, PLAT]], [8.1, [JX - 100, PLAT]], [8.9, [230, PLAT]]];
-      const bK = [[7.2, [1180, PLAT]], [7.8, [JX + 110, PLAT]], [8.1, [JX + 110, PLAT]], [8.9, [460, PLAT]]];
+      const aK = [[7.2, [640, PLAT]], [7.8, [JX - 100, PLAT]], [8.1, [JX - 100, PLAT]], [8.9, [ph ? 520 : 230, PLAT]]]   // phone: still in view as they lead Him off;
+      const bK = [[7.2, [1180, PLAT]], [7.8, [JX + 110, PLAT]], [8.1, [JX + 110, PLAT]], [8.9, [ph ? 690 : 460, PLAT]]];
       const [ax, ay] = kf(t, aK), [bx, by] = kf(t, bK);
       sols[0].set({ x: ax, y: ay, s: 0.84, flip: t > 7.85, walk: moving(t, aK) ? ax * 0.05 : undefined, armF: 34, armB: 8 + es(t, 7.75, 8.0) * 40, blink: blinkAt(T, 4), o: 1 - es(t, 8.75, 8.95) });
       sols[1].set({ x: bx, y: by, s: 0.84, flip: true, walk: moving(t, bK) ? bx * 0.05 : undefined, armF: 34, armB: 8, blink: blinkAt(T, 5), o: 1 - es(t, 8.75, 8.95) });
@@ -92,10 +93,10 @@ export default {
       /* v13b — the Pavement and its names */
       fade(mosaic, es(t, 1.3, 1.6));
       const pl = es(t, 1.3, 1.65) * (1 - es(t, 1.95, 2.15));
-      pose(plate, { x: 1050, y: lerp(-420, 140, pl), r: Math.sin(T * 0.8) * 0.8, o: pl > 0.01 ? 1 : 0 });
+      pose(plate, { x: ph ? 960 : 1050, y: lerp(-420, ph ? 60 : 140, pl), r: Math.sin(T * 0.8) * 0.8, o: pl > 0.01 ? 1 : 0 });
       /* v14a — the Preparation of the Passover, about the sixth hour */
       const cd = es(t, 2.1, 2.45) * (1 - es(t, 2.95, 3.15));
-      pose(card, { x: 1040, y: lerp(-420, 120, cd), r: Math.sin(T * 0.8 + 1) * 0.8, o: cd > 0.01 ? 1 : 0 });
+      pose(card, { x: ph ? 960 : 1040, y: lerp(-420, 120, cd), r: Math.sin(T * 0.8 + 1) * 0.8, o: cd > 0.01 ? 1 : 0 });
       /* v14b — "Behold your King!" */
       const kk = es(t, 3.1, 3.3, ease.back) * (1 - es(t, 3.9, 4.05));
       pose(king, { x: phx - 26, y: phy - 18, s: kk, o: kk > 0.02 ? 1 : 0 });
@@ -116,9 +117,9 @@ export default {
       pose(shall, { x: phx - 26, y: phy - 18, s: sk2, o: sk2 > 0.02 ? 1 : 0 });
       /* v15c — "We have no king but Caesar": the coin is lowered over the priests */
       const nk = es(t, 6.1, 6.3, ease.back) * (1 - es(t, 6.95, 7.1));
-      pose(noKing, { x: 380, y: 596, s: nk, r: -2, o: nk > 0.02 ? 1 : 0 });
+      pose(noKing, { x: ph ? 545 : 380, y: 596, s: nk, r: -2, o: nk > 0.02 ? 1 : 0 });
       const cn = es(t, 6.1, 6.5) * (1 - es(t, 7.3, 7.7));
-      pose(coin, { x: 470, y: lerp(-500, 400, cn) + Math.sin(T * 0.7) * 3, r: Math.sin(T * 0.6) * 1.4, o: cn > 0.01 ? 1 : 0 });
+      pose(coin, { x: ph ? 560 : 470, y: lerp(-500, 400, cn) + Math.sin(T * 0.7) * 3, r: Math.sin(T * 0.6) * 1.4, o: cn > 0.01 ? 1 : 0 });
 
       S.cam.x = es(t, 1.0, 1.4) * 40 * (1 - es(t, 3.0, 3.3)) - es(t, 8.1, 8.9) * 40;
       S.cam.y = -10 - es(t, 2.9, 3.3) * 30 * (1 - es(t, 3.9, 4.2)) + es(t, 5.9, 6.3) * 30 * (1 - es(t, 7.0, 7.4));

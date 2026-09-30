@@ -71,7 +71,7 @@ export default {
 
       /* v31a — the Preparation; the great Sabbath is near */
       const ck = es(t, 0.1, 0.45) * (1 - es(t, 0.95, 1.15));
-      swing(card, 1020, 130 - (1 - ck) * 700, T, 1, 0.8, 1);
+      swing(card, S.portrait ? 960 : 1020, 130 - (1 - ck) * 700, T, 1, 0.8, 1);
       /* v31b — the chief priests ask Pilate; he nods */
       const prK = (i) => [[0.9 + i * 0.1, [1560 + i * 90, RY + 4]], [1.5 + i * 0.1, [1000 + i * 100, RY + 4]], [2.0, [1000 + i * 100, RY + 4]], [2.6, [1600 + i * 100, RY + 4]]];
       pr.forEach((p, i) => {
@@ -80,7 +80,7 @@ export default {
         p.set({ x, y, s: 0.82, flip: t < 2.0, walk: moving(t, k) ? x * 0.06 : undefined, armF: 30 + up * 90, armB: 10 + up * 40, head: -up * 14, blink: blinkAt(T, 5 + i) });
       });
       const pk = es(t, 1.1, 1.4) * (1 - es(t, 1.95, 2.15));
-      swing(pil, 1080, 200 - (1 - pk) * 700, T, 1, 0.8, 2);
+      swing(pil, S.portrait ? 1030 : 1080, 200 - (1 - pk) * 700, T, 1, 0.8, 2);
       fade(nod, es(t, 1.6, 1.75));
       const ak = es(t, 1.3, 1.5, ease.back) * (1 - es(t, 1.85, 2.0));
       pose(ask, { x: 990, y: 520, s: ak, o: ak > 0.02 ? 1 : 0 });

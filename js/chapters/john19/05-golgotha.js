@@ -55,7 +55,7 @@ export default {
 
       /* v17b — "Golgotha" */
       const gt = es(t, 1.05, 1.45) * (1 - es(t, 1.95, 2.2));
-      swing(golTag, 1100, 180 - (1 - gt) * 800, T, 1, 0.8, 1);
+      swing(golTag, S.portrait ? 1000 : 1100, 180 - (1 - gt) * 800, T, 1, 0.8, 1);
 
       /* v18 — the crosses rise: His in the middle first, then one on each side */
       const kC = es(t, 2.1, 2.55);

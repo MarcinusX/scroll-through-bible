@@ -21,9 +21,12 @@ export default {
     { v: 41, cont: true, text: 'w ogrodzie zaś nowy grób, w którym jeszcze nie złożono nikogo.' },
     { v: 42 },
   ],
-  cam: { x: [-80, 160], y: [-40, 40], z: [1, 1.16] },
+  cam: { x: [-80, 400], y: [-40, 40], z: [1, 1.16] },
   build(S) {
     const c = S.c;
+    // phone: the bearers rest nearer the tomb and the camera goes further right, so the tomb, its stone and the star are in view
+    const ph = S.portrait;
+    const RX = ph ? 780 : 700;
     const sk = sky(S, J19.eve);
     const starL = S.layer({ par: 0.02, sh: 1, flat: true });
     starL.add(stars(c, { x0: -600, x1: 2200, y0: -400, y1: 360, n: 50 }));
@@ -62,10 +65,10 @@ export default {
       starL.fade(es(t, 3.0, 4.8));
       night.fade(dark * 0.3);
       const ek = es(t, 4.4, 4.7);
-      pose(eve, { x: 1110, y: lerp(-300, 235, ek), s: 0.7 + ek * 0.3 + Math.sin(T * 1.4) * 0.03, o: ek > 0.01 ? 1 : 0 });
+      pose(eve, { x: ph ? 1000 : 1110, y: lerp(-300, 235, ek), s: 0.7 + ek * 0.3 + Math.sin(T * 1.4) * 0.03, o: ek > 0.01 ? 1 : 0 });
 
       /* the litter: in along the path, the linen and spices, then into the tomb */
-      const bx = t < 4 ? lerp(-260, 700, es(t, -0.3, 0.7)) : lerp(700, 1110, es(t, 4.02, 4.3));
+      const bx = t < 4 ? lerp(-260, RX, es(t, -0.3, 0.7)) : lerp(RX, 1110, es(t, 4.02, 4.3));
       const by = pathY(bx), s = pS(by);
       const moving = (t > -0.3 && t < 0.7) || (t > 4.02 && t < 4.3);
       const bow = es(t, 1.05, 1.3) * (1 - es(t, 1.9, 2.1));
@@ -76,7 +79,7 @@ export default {
       nico.set({ x: nxp, y: pathY(nxp) + 4, s: s * 1.02, walk: moving ? nxp * 0.05 : undefined, amt: 0.6, armF: 60 * carry + 10, armB: 50 * carry + 10, head: 4 + bow * 14, lean: bow * 6, blink: blinkAt(T, 3) });
       pose(lit, { x: bx, y: by - 92 * s + (1 - carry) * 40, s, o: 1 - inside });
       fade(bands, es(t, 0.3, 0.8));
-      jars.forEach((j, i) => pose(j, { x: 640 + i * 26, y: pathY(640) + 18 + i * 4, s: 1.2, o: es(t, 0.3, 0.5) * (1 - es(t, 4.0, 4.3)) }));
+      jars.forEach((j, i) => pose(j, { x: RX - 60 + i * 26, y: pathY(RX - 60) + 18 + i * 4, s: 1.2, o: es(t, 0.3, 0.5) * (1 - es(t, 4.0, 4.3)) }));
       curls.forEach((cu, i) => {
         const k = ((T * 0.25 + i / 3) % 1);
         pose(cu, { x: bx - 40 + i * 40 + Math.sin(T + i) * 4, y: by - 110 * s - k * 40, s: 0.8 + k * 0.3, o: es(t, 0.4, 0.7) * (1 - es(t, 3.9, 4.2)) * Math.sin(k * PI) * 0.9 });
@@ -86,7 +89,7 @@ export default {
       blooms.forEach((b) => { const k = es(t, 2.05 + b.i * 0.03, 2.4 + b.i * 0.03, ease.back); pose(b.el, { x: b.x, y: b.y, s: k * 1.1, o: k > 0.02 ? 1 : 0 }); });
       /* v41b — a new tomb, where no one had yet been laid */
       const nk = es(t, 3.1, 3.4) * (1 - es(t, 3.95, 4.15));
-      swing(newTag, DOOR.x, 300 - (1 - nk) * 700, T, 1.1, 0.9, 2);
+      swing(newTag, DOOR.x - (ph ? 70 : 0), 300 - (1 - nk) * 700, T, 1.1, 0.9, 2);
       const glowK = es(t, 3.05, 3.4) * (1 - es(t, 4.6, 4.8) * 0.6);
       pose(G.doorGlow, { x: DOOR.x, y: DOOR.y, o: glowK * 0.5 });
       /* v42 — laid there; the stone rolls across */
@@ -94,7 +97,7 @@ export default {
       const sx = lerp(STONE.x, DOOR.x, roll);
       pose(G.stone, { x: sx, y: DOOR.y - STONE.r + 2, r: -((STONE.x - sx) / STONE.r) * (180 / PI) });
 
-      S.cam.x = lerp(-60, 0, es(t, -0.3, 0.8)) + es(t, 2.9, 3.4) * 120 + es(t, 4.0, 4.4) * 20;
+      S.cam.x = lerp(-60, 0, es(t, -0.3, 0.8)) + es(t, 2.9, 3.4) * (ph ? 330 : 120) + es(t, 4.0, 4.4) * (ph ? 60 : 20);
       S.cam.y = -10 - es(t, 1.9, 2.4) * 20 * (1 - es(t, 2.9, 3.3)) - es(t, 4.3, 4.7) * 20;
       S.cam.z = 1.03 + es(t, 1.9, 2.4) * 0.03 * (1 - es(t, 2.9, 3.3)) + es(t, 4.35, 4.7) * 0.05;
     };

@@ -25,6 +25,7 @@ export default {
   cam: { x: [-40, 40], y: [-30, 40], z: [1, 1.14] },
   build(S) {
     const c = S.c;
+    const ph = S.portrait;
     const sk = sky(S, J19.court);
 
     /* ---------- the courtyard wall with the screen ---------- */
@@ -146,9 +147,9 @@ export default {
       glints.forEach((e) => fade(e, g));
       pose(shine, { x: JX + 4, y: JY - 150, s: 0.75 + g * 0.35 + dimK * 0.2, o: 0.3 + dimK * 0.4 + g * 0.4 });
 
-      /* soldiers in colour at His sides */
-      solA.set({ x: 1040, y: JY + 4, s: 1, flip: true, armF: 34, armB: 8, blink: blinkAt(T, 3) });
-      solB.set({ x: 1170, y: JY + 6, s: 1, flip: true, armF: 34, armB: 8, blink: blinkAt(T, 4) });
+      /* soldiers in colour at His sides (phone: both inside the screen) */
+      solA.set({ x: ph ? 985 : 1040, y: JY + 4, s: 1, flip: true, armF: 34, armB: 8, blink: blinkAt(T, 3) });
+      solB.set({ x: ph ? 1075 : 1170, y: JY + 6, s: 1, flip: true, armF: 34, armB: 8, blink: blinkAt(T, 4) });
 
       /* v3a — "Hail, King of the Jews!" */
       const hk = es(t, 4.1, 4.35, ease.back) * (1 - es(t, 4.9, 5.05));

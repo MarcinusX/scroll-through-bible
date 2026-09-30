@@ -23,6 +23,7 @@ export default {
   cam: { x: [-60, 20], y: [-40, 40], z: [1, 1.14] },
   build(S) {
     const c = S.c;
+    const ph = S.portrait;   // phone: the two Marys and their names a little nearer the cross
     const N = crossNearSet(S, { pal: J19.gold });
     const home = N.far.add(`<g transform="translate(540 552) scale(0.8)">${homeLight(c, { w: 60, h: 44 })}</g>`);
     const win = home.querySelector('.win'), wglow = home.querySelector('.wglow');
@@ -75,15 +76,15 @@ export default {
       mary.p.set({ x: mx, y: GY, s: 1, flip: turnM > 0.5 || t > 5.25, walk: walkOn ? mx * 0.05 : undefined, amt: 0.5, armF: 20 + bump(t, 3.1, 3.9) * 30, armB: 10 + (1 - see) * 20 * mIn, head: -12 + see * 4 + turnM * 10, blink: blinkAt(T, 1), o: mIn });
       fade(mary.sad, 1); fade(mary.tear, mIn * (1 - see));
       const wIn = es(t, 1.05, 1.4);
-      clop.p.set({ x: 910, y: GY, s: 0.98, flip: true, armF: 30 + Math.sin(0.3) * 4, armB: 10, head: -12, blink: blinkAt(T, 5), o: wIn });
-      magd.p.set({ x: 1010, y: GY + 4, s: 0.98, flip: true, armF: 70, armB: 60, head: -14, lean: 4, blink: blinkAt(T, 7), o: wIn });
+      clop.p.set({ x: ph ? 885 : 910, y: GY, s: 0.98, flip: true, armF: 30 + Math.sin(0.3) * 4, armB: 10, head: -12, blink: blinkAt(T, 5), o: wIn });
+      magd.p.set({ x: ph ? 980 : 1010, y: GY + 4, s: 0.98, flip: true, armF: 70, armB: 60, head: -14, lean: 4, blink: blinkAt(T, 7), o: wIn });
       fade(clop.sad, 1); fade(magd.sad, 1); fade(magd.tear, wIn);
 
       /* the names */
       const tk = (a, b) => es(t, a, a + 0.3) * (1 - es(t, b, b + 0.2));
       swing(tags[0], 686, 380 - (1 - tk(0.2, 0.95)) * 700, T, 1, 0.9, 1);
-      swing(tags[1], 900, 380 - (1 - tk(1.1, 1.95)) * 700, T, 1, 0.9, 2);
-      swing(tags[2], 1030, 400 - (1 - tk(1.25, 1.95)) * 700, T, 1, 0.9, 3);
+      swing(tags[1], ph ? 870 : 900, 380 - (1 - tk(1.1, 1.95)) * 700, T, 1, 0.9, 2);
+      swing(tags[2], ph ? 995 : 1030, 400 - (1 - tk(1.25, 1.95)) * 700, T, 1, 0.9, 3);
       swing(tags[3], 560, 390 - (1 - tk(2.2, 2.95)) * 700, T, 1, 0.9, 4);
 
       /* v26b — "Woman, behold your son": the thread of light */

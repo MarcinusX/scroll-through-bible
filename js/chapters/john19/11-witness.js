@@ -23,6 +23,7 @@ export default {
   cam: { x: [-60, 40], y: [-30, 50], z: [1, 1.14] },
   build(S) {
     const c = S.c;
+    const ph = S.portrait;   // phone: the scrolls hang above the crosses, the lamb and the people stand inside the screen
     const G = golgothaSet(S, { pal: J19.eve });
     clearClouds(G);
     const gl = G.hangL.add(`<g>${glory(c, 360, 16)}</g>`);
@@ -38,7 +39,7 @@ export default {
 
     /* the people who will look on Him, and the witness */
     const P = S.layer({ par: 0.55, sh: 5 });
-    const folk = [0, 1, 2, 3].map((i) => ({ i, x: [860, 950, 1060, 1150][i], p: S.puppet(P.add(person(c, crowdPerson(c)))) }));
+    const folk = [0, 1, 2, 3].map((i) => ({ i, x: (ph ? [885, 950, 1015, 1080] : [860, 950, 1060, 1150])[i], p: S.puppet(P.add(person(c, crowdPerson(c)))) }));
     const john = S.puppet(P.add(person(c, BELOVED)));
     const fx = S.layer({ par: 0.58, sh: 5 });
     const lampEl = fx.add(`<g>${oilLamp(c)}</g>`);
@@ -96,13 +97,13 @@ export default {
 
       /* v36 — "Not a bone of Him shall be broken" — the Passover lamb */
       const s1 = es(t, 2.05, 2.4) * (1 - es(t, 3.9, 4.2));
-      pose(sc1, { x: 1030, y: lerp(-500, 104, s1), r: Math.sin(T * 0.6) * 0.5, o: s1 > 0.01 ? 1 : 0 });
+      pose(sc1, { x: ph ? 825 : 1030, y: lerp(-500, ph ? 50 : 104, s1), r: Math.sin(T * 0.6) * 0.5, o: s1 > 0.01 ? 1 : 0 });
       w1.forEach((w) => fade(w, es(t, 3.05, 3.35)));
       const lk = es(t, 3.2, 3.55) * (1 - es(t, 3.9, 4.2));
-      pose(lambP, { x: 1060, y: lerp(-400, 330, lk), r: Math.sin(T * 0.7 + 1) * 1, o: lk > 0.01 ? 1 : 0 });
+      pose(lambP, { x: ph ? 1040 : 1060, y: lerp(-400, 330, lk), r: Math.sin(T * 0.7 + 1) * 1, o: lk > 0.01 ? 1 : 0 });
       /* v37 — "They will look on the One whom they pierced" */
       const s2 = es(t, 4.05, 4.4);
-      pose(sc2, { x: 1030, y: lerp(-500, 104, s2), r: Math.sin(T * 0.6 + 2) * 0.5, o: s2 > 0.01 ? 1 : 0 });
+      pose(sc2, { x: ph ? 825 : 1030, y: lerp(-500, ph ? 50 : 104, s2), r: Math.sin(T * 0.6 + 2) * 0.5, o: s2 > 0.01 ? 1 : 0 });
       w2.forEach((w, i) => fade(w, es(t, 5.05 + i * 0.12, 5.3 + i * 0.12)));
       const lookUp = es(t, 5.1, 5.45);
       folk.forEach((m) => m.p.set({ x: m.x, y: RY + (m.i % 2) * 6, s: 0.8, flip: true, armF: 20 + lookUp * (m.i % 2 ? 40 : 10), armB: 10 + lookUp * (m.i === 2 ? 80 : 20), head: -lookUp * 16, blink: blinkAt(T, m.i + 4), o: es(t, 4.1 + m.i * 0.1, 4.4 + m.i * 0.1) }));

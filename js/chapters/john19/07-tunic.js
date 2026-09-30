@@ -24,6 +24,7 @@ export default {
   cam: { x: [-40, 40], y: [-20, 80], z: [1, 1.2] },
   build(S) {
     const c = S.c;
+    const ph = S.portrait;
     const G = golgothaSet(S, { pal: J19.gold });
     clearClouds(G);
     const gl = G.hangL.add(`<g>${glory(c, 380, 18)}</g>`);
@@ -88,7 +89,7 @@ export default {
       pose(small, { x: lerp(CX, hx + 20 + tugX, Math.min(1, es(t, 1.05, 1.3) + cheer)), y: lerp(CY - 30, hy - 30, Math.min(1, es(t, 1.05, 1.3) + cheer)) - cheer * 10, s: 0.3 + cheer * 0.05, r: Math.sin(T * 1.2) * 2 * cheer, o: Math.min(1, es(t, 1.0, 1.1) * (1 - es(t, 2.9, 3.0)) + es(t, 3.0, 3.05) * (1 - es(t, 3.4, 3.5)) + cheer) });
       /* v23c — the plate: woven from the top down */
       const pk = es(t, 2.05, 2.35) * (1 - es(t, 2.95, 3.15));
-      pose(plate, { x: 1010, y: lerp(-500, 140, pk), s: 0.85, r: Math.sin(T * 0.6) * 0.6, o: pk > 0.01 ? 1 : 0 });
+      pose(plate, { x: ph ? 975 : 1010, y: lerp(-500, 140, pk), s: ph ? 0.75 : 0.85, r: Math.sin(T * 0.6) * 0.6, o: pk > 0.01 ? 1 : 0 });
       const wv = es(t, 2.2, 2.9, (x) => x);
       const n = rows.length;
       rows.forEach((r, i) => fade(r, Math.min(1, Math.max(0, wv * n - i))));
@@ -104,8 +105,9 @@ export default {
       pose(d1, { x: lerp(-170, 14, roll), y: -Math.sin(roll * Math.PI) * 50 * (1 - settle) + (1 - roll) * -60, r: roll * -380 * (1 - settle) });
       pose(dd, { x: CX, y: CY - 10, s: 1.3, o: roll > 0.01 ? 1 : 0 });
       /* v24b — Psalm 22 */
-      const sk2 = es(t, 4.05, 4.4) * (1 - es(t, 5.6, 5.9));
-      pose(scroll, { x: 1000, y: lerp(-600, 130, sk2), r: Math.sin(T * 0.6 + 1) * 0.5, o: sk2 > 0.01 ? 1 : 0 });
+      // phone: the scroll hangs in the middle above the crosses, and is gone before the last sentence rests
+      const sk2 = es(t, 4.05, 4.4) * (1 - (ph ? es(t, 5.3, 5.6) : es(t, 5.6, 5.9)));
+      pose(scroll, { x: ph ? 800 : 1000, y: lerp(-600, ph ? 20 : 130, sk2), r: Math.sin(T * 0.6 + 1) * 0.5, o: sk2 > 0.01 ? 1 : 0 });
 
       S.cam.x = es(t, 1.9, 2.3) * 30 * (1 - es(t, 2.9, 3.3)) + es(t, 3.9, 4.3) * 30 * (1 - es(t, 5.5, 5.9));
       S.cam.y = 50 - es(t, 1.9, 2.3) * 40 * (1 - es(t, 2.9, 3.3)) - es(t, 3.9, 4.3) * 40 * (1 - es(t, 5.5, 5.9));

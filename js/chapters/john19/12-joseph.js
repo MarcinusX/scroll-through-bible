@@ -19,6 +19,7 @@ export default {
   cam: { x: [-60, 160], y: [-20, 40], z: [1, 1.12] },
   build(S) {
     const c = S.c;
+    const ph = S.portrait;   // phone: Joseph and Pilate both in view from the start
     const H = hallSet(S, { evening: true });
     const P = H.charL;
     const pil = S.puppet(P.add(pilate(c, { pose: 'sit' })));
@@ -39,7 +40,7 @@ export default {
       H.lamps.forEach((l) => lampSet(l, 1, T));
 
       /* v38a — Joseph comes in, looking back over his shoulder */
-      const jK = [[-0.3, [120, GY]], [0.7, [560, GY]], [1.05, [560, GY]], [1.5, [930, GY]]];
+      const jK = [[-0.3, [120, GY]], [0.7, [ph ? 600 : 560, GY]], [1.05, [ph ? 600 : 560, GY]], [1.5, [930, GY]]];
       const [jx, jy] = kf(t, jK);
       const glance = bump(t, 0.35, 0.9);
       const brave = es(t, 1.05, 1.3);
@@ -66,7 +67,7 @@ export default {
       const pk = es(t, 2.2, 2.5);
       pose(perm, { x: lerp(px, hx + 6, pk), y: lerp(py, hy - 4, pk) - Math.sin(pk * Math.PI) * 30, r: -10, o: give > 0.02 ? 1 : 0 });
 
-      S.cam.x = lerp(-40, 120, es(t, 0.3, 1.6));
+      S.cam.x = lerp(ph ? 60 : -40, 120, es(t, 0.3, 1.6));
       S.cam.y = 10;
       S.cam.z = 1.02 + es(t, 1.2, 1.7) * 0.06;
     };

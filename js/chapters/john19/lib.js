@@ -299,6 +299,8 @@ import { priest as priestM, guard as guardM } from '../mark15/lib.js';
  */
 export function squareCrowd(S, L) {
   const c = S.c;
+  const ph = S.portrait;   // phone: the priests and the officers stand nearer the middle, so both groups are in view
+  const gapL = ph ? 550 : 480, gapR = ph ? 1060 : 1150;
   const rows = [
     { y: 648, s: 0.72, n: 13, x0: 180, x1: 1420 },
     { y: 702, s: 0.86, n: 11, x0: 150, x1: 1450 },
@@ -308,14 +310,14 @@ export function squareCrowd(S, L) {
   rows.forEach((r, ri) => {
     for (let i = 0; i < r.n; i++) {
       const x = lerp(r.x0, r.x1, (i + c.rr(0.2, 0.8)) / r.n);
-      if (ri === 2 && (Math.abs(x - 480) < 110 || Math.abs(x - 1150) < 110)) continue;
+      if (ri === 2 && (Math.abs(x - gapL) < 110 || Math.abs(x - gapR) < 110)) continue;
       all.push({ x, y: r.y + c.rr(-4, 4), s: r.s * c.rr(0.92, 1.06), ri, opts: crowdPerson(c) });
     }
   });
   all.sort((a, b) => a.y - b.y);
   const people = all.map((m, i) => ({ ...m, p: S.puppet(L.add(person(c, m.opts))), i, flip: m.x > 800, seed: c.rr(0, 9), shout: c.chance(0.7) }));
-  const pr = [0, 1].map((i) => ({ i, p: S.puppet(L.add(priestM(c, i))), x: [420, 530][i], y: 772 - i * 6 }));
-  const of = [0, 1].map((i) => ({ i, p: S.puppet(L.add(guardM(c, i))), x: [1110, 1210][i], y: 770 - i * 4 }));
+  const pr = [0, 1].map((i) => ({ i, p: S.puppet(L.add(priestM(c, i))), x: (ph ? [500, 600] : [420, 530])[i], y: 772 - i * 6 }));
+  const of = [0, 1].map((i) => ({ i, p: S.puppet(L.add(guardM(c, i))), x: (ph ? [1015, 1105] : [1110, 1210])[i], y: 770 - i * 4 }));
   return { people, pr, of };
 }
 /** an arched doorway in the praetorium's wall with a half-drawn curtain (origin: threshold centre) */
