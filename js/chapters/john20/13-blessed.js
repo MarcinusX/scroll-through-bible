@@ -71,9 +71,9 @@ export default {
       pose(houseGlow, { x: GC.x, y: GC.y - GC.r - 10, s: 0.6 + pull * 0.6, o: pull });
       waves.forEach((w, i) => fade(w, es(t, 1.35 + i * 0.12, 1.55 + i * 0.12)));
       const nf = es(t, 1.4, 1.7);
-      reader.set({ x: 1130, y: 800, s: 1.2, flip: true, o: nf, armF: 70, armB: 20, head: 12, blink: blinkAt(T, 2) });
+      reader.set({ x: S.portrait ? 1050 : 1130, y: 800, s: 1.2, flip: true, o: nf, armF: 70, armB: 20, head: 12, blink: blinkAt(T, 2) });
       upright(reader, 'F', 70);
-      old.set({ x: 470, y: 806, s: 1.15, o: nf, armF: 110, armB: 30, head: -8, blink: blinkAt(T, 4) });
+      old.set({ x: S.portrait ? 550 : 470, y: 806, s: 1.15, o: nf, armF: 110, armB: 30, head: -8, blink: blinkAt(T, 4) });
       upright(old, 'F', 110);
       const fl = old.armF.querySelector('.flame');
       if (fl) pose(fl, { x: 27, y: -12, sx: T ? 1 + Math.sin(T * 7) * 0.1 : 1, sy: T ? 1 + Math.sin(T * 5.3) * 0.14 : 1 });

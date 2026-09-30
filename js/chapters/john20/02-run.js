@@ -31,7 +31,7 @@ export default {
     { v: 4, cont: true, text: 'lecz ów drugi uczeń wyprzedził Piotra' },
     { v: 4, cont: true, text: 'i przybył pierwszy do grobu.' },
   ],
-  cam: { x: [-760, 460], y: [-10, 40], z: [1, 1.1] },
+  cam: { x: [-900, 460], y: [-10, 40], z: [1, 1.1] },
   build(S) {
     const c = S.c;
     const sk = sky(S, ROSE);
@@ -103,7 +103,7 @@ export default {
       const tg = es(t, 0.45, 0.7, ease.back) * (1 - es(t, 1.0, 1.15));
       const [phx, phy] = headAt(px0, HOUSE.y + 4, 0.94, false, 62);
       const [jhx, jhy] = headAt(jx0, HOUSE.y + 6, 0.92, false, 62);
-      pose(pTag, { x: phx - 40, y: phy - 110, s: tg, r: -3, o: tg > 0.01 ? 1 : 0 });
+      pose(pTag, { x: phx - (S.portrait ? 6 : 40), y: phy - 110, s: tg, r: -3, o: tg > 0.01 ? 1 : 0 });
       pose(jTag, { x: jhx + 50, y: jhy - 150, s: tg, r: 2, o: tg > 0.01 ? 1 : 0 });
       pose(jHeart, { x: jhx + 4, y: jhy - 40, s: tg * (1 + (T ? Math.sin(T * 5) * 0.08 : 0)), o: tg > 0.01 ? 1 : 0 });
       const [mhx, mhy] = headAt(mx, my, ms, true);
@@ -132,7 +132,8 @@ export default {
       pose(speed, { x: jx - 34, y: jby + 30, o: bump(t, 5.1, 6.6) * 0.9 });
 
       const lead = t < 3 ? 250 : Math.max(250, (jx + px) / 2 + (t > 5 ? 90 : 0));
-      const camX = Math.max(-760, Math.min(460, (lead - 800) / 0.52 + (S.portrait ? 0 : 60)));
+      // phone: pan further left, so Peter on the bench is not sliced by the screen edge
+      const camX = Math.max(S.portrait ? -900 : -760, Math.min(460, (lead - 800) / 0.52 + (S.portrait ? 0 : 60)));
       S.cam.x = camX;
       S.cam.y = 20 - es(t, 3, 6) * 10;
       S.cam.z = 1.04 - es(t, 3.5, 4.5) * 0.04 + es(t, 6.2, 6.9) * 0.05;

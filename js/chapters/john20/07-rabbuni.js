@@ -143,7 +143,8 @@ export default {
       });
       setThread(11, TOP.x, TOP.y + 30, lerp(TOP.x, jhx, th), lerp(TOP.y + 30, jhy - 30, th), th * 0.9);
 
-      S.cam.x = 190 - es(t, 5.0, 5.5) * (S.portrait ? 490 : 70);
+      // phone: the brothers' faces, Jesus and Mary all in view
+      S.cam.x = 190 - es(t, 5.0, 5.5) * (S.portrait ? 310 : 70);
       S.cam.y = 24 - lookUp * 60 - es(t, 5.0, 5.5) * 20 * (1 - lookUp);
       S.cam.z = 1.06 - es(t, 4.0, 4.5) * 0.06 + es(t, 1.2, 1.6) * 0.04 * (1 - es(t, 3.9, 4.2));
     };

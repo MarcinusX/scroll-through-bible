@@ -38,9 +38,9 @@ export default {
     // the light behind the book
     const back = S.layer({ par: 0.45, sh: 0, flat: true });
     const rays = back.add(`<g>${glowDisc(360, 'halo-glow', 1)}${rayBurst(c, { n: 28, r0: 60, r1: 1200, spread: 0.04, o: 0.5 })}</g>`);
-    // the disciples, three on each side, looking up
+    // the disciples, three on each side, looking up (phone: closer in, so none is cut by the screen edge)
     const PL = S.layer({ par: 0.5, sh: 5 });
-    const DIS = [['peter', 470], ['john', 540], ['andrew', 405], ['thomas', 1130], ['james', 1060], ['matthew', 1195]].map(([k, x], i) => ({ x, i, p: S.puppet(PL.add(person(c, { ...(k === 'thomas' ? CAST.thomas : TW[k]) }))), seed: c.rr(0, 9) }));
+    const DIS = [['peter', 470, 534], ['john', 540, 586], ['andrew', 405, 484], ['thomas', 1130, 1066], ['james', 1060, 1014], ['matthew', 1195, 1116]].map(([k, xl, xp], i) => ({ x: S.portrait ? xp : xl, i, p: S.puppet(PL.add(person(c, { ...(k === 'thomas' ? CAST.thomas : TW[k]) }))), seed: c.rr(0, 9) }));
     // the book
     const bL = S.layer({ par: 0.55, sh: 7 });
     const bloomEls = [-230, -170, 170, 230, -120, 120].map((dx, i) => ({ dx, i, el: bL.add(`<g>${blooms(c, 70, 5)}</g>`) }));

@@ -22,7 +22,7 @@ export default {
     { v: 9 },
     { v: 10 },
   ],
-  cam: { x: [-60, 260], y: [-40, 60], z: [0.96, 1.2] },
+  cam: { x: [-200, 260], y: [-40, 60], z: [0.96, 1.2] },
   build(S) {
     const c = S.c;
     const T0 = tombInside(S);
@@ -120,7 +120,8 @@ export default {
       const qq = es(t, 5.3, 5.5, ease.back) * (1 - es(t, 5.9, 6.05));
       pose(q, { x: phx + 10, y: phy - 60, s: qq * 1.1, o: qq > 0.01 ? 1 : 0 });
 
-      S.cam.x = lerp(150, 190, es(t, 0, 1)) - es(t, 2.9, 3.4) * 60 - es(t, 6, 6.8) * 80;
+      // phone: from v8 on the camera moves over to the two disciples and the doorway
+      S.cam.x = lerp(150, 190, es(t, 0, 1)) - (S.portrait ? es(t, 2.9, 3.4) * 380 : es(t, 2.9, 3.4) * 60 + es(t, 6, 6.8) * 80);
       S.cam.y = 20 - es(t, 1.0, 1.3) * 30 * (1 - es(t, 2.9, 3.3)) - es(t, 4.9, 5.2) * 30 * (1 - es(t, 6, 6.3));
       S.cam.z = (1.08 + es(t, 3.9, 4.4) * 0.08 * (1 - es(t, 4.9, 5.2))) * (S.portrait ? 0.92 : 1);
     };
