@@ -32,7 +32,7 @@ export default {
     { v: 4, cont: true, text: 'a owce postępują za nim, ponieważ głos jego znają.' },
     { v: 5 },
   ],
-  cam: { x: [-120, 120], y: [-60, 60], z: [1, 1.32] },
+  cam: { x: [-180, 120], y: [-60, 60], z: [1, 1.32] },
   build(S) {
     const c = S.c;
     const set = pastureSet(S, { skyCols: DAWN, sunAt: [1260, 420], sunR: 44, moonAt: [430, 130], groundY: 560 });
@@ -79,6 +79,7 @@ export default {
     const LH = PATHS.map((P) => polyLen(P.slice(0, 3)));
     const TOT = PATHS.map((P) => polyLen(P));
     const OUTLEN = polyLen(OUT);
+    const STX = S.portrait ? 1040 : 1130; // phone: the stranger stands nearer, so he and the shepherd are both in view
 
     return (t, time) => {
       const T = time;
@@ -129,10 +130,10 @@ export default {
       /* v5 — the stranger */
       const sc = es(t, 7.02, 7.3);
       const back = es(t, 7.75, 7.98);
-      stranger.set({ x: lerp(1330, 1130, sc) + back * 30, y: 718, s: 1.0, flip: true, walk: sc > 0 && sc < 1 ? T * 8 : undefined, armF: 20 + bump(t, 7.1, 7.8) * 70, armB: 8 + back * 40, head: back * 10, o: sc > 0.001 ? 1 : 0, blink: blinkAt(T, 6) });
+      stranger.set({ x: lerp(1330, STX, sc) + back * 30, y: 718, s: 1.0, flip: true, walk: sc > 0 && sc < 1 ? T * 8 : undefined, armF: 20 + bump(t, 7.1, 7.8) * 70, armB: 8 + back * 40, head: back * 10, o: sc > 0.001 ? 1 : 0, blink: blinkAt(T, 6) });
       const sb = es(t, 7.15, 7.3, ease.back) * (1 - es(t, 7.7, 7.85));
-      vis(strangerB, { x: 1080, y: 520, s: sb, o: sb > 0.01 ? 1 : 0 });
-      rings2(1108, 550, bump(t, 7.12, 7.7), T, { dir: -1, s0: 0.6, spread: 1.5 });
+      vis(strangerB, { x: STX - 50, y: 520, s: sb, o: sb > 0.01 ? 1 : 0 });
+      rings2(STX - 22, 550, bump(t, 7.12, 7.7), T, { dir: -1, s0: 0.6, spread: 1.5 });
       const look = bump(t, 7.08, 7.45);
       const flee = es(t, 7.38, 7.8, ease.out);
 
@@ -165,9 +166,14 @@ export default {
         vis(el, { x: m.x + 26, y: m.y - 78, s: k * 1.2, o: k > 0.01 ? 1 : 0 });
       });
 
-      S.cam.x = kf(t, [[0, -50], [0.9, -40], [1.8, 30], [2.8, 20], [3.6, 0], [5, -10], [6, -40], [7, -50], [7.4, 0], [8, -20]]);
+      // phone: the camera follows the shepherd down the path and draws back, so he is not cut off at the edge
+      S.cam.x = S.portrait
+        ? kf(t, [[0, -50], [0.9, -40], [1.8, 30], [2.8, 20], [3.6, 0], [5, -40], [6, -150], [7, -170], [7.4, -110], [8, -100]])
+        : kf(t, [[0, -50], [0.9, -40], [1.8, 30], [2.8, 20], [3.6, 0], [5, -10], [6, -40], [7, -50], [7.4, 0], [8, -20]]);
       S.cam.y = kf(t, [[0, -30], [1, 0], [3, 20], [5, 40], [7, 40]]);
-      S.cam.z = kf(t, [[0, 1.3], [1.2, 1.18], [3, 1.3], [5, 1.22], [6.5, 1.18], [8, 1.16]]);
+      S.cam.z = S.portrait
+        ? kf(t, [[0, 1.3], [1.2, 1.18], [3, 1.3], [5, 1.16], [6, 1.05], [7.4, 1.0], [8, 1.0]])
+        : kf(t, [[0, 1.3], [1.2, 1.18], [3, 1.3], [5, 1.22], [6.5, 1.18], [8, 1.16]]);
     };
   },
 };

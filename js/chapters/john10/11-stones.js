@@ -68,12 +68,13 @@ export default {
       const qk = es(t, 2.2, 2.5, ease.out) * (1 - es(t, 2.9, 3.05, ease.in));
       swing(q, 800, 380 - (1 - qk) * 700, qk > 0.001 ? T : 0, 1.4, 1.1);
       fade(q, qk > 0.001 ? 1 : 0);
+      const PARK = S.portrait ? 800 : 500;     // phone: parked plates rest above the tall sky, not under the section tag
       /* v33a — not for a good work: the plates go dim */
       const dk = es(t, 3.2, 3.45);
       plates.forEach((p) => {
         const hot = point > 0.5 && which === p.i ? 1 : 0;
-        vis(p.el, { x: p.x, y: 250 - (1 - pk(p.i)) * 500 - off * 500, s: 1 + hot * 0.15, o: pk(p.i) > 0.001 ? 1 : 0 });
-        vis(dim[p.i], { x: p.x, y: 250 - off * 500, o: dk * (1 - off) });
+        vis(p.el, { x: p.x, y: 250 - (1 - pk(p.i)) * PARK - off * PARK, s: 1 + hot * 0.15, o: pk(p.i) > 0.001 ? 1 : 0 });
+        vis(dim[p.i], { x: p.x, y: 250 - off * PARK, o: dk * (1 - off) });
       });
       /* v33b — for blasphemy */
       const bk = es(t, 4.1, 4.3, ease.back);
@@ -98,9 +99,12 @@ export default {
         const pile = PILES[faceL ? 1 : 0];
         vis(stones[i], { x: onPile ? pile[0] + (i % 3 - 1) * 30 : hx, y: onPile ? pile[1] - 30 : hy + 6, s: m.s, o: g > 0.001 || t > 0.3 ? 1 : 0 });
       });
-      S.cam.x = kf(t, [[0, 0], [1, 0], [2, 0], [4, 40], [5, 40]]);
+      // phone: drawn back a little, so the outermost leaders are not cut off at the screen edges
+      S.cam.x = S.portrait ? 0 : kf(t, [[0, 0], [1, 0], [2, 0], [4, 40], [5, 40]]);
       S.cam.y = kf(t, [[0, 20], [1, 10], [1.6, -70], [3.2, -60], [4, 10], [5, 10]]);
-      S.cam.z = kf(t, [[0, 1.12], [1, 1.12], [1.6, 1.04], [3.2, 1.04], [4, 1.14], [5, 1.16]]);
+      S.cam.z = S.portrait
+        ? kf(t, [[0, 1.02], [1, 1.02], [1.6, 1.0], [3.2, 1.0], [4, 1.02], [5, 1.02]])
+        : kf(t, [[0, 1.12], [1, 1.12], [1.6, 1.04], [3.2, 1.04], [4, 1.14], [5, 1.16]]);
     };
   },
 };

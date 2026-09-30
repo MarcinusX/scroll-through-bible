@@ -34,6 +34,10 @@ export default {
   cam: { x: [-80, 80], y: [-120, 60], z: [1, 1.3] },
   build(S) {
     const c = S.c;
+    // phone: the listeners stand nearer the gate and the thief comes nearer, so nobody is cut off at the screen edge
+    const PT = S.portrait;
+    const LX = PT ? [75, 70, 85] : [0, 0, 0], THX = PT ? 1100 : 1180, BADX = PT ? 830 : 900, BADD = PT ? 100 : 120;
+    const S0 = PT ? [690, 726] : [640, 716], S0B = PT ? [670, 748] : [600, 736], S1 = PT ? [960, 730] : OUTS[1], S2 = PT ? [1080, 696] : OUTS[2];
     const set = pastureSet(S, { skyCols: MORNING, sunAt: [1220, 140], groundY: 500 });
     const field = S.layer({ par: 0.45, sh: 3 });
     const ffn = c.wave(420, [5, 2], [600, 170]);
@@ -67,11 +71,11 @@ export default {
     const creep = shadowL.add(`<g><path d="${c.cut(c.blob(0, 0, 420, 90, 18, 0.2), 1, 12)}" fill="#1f1a33" opacity=".38"/></g>`);
     // people and the sheep outside
     const act = S.layer({ par: 0.5, sh: 5 });
-    const outside = OUTS.map((p, i) => ({ i, home: p, r: sheepRig(act.add(ewe(c, { wool: WOOLS[i], patch: i === 1 }))) }));
+    const outside = OUTS.map((p, i) => ({ i, home: [S0, S1, S2][i], r: sheepRig(act.add(ewe(c, { wool: WOOLS[i], patch: i === 1 }))) }));
     const lis = cast(S, act, [
-      { look: leader(0), x: 440, y: 718, s: 1.02, face: true },
-      { look: leader(2), x: 530, y: 726, s: 1.04, face: true },
-      { look: leader(4), x: 380, y: 690, s: 0.94, face: true },
+      { look: leader(0), x: 440 + LX[0], y: 718, s: 1.02, face: true },
+      { look: leader(2), x: 530 + LX[1], y: 726, s: 1.04, face: true },
+      { look: leader(4), x: 380 + LX[2], y: 690, s: 0.94, face: true },
     ], 'door');
     const jesus = S.puppet(act.add(person(c, JESUS)));
     const thief = S.puppet(act.add(person(c, { ...THIEF, holdB: sack(c) })));
@@ -138,17 +142,17 @@ export default {
         let fl = x > 800, moving = false, sc = 0.94, o = 1;
         if (i === 0) {
           // v9b: in through the door, v9c: out again
-          const P = [[640, 716], [760, 660], [800, 612], [808, 560], [884, 540]];
+          const P = [S0, [760, 660], [800, 612], [808, 560], [884, 540]];
           const u = enter * (1 - outK * 0.0);
           [x, y] = polyAt(P, u);
           const back = es(t, 6.2, 6.9);
-          if (back > 0) [x, y] = polyAt([[884, 540], [808, 560], [800, 612], [760, 690], [600, 736]], back);
+          if (back > 0) [x, y] = polyAt([[884, 540], [808, 560], [800, 612], [760, 690], S0B], back);
           fl = back > 0 ? true : x > 880;
           moving = (enter > 0 && enter < 1) || (back > 0 && back < 1);
           sc = y < 600 ? 0.84 : 0.94;
         }
         const fleeT = bump(t, 7.3, 8.1);
-        if (i === 2) x += fleeT * 60;
+        if (i === 2) x += fleeT * (PT ? -50 : 60);
         const graze = es(t, 6.5, 6.8) * (1 - es(t, 7.2, 7.4)) + es(t, 8.7, 8.95);
         s.r.set({ x, y, s: sc, flip: fl, head: away * 26 + graze * 34 - fleeT * 12, hop: moving || (i === 2 && fleeT > 0.1 && fleeT < 0.9) ? Math.abs(Math.sin(T * 12 + i)) * 3 : 0 + bump(t, 8.5, 9) * Math.abs(Math.sin(T * 7 + i)) * 6, o });
       });
@@ -167,10 +171,10 @@ export default {
       vis(creep, { x: lerp(1500, 1050, cr), y: 760, s: 1, o: cr });
       /* v10a — the thief */
       const th = es(t, 7.1, 7.5) * (1 - es(t, 8.1, 8.45));
-      thief.set({ x: lerp(1360, 1180, th), y: 716, s: 1.0, flip: true, walk: th > 0 && th < 1 ? T * 7 : undefined, lean: th * 12, armF: 30 + th * 50, armB: 10, head: 8, o: th > 0.01 ? 1 : 0, blink: blinkAt(T, 7) });
+      thief.set({ x: lerp(1360, THX, th), y: 716, s: 1.0, flip: true, walk: th > 0 && th < 1 ? T * 7 : undefined, lean: th * 12, armF: 30 + th * 50, armB: 10, head: 8, o: th > 0.01 ? 1 : 0, blink: blinkAt(T, 7) });
       bad.forEach((el, i) => {
         const k = es(t, 7.2 + i * 0.12, 7.45 + i * 0.12, ease.out) * (1 - es(t, 8.05, 8.25, ease.in));
-        swing(el, 900 + i * 120, 300 - (1 - k) * 700, k > 0.001 ? T : 0, 1.4, 0.8, i);
+        swing(el, BADX + i * BADD, 300 - (1 - k) * 700, k > 0.001 ? T : 0, 1.4, 0.8, i);
         fade(el, k > 0.001 ? 1 : 0);
       });
       const lk = es(t, 8.35, 8.65, ease.out);
@@ -183,9 +187,13 @@ export default {
         mood(m, { angry: 0.2 + th * 0.4, sad: 0 });
       });
 
-      S.cam.x = kf(t, [[0, -60], [1, -40], [2, 0], [3, 0], [4, 0], [6, 0], [7, 60], [8, 30], [9, 0]]);
+      S.cam.x = PT
+        ? kf(t, [[0, -70], [1, -60], [2, -40], [6, -40], [7, -40], [8, -40], [9, -30]])
+        : kf(t, [[0, -60], [1, -40], [2, 0], [3, 0], [4, 0], [6, 0], [7, 60], [8, 30], [9, 0]]);
       S.cam.y = kf(t, [[0, 20], [1, 20], [2.2, -60], [3, -20], [5, -20], [6.2, 30], [8.2, 20], [9, -40]]);
-      S.cam.z = kf(t, [[0, 1.1], [2, 1.18], [3, 1.1], [5.2, 1.22], [6.5, 1.1], [8.2, 1.08], [9, 1.0]]);
+      S.cam.z = PT
+        ? kf(t, [[0, 1.0], [2, 1.04], [3, 1.0], [5.2, 1.05], [6.5, 1.0], [9, 1.0]])
+        : kf(t, [[0, 1.1], [2, 1.18], [3, 1.1], [5.2, 1.22], [6.5, 1.1], [8.2, 1.08], [9, 1.0]]);
     };
   },
 };

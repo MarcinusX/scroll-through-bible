@@ -69,7 +69,7 @@ export default {
       const walk = es(t, 0.8, 1.85);
       const jx = lerp(120, 800, walk);
       const tp = es(t, 1.2, 1.5, ease.out) * (1 - es(t, 1.9, 2.1, ease.in));
-      swing(tagP, 520, 270 - (1 - tp) * 700, tp > 0.001 ? T : 0, 1.2, 0.8, 1);
+      swing(tagP, S.portrait ? 620 : 520, 270 - (1 - tp) * 700, tp > 0.001 ? T : 0, 1.2, 0.8, 1);
       fade(tagP, tp > 0.001 ? 1 : 0);
       /* v24 — they surround Him */
       const sur = (i) => es(t, 2.0 + (i % 3) * 0.08, 2.55 + (i % 3) * 0.08);
@@ -100,7 +100,7 @@ export default {
       rings(jx + 6, F - 176, talk * 0.9, T, { s0: 0.8, spread: 1.8 });
       leads.forEach((m) => {
         const k = sur(m.i);
-        const apart = es(t, 6.05, 6.45) * (m.to[0] < 800 ? -70 : 70);
+        const apart = es(t, 6.05, 6.45) * (m.to[0] < 800 ? -1 : 1) * (S.portrait ? 40 : 70);
         const x = lerp(m.from[0], m.to[0], k) + apart, y = lerp(m.from[1], m.to[1], k);
         const faceL = m.to[0] > 800;
         const speaker = m.i === 3 && (bump(t, 2.05, 2.95) + bump(t, 3.05, 3.95)) > 0;
@@ -114,7 +114,7 @@ export default {
       });
       S.cam.x = kf(t, [[0, 0], [1, -40], [1.9, 0], [4, 0], [5, 0]]);
       S.cam.y = kf(t, [[0, -120], [0.9, -60], [1.9, 20], [2.3, -40], [3, 0], [5, -80], [6, -40], [7, 20]]);
-      S.cam.z = kf(t, [[0, 1.0], [1, 1.04], [2, 1.14], [3, 1.16], [5, 1.06], [6, 1.06], [7, 1.16]]);
+      S.cam.z = kf(t, [[0, 1.0], [1, 1.04], [2, 1.14], [3, 1.16], [5, 1.06], [6, 1.06], [7, S.portrait ? 1.02 : 1.16]]); // phone: all six stay in view as they step apart
     };
   },
 };

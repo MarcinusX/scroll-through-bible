@@ -133,7 +133,7 @@ export default {
         m.r.set({ x, y, s, flip: tx < hx0, head: -hear * 18 + (1 - hear) * 20 * (m.j % 2), hop: cm > 0 && cm < 1 ? Math.abs(Math.sin(T * 12 + k)) * 3 * s : 0 });
       });
       const ok = es(t, 3.2, 3.5, ease.out) * (1 - es(t, 4.1, 4.3, ease.in));
-      swing(tagO, 1100, 300 - (1 - ok) * 700, ok > 0.001 ? T : 0, 1.2, 0.8);
+      swing(tagO, S.portrait ? 1030 : 1100, 300 - (1 - ok) * 700, ok > 0.001 ? T : 0, 1.2, 0.8);
       fade(tagO, ok > 0.001 ? 1 : 0);
       const onek = es(t, 5.3, 5.6, ease.out);
       swing(tagOne, 800, 200 - (1 - onek) * 700, onek > 0.001 ? T : 0, 1.2, 0.8, 1);

@@ -28,9 +28,13 @@ export default {
     const c = S.c;
     const set = pastureSet(S, { skyCols: TWILIGHT, sunAt: [1180, 560], sunR: 40, moonAt: [1120, 170], starsN: 60, groundY: 560, clouds: false, tintCol: C.indigo, tintK: 0.28 });
     // the far hill the hired hand runs off to
+    // phone: the far hill stands nearer the middle and the sheep scatter less far, so the last picture is not empty
+    const FX = S.portrait ? 1010 : 1250, SCAT = S.portrait ? 150 : 260;
+    const WX = S.portrait ? 570 : 530, FLX = S.portrait ? 24 : 0; // phone: the wolf and its tag come further in
+    const DIR = S.portrait ? DIRS.map((d, i) => (i === 2 ? [0.2, 0.9] : d)) : DIRS;
     const farHill = S.layer({ par: 0.3, sh: 3 });
-    const hf = (x) => 530 + Math.pow((x - 1250) / 300, 2) * 60;
-    farHill.add(sheet().p(c.ridge(hf, 850, 1700, 1400, 12, 1), mix(mix(C.hillMid, C.sage, 0.3), C.indigo, 0.3)).out());
+    const hf = (x) => 530 + Math.pow((x - FX) / 300, 2) * 60;
+    farHill.add(sheet().p(c.ridge(hf, FX - 400, FX + 450, 1400, 12, 1), mix(mix(C.hillMid, C.sage, 0.3), C.indigo, 0.3)).out());
     // the near meadow
     const ground = S.layer({ par: 0.45, sh: 4 });
     const gfn = c.wave(574, [6, 2], [700, 160]);
@@ -42,7 +46,7 @@ export default {
     wood.add(cypress(c, 250, 600, 260, TREE) + cypress(c, 330, 610, 220, shade(TREE, -0.1)) + cypress(c, 400, 600, 190, TREE) + olive(c, 180, 630, 1.2, { trunk: mix(C.wood2, C.night2, 0.4), leaf: mix(C.olive, C.night2, 0.45), leaf2: mix(C.sage, C.night2, 0.5) }) + bush(c, 450, 630, 90, mix(C.moss, C.night2, 0.4)));
     const act = S.layer({ par: 0.45, sh: 5 });
     act.add(rock(c, 1060, 654, 110, 40, mix(C.rock2, C.indigo, 0.2)));
-    const flock = FL.map(([x, y, w], i) => ({ i, x, y, lamb: i === 5, r: sheepRig(act.add(ewe(c, { wool: WOOLS[w], lamb: i === 5, patch: i === 2 })), i === 5) }));
+    const flock = FL.map(([x, y, w], i) => ({ i, x: x + FLX, y, lamb: i === 5, r: sheepRig(act.add(ewe(c, { wool: WOOLS[w], lamb: i === 5, patch: i === 2 })), i === 5) }));
     const w = act.add(wolf(c, { dark: true }));
     const wHd = w.querySelector('.hd'), wTl = w.querySelector('.tl');
     const carried = act.add(`<g>${ewe(c, { wool: WOOLS[5], lamb: true })}</g>`);
@@ -57,7 +61,7 @@ export default {
     const think = fx.add(`<g>${thought(c, `<g transform="translate(-9 2)">${coin(c, 9)}</g><g transform="translate(9 2)">${coin(c, 9)}</g><g transform="translate(0 -8)">${coin(c, 9)}</g>`, { w: 64, h: 48 })}</g>`);
     const glint = fx.add(`<g><circle r="18" fill="url(#warm-glow)"/><path d="${c.poly(c.star(0, 0, 9, 2.4, 4, 0))}" fill="${C.star}"/></g>`);
     const tagH = hanging(fx, nameTag(c, tr('najemnik', 'the hired hand'), { size: 18 }), { x: 1060, y: 300, len: 700 });
-    const tagW = hanging(fx, nameTag(c, tr('wilk', 'the wolf'), { size: 18, dark: true }), { x: 470, y: 300, len: 700 });
+    const tagW = hanging(fx, nameTag(c, tr('wilk', 'the wolf'), { size: 18, dark: true }), { x: WX - 60, y: 300, len: 700 });
     const fg = S.layer({ par: 0.85, sh: 7 });
     fg.add(bush(c, 110, 960, 220, mix(C.moss, C.night2, 0.35), mix(C.moss2, C.night2, 0.35)) + rock(c, 1480, 985, 240, 90, mix(C.rock2, C.indigo, 0.3)));
 
@@ -75,11 +79,11 @@ export default {
       const leap = es(t, 2.1, 2.45);
       const away = es(t, 2.55, 2.95, ease.in);
       const wtk = es(t, 0.4, 0.7, ease.out) * (1 - es(t, 0.95, 1.1, ease.in));
-      swing(tagW, 470, 300 - (1 - wtk) * 700, wtk > 0.001 ? T : 0, 1.2, 0.8, 2);
+      swing(tagW, WX - 60, 300 - (1 - wtk) * 700, wtk > 0.001 ? T : 0, 1.2, 0.8, 2);
       fade(tagW, wtk > 0.001 ? 1 : 0);
       // wolf: creeps out of the wood, waits, leaps into the flock, lopes away with the lamb
-      let wx = lerp(300, 530, creep), wy = 640, wr = 0, flip = false;
-      if (leap > 0) { wx = lerp(530, 730, leap); wy = 640 - Math.sin(leap * PI) * 80; wr = lerp(-14, 10, leap); }
+      let wx = lerp(300, WX, creep), wy = 640, wr = 0, flip = false;
+      if (leap > 0) { wx = lerp(WX, 730, leap); wy = 640 - Math.sin(leap * PI) * 80; wr = lerp(-14, 10, leap); }
       if (away > 0) { wx = lerp(730, 240, away); wy = 650; wr = 0; flip = true; }
       const trot = (creep > 0 && creep < 1) || (away > 0 && away < 1);
       pose(w, { x: wx, y: wy - (trot ? Math.abs(Math.sin(T * 10)) * 4 : 0), s: 1.3, sx: flip ? -1 : 1, r: wr, o: creep > 0.001 && away < 0.98 ? 1 : 0 });
@@ -97,8 +101,8 @@ export default {
       const scat = es(t, 2.2, 2.9, ease.out);
       flock.forEach((m) => {
         const i = m.i;
-        const [dx, dy] = DIRS[i];
-        let x = m.x + dx * scat * 260, y = m.y + dy * scat * 50;
+        const [dx, dy] = DIR[i];
+        let x = m.x + dx * scat * SCAT, y = m.y + dy * scat * 50;
         const hop = scat > 0 && scat < 1 ? Math.abs(Math.sin(T * 13 + i)) * 5 : 0;
         const graze = (1 - es(t, 0.7, 0.9)) * (i % 2 ? 1 : 0.4);
         const look = es(t, 0.75, 1.0) * (1 - scat);
@@ -110,18 +114,20 @@ export default {
       vis(carried, { x: hx, y: hy + 26, s: 0.66, sx: flip ? -1 : 1, r: flip ? 12 : -12, o: hasLamb && away < 0.98 ? 1 : 0 });
       /* v13 — far off, counting his coins; the sheep left wondering */
       const far = es(t, 3.05, 3.35);
-      hireFar.set({ x: 1250, y: hf(1250) + 4, s: 0.55, flip: false, armF: 40 + (T ? Math.sin(T * 3) * 8 : 0), armB: 10, head: 10, o: far, blink: blinkAt(T, 5) });
+      hireFar.set({ x: FX, y: hf(FX) + 4, s: 0.55, flip: false, armF: 40 + (T ? Math.sin(T * 3) * 8 : 0), armB: 10, head: 10, o: far, blink: blinkAt(T, 5) });
       const tk = es(t, 3.3, 3.5, ease.back);
-      vis(think, { x: 1290, y: hf(1250) - 150, s: tk * 0.9, o: tk > 0.01 ? 1 : 0 });
-      vis(glint, { x: 1262, y: hf(1250) - 62, s: 0.8 + (T ? Math.sin(T * 5) * 0.2 : 0), o: far * es(t, 3.2, 3.4) });
+      vis(think, { x: FX + 40, y: hf(FX) - 150, s: tk * 0.9, o: tk > 0.01 ? 1 : 0 });
+      vis(glint, { x: FX + 12, y: hf(FX) - 62, s: 0.8 + (T ? Math.sin(T * 5) * 0.2 : 0), o: far * es(t, 3.2, 3.4) });
       qs.forEach((el, i) => {
         const m = flock[[0, 2, 4][i]];
         const k = es(t, 3.35 + i * 0.1, 3.55 + i * 0.1, ease.back);
-        vis(el, { x: m.x + DIRS[m.i][0] * scat * 260 + 20, y: m.y + DIRS[m.i][1] * scat * 50 - 90, s: k * 0.8, o: k > 0.01 ? 1 : 0 });
+        vis(el, { x: m.x + DIR[m.i][0] * scat * SCAT + 20, y: m.y + DIR[m.i][1] * scat * 50 - 90, s: k * 0.8, o: k > 0.01 ? 1 : 0 });
       });
-      S.cam.x = kf(t, [[0, 60], [0.6, -20], [1.2, 60], [2, 0], [3, 0], [3.4, 60]]);
+      S.cam.x = S.portrait
+        ? kf(t, [[0, 40], [0.6, 20], [1.2, 30], [2, -20], [3, 0], [3.4, 40]])
+        : kf(t, [[0, 60], [0.6, -20], [1.2, 60], [2, 0], [3, 0], [3.4, 60]]);
       S.cam.y = kf(t, [[0, -20], [3, 0], [3.5, -40]]);
-      S.cam.z = kf(t, [[0, 1.1], [1, 1.14], [2.2, 1.08], [3.4, 1.06]]);
+      S.cam.z = S.portrait ? 1 : kf(t, [[0, 1.1], [1, 1.14], [2.2, 1.08], [3.4, 1.06]]);
     };
   },
 };

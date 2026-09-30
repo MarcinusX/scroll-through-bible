@@ -83,7 +83,7 @@ export default {
       jWalk.set({ x: jx, y: 732, s: 1.02, walk: walk > 0 && walk < 1 ? jx * 0.07 : undefined, o: 1 - sit, armF: 12, blink: blinkAt(T, 1) });
       jSit.set({ x: 800, y: 732, s: 1.02, o: sit, armF: 30 + bump(t, 2.1, 5.9) * 20, armB: 20 + es(t, 5.1, 5.5) * 60, head: -4, blink: blinkAt(T, 2) });
       const tk = es(t, 0.15, 0.45, ease.out) * (1 - es(t, 0.9, 1.1, ease.in));
-      swing(tag, 520, 260 - (1 - tk) * 700, tk > 0.001 ? T : 0, 1.2, 0.8);
+      swing(tag, S.portrait ? 640 : 520, (S.portrait ? 30 : 260) - (1 - tk) * 700, tk > 0.001 ? T : 0, 1.2, 0.8);
       fade(tag, tk > 0.001 ? 1 : 0);
       const pk = Math.max(es(t, 0.3, 0.6, ease.out) * (1 - es(t, 1.05, 1.3, ease.in)), es(t, 3.1, 3.4, ease.out) * (1 - es(t, 5.1, 5.4, ease.in)));
       const PX = 780, PY = 110 - (1 - pk) * 700;

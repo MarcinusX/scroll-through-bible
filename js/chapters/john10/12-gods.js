@@ -51,8 +51,10 @@ export default {
     const paper = sheet().p(c.cut([[-SW / 2 + 6, 0], [SW / 2 - 6, 0], [SW / 2 - 8, SH], [-SW / 2 + 8, SH]], 0.5, 8), C.parchment).out();
     const scrollEl = fx.add(`<g><g class="unroll" clip-path="url(#${clip})">${paper}<g class="txt" opacity="0">${sheetM.sheet.replace(/^[\s\S]*?(<text)/, '$1')}</g><g class="jd" opacity="0">${judges.join('')}<path d="${[-120, 0, 120].map((x) => `M${x} ${vs.h - 34}V${vs.h - 8}`).join('')}" stroke="${C.sun}" stroke-width="3" opacity=".9"/></g><rect class="brd" x="${-SW / 2 + 14}" y="10" width="${SW - 28}" height="${SH - 20}" rx="6" pathLength="1" stroke="${C.sun}" stroke-width="5" fill="none" stroke-dasharray="1 1" stroke-dashoffset="1"/></g><g class="rodT">${vs.rodTop}</g><g class="rodB">${vs.rodBottom}</g><g class="seal" opacity="0" transform="translate(${SW / 2 - 40} ${SH - 30})"><circle r="22" fill="${C.terracotta}"/><path d="${c.poly(c.star(0, 0, 13, 6, 8, 0))}" fill="${C.sun}"/></g></g>`);
     const unroll = scrollEl.querySelector('.unroll'), rodB = scrollEl.querySelector('.rodB'), txt = scrollEl.querySelector('.txt'), jd = scrollEl.querySelector('.jd'), brd = scrollEl.querySelector('.brd'), seal = scrollEl.querySelector('.seal');
+    // phone: the globe and the bubble come further in
+    const GX = S.portrait ? 1020 : 1120, GY = S.portrait ? 410 : 470, BLX = S.portrait ? 640 : 560;
     const world = fx.add(`<g><circle r="80" fill="url(#halo-glow)"/>${globe(c, 44)}</g>`);
-    const path = fx.add(`<path d="M800 120Q1000 260 1120 470" pathLength="1" stroke="${C.halo}" stroke-width="5" stroke-linecap="round" stroke-dasharray="1 1" stroke-dashoffset="1" fill="none"/>`);
+    const path = fx.add(`<path d="M800 120Q1000 260 ${GX} ${GY}" pathLength="1" stroke="${C.halo}" stroke-width="5" stroke-linecap="round" stroke-dasharray="1 1" stroke-dashoffset="1" fill="none"/>`);
     const blas = fx.add(`<g>${bubble(c, tr('Bluźnisz!', 'You blaspheme!'), { size: 22, tail: -1, fill: mix(C.stone2, C.storm, 0.25), ink: C.cream })}</g>`);
     const son = fx.add(`<g><circle r="110" fill="url(#halo-glow)"/>${word(c, tr('Jestem Synem Bożym', 'I am the Son of God'), { size: 24, fill: '#2a2e5a', ink: C.halo })}</g>`);
     const snowF = W.snowFront();
@@ -82,9 +84,9 @@ export default {
       attr(path, 'stroke-dashoffset', 1 - es(t, 4.3, 4.7));
       attr(path, 'opacity', 1 - es(t, 5.3, 5.6));
       const wk = es(t, 4.45, 4.7, ease.back) * (1 - es(t, 5.3, 5.5));
-      vis(world, { x: 1120, y: 470, s: wk, o: wk > 0.01 ? 1 : 0 });
+      vis(world, { x: GX, y: GY, s: wk, o: wk > 0.01 ? 1 : 0 });
       const bl = es(t, 4.7, 4.85, ease.back) * (1 - es(t, 5.3, 5.45));
-      vis(blas, { x: 560, y: 440, s: bl * 1.35, o: bl > 0.01 ? 1 : 0 });
+      vis(blas, { x: BLX, y: 440, s: bl * 1.35, o: bl > 0.01 ? 1 : 0 });
       /* v36b — "I am the Son of God" */
       const so = es(t, 5.15, 5.45, ease.back);
       vis(son, { x: 800, y: 380, s: so, o: so > 0.01 ? 1 : 0 });
@@ -105,7 +107,9 @@ export default {
       });
       S.cam.x = 0;
       S.cam.y = kf(t, [[0, -40], [0.5, -120], [3.6, -120], [4.1, -60], [5, -40], [6, -30]]);
-      S.cam.z = kf(t, [[0, 1.06], [0.6, 1.04], [3.6, 1.04], [4.2, 1.08], [5.2, 1.14], [6, 1.14]]);
+      S.cam.z = S.portrait
+        ? kf(t, [[0, 1.02], [0.6, 1.0], [3.6, 1.0], [4.2, 1.02], [6, 1.02]])
+        : kf(t, [[0, 1.06], [0.6, 1.04], [3.6, 1.04], [4.2, 1.08], [5.2, 1.14], [6, 1.14]]);
     };
   },
 };

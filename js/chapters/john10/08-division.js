@@ -36,6 +36,7 @@ export default {
     const eye = fx.add(`<g>${workPlate(c, 'eye', { r: 58 })}</g>`);
     const eyeClosed = fx.add(`<g><path d="${c.cut(c.circ(0, 0, 58, 32), 0.4, 5)}" fill="${C.cream}"/><g transform="scale(2.4)">${eyeIcon(c, false, 16)}</g></g>`);
     K.front();
+    const BX = S.portrait ? -50 : 0; // phone: the bubbles on the right stay inside the screen
 
     return (t, time) => {
       const T = time;
@@ -50,11 +51,11 @@ export default {
       const apart = es(t, 0.35, 0.85);
       /* v20 — the many: possessed, mad; why listen? */
       const b1 = es(t, 1.08, 1.25, ease.back) * (1 - es(t, 1.9, 2.05));
-      vis(bDemon, { x: 1060, y: 440, s: b1, o: b1 > 0.01 ? 1 : 0 });
+      vis(bDemon, { x: 1060 + BX, y: 440, s: b1, o: b1 > 0.01 ? 1 : 0 });
       const b1s = es(t, 1.35, 1.5, ease.back) * (1 - es(t, 1.9, 2.05));
-      vis(bStorm, { x: 1140, y: 360, s: b1s, o: b1s > 0.01 ? 1 : 0 });
+      vis(bStorm, { x: 1140 + BX * 1.4, y: 360, s: b1s, o: b1s > 0.01 ? 1 : 0 });
       const b2 = es(t, 2.08, 2.25, ease.back) * (1 - es(t, 2.9, 3.05));
-      vis(bWhy, { x: 1000, y: 440, s: b2, o: b2 > 0.01 ? 1 : 0 });
+      vis(bWhy, { x: 1000 + BX, y: 440, s: b2, o: b2 > 0.01 ? 1 : 0 });
       /* v21 — the others: not the words of one possessed; can a demon open the eyes of the blind? */
       const b3 = es(t, 3.08, 3.25, ease.back) * (1 - es(t, 3.9, 4.05));
       vis(bGood, { x: 540, y: 420, s: b3, o: b3 > 0.01 ? 1 : 0 });

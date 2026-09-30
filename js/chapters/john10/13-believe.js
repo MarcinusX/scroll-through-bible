@@ -74,7 +74,8 @@ export default {
       const away = es(t, 4.1, 4.95);
       const talk = Math.max(bump(t, 0.05, 0.95), bump(t, 1.05, 1.95), bump(t, 2.05, 2.95));
       jesus.set({ x: 800, y: F + 4 - slip * 14, s: 1.06, o: 1 - slip, flip: false, armF: 14 + talk * 16 + bump(t, 1.1, 1.9) * 40, armB: 8 + bump(t, 1.1, 1.9) * 120 + bump(t, 2.3, 2.9) * 40, head: -bump(t, 1.1, 1.9) * 12, blink: blinkAt(T, 1) });
-      jFar.set({ x: lerp(820, 1220, away), y: lerp(676, 646, away), s: lerp(0.9, 0.7, away), flip: false, walk: away > 0 && away < 1 ? T * 6 : undefined, armF: 12, o: slip * (1 - es(t, 4.8, 4.98)) });
+      jFar.set({ x: lerp(820, S.portrait ? 1110 : 1220, away), // phone: He is still in sight as He walks away
+        y: lerp(676, 646, away), s: lerp(0.9, 0.7, away), flip: false, walk: away > 0 && away < 1 ? T * 6 : undefined, armF: 12, o: slip * (1 - es(t, 4.8, 4.98)) });
       rings(806, F - 176, talk * 0.8, T, { s0: 0.8, spread: 1.8 });
       const pk = bump(t, 4.05, 4.6);
       vis(puff, { x: 800, y: F - 110, s: 0.7 + pk * 0.8, o: pk * 0.9 });
@@ -90,7 +91,9 @@ export default {
       });
       S.cam.x = kf(t, [[0, 0], [4, 0], [4.9, 60]]);
       S.cam.y = kf(t, [[0, -100], [2, -90], [2.4, -10], [3, 0], [4, 10], [5, -10]]);
-      S.cam.z = kf(t, [[0, 1.04], [2, 1.04], [2.5, 1.16], [3.1, 1.1], [4, 1.14], [5, 1.08]]);
+      S.cam.z = S.portrait
+        ? kf(t, [[0, 1.0], [2, 1.0], [2.5, 1.04], [3.1, 1.02], [5, 1.02]])
+        : kf(t, [[0, 1.04], [2, 1.04], [2.5, 1.16], [3.1, 1.1], [4, 1.14], [5, 1.08]]);
     };
   },
 };
