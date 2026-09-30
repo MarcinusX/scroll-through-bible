@@ -33,6 +33,13 @@ export const UI = {
     langLabel: 'Język',
     home: 'Strona tytułowa',
     back: 'Powrót',
+    libKicker: 'Papierowy teatr',
+    libBible: 'Biblia',
+    libSub: 'Wybierz księgę, a potem rozdział',
+    libBack: '← Wszystkie księgi',
+    toc: 'Spis rozdziałów',
+    // 1 rozdział, 2–4 rozdziały (but 12–14 rozdziałów), 5+ rozdziałów
+    chapterCount: (n) => `${n} ${n === 1 ? 'rozdział' : [2, 3, 4].includes(n % 10) && ![12, 13, 14].includes(n % 100) ? 'rozdziały' : 'rozdziałów'}`,
     ref: (abbr, ch, a, b) => `${abbr} ${ch},${a}${b && b !== a ? '–' + b : ''}`,
   },
   en: {
@@ -55,6 +62,12 @@ export const UI = {
     langLabel: 'Language',
     home: 'Home — title page',
     back: 'Home',
+    libKicker: 'A paper theatre',
+    libBible: 'The Bible',
+    libSub: 'Pick a book, then a chapter',
+    libBack: '← All books',
+    toc: 'All chapters',
+    chapterCount: (n) => `${n} chapter${n === 1 ? '' : 's'}`,
     ref: (abbr, ch, a, b) => `${abbr} ${ch}:${a}${b && b !== a ? '–' + b : ''}`,
   },
 }[LANG];

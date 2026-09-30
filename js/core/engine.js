@@ -76,6 +76,8 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
     timeline.push(entry);
   });
   const total = g0 + 0.6;
+  // where the play proper begins: the first sentence after the title card
+  const opening = timeline.flatMap((e) => e.beats).find((b) => !b.cover) || timeline[0].beats[0];
 
   // scene-local time from global position g
   function localT(e, g) {
@@ -736,7 +738,7 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
     coverEl.style.transform = `translateY(${(-(1 - c) * 40).toFixed(1)}px)`;
     hintEl.classList.toggle('gone', g > 0.25);
     langEl?.classList.toggle('gone', g > 0.3); // the language picker lives on the home page only
-    tagEl.classList.toggle('gone', g < 0.3); // …and the hanging tag only off it
+    tagEl.classList.toggle('gone', g < Math.max(0.3, opening.start - 0.1)); // …and the hanging tag only once the play is on
     endEl.classList.toggle('on', g > total - 0.9);
     liftLive();
   }
@@ -844,6 +846,13 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
     }, 420);
   }
   const beats = timeline.flatMap((e) => e.beats);
+  // straight into the play: stand at the first sentence, then let its words come in
+  // put the reader at t at once (no glide through everything in between)
+  function seek(t) { scrollTo(0, t * unitPx); g = t; step(); step(); }
+  function enter() {
+    seek(opening.start);
+    setTimeout(() => scrollTo({ top: (opening.start + Math.min(0.55, opening.len * 0.5)) * unitPx, behavior: reduced ? 'auto' : 'smooth' }), 650);
+  }
   // move to the next / previous sentence (lands where its words have all appeared)
   function nextBeat(dir) {
     const cur = scrollY / unitPx;
@@ -869,5 +878,5 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
     return v;
   }
 
-  return { timeline, get g() { return g; }, unitPx: () => unitPx, go, step, verse, nextBeat, turnTo };
+  return { timeline, get g() { return g; }, unitPx: () => unitPx, go, step, verse, nextBeat, turnTo, enter, seek };
 }
