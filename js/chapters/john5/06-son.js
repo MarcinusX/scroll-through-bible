@@ -28,7 +28,7 @@ export default {
     { v: 20, text: 'Ojciec bowiem miłuje Syna i ukazuje Mu to wszystko, co On sam czyni,' },
     { v: 20, cont: true, text: 'i jeszcze większe dzieła ukaże Mu, abyście się dziwili.' },
   ],
-  cam: { x: [-60, 80], y: [-80, 40], z: [1, 1.18] },
+  cam: { x: [-60, 230], y: [-80, 40], z: [1, 1.18] },
   build(S) {
     const c = S.c;
     const W = workshopSet(S, { floor: F });
@@ -79,6 +79,7 @@ export default {
       `<g transform="translate(0 14) scale(1.5)">${tombIcon(c, { open: true })}</g>`,
     ].map((ic, i) => ({ i, el: X.add(hungPlate(c, ic, { r: 62, rim: C.sun })) }));
 
+    const LX = S.portrait ? [1135, 1195] : [1250, 1330];   // phone: the men at the door stand within reach of the camera
     return (t, time) => {
       const T = time;
       const lit = es(t, 0.1, 0.6);
@@ -96,14 +97,16 @@ export default {
       jesus.set({ x: 990, y: F - 8, s: 1.02, flip: toDoor < 0.5, armF: 20 + bump(t, 0.1, 0.95) * 50 + cut * (70 + Math.sin(work * PI * 8) * 8) + love * 40, armB: 10 + love * 50, head: watch * 10 + cut * 16 - love * 6, lean: cut * -6, blink: blinkAt(T, 1) });
       const [jhx, jhy] = headAt(990, F - 8, 1.02, false);
       voice(jhx + 22, jhy + 8, bump(t, 0.1, 0.95), T, { dir: 1 });
+      // phone: while the camera is on the bench they wait outside the door, then step in again
+      const back = S.portrait ? (es(t, 0.95, 1.25) * (1 - es(t, 3.95, 4.3))) * 170 : 0;
       LEAD.forEach((l) => {
         const marvel = es(t, 4.35, 4.6);
-        l.p.set({ x: 1250 + l.i * 80, y: F + 4 - l.i * 6, s: 0.98, flip: true, armF: 20 + marvel * 60, armB: 10 + marvel * (l.i ? 130 : 90), head: -marvel * 10, lean: marvel * 4, blink: blinkAt(T, l.seed) });
+        l.p.set({ x: LX[l.i] + back, walk: back > 0 && back < 170 ? back * 0.09 : undefined, y: F + 4 - l.i * 6, s: 0.98, flip: true, armF: 20 + marvel * 60, armB: 10 + marvel * (l.i ? 130 : 90), head: -marvel * 10, lean: marvel * 4, blink: blinkAt(T, l.seed) });
         attr(l.angry, 'opacity', (0.7 * (1 - marvel)).toFixed(2));
       });
       bangs.forEach((b, i) => {
         const k = es(t, 4.45 + i * 0.08, 4.65 + i * 0.08, ease.back);
-        const [hx, hy] = headAt(1250 + i * 80, F + 4 - i * 6, 0.98, true);
+        const [hx, hy] = headAt(LX[i] + back, F + 4 - i * 6, 0.98, true);
         vis(b, { x: hx - 6, y: hy - 50, s: k, r: i ? 10 : -10, o: k > 0.01 ? 1 : 0 });
       });
 
@@ -139,9 +142,11 @@ export default {
         vis(g.el, { x: 760 + g.i * 190, y: 220 - (1 - k) * 480, r: Math.sin(T * 0.7 + g.i) * 1.5, o: k > 0.01 ? 1 : 0 });
       });
 
-      S.cam.x = kf(t, [[0, 60], [0.9, 50], [1.2, -10], [2.0, 10], [3.0, 10], [4.0, 20], [4.8, 50]]);
+      S.cam.x = kf(t, S.portrait
+        ? [[0, 228], [0.9, 228], [1.3, -10], [2.0, 10], [3.0, 10], [4.0, 40], [4.8, 230]]   // phone: pans to the listeners at the door
+        : [[0, 60], [0.9, 50], [1.2, -10], [2.0, 10], [3.0, 10], [4.0, 20], [4.8, 50]]);
       S.cam.y = kf(t, [[0, 20], [1.0, 20], [2.0, 30], [3.0, -20], [4.8, -30]]);
-      S.cam.z = kf(t, [[0, 1.1], [1.0, 1.16], [2.0, 1.18], [3.0, 1.08], [4.8, 1.06]]);
+      S.cam.z = kf(t, S.portrait ? [[0, 1.04], [1.0, 1.16], [2.0, 1.18], [3.0, 1.08], [4.8, 1.02]] : [[0, 1.1], [1.0, 1.16], [2.0, 1.18], [3.0, 1.08], [4.8, 1.06]]);
     };
   },
 };

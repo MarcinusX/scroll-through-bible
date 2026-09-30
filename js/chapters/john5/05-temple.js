@@ -57,7 +57,7 @@ export default {
     const flower = L.add(`<g>${sprout(c, 80)}</g>`);
     const LEAD = [0, 1, 2, 3].map((i) => {
       const el = L.add(withFace(person(c, { ...leaderOpts(i), holdF: `<g class="st">${stone(c)}</g>` }), faceBits(c)));
-      return { i, el, p: S.puppet(el), angry: el.querySelector('[data-part="angry"]'), st: el.querySelector('.st'), x: [1060, 1150, 1240, 1320][i], seed: c.rr(0, 9) };
+      return { i, el, p: S.puppet(el), angry: el.querySelector('[data-part="angry"]'), st: el.querySelector('.st'), x: (S.portrait ? [1060, 1130, 1200, 1265] : [1060, 1150, 1240, 1320])[i], seed: c.rr(0, 9) };
     });
     const manEl = L.add(withFace(person(c, HEALED), faceBits(c)));
     const man = S.puppet(manEl);
@@ -84,7 +84,7 @@ export default {
       swing(cl1, 470 + Math.sin(T * 0.1) * 26, 140, T, 1.3, 0.6, 1);
       const dark = es(t, 7.05, 7.5) * (1 - es(t, 8.7, 9.0) * 0.4);
       darkL.fade(dark * 0.32);
-      darkL.shift((1 - dark) * 500, 0);
+      darkL.shift((1 - dark) * 500 - (S.portrait ? 170 : 0), 0);   // phone: the darkness reaches the leaders, not only its tips at the edge
       sk.blend(SKY, ['#c9c6cf', '#e6d6c2', '#efd2b6'], dark * 0.5);
 
       /* v14a — Jesus finds him in the Temple */
@@ -130,7 +130,7 @@ export default {
       const stones = es(t, 7.15, 7.4);
       const outrage = bump(t, 8.1, 9.0);
       LEAD.forEach((l) => {
-        const x = lerp(l.x + 120, l.x - 130 + l.i * -6, come);
+        const x = lerp(l.x + (S.portrait ? 50 : 120), l.x - 130 + l.i * -6, come);
         const y = FLOOR + 10 - (l.i % 2) * 8;
         const pointAt = bump(t, 4.2, 5.0) * (l.i < 2 ? 1 : 0.4);
         l.p.set({ x, y, s: 1, flip: true, walk: come > 0 && come < 1 ? x * 0.08 : undefined, armF: 20 + pointAt * 70 + stones * 30, armB: 10 + (l.i === 1 ? bump(t, 4.3, 5.0) * 120 : 0) + outrage * (l.i % 2 ? 150 : 120), head: -outrage * 10 + bump(t, 6.2, 6.9) * -10, lean: -pointAt * 5 + outrage * 3, blink: blinkAt(T, l.seed) });
@@ -139,11 +139,11 @@ export default {
       });
       shadowsEl.forEach((sh, i) => {
         const l = LEAD[i];
-        const x = lerp(l.x + 120, l.x - 130 + l.i * -6, come);
+        const x = lerp(l.x + (S.portrait ? 50 : 120), l.x - 130 + l.i * -6, come);
         vis(sh, { x: x - 20, y: FLOOR + 10 - (l.i % 2) * 8, sx: 0.3 + come * 0.6 + dark * 0.5, o: es(t, 4.1, 4.6) * 0.8 });
       });
       const sabK = es(t, 4.2, 4.5, ease.back) * (1 - es(t, 5.0, 5.3));
-      vis(sab, { x: 1080, y: 200 - (1 - sabK) * 480, r: Math.sin(T * 0.8) * 1.5, o: sabK > 0.01 ? 1 : 0 });
+      vis(sab, { x: S.portrait ? 1000 : 1080, y: 200 - (1 - sabK) * 480, r: Math.sin(T * 0.8) * 1.5, o: sabK > 0.01 ? 1 : 0 });
 
       /* v17 — "My Father is working until now, and I am working" */
       const hk = es(t, 5.95, 6.3) * (1 - es(t, 7.05, 7.4) * 0.6);
@@ -166,7 +166,9 @@ export default {
       const ek = es(t, 8.5, 8.7, ease.back);
       vis(eqT, { x: 800, y: 350 - (1 - ek) * 500, r: Math.sin(T * 0.7) * 1, o: ek > 0.01 ? 1 : 0 });
 
-      S.cam.x = kf(t, [[-0.3, -40], [0.6, 0], [1.5, 30], [3.0, 30], [3.6, 80], [4.5, 60], [5.5, 30], [6.2, 0], [7.2, 40], [8.2, 0]]);
+      S.cam.x = kf(t, S.portrait
+        ? [[-0.3, -40], [0.6, 0], [1.5, 30], [3.0, 30], [3.6, 80], [4.5, 80], [6.2, 60], [7.2, 80], [8.2, 50]]   // phone: Jesus and all the leaders in view
+        : [[-0.3, -40], [0.6, 0], [1.5, 30], [3.0, 30], [3.6, 80], [4.5, 60], [5.5, 30], [6.2, 0], [7.2, 40], [8.2, 0]]);
       S.cam.y = kf(t, [[-0.3, 20], [1.0, 20], [3.0, 20], [5.0, 10], [6.2, -50], [7.0, 0], [8.1, -40]]);
       S.cam.z = kf(t, [[-0.3, 1.06], [1.0, 1.14], [3.0, 1.14], [4.5, 1.06], [6.2, 1.02], [7.2, 1.1], [8.1, 1.02]]);
     };

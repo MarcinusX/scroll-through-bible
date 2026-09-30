@@ -25,7 +25,7 @@ export default {
     { v: 23, text: 'aby wszyscy oddawali cześć Synowi, tak jak oddają cześć Ojcu.' },
     { v: 23, cont: true, text: 'Kto nie oddaje czci Synowi, nie oddaje czci Ojcu, który Go posłał.' },
   ],
-  cam: { x: [-60, 80], y: [-120, 40], z: [1, 1.14] },
+  cam: { x: [-60, 100], y: [-120, 40], z: [1, 1.14] },
   build(S) {
     const c = S.c;
     const sk = sky(S, GREY);
@@ -55,13 +55,15 @@ export default {
     /* the dead (grey, lying) and the living (colour, standing) */
     const L = S.layer({ par: 0.45, sh: 5 });
     const shade1 = L.add(`<g><ellipse rx="160" ry="280" fill="url(#${S.id('shd')})"/></g>`);
-    const DEAD = [[470, 0], [1010, 1], [1150, 2]].map(([x, k], i) => {
+    // phone: everyone stands closer to Jesus, so nobody is sliced by the screen edge
+    const ph = S.portrait;
+    const DEAD = (ph ? [[525, 0], [935, 1], [1045, 2]] : [[470, 0], [1010, 1], [1150, 2]]).map(([x, k], i) => {
       const o = { ...crowdPerson(c), mantle: null };
       const grey = L.add(lyingOn(c, { ...silhouette(o, GREYC), eyes: 'closed' }, { s: 0.72, w: 150, mat: false, eyes: 'closed' }));
       const live = S.puppet(L.add(person(c, o)));
       return { i, x, grey, live, seed: c.rr(0, 9), flip: x > 800 };
     });
-    const others = [[330, false], [620, false], [1310, true]].map(([x, flip], i) => {
+    const others = (ph ? [[410, false], [630, false], [1130, true]] : [[330, false], [620, false], [1310, true]]).map(([x, flip], i) => {
       const el = L.add(withFace(person(c, crowdPerson(c)), faceBits(c)));
       return { i, x, flip, el, p: S.puppet(el), sad: el.querySelector('[data-part="sad"]'), seed: c.rr(0, 9) };
     });
@@ -104,7 +106,7 @@ export default {
       /* v22 — the empty throne; the scales idle beside it, then given to the Son */
       const th = es(t, 2.05, 2.4, ease.out);
       vis(throne, { x: 800, y: lerp(-100, 380, th), s: 1, o: th > 0.01 ? 1 : 0 });
-      const bx = lerp(1080, 880, scales), by = lerp(190, 330, scales);
+      const bx = lerp(ph ? 1005 : 1080, 880, scales), by = lerp(190, 330, scales);
       const sway = t > 3.6 ? Math.sin((t - 3.6) * 6) * 5 * Math.max(0, 1 - (t - 3.6) * 1.5) : 0;
       bal.set(bx, by - (1 - es(t, 2.2, 2.55, ease.out)) * 480, sway, t > 2.15 ? 1 : 0);
 
@@ -113,14 +115,14 @@ export default {
       others.forEach((m) => {
         const turnAway = m.i === 2 ? away : 0;
         const face = m.x < 800 ? false : true;
-        m.p.set({ x: m.x, y: F + 8, s: 0.96, flip: turnAway > 0.5 ? !face : face, armF: 20 + (1 - turnAway) * (bowToSon * 20 + bowToLight * 20), armB: 10 + bowToLight * 140 * (1 - turnAway), head: (-bowToLight * 22 + bowToSon * 22) * (1 - turnAway) + turnAway * 10, lean: bowToSon * (face ? -18 : 18) * (1 - turnAway), blink: blinkAt(T, m.seed), o: es(t, 1.7, 2.1) });
+        m.p.set({ x: m.x, y: F + 8, s: 0.96, flip: turnAway > 0.5 ? !face : face, armF: 20 + (1 - turnAway) * (bowToSon * 20 + bowToLight * 20), armB: 10 + bowToLight * 140 * (1 - turnAway), head: (-bowToLight * 22 + bowToSon * 22) * (1 - turnAway) + turnAway * 10, lean: bowToSon * (face ? -18 : 18) * (1 - turnAway), blink: blinkAt(T, m.seed), o: ph && m.i === 0 ? 0 : es(t, 1.7, 2.1) });
         if (m.i === 2) attr(m.sad, 'opacity', away.toFixed(2));
       });
-      vis(shade1, { x: 1310, y: F - 110, s: 0.6 + away * 0.5, o: away });
+      vis(shade1, { x: others[2].x, y: F - 110, s: 0.6 + away * 0.5, o: away });
 
-      S.cam.x = kf(t, [[0, -60], [1.0, -40], [1.5, 60], [2.0, 0], [4.0, 0], [5.0, 40], [5.9, 60]]);
+      S.cam.x = kf(t, ph ? [[0, -30], [1.0, -20], [1.5, 40], [4.0, 40], [5.0, 60], [5.9, 70]] : [[0, -60], [1.0, -40], [1.5, 60], [2.0, 0], [4.0, 0], [5.0, 40], [5.9, 60]]);
       S.cam.y = kf(t, [[0, 0], [1.0, 20], [2.0, -80], [3.0, -60], [4.0, 10], [5.0, 20]]);
-      S.cam.z = kf(t, [[0, 1.08], [1.0, 1.1], [2.0, 1.02], [3.0, 1.04], [4.0, 1.06], [5.0, 1.1]]);
+      S.cam.z = kf(t, ph ? [[0, 1.06], [1.0, 1.06], [2.0, 1], [4.0, 1], [5.0, 1.02]] : [[0, 1.08], [1.0, 1.1], [2.0, 1.02], [3.0, 1.04], [4.0, 1.06], [5.0, 1.1]]);
     };
   },
 };

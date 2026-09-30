@@ -77,7 +77,8 @@ export default {
 
     /* the dead on the grey ground, and the ones who rise */
     const L = S.layer({ par: 0.4, sh: 5 });
-    const DEAD = [[430, 0], [610, 1]].map(([x, i]) => {
+    const ph = S.portrait;   // phone: the dead, the scales and the listener keep inside the narrow screen
+    const DEAD = (ph ? [[560, 0], [680, 1]] : [[430, 0], [610, 1]]).map(([x, i]) => {
       const o = { ...crowdPerson(c), mantle: null };
       return { i, x, grey: L.add(lyingOn(c, { ...silhouette(o, GREYC) }, { s: 0.66, w: 140, mat: false, eyes: 'closed' })), live: S.puppet(L.add(person(c, { ...o, pose: 'sit' }))), light: L.add(`<g>${soulLight(c, 9)}</g>`), seed: c.rr(0, 9) };
     });
@@ -120,7 +121,7 @@ export default {
 
       /* v24a — the grey man hears the word and believes */
       const walk = es(t, 1.1, 1.85, ease.sine);
-      const mx = lerp(500, 1060, walk);
+      const mx = lerp(500, ph ? 1000 : 1060, walk);
       const col = seg(mx, SEAM - 30, SEAM + 40);
       const listen = es(t, 0.3, 0.55) * (1 - walk);
       const common = { x: mx, y: F + 8, s: 1, flip: false, walk: walk > 0 && walk < 1 ? mx * 0.08 : undefined, armF: 20 + listen * 30, armB: 10 + listen * 120, head: -listen * 14 + es(t, 1.9, 2.1) * -6, blink: blinkAt(T, 3) };
@@ -137,8 +138,8 @@ export default {
 
       /* v24b — no judgment: the scales hang over the grey path; he passes by */
       const bk = es(t, 0.95, 1.2, ease.out) * (1 - es(t, 2.0, 2.2));
-      bal.set(600, 190 - (1 - bk) * 460, Math.sin(T * 0.8) * 2 * bk, bk > 0.01 ? 1 : 0);
-      vis(sadT, { x: 600, y: 390 - (1 - bk) * 460, r: Math.sin(T * 0.8) * 2, o: bk > 0.01 ? 1 : 0 });
+      bal.set(ph ? 670 : 600, 190 - (1 - bk) * 460, Math.sin(T * 0.8) * 2 * bk, bk > 0.01 ? 1 : 0);
+      vis(sadT, { x: ph ? 670 : 600, y: 390 - (1 - bk) * 460, r: Math.sin(T * 0.8) * 2, o: bk > 0.01 ? 1 : 0 });
 
       /* v25a — the hour is coming, and now is */
       const dk = es(t, 2.05, 2.35, ease.back) * (1 - es(t, 3.0, 3.3));
@@ -162,9 +163,9 @@ export default {
       const [hx, hy] = handAt(JX, JY, JS, false, 10 + 110);
       vis(sc, { x: lerp(1010, hx - 18, rod), y: lerp(-60, hy - 60, rod), r: -10, o: t > 5.1 ? 1 : 0 });
       const sk = es(t, 5.5, 5.75, ease.back);
-      vis(somT, { x: 1020, y: 230 - (1 - sk) * 420, r: Math.sin(T * 0.7) * 1.5, o: sk > 0.01 ? 1 : 0 });
+      vis(somT, { x: ph ? 960 : 1020, y: 230 - (1 - sk) * 420, r: Math.sin(T * 0.7) * 1.5, o: sk > 0.01 ? 1 : 0 });
 
-      S.cam.x = kf(t, [[0, -80], [1.0, -60], [1.9, 60], [2.2, -40], [3.0, -60], [3.9, -20], [4.5, 0], [5.4, 20]]);
+      S.cam.x = kf(t, ph ? [[0, -80], [1.0, -60], [1.9, 60], [2.2, 20], [3.0, 10], [3.9, 10], [4.5, 20], [5.4, 20]] : [[0, -80], [1.0, -60], [1.9, 60], [2.2, -40], [3.0, -60], [3.9, -20], [4.5, 0], [5.4, 20]]);
       S.cam.y = kf(t, [[0, 10], [1.0, -20], [2.0, 10], [2.4, -30], [3.0, 20], [4.0, -60], [4.8, 0], [5.4, -20]]);
       S.cam.z = kf(t, [[0, 1.12], [1.0, 1.06], [2.0, 1.1], [3.0, 1.1], [4.0, 1.02], [4.8, 1.12], [5.4, 1.06]]);
     };

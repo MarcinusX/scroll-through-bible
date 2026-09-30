@@ -77,7 +77,7 @@ export default {
 
       /* v5 — thirty-eight years: the board counts them */
       const bk = es(t, 0.1, 0.4, ease.out) * (1 - es(t, 1.9, 2.2, ease.in));
-      vis(board, { x: 940, y: 150 - (1 - bk) * 420, r: Math.sin(T * 0.6) * 0.7, o: bk > 0.01 ? 1 : 0 });
+      vis(board, { x: S.portrait ? 835 : 940, y: 150 - (1 - bk) * 420, r: Math.sin(T * 0.6) * 0.7, o: bk > 0.01 ? 1 : 0 });
       const n = Math.floor(es(t, 0.3, 0.75, (x) => x) * 38.999);
       marks.forEach((m, i) => attr(m, 'opacity', i < n ? 1 : 0));
       const ns = n ? String(n) : '';

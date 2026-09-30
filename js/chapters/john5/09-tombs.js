@@ -33,6 +33,8 @@ export default {
   cam: { x: [-60, 80], y: [-100, 40], z: [1, 1.16] },
   build(S) {
     const c = S.c;
+    const ph = S.portrait;
+    const DAWNX = ph ? 1090 : 1330;   // phone: the dawn and the way up to it are inside the screen
     const sk = sky(S, NIGHT);
     const starL = S.layer({ par: 0.02, sh: 0, flat: true });
     starL.add(stars(c, { x0: -600, x1: 2200, y0: -500, y1: 420, n: 90 }));
@@ -48,7 +50,7 @@ export default {
     hill.add(hs.out());
     // the path of light up to the dawn (right)
     const pathL = S.layer({ par: 0.2, sh: 0, flat: true });
-    const path = pathL.add(`<path d="${c.poly([[1000, 560], [1100, 560], [1340, 340], [1310, 330]])}" fill="${C.halo}" opacity=".7"/>`);
+    const path = pathL.add(`<path d="${c.poly(ph ? [[960, 560], [1060, 560], [1110, 340], [1080, 330]] : [[1000, 560], [1100, 560], [1340, 340], [1310, 330]])}" fill="${C.halo}" opacity=".7"/>`);
     const TL = S.layer({ par: 0.2, sh: 4 });
     const T = TOMBS.map(([x, y, s, good], i) => {
       TL.add(`<g transform="translate(${x} ${y}) scale(${s})">${tomb(c, TW, TH, { stone: false, face: mix(C.rock2, C.storm, 0.25) })}</g>`);
@@ -97,7 +99,7 @@ export default {
       sk.blend(NIGHT, DAWN, dawnK * 0.8);
       starL.fade(1 - dawnK * 0.6);
       swing(moonEl, 420, 150 + dawnK * 80, Tm, 1, 0.6);
-      pose(dawn, { x: 1330, y: lerp(560, 320, dawnK), r: Tm * 2, s: 0.6 + dawnK * 0.4 });
+      pose(dawn, { x: DAWNX, y: lerp(560, 320, dawnK), r: Tm * 2, s: 0.6 + dawnK * 0.4 });
       fade(dawn, dawnK);
       const dim = es(t, 4.0, 4.4) * (1 - es(t, 6.6, 6.95) * 0.5);
       dimL.fade(dim * 0.6);
@@ -107,7 +109,7 @@ export default {
       const calm = bump(t, 0.1, 0.95);
       const speak = bump(t, 1.05, 1.95);
       LEAD.forEach((l) => {
-        const x = 1180 + l.i * 90;
+        const x = ph ? 1010 + l.i * 70 : 1180 + l.i * 90;
         const shock = 1 - es(t, 0.55, 0.9);
         l.p.set({ x, y: F + 6 - l.i * 6, s: 1, flip: true, armF: 20 + shock * 60, armB: 10 + shock * 120, head: -shock * 8 + es(t, 1.2, 1.6) * -14, blink: blinkAt(Tm, l.seed) });
         const [hx, hy] = headAt(x, F + 6 - l.i * 6, 1, true);
@@ -134,7 +136,7 @@ export default {
         vis(tb.rim, { x: tb.x, y: tb.y - TH * 0.4 * tb.s, s: 1 + Math.sin(Tm * 2 + tb.i) * 0.05, o: wake * (1 - open) });
         const out = tb.good ? es(t, 2.3 + tb.i * 0.04, 2.6 + tb.i * 0.04) : es(t, 3.3, 3.6);
         const climb = tb.good ? es(t, 2.55 + tb.i * 0.05, 3.2 + tb.i * 0.05, ease.sine) : 0;
-        const fx = lerp(tb.x, 1320, climb), fy = lerp(tb.y + 2, 350, climb);
+        const fx = lerp(tb.x, DAWNX - 10, climb), fy = lerp(tb.y + 2, 350, climb);
         tb.fig.set({ x: fx, y: fy, s: tb.s * 0.45 * (1 - climb * 0.35), flip: tb.good ? false : tb.x > 800, walk: climb > 0 && climb < 1 ? fx * 0.2 : undefined, armB: tb.good ? 30 + out * 100 : 5, armF: tb.good ? 40 + out * 60 : 5, head: tb.good ? -out * 10 : 22 * out, blink: 0, o: seg(out, 0, 0.3) * (1 - seg(climb, 0.8, 1)) });
       });
       const cb = es(t, 3.3, 3.6);
@@ -143,8 +145,8 @@ export default {
       /* v30b — as I hear, I judge; the scales hang level */
       const bk = es(t, 5.1, 5.4, ease.out) * (1 - es(t, 6.05, 6.3));
       const sway = Math.sin(Math.max(0, t - 5.3) * 8) * 10 * Math.max(0, 1 - (t - 5.3) * 2) * (t > 5.3 ? 1 : 0);
-      const [pl] = bal.set(1040, 190 - (1 - bk) * 460, sway, bk > 0.01 ? 1 : 0);
-      vis(ok, { x: 1040, y: 196 - (1 - bk) * 460, s: es(t, 5.55, 5.7, ease.back), o: bk > 0.01 && t > 5.55 ? 1 : 0 });
+      const [pl] = bal.set(ph ? 975 : 1040, 190 - (1 - bk) * 460, sway, bk > 0.01 ? 1 : 0);
+      vis(ok, { x: ph ? 975 : 1040, y: 196 - (1 - bk) * 460, s: es(t, 5.55, 5.7, ease.back), o: bk > 0.01 && t > 5.55 ? 1 : 0 });
       /* v30c — not my own will */
       const wk = es(t, 6.03, 6.2, ease.back) * (1 - es(t, 6.7, 6.95, ease.in));
       vis(willT, { x: 620 - es(t, 6.7, 6.95) * 160, y: 300 - es(t, 6.7, 6.95) * 380, r: Math.sin(Tm * 0.8) * 2, o: wk > 0.01 ? 1 : 0 });

@@ -45,7 +45,7 @@ export default {
     const LEAD = [0, 1, 2].map((i) => {
       const o = leaderOpts(i);
       const el = A.add(withFace(person(c, { ...o, holdF: i === 1 ? `<g transform="translate(0 8)">${scrollRolled(c, 40)}</g>` : '' }), faceBits(c)));
-      return { i, el, p: S.puppet(el), angry: el.querySelector('[data-part="angry"]'), x: [470, 570, 670][i], seed: c.rr(0, 9) };
+      return { i, el, p: S.puppet(el), angry: el.querySelector('[data-part="angry"]'), x: (S.portrait ? [535, 620, 705] : [470, 570, 670])[i], seed: c.rr(0, 9) };
     });
 
     /* the man with his mat */
@@ -91,7 +91,7 @@ export default {
         l.p.set({ x, y: F + 8 - (l.i % 2) * 6, s: 1, flip: false, walk: k > 0 && k < 1 ? x * 0.08 : undefined, armF: (l.i === 1 ? 50 : 20) + point * 70 + ask * (l.i === 2 ? 50 : 20), armB: 10 + (l.i === 0 ? bump(t, 1.1, 2.0) * 130 : 0) + ask * (l.i === 0 ? 40 : 0), head: -ask * 4, lean, blink: blinkAt(T, l.seed) });
         attr(l.angry, 'opacity', (l.i === 1 ? 0.6 : es(t, 0.6, 1.0)).toFixed(2));
       });
-      const [lhx, lhy] = headAt(670, F + 8, 1, false);
+      const [lhx, lhy] = headAt(LEAD[2].x, F + 8, 1, false);
 
       /* v10b — "It is the Sabbath: you may not carry your mat" */
       const nk = es(t, 1.12, 1.32, ease.back) * (1 - es(t, 1.95, 2.05));
@@ -125,7 +125,7 @@ export default {
       });
       pose(lier, { x: 1260, y: F + 10, sx: -1 });
 
-      S.cam.x = kf(t, [[0, 40], [0.6, -20], [2.0, 0], [3.0, -20], [4.0, 0], [5.0, -60], [5.9, -140]]);
+      S.cam.x = kf(t, [[0, 40], [0.6, -20], [2.0, 0], [3.0, -20], [4.0, 0], [5.0, -60], [5.9, S.portrait ? -100 : -140]]);
       S.cam.y = kf(t, [[0, 20], [1.0, 20], [4.0, 20], [5.0, -20], [5.9, -60]]);
       S.cam.z = kf(t, [[0, 1.06], [1.0, 1.14], [4.0, 1.14], [5.0, 1.08], [5.9, 1.16]]);
     };

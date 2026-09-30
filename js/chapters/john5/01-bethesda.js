@@ -88,7 +88,8 @@ export default {
       [tr('chromi', 'the lame'), `<g transform="translate(0 -40) scale(.5)">${crutch(c)}</g>`, 800],
       [tr('sparaliżowani', 'the paralysed'), `<g transform="translate(0 6) scale(.42)">${lyingOn(c, sickLook(c, 2), { s: 0.7, w: 176 })}</g>`, 1130],
     ];
-    const cards = cardsDef.map(([w, icon, x], i) => ({ i, x, el: X.add(`<g>${hang2(card(c, icon, w, { w: 150, h: 120 }), 40, 300)}</g>`) }));
+    const CARDX = S.portrait ? [570, 800, 1030] : [470, 800, 1130];   // phone: all three cards in view
+    const cards = cardsDef.map(([w, icon], i) => ({ i, x: CARDX[i], el: X.add(`<g>${hang2(card(c, icon, w, { w: 150, h: 120 }), 40, 300)}</g>`) }));
     const glass = X.add(`<g>${hang2(`<g transform="translate(0 50)">${sandGlass(c, 80)}</g>`, 0.01, 300)}</g>`);
     const angelGlow = X.add(`<g><circle r="150" fill="url(#halo-glow)"/></g>`);
     const angel = X.add(smallAngel(c));

@@ -129,7 +129,7 @@ export default {
       fade(glowEl, burn * (0.9 + Math.sin(T * 5) * 0.05));
       vis(lampT, { x: 960, y: 200 - (1 - lk) * 520, r: Math.sin(T * 0.7 + 1) * 1.5, o: lk > 0.01 ? 1 : 0 });
       const gk = es(t, 7.1, 7.3, ease.back) * (1 - es(t, 7.8, 7.95));
-      vis(glass, { x: 1140, y: 150 - (1 - gk) * 420, o: gk > 0.01 ? 1 : 0 });
+      vis(glass, { x: S.portrait ? 1105 : 1140, y: 150 - (1 - gk) * 420, o: gk > 0.01 ? 1 : 0 });
       const joy = es(t, 7.05, 7.25) * (1 - es(t, 7.55, 7.8));
       const drift = es(t, 7.6, 7.95);
       LEAD.forEach((l) => {

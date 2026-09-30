@@ -18,7 +18,6 @@ import {
 } from './lib.js';
 
 const F = 700;
-const DX = 520;
 
 export default {
   id: 'j5-scriptures',
@@ -32,9 +31,11 @@ export default {
     { v: 43, cont: true, text: 'Gdyby jednak przybył kto inny we własnym imieniu, to byście go przyjęli.' },
     { v: 44 },
   ],
-  cam: { x: [-100, 80], y: [-100, 60], z: [1, 1.24] },
+  cam: { x: [-300, 80], y: [-100, 60], z: [1, 1.24] },
   build(S) {
     const c = S.c;
+    const ph = S.portrait;
+    const DX = ph ? 600 : 520;   // phone: the desk stands nearer to Jesus, and the camera keeps both in view
     const H = scrollHall(S, { floor: F, winX: 790, winY: 230 });
 
     /* two lamps hang in the hall */
@@ -134,7 +135,7 @@ export default {
 
       /* v41 — glory from men: a laurel offered and waved away */
       const bin = es(t, 2.9, 3.2, ease.out) * (1 - es(t, 4.0, 4.3));
-      const bx = lerp(1450, 1130, bin);
+      const bx = lerp(1450, ph ? 1060 : 1130, bin);
       const offer = bump(t, 3.05, 3.9);
       by.set({ x: bx, y: F + 12, s: 1, flip: true, walk: bin > 0 && bin < 1 ? bx * 0.08 : undefined, armF: 20 + offer * 110, armB: 10, head: -offer * 6, blink: blinkAt(T, 4), o: bin > 0.01 ? 1 : 0 });
       const [wx, wy] = handAt(bx, F + 12, 1, true, 20 + offer * 110);
@@ -143,10 +144,10 @@ export default {
 
       /* v43b — another in his own name: glitter, a mask, a banner */
       const mk = es(t, 6.05, 6.5, ease.out);
-      const mx = lerp(-220, 330, mk) + es(t, 7.05, 7.4) * 50;
+      const mx = lerp(-220, ph ? 400 : 330, mk) + es(t, 7.05, 7.4) * 50;
       masked.set({ x: mx, y: F + 8, s: 1.02, flip: false, walk: mk > 0 && mk < 1 ? mx * 0.08 : undefined, armF: 100, armB: 150, head: -4, lean: -3, blink: 0, o: mk > 0.01 ? 1 : 0 });
       const [ox, oy] = handAt(mx, F + 8, 1.02, false, 150);
-      vis(ownB, { x: ox - 90, y: oy - 60, r: Math.sin(T * 1.4) * 3, o: mk > 0.01 ? 1 : 0 });
+      vis(ownB, { x: ox + (ph ? 30 : -90), y: oy - 60, r: Math.sin(T * 1.4) * 3, o: mk > 0.01 ? 1 : 0 });
       glit.forEach((g, i) => {
         const a = T * 1.3 + (i * PI) / 2;
         vis(g, { x: mx + Math.cos(a) * 60, y: F - 120 + Math.sin(a) * 90, s: 0.6 + Math.sin(T * 5 + i) * 0.3, o: mk > 0.01 ? 0.9 : 0 });
@@ -160,9 +161,11 @@ export default {
       const h0 = heads[a], h1 = heads[a + 1];
       vis(little, { x: lerp(h0[0], h1[0], f), y: lerp(h0[1], h1[1], f) - 30 - Math.sin(f * PI) * 40, o: t > 7.05 ? es(t, 7.05, 7.15) : 0 });
 
-      S.cam.x = kf(t, [[0, -80], [1.0, -60], [1.6, 0], [2.3, 20], [3.3, 80], [4.1, -60], [5.2, 0], [6.1, -80], [7.1, -40]]);
+      S.cam.x = kf(t, ph
+        ? [[0, -190], [1.0, -190], [2.3, -170], [2.9, -100], [3.3, 60], [3.8, 60], [4.2, -190], [5.2, -170], [6.1, -290], [7.1, -270]]
+        : [[0, -80], [1.0, -60], [1.6, 0], [2.3, 20], [3.3, 80], [4.1, -60], [5.2, 0], [6.1, -80], [7.1, -40]]);
       S.cam.y = kf(t, [[0, 20], [1.0, 0], [2.0, 10], [3.0, 30], [4.1, 40], [5.2, 10], [6.1, 30], [7.1, -30]]);
-      S.cam.z = kf(t, [[0, 1.2], [1.0, 1.14], [2.0, 1.16], [3.0, 1.18], [4.1, 1.22], [5.2, 1.14], [6.1, 1.16], [7.1, 1.06]]);
+      S.cam.z = kf(t, ph ? [[0, 1.06], [2.0, 1.06], [3.0, 1.1], [4.1, 1.08], [5.2, 1.04], [6.1, 1], [7.1, 1]] : [[0, 1.2], [1.0, 1.14], [2.0, 1.16], [3.0, 1.18], [4.1, 1.22], [5.2, 1.14], [6.1, 1.16], [7.1, 1.06]]);
     };
   },
 };

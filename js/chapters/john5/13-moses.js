@@ -38,6 +38,7 @@ export default {
   cam: { x: [-80, 60], y: [-100, 40], z: [1, 1.2] },
   build(S) {
     const c = S.c;
+    const ph = S.portrait;   // phone: Moses, his rock and his scroll stand inside the narrow screen
     const sk = sky(S, EVE);
     const hi = S.layer({ par: 0.05, sh: 3 });
     const burst = hi.add(`<g>${rayBurst(c, { n: 20, r0: 60, r1: 520, spread: 0.045, o: 0.5 })}<circle r="200" fill="url(#halo-glow)"/></g>`);
@@ -55,13 +56,13 @@ export default {
     const ML = S.layer({ par: 0.42, sh: 5 });
     const mGlow = ML.add(`<g><circle r="150" fill="url(#halo-glow)"/></g>`);
     const moses = S.puppet(ML.add(person(c, { ...sepia(MOSES, 0.15), holdB: `<g transform="translate(0 6) rotate(180) scale(.62)">${lawTablets(c, { w: 50, h: 70 })}</g>` })));
-    ML.add(rock(c, 440, F - 6, 210, 90, mix(C.rock2, C.sand2, 0.3)));
+    ML.add(rock(c, ph ? 530 : 440, F - 6, 210, 90, mix(C.rock2, C.sand2, 0.3)));
 
     /* Jesus and the leaders */
     const L = S.layer({ par: 0.5, sh: 6 });
     const LEAD = [0, 1, 2].map((i) => {
       const el = L.add(withFace(person(c, leaderOpts(i)), faceBits(c)));
-      return { i, el, p: S.puppet(el), angry: el.querySelector('[data-part="angry"]'), sad: el.querySelector('[data-part="sad"]'), x: [1060, 1160, 1260][i], y: F + 8 - (i % 2) * 8, seed: c.rr(0, 9) };
+      return { i, el, p: S.puppet(el), angry: el.querySelector('[data-part="angry"]'), sad: el.querySelector('[data-part="sad"]'), x: (ph ? [1000, 1075, 1150] : [1060, 1160, 1260])[i], y: F + 8 - (i % 2) * 8, seed: c.rr(0, 9) };
     });
     const jesus = S.puppet(L.add(person(c, { ...CAST.jesus })));
     const word = L.add(`<g><circle r="70" fill="url(#warm-glow)"/><circle r="40" fill="url(#halo-glow)"/>${wordFlame(c, 60)}</g>`);
@@ -80,7 +81,7 @@ export default {
     const lnP = line.querySelector('.ln');
 
     const JX = 780, JY = F + 10, JS = 1.06;
-    const MX = 470;
+    const MX = ph ? 560 : 470;
     return (t, time) => {
       const T = time;
       const late = es(t, 4.0, 4.9);
@@ -113,14 +114,14 @@ export default {
         attr(l.angry, 'opacity', (0.3 + es(t, 4.1, 4.4) * 0.6).toFixed(2));
         attr(l.sad, 'opacity', (pointAt * 0.8).toFixed(2));
       });
-      const [lhx, lhy] = headAt(1160, F, 1, true);
+      const [lhx, lhy] = headAt(LEAD[1].x, F, 1, true);
       const hk = bump(t, 1.2, 1.9);
       vis(hope, { x: lerp(lhx, MX + 20, es(t, 1.25, 1.6)), y: lerp(lhy - 40, F - 250, es(t, 1.25, 1.6)), s: 0.6 + hk * 0.6, o: hk });
 
       /* v46a — his scroll unrolls; a golden line from it to Jesus */
       const sc = es(t, 2.05, 2.3, ease.out);
       const un = es(t, 2.25, 2.6);
-      const SX = 640, SY = 175 - (1 - sc) * 520;
+      const SX = ph ? 675 : 640, SY = 175 - (1 - sc) * 520;
       pose(rodTop, { x: SX, y: SY, r: Math.sin(T * 0.6) * 0.8 });
       pose(scrollSheet, { x: SX, y: SY, sy: Math.max(0.01, un), o: sc > 0.05 ? 1 : 0 });
       pose(rodBot, { x: SX, y: SY + un * V.h, o: sc > 0.05 ? 1 : 0 });
@@ -136,7 +137,7 @@ export default {
       const [hx, hy] = handAt(JX, JY, JS, false, 20 + holdWord * 60);
       vis(word, { x: hx + 6, y: hy - 24, s: (0.3 + holdWord * 0.7) * (1 + Math.sin(T * 4) * 0.04), o: holdWord > 0.01 ? 1 : 0 });
 
-      S.cam.x = kf(t, [[0, 20], [1.0, 0], [1.5, -60], [2.3, -40], [3.0, -40], [4.0, 0], [4.9, 0]]);
+      S.cam.x = kf(t, ph ? [[0, 20], [1.0, 0], [1.5, -20], [3.0, -20], [4.0, 0], [4.9, 0]] : [[0, 20], [1.0, 0], [1.5, -60], [2.3, -40], [3.0, -40], [4.0, 0], [4.9, 0]]);
       S.cam.y = kf(t, [[0, -40], [1.0, -20], [2.0, -10], [2.6, -60], [3.4, -60], [4.2, 0], [4.9, 20]]);
       S.cam.z = kf(t, [[0, 1.04], [1.0, 1.06], [2.0, 1.1], [3.0, 1.06], [4.2, 1.12], [4.9, 1.2]]);
     };

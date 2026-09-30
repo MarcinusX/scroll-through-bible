@@ -49,7 +49,7 @@ export default {
     const L = S.layer({ par: 0.45, sh: 6 });
     const LEAD = [0, 1, 2].map((i) => {
       const el = L.add(withFace(person(c, leaderOpts(i + 1)), faceBits(c)));
-      return { i, el, p: S.puppet(el), angry: el.querySelector('[data-part="angry"]'), x: [1060, 1160, 1260][i], y: F + 6 - (i % 2) * 8, seed: c.rr(0, 9) };
+      return { i, el, p: S.puppet(el), angry: el.querySelector('[data-part="angry"]'), x: (S.portrait ? [980, 1050, 1120] : [1060, 1160, 1260])[i], y: F + 6 - (i % 2) * 8, seed: c.rr(0, 9) };
     });
     LEAD.forEach((l) => { l.win = L.add(`<g>${heartWindow(c, 'faint', 15)}</g>`); });
     const jesus = S.puppet(L.add(person(c, { ...CAST.jesus })));
@@ -117,7 +117,7 @@ export default {
 
       /* v37b — never heard His voice nor seen His form: an empty frame, closed ears */
       const fk = es(t, 4.1, 4.4, ease.out) * (1 - es(t, 4.95, 5.2, ease.in));
-      vis(frame, { x: 1160, y: 180 - (1 - fk) * 520, r: Math.sin(T * 0.6) * 1, o: fk > 0.01 ? 1 : 0 });
+      vis(frame, { x: S.portrait ? 1010 : 1160, y: 180 - (1 - fk) * 520, r: Math.sin(T * 0.6) * 1, o: fk > 0.01 ? 1 : 0 });
       LEAD.forEach((l) => {
         const look = es(t, 4.1, 4.4) * (1 - es(t, 5.0, 5.2));
         l.p.set({ x: l.x, y: l.y, s: 1, flip: true, armF: 20 + look * 40, armB: 10 + (l.i === 1 ? bump(t, 0.4, 1.0) * 60 : 0), head: -look * 18, blink: blinkAt(T, l.seed) });
