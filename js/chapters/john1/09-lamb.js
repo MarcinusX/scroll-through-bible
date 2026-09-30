@@ -43,7 +43,7 @@ export default {
 
     /* ---------- the world and its sin ---------- */
     const T = S.layer({ par: 0.3, sh: 6 });
-    const GX = 1060, GY = 250;
+    const GX = S.portrait ? 1000 : 1060, GY = 250;   // phone: the whole globe in view
     const globeEl = T.add(`<g class="hang"><path d="M0 -1600V-62" stroke="rgba(74,54,34,.55)" stroke-width="1.2" fill="none"/><g class="obj">${globe(c, 62)}</g></g>`);
     const sins = [[-24, -20], [18, -30], [30, 14], [-10, 22], [-34, 8], [6, -4]].map(([dx, dy], i) => ({ el: T.add(`<g>${scrap(c, 10 + (i % 3) * 2)}</g>`), dx, dy, i }));
     const flashes = sins.map(() => T.add(`<g>${sparkle(c, 12)}</g>`));

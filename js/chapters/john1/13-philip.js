@@ -25,10 +25,12 @@ export default {
   cam: { x: [-40, 1200], y: [-40, 30], z: [1, 1.12] },
   build(S) {
     const c = S.c;
+    const PT = S.portrait;             // phone: the disciples walk closer behind Him; the map and the sun hang further in
+    const SUNX = PT ? 1080 : 1180, D1 = PT ? 100 : 110, D2 = PT ? 185 : 210, D3 = PT ? 265 : 300;
     const MORN = ['#cde2dd', '#eef0d8', '#f8eed6'];
     sky(S, MORN);
     const hangL = S.layer({ par: 0.04, sh: 5 });
-    const sunEl = hanging(hangL, sun(c, 46), { x: 1180, y: 150, len: 700 });
+    const sunEl = hanging(hangL, sun(c, 46), { x: SUNX, y: 150, len: 700 });
     const cls = [[480, 160, 190], [980, 120, 150], [1500, 170, 200]].map(([x, y, w], i) => ({ el: hanging(hangL, cloud(c, w), { x, y, len: 700 }), x, y, i }));
     S.layer({ par: 0.08, sh: 2 }).add(band(c, { y: 440, amps: [18, 8, 3], lens: [1000, 360, 130], color: C.hillFar, x0: -1300, x1: 3200 }).markup);
     const lakeL = S.layer({ par: 0.14, sh: 2 });
@@ -79,15 +81,15 @@ export default {
     const comeEl = T.add(`<g>${bubble(c, tr('Chodź i zobacz!', 'Come and see!'), { size: 22, tail: -1 })}</g>`);
 
     return (t, time) => {
-      pose(sunEl, { x: 1180, y: 150, r: Math.sin(time * 0.6) });
+      pose(sunEl, { x: SUNX, y: 150, r: Math.sin(time * 0.6) });
       cls.forEach((cl) => pose(cl.el, { x: cl.x + Math.sin(time * 0.1 + cl.i) * 22, y: cl.y, r: Math.sin(time * 0.6 + cl.i) * 1.2 }));
 
       /* v43a: to Galilee — the map, and the road */
       const mk = es(t, 0.05, 0.35, ease.out) * (1 - es(t, 0.95, 1.2, ease.in));
-      pose(mapEl, { x: 1010, y: lerp(-500, 270, mk), r: Math.sin(t * 2.8) * 0.8, o: mk > 0.01 ? 1 : 0 });
+      pose(mapEl, { x: PT ? 880 : 1010, y: lerp(-500, 270, mk), r: Math.sin(t * 2.8) * 0.8, o: mk > 0.01 ? 1 : 0 });
       attr(routeEl, 'stroke-dasharray', `2 12`);
       attr(routeEl, 'opacity', es(t, 0.3, 0.8));
-      const walk = es(t, 0.1, 1.2);
+      const walk = es(t, 0.1, PT ? 0.9 : 1.2);
       const baseX = lerp(-300, 760, walk);
       /* v43b: He finds Philip; v43c: follow me */
       const meet = es(t, 1.05, 1.6);
@@ -99,11 +101,11 @@ export default {
       const phx = lerp(phx0, FIGX - 170, run);
       const moving = (walk > 0 && walk < 1);
       jesus.set({ x: baseX + 40, y: PY, s: 1.05, flip: false, walk: moving ? baseX * 0.05 : undefined, armF: 12 + es(t, 2.05, 2.3) * 70 * (1 - es(t, 2.9, 3.1)), armB: es(t, 2.05, 2.3) * 30 * (1 - es(t, 2.9, 3.1)), blink: blinkAt(time, 2) });
-      peter.set({ x: baseX - 110, y: PY + 6, s: 1.02, flip: false, walk: moving ? baseX * 0.05 + 1 : undefined, armF: 10 + bump(t, 3.1, 3.8) * 70, blink: blinkAt(time, 3) });
-      andrew.set({ x: baseX - 210, y: PY + 2, s: 1.0, flip: false, walk: moving ? baseX * 0.05 + 2 : undefined, armF: 10 + bump(t, 3.15, 3.85) * 60, blink: blinkAt(time, 4) });
-      jn.set({ x: baseX - 300, y: PY + 8, s: 0.96, flip: false, walk: moving ? baseX * 0.05 + 3 : undefined, blink: blinkAt(time, 5) });
+      peter.set({ x: baseX - D1, y: PY + 6, s: 1.02, flip: false, walk: moving ? baseX * 0.05 + 1 : undefined, armF: 10 + bump(t, 3.1, 3.8) * 70, blink: blinkAt(time, 3) });
+      andrew.set({ x: baseX - D2, y: PY + 2, s: 1.0, flip: false, walk: moving ? baseX * 0.05 + 2 : undefined, armF: 10 + bump(t, 3.15, 3.85) * 60, blink: blinkAt(time, 4) });
+      jn.set({ x: baseX - D3, y: PY + 8, s: 0.96, flip: false, walk: moving ? baseX * 0.05 + 3 : undefined, blink: blinkAt(time, 5) });
       const phWalk = (meet > 0 && meet < 1) || (run > 0 && run < 1);
-      philip.set({ x: phx, y: PY + 4, s: 1.0, flip: run > 0 ? false : true, o: seg(t, 1.02, 1.06), walk: phWalk ? phx * 0.06 : undefined, amt: run > 0 ? 1.3 : 1, armF: 10 + bump(t, 2.4, 3.0) * 40 + bump(t, 3.1, 3.8) * 60 + bump(t, 5.1, 5.9) * 70 + es(t, 7.1, 7.35) * 80, armB: bump(t, 5.1, 5.9) * 110, head: bump(t, 2.3, 2.9) * 8, blink: blinkAt(time, 6) });
+      philip.set({ x: phx, y: PY + 4, s: 1.0, flip: run > 0 ? PT && t > 7.4 : true, o: seg(t, 1.02, 1.06), walk: phWalk ? phx * 0.06 : undefined, amt: run > 0 ? 1.3 : 1, armF: 10 + bump(t, 2.4, 3.0) * 40 + bump(t, 3.1, 3.8) * 60 + bump(t, 5.1, 5.9) * 70 + es(t, 7.1, 7.35) * 80, armB: bump(t, 5.1, 5.9) * 110, head: bump(t, 2.3, 2.9) * 8, blink: blinkAt(time, 6) });
       const [phx1, phy1] = headAt(phx, PY + 4, 1, true);
       pose(phTag, { x: phx1, y: lerp(-600, phy1 - 130, es(t, 1.4, 1.7, ease.out) * (1 - es(t, 2.9, 3.1, ease.in))), r: Math.sin(t * 4.4) * 2, o: t > 1.3 && t < 3.2 ? 1 : 0 });
       const [jhx, jhy] = headAt(baseX + 40, PY, 1.05, false);
@@ -113,7 +115,7 @@ export default {
       const bk = es(t, 3.05, 3.35, ease.out) * (1 - es(t, 3.95, 4.15, ease.in));
       const BX = 800, BY = 280;
       pose(bsd, { x: BX, y: lerp(-500, BY, bk), r: Math.sin(t * 3.2) * 1.2, o: bk > 0.01 ? 1 : 0 });
-      const who = [[baseX - 210, PY + 2], [baseX - 110, PY + 6], [phx, PY + 4]];
+      const who = [[baseX - D2, PY + 2], [baseX - D1, PY + 6], [phx, PY + 4]];
       minis.forEach((m, i) => {
         const k = es(t, 3.2 + i * 0.08, 3.45 + i * 0.08, ease.back) * (1 - es(t, 3.95, 4.1));
         const [hx, hy] = headAt(who[i][0], who[i][1], 1, i === 2);
@@ -128,7 +130,7 @@ export default {
       const doubtK = es(t, 6.1, 6.35);
       nSit.set({ x: FIGX - 30, y: PY - 4, s: 1.0, flip: true, o: 1 - up, armF: 50 * reading + 30 + doubtK * 40 * (1 - es(t, 6.9, 7.1)), armB: 30 + doubtK * 60 * (1 - es(t, 6.9, 7.1)), head: 10 * reading - doubtK * 6, blink: blinkAt(time, 7) });
       fade(frown, doubtK * (1 - es(t, 7.0, 7.2)));
-      const nx = lerp(FIGX - 30, FIGX - 700, es(t, 7.4, 7.95));
+      const nx = lerp(FIGX - 30, FIGX - (PT ? 345 : 700), es(t, 7.4, 7.95));   // phone: he is still in view as the beat ends, and Philip turns to show him the way
       nStand.set({ x: nx, y: PY + 2, s: 1.0, flip: true, o: up, walk: es(t, 7.4, 7.95) > 0 && es(t, 7.4, 7.95) < 1 ? nx * 0.06 : undefined, armF: 40, blink: blinkAt(time, 7) });
 
       /* v45b: Moses in the Law, and the Prophets — Jesus, son of Joseph, from Nazareth */

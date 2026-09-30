@@ -62,12 +62,14 @@ export default {
     /* ---------- the people of the camp who come ---------- */
     const P = S.layer({ par: 0.45, sh: 4 });
     const lamp = handLamp(c, { glowR: 70 });
+    const PT = S.portrait;             // phone: the people of the camp come closer to the tent
+    const px = (a, b) => (PT ? b : a);
     const COMERS = [
-      { o: manOpts(c, { robe: C.dustyBlue, holdF: lamp }), x: 470, from: -200, y: 778, s: 0.92, lamp: true },
-      { o: womanOpts(c, { robe: C.mauve, veil: C.linen2 }), x: 380, from: -300, y: 800, s: 0.95 },
-      { o: { robe: C.skyVeil, hair: C.hair2, hairStyle: 'short', beard: 'none', skin: C.skin2 }, x: 555, from: -120, y: 792, s: 0.62 },
-      { o: womanOpts(c, { robe: C.ochreRobe, veil: C.skyVeil, holdF: lamp }), x: 1080, from: 1800, y: 780, s: 0.92, lamp: true },
-      { o: manOpts(c, { robe: C.clayMantle, hairStyle: 'wrap', veil: C.stone, beard: 'full', beardColor: C.greyHair, hair: C.greyHair }), x: 1190, from: 1900, y: 800, s: 0.95 },
+      { o: manOpts(c, { robe: C.dustyBlue, holdF: lamp }), x: px(470, 512), from: -200, y: 778, s: 0.92, lamp: true },
+      { o: womanOpts(c, { robe: C.mauve, veil: C.linen2 }), x: px(380, 428), from: -300, y: 800, s: 0.95 },
+      { o: { robe: C.skyVeil, hair: C.hair2, hairStyle: 'short', beard: 'none', skin: C.skin2 }, x: px(555, 586), from: -120, y: 792, s: 0.62 },
+      { o: womanOpts(c, { robe: C.ochreRobe, veil: C.skyVeil, holdF: lamp }), x: px(1080, 1066), from: 1800, y: 780, s: 0.92, lamp: true },
+      { o: manOpts(c, { robe: C.clayMantle, hairStyle: 'wrap', veil: C.stone, beard: 'full', beardColor: C.greyHair, hair: C.greyHair }), x: px(1190, 1136), from: 1900, y: 800, s: 0.95 },
     ].map((m, i) => ({ ...m, i, p: S.puppet(P.add(person(c, m.o))) }));
 
     /* ---------- the flame coming down; glory; grace and truth ---------- */

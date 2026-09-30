@@ -25,6 +25,7 @@ export default {
   cam: { x: [-60, 60], y: [-80, 60], z: [0.9, 1.2] },
   build(S) {
     const c = S.c;
+    const PT = S.portrait;             // phone: the plates, the sandal and the map hang further in; the envoys stand closer
     const J = jordanSet(S, { skyCols: DAY, sunAt: [1230, 150], city: true, path: false });
 
     /* ---------- the road from Jerusalem: crooked, then straight ---------- */
@@ -47,9 +48,9 @@ export default {
     /* ---------- the near bank: the envoys, and the people — with Him among them ---------- */
     const { N } = J.nearBank();
     const DEL = [
-      { m: priest(c, 0), x: 440, s: 1.0 },
+      { m: priest(c, 0), x: PT ? 478 : 440, s: 1.0 },
       { m: priest(c, 1), x: 560, s: 0.98 },
-      { m: person(c, { ...LEVITE(0), holdF: `<g transform="translate(2 4) rotate(80)">${scrollRoll(c)}</g>` }), x: 330, s: 0.95 },
+      { m: person(c, { ...LEVITE(0), holdF: `<g transform="translate(2 4) rotate(80)">${scrollRoll(c)}</g>` }), x: PT ? 392 : 330, s: 0.95 },
     ].map((d, i) => ({ ...d, i, p: S.puppet(N.add(d.m)) }));
     const glowJ = N.add(`<g>${glowDisc(150, 'halo-glow', 1)}${glowDisc(90, 'warm-glow', 0.8)}</g>`);
     const others = [
@@ -87,10 +88,10 @@ export default {
       /* v23a: I am the voice */
       const cry = es(t, 0.1, 0.3) * (1 - es(t, 1.8, 2.0));
       const vp = es(t, 0.3, 0.6, ease.out) * (1 - es(t, 1.9, 2.2, ease.in));
-      pose(voicePlate, { x: 1110, y: lerp(280, 280, vp) - (1 - vp) * 700, r: Math.sin(t * 3.6) * 1.5, o: vp > 0.01 ? 1 : 0 });
+      pose(voicePlate, { x: PT ? 1005 : 1110, y: (PT ? 340 : 280) - (1 - vp) * 700, r: Math.sin(t * 3.6) * 1.5, o: vp > 0.01 ? 1 : 0 });
       /* v23b: make straight the way — Isaiah's scroll; the crooked road is straightened */
       const down = es(t, 1.02, 1.3, ease.out), unroll = es(t, 1.2, 1.45), up = es(t, 1.9, 2.2, ease.in);
-      pose(scrollEl, { x: 800, y: lerp(-420, 110, down) - up * 600, r: Math.sin(t * 2.4) * 0.6, o: down > 0.01 && up < 1 ? 1 : 0 });
+      pose(scrollEl, { x: PT ? 760 : 800, y: lerp(-420, 110, down) - up * 600, r: Math.sin(t * 2.4) * 0.6, o: down > 0.01 && up < 1 ? 1 : 0 });
       pose(sheetEl, { sy: 0.03 + unroll * 0.97 });
       pose(rodB, { y: unroll * 150 });
       const st = es(t, 1.4, 1.8);
@@ -100,7 +101,7 @@ export default {
 
       /* v24: the envoys were Pharisees */
       const ph = es(t, 2.05, 2.35, ease.out) * (1 - es(t, 2.9, 3.1, ease.in));
-      pose(phTag, { x: 450, y: lerp(-500, 470, ph), r: Math.sin(t * 4.4) * 2, o: ph > 0.01 ? 1 : 0 });
+      pose(phTag, { x: PT ? 600 : 450, y: lerp(-500, 470, ph), r: Math.sin(t * 4.4) * 2, o: ph > 0.01 ? 1 : 0 });
       /* v25: why then do you baptise? — the three crossed plates, once more */
       mini.forEach((m) => {
         const k = es(t, 3.1 + m.i * 0.08, 3.35 + m.i * 0.08, ease.out) * (1 - es(t, 3.85, 4.05, ease.in));
@@ -139,12 +140,12 @@ export default {
 
       /* v27: the sandal whose strap he is not worthy to untie */
       const sk = es(t, 6.05, 6.4, ease.out) * (1 - es(t, 7.0, 7.3, ease.in));
-      pose(sandalEl, { x: 1110, y: lerp(-400, 520, sk), r: Math.sin(t * 2.4) * 1.2, s: 0.8, o: sk > 0.01 ? 1 : 0 });
+      pose(sandalEl, { x: PT ? 1020 : 1110, y: lerp(-400, PT ? 470 : 520, sk), r: Math.sin(t * 2.4) * 1.2, s: 0.8, o: sk > 0.01 ? 1 : 0 });
       pose(thong, { x: -300 * 0.4 * 0.46, y: -300 * 0.4, r: Math.sin(t * 5.2) * 8 });
 
       /* v28: in Bethany beyond the Jordan */
       const mk = es(t, 7.05, 7.4, ease.out);
-      pose(mapEl, { x: 1110, y: lerp(-500, 300, mk), r: Math.sin(t * 2.8) * 0.8, o: mk > 0.01 ? 1 : 0 });
+      pose(mapEl, { x: PT ? 955 : 1110, y: lerp(-500, 300, mk), r: Math.sin(t * 2.8) * 0.8, o: mk > 0.01 ? 1 : 0 });
       pose(pinEl, { x: LAND.beth[0], y: LAND.beth[1], s: es(t, 7.35, 7.55, ease.back), o: seg(t, 7.35, 7.4) });
       const bk = es(t, 7.15, 7.45, ease.back);
       pose(bethany, { x: 560, y: J.fbFn(560) + 6, s: 0.9, sy: 0.9 * Math.max(0.001, bk), o: bk > 0.001 ? 1 : 0 });

@@ -22,9 +22,10 @@ export default {
     { v: 42, cont: true, text: 'A Jezus wejrzawszy na niego rzekł: «Ty jesteś Szymon, syn Jana,' },
     { v: 42, cont: true, text: 'ty będziesz nazywał się Kefas» - to znaczy: Piotr.' },
   ],
-  cam: { x: [-40, 180], y: [-40, 30], z: [1, 1.14] },
+  cam: { x: [-40, 500], y: [-40, 30], z: [1, 1.14] },
   build(S) {
     const c = S.c;
+    const PT = S.portrait;             // phone: the camera goes with Andrew to the fire and back; the rock and both brothers stay in view
     const DUSK = ['#9a8fb3', '#e3a88f', '#f2cfa6'];
     const sk = sky(S, DUSK);
     const st = S.layer({ par: 0.02, sh: 1, flat: true });
@@ -53,7 +54,7 @@ export default {
 
     /* ---------- the fire and the nets ---------- */
     const F = S.layer({ par: 0.35, sh: 4 });
-    const FX = 1300;
+    const FX = PT ? 1260 : 1300;
     F.add(`<g transform="translate(${FX} ${PY - 4})">${firePit(c, 90)}</g>`);
     const fireGlow = F.add(`<g>${glowDisc(150, 'warm-glow', 1)}</g>`);
     const flames = F.add(`<g>${fireFlames(c, 90)}</g>`);
@@ -95,8 +96,9 @@ export default {
       const run = es(t, 1.05, 1.7);
       /* v42a: brings him to Jesus */
       const bring = es(t, 3.05, 3.8);
-      const ax = lerp(lerp(700, FX - 190, run), 1060, bring);
-      const sx = lerp(FX - 90, 950, bring);
+      const SX = PT ? 930 : 950;
+      const ax = lerp(lerp(700, FX - 190, run), PT ? 1140 : 1060, bring);
+      const sx = lerp(FX - 90, SX, bring);
       andrew.set({ x: ax, y: PY + 4, s: 1.0, flip: bring > 0 && bring < 1 ? true : false, walk: (run > 0 && run < 1) || (bring > 0 && bring < 1) ? ax * 0.07 : undefined, amt: 1.3, armF: 10 + bump(t, 2.05, 2.9) * 80 + bring * 30 * (1 - es(t, 3.8, 4)), armB: bump(t, 2.05, 2.9) * 120, head: -bump(t, 2.05, 2.9) * 6, blink: blinkAt(time, 3) });
       const up = es(t, 2.3, 2.45);
       simonSit.set({ x: FX - 90, y: PY + 4, s: 1.0, flip: false, o: 1 - up, armF: 60 + (time ? Math.sin(time * 2) * 6 : 0), armB: 40, head: 6 - bump(t, 1.6, 2.2) * 10, blink: blinkAt(time, 5) });
@@ -117,18 +119,18 @@ export default {
       /* v42b: Jesus looks at him — Simon, son of John */
       const look = es(t, 4.1, 4.4);
       const [jhx, jhy] = headAt(JX, PY, 1.05, false);
-      const [shx, shy] = headAt(950, PY + 8, 1.03, true);
+      const [shx, shy] = headAt(SX, PY + 8, 1.03, true);
       pose(gaze, { x: jhx + 20, y: jhy, o: look * (1 - es(t, 5.6, 5.9)) > 0.01 ? 0.9 : 0 });
       attr(gaze, 'd', `M0 0L${((shx - jhx - 44) * look).toFixed(0)} ${((shy - jhy) * look).toFixed(0)}`);
       const nm = es(t, 4.2, 4.5, ease.out);
       const turnTag = es(t, 5.3, 5.5);
-      pose(simTag, { x: 950, y: lerp(-600, 380, nm), sx: Math.max(0.001, 1 - turnTag * 2), r: Math.sin(t * 4.4) * 1.6, o: nm > 0.01 && turnTag < 0.5 ? 1 : 0 });
-      pose(petTag, { x: 950, y: 380, sx: Math.max(0.001, turnTag * 2 - 1), r: Math.sin(t * 4.4) * 1.6, o: turnTag >= 0.5 ? 1 : 0 });
+      pose(simTag, { x: SX, y: lerp(-600, 380, nm), sx: Math.max(0.001, 1 - turnTag * 2), r: Math.sin(t * 4.4) * 1.6, o: nm > 0.01 && turnTag < 0.5 ? 1 : 0 });
+      pose(petTag, { x: SX, y: 380, sx: Math.max(0.001, turnTag * 2 - 1), r: Math.sin(t * 4.4) * 1.6, o: turnTag >= 0.5 ? 1 : 0 });
       /* v42c: Cephas — the rock */
       const rk = es(t, 5.05, 5.45, ease.back);
-      pose(rockEl, { x: 1085, y: lerp(1000, 748, rk), o: rk > 0.001 ? 1 : 0 });
+      pose(rockEl, { x: PT ? 1035 : 1085, y: lerp(1000, 748, rk), o: rk > 0.001 ? 1 : 0 });
 
-      S.cam.x = 170 * es(t, 1.0, 1.6) * (1 - es(t, 3.2, 3.8));
+      S.cam.x = PT ? 415 + 65 * es(t, 1.0, 1.6) - 290 * es(t, 3.2, 3.8) : 170 * es(t, 1.0, 1.6) * (1 - es(t, 3.2, 3.8));
       S.cam.z = 1.02 + 0.06 * es(t, 4.0, 4.4);
     };
   },

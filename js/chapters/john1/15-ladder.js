@@ -19,6 +19,7 @@ export default {
   cam: { x: [-20, 20], y: [-120, 20], z: [0.92, 1.08] },
   build(S) {
     const c = S.c;
+    const PT = S.portrait;             // phone: the disciples stand closer round Him; the name hangs further in
     const DUSK = ['#6c6a9a', '#c08f99', '#eab795'];
     const sk = sky(S, DUSK);
     const st = S.layer({ par: 0.02, sh: 1, flat: true });
@@ -61,8 +62,8 @@ export default {
     const P = S.layer({ par: 0.45, sh: 4 });
     const jGlow = P.add(`<g>${glowDisc(240, 'warm-glow', 1)}</g>`);
     const CIRCLE = [
-      { o: CAST.andrew, x: 360, s: 0.98 }, { o: CAST.peter, x: 480, s: 1.0 }, { o: CAST.john, x: 610, s: 0.96 },
-      { o: LOOK.bartholomew, x: 990, s: 1.0, flip: true }, { o: LOOK.philip, x: 1120, s: 0.98, flip: true },
+      { o: CAST.andrew, x: PT ? 500 : 360, s: 0.98 }, { o: CAST.peter, x: PT ? 590 : 480, s: 1.0 }, { o: CAST.john, x: PT ? 680 : 610, s: 0.96 },
+      { o: LOOK.bartholomew, x: PT ? 975 : 990, s: 1.0, flip: true }, { o: LOOK.philip, x: PT ? 1085 : 1120, s: 0.98, flip: true },
     ].map((m, i) => ({ ...m, i, p: S.puppet(P.add(person(c, m.o))) }));
     const jesus = S.puppet(P.add(person(c, { ...CAST.jesus })));
     const voice = voiceRings(P, c, { n: 3, color: C.haloRim, r: 38, w: 6 });
@@ -99,7 +100,7 @@ export default {
         pose(a.el, { x, y, s: lerp(0.9, 0.5, u), r: (a.up ? -1 : 1) * 3, o: on * edge });
       });
       const sk2 = es(t, 2.45, 2.8, ease.out);
-      pose(som, { x: 1030, y: lerp(-500, 470, sk2), r: Math.sin(t * 3.2) * 1.2, o: sk2 > 0.01 ? 1 : 0 });
+      pose(som, { x: PT ? 975 : 1030, y: lerp(-500, 470, sk2), r: Math.sin(t * 3.2) * 1.2, o: sk2 > 0.01 ? 1 : 0 });
 
       const look = es(t, 1.1, 1.5);
       const awe = es(t, 2.2, 2.6);

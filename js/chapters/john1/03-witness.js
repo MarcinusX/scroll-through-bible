@@ -64,7 +64,9 @@ export default {
 
     /* ---------- people ---------- */
     const P = S.layer({ par: 0.3, sh: 4 });
-    const people = crowd(S, P, [{ y: 770, s: 0.84, n: 4, x0: 880, x1: 1260 }, { y: 800, s: 0.9, n: 2, x0: 330, x1: 470 }]);
+    const PT = S.portrait;               // phone: the people gather closer to the road, the name hangs over John's head
+    const people = crowd(S, P, PT ? [{ y: 770, s: 0.84, n: 4, x0: 860, x1: 1140 }, { y: 800, s: 0.9, n: 2, x0: 420, x1: 530 }] : [{ y: 770, s: 0.84, n: 4, x0: 880, x1: 1260 }, { y: 800, s: 0.9, n: 2, x0: 330, x1: 470 }]);
+    const NX = PT ? JX + 4 : JX - 118, NY = PT ? 452 : 470;
     people.forEach((m) => { m.from = m.x < 800 ? m.x - 700 : m.x + 700; });
     const john = S.puppet(P.add(person(c, { ...JOHN_B })));
     const nameEl = hanging(P, nameTag(c, tr('Jan', 'John'), { size: 22 }), { x: JX - 110, y: 420, len: 800 });
@@ -109,7 +111,7 @@ export default {
         armB: greet * 120 + bump(t, 3.35, 3.9) * 70 + es(t, 4.2, 4.5) * 40,
         head: shake - pointA * 6 + bump(t, 3.05, 3.35) * -10, blink: blinkAt(time),
       });
-      pose(nameEl, { x: JX - 118, y: lerp(-300, 470, es(t, 1.05, 1.4, ease.out)) - es(t, 2.9, 3.2, ease.in) * 800, r: Math.sin(t * 3.6) * 1.6, o: t > 1 && t < 3.3 ? 1 : 0 });
+      pose(nameEl, { x: NX, y: lerp(-300, NY, es(t, 1.05, 1.4, ease.out)) - es(t, 2.9, 3.2, ease.in) * 800, r: Math.sin(t * 3.6) * 1.6, o: t > 1 && t < 3.3 ? 1 : 0 });
       const [hx, hy] = headAt(JX, JY, 1.02, false);
       const hTarget = [lerp(hx, LX, away), lerp(hy - 44, LY - 34, away)];
       pose(halo, { x: lerp(hx + 80, hTarget[0], hk), y: lerp(-120, hTarget[1], hk), s: lerp(1, 0.6, away), r: t * 30, o: hk * (1 - es(t, 4.05, 4.25)) });

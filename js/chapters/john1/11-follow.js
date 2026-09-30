@@ -25,13 +25,14 @@ export default {
   cam: { x: [-40, 260], y: [-30, 30], z: [1, 1.12] },
   build(S) {
     const c = S.c;
+    const PT = S.portrait;             // phone: John and his two disciples stand together in view; Jesus has passed them by the end of the beat
     const MORN = ['#d3e3dd', '#f1e6cb', '#f7e9ce'];
     const J = jordanSet(S, { skyCols: MORN, sunAt: [1230, 170] });
     const farPeople = crowd(S, J.far, [{ y: 584, s: 0.4, n: 8, x0: 150, x1: 1450 }]);
     const R = J.riverLayer();
     J.waterFront(R);
     const { N } = J.nearBank();
-    const JOX = 470;
+    const JOX = PT ? 520 : 470;
     const john = S.puppet(N.add(person(c, { ...JOHN_B })));
     const andrew = S.puppet(N.add(person(c, { ...CAST.andrew })));
     const jn = S.puppet(N.add(person(c, { ...CAST.john })));
@@ -80,8 +81,8 @@ export default {
       J.update(t, es(t, 5.85, 6.2) > 0.98 ? 0 : time);
       /* v35: John with two of his disciples */
       /* v36: Jesus walks by — "Behold, the Lamb of God" */
-      const pass = es(t, 0.9, 2.2, ease.sine);
-      const jx = lerp(-200, 900, pass);
+      const pass = es(t, 0.9, PT ? 1.9 : 2.2, ease.sine);
+      const jx = lerp(-200, PT ? 980 : 900, pass);
       const point = es(t, 1.15, 1.35) * (1 - es(t, 2.1, 2.3));
       /* v37: the two go after Jesus */
       const go = es(t, 2.05, 2.9);
@@ -89,11 +90,11 @@ export default {
       const turn = es(t, 3.1, 3.2);
       const jxs = jx + go * 0 ;
       /* v39a: come and see — they walk off to the right */
-      const away = es(t, 5.62, 6.0);
+      const away = PT ? es(t, 5.76, 6.05) : es(t, 5.62, 6.0);
       const jxf = jxs + away * 700;
       const walking = (pass > 0 && pass < 1) || (away > 0 && away < 1);
       jesus.set({ x: jxf, y: BANK, s: 1.05, flip: turn > 0.5 && away < 0.05, walk: walking ? jxf * 0.05 : undefined, armF: 12 + bump(t, 3.2, 3.9) * 40 + es(t, 5.05, 5.3) * (1 - es(t, 5.5, 5.6)) * 70, armB: es(t, 5.05, 5.3) * (1 - es(t, 5.5, 5.6)) * 40, head: turn * 4, blink: blinkAt(time, 2) });
-      const ax = lerp(560, 640, go) + away * 700, jnx = lerp(330, 720, go) + away * 700;
+      const ax = (PT ? lerp(630, 720, go) : lerp(560, 640, go)) + away * 700, jnx = (PT ? lerp(740, 822, go) : lerp(330, 720, go)) + away * 700;
       const walkD = (go > 0 && go < 1) || (away > 0 && away < 1);
       andrew.set({ x: ax, y: BANK + 6, s: 1.0, flip: false, walk: walkD ? ax * 0.05 : undefined, armF: 10 + bump(t, 4.1, 4.9) * 60, head: -bump(t, 1.2, 2.0) * 4, blink: blinkAt(time, 3) });
       jn.set({ x: jnx, y: BANK + 10, s: 0.97, flip: false, walk: walkD ? jnx * 0.05 : undefined, armF: 10 + bump(t, 4.2, 4.9) * 40, blink: blinkAt(time, 4) });
@@ -108,7 +109,7 @@ export default {
       pose(ansEl, { x: ahx + 50, y: ahy - 20, s: es(t, 4.1, 4.3, ease.back), o: seg(t, 4.08, 4.12) * (1 - seg(t, 4.95, 5.0)) });
       const rb = es(t, 4.3, 4.6, ease.out) * (1 - es(t, 5.0, 5.2, ease.in));
       pose(rabbi, { x: 720, y: lerp(-400, 330, rb), r: Math.sin(t * 4.0) * 1.5, o: rb > 0.01 ? 1 : 0 });
-      pose(comeEl, { x: jhx - 60, y: jhy - 30, s: es(t, 5.05, 5.2, ease.back), o: seg(t, 5.03, 5.07) * (1 - seg(t, 5.55, 5.6)) });
+      pose(comeEl, { x: jhx - 60, y: jhy - 30, s: es(t, 5.05, 5.2, ease.back), o: seg(t, 5.03, 5.07) * (1 - (PT ? seg(t, 5.78, 5.83) : seg(t, 5.55, 5.6))) });
       farPeople.forEach((m) => m.p.set({ x: m.x, y: m.y, s: m.s, flip: m.x > jx, blink: blinkAt(time, m.seed) }));
 
       /* v39b: they came and saw where He was staying, and stayed with Him */
@@ -127,7 +128,7 @@ export default {
       const dk = es(t, 7.1, 7.4, ease.out);
       pose(dial, { x: 690, y: lerp(-400, 250, dk), r: Math.sin(t * 3.2) * 1.4, o: dk > 0.01 ? 1 : 0 });
 
-      S.cam.x = 60 * es(t, 2.2, 3.1) * (1 - es(t, 5.7, 6.0));
+      S.cam.x = (PT ? 0 : 60) * es(t, 2.2, 3.1) * (1 - es(t, 5.7, 6.0));
       S.cam.z = 1.02 + 0.05 * es(t, 3.0, 3.3) * (1 - es(t, 5.0, 5.4));
     };
   },

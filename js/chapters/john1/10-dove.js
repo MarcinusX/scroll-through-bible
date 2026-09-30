@@ -22,6 +22,7 @@ export default {
   cam: { x: [-30, 30], y: [-50, 30], z: [1, 1.1] },
   build(S) {
     const c = S.c;
+    const PT = S.portrait;             // phone: the people stand closer; the shadow screen hangs further in
     const J = jordanSet(S, { skyCols: DAY, sunAt: [1230, 150] });
     const opening = S.layer({ par: 0.04, sh: 1, flat: true });
     const openGlow = opening.add(`<g>${glowDisc(360, 'halo-glow', 1)}</g>`);
@@ -32,7 +33,7 @@ export default {
     const { N } = J.nearBank();
     const beam = N.add(`<path d="${c.poly([[JX - 30, -300], [JX + 30, -300], [JX + 110, BANK], [JX - 110, BANK]])}" fill="#fff4cf" opacity="0"/>`);
     const jGlow = N.add(`<g>${glowDisc(210, 'halo-glow', 1)}</g>`);
-    const people = crowd(S, N, [{ y: 790, s: 0.88, n: 2, x0: 260, x1: 420 }, { y: 790, s: 0.88, n: 3, x0: 1060, x1: 1320 }]);
+    const people = crowd(S, N, PT ? [{ y: 790, s: 0.88, n: 2, x0: 360, x1: 480 }, { y: 790, s: 0.88, n: 3, x0: 1010, x1: 1200 }] : [{ y: 790, s: 0.88, n: 2, x0: 260, x1: 420 }, { y: 790, s: 0.88, n: 3, x0: 1060, x1: 1320 }]);
     const john = S.puppet(N.add(person(c, { ...JOHN_B })));
     const jesus = S.puppet(N.add(person(c, { ...CAST.jesus })));
     const voice = voiceRings(N, c, { n: 3, color: C.clay, r: 38, w: 6, both: false });
@@ -104,7 +105,7 @@ export default {
         pose(r, { x: 800, y: 210 + k * 260, s: 0.6 + k * 2.2, sy: 0.6 + k * 1.5, o: hear * (1 - k) * 0.9 });
       });
       const sk = es(t, 3.05, 3.3, ease.out);
-      pose(scrEl, { x: 1010, y: lerp(-400, 400, sk), r: (1 - sk) * 4, o: sk > 0.01 ? 1 : 0 });
+      pose(scrEl, { x: PT ? 950 : 1010, y: lerp(-400, 400, sk), r: (1 - sk) * 4, o: sk > 0.01 ? 1 : 0 });
       const sd = es(t, 3.2, 3.55, ease.out);
       pose(sDove, { x: 0, y: lerp(-160, -72, sd), o: 1 });
       flapWings(sDove.firstElementChild.firstElementChild, t * 6, 24 * (1 - sd) + 6, 7, -10);

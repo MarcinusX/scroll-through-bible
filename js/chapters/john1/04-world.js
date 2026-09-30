@@ -23,9 +23,10 @@ export default {
     { v: 12, cont: true, text: 'tym, którzy wierzą w imię Jego -' },
     { v: 13 },
   ],
-  cam: { x: [-40, 40], y: [-60, 40], z: [0.98, 1.1] },
+  cam: { x: [-40, 40], y: [-60, 40], z: [0.78, 1.1] },
   build(S) {
     const c = S.c;
+    const PT = S.portrait;           // phone: the four houses stand closer and the camera steps back, so the whole street is in view
     const sk = sky(S, NIGHT);
     const st = S.layer({ par: 0.02, sh: 1, flat: true });
     st.add(stars(c, { x0: -900, x1: 2500, y0: -600, y1: 420, n: 120 }));
@@ -40,10 +41,10 @@ export default {
     /* ---------- the houses of the town ---------- */
     const H = S.layer({ par: 0.3, sh: 4 });
     const HS = [
-      { x: 300, w: 160, h: 130, wall: C.plaster },
-      { x: 530, w: 150, h: 116, wall: mix(C.plaster, C.sand, 0.4) },
-      { x: 870, w: 156, h: 124, wall: C.stone },
-      { x: 1090, w: 160, h: 134, wall: mix(C.plaster, C.peach, 0.3) },
+      { x: PT ? 350 : 300, w: 160, h: 130, wall: C.plaster },
+      { x: PT ? 550 : 530, w: 150, h: 116, wall: mix(C.plaster, C.sand, 0.4) },
+      { x: PT ? 860 : 870, w: 156, h: 124, wall: C.stone },
+      { x: PT ? 1040 : 1090, w: 160, h: 134, wall: mix(C.plaster, C.peach, 0.3) },
     ].map((h, i) => {
       const d = doorHouse(c, { w: h.w, h: h.h, wall: tint(h.wall, NIGHTC, 0.3), shadow: tint(C.plaster2, NIGHTC, 0.4), roof: tint(C.roof, NIGHTC, 0.3) });
       H.add(`<g transform="translate(${h.x} ${GY})">${d.wall}</g>`);
@@ -60,19 +61,19 @@ export default {
     /* ---------- people of the world ---------- */
     const P = S.layer({ par: 0.3, sh: 4 });
     const WORLD = [
-      { o: { ...manOpts(c), robe: C.plumRobe, mantle: C.ochre }, x: 470, flip: false },
+      { o: { ...manOpts(c), robe: C.plumRobe, mantle: C.ochre }, x: PT ? 520 : 470, flip: false },
       { o: womanOpts(c, { robe: C.tealRobe, veil: C.skyVeil }), x: 690, flip: false },
       { o: manOpts(c, { robe: C.clayMantle }), x: 980, flip: true },
-      { o: { ...manOpts(c), robe: C.dustyBlue, hairStyle: 'bald', beard: 'full' }, x: 1200, flip: true },
+      { o: { ...manOpts(c), robe: C.dustyBlue, hairStyle: 'bald', beard: 'full' }, x: PT ? 1100 : 1200, flip: true },
     ].map((w, i) => ({ ...w, i, p: S.puppet(P.add(person(c, { ...w.o, skin: tint(w.o.skin || C.skin, NIGHTC, 0.15) }))), glow: null }));
     // those who receive Him: an old man from the first house, a mother and child from the last
     const OLD = { robe: C.wheatRobe, mantle: C.sageRobe, hair: C.greyHair, hairStyle: 'wrap', veil: C.linen2, beard: 'full', beardColor: C.greyHair, skin: C.skin3 };
     const MOTHER = { robe: C.roseRobe, hairStyle: 'veil', veil: C.blushVeil, hair: C.hair, skin: C.skin2 };
     const CHILD = { robe: C.skyVeil, hair: C.hair2, hairStyle: 'short', beard: 'none', skin: C.skin };
     const BEL = [
-      { o: OLD, h: 0, x: 420, s: 0.95, flip: false },
-      { o: MOTHER, h: 3, x: 1080, s: 0.93, flip: true },
-      { o: CHILD, h: 3, x: 1000, s: 0.62, flip: true },
+      { o: OLD, h: 0, x: PT ? 490 : 420, s: 0.95, flip: false },
+      { o: MOTHER, h: 3, x: PT ? 1050 : 1080, s: 0.93, flip: true },
+      { o: CHILD, h: 3, x: PT ? 975 : 1000, s: 0.62, flip: true },
     ].map((b, i) => ({ ...b, i, p: S.puppet(P.add(person(c, b.o))) }));
 
     /* ---------- the light ---------- */
@@ -188,7 +189,7 @@ export default {
       pose(fromAbove, { o: born * 0.35 });
 
       S.cam.y = -30 * (1 - down) + es(t, 6.9, 7.3) * -40;
-      S.cam.z = 1.02 + es(t, 3.0, 3.4) * 0.04 - es(t, 4.9, 5.3) * 0.04 - es(t, 6.9, 7.3) * 0.03;
+      S.cam.z = (1.02 + es(t, 3.0, 3.4) * 0.04 - es(t, 4.9, 5.3) * 0.04 - es(t, 6.9, 7.3) * 0.03) * (PT ? 0.8 : 1);
     };
   },
 };

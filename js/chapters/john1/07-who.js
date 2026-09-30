@@ -20,15 +20,17 @@ export default {
     { v: 22, text: 'Powiedzieli mu więc: «Kim jesteś, abyśmy mogli dać odpowiedź tym, którzy nas wysłali?' },
     { v: 22, cont: true, text: 'Co mówisz sam o sobie?»' },
   ],
-  cam: { x: [-120, 40], y: [-60, 60], z: [0.96, 1.2] },
+  cam: { x: [-320, 40], y: [-60, 60], z: [0.96, 1.2] },
   build(S) {
     const c = S.c;
+    const PT = S.portrait;             // phone: the delegation and John stand closer, the plates hang in one narrow row
+    const JXP = 1010;
     const J = jordanSet(S, { skyCols: DAY, sunAt: [1230, 150], city: true });
 
     /* ---------- the delegation, small, on the road down from Jerusalem ---------- */
     const far = [0, 1, 2, 3].map((i) => ({ i, p: S.puppet(J.hill.add(i < 2 ? priest(c, i) : person(c, LEVITE(i)))) }));
     // people on the far bank who came to be baptised
-    const fbPeople = crowd(S, J.far, [{ y: 584, s: 0.4, n: 9, x0: 150, x1: 1450 }]).filter((m) => Math.abs(m.x - JX) > 120);
+    const fbPeople = crowd(S, J.far, [{ y: 584, s: 0.4, n: 9, x0: 150, x1: 1450 }]).filter((m) => Math.abs(m.x - JX) > 120 && !(PT && Math.abs(m.x - JXP) < 90));
 
     /* ---------- John in the river ---------- */
     const R = J.riverLayer();
@@ -40,10 +42,10 @@ export default {
     /* ---------- the near bank: priests and Levites ---------- */
     const { N } = J.nearBank();
     const DEL = [
-      { m: priest(c, 0, { holdB: '' }), x: 470, s: 1.0 },
-      { m: priest(c, 1), x: 600, s: 0.98 },
-      { m: person(c, { ...LEVITE(0), holdF: `<g transform="translate(2 4) rotate(80)">${scrollRoll(c)}</g>` }), x: 350, s: 0.95 },
-      { m: person(c, LEVITE(1)), x: 710, s: 0.95 },
+      { m: priest(c, 0, { holdB: '' }), x: PT ? 545 : 470, s: 1.0 },
+      { m: priest(c, 1), x: PT ? 660 : 600, s: 0.98 },
+      { m: person(c, { ...LEVITE(0), holdF: `<g transform="translate(2 4) rotate(80)">${scrollRoll(c)}</g>` }), x: PT ? 440 : 350, s: 0.95 },
+      { m: person(c, LEVITE(1)), x: PT ? 765 : 710, s: 0.95 },
     ].map((d, i) => ({ ...d, i, p: S.puppet(N.add(d.m)) }));
     const voice = voiceRings(N, c, { n: 3, color: C.clay, r: 34, w: 5, both: false });
 
@@ -58,7 +60,7 @@ export default {
       { icon: `<g transform="translate(-6 6) scale(1.4)">${crown(c)}</g><g transform="translate(14 6) scale(.55) rotate(-10)">${oilHorn(c)}</g>`, w: tr('Mesjasz', 'the Christ'), a: 2.2 },
       { icon: `<g transform="translate(0 -4) scale(.55)">${fireWheel(c, 40)}</g>`, w: tr('Eliasz', 'Elijah'), a: 3.2 },
       { icon: `<g transform="translate(0 -2) scale(1.5)">${scrollRoll(c)}</g>`, w: tr('prorok', 'the prophet'), a: 4.2 },
-    ].map((p, i) => ({ ...p, i, x: 600 + i * 170, el: P2.add(hungPlate(c, iconWord(p.icon, p.w), { r: 58 })), cr: P2.add(`<g>${crossOut(c, 34)}</g>`) }));
+    ].map((p, i) => ({ ...p, i, x: PT ? 575 + i * 150 : 600 + i * 170, el: P2.add(hungPlate(c, iconWord(p.icon, p.w), { r: 58 })), cr: P2.add(`<g>${crossOut(c, 34)}</g>`) }));
     const emptyEl = P2.add(hungPlate(c, `<g transform="translate(0 -4) scale(1.3)">${question(c)}</g>`, { r: 58 }));
 
     J.foreground();
@@ -93,14 +95,15 @@ export default {
 
       /* John: out of the water to face them; hand on his chest; shaking his head at each plate */
       const turn = es(t, 1.5, 1.7);
+      const jx = PT ? lerp(JX - 30, JXP, es(t, 1.1, 1.6)) : JX;   // phone: he wades aside as they arrive
       const shake = Math.sin(seg(t, 2.35, 2.9) * PI * 6) * 12 * bump(t, 2.35, 2.9) + Math.sin(seg(t, 3.4, 3.9) * PI * 6) * 12 * bump(t, 3.4, 3.9) + Math.sin(seg(t, 4.4, 4.9) * PI * 6) * 12 * bump(t, 4.4, 4.9);
       const chest = Math.max(bump(t, 2.3, 3.0), es(t, 6.1, 6.4));
-      john.set({ x: JX, y: WADE, s: 1.05, flip: turn > 0.5, armF: 30 + pour * 80 - turn * 10 + chest * 50, armB: 10 + bump(t, 3.3, 3.9) * 60 + bump(t, 4.3, 4.9) * 80, head: pour * 8 + shake - chest * 4, blink: blinkAt(time, 1) });
-      const [jhx, jhy] = headAt(JX, WADE, 1.05, true);
+      john.set({ x: jx, y: WADE, s: 1.05, flip: turn > 0.5, armF: 30 + pour * 80 - turn * 10 + chest * 50, armB: 10 + bump(t, 3.3, 3.9) * 60 + bump(t, 4.3, 4.9) * 80, head: pour * 8 + shake - chest * 4, blink: blinkAt(time, 1) });
+      const [jhx, jhy] = headAt(jx, WADE, 1.05, true);
       voice(jhx - 22, jhy + 4, bump(t, 4.4, 4.95), time, { spread: 2, s0: 0.6, dir: -1 });
       pose(noEl, { x: jhx - 60, y: jhy - 30, s: es(t, 4.45, 4.6, ease.back), o: seg(t, 4.44, 4.47) * (1 - seg(t, 4.95, 5.0)) });
-      kneeler.set({ x: JX + 100 + es(t, 1.1, 1.5) * 400, y: WADE, s: 1, flip: true, o: 1 - es(t, 1.35, 1.5), head: 10 + pour * 6, armF: 60 - pour * 30, armB: 40, blink: blinkAt(time, 4) });
-      const [px, py] = hand(JX, WADE, 1.05, false, 30 + pour * 80);
+      kneeler.set({ x: jx + 100 + es(t, 1.1, 1.5) * 400, y: WADE, s: 1, flip: true, o: 1 - es(t, 1.35, 1.5), head: 10 + pour * 6, armF: 60 - pour * 30, armB: 40, blink: blinkAt(time, 4) });
+      const [px, py] = hand(jx, WADE, 1.05, false, 30 + pour * 80);
       const fall = time ? (time * 1.6) % 1 : 0.5;
       pose(pourEl, { x: px + 12 + fall * 10, y: py + 6 + fall * 50, o: seg(t, 0.35, 0.45) * (1 - seg(t, 0.7, 0.78)) });
       fbPeople.forEach((m) => m.p.set({ x: m.x, y: m.y, s: m.s, flip: m.x > JX, head: es(t, 1.5, 1.8) * 6, armF: bump(t, 2.3, 3) * 20, blink: blinkAt(time, m.seed) }));
@@ -119,12 +122,13 @@ export default {
       /* v22b: "what do you say about yourself?" — an empty plate */
       pose(ask2El, { x: ax + 50, y: ay - 16, s: es(t, 6.05, 6.25, ease.back), o: seg(t, 6.03, 6.08) });
       const ek = es(t, 6.2, 6.5, ease.out);
-      pose(emptyEl, { x: 1110, y: lerp(-500, 280, ek), r: Math.sin(t * 3.6 + 4) * 1.5 * ek, o: ek > 0.01 ? 1 : 0 });
+      pose(emptyEl, { x: PT ? 575 + 3 * 150 : 1110, y: lerp(-500, 280, ek), r: Math.sin(t * 3.6 + 4) * 1.5 * ek, o: ek > 0.01 ? 1 : 0 });
       pose(qEl, { x: jhx - 40, y: jhy - 40, s: es(t, 6.4, 6.6, ease.back) * 0.9, r: Math.sin(t * 8.0) * 6, o: seg(t, 6.38, 6.42) });
 
       /* camera: to the road from Jerusalem, then onto the bank */
-      const toCity = es(t, 0.9, 1.2) * (1 - es(t, 1.45, 1.75)) + es(t, 5.1, 5.35) * (1 - es(t, 5.75, 6.0));
-      S.cam.x = -120 * toCity;
+      const toCity1 = es(t, 0.9, 1.2) * (1 - es(t, 1.45, 1.75)), toCity2 = es(t, 5.1, 5.35) * (1 - es(t, 5.75, 6.0));
+      const toCity = toCity1 + toCity2;
+      S.cam.x = PT ? -260 * toCity1 - 110 * toCity2 : -120 * toCity;
       S.cam.y = -40 * toCity;
       S.cam.z = 1.04 + 0.08 * toCity;
     };

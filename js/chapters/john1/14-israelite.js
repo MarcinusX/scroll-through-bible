@@ -24,6 +24,7 @@ export default {
   cam: { x: [-30, 60], y: [-60, 30], z: [1, 1.14] },
   build(S) {
     const c = S.c;
+    const PT = S.portrait;             // phone: the disciples stand closer; the plates and words hang further in
     const LATE = ['#d9dccd', '#f3dfbe', '#f7e5c6'];
     const F = fieldSet(S, { skyCols: DAY, sunAt: [1200, 170] });
     const skyGlow = S.layer({ par: 0.03, sh: 1, flat: true });
@@ -73,7 +74,7 @@ export default {
 
       /* v47a: Nathanael comes with Philip */
       const come = es(t, 0.05, 0.8);
-      const nx = lerp(1500, NX, come), px = lerp(1640, 1130, come);
+      const nx = lerp(1500, NX, come), px = lerp(1640, PT ? 1085 : 1130, come);
       const kneel = es(t, 4.1, 4.25) * (1 - es(t, 6.1, 6.25));
       nat.set({ x: nx, y: PY + 2, s: 1.0, flip: true, o: 1 - kneel, walk: come > 0 && come < 1 ? nx * 0.06 : undefined, armF: 10 + bump(t, 2.05, 2.9) * 70 + es(t, 6.2, 6.5) * 20, armB: bump(t, 2.05, 2.9) * 90, head: -bump(t, 3.1, 3.9) * 8, blink: blinkAt(time, 7) });
       natK.set({ x: NX - 20, y: PY + 2, s: 1.0, flip: true, o: kneel, armF: 60 + es(t, 5.05, 5.3) * 40, armB: 90 + es(t, 5.05, 5.3) * 50, head: -10, blink: blinkAt(time, 7) });
@@ -82,7 +83,7 @@ export default {
       const pointUp = es(t, 7.05, 7.35);
       jesus.set({ x: JX, y: PY, s: 1.05, flip: false, armF: 12 + es(t, 0.3, 0.6) * 50 * (1 - es(t, 1.9, 2.1)) + es(t, 3.05, 3.3) * 40 * (1 - es(t, 3.9, 4.1)) + es(t, 6.05, 6.3) * 50 * (1 - pointUp) + pointUp * 20, armB: pointUp * 150, head: -pointUp * 10, blink: blinkAt(time, 2) });
       const awe = es(t, 4.1, 4.5);
-      [[andrew, 440, 3], [peter, 560, 4], [jn, 660, 5]].forEach(([p, x, i]) => p.set({ x, y: PY + (i % 2) * 6, s: 1.0, flip: false, armF: 12 + awe * 30, armB: es(t, 7.1, 7.4) * (i === 4 ? 140 : 40), head: -es(t, 7.1, 7.4) * 12, blink: blinkAt(time, i) }));
+      [[andrew, PT ? 500 : 440, 3], [peter, PT ? 585 : 560, 4], [jn, PT ? 675 : 660, 5]].forEach(([p, x, i]) => p.set({ x, y: PY + (i % 2) * 6, s: 1.0, flip: false, armF: 12 + awe * 30, armB: es(t, 7.1, 7.4) * (i === 4 ? 140 : 40), head: -es(t, 7.1, 7.4) * 12, blink: blinkAt(time, i) }));
       pose(jGlow, { x: JX, y: PY - 110, s: 0.6 + awe * 0.5, o: Math.max(0.25, awe * (1 - es(t, 6.9, 7.2) * 0.4)) });
 
       /* v47b: an Israelite indeed, in whom is no deceit — a clear heart */
@@ -90,19 +91,19 @@ export default {
       const hk = es(t, 1.1, 1.35, ease.back) * (1 - es(t, 1.95, 2.1));
       pose(clearHeart, { x: NX - 4, y: PY - 108, s: hk, o: hk > 0.01 ? 1 : 0 });
       const ik = es(t, 1.2, 1.5, ease.out) * (1 - es(t, 1.95, 2.15, ease.in));
-      pose(isr, { x: NX + 10, y: lerp(-500, 380, ik), r: Math.sin(t * 4.0) * 1.5, o: ik > 0.01 ? 1 : 0 });
+      pose(isr, { x: PT ? NX - 25 : NX + 10, y: lerp(-500, 380, ik), r: Math.sin(t * 4.0) * 1.5, o: ik > 0.01 ? 1 : 0 });
       /* v48a: how do you know me? */
       pose(how, { x: nhx - 70, y: nhy - 24, s: es(t, 2.05, 2.25, ease.back), o: seg(t, 2.03, 2.07) * (1 - seg(t, 2.93, 2.98)) });
       /* v48b: I saw you under the fig tree — the memory plate; v50a it returns; v50b it floats away */
       const mk = es(t, 3.05, 3.4, ease.out) * (1 - es(t, 3.95, 4.15, ease.in)) + es(t, 6.05, 6.35, ease.out) * (1 - es(t, 7.05, 7.4, ease.in));
       const small = es(t, 6.0, 6.1);
-      pose(memEl, { x: lerp(1010, 1060, small), y: lerp(-500, lerp(300, 280, small), mk) - es(t, 7.05, 7.4) * 0, s: lerp(1, 0.72, small), r: Math.sin(t * 2.8) * 1.2, o: mk > 0.01 ? 1 : 0 });
+      pose(memEl, { x: PT ? lerp(955, 1010, small) : lerp(1010, 1060, small), y: lerp(-500, lerp(300, 280, small), mk) - es(t, 7.05, 7.4) * 0, s: lerp(1, 0.72, small), r: Math.sin(t * 2.8) * 1.2, o: mk > 0.01 ? 1 : 0 });
       pose(gazeEl, { o: es(t, 3.3, 3.6) * 0.7 });
       /* v49: Son of God, King of Israel */
       const sk = es(t, 4.2, 4.5, ease.out) * (1 - es(t, 5.9, 6.1, ease.in));
       pose(son, { x: 610, y: lerp(-500, 350, sk), r: Math.sin(t * 3.2) * 1.4, o: sk > 0.01 ? 1 : 0 });
       const kk = es(t, 5.1, 5.45, ease.out) * (1 - es(t, 5.9, 6.1, ease.in));
-      pose(king, { x: 990, y: lerp(-500, 330, kk), r: Math.sin(t * 3.2 + 1) * 1.4, o: kk > 0.01 ? 1 : 0 });
+      pose(king, { x: PT ? 965 : 990, y: lerp(-500, 330, kk), r: Math.sin(t * 3.2 + 1) * 1.4, o: kk > 0.01 ? 1 : 0 });
       const ck = es(t, 5.05, 5.45, ease.out);
       const [jhx, jhy] = headAt(JX, PY, 1.05, false);
       pose(crownEl, { x: jhx, y: lerp(-200, jhy - 62, ck), s: 1, o: ck * (1 - es(t, 6.9, 7.2)) });

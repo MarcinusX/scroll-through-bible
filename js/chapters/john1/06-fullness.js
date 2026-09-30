@@ -25,6 +25,7 @@ export default {
   cam: { x: [-40, 40], y: [-80, 40], z: [0.96, 1.12] },
   build(S) {
     const c = S.c;
+    const PT = S.portrait;             // phone: John, the people and the plates stand closer to Jesus
     const J = jordanSet(S, { skyCols: DAY, sunAt: [1230, 150], sunR: 44 });
 
     /* ---------- the light behind the cloud (v18) ---------- */
@@ -46,7 +47,7 @@ export default {
 
     /* ---------- people on the near bank ---------- */
     const { N } = J.nearBank();
-    const people = crowd(S, N, [{ y: 770, s: 0.86, n: 3, x0: 250, x1: 450 }, { y: 772, s: 0.86, n: 3, x0: 1080, x1: 1290 }]);
+    const people = crowd(S, N, PT ? [{ y: 770, s: 0.86, n: 3, x0: 330, x1: 510 }, { y: 772, s: 0.86, n: 3, x0: 1040, x1: 1230 }] : [{ y: 770, s: 0.86, n: 3, x0: 250, x1: 450 }, { y: 772, s: 0.86, n: 3, x0: 1080, x1: 1290 }]);
     const FLOW = S.layer({ par: 0.45, sh: 1, flat: true });
     const ringEl = FLOW.add(`<g>${eternityRing(c, 150, 7, 26)}</g>`);
     const jGlow = FLOW.add(`<g>${glowDisc(240, 'warm-glow', 1)}</g>`);
@@ -96,7 +97,7 @@ export default {
       const ahead = es(t, 1.4, 1.65);
       const jx0 = lerp(-120, 520, come);
       const jxs = lerp(jx0, JX, ahead);
-      const johnX = lerp(660, 470, aside);
+      const johnX = lerp(660, PT ? 596 : 470, aside);
       john.set({
         x: johnX, y: PY, s: 1.02, flip: aside > 0.3, walk: aside > 0 && aside < 1 ? johnX * 0.05 : undefined,
         armF: 20 + cry * 60 + bump(t, 1.3, 1.6) * 50 + es(t, 1.8, 2.0) * 60 - es(t, 2.9, 3.1) * 40, armB: cry * 140 + es(t, 1.8, 2.0) * 10,
@@ -113,7 +114,7 @@ export default {
       /* v16b: grace upon grace — wave after wave */
       waves.forEach((w, i) => {
         const a = 2.4 + i * 0.42, k = es(t, a, a + 0.45, ease.out);
-        pose(w, { x: JX, y: 270, s: 0.15 + k * 0.85, o: seg(t, a, a + 0.05) * (1 - es(t, a + 0.6, a + 0.9)) * 0.95 });
+        pose(w, { x: JX, y: 270, s: 0.15 + k * 0.85, sx: (0.15 + k * 0.85) * (PT ? 0.8 : 1), o: seg(t, a, a + 0.05) * (1 - es(t, a + 0.6, a + 0.9)) * 0.95 });
       });
       people.forEach((m, i) => {
         const recv = es(t, 2.5 + (i % 3) * 0.1, 2.8 + (i % 3) * 0.1);
@@ -126,13 +127,13 @@ export default {
 
       /* v17a: the Law through Moses — a stone-grey plate */
       const mk = es(t, 4.05, 4.4, ease.out) * (1 - es(t, 5.95, 6.2, ease.in));
-      pose(moses, { x: 540, y: lerp(-500, 320, mk), r: Math.sin(t * 2.8) * 1.2, o: mk > 0.01 ? 1 : 0 });
-      pose(lawTag, { x: 540, y: lerp(-500, 462, mk), r: Math.sin(t * 3.6 + 1) * 1.6, o: mk > 0.01 ? 1 : 0 });
+      pose(moses, { x: PT ? 580 : 540, y: lerp(-500, PT ? 290 : 320, mk), s: PT ? 0.85 : 1, r: Math.sin(t * 2.8) * 1.2, o: mk > 0.01 ? 1 : 0 });
+      pose(lawTag, { x: PT ? 580 : 540, y: lerp(-500, PT ? 412 : 462, mk), r: Math.sin(t * 3.6 + 1) * 1.6, o: mk > 0.01 ? 1 : 0 });
       /* v17b: grace and truth through Jesus Christ */
       const nk = es(t, 5.05, 5.4, ease.out) * (1 - es(t, 5.95, 6.2, ease.in));
       pose(nameEl, { x: JX, y: lerp(-500, 330, nk), r: Math.sin(t * 3.2) * 1.2, o: nk > 0.01 ? 1 : 0 });
       const gk = es(t, 5.2, 5.55, ease.out) * (1 - es(t, 5.95, 6.2, ease.in));
-      pose(graceEl, { x: 1210, y: lerp(-500, 390, gk), r: Math.sin(t * 3.6 + 2) * 1.6, o: gk > 0.01 ? 1 : 0 });
+      pose(graceEl, { x: PT ? 1010 : 1210, y: lerp(-500, PT ? 420 : 390, gk), r: Math.sin(t * 3.6 + 2) * 1.6, o: gk > 0.01 ? 1 : 0 });
 
       /* Jesus */
       const open = es(t, 5.1, 5.4) * (1 - es(t, 6.0, 6.3)) + es(t, 7.1, 7.45);
