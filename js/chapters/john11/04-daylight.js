@@ -9,7 +9,6 @@ import { DISC, DAY, NIGHT, dayArc, hourAt, sunToken, rayBurst, hanging, sky, vis
 
 const F = 712;
 const PY = (x) => 604 + Math.sin(x / 140) * 8;      // the path in the middle distance
-const STONE = 1010;
 
 export default {
   id: 'j11-daylight',
@@ -22,6 +21,7 @@ export default {
   cam: { x: [-40, 60], y: [-80, 30], z: [1, 1.14] },
   build(S) {
     const c = S.c;
+    const STONE = S.portrait ? 900 : 1010;   // phone: the stone (and the stumble) inside the narrow screen
     const sk = sky(S, DAY);
     const starL = S.layer({ par: 0.02, sh: 0, flat: true });
     starL.add(stars(c, { x0: -200, x1: 1800, y0: -200, y1: 460, n: 70 }));
@@ -47,7 +47,7 @@ export default {
     const glowL = S.layer({ par: 0.46, sh: 0, flat: true });
     const jGlow = glowL.add(`<g><circle r="320" fill="url(#halo-glow)"/></g>`);
     const A = S.layer({ par: 0.5, sh: 5 });
-    const SIDE = [[470, 0, 0], [400, 0, 5], [1130, 1, 3], [1200, 1, 1]];
+    const SIDE = S.portrait ? [[535, 0, 0], [465, 0, 5], [1065, 1, 3], [1135, 1, 1]] : [[470, 0, 0], [400, 0, 5], [1130, 1, 3], [1200, 1, 1]];
     const disc = SIDE.map(([x, f, k], i) => ({ i, x, flip: !!f, p: S.puppet(A.add(person(c, DISC[k]))) }));
     const jesus = S.puppet(A.add(person(c, CAST.jesus)));
 
@@ -78,7 +78,7 @@ export default {
       /* the traveller: by day he steps over the stone; at night he stumbles */
       const day = t < 3.0;
       const u = day ? es(t, 2.05, 2.95, ease.sine) : es(t, 3.25, 3.58, ease.in);
-      const x = day ? lerp(380, 1260, u) : lerp(720, STONE - 12, u);
+      const x = day ? lerp(380, S.portrait ? 1010 : 1260, u) : lerp(S.portrait ? 640 : 720, STONE - 12, u);
       const hop = day ? bump(x, STONE - 50, STONE + 50) * 22 : 0;
       const trip = es(t, 3.58, 3.7, ease.out);
       const on = day ? (u > 0.001 && u < 0.999 ? 1 : 0) : (t > 3.25 ? 1 : 0);
@@ -89,9 +89,9 @@ export default {
       jesus.set({ x: 800, y: F, s: 1.04, flip: t > 2.0 && t < 3.0, armF: 20 + speak * 30 + bump(t, 1.1, 1.9) * 50, armB: 10 + bump(t, 2.1, 2.9) * 70, head: -bump(t, 1.1, 1.9) * 8, blink: blinkAt(T, 1) });
       disc.forEach((d) => d.p.set({ x: d.x, y: F + 6 + (d.i % 2) * 6, s: 0.92, flip: d.flip, armF: 10 + bump(t, 3.8, 4.0) * 20, head: -bump(t, 1.1, 1.9) * 8 + nk * 4, blink: blinkAt(T, d.i + 5) }));
 
-      S.cam.x = kf(t, [[0, 0], [1, 0], [2, 20], [3, 40], [4, 40]]);
+      S.cam.x = S.portrait ? 0 : kf(t, [[0, 0], [1, 0], [2, 20], [3, 40], [4, 40]]);
       S.cam.y = kf(t, [[0, 0], [1, -70], [2, -40], [3, -20], [4, -20]]);
-      S.cam.z = kf(t, [[0, 1.0], [1, 1.02], [2, 1.06], [3, 1.08], [4, 1.1]]);
+      S.cam.z = S.portrait ? kf(t, [[0, 1.0], [1, 1.02], [4, 1.03]]) : kf(t, [[0, 1.0], [1, 1.02], [2, 1.06], [3, 1.08], [4, 1.1]]);
     };
   },
 };

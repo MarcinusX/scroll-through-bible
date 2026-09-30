@@ -27,7 +27,7 @@ export default {
     { v: 16, text: 'Na to Tomasz, zwany Didymos, rzekł do współuczniów:' },
     { v: 16, cont: true, text: '«Chodźmy także i my, aby razem z Nim umrzeć».' },
   ],
-  cam: { x: [-240, 60], y: [-80, 30], z: [1, 1.14] },
+  cam: { x: [-240, 180], y: [-80, 30], z: [1, 1.14] },
   build(S) {
     const c = S.c;
     const set = jordanSet(S, { skyCols: AFTERNOON, sunAt: [1180, 200] });
@@ -105,7 +105,7 @@ export default {
       /* v15b — "Let us go to him": Jesus turns to Judea */
       const go = es(t, 6.1, 6.4);
       const sk2 = es(t, 6.2, 6.5, ease.back) * (1 - es(t, 7.0, 7.2));
-      vis(post, { x: 560, y: 560 - (1 - sk2) * 560, r: Math.sin(T * 0.7) * 1.2, o: sk2 > 0.01 ? 1 : 0 });
+      vis(post, { x: S.portrait ? 640 : 560, y: 560 - (1 - sk2) * 560, r: Math.sin(T * 0.7) * 1.2, o: sk2 > 0.01 ? 1 : 0 });
       const JK = [[6.2, 800], [6.9, 740], [8.1, 740], [8.95, 540]];
       const jx = kf(t, JK);
       const speak = es(t, 1.0, 1.2) * (1 - es(t, 1.9, 2.05)) + es(t, 5.05, 5.3) * (1 - es(t, 5.9, 6.05));
@@ -135,7 +135,9 @@ export default {
       const tx = t < 8.2 ? 880 : kf(t, [[8.2, 880], [8.95, 640]]);
       vis(brave, { x: tx + 4, y: F + 16 - 250 * 0.95 + Math.sin(T * 2) * 3, s: bh * (1 + Math.sin(T * 3) * 0.05), o: bh > 0.01 ? 1 : 0 });
 
-      S.cam.x = kf(t, [[0, 0], [1, 0], [2, 40], [3, 40], [4, 20], [5, 40], [6, 40], [7, 0], [8, 0], [9, -160]]);
+      // phone: Jesus and the disciples beside Him share the narrow screen
+      S.cam.x = S.portrait ? kf(t, [[0, 150], [1, 140], [2, 170], [3, 160], [4, 150], [5, 170], [6, 160], [6.6, 20], [7, 20], [8, 0], [9, -160]])
+        : kf(t, [[0, 0], [1, 0], [2, 40], [3, 40], [4, 20], [5, 40], [6, 40], [7, 0], [8, 0], [9, -160]]);
       S.cam.y = kf(t, [[0, 0], [1, -60], [2, -30], [3, -60], [4, -60], [5, -40], [6, -20], [7, -20], [8, 0], [9, 0]]);
       S.cam.z = kf(t, [[0, 1.02], [1, 1.0], [2, 1.04], [3, 1.0], [4, 1.02], [5, 1.02], [6, 1.0], [7, 1.06], [8, 1.08], [9, 1.02]]);
     };

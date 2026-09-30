@@ -31,7 +31,7 @@ export default {
     { v: 56, cont: true, text: '«Cóż wam się zdaje? Czyżby nie miał przyjść na święto?»' },
     { v: 57 },
   ],
-  cam: { x: [-60, 80], y: [-80, 30], z: [1, 1.14] },
+  cam: { x: [-210, 210], y: [-80, 30], z: [1, 1.14] },
   build(S) {
     const c = S.c;
     const SKY = ['#cfe0dc', '#eee6cc', '#f6ead2'], DUSKC = ['#7d7aa6', '#d7a893', '#efc7a1'];
@@ -116,7 +116,9 @@ export default {
       guard.set({ x: gx, y: F + 4, s: 0.94, walk: moving(t, GK) ? gx * 0.1 : undefined, armF: 12, head: 4, blink: blinkAt(T, 6), o: t > 4.0 ? 1 : 0 });
       vis(note, { x: 470, y: lerp(F - 300, F - 280, nail), r: -2 + (1 - nail) * 6, o: nail > 0.01 ? 1 : 0 });
 
-      S.cam.x = kf(t, [[0, 0], [1, 0], [1.6, 60], [2, 20], [3, 0], [4, 0], [5, -60]]);
+      // phone: pan to the basin for v55b and to the pillar with the order for v57
+      S.cam.x = S.portrait ? kf(t, [[0, 0], [1, 0], [1.5, 200], [2, 200], [2.5, 20], [3, 0], [4, 0], [4.6, -200], [5, -200]])
+        : kf(t, [[0, 0], [1, 0], [1.6, 60], [2, 20], [3, 0], [4, 0], [5, -60]]);
       S.cam.y = kf(t, [[0, -60], [1, -40], [2, -10], [3, 0], [4, -10], [5, -20]]);
       S.cam.z = kf(t, [[0, 1.0], [1, 1.02], [2, 1.02], [3, 1.06], [4, 1.02], [5, 1.12]]);
     };

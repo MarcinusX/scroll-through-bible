@@ -21,7 +21,7 @@ export default {
     { v: 23 },
     { v: 24 },
   ],
-  cam: { x: [-60, 120], y: [-90, 30], z: [1, 1.16] },
+  cam: { x: [-60, 150], y: [-90, 30], z: [1, 1.16] },
   build(S) {
     const c = S.c;
     const set = bethanySet(S, { skyCols: WARM, sunAt: [560, 150] });
@@ -56,6 +56,7 @@ export default {
     const lastDay = X.add(`<g><circle r="70" fill="url(#halo-glow)"/>${sheet().p(c.cut(c.star(0, 0, 22, 16, 14, 0), 0.3, 3), C.sunDeep).p(c.cut(c.circ(0, 0, 13, 14), 0.3, 3), C.sun).out()}</g>`);
     const lastT = X.add(`<g>${strip(c, tr('dzień ostateczny', 'the last day'), { size: 16 })}</g>`);
 
+    const P = S.portrait;   // phone: the string of days and the last day inside the screen
     return (t, time) => {
       const T = time;
       pose(set.sunEl, { x: 560, y: 150, r: Math.sin(T * 0.6) * 1.5 });
@@ -105,13 +106,13 @@ export default {
       trail.forEach((d) => {
         const u = d.i / (N - 1);
         const k = es(t, 3.1 + d.i * 0.06, 3.35 + d.i * 0.06, ease.out);
-        vis(d.el, { x: lerp(1000, 1180, u), y: lerp(380, 250, Math.pow(u, 0.8)) - (1 - k) * 520, s: lerp(1, 0.4, u), r: Math.sin(T * 0.8 + d.i) * 2, o: k > 0.01 ? 1 : 0 });
+        vis(d.el, { x: lerp(P ? 985 : 1000, P ? 1105 : 1180, u), y: lerp(380, 250, Math.pow(u, 0.8)) - (1 - k) * 520, s: lerp(1, 0.4, u), r: Math.sin(T * 0.8 + d.i) * 2, o: k > 0.01 ? 1 : 0 });
       });
       const lk2 = es(t, 3.6, 3.85, ease.back);
-      vis(lastDay, { x: 1200, y: 236, s: lk2 * 0.8, r: T * 4, o: lk2 > 0.01 ? 1 : 0 });
-      vis(lastT, { x: 1160, y: 290, o: lk2 });
+      vis(lastDay, { x: P ? 1122 : 1200, y: 236, s: lk2 * 0.8, r: T * 4, o: lk2 > 0.01 ? 1 : 0 });
+      vis(lastT, { x: P ? 1095 : 1160, y: P ? 296 : 290, o: lk2 });
 
-      S.cam.x = kf(t, [[0, 40], [1, 20], [2, 20], [3, 60], [4, 110]]);
+      S.cam.x = kf(t, [[0, 40], [1, 20], [2, 20], [3, 60], [4, P ? 140 : 110]]);
       S.cam.y = kf(t, [[0, -40], [1, -80], [2, -40], [3, -40], [4, -40]]);
       S.cam.z = kf(t, [[0, 1.06], [1, 1.0], [2, 1.08], [3, 1.04], [4, 1.06]]);
     };

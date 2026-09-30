@@ -129,7 +129,7 @@ export default {
       /* v6b — two days */
       days.forEach((d) => {
         const k = es(t, 5.0, 5.2, ease.out) * (1 - es(t, 5.95, 6.0));
-        vis(d.el, { x: 720 + d.i * 160, y: 240 - (1 - k) * 420, r: Math.sin(T * 0.7 + d.i) * 2, o: k > 0.01 ? 1 : 0 });
+        vis(d.el, { x: 720 + d.i * 160, y: 310 - (1 - k) * 420, r: Math.sin(T * 0.7 + d.i) * 2, o: k > 0.01 ? 1 : 0 });
         if (d.lit) d.lit.setAttribute('opacity', es(t, 5.3 + d.i * 0.42, 5.4 + d.i * 0.42).toFixed(2));
       });
 

@@ -32,7 +32,7 @@ export default {
     { v: 39, cont: true, text: 'Leży bowiem od czterech dni w grobie».' },
     { v: 40 },
   ],
-  cam: { x: [-60, 140], y: [-80, 30], z: [1, 1.16] },
+  cam: { x: [-60, 340], y: [-80, 30], z: [1, 1.16] },
   build(S) {
     const c = S.c;
     const set = tombSet(S, { skyCols: EVENING, sunAt: [640, 290] });
@@ -99,7 +99,7 @@ export default {
       /* v38b — a cave, and a stone */
       const lk = es(t, 1.05, 1.35, ease.back) * (1 - es(t, 1.95, 2.15));
       vis(caveT, { x: DOOR.x - 20, y: 400 - (1 - lk) * 420, r: Math.sin(T * 0.8) * 2, o: lk > 0.01 ? 1 : 0 });
-      vis(stoneT, { x: DOOR.x + 120, y: 490 - (1 - es(t, 1.2, 1.5, ease.back) * (1 - es(t, 1.95, 2.15))) * 420, r: Math.sin(T * 0.9 + 1) * 2, o: lk > 0.01 ? 1 : 0 });
+      vis(stoneT, { x: DOOR.x + (S.portrait ? 85 : 120), y: 490 - (1 - es(t, 1.2, 1.5, ease.back) * (1 - es(t, 1.95, 2.15))) * 420, r: Math.sin(T * 0.9 + 1) * 2, o: lk > 0.01 ? 1 : 0 });
 
       /* v39b — Martha: "Lord, there is a smell"; v39c — four days */
       const MK = [[3.0, 1180], [3.35, 920]];
@@ -121,7 +121,9 @@ export default {
       const fk = es(t, 5.02, 5.25, ease.back) * (1 - es(t, 5.45, 5.6));
       vis(faithP, { x: 870, y: 330 - (1 - fk) * 520, r: Math.sin(T * 0.8) * 1.5, o: fk > 0.01 ? 1 : 0 });
 
-      S.cam.x = kf(t, [[0, -40], [1, 20], [2, 120], [3, 60], [4, 80], [5, 100], [6, 130]]);
+      // phone: the camera goes on to the cave, so the stone, its labels, the four days and the open door are in view
+      S.cam.x = S.portrait ? kf(t, [[0, -40], [1, 20], [1.4, 200], [2, 220], [5, 230], [5.4, 240], [6, 330]])
+        : kf(t, [[0, -40], [1, 20], [2, 120], [3, 60], [4, 80], [5, 100], [6, 130]]);
       S.cam.y = kf(t, [[0, 0], [1, -20], [2, -40], [3, -20], [4, -20], [5, -60], [6, -30]]);
       S.cam.z = kf(t, [[0, 1.0], [1, 1.02], [2, 1.08], [3, 1.04], [4, 1.06], [5, 1.02], [6, 1.06]]);
     };

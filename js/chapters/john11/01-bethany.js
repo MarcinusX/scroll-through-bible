@@ -72,6 +72,8 @@ export default {
 
     const cur = curtains(S);
     const MK = [[5.0, 360], [5.35, 560], [5.8, 560], [6.1, 380]];
+    const PY0 = S.portrait ? 300 : 380;      // phone: the plate hangs above Martha's head
+    const BNX = S.portrait ? 1005 : 1047;    // phone: the village name clear of the edge
     return (t, time) => {
       const T = time;
       cur.set(es(t, 0.05, 0.85), T);
@@ -102,13 +104,13 @@ export default {
       vis(tagMt, { x: 600, y: 420 - (1 - tk) * 420, r: Math.sin(T * 0.9 + 1) * 1.5, o: tk > 0.01 ? 1 : 0 });
       vis(tagMa, { x: 1060, y: 470 - (1 - tk) * 420, r: Math.sin(T * 0.8 + 2) * 1.5, o: tk > 0.01 ? 1 : 0 });
       const pk = es(t, 2.1, 2.45, ease.out) * (1 - es(t, 2.9, 3.1));
-      vis(place, { x: 1047, y: 300 - (1 - pk) * 420, r: Math.sin(T * 0.7) * 1, o: pk > 0.01 ? 1 : 0 });
+      vis(place, { x: BNX, y: 300 - (1 - pk) * 420, r: Math.sin(T * 0.7) * 1, o: pk > 0.01 ? 1 : 0 });
 
       /* v2a — the plate: Mary who anointed the Lord */
       const pl = es(t, 3.0, 3.4, ease.out) * (1 - es(t, 3.9, 4.15, ease.in));
-      vis(plate, { x: 800, y: 380 - (1 - pl) * 640, r: Math.sin(T * 0.6) * 0.6, o: pl > 0.01 ? 1 : 0 });
+      vis(plate, { x: 800, y: PY0 - (1 - pl) * 640, r: Math.sin(T * 0.6) * 0.6, o: pl > 0.01 ? 1 : 0 });
       const mk = es(t, 3.3, 3.6) * pl;
-      vis(mist, { x: 800 + 150, y: 380 - (1 - pl) * 640 + PH / 2 - 84, s: 0.8 + Math.sin(T * 1.3) * 0.05, o: mk });
+      vis(mist, { x: 800 + 150, y: PY0 - (1 - pl) * 640 + PH / 2 - 84, s: 0.8 + Math.sin(T * 1.3) * 0.05, o: mk });
 
       /* v2b — Martha set down her bowl; Mary holds her brother's hand */
       const bowlDown = seg(t, 4.3, 4.35);

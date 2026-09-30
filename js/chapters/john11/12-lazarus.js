@@ -31,7 +31,7 @@ export default {
     { v: 45 },
     { v: 46 },
   ],
-  cam: { x: [-120, 160], y: [-110, 40], z: [1, 1.2] },
+  cam: { x: [-440, 160], y: [-110, 40], z: [1, 1.2] },
   build(S) {
     const c = S.c;
     const set = tombSet(S, { skyCols: EVENING, sunAt: [540, 400] });
@@ -41,10 +41,10 @@ export default {
     // Lazarus: inside the cave (behind the rock), then outside
     const W = wrapped(c);
     const inside = set.caveL.add(`<g>${W.body}${W.cloth}</g>`);
+    const freedGlow = set.stoneL.add(`<g><circle r="150" fill="url(#halo-glow)"/></g>`);   // behind the figure
     const outBody = set.stoneL.add(`<g>${W.body}</g>`);
     const outCloth = set.stoneL.add(`<g>${W.cloth}</g>`);
     const freed = S.puppet(set.stoneL.add(lazarus(c, { robe: C.linen, mantle: null, belt: C.rope })));
-    const freedGlow = set.stoneL.add(`<g><circle r="150" fill="url(#halo-glow)"/></g>`);
 
     const thrL = S.layer({ par: 0.5, sh: 1 });
     const thread = thrL.add(`<g><path d="" fill="${C.haloRim}"/></g>`);
@@ -97,7 +97,7 @@ export default {
       const wonder = es(t, 5.2, 5.5) * (1 - es(t, 7.0, 7.4));
       MO.forEach((m) => {
         const leave = m.i < 2 ? es(t, 9.1 + m.i * 0.06, 9.95, ease.in) : 0;
-        const x = m.x - leave * 420;
+        const x = m.x - leave * (S.portrait ? 130 : 420);
         const walking = leave > 0 && leave < 1;
         m.p.set({ x, y: m.y, s: 0.9, flip: m.i < 2 && t > 9.05, walk: walking ? x * 0.1 : undefined, armF: 12 + wonder * 60 + (m.i < 2 ? 0 : es(t, 8.1, 8.4) * 30), armB: 8 + wonder * (m.i % 2 ? 130 : 80), head: 6 - up * 16 - wonder * 8 + (m.i < 2 && t > 9 ? 6 : 0), blink: blinkAt(T, m.i + 6) });
         if (m.angry) attr(m.angry, 'opacity', m.i < 2 ? es(t, 9.0, 9.2) : 0);
@@ -155,9 +155,9 @@ export default {
       });
       /* v46 — some went to the Pharisees */
       const pk = es(t, 9.05, 9.35, ease.back);
-      vis(post, { x: 330, y: 560 - (1 - pk) * 520, r: Math.sin(T * 0.8) * 1.2, o: pk > 0.01 ? 1 : 0 });
+      vis(post, { x: S.portrait ? 430 : 330, y: 560 - (1 - pk) * 520, r: Math.sin(T * 0.8) * 1.2, o: pk > 0.01 ? 1 : 0 });
 
-      S.cam.x = kf(t, [[0, 0], [1, 0], [2, -20], [3, 40], [4, 90], [5, 120], [6, 110], [7, 60], [8, 80], [9, 40], [10, -60]]);
+      S.cam.x = kf(t, [[0, 0], [1, 0], [2, -20], [3, 40], [4, 90], [5, 120], [6, 110], [7, 60], [8, 80], [9, 40], [10, S.portrait ? -420 : -60]]);   // phone: follow the two who slip away
       S.cam.y = kf(t, [[0, -60], [1, -90], [2, -40], [3, -20], [4, -30], [5, -10], [6, 0], [7, 0], [8, -50], [9, -20], [10, -10]]);
       S.cam.z = kf(t, [[0, 1.0], [1, 1.02], [2, 1.0], [3, 1.06], [4, 1.1], [5, 1.14], [6, 1.08], [7, 1.12], [8, 1.04], [9, 1.02], [10, 1.02]]);
     };

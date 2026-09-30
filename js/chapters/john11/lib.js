@@ -430,12 +430,13 @@ export function councilSet(S, { skyCols = ['#5b5a8c', '#b58a9b', '#e7ae93'] } = 
   const R = chamber14(S, { skyCols });
   const FLOOR = R.FLOOR, TOP = FLOOR - 100;
   const SH = '#2a2034';
+  // phone: the two Pharisees in front stand closer in, inside the narrow screen
   const cast = [
-    { k: 'ph0', o: leader5(0), m: () => person(c, leader5(0)), x: 500, y: FLOOR + 10, s: 1.0, flip: false, front: true },
+    { k: 'ph0', o: leader5(0), m: () => person(c, leader5(0)), x: S.portrait ? 528 : 500, y: FLOOR + 10, s: 1.0, flip: false, front: true },
     { k: 'pr1', o: priestOpts14(1), m: () => priest14(c, 1), x: 650, y: FLOOR - 26, s: 0.94, flip: false },
     { k: 'hp', o: HP14, m: () => hp14(c), x: 820, y: FLOOR - 26, s: 0.98, flip: true },
     { k: 'pr2', o: priestOpts14(2), m: () => priest14(c, 2), x: 975, y: FLOOR - 26, s: 0.94, flip: true },
-    { k: 'ph1', o: leader5(1), m: () => person(c, leader5(1)), x: 1110, y: FLOOR + 10, s: 1.0, flip: true, front: true },
+    { k: 'ph1', o: leader5(1), m: () => person(c, leader5(1)), x: S.portrait ? 1072 : 1110, y: FLOOR + 10, s: 1.0, flip: true, front: true },
   ];
   cast.forEach((m, i) => {
     m.i = i; m.seed = c.rr(0, 9);

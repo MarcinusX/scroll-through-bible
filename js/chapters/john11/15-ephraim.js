@@ -18,7 +18,7 @@ export default {
     { v: 54, cont: true, text: 'tylko odszedł stamtąd do krainy w pobliżu pustyni, do miasteczka, zwanego Efraim,' },
     { v: 54, cont: true, text: 'i tam przebywał ze swymi uczniami.' },
   ],
-  cam: { x: [-60, 200], y: [-60, 30], z: [1, 1.14] },
+  cam: { x: [-60, 310], y: [-60, 30], z: [1, 1.14] },
   build(S) {
     const c = S.c;
     const EV = ['#8f7fa8', '#dca58c', '#f0c79a'];
@@ -96,9 +96,10 @@ export default {
       jSit.set({ x: 930, y: F - 4, s: 1.0, armF: 30 + bump(t, 2.4, 3.0) * 20, head: 6, blink: blinkAt(T, 1), o: sit });
       sitters.forEach((d) => d.p.set({ x: d.x, y: F + 4 + (d.i % 2) * 8, s: 0.9, flip: d.flip, armF: 30, head: 4, blink: blinkAt(T, d.i + 4), o: sit }));
 
-      S.cam.x = kf(t, [[0, -30], [1, 0], [2, 160], [3, 180]]);
+      // phone: the whole circle round the fire, the town and its name in view
+      S.cam.x = S.portrait ? kf(t, [[0, -30], [1, 0], [2, 260], [3, 300]]) : kf(t, [[0, -30], [1, 0], [2, 160], [3, 180]]);
       S.cam.y = kf(t, [[0, 0], [1, -40], [2, -20], [3, 10]]);
-      S.cam.z = kf(t, [[0, 1.02], [1, 1.0], [2, 1.04], [3, 1.12]]);
+      S.cam.z = S.portrait ? kf(t, [[0, 1.02], [1, 1.0], [3, 1.03]]) : kf(t, [[0, 1.02], [1, 1.0], [2, 1.04], [3, 1.12]]);
     };
   },
 };

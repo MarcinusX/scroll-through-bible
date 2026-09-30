@@ -35,7 +35,7 @@ export default {
     // mourners: sitting ones and standing ones
     const MS = [
       { x: 910, sit: true, f: 1 }, { x: 1000, sit: false, f: 1 }, { x: 1075, sit: false, f: 1 }, { x: 1140, sit: true, f: 1 },
-    ].map((m, i) => ({ ...m, i, o: mournerOpts(i + 2) }));
+    ].map((m, i) => ({ ...m, x: S.portrait ? [900, 975, 1040, 1100][i] : m.x, i, o: mournerOpts(i + 2) }));   // phone: the four mourners inside the room
     MS.forEach((m) => {
       m.sitP = m.sit ? S.puppet(A.add(person(c, { ...m.o, pose: 'sit' }))) : null;
       m.standP = S.puppet(A.add(person(c, m.o)));

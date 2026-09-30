@@ -21,7 +21,7 @@ export default {
     { v: 20, text: 'Kiedy zaś Marta dowiedziała się, że Jezus nadchodzi, wyszła Mu na spotkanie.' },
     { v: 20, cont: true, text: 'Maria zaś siedziała w domu.' },
   ],
-  cam: { x: [-80, 160], y: [-80, 30], z: [1, 1.18] },
+  cam: { x: [-80, 200], y: [-80, 30], z: [1, 1.18] },
   build(S) {
     const c = S.c;
     const set = bethanySet(S, { skyCols: WARM, house: true, sunAt: [1180, 150] });
@@ -104,7 +104,9 @@ export default {
       /* v20b — Mary sits in the house */
       marySit.set({ x: 1100, y: F - 4, s: 0.9, flip: true, armF: 40 + es(t, 4.1, 4.4) * 100, armB: 20, head: 14, blink: 0 });
 
-      S.cam.x = kf(t, [[0, -40], [1, 0], [2, 80], [3, 120], [4, 60], [5, 140]]);
+      // phone: Jerusalem and its name in view for v18; Mary in the doorway for v20b
+      S.cam.x = S.portrait ? kf(t, [[0, -40], [1, 0], [1.9, 0], [2.3, 80], [3, 120], [4, 60], [4.6, 190], [5, 190]])
+        : kf(t, [[0, -40], [1, 0], [2, 80], [3, 120], [4, 60], [5, 140]]);
       S.cam.y = kf(t, [[0, 0], [1, -60], [2, -40], [3, 0], [4, 10], [5, 20]]);
       S.cam.z = kf(t, [[0, 1.0], [1, 1.02], [2, 1.02], [3, 1.06], [4, 1.04], [5, 1.16]]);
     };
