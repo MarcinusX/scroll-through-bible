@@ -47,6 +47,8 @@ export default {
     const lblDown = fx.add(`<g>${strip(c, tr('z niskości', 'from beneath'), { size: 20, fill: mix(C.stone2, C.indigo, 0.3), ink: C.cream })}</g>`);
     const am = hanging(fx, iAm(c, tr('JA JESTEM', 'I AM'), { size: 30 }), { x: 800, y: 250, len: 700 });
 
+    const DLX = S.portrait ? 1030 : 1070, WX = S.portrait ? 1050 : 1080;      // phone: whole, clear of the edge
+
     return (t, time) => {
       const T = time;
       /* two storeys: light above, shadow below */
@@ -103,9 +105,9 @@ export default {
       swing(lblUp, 800, 170 - (1 - ul) * 600, ul > 0.001 ? T : 0, 1, 0.7);
       fade(lblUp, ul > 0.001 ? 1 : 0);
       const dl = es(t, 3.3, 3.55, ease.out) * (1 - es(t, 4.0, 4.15));
-      vis(lblDown, { x: 1070, y: 500 - dl * 40, r: 3, o: dl });
+      vis(lblDown, { x: DLX, y: 500 - dl * 40, r: 3, o: dl });
       const wk = es(t, 4.1, 4.5, ease.out) * (1 - es(t, 5.0, 5.3, ease.in));
-      swing(world, 1080, 470 - (1 - wk) * 700, wk > 0.001 ? T : 0, 1.2, 0.8, 1);
+      swing(world, WX, 470 - (1 - wk) * 700, wk > 0.001 ? T : 0, 1.2, 0.8, 1);
       fade(world, wk > 0.001 ? 1 : 0);
       /* v24b — the I AM, and a ray down to them */
       const ak = es(t, 6.1, 6.45, ease.out);

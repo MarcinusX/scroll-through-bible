@@ -42,6 +42,7 @@ export default {
     })();
     const card = st.fx.add(`<g>${cardInner}</g>`);
     const stamp = st.fx.add(`<g>${crossX(c, 46)}</g>`);
+    const CX = S.portrait ? 1035 : 1060;      // phone: the card clear of the progress thread
 
     return (t, time) => {
       const T = time;
@@ -53,7 +54,7 @@ export default {
       /* v12a — He speaks again */
       const speak = es(t, 0.3, 0.6);
       const walk = es(t, 2.1, 2.9);
-      const jx = DC.JX + walk * 60;
+      const jx = DC.JX + walk * 40;
       const toPh = es(t, 3.1, 3.4);
       K.set(T, {
         j: {
@@ -67,9 +68,9 @@ export default {
           return { x, walk: k > 0 && k < 1 ? x * 0.06 : undefined, armF: 14 + es(t, 2.3, 2.6) * 50, head: -4 - lit * 4 };
         },
         leadF: (m) => {
-          const step = m.i === 0 ? es(t, 3.05, 3.35) * 30 : 0;
+          const step = m.i === 0 ? es(t, 3.05, 3.35) * 14 : 0;      // he steps up to Him, not over Him
           const point = m.i === 0 ? bump(t, 3.1, 3.95) : m.i === 1 ? bump(t, 4.1, 4.9) : 0;
-          return { x: m.x - step, walk: step > 0 && step < 30 ? m.x * 0.06 : undefined, armF: 20 + point * 70, armB: 10 + (m.i === 2 ? es(t, 3.3, 3.6) * 30 : 0), head: -2 - lit * 3, angry: 0.3 + es(t, 3.0, 3.3) * 0.7 };
+          return { x: m.x - step, walk: step > 0 && step < 14 ? m.x * 0.06 : undefined, armF: 20 + point * 70, armB: 10 + (m.i === 2 ? es(t, 3.3, 3.6) * 30 : 0), head: -2 - lit * 3, angry: 0.3 + es(t, 3.0, 3.3) * 0.7 };
         },
       });
       const [hx, hy] = [jx + 2, DC.FLOOR + 8 - 170 * 1.06];
@@ -97,9 +98,9 @@ export default {
 
       /* v13 — "You testify about yourself" — the card; "not true" — the stamp */
       const ck = es(t, 3.2, 3.55, ease.out) * (1 - es(t, 4.8, 5.0, ease.in));
-      vis(card, { x: 1060, y: 250 - (1 - ck) * 700, r: Math.sin(T * 0.8) * 1.2 * ck, o: ck > 0.001 ? 1 : 0 });
+      vis(card, { x: CX, y: 250 - (1 - ck) * 700, r: Math.sin(T * 0.8) * 1.2 * ck, o: ck > 0.001 ? 1 : 0 });
       const sk = es(t, 4.2, 4.35, ease.back);
-      vis(stamp, { x: 1060, y: 330 - (1 - ck) * 700, s: sk * 1.4, r: -8, o: sk > 0.01 ? ck : 0 });
+      vis(stamp, { x: CX, y: 330 - (1 - ck) * 700, s: sk * 1.4, r: -8, o: sk > 0.01 ? ck : 0 });
 
       S.cam.x = kf(t, [[0, 0], [1.0, 0], [1.3, 0], [2.1, -30], [2.9, 20], [3.2, 60], [5, 60]]);
       S.cam.y = kf(t, [[0, 0], [1.1, -50], [1.9, -60], [2.3, 20], [3.2, -10], [5, -10]]);

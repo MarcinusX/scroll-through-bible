@@ -62,34 +62,39 @@ export default {
     const two = hanging(st.fx, numberCard(c, '2', { size: 30 }), { x: DC.JX + 170, y: 250, len: 700 });
     const tk = st.fx.add(`<g>${tick(c, 30)}</g>`);
 
+    // phone: the card, the scales and the scroll of the Law hang further in (whole on a narrow screen), the
+    // scales and the scroll lower, clear of the radiance beside Him
+    const P = S.portrait;
+    const CX = P ? 1025 : 1060, SX = P ? 1000 : 1060, SY = P ? 350 : 300, LX = P ? 1000 : 1060, LY = P ? 395 : 330;
+
     return (t, time) => {
       const T = time;
       st.set.update(t, T, { lit: 1, moonY: 150, glowO: 0.7, gate: 0.6 });
       /* v14a — the cross falls away, the path of light */
       const cardK = 1 - es(t, 0.7, 1.0, ease.in);
-      vis(cardEl, { x: 1060, y: 250 - (1 - cardK) * 700, r: Math.sin(T * 0.8) * 1.2 * cardK, o: cardK > 0.001 ? 1 : 0 });
+      vis(cardEl, { x: CX, y: 250 - (1 - cardK) * 700, r: Math.sin(T * 0.8) * 1.2 * cardK, o: cardK > 0.001 ? 1 : 0 });
       const xf = es(t, 0.15, 0.55, ease.in);
-      vis(xEl, { x: 1060 + xf * 30, y: 330 + xf * 420, s: 1.4, r: -8 + xf * 90, o: 1 - seg(t, 0.5, 0.55) });
+      vis(xEl, { x: CX + xf * 30, y: 330 + xf * 420, s: 1.4, r: -8 + xf * 90, o: 1 - seg(t, 0.5, 0.55) });
       const pin = es(t, 0.3, 0.7), pout = es(t, 0.6, 0.95);
       drawPath(pathIn, pin); drawPath(pathOut, pout);
       arcL.fade(1 - es(t, 2.0, 2.3));
-      vis(tagFrom, { x: 640, y: 150, s: 1, r: -5, o: es(t, 0.45, 0.6) * (1 - es(t, 2.0, 2.3)) });
-      vis(tagTo, { x: 960, y: 150, s: 1, r: 5, o: es(t, 0.8, 0.95) * (1 - es(t, 2.0, 2.3)) });
+      vis(tagFrom, { x: 705, y: 150, s: 1, r: -5, o: es(t, 0.45, 0.6) * (1 - es(t, 2.0, 2.3)) });
+      vis(tagTo, { x: 925, y: 150, s: 1, r: 5, o: es(t, 0.8, 0.95) * (1 - es(t, 2.0, 2.3)) });
       /* v14b — the mist over them */
       const mk = es(t, 1.1, 1.4) * (1 - es(t, 2.0, 2.3));
       vis(mist, { x: 1060 + Math.sin(T * 0.5) * 6, y: 470, s: 0.6 + mk * 0.4, o: mk * 0.95 });
       /* v15 — the scales of the flesh; v16 — level in the light */
       const sk = es(t, 2.05, 2.4, ease.out) * (1 - es(t, 3.85, 4.1, ease.in));
       const tilt = 16 * (1 - es(t, 3.2, 3.55));
-      poseScales(sc, 1060, 300 - (1 - sk) * 700, tilt + (sk > 0.01 && T ? Math.sin(T * 0.9) * 1.2 : 0), sk > 0.001 ? 1 : 0, 1, 100);
+      poseScales(sc, SX, SY - (1 - sk) * 700, tilt + (sk > 0.01 && T ? Math.sin(T * 0.9) * 1.2 : 0), sk > 0.001 ? 1 : 0, 1, 100);
       const rk = es(t, 3.05, 3.45, ease.out);
       vis(rad, { x: DC.JX + 170, y: 250 - (1 - rk) * 500, s: 0.9 + (T ? Math.sin(T * 1.2) * 0.02 : 0), o: rk });
       vis(beam, { x: DC.JX + 170, y: DC.FLOOR - 10, o: rk * (1 - es(t, 4.0, 4.3) * 0.5) });
       /* v17 — the two witnesses of the Law */
       const lk = es(t, 4.05, 4.4, ease.out) * (1 - es(t, 4.95, 5.2, ease.in));
-      vis(lawEl, { x: 1060, y: 330 - (1 - lk) * 700, r: Math.sin(T * 0.7) * lk, o: lk > 0.001 ? 1 : 0 });
+      vis(lawEl, { x: LX, y: LY - (1 - lk) * 700, r: Math.sin(T * 0.7) * lk, o: lk > 0.001 ? 1 : 0 });
       const lt = es(t, 4.5, 4.65, ease.back) * (1 - es(t, 4.95, 5.2));
-      vis(lawTick, { x: 1160, y: 300, s: lt, o: lt > 0.01 ? 1 : 0 });
+      vis(lawTick, { x: LX + 100, y: LY - 30, s: lt, o: lt > 0.01 ? 1 : 0 });
       /* v18 — "1" over Him, "2" over the light, a tick */
       const k1 = es(t, 5.1, 5.4, ease.out), k2 = es(t, 5.35, 5.65, ease.out);
       swing(one, DC.JX, 300 - (1 - k1) * 700, k1 > 0.001 ? T : 0, 1, 0.8);

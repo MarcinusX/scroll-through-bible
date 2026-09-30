@@ -59,13 +59,13 @@ export default {
         const k = es(t, 1.05 + p.i * 0.08, 1.4 + p.i * 0.08, ease.out) * (1 - galleryOff);
         const y = 120 - (1 - k) * 700;
         vis(p.el, { x: XS[p.i], y, r: Math.sin(T * 0.7 + p.i) * 0.8 * k, o: k > 0.001 ? 1 : 0 });
-        const bk = es(t, 1.5 + p.i * 0.08, 1.62 + p.i * 0.08);
+        const bk = es(t, 1.46 + p.i * 0.06, 1.56 + p.i * 0.06);      // all four tied by the time the reader pauses
         vis(p.band, { x: XS[p.i], y, s: 0.6 + bk * 0.4, o: k > 0.001 ? bk : 0 });
       });
       /* v53 — greater than Abraham? */
       const sk = es(t, 2.1, 2.45, ease.out) * (1 - es(t, 2.95, 3.15, ease.in));
       const tilt = -12 + bump(t, 2.4, 2.95) * 8;
-      poseScales(sc, 1000, 260 - (1 - sk) * 700, tilt, sk > 0.001 ? 1 : 0, 1, 110);
+      poseScales(sc, S.portrait ? 960 : 1000, 260 - (1 - sk) * 700, tilt, sk > 0.001 ? 1 : 0, 1, 110);
       /* v54a — self-made glory: nothing */
       const fall = es(t, 3.45, 3.95, ease.in);
       vis(star, { x: DC.JX + 70 + fall * 20, y: DC.FLOOR - 260 + fall * 250, sx: 1 - fall * 0.6, sy: 1 - fall * 0.8, r: fall * 120, o: t > 3.1 ? es(t, 3.1, 3.25) * (1 - es(t, 3.85, 3.98)) : 0 });

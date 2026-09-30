@@ -15,7 +15,7 @@ export default {
     { v: 7, cont: true, text: '«Kto z was jest bez grzechu, niech pierwszy rzuci na nią kamień».' },
     { v: 8 },
   ],
-  cam: { x: [-40, 120], y: [-40, 150], z: [1, 1.5] },
+  cam: { x: [-40, 140], y: [-40, 150], z: [1, 1.5] },
   build(S) {
     const c = S.c;
     const set = set0(S);
@@ -24,6 +24,8 @@ export default {
     const qs = [0, 1, 2, 3].map((i) => set.fx.add(`<g>${question(c)}</g>`));
     const rings = voiceRings(set.fx, c, { n: 4, r: 40, w: 6, both: false, color: shade(C.halo, -0.05) });
     const sweep = set.glowL.add(`<g><ellipse rx="160" ry="260" fill="url(#halo-glow)"/></g>`);
+    // phone: the snare and the row of accusers in view (the camera goes further right, the net hangs further in)
+    const PX = S.portrait ? 40 : 0, NX = S.portrait ? 1060 : 1090;
     const markGlow = set.glowL.add(`<g><ellipse rx="130" ry="40" fill="url(#halo-glow)"/></g>`);
 
     return (t, time) => {
@@ -32,7 +34,7 @@ export default {
       K.crowd.forEach((m) => m.p.set({ x: m.x, y: m.y, s: m.s, head: -6 + es(t, 1.2, 1.5) * 8 * (1 - es(t, 2.5, 2.8)), blink: blinkAt(T, m.seed) }));
       /* v6a — a test, a snare */
       const nk = es(t, 0.1, 0.5, ease.out) * (1 - es(t, 1.0, 1.3, ease.in));
-      swing(net, 1090, 300 - (1 - nk) * 700, nk > 0.001 ? T : 0, 1.4, 0.8);
+      swing(net, NX, 300 - (1 - nk) * 700, nk > 0.001 ? T : 0, 1.4, 0.8);
       fade(net, nk > 0.001 ? 1 : 0);
       const sly = bump(t, 0.2, 0.95);
       /* v6b — He bends down and writes; v7a — they keep asking, He straightens; v8 — bends again */
@@ -83,7 +85,7 @@ export default {
       const sw = seg(t, 3.15, 3.95);
       vis(sweep, { x: lerp(950, 1260, sw), y: CT.FLOOR - 120, s: 1, o: Math.sin(sw * PI) * 0.9 });
 
-      S.cam.x = kf(t, [[0, 40], [0.9, 80], [1.2, 10], [2.0, 20], [2.4, 60], [3.0, 60], [3.3, 90], [3.9, 90], [4.2, 20]]);
+      S.cam.x = kf(t, [[0, 40 + PX], [0.9, 80 + PX], [1.2, 10], [2.0, 20], [2.4, 60 + PX], [3.0, 60 + PX], [3.3, 90 + PX], [3.9, 90 + PX], [4.2, 20]]);
       S.cam.y = kf(t, [[0, 0], [0.9, -20], [1.3, 130], [2.0, 130], [2.4, 0], [4.2, 0], [4.5, 130]]);
       S.cam.z = kf(t, [[0, 1.12], [0.9, 1.12], [1.3, 1.46], [2.0, 1.46], [2.4, 1.14], [3.3, 1.18], [3.9, 1.2], [4.2, 1.14], [4.6, 1.42]]);
     };

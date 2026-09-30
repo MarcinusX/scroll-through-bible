@@ -24,6 +24,7 @@ export default {
   cam: { x: [-40, 120], y: [-120, 40], z: [1, 1.2] },
   build(S) {
     const c = S.c;
+    const SX = S.portrait ? 925 : SCR.x;      // phone: the whole screen in view
     const st = nightStage(S, { skyCols: NIGHT });
     const K = st.cast;
     const fx = st.fx;
@@ -81,11 +82,11 @@ export default {
       /* v44 — the shadow screen */
       const sc = es(t, 3.05, 3.4, ease.out) * (1 - es(t, 6.55, 6.9, ease.in));
       const dy = -(1 - sc) * 700;
-      vis(screen, { x: SCR.x, y: SCR.y + dy, o: sc > 0.001 ? 1 : 0 });
+      vis(screen, { x: SX, y: SCR.y + dy, o: sc > 0.001 ? 1 : 0 });
       const dark = es(t, 6.2, 6.5);
-      vis(dim, { x: SCR.x, y: SCR.y + dy, o: sc > 0.001 ? dark * 0.9 : 0 });
+      vis(dim, { x: SX, y: SCR.y + dy, o: sc > 0.001 ? dark * 0.9 : 0 });
       const coil = es(t, 4.05, 4.6);
-      const GX = SCR.x - SCR.w / 2, GY = SCR.y + SCR.h - 26 + dy;
+      const GX = SX - SCR.w / 2, GY = SCR.y + SCR.h - 26 + dy;
       const slide = es(t, 4.6, 4.95);
       vis(snake, { x: GX + lerp(210, 60, coil) + slide * 40, y: GY - 10 - coil * 60 + slide * 50, s: 0.8, r: -coil * 20 + slide * 25, o: sc > 0.001 ? es(t, 3.3, 3.6) * (1 - dark) : 0 });
       const flick = bump(t, 5.15, 5.35) + bump(t, 5.45, 5.65);

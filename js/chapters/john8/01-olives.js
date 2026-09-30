@@ -34,8 +34,10 @@ export default {
     const jKneel = S.puppet(act.add(person(c, { ...CAST.jesus, pose: 'kneel' })));
     const prayGlow = act.add(`<g><circle r="120" fill="url(#halo-glow)"/></g>`);
     const tagL = S.layer({ par: 0.2, sh: 4 });
-    const tag = hanging(tagL, nameTag(c, tr('Góra Oliwna', 'Mount of Olives'), { size: 18 }), { x: 520, y: 300, len: 600 });
-    const tagT = hanging(tagL, nameTag(c, tr('świątynia', 'the temple'), { size: 18 }), { x: set.TEMPLE[0] + 150, y: set.TEMPLE[1] - 60, len: 600 });
+    // phone: both name tags clear of the screen edges and the progress thread
+    const TGX = S.portrait ? 590 : 520, TTX = set.TEMPLE[0] + (S.portrait ? 105 : 150);
+    const tag = hanging(tagL, nameTag(c, tr('Góra Oliwna', 'Mount of Olives'), { size: 18 }), { x: TGX, y: 300, len: 600 });
+    const tagT = hanging(tagL, nameTag(c, tr('świątynia', 'the temple'), { size: 18 }), { x: TTX, y: set.TEMPLE[1] - 60, len: 600 });
     set.front({ bough: true });
 
     const cur = curtains(S);
@@ -68,10 +70,10 @@ export default {
       vis(prayGlow, { x: 800, y: 560, s: 0.8 + Math.sin(T * 1.3) * 0.04, o: pray * kn * 0.8 });
       // name tags come down and go up
       const tk = es(t, 0.9, 1.3, ease.out) * (1 - es(t, 1.9, 2.1, ease.in));
-      swing(tag, 520, 300 - (1 - tk) * 600, tk > 0.001 ? T : 0, 1.2, 0.7);
+      swing(tag, TGX, 300 - (1 - tk) * 600, tk > 0.001 ? T : 0, 1.2, 0.7);
       fade(tag, tk > 0.001 ? 1 : 0);
       const tt = es(t, 2.5, 2.85, ease.out);
-      swing(tagT, set.TEMPLE[0] + 150, set.TEMPLE[1] - 60 - (1 - tt) * 600, tt > 0.001 ? T : 0, 1.2, 0.7, 2);
+      swing(tagT, TTX, set.TEMPLE[1] - 60 - (1 - tt) * 600, tt > 0.001 ? T : 0, 1.2, 0.7, 2);
       fade(tagT, tt > 0.001 ? 1 : 0);
 
       // camera: the Mount, then lifting toward the city as the day comes

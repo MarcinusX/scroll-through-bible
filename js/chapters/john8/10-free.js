@@ -78,7 +78,7 @@ export default {
       });
       /* v33 — Abraham's children; "how can you say 'free'?" */
       const ak = es(t, 2.05, 2.4, ease.out) * (1 - es(t, 3.9, 4.15, ease.in));
-      vis(portrait, { x: 1060, y: 190 - (1 - ak) * 700, r: Math.sin(T * 0.7) * 0.8 * ak, o: ak > 0.001 ? 1 : 0 });
+      vis(portrait, { x: S.portrait ? 995 : 1060, y: 190 - (1 - ak) * 700, r: Math.sin(T * 0.7) * 0.8 * ak, o: ak > 0.001 ? 1 : 0 });
       const qk = es(t, 3.1, 3.3, ease.back) * (1 - es(t, 3.9, 4.0));
       vis(q, { x: 1000, y: 470, s: qk * 1.4, o: qk > 0.01 ? 1 : 0 });
       /* v34–36 — the shadow screen */

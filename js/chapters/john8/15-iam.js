@@ -81,8 +81,8 @@ export default {
       const [lx, ly] = hand(K.lead[0].x, K.lead[0].y, K.lead[0].s, true, 20 + fk * 100);
       vis(fifty, { x: lx - 10, y: ly - 30, s: fk, r: -6, o: fk > 0.01 ? 1 : 0 });
       const tk = es(t, 1.3, 1.5) * (1 - es(t, 1.9, 2.05));
-      vis(tiny, { x: 400, y: 330, s: 0.7 + tk * 0.3, o: tk });
-      vis(q, { x: 520, y: 330, s: tk, o: tk > 0.01 ? 1 : 0 });
+      vis(tiny, { x: S.portrait ? 570 : 400, y: 330, s: 0.7 + tk * 0.3, o: tk });
+      vis(q, { x: S.portrait ? 680 : 520, y: 330, s: tk, o: tk > 0.01 ? 1 : 0 });
       /* v58b — the dial spins into eternity; the I AM; the light */
       const dk = es(t, 2.2, 2.5, ease.out) * (1 - es(t, 3.35, 3.55));
       const DX = 800, DY = 230 - (1 - es(t, 2.2, 2.5, ease.out)) * 700;

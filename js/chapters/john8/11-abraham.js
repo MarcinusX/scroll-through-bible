@@ -56,7 +56,7 @@ export default {
       st.set.update(t, T, { lit: 1, moonY: 150, glowO: 0.7, gate: 0.6 });
       /* the portrait (v37, v39a) and its thread of descent */
       const pk = es(t, 0.05, 0.4, ease.out) * (1 - es(t, 3.0, 3.2));
-      const PX = 1060, PY = 150;
+      const PX = S.portrait ? 1010 : 1060, PY = 150;      // phone: the portrait and the plate whole on a narrow screen
       vis(portrait, { x: PX, y: PY - (1 - pk) * 700, r: Math.sin(T * 0.7) * 0.8 * pk, o: pk > 0.001 ? 1 : 0 });
       const th = es(t, 0.3, 0.6) * (1 - es(t, 1.0, 1.2)) + es(t, 2.1, 2.4) * (1 - es(t, 2.9, 3.05));
       attr(threadL, 'd', `M${PX} ${PY + 162}L${PX} ${lerp(PY + 162, 480, th).toFixed(1)}`);
@@ -76,7 +76,7 @@ export default {
       vis(shadow, { x: 1060, y: 540, s: 0.8 + sh * 0.3, o: sh });
       /* v39b–40 — Mamre */
       const bk = es(t, 3.05, 3.4, ease.out) * (1 - es(t, 4.9, 5.15, ease.in));
-      const BX = 990, BY = 110 - (1 - bk) * 700;
+      const BX = S.portrait ? 900 : 990, BY = 110 - (1 - bk) * 700;
       vis(big, { x: BX, y: BY, o: bk > 0.001 ? 1 : 0 });
       const bow = bump(t, 3.45, 4.05);
       const offer = es(t, 4.05, 4.4);

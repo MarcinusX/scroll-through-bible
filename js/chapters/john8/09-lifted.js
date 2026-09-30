@@ -43,6 +43,9 @@ export default {
     const page = fx.add(`<g><circle r="60" fill="url(#halo-glow)"/>${sheet().p(c.cut(c.rect(-30, -38, 60, 76), 0.4, 5), C.halo).x((() => { let d = ''; for (let i = 0; i < 6; i++) d += c.ribbon([[-20, -26 + i * 10], [20 - (i % 2) * 8, -26 + i * 10]], 1.6); return d; })(), C.haloRim).out()}</g>`);
     const lights = [...K.lis, K.lead[4], K.lead[5]].map(() => fx.add(`<g>${soulLight(c, 10)}</g>`));
 
+    // phone: the far plate whole on a narrow screen, a little lower so the radiance does not sit on its corner
+    const PLX = S.portrait ? 935 : 1000, PLY = S.portrait ? 190 : 150, AMY = S.portrait ? 458 : 420;
+
     return (t, time) => {
       const T = time;
       st.set.update(t, T, { lit: 1, moonY: 150, glowO: 0.7, gate: 0.6 });
@@ -72,9 +75,9 @@ export default {
       vis(cloud, { x: 1000 + Math.sin(T * 0.4) * 6, y: 250, s: 0.8 + cover * 0.2, o: cover * 0.95 });
       /* v28a — the far plate and the I AM; v28b — the golden page */
       const pk = es(t, 4.05, 4.45, ease.out) * (1 - es(t, 4.95, 5.2, ease.in));
-      vis(plate, { x: 1000, y: 150 - (1 - pk) * 700, r: Math.sin(T * 0.7) * 0.8 * pk, o: pk > 0.001 ? 1 : 0 });
+      vis(plate, { x: PLX, y: PLY - (1 - pk) * 700, r: Math.sin(T * 0.7) * 0.8 * pk, o: pk > 0.001 ? 1 : 0 });
       const ak = es(t, 4.45, 4.7, ease.back) * (1 - es(t, 4.95, 5.2));
-      vis(am, { x: 1000, y: 420, s: ak, o: ak > 0.01 ? 1 : 0 });
+      vis(am, { x: PLX, y: AMY, s: ak, o: ak > 0.01 ? 1 : 0 });
       const pg = es(t, 5.1, 5.7);
       const [hx, hy] = hand(DC.JX, DC.FLOOR + 8, 1.06, false, 60);
       vis(page, { x: lerp(rx, hx + 10, pg), y: lerp(ry + 40, hy - 30, pg), s: 0.7 + pg * 0.3, r: (1 - pg) * 20, o: pg > 0 ? 1 - es(t, 6.0, 6.2) : 0 });
