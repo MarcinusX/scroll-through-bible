@@ -456,7 +456,9 @@ export function chamber(S, { skyCols = DUSK } = {}) {
   let blot = '';
   for (let i = 0; i < 14; i++) blot += c.cut(c.blob(c.rr(-200, 1800), c.rr(CEIL + 40, FLOOR - 60), c.rr(24, 60), c.rr(10, 22), 10, 0.2), 0.8, 6);
   w.x(blot, shade(wcol, -0.06), 'opacity=".55"');
-  w.p(c.cut([[-900, -1200], [2500, -1200], [2500, CEIL], [-900, CEIL]], 0.8, 30), shade(C.wood2, -0.25));
+  // on a tall screen the ceiling is only a beam across the wall, so the wood does not fill the top of the picture
+  const CTOP = S.portrait ? CEIL - 150 : -1200;
+  w.p(c.cut([[-900, CTOP], [2500, CTOP], [2500, CEIL], [-900, CEIL]], 0.8, 30), shade(C.wood2, -0.25));
   let beams = '';
   for (let x = -300; x < 1900; x += 110) beams += c.cut(c.rect(x, CEIL - 6, 22, 26), 0.3, 5);
   w.p(beams, shade(C.wood, -0.1));

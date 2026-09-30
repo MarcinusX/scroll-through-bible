@@ -194,7 +194,8 @@ export function nameTag(c, text, { size = 17, dark = false, w, back } = {}) {
   const lines = Array.isArray(text) ? text : [text];
   const longest = Math.max(...lines.map((l) => l.length));
   const ww = w || Math.max(58, size * (0.5 * longest + 1.7));
-  const h = size * (0.75 + lines.length * 1.1);
+  const h0 = size * (0.75 + lines.length * 1.1);
+  const h = h0 + size * 0.3;          // room under the words, so descenders stay on the paper
   const s = sheet();
   const fill = dark ? mix(C.storm, C.stone2, 0.25) : C.cream;
   const pts = [[-ww / 2 + 10, 6], [ww / 2 - 10, 6], [ww / 2, 16], [ww / 2, 6 + h], [-ww / 2, 6 + h], [-ww / 2, 16]];
@@ -202,7 +203,7 @@ export function nameTag(c, text, { size = 17, dark = false, w, back } = {}) {
   s.p(c.cut([[-ww / 2 + 5, 20], [ww / 2 - 5, 20], [ww / 2 - 5, 2 + h], [-ww / 2 + 5, 2 + h]], 0.3, 6), dark ? mix(C.storm, C.stone2, 0.4) : C.parchment);
   s.x(c.poly(c.circ(0, 12, 3.2, 10)), dark ? C.storm2 : C.wood2);
   const ink = dark ? C.cream : C.ink;
-  const y0 = 12 + (h - lines.length * size * 1.1) / 2 + size * 0.95;
+  const y0 = 12 + (h0 - lines.length * size * 1.1) / 2 + size * 0.95;
   const txt = lines.map((l, i) => `<text x="0" y="${(y0 + i * size * 1.1).toFixed(1)}" text-anchor="middle" font-family="${FONT}" font-size="${size}" font-style="italic" fill="${ink}">${l}</text>`).join('');
   return `${s.out()}${txt}`;
 }

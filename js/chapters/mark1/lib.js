@@ -542,7 +542,8 @@ export function synagogueInterior(S, { P = 0.45, sky = ['#bcd6d6', '#e2ecdf', '#
     addColumns() {
       const fg = S.layer({ par: 0.9, sh: 8 });
       fg.add(column(c, 60, 1100, 1400, 150, C.stone2) + column(c, 1540, 1100, 1400, 150, C.stone2));
-      const beam = sheet().p(c.cut([[-1200, -1400], [2800, -1400], [2800, 70], [-1200, 84]], 0.8, 16), C.wood2).x(c.ribbon([[-1200, 64], [2800, 60]], 3), shade(C.wood2, -0.25), 'opacity=".6"');
+      const up = S.portrait ? 260 : 0;    // phone: the beam sits higher, so it does not fill the top of the tall screen
+      const beam = sheet().p(c.cut([[-1200, -1400], [2800, -1400], [2800, 70 - up], [-1200, 84 - up]], 0.8, 16), C.wood2).x(c.ribbon([[-1200, 64 - up], [2800, 60 - up]], 3), shade(C.wood2, -0.25), 'opacity=".6"');
       fg.add(beam.out());
       return fg;
     },
