@@ -1,8 +1,8 @@
 # Ewangelie — papierowy teatr
 
-Scroll through bible: https://marcinusx.github.io/scroll-through-bible/
+Scroll through bible: https://palcemprzezbiblie.pl/
 
-[![The paper theatre in motion: the crowd gathers by the lake, the sower sows, the lamp is lifted onto its stand, the storm is stilled](docs/demo.gif)](https://marcinusx.github.io/scroll-through-bible/?lang=en)
+[![The paper theatre in motion: the crowd gathers by the lake, the sower sows, the lamp is lifted onto its stand, the storm is stilled](docs/demo.gif)](https://palcemprzezbiblie.pl/?lang=en)
 
 A scroll-driven, sentence-by-sentence illustrated reading of the Gospels, drawn as a layered
 **paper-cut diorama**. Every sentence is acted out on its own beat, in Polish and English.
