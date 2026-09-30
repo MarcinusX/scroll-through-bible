@@ -24,6 +24,7 @@ export default {
   cam: { x: [-40, 60], y: [-80, 80], z: [1, 1.3] },
   build(S) {
     const c = S.c;
+    const SCX = S.portrait ? 815 : SCR.x;          // phone: the whole screen inside the frame
     const W = wellSet(S, { skyCols: NOON, sunAt: [1250, 140] });
     const K = wellCast(S, W);
 
@@ -36,7 +37,7 @@ export default {
     let stars = '';
     for (let i = 0; i < 16; i++) stars += c.poly(c.star(c.rr(-SCR.w / 2 + 30, SCR.w / 2 - 30), c.rr(20, 90), c.rr(3, 6), 1.4, 4, 0));
     const ground = c.ridge(c.wave(GY, [4, 2], [200, 60]), -SCR.w / 2 - 20, SCR.w / 2 + 20, SCR.h + 20, 10, 0.8);
-    const scr = hanging(scrL, `<defs><clipPath id="${clip}"><path d="${cloth}"/></clipPath></defs><g clip-path="url(#${clip})"><path d="${cloth}" fill="#f3dcae"/><circle data-k="sGlow" cx="0" cy="${SCR.h * 0.5}" r="${SCR.w * 0.55}" fill="url(#warm-glow)" opacity=".7"/><g data-k="stars" opacity="0"><path d="${stars}" fill="${C.star}"/></g><path d="${ground}" fill="${INK}"/><g transform="translate(-200 ${GY})">${hydria(c, { col: INK })}</g></g><path d="${c.ribbon([[-SCR.w / 2 - 10, 2], [SCR.w / 2 + 10, 2]], 10)}" fill="${C.wood2}"/>`, { x: SCR.x, y: SCR.y, len: 800 });
+    const scr = hanging(scrL, `<defs><clipPath id="${clip}"><path d="${cloth}"/></clipPath></defs><g clip-path="url(#${clip})"><path d="${cloth}" fill="#f3dcae"/><circle data-k="sGlow" cx="0" cy="${SCR.h * 0.5}" r="${SCR.w * 0.55}" fill="url(#warm-glow)" opacity=".7"/><g data-k="stars" opacity="0"><path d="${stars}" fill="${C.star}"/></g><path d="${ground}" fill="${INK}"/><g transform="translate(-200 ${GY})">${hydria(c, { col: INK })}</g></g><path d="${c.ribbon([[-SCR.w / 2 - 10, 2], [SCR.w / 2 + 10, 2]], 10)}" fill="${C.wood2}"/>`, { x: SCX, y: SCR.y, len: 800 });
     const sGlow = S.$('sGlow'), starsEl = S.$('stars');
     const shL = S.layer({ par: 0.5, sh: 0, flat: true });
     const sunS = shL.add(`<g><path d="${c.cut(c.star(0, 0, 26, 19, 14, 0), 0.3, 4)}" fill="${INK}"/></g>`);
@@ -57,9 +58,9 @@ export default {
       W.update(t, T, { sunX: 1250, sunY: 140, glow: 0.8 });
       const down = es(t, -0.3, 0.2, ease.out) * (1 - es(t, 3.0, 3.35, ease.in));
       const sy = SCR.y - (1 - down) * 800;
-      pose(scr, { x: SCR.x, y: sy });
+      pose(scr, { x: SCX, y: sy });
       const on = down > 0.01 ? 1 : 0;
-      const O = (x, y) => [SCR.x + x, sy + y];
+      const O = (x, y) => [SCX + x, sy + y];
 
       /* v13 — drink, thirst, drink again */
       const cyc = seg(t, 0.1, 0.95);                  // two days go by in the beat

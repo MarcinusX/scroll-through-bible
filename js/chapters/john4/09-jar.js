@@ -23,14 +23,17 @@ export default {
     { v: 29, cont: true, text: 'Czyż On nie jest Mesjaszem?»' },
     { v: 30 },
   ],
-  cam: { x: [-60, 200], y: [-60, 100], z: [0.9, 1.3] },
+  cam: { x: [-60, 340], y: [-60, 100], z: [0.9, 1.3] },
   build(S) {
     const c = S.c;
-    const PAN = S.portrait ? { ...PAN0, x: 780, y: 20 } : PAN0;
+    // phone: the disciples stand closer to the well and the camera looks between Him and them; the picture of the
+    // town hangs in the middle of the screen
+    const PH = S.portrait;
+    const PAN = PH ? { ...PAN0, x: 916, y: 20 } : PAN0;
     const W = wellSet(S, { skyCols: NOON, sunAt: [860, 140], behind: (S) => S.layer({ par: 0.55, sh: 0, flat: true }) });
     const jarGlow = W.behind.add(`<circle r="90" fill="url(#halo-glow)"/>`);
     const L = W.actL;
-    const disc = DISC.map((o, i) => ({ i, seed: c.rr(0, 9), p: S.puppet(L.add(person(c, { ...o, holdB: i < 3 ? `<g transform="translate(0 4) scale(.8)">${basket(c, { w: 40, h: 24, full: true })}</g>` : '' }))), x: 1150 + i * 58, y: G.floor - 12 + (i % 2) * 6 }));
+    const disc = DISC.map((o, i) => ({ i, seed: c.rr(0, 9), p: S.puppet(L.add(person(c, { ...o, holdB: i < 3 ? `<g transform="translate(0 4) scale(.8)">${basket(c, { w: 40, h: 24, full: true })}</g>` : '' }))), x: PH ? 1085 + i * 48 : 1150 + i * 58, y: G.floor - 12 + (i % 2) * 6 }));
     const K = wellCast(S, W);
     // the stream of townsfolk (v30)
     const folk = Array.from({ length: 12 }, (_, i) => ({ i, seed: c.rr(0, 9), p: S.puppet(L.add(person(c, samaritan(c, i + 40)))), d: i * 0.045 + c.rr(0, 0.02) }));
@@ -121,9 +124,9 @@ export default {
         f.p.set({ x: x + (f.i % 4) * 44 * u, y: y + (f.i % 3) * 10 * u, s: sc * 0.95, flip: true, o: u > 0 ? Math.min(1, u * 6) : 0, walk: u > 0 && u < 1 ? T * 7 + f.i : undefined, head: -2, blink: blinkAt(T, f.seed) });
       });
 
-      S.cam.x = kf(t, [[-0.5, 120], [0.5, 110], [1.8, 80], [2.3, 120], [2.95, 180], [3.4, 160], [5.9, 160], [6.3, 60]]);
+      S.cam.x = PH ? kf(t, [[-0.5, 330], [2.3, 330], [3.4, 290], [7, 290]]) : kf(t, [[-0.5, 120], [0.5, 110], [1.8, 80], [2.3, 120], [2.95, 180], [3.4, 160], [5.9, 160], [6.3, 60]]);
       S.cam.y = kf(t, [[-0.5, 40], [0.5, 40], [1.8, 40], [2.95, 30], [3.4, -40], [5.9, -40], [6.3, 30]]);
-      S.cam.z = kf(t, [[-0.5, 1.12], [0.5, 1.1], [1.8, 1.16], [2.3, 1.08], [3.4, 1.12], [5.9, 1.12], [6.3, 0.96]]);
+      S.cam.z = PH ? kf(t, [[-0.5, 0.96], [2.9, 0.96], [3.4, 1], [5.9, 1], [6.3, 0.96]]) : kf(t, [[-0.5, 1.12], [0.5, 1.1], [1.8, 1.16], [2.3, 1.08], [3.4, 1.12], [5.9, 1.12], [6.3, 0.96]]);
     };
   },
 };

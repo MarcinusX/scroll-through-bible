@@ -27,12 +27,14 @@ export default {
     { v: 38, text: 'Ja was wysłałem żąć to, nad czym wyście się nie natrudzili.' },
     { v: 38, cont: true, text: 'Inni się natrudzili, a w ich trud wyście weszli».' },
   ],
-  cam: { x: [-80, 120], y: [-100, 80], z: [1, 1.3] },
+  cam: { x: [-80, 380], y: [-100, 80], z: [1, 1.3] },
   build(S) {
     const c = S.c;
+    // phone: the reaping happens closer to Jesus (RS), the sun hangs inside the frame, and the camera goes with the reapers
+    const PH = S.portrait, RS = PH ? -90 : 0, SUNX = PH ? 1060 : 1180;
     const sk = sky(S, AFTER);
     const hangL = S.layer({ par: 0.04, sh: 4 });
-    const sunEl = hanging(hangL, sun(c, 44), { x: 1180, y: 170, len: 700 });
+    const sunEl = hanging(hangL, sun(c, 44), { x: SUNX, y: 170, len: 700 });
     const cl = hanging(hangL, cloud(c, 170), { x: 480, y: 150, len: 600 });
     const farL = S.layer({ par: 0.1, sh: 2 });
     farL.add(band(c, { y: 470, amps: [16, 8, 3], lens: [1000, 360, 130], color: C.hillFar }).markup);
@@ -48,7 +50,7 @@ export default {
     const walkL = S.layer({ par: 0.35, sh: 3 });
     const white = Array.from({ length: 11 }, (_, i) => ({ i, seed: c.rr(0, 9), p: S.puppet(walkL.add(person(c, samaritan(c, i + 80, { white: true })))), x: 980 + i * 70 + c.rr(-20, 20), y: 616 + (i % 3) * 7, d: c.rr(0, 0.3) }));
     // those who laboured before (faint shadows in the rows)
-    const olds = [{ o: { ...JOHN_B }, x: 330 }, { o: { robe: C.dustyBlue, mantle: C.linen2, hair: C.greyHair, hairStyle: 'wrap', veil: C.stone, beard: 'full' }, x: 560 }, { o: samaritan(c, 5), x: 1090 }, { o: samaritan(c, 6), x: 1300 }]
+    const olds = [{ o: { ...JOHN_B }, x: PH ? 640 : 330 }, { o: { robe: C.dustyBlue, mantle: C.linen2, hair: C.greyHair, hairStyle: 'wrap', veil: C.stone, beard: 'full' }, x: PH ? 800 : 560 }, { o: samaritan(c, 5), x: PH ? 1010 : 1090 }, { o: samaritan(c, 6), x: PH ? 1180 : 1300 }]
       .map((d, i) => ({ ...d, i, p: S.puppet(walkL.add(shadowPerson(c, d.o, '#5a4a3c'))) }));
     walkL.add(wheatField(c, { y: 640, h: 40, n: 360, color: mix(C.wheat2, C.cream, 0.3), ear: mix(C.wheat, C.cream, 0.6) }));
     const greenL = S.layer({ par: 0.36, sh: 3 });
@@ -84,13 +86,13 @@ export default {
     ].map((p) => ({ ...p, el: hanging(fx, `${plate(c, p.icon, { r: 58 })}<g transform="translate(0 86)">${strip(c, p.text, { size: 18 })}</g>`, { x: p.x, y: 280, len: 600 }) }));
 
     const nearWheat = S.layer({ par: 0.6, sh: 4 });
-    nearWheat.add(wheatField(c, { x0: 1120, x1: 1700, y: 760, h: 110, n: 150, color: C.wheat2, ear: mix(C.wheat, C.cream, 0.3) }));
+    nearWheat.add(wheatField(c, { x0: 1120 + RS, x1: 1700, y: 760, h: 110, n: 150, color: C.wheat2, ear: mix(C.wheat, C.cream, 0.3) }));
 
     return (t, time) => {
       const T = time;
       const lift = es(t, 1.05, 1.5);
       sk.blend(AFTER, GOLD, lift);
-      swing(sunEl, 1180, 170, T, 1.1, 0.6);
+      swing(sunEl, SUNX, 170, T, 1.1, 0.6);
       swing(cl, 480 + Math.sin(T * 0.1) * 24, 150, T, 1.3, 0.7, 1);
       /* v35a — four more months */
       cards.forEach((cd) => {
@@ -119,34 +121,34 @@ export default {
       disc.forEach((d) => {
         let x = d.x, flip = d.x < 800;
         const reaper = d.i >= 2 && d.i <= 3;
-        if (reaper) x = lerp(d.x, 1180 + (d.i - 2) * 90, reap);
-        if (d.i >= 1 && d.i <= 3) x = lerp(x, 1330 + d.i * 50, go);
+        if (reaper) x = lerp(d.x, 1180 + RS + (d.i - 2) * 90, reap);
+        if (d.i >= 1 && d.i <= 3) x = lerp(x, PH ? 1130 + d.i * 50 : 1330 + d.i * 50, go);
         const swingK = reaper ? Math.max(0, Math.sin(t * 28 + d.i)) * reap * seg(t, 2.25, 2.95) : 0;
         d.p.set({ x, y: FLOOR + 4 + (d.i % 2) * 6, s: 1.0, flip: reaper && reap > 0.5 ? false : flip && go < 0.5, walk: (reap > 0 && reap < 1 && reaper) || (go > 0 && go < 1 && d.i >= 1 && d.i <= 3) ? x * 0.05 : undefined, armF: 20 + swingK * 60 + point * 10 + (d.i === 0 ? bump(t, 0.2, 0.9) * 50 : 0), armB: 12, head: -point * 10 + (d.i === 0 ? bump(t, 0.2, 0.9) * 8 : 0) + swingK * 10, lean: swingK * 10, blink: blinkAt(T, d.seed) });
       });
       /* v36a — wages and sheaves for eternal life */
       sheaves.forEach((sh, i) => {
         const k = es(t, 2.3 + i * 0.18, 2.45 + i * 0.18, ease.back);
-        vis(sh, { x: 1000 + i * 60, y: FLOOR + 24, s: k, o: k > 0.01 ? 1 - go * 0 : 0 });
+        vis(sh, { x: 1000 + RS + i * 60, y: FLOOR + 24, s: k, o: k > 0.01 ? 1 - go * 0 : 0 });
         fade(sh.querySelector('.sg'), es(t, 2.7, 2.95) * 0.9);
       });
       coins.forEach((cn, i) => {
         const k = seg(t, 2.5 + i * 0.1, 2.9 + i * 0.1);
-        vis(cn, { x: 1200 + i * 40, y: 470 + k * 60 - Math.sin(k * PI) * 50, sx: Math.cos(k * 14), o: k > 0 && k < 1 ? 1 : 0 });
+        vis(cn, { x: 1200 + RS + i * 40, y: 470 + k * 60 - Math.sin(k * PI) * 50, sx: Math.cos(k * 14), o: k > 0 && k < 1 ? 1 : 0 });
       });
       sparks.forEach((sp, i) => {
         const k = ((T * 0.4 + i / 5) % 1);
-        vis(sp, { x: 990 + i * 30, y: FLOOR - 60 - k * 90, s: 0.5 + (1 - k) * 0.5, o: es(t, 2.7, 2.95) * (1 - es(t, 3.9, 4.1)) * Math.sin(k * PI) });
+        vis(sp, { x: 990 + RS + i * 30, y: FLOOR - 60 - k * 90, s: 0.5 + (1 - k) * 0.5, o: es(t, 2.7, 2.95) * (1 - es(t, 3.9, 4.1)) * Math.sin(k * PI) });
       });
       /* v36b — sower and reaper rejoice together */
       const sw = es(t, 3.05, 3.5, ease.out) * (1 - es(t, 5.0, 5.4));
-      const sx = lerp(1720, 1300, sw);
+      const sx = lerp(1720, 1300 + RS, sw);
       const joy = es(t, 3.45, 3.6) * (1 - es(t, 4.1, 4.3));
       const hop = Math.abs(Math.sin(T * 5)) * 8 * joy;
       sower.set({ x: sx, y: FLOOR + 6 - hop, s: 1.0, flip: true, walk: sw > 0 && sw < 1 ? sx * 0.05 : undefined, armF: 20 + joy * 110, armB: 20 + joy * 40, o: sw > 0.01 ? 1 : 0, blink: blinkAt(T, 7) });
       hearts.forEach((h, i) => {
         const k = es(t, 3.55 + i * 0.1, 3.75 + i * 0.1, ease.back) * (1 - es(t, 4.1, 4.3));
-        vis(h, { x: 1250 + i * 50, y: 470 - k * 20 + Math.sin(T * 2 + i) * 4, s: k, o: k > 0.01 ? 1 : 0 });
+        vis(h, { x: 1250 + RS + i * 50, y: 470 - k * 20 + Math.sin(T * 2 + i) * 4, s: k, o: k > 0.01 ? 1 : 0 });
       });
       /* v37 — one sows, another reaps */
       plates.forEach((p, i) => {
@@ -159,8 +161,9 @@ export default {
       olds.forEach((o) => o.p.set({ x: o.x, y: 640, s: 0.5, flip: o.x > 800, o: ghost * 0.85, armF: 60 + (ghost > 0.01 ? Math.sin(T + o.i) * 10 : 0), lean: 16, head: 10 }));
 
       S.cam.y = kf(t, [[-0.5, 20], [0.5, -40], [1.05, -40], [1.5, -80], [2.0, 20], [3.0, 20], [4.0, -40], [5.0, 0], [6.0, -20]]);
-      S.cam.x = kf(t, [[-0.5, 0], [1.5, 40], [2.0, 110], [3.5, 110], [4.0, 0], [5.0, 60], [6.0, 30]]);
-      S.cam.z = kf(t, [[-0.5, 1.04], [0.5, 1.02], [1.5, 1.06], [2.0, 1.18], [3.5, 1.18], [4.0, 1.04], [6.0, 1.04]]);
+      S.cam.x = PH ? kf(t, [[-0.5, 0], [1.5, 40], [2.1, 370], [3.6, 370], [4.0, 0], [4.9, 0], [5.4, 360], [7, 360]])
+        : kf(t, [[-0.5, 0], [1.5, 40], [2.0, 110], [3.5, 110], [4.0, 0], [5.0, 60], [6.0, 30]]);
+      S.cam.z = PH ? 1.04 : kf(t, [[-0.5, 1.04], [0.5, 1.02], [1.5, 1.06], [2.0, 1.18], [3.5, 1.18], [4.0, 1.04], [6.0, 1.04]]);
     };
   },
 };

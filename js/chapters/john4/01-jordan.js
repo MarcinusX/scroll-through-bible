@@ -23,9 +23,13 @@ export default {
     { v: 5 },
     { v: 6, text: 'Było tam źródło Jakuba.' },
   ],
-  cam: { x: [-120, 120], y: [-160, 120], z: [1, 2.2] },
+  cam: { x: [-120, 280], y: [-160, 120], z: [0.76, 2.2] },
   build(S) {
     const c = S.c;
+    // phone: the stage is drawn closer together (and seen from a little further back), so both lines, both
+    // tallies, the Pharisees and the Lord fit the narrow screen
+    const PH = S.portrait;
+    const FX = PH ? 442 : 380, JX = PH ? 826 : 860, DX = PH ? 906 : 960, DS = PH ? 52 : 62;
     const SKY = ['#cfe0da', '#efe6cd', '#f6e8cf'];
     const sk = sky(S, SKY);
     const hangL = S.layer({ par: 0.04, sh: 4 });
@@ -44,7 +48,7 @@ export default {
 
     // John further up the river, with a short line
     const jL = S.layer({ par: 0.36, sh: 3 });
-    const JB = { x: 1270, y: 640, s: 0.55 };
+    const JB = { x: PH ? 1125 : 1270, y: 640, s: 0.55 };
     const baptist = S.puppet(jL.add(person(c, { ...JOHN_B, holdF: `<g transform="translate(0 4) scale(.8)">${bowl(c, { w: 26, color: C.clay, food: 'water' })}</g>` })));
     const jKneel = S.puppet(jL.add(person(c, { ...samaritan(c, 3), pose: 'kneel' })));
     const jLine = [0, 1, 2].map((i) => ({ i, p: S.puppet(jL.add(person(c, samaritan(c, i + 5)))) }));
@@ -76,7 +80,7 @@ export default {
       return { el, marks: Array.from(el.querySelectorAll('.mk')), x, y };
     };
     const tJ = tally(tr('uczniowie Jezusa', 'Jesus’ disciples'), 12, 660, 210);
-    const tB = tally(tr('uczniowie Jana', 'John’s disciples'), 6, 1170, 240);
+    const tB = tally(tr('uczniowie Jana', 'John’s disciples'), 6, PH ? 1035 : 1170, 240);
 
     // the near bank: Jesus, Peter, Philip, Nathanael; two Pharisees on the left
     const bank = S.layer({ par: 0.55, sh: 4 });
@@ -84,12 +88,14 @@ export default {
     bank.add(sheet().p(c.ridge(bfn, -900, 2500, 1700, 12, 1), mix(C.sand, C.sage2, 0.35)).out());
     bank.add(reeds(c, 250, 736, 12, 110, C.olive) + reeds(c, 1420, 738, 10, 100, C.olive) + rock(c, 1300, 745, 70, 26, C.rock2));
     bank.add(grass(c, { x0: -500, x1: 2100, y: 730, fn: bfn, n: 30, h: 16, color: C.olive }));
-    const SIGN = { x: 1160, y: 742 };
+    const SIGN = { x: PH ? 975 : 1160, y: 742 };
     const post = bank.add(`<g>${signpost(c, tr('Galilea', 'Galilee'), { size: 20, dir: 1 })}</g>`);
     const ppl = S.layer({ par: 0.55, sh: 5 });
     const phar = [0, 1].map((i) => ({ i, seed: c.rr(0, 9), p: S.puppet(ppl.add(person(c, pharisee(c, i + 1)))) }));
-    const jesus = S.puppet(ppl.add(person(c, CAST.jesus)));
+    // cut in the old order, but Jesus is laid on last: He walks past the three in front of them, not hidden behind
+    const jesusM = person(c, CAST.jesus);
     const bankD = [0, 3, 4].map((k, i) => ({ i, seed: c.rr(0, 9), p: S.puppet(ppl.add(person(c, DISC[k]))) }));
+    const jesus = S.puppet(ppl.add(jesusM));
     const whisper = ppl.add(`<g>${speech(c, `<g transform="translate(-10 0)">${GLYPH.bang(c)}</g><g transform="translate(10 0)">${GLYPH.bang(c)}</g>`, { w: 62, h: 44 })}</g>`);
     const rings = [0, 1, 2].map((i) => ppl.add(`<path d="${c.ribbon(c.arc(0, 0, 16, 16, -0.6, 0.6, 8), 3.4)}" fill="${shade(C.ochre, 0.1)}"/>`));
 
@@ -154,21 +160,23 @@ export default {
 
       // the Pharisees point, lean together, whisper; the whisper reaches Jesus
       const lean = es(t, 1.25, 1.45);
+      const off = PH ? es(t, 3.1, 3.9, ease.in) : 0;     // phone: they walk off before the map fills the screen
       phar.forEach((f) => f.p.set({
-        x: 380 + f.i * 64, y: 752, s: 0.96, flip: f.i === 1 ? es(t, 1.2, 1.3) < 0.5 : false,
+        x: FX + f.i * 64 - off * 260, y: 752, s: 0.96, flip: off > 0 ? true : f.i === 1 ? es(t, 1.2, 1.3) < 0.5 : false,
+        walk: off > 0 && off < 1 ? off * 30 + f.i : undefined,
         armF: f.i === 0 ? bump(t, 0.95, 1.4) * 90 : 20, armB: 10, head: f.i === 1 ? -lean * 8 : lean * 6, lean: (f.i ? -1 : 1) * lean * 5, blink: blinkAt(T, f.seed),
       }));
       const wk = es(t, 1.3, 1.45, ease.back) * (1 - es(t, 1.7, 1.8));
-      vis(whisper, { x: 470, y: 560, s: wk, o: wk > 0.01 ? 1 : 0 });
+      vis(whisper, { x: FX + 90, y: 560, s: wk, o: wk > 0.01 ? 1 : 0 });
       rings.forEach((r, i) => {
         const k = seg(t, 1.5 + i * 0.07, 1.85 + i * 0.07);
-        vis(r, { x: lerp(500, 850, k), y: lerp(590, 580, k), s: 0.8 + k * 0.4, o: k > 0 && k < 1 ? 1 - k * 0.4 : 0 });
+        vis(r, { x: lerp(FX + 120, JX - 10, k), y: lerp(590, 580, k), s: 0.8 + k * 0.4, o: k > 0 && k < 1 ? 1 - k * 0.4 : 0 });
       });
 
       /* v2 — He does not baptize: His disciples do */
       const hear = es(t, 1.8, 1.95);
       const leave = es(t, 3.05, 3.9, ease.in);
-      const jx = lerp(860, 1320, leave);
+      const jx = lerp(JX, 1320, leave);
       jesus.set({
         x: jx, y: 758, s: 1.0, flip: t < 3.02, walk: leave > 0 && leave < 1 ? jx * 0.05 : undefined,
         armF: 10 + es(t, 2.05, 2.3) * 55 * (1 - es(t, 2.85, 3.0)), armB: 8 + es(t, 2.05, 2.3) * 20 * (1 - es(t, 2.85, 3.0)),
@@ -184,12 +192,12 @@ export default {
       });
       bankD.forEach((d) => {
         const go = es(t, 3.15 + d.i * 0.1, 3.95 + d.i * 0.1, ease.in);
-        const x = lerp(960 + d.i * 62, 1440 + d.i * 60, go);
+        const x = lerp(DX + d.i * DS, 1440 + d.i * 60, go);
         d.p.set({ x, y: 760, s: 0.96, flip: t < 1.9 ? false : t < 3.1, walk: go > 0 && go < 1 ? x * 0.05 : undefined, head: -hear * 4, blink: blinkAt(T, d.seed) });
       });
       // v3 — the signpost to Galilee
       const sp = es(t, 3.0, 3.25, ease.back);
-      vis(post, { x: SIGN.x, y: SIGN.y + (1 - sp) * 120, s: 1, o: sp > 0.01 ? 1 : 0 });
+      vis(post, { x: SIGN.x, y: SIGN.y + (1 - sp) * 120, s: 1, o: sp > 0.01 && !(PH && mapK > 0.6) ? 1 : 0 });
 
       /* v4 — the map: the route through Samaria */
       vis(mapEl, { x: MAP.x, y: MAP.y - (1 - mapK) * 1100, s: MAP.s, o: mapK > 0.005 ? 1 : 0 });
@@ -214,11 +222,13 @@ export default {
 
       // camera: the river, the bank, then onto the map and into Sychar
       const zin = es(t, 4.9, 5.4);
-      const cx = kf(t, [[0, 0], [1.2, -40], [2.0, -80], [2.9, -40], [3.4, 60], [4.2, 0]]);
+      // phone: the camera stays put, then walks with Him past the signpost
+      const cx = PH ? kf(t, [[0, 0], [3.0, 0], [3.7, 260], [3.85, 260], [4.25, 0]]) : kf(t, [[0, 0], [1.2, -40], [2.0, -80], [2.9, -40], [3.4, 60], [4.2, 0]]);
       const cy = kf(t, [[0, 80], [1.2, 60], [2.0, 90], [3.2, 70], [4.2, 0]]);
       S.cam.x = lerp(cx, SY[0] + 30 - 800, zin);
       S.cam.y = lerp(cy, SY[1] + 10 - 470, zin);
-      S.cam.z = kf(t, [[0, 1.08], [1.2, 1.14], [2.0, 1.24], [2.9, 1.12], [4.2, 1.0], [4.9, 1.0], [5.4, 2.0], [6.2, 2.1]]);
+      S.cam.z = PH ? kf(t, [[0, 0.78], [2.0, 0.78], [2.4, 0.86], [2.9, 0.8], [3.6, 1.0], [4.9, 1.0], [5.4, 2.0], [6.2, 2.1]])
+        : kf(t, [[0, 1.08], [1.2, 1.14], [2.0, 1.24], [2.9, 1.12], [4.2, 1.0], [4.9, 1.0], [5.4, 2.0], [6.2, 2.1]]);
     };
   },
 };

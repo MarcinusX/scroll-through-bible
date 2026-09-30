@@ -10,7 +10,7 @@ import { tr } from '../../core/i18n.js';
 import { wellSet, wellCast, G, NOON, jerusalem, shadowPerson, samaritan, hang2, hourglassJ, nameTag, glory, vis, kf, hanging, swing, PI } from './lib.js';
 
 const INK = '#4a3a33';
-const GZ = { x: 530, y: 306 }, JR0 = { x: 1190, y: 420 };
+const GZ0 = { x: 530, y: 306 }, JR0 = { x: 1190, y: 420 };
 
 export default {
   id: 'j4-mountain',
@@ -26,9 +26,13 @@ export default {
   cam: { x: [-60, 80], y: [-80, 80], z: [1, 1.3] },
   build(S) {
     const c = S.c;
-    const JR = S.portrait ? { x: 1010, y: 330 } : JR0;
+    // phone: both hills, their people and their name tags inside the frame; the hourglass between the two at the well
+    const PH = S.portrait;
+    const JR = PH ? { x: 975, y: 330 } : JR0;
+    const HG = PH ? { x: 850, y: 420 } : { x: 850, y: 290 };
     let flatL;
     const W = wellSet(S, { skyCols: NOON, sunAt: [830, 140], behind: (S) => { flatL = S.layer({ par: 0.5, sh: 5 }); return S.layer({ par: 0.55, sh: 0, flat: true }); } });
+    const GZ = { x: W.gerX + 10, y: GZ0.y };
     const K = wellCast(S, W);
 
     /* ---------- the two painted hills ---------- */
@@ -78,11 +82,11 @@ export default {
       const pray = (i) => 0.5 + 0.5 * Math.sin(T * 1.2 + i);
       gWor.forEach((w) => w.p.set({ x: GZ.x + w.dx, y: GZ.y + 2, s: 0.13, flip: w.dx > 0, o: gk * es(t, 1.3, 1.5), armB: 150, armF: 70 + pray(w.i) * 20 * es(t, 1.4, 1.6) }));
       jWor.forEach((w) => w.p.set({ x: JR.x + w.dx * 0.8, y: jy - 8, s: 0.12, flip: w.dx > 0, o: jk > 0.01 ? es(t, 2.3, 2.5) : 0, armB: 150, armF: 70 + pray(w.i) * 20 * es(t, 2.4, 2.6) }));
-      vis(tagG, { x: GZ.x + 170, y: GZ.y - 30, r: -5, o: gk * es(t, 1.3, 1.45) });
-      vis(tagJ, { x: JR.x + 140, y: jy - 110, r: 5, o: jk > 0.01 ? es(t, 2.3, 2.45) : 0 });
+      vis(tagG, { x: PH ? GZ.x : GZ.x + 170, y: PH ? GZ.y - 96 : GZ.y - 30, r: -5, o: gk * es(t, 1.3, 1.45) });
+      vis(tagJ, { x: PH ? JR.x + 60 : JR.x + 140, y: PH ? jy - 124 : jy - 110, r: 5, o: jk > 0.01 ? es(t, 2.3, 2.45) : 0 });
       /* v21a — the hour is coming */
       const hk = es(t, 3.0, 3.35, ease.out) * (1 - es(t, 5.0, 5.35, ease.in));
-      swing(hg, 850, 290 - (1 - hk) * 600, T * hk, 1, 0.7);
+      swing(hg, HG.x, HG.y - (1 - hk) * (PH ? 900 : 600), T * hk, 1, 0.7);
       fade(hg, hk > 0.001 ? 1 : 0);
       const sand = seg(t, 3.2, 5.0);
       pose(sandT, { sy: 1 - sand * 0.8, oy: 0, y: 0 });

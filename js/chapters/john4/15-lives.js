@@ -28,10 +28,10 @@ export default {
     { v: 53, cont: true, text: 'I uwierzył on sam i cała jego rodzina.' },
     { v: 54 },
   ],
-  cam: { x: [-60, 160], y: [-60, 80], z: [1, 1.3] },
+  cam: { x: [-60, 200], y: [-60, 80], z: [1, 1.3] },
   build(S) {
     const c = S.c;
-    const A1 = S.portrait ? { ...A1L, x: 640, y: 250 } : A1L, A2 = S.portrait ? { ...A2L, x: 960, y: 250 } : A2L;
+    const A1 = S.portrait ? { ...A1L, x: 690, y: 250 } : A1L, A2 = S.portrait ? { ...A2L, x: 990, y: 250 } : A2L;
     const W = galileeSet(S, { lakeX: 1000 });
     const nightL = S.layer({ par: 0.02, sh: 0, flat: true });
     nightL.el.parentNode.insertBefore(nightL.el, W.hangL.el);
@@ -78,7 +78,7 @@ export default {
       nightL.shift(0, night > 0.001 ? 0 : 6000);
       tintL.shift(0, night > 0.001 || dusk0 > 0.001 ? 0 : 6000);
       tintL.fade(night * 0.4 + dusk * 0.08);
-      W.update(t, T, { sunX: lerp(1180, 1500, Math.max(dusk, night)), sunY: 170 + Math.max(dusk * 0.6, night) * 520 });
+      W.update(t, T, { sunX: lerp(W.sunAt[0], 1500, Math.max(dusk, night)), sunY: lerp(W.sunAt[1], 690, Math.max(dusk * 0.6, night)) });
       swing(moonEl, 640, 170 + (1 - night) * 600, night > 0.001 ? T : 0, 1, 0.6, 1);
       fade(moonEl, night > 0.001 ? 1 : 0);
       /* v50b — he believes and goes his way */
@@ -144,9 +144,10 @@ export default {
       fade(tag2, g2 > 0.001 ? 1 : 0);
       vis(sTxt, { x: 900, y: 330, s: es(t, 6.4, 6.6, ease.back), o: es(t, 6.4, 6.5) });
 
-      S.cam.x = kf(t, [[-0.5, -40], [1.0, 40], [2.0, 60], [3.0, 60], [4.0, 20], [5.0, 60], [6.0, 60], [6.5, 20]]);
+      // phone: the camera keeps the father, the servants and the household in the frame
+      S.cam.x = S.portrait ? kf(t, [[-0.5, -40], [1.0, 40], [1.5, 160], [5.0, 160], [5.4, 200]]) : kf(t, [[-0.5, -40], [1.0, 40], [2.0, 60], [3.0, 60], [4.0, 20], [5.0, 60], [6.0, 60], [6.5, 20]]);
       S.cam.y = kf(t, [[-0.5, 40], [1.0, 40], [2.0, 40], [3.0, -10], [4.0, -30], [5.0, 30], [6.0, -30]]);
-      S.cam.z = kf(t, [[-0.5, 1.1], [1.0, 1.1], [2.0, 1.16], [3.0, 1.04], [4.0, 1.02], [5.0, 1.12], [6.0, 1.02]]);
+      S.cam.z = S.portrait ? kf(t, [[-0.5, 1.1], [1.0, 1.1], [1.5, 1.0]]) : kf(t, [[-0.5, 1.1], [1.0, 1.1], [2.0, 1.16], [3.0, 1.04], [4.0, 1.02], [5.0, 1.12], [6.0, 1.02]]);
     };
   },
 };

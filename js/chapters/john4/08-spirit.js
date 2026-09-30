@@ -9,7 +9,7 @@ import { seg, es, ease, bump, fade } from '../../core/anim.js';
 import { tr } from '../../core/i18n.js';
 import { wellSet, wellCast, G, NOON, dayArc, hourAt, sunToken, samaritan, tag, thought, oilHorn, lightCrown, glory, say, vis, kf, hanging, swing } from './lib.js';
 
-const AR = { x: 850, y: 310, r: 100 };
+const AR0 = { x: 850, y: 310, r: 100 };
 
 export default {
   id: 'j4-spirit',
@@ -25,6 +25,8 @@ export default {
   cam: { x: [-60, 60], y: [-80, 100], z: [1, 1.5] },
   build(S) {
     const c = S.c;
+    const AR = S.portrait ? { ...AR0, y: 400 } : AR0;     // phone: the day-arc under the sun, not over it
+    const SCX = S.portrait ? 812 : 850;                  // phone: the whole scroll, rods and all, inside the frame
     let beamL;
     const W = wellSet(S, {
       skyCols: NOON, sunAt: [830, 140],
@@ -61,7 +63,7 @@ export default {
       for (let r = 0; r < 6; r++) { let x = -SW / 2 + 24; while (x < SW / 2 - 30) { const l = c.rr(14, 46); ln += c.ribbon([[x, 20 + r * 16], [Math.min(x + l, SW / 2 - 24), 20 + r * 16 + c.rr(-1, 1)]], 2); x += l + 8; } }
       s.x(ln, C.inkSoft, 'opacity=".5"');
       return `${s.out()}<rect class="shine" x="${-SW / 2}" y="0" width="80" height="120" fill="#fff7dc" opacity="0"/>`;
-    })(), { x: 850, y: 170, len: 600 });
+    })(), { x: SCX, y: 170, len: 600 });
     const sClip = S.id('sc');
     S.defs(`<clipPath id="${sClip}"><rect x="${-SW / 2}" y="-20" width="${SW}" height="160"/></clipPath>`);
     const shine = scroll.querySelector('.shine');
@@ -121,12 +123,12 @@ export default {
       const sk = es(t, 5.0, 5.2, ease.out) * (1 - es(t, 5.9, 6.1, ease.in));
       const un = es(t, 5.15, 5.6);
       const sy = 170 - (1 - sk) * 600;
-      pose(scroll, { x: 850, y: sy });
+      pose(scroll, { x: SCX, y: sy });
       fade(scroll, sk > 0.01 ? 1 : 0);
       const half = 10 + un * (SW / 2);
       pose(scrollBody, { sx: un * 0.98 + 0.02 });
-      vis(rod, { x: 850 + half, y: sy, o: sk > 0.01 ? 1 : 0 });
-      vis(rodL, { x: 850 - half, y: sy, o: sk > 0.01 ? 1 : 0 });
+      vis(rod, { x: SCX + half, y: sy, o: sk > 0.01 ? 1 : 0 });
+      vis(rodL, { x: SCX - half, y: sy, o: sk > 0.01 ? 1 : 0 });
       const sh = seg(t, 5.55, 5.95);
       pose(shine, { x: sh * (SW - 80) });
       fade(shine, bump(t, 5.55, 5.95) * 0.8);

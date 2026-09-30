@@ -244,7 +244,8 @@ export function wellSet(S, o = {}) {
   const farL = S.layer({ par: 0.1, sh: 2 });
   farL.add(band(c, { y: 470, amps: [16, 8, 3], lens: [1000, 360, 130], color: C.hillFar }).markup);
   const ger = farL.add(`<g>${gerizim(c, 560, 170, mix(C.hillFar, C.sage2, 0.25))}</g>`);
-  pose(ger, { x: 520, y: 478 });
+  const gerX = S.portrait ? 600 : 520;       // phone: the mountain and its ruins clear of the screen edge
+  pose(ger, { x: gerX, y: 478 });
   farL.add(sheet().p(c.cut([[1000, 520], [1180, 420], [1330, 372], [1480, 360], [1640, 392], [1900, 470], [2200, 520]], 1.2, 12), mix(C.hillFar, C.sage2, 0.3)).out());
   // mid: Sychar on its hill, fields
   const midL = S.layer({ par: 0.2, sh: 3 });
@@ -288,7 +289,7 @@ export function wellSet(S, o = {}) {
   fgL.add(grass(c, { x0: -1400, x1: 3000, y: 960, fn: fgf, n: 60, h: 30, color: C.moss2 }));
   fgL.add(flowers(c, { x0: -1400, x1: 3000, y: 960, fn: fgf, n: 30, h: 30 }));
   return {
-    sk, hangL, farL, midL, fieldL, groundL, actL, fgL, behind, sunEl, sunGlow, cls, ger, gfn, tree, treeShadow, wellEl, benchEl,
+    sk, hangL, farL, midL, fieldL, groundL, actL, fgL, behind, sunEl, sunGlow, cls, ger, gerX, gfn, tree, treeShadow, wellEl, benchEl,
     update(t, time, { sunX = sunAt[0], sunY = sunAt[1], glow = 0.55, drift = 1 } = {}) {
       swing(sunEl, sunX, sunY, time, 1.1, 0.6);
       pose(sunGlow, { x: sunX, y: sunY, s: 0.8 + glow * 0.6, o: glow });
@@ -460,7 +461,8 @@ export const GAL = ['#cfe0da', '#eee8d0', '#f6ead2'];
  */
 export function galileeSet(S, o = {}) {
   const c = S.c;
-  const { skyCols = GAL, sunAt = [1180, 170], cana = null, act = 0.55, groundY = 640, lakeX = 1150 } = o;
+  // phone: the sun hangs inside the frame, high in the tall sky, clear of the hanging pictures
+  const { skyCols = GAL, sunAt = S.portrait ? [1040, -60] : [1180, 170], cana = null, act = 0.55, groundY = 640, lakeX = 1150 } = o;
   const sk = sky(S, skyCols);
   const hangL = S.layer({ par: 0.04, sh: 4 });
   const sunEl = hanging(hangL, sun(c, 44), { x: sunAt[0], y: sunAt[1], len: 700 });
@@ -488,7 +490,7 @@ export function galileeSet(S, o = {}) {
   fgL.add(sheet().p(c.ridge(fgf, -1400, 3000, 1800, 14, 1.4), C.moss2).out());
   fgL.add(grass(c, { x0: -1400, x1: 3000, y: 970, fn: fgf, n: 60, h: 30, color: C.moss2 }));
   return {
-    sk, hangL, farL, lakeL, midL, groundL, actL, fgL, behind, sunEl, gfn, h2,
+    sk, hangL, farL, lakeL, midL, groundL, actL, fgL, behind, sunEl, sunAt, gfn, h2,
     update(t, time, { sunX = sunAt[0], sunY = sunAt[1] } = {}) {
       swing(sunEl, sunX, sunY, time, 1.1, 0.6);
       cls.forEach((cl) => swing(cl.el, cl.x + Math.sin(time * 0.1 + cl.i * 2) * 24, cl.y, time, 1.4, 0.7, cl.i));

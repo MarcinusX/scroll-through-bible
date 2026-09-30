@@ -23,9 +23,10 @@ export default {
   cam: { x: [-80, 80], y: [-60, 120], z: [1, 1.3] },
   build(S) {
     const c = S.c;
-    const AR = S.portrait ? { ...AR0, x: 960, y: 250 } : AR0;
+    const AR = S.portrait ? { ...AR0, x: 900, y: 420 } : AR0;   // phone: under the sun, not over it
     const RX = S.portrait ? 820 : 1120, RY = S.portrait ? 60 : 290;
-    const W = wellSet(S, { skyCols: MORN, sunAt: [1180, 230] });
+    const SX0 = S.portrait ? 1050 : 1180;      // phone: the morning sun inside the frame
+    const W = wellSet(S, { skyCols: MORN, sunAt: [SX0, 230] });
     const L = W.actL;
     // heat shimmer over the plaza
     const heat = [0, 1, 2, 3].map((i) => W.groundL.add(`<path d="${c.ribbon(c.cbez([0, 0], [14, -30], [-14, -60], [0, -90], 16), 3)}" fill="${C.apricot}" opacity="0"/>`));
@@ -67,7 +68,7 @@ export default {
       /* v6c — the sun climbs to the sixth hour */
       const noon = es(t, 1.0, 1.7);
       W.sk.blend(MORN, NOON, noon);
-      W.update(t, T, { sunX: lerp(1180, 830, noon), sunY: lerp(230, 150, noon), glow: 0.4 + noon * 0.5 });
+      W.update(t, T, { sunX: lerp(SX0, 830, noon), sunY: lerp(230, 150, noon), glow: 0.4 + noon * 0.5 });
       pose(W.treeShadow, { x: 470, y: 652, sx: 1 - noon * 0.4, ox: 470, oy: 652 });
       heat.forEach((h, i) => {
         const on = noon * (1 - es(t, 4.1, 4.4) * 0.5);

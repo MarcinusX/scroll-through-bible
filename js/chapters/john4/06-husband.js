@@ -29,7 +29,7 @@ export default {
     const dots = loop.map((p, i) => ({ i, el: fx.add(`<path d="${c.cut(c.ell(0, 0, 5, 3, 8), 0.2, 2)}" fill="${C.terracotta}"/>`), p }));
     const empty = fx.add(`<g>${ghost(c)}</g>`);
     const kind = fx.add(`<g>${spark(c, 12)}</g>`);
-    const rings = [0, 1, 2, 3, 4].map((i) => ({ i, el: fx.add(`<g><circle r="40" fill="url(#halo-glow)" opacity=".5"/>${hoop(c, 22, [C.sun, C.haloRim, C.ochre, C.wheat, C.apricot][i])}</g>`), x: 1060 + (i - 2) * 58 + c.rr(-8, 8), y: 330 + Math.abs(i - 2) * 26 + c.rr(-6, 6) }));
+    const rings = [0, 1, 2, 3, 4].map((i) => ({ i, el: fx.add(`<g><circle r="40" fill="url(#halo-glow)" opacity=".5"/>${hoop(c, 22, [C.sun, C.haloRim, C.ochre, C.wheat, C.apricot][i])}</g>`), x: (S.portrait ? 1000 : 1060) + (i - 2) * (S.portrait ? 50 : 58) + c.rr(-8, 8), y: 330 + Math.abs(i - 2) * 26 + c.rr(-6, 6) }));
     const six = fx.add(`<g>${brokenHoop(c, 24, C.stone2)}</g>`);
     const petals = rings.map((r, i) => ({ i, el: fx.add(`<path d="${c.cut(c.ell(0, 0, 7, 4, 10), 0.3, 3)}" fill="${[C.blushVeil, C.halo, C.cream, C.roseRobe, C.wheat][i]}"/>`) }));
     const heartL = fx.add(`<g>${soulLight(c, 11)}</g>`);

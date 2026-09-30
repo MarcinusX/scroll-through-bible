@@ -20,9 +20,13 @@ export default {
     { v: 34, text: 'Powiedział im Jezus: «Moim pokarmem jest wypełnić wolę Tego, który Mnie posłał,' },
     { v: 34, cont: true, text: 'i wykonać Jego dzieło.' },
   ],
-  cam: { x: [-40, 120], y: [-60, 80], z: [1, 1.3] },
+  cam: { x: [-40, 370], y: [-60, 80], z: [0.94, 1.3] },
   build(S) {
     const c = S.c;
+    // phone: the four stand closer together, the townsfolk come a little further down the road, and the camera
+    // takes in Jesus and all of them
+    const PH = S.portrait;
+    const OX = PH ? [1000, 1062, 1124, 1186] : [1030, 1110, 1190, 1270], RDX = PH ? -85 : 0;
     let beamL;
     const W = wellSet(S, { skyCols: AFTER, sunAt: [980, 170], behind: (S) => { beamL = S.layer({ par: 0.55, sh: 0, flat: true }); return beamL; } });
     const beam = beamL.add(`<g><path d="M-60 -900L60 -900L150 40L-150 40Z" fill="#fff4d0" opacity=".6"/><circle cy="-40" r="170" fill="url(#halo-glow)"/></g>`);
@@ -35,7 +39,7 @@ export default {
       .x((() => { let d = ''; for (let x = 870; x < 1120; x += 26) d += c.ribbon([[x, G.floor + 16], [x - 8, G.floor + 42]], 1.2); return d; })(), C.terracotta, 'opacity=".4"').out()
       + `<g transform="translate(900 ${G.floor + 30})">${loaf(c, 16)}</g><g transform="translate(950 ${G.floor + 34}) scale(.9)">${fishCut(c)}</g><g transform="translate(1010 ${G.floor + 34})">${bowl(c, { w: 34, food: 'fruit' })}</g><g transform="translate(1070 ${G.floor + 32})">${loaf(c, 14)}</g>`);
     const peter = S.puppet(L.add(person(c, { ...DISC[0], pose: 'kneel', holdF: `<g transform="translate(2 4)">${loaf(c, 14)}</g>` })));
-    const others = [1, 2, 3, 4].map((k, i) => ({ i, k, seed: c.rr(0, 9), p: S.puppet(L.add(person(c, { ...DISC[k], holdB: k === 1 ? `<g transform="translate(0 4) scale(.8)">${basket(c, { w: 40, h: 24, full: true })}</g>` : '' }))), x: [1030, 1110, 1190, 1270][i] }));
+    const others = [1, 2, 3, 4].map((k, i) => ({ i, k, seed: c.rr(0, 9), p: S.puppet(L.add(person(c, { ...DISC[k], holdB: k === 1 ? `<g transform="translate(0 4) scale(.8)">${basket(c, { w: 40, h: 24, full: true })}</g>` : '' }))), x: OX[i] }));
     const jStand = S.puppet(L.add(person(c, CAST.jesus)));
 
     const fx = S.layer({ par: 0.55, sh: 5 });
@@ -84,10 +88,10 @@ export default {
         const turn = talk * (o.i % 2 ? 1 : 0);
         o.p.set({ x: o.x, y: G.floor - 6 + (o.i % 2) * 6, s: 0.96, flip: turn < 0.5, armF: 16 + (o.i === 0 ? bump(t, 2.3, 2.9) * 70 : 0) + es(t, 4.05, 4.3) * 10, armB: 12, head: -talk * 6 + (o.i === 0 ? bump(t, 2.3, 2.9) * 18 : 0) - es(t, 4.1, 4.4) * 4 * 0, lean: o.i === 0 ? bump(t, 2.3, 2.9) * 10 : 0, blink: blinkAt(T, o.seed) });
       });
-      const [ohx, ohy] = headAt(1110, G.floor, 0.96, true);
+      const [ohx, ohy] = headAt(OX[1], G.floor, 0.96, true);
       vis(qJ, { x: ohx - 10, y: ohy - 24, s: qk, o: qk > 0.01 ? 1 : 0 });
       const wk = es(t, 2.2, 2.4, ease.back) * (1 - es(t, 2.9, 3.0));
-      vis(whisper, { x: 1150, y: ohy - 10, s: wk, o: wk > 0.01 ? 1 : 0 });
+      vis(whisper, { x: OX[1] + 40, y: ohy - 10, s: wk, o: wk > 0.01 ? 1 : 0 });
       /* v34 — the will of Him who sent me; His work */
       const bk = es(t, 3.1, 3.4);
       vis(beam, { x: G.jx + 10, y: G.floor - 10, s: 1, o: bk * (1 - es(t, 4.6, 4.9) * 0.5) });
@@ -101,12 +105,12 @@ export default {
       folk.forEach((f) => {
         const u = seg(t, 3.9 + f.d * 0.3, 4.9 + f.d * 0.3);
         const [x, y] = along(ROAD, u);
-        f.p.set({ x: x + (f.i % 3) * 20, y: y + (f.i % 2) * 4, s: 0.42 + u * 0.08, flip: true, o: es(t, 3.85, 4.0), walk: u > 0 && u < 1 ? T * 7 + f.i : undefined });
+        f.p.set({ x: x + RDX + (f.i % 3) * 20, y: y + (f.i % 2) * 4, s: 0.42 + u * 0.08, flip: true, o: es(t, 3.85, 4.0), walk: u > 0 && u < 1 ? T * 7 + f.i : undefined });
       });
 
-      S.cam.x = kf(t, [[-0.5, 40], [0.5, 30], [1.0, 20], [2.0, 90], [3.0, 20], [4.0, 60], [4.6, 110]]);
+      S.cam.x = PH ? kf(t, [[-0.5, 150], [3.9, 150], [4.6, 340]]) : kf(t, [[-0.5, 40], [0.5, 30], [1.0, 20], [2.0, 90], [3.0, 20], [4.0, 60], [4.6, 110]]);
       S.cam.y = kf(t, [[-0.5, 40], [0.5, 50], [2.0, 50], [3.0, -20], [4.0, 0], [4.6, 20]]);
-      S.cam.z = kf(t, [[-0.5, 1.12], [0.5, 1.16], [2.0, 1.2], [3.0, 1.04], [4.0, 1.04], [4.6, 1.02]]);
+      S.cam.z = PH ? 1 - es(t, 3.9, 4.6) * 0.06 : kf(t, [[-0.5, 1.12], [0.5, 1.16], [2.0, 1.2], [3.0, 1.04], [4.0, 1.04], [4.6, 1.02]]);
     };
   },
 };

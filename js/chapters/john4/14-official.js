@@ -16,7 +16,7 @@ import { lyingPerson } from '../mark5/lib.js';
 const FLOOR = 716;
 const PAN0 = { x: 1160, y: 140 };
 const JX = 830;
-const AR = { x: 600, y: 330, r: 80 };
+const AR0 = { x: 600, y: 330, r: 80 };
 const WINE = shade(C.plumRobe, -0.25);
 
 export default {
@@ -30,10 +30,11 @@ export default {
     { v: 49 },
     { v: 50, text: 'Rzekł do niego Jezus: «Idź, syn twój żyje».' },
   ],
-  cam: { x: [-40, 160], y: [-60, 80], z: [1, 1.3] },
+  cam: { x: [-300, 160], y: [-60, 80], z: [1, 1.3] },
   build(S) {
     const c = S.c;
     const PAN = S.portrait ? { x: 820, y: 30 } : PAN0;
+    const AR = S.portrait ? { ...AR0, x: 640, y: 480 } : AR0;     // phone: the hour of Cana under the picture, inside the frame
     const W = galileeSet(S, { cana: null });
     const L = W.actL;
     // the courtyard wall and the six stone jars of Cana
@@ -90,7 +91,7 @@ export default {
       const blush = bump(t, 0.35, 0.95);
       wine.forEach((w, i) => fade(w, blush * es(t, 0.35 + i * 0.04, 0.45 + i * 0.04)));
       jarSp.forEach((s, i) => vis(s, { x: JARS[i * 2 + 1], y: FLOOR - 70 - bump(t, 0.4 + i * 0.1, 0.95) * 20, s: bump(t, 0.4 + i * 0.1, 0.95), r: T * 30, o: bump(t, 0.4 + i * 0.1, 0.95) }));
-      vis(canaTag, { x: 540, y: FLOOR - 170, r: -3, o: es(t, 0.2, 0.4) * (1 - es(t, 1.8, 2.1)) });
+      vis(canaTag, { x: 540, y: FLOOR - 170, r: -3, o: es(t, 0.2, 0.4) * (1 - (S.portrait ? es(t, 0.95, 1.15) : es(t, 1.8, 2.1))) });   // phone: gone before the camera leaves the jars
       look.forEach((l) => {
         const crane = es(t, 4.2, 4.4) * (1 - es(t, 4.9, 5.1));
         l.p.set({ x: l.x, y: FLOOR - 8 + (l.i % 2) * 6, s: 0.98, armF: 16 + crane * 40 * (l.i % 2), armB: 12 + crane * 60 * ((l.i + 1) % 2), head: -crane * 14 + es(t, 2.6, 2.9) * 6, blink: blinkAt(T, l.seed) });
@@ -153,7 +154,8 @@ export default {
       fade(thread, th > 0 ? 1 - es(t, 6.8, 6.95) * 0.6 : 0);
       vis(hope, { x: B[0] + 30, y: B[1] - 60, s: 0.5 + heal, o: bump(t, 6.35, 6.95) });
 
-      S.cam.x = kf(t, [[-0.5, -20], [0.5, -40], [1.0, 60], [2.0, 80], [2.3, 40], [3.0, 60], [4.0, 20], [5.0, 40], [6.0, 60]]);
+      // phone: first look left, to the six jars of Cana
+      S.cam.x = S.portrait ? kf(t, [[-0.5, -160], [0.4, -280], [0.95, -280], [1.4, 60], [2.0, 80], [2.3, 40], [3.0, 60], [4.0, 20], [5.0, 40], [6.0, 60]]) : kf(t, [[-0.5, -20], [0.5, -40], [1.0, 60], [2.0, 80], [2.3, 40], [3.0, 60], [4.0, 20], [5.0, 40], [6.0, 60]]);
       S.cam.y = kf(t, [[-0.5, 40], [0.5, 40], [1.0, -20], [2.0, -20], [3.0, 10], [4.0, 20], [5.0, 20], [6.0, -20]]);
       S.cam.z = kf(t, [[-0.5, 1.06], [0.5, 1.12], [1.0, 1.02], [2.0, 1.02], [3.0, 1.06], [4.0, 1.08], [5.0, 1.12], [6.0, 1.0]]);
     };

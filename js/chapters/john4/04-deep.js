@@ -121,7 +121,7 @@ export default {
 
       /* v12 — Jacob's picture */
       const pk = es(t, 2.0, 2.4, ease.out);
-      const py = PAN.y - (1 - pk) * 700;
+      const py = (S.portrait ? PAN.y + 80 : PAN.y) - (1 - pk) * 700;   // phone: the picture hangs under the sun, not over it
       const on = pk > 0.01 ? 1 : 0;
       vis(panEl, { x: PAN.x, y: py, o: on });
       vis(pTag, { x: PAN.x - PAN.w / 2 + 70, y: py + 6, r: -4, o: on * es(t, 2.3, 2.5) });
