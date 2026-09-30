@@ -63,11 +63,12 @@ export default {
     const hgL = S.layer({ par: 0.22, sh: 5 });
     const hg = hourglassRig(hgL, c, 120);
     hg.el.insertAdjacentHTML('afterbegin', `<path d="M0 -1600V-60" stroke="rgba(74,54,34,.55)" stroke-width="1.2" fill="none"/>`);
+    const AX = S.portrait ? 1005 : 1100;       // phone: the altar plate inside the screen
     const alt = sheet();
     alt.p(c.cut(c.rect(-34, -40, 68, 40), 0.4, 6), nt(C.stone, 0.3));
     alt.p(c.cut(c.rect(-42, -48, 84, 10), 0.3, 6) + c.cut(c.rect(-42, -4, 84, 8), 0.3, 6), nt(C.stone2, 0.35));
     alt.p(c.cut([[-40, -48], [-44, -60], [-32, -50]], 0.2, 3) + c.cut([[40, -48], [44, -60], [32, -50]], 0.2, 3), nt(C.stone2, 0.35));
-    const altar = hanging(hgL, `${sheet().p(c.cut(c.circ(0, 0, 76, 40), 0.5, 5), C.ochre).p(c.cut(c.circ(0, 0, 69, 38), 0.5, 5), '#3a3d68').out()}<g transform="translate(0 40)">${alt.out()}</g>`, { x: 1100, y: 290, len: 700 });
+    const altar = hanging(hgL, `${sheet().p(c.cut(c.circ(0, 0, 76, 40), 0.5, 5), C.ochre).p(c.cut(c.circ(0, 0, 69, 38), 0.5, 5), '#3a3d68').out()}<g transform="translate(0 40)">${alt.out()}</g>`, { x: AX, y: 290, len: 700 });
     const smoke = Array.from({ length: 5 }, (_, i) => ({ i, el: hgL.add(`<g><path d="${c.cut(c.blob(0, 0, 16, 11, 10, 0.25), 0.5, 4)}" fill="${mix(C.storm, C.greyHair, 0.3)}"/></g>`) }));
 
     /* ---- the Father and the Son, veiled ---- */
@@ -133,10 +134,10 @@ export default {
       vis(hg.el, { x: JX, y: 260 - (1 - hour) * 700, r: 180 - turn * 180 + (T ? Math.sin(T * 0.9) * 1.2 : 0), o: hour > 0.01 ? 1 : 0 });
       hg.set(1 - es(t, 1.4, 2.0) * 0.6, turn > 0.9 ? 1 : 0);
       const altIn = es(t, 1.2, 1.5, ease.out) * (1 - es(t, 1.95, 2.2, ease.in));
-      vis(altar, { x: 1100, y: 300 - (1 - altIn) * 700, r: T ? Math.sin(T * 0.7 + 1) * 1 : 0, o: altIn > 0.01 ? 1 : 0 });
+      vis(altar, { x: AX, y: 300 - (1 - altIn) * 700, r: T ? Math.sin(T * 0.7 + 1) * 1 : 0, o: altIn > 0.01 ? 1 : 0 });
       smoke.forEach((sm) => {
         const k = seg(t, 1.4 + sm.i * 0.1, 2.0 + sm.i * 0.1);
-        vis(sm.el, { x: 1100 + Math.sin(k * 5 + sm.i) * 16 + k * 20, y: 300 - (1 - altIn) * 700 + 20 - k * 150, s: 0.7 + k * 1.3, o: altIn > 0.01 && k > 0 && k < 1 ? Math.min(1, (1 - k) * 2.5) * altIn : 0 });
+        vis(sm.el, { x: AX + Math.sin(k * 5 + sm.i) * 16 + k * 20, y: 300 - (1 - altIn) * 700 + 20 - k * 150, s: 0.7 + k * 1.3, o: altIn > 0.01 && k > 0 && k < 1 ? Math.min(1, (1 - k) * 2.5) * altIn : 0 });
       });
       const dark = es(t, 1.15, 1.8) * (1 - es(t, 4.05, 4.5));
       P.sky.blend(NIGHT, STORM, dark);

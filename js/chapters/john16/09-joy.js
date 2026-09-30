@@ -65,7 +65,7 @@ export default {
 
     const peopleL = S.layer({ par: 0.52, sh: 5 });
     const { J, D } = cast(S, peopleL, { gy: GY, pos: LINE });
-    const TH = D.find((m) => m.k === 'thaddaeus');
+    const TH = D.find((m) => m.k === (S.portrait ? 'bartholomew' : 'thaddaeus'));   // phone: the one reached for stands inside the screen
 
     const fx = S.layer({ par: 0.56, sh: 4 });
     const stones = D.map((m) => ({ m, el: fx.add(`<g>${stoneHeart(c, 13)}</g>`) }));
@@ -97,7 +97,7 @@ export default {
       });
       const reach = es(t, 2.05, 2.35) * (1 - es(t, 2.6, 3.0) * 0.8);
       const thx = TH.x - 6, thy = TH.y - 112 * TH.s;
-      vis(grab, { x: lerp(1420, thx + 60, reach), y: lerp(740, thy + 70, reach), r: -55, s: 1, o: es(t, 2.0, 2.1) * (1 - es(t, 2.9, 3.0)) });
+      vis(grab, { x: lerp(S.portrait ? 1270 : 1420, thx + 60, reach), y: lerp(740, thy + 70, reach), r: -55, s: 1, o: es(t, 2.0, 2.1) * (1 - es(t, 2.9, 3.0)) });
       const gk = seg(t, 2.3, 2.85);
       vis(guard, { x: thx, y: thy, s: 0.6 + gk * 1.2, o: gk > 0 && gk < 1 ? (1 - gk) : 0 });
 

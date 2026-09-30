@@ -42,12 +42,12 @@ export default {
     // the world's feast over the city: pennants and little lights
     const feastL = S.layer({ par: 0.1, sh: 1 });
     const cols = [C.terracotta, C.sun, C.skyVeil, C.roseRobe, C.sageRobe, C.lavender];
-    let pen = '';
+    let pen = '';                                // phone: the feast is strung over the part of the city the screen shows
     const pens = [];
-    for (let i = 0; i < 16; i++) { const x = 330 + i * 18, y = 318 + Math.sin((i / 15) * PI) * 16; pens.push([x, y]); }
+    for (let i = 0; i < 16; i++) { const x = (S.portrait ? 462 : 330) + i * (S.portrait ? 12 : 18), y = 318 + Math.sin((i / 15) * PI) * 16; pens.push([x, y]); }
     pen = pens.map(([x, y], i) => `<path d="${c.poly([[x - 6, y], [x + 6, y + 1], [x, y + 12]])}" fill="${cols[i % cols.length]}"/>`).join('');
     const bunting = feastL.add(`<g><path d="${c.ribbon(pens, 1)}" fill="${C.cream}" opacity=".7"/>${pen}</g>`);
-    const pops = Array.from({ length: 9 }, (_, i) => ({ i, x: 360 + c.rr(0, 240), el: feastL.add(`<g><circle r="14" fill="url(#warm-glow)"/><path d="${c.cut(c.star(0, 0, 5, 2, 4, 0), 0.1, 2)}" fill="${cols[i % cols.length]}"/></g>`) }));
+    const pops = Array.from({ length: 9 }, (_, i) => ({ i, x: S.portrait ? 470 + c.rr(0, 240) * 0.7 : 360 + c.rr(0, 240), el: feastL.add(`<g><circle r="14" fill="url(#warm-glow)"/><path d="${c.cut(c.star(0, 0, 5, 2, 4, 0), 0.1, 2)}" fill="${cols[i % cols.length]}"/></g>`) }));
 
     // the rain cloud over the Eleven, and the petals it turns into
     const cloudL = S.layer({ par: 0.3, sh: 4 });

@@ -63,6 +63,7 @@ export default {
     const clouds = Array.from({ length: 6 }, (_, i) => ({ i, a: (i / 6) * PI * 2, el: stormL.add(`<g>${greyCloud(c, c.rr(80, 105), mix(C.storm2, C.night2, 0.2 + (i % 2) * 0.15))}</g>`) }));
     const bolts = [0, 1].map((i) => stormL.add(`<g>${lightning(c, 120)}</g>`));
     // the hourglass
+    const HX = S.portrait ? 985 : 1040;        // phone: its string clear of the moon
     const hgL = S.layer({ par: 0.2, sh: 4 });
     const hg = hourglassRig(hgL, c, 120);
     const hgStr = hgL.add(`<g><path d="M0 -1600V-60" stroke="rgba(74,54,34,.55)" stroke-width="1.2" fill="none"/></g>`);
@@ -86,8 +87,8 @@ export default {
 
       /* v32a — the hour has come */
       const hIn = es(t, 0.95, 1.25, ease.out) * (1 - es(t, 1.95, 2.2, ease.in));
-      vis(hg.el, { x: 1040, y: 300 - (1 - hIn) * 700, r: T ? Math.sin(T * 0.9) * 1 : 0, o: hIn > 0.01 ? 1 : 0 });
-      vis(hgStr, { x: 1040, y: 300 - (1 - hIn) * 700, o: hIn > 0.01 ? 1 : 0 });
+      vis(hg.el, { x: HX, y: 300 - (1 - hIn) * 700, r: T ? Math.sin(T * 0.9) * 1 : 0, o: hIn > 0.01 ? 1 : 0 });
+      vis(hgStr, { x: HX, y: 300 - (1 - hIn) * 700, o: hIn > 0.01 ? 1 : 0 });
       hg.set(0.35 - es(t, 1.2, 1.7) * 0.34, t > 1.2 && t < 1.75 ? 1 : 0);
       const night = es(t, 1.2, 1.7) * (1 - es(t, 3.05, 3.4) * 0.4);
       const storm = es(t, 5.05, 5.35) * (1 - es(t, 6.1, 6.5));

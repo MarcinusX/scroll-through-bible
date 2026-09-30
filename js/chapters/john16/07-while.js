@@ -97,7 +97,9 @@ export default {
         const k = SAY[m.k] === 'a' ? talkA : SAY[m.k] === 'b' ? talkB : talkC;
         const fl = turnIn > 0.5 ? m.face : m.flip;
         const [hx, hy] = headAt(m.x, m.y, m.s, fl);
-        vis(el, { x: hx + (fl ? -14 : 14), y: hy - 28, s: 0.4 + k * 0.6, o: Math.min(1, k * 2.2) });
+        // phone: bubbles stay inside the screen; none for those who stand at or beyond its edges
+        const bx = S.portrait ? Math.max(545, Math.min(1075, hx + (fl ? -14 : 14))) : hx + (fl ? -14 : 14);
+        vis(el, { x: bx, y: hy - 28, s: 0.4 + k * 0.6, o: S.portrait && (m.x < 470 || m.x > 1100) ? 0 : Math.min(1, k * 2.2) });
       });
       /* v18b — question marks everywhere; v19a — they drift to Him and circle */
       const qIn = es(t, 5.05, 5.35);
@@ -134,7 +136,9 @@ export default {
 
       S.cam.x = kf(t, [[0, 20], [1.9, 20], [2.3, 0], [7, 0], [8, 0]]);
       S.cam.y = kf(t, [[0, -20], [1.9, -20], [2.3, 10], [5.8, 10], [6.5, -20], [7.2, -40], [8, -40]]);
-      S.cam.z = kf(t, [[0, 1.02], [2, 1.02], [2.5, 1.1], [5.8, 1.1], [6.5, 1.04], [8, 1.02]]);
+      // phone: no zoom while they talk, so the whole line and its bubbles fit the narrow screen
+      S.cam.z = S.portrait ? kf(t, [[0, 1.02], [2, 1.02], [2.5, 1.0], [5.8, 1.0], [6.5, 1.02], [8, 1.02]])
+        : kf(t, [[0, 1.02], [2, 1.02], [2.5, 1.1], [5.8, 1.1], [6.5, 1.04], [8, 1.02]]);
     };
   },
 };

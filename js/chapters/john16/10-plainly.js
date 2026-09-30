@@ -66,7 +66,8 @@ export default {
       `<g transform="translate(0 -18) scale(1.1)">${lantern(c, 0, { glowR: 30 })}</g>`,
       `<g>${mc}</g>`,
     ];
-    const GX = [470, 600, 730, 870, 1000, 1130], GYs = [370, 320, 360, 320, 365, 320];
+    // phone: all six plates inside the screen, clear of the progress thread
+    const GX = S.portrait ? [530, 632, 734, 836, 938, 1040] : [470, 600, 730, 870, 1000, 1130], GYs = [370, 320, 360, 320, 365, 320];
     const plates = icons.map((ic, i) => ({ i, el: plL.add(`<g>${hungPlate(c, `<g transform="scale(1.15)">${ic}</g>`, { r: 46, face: C.parchment })}</g>`) }));
 
     const wayL = S.layer({ par: 0.3, sh: 0, flat: true });
@@ -92,7 +93,7 @@ export default {
         const k = es(t, 0.1 + p.i * 0.06, 0.45 + p.i * 0.06, ease.out);
         const up = es(t, 1.05 + (p.i % 3) * 0.05, 1.4 + (p.i % 3) * 0.05, ease.in);
         const y = GYs[p.i] - (1 - k) * 700 - up * 800;
-        vis(p.el, { x: GX[p.i], y, r: T ? Math.sin(T * 0.9 + p.i) * 1.8 : 0, o: k > 0.01 && up < 0.99 ? 1 : 0 });
+        vis(p.el, { x: GX[p.i], y, s: S.portrait ? 0.9 : 1, r: T ? Math.sin(T * 0.9 + p.i) * 1.8 : 0, o: k > 0.01 && up < 0.99 ? 1 : 0 });
       });
       const sky = es(t, 1.4, 1.9) * 0.4;
       P.sky.blend(NIGHT, PREDAWN, sky);

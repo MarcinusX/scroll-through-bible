@@ -28,11 +28,13 @@ export default {
   cam: { x: [-20, 60], y: [-70, 40], z: [1, 1.15] },
   build(S) {
     const c = S.c;
+    const HX = S.portrait ? 1060 : 1150;       // the bright horizon (phone: inside the screen)
+    const BX = S.portrait ? 800 : 760;         // the banner
     let glowL = null;
     const P = pathSet(S, {
       beyond(S2) {
         glowL = S2.layer({ par: 0.12, sh: 0, flat: true });
-        glowL.add(`<ellipse cx="1150" cy="500" rx="820" ry="260" fill="url(#halo-glow)"/><ellipse cx="1150" cy="505" rx="420" ry="110" fill="url(#halo-glow)"/>`);
+        glowL.add(`<ellipse cx="${HX}" cy="500" rx="820" ry="260" fill="url(#halo-glow)"/><ellipse cx="${HX}" cy="505" rx="420" ry="110" fill="url(#halo-glow)"/>`);
         return glowL;
       },
     });
@@ -40,7 +42,7 @@ export default {
 
     // the golden way out to the bright horizon
     const wayL = S.layer({ par: 0.3, sh: 0, flat: true });
-    const wayPts = c.cbez([JX + 40, GY - 20], [980, GY - 60], [1000, 520], [1150, P.ridge(1150) - 4], 40);
+    const wayPts = c.cbez([JX + 40, GY - 20], [980, GY - 60], [HX - 150, 520], [HX, P.ridge(HX) - 4], 40);
     const way = goldArc(wayL, c, wayPts, { w: 4.5, n: 46 });
 
     // the light above and its rings of sound
@@ -147,10 +149,10 @@ export default {
       const bIn = es(t, 3.95, 4.2, ease.out);
       const unroll = es(t, 4.15, 4.6);
       const by = 150 - (1 - bIn) * 700;
-      vis(banner, { x: 760, y: by, o: bIn > 0.01 ? 1 : 0 });
+      vis(banner, { x: BX, y: by, o: bIn > 0.01 ? 1 : 0 });
       pose(bnb, { sx: Math.max(0.02, unroll) });
-      vis(rodL, { x: 760 - (BW / 2) * unroll - 4, y: by, o: bIn > 0.01 ? 1 : 0 });
-      vis(rodR, { x: 760 + (BW / 2) * unroll + 4, y: by, o: bIn > 0.01 ? 1 : 0 });
+      vis(rodL, { x: BX - (BW / 2) * unroll - 4, y: by, o: bIn > 0.01 ? 1 : 0 });
+      vis(rodR, { x: BX + (BW / 2) * unroll + 4, y: by, o: bIn > 0.01 ? 1 : 0 });
 
       /* people */
       D.forEach((m) => {

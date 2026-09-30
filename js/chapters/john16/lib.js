@@ -100,6 +100,7 @@ export function put(m, T, o = {}) {
  */
 export function pathSet(S, { skyCols = NIGHT, moonAt = [1170, 160], city = true, gy = 700, moonLen = 620, beyond = null } = {}) {
   const c = S.c;
+  if (S.portrait) moonAt = [1078, -70];        // phone: the moon whole, high in the tall sky (not sliced by the edge)
   const sk = sky(S, skyCols);
   const starL = S.layer({ par: 0.02, sh: 1, flat: true });
   starL.add(stars(c, { x0: -700, x1: 2300, y0: -700, y1: 440, n: 95 }));

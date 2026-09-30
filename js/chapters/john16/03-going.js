@@ -12,7 +12,6 @@ import {
   kf, vis, pose, lerp, C, PI, JX,
 } from './lib.js';
 
-const RX = 1150;            // where the path crosses the ridge
 
 export default {
   id: 'j16-going',
@@ -27,6 +26,7 @@ export default {
   cam: { x: [-20, 60], y: [-60, 40], z: [1, 1.12] },
   build(S) {
     const c = S.c;
+    const RX = S.portrait ? 1010 : 1150;       // where the path crosses the ridge (phone: inside the screen)
     let B = null;
     const P = pathSet(S, {
       beyond(S2) {
@@ -43,7 +43,7 @@ export default {
 
     // the golden way over the hill
     const wayL = S.layer({ par: 0.3, sh: 0, flat: true });
-    const wayPts = c.cbez([JX + 36, GY - 150], [900, 330], [1060, 360], [RX, RY - 10], 40);
+    const wayPts = c.cbez([JX + 36, GY - 150], [900, 330], [RX - 90, 360], [RX, RY - 10], 40);
     const way = goldArc(wayL, c, wayPts, { w: 4, n: 44, col: C.halo });
 
     const peopleL = S.layer({ par: 0.52, sh: 5 });
