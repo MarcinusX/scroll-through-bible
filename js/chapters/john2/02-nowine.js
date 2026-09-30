@@ -17,7 +17,7 @@ export default {
     { v: 4, cont: true, text: 'Czyż jeszcze nie nadeszła godzina moja?»' },
     { v: 5 },
   ],
-  cam: { x: [-60, 30], y: [0, 110], z: [1, 1.3] },
+  cam: { x: [-320, 30], y: [0, 110], z: [1, 1.3] },
   build(S) {
     const c = S.c;
     const set = canaSet(S, { floorY: FLOOR });
@@ -106,7 +106,7 @@ export default {
       const jb = es(t, 2.1, 2.35, ease.back) * (1 - es(t, 2.95, 3.1));
       pose(jBubble, { x: 822, y: TABLE_Y - 158, s: 0.3 + jb * 0.7, o: jb });
       const drop = es(t, 3.0, 3.5, ease.out) * (1 - es(t, 4.05, 4.35));
-      pose(glassEl, { x: 790, y: 330 - (1 - drop) * 560, r: Math.sin(T * 0.8) * 1.6 * drop });
+      pose(glassEl, { x: 790, y: 330 - (1 - drop) * (S.portrait ? 900 : 560), r: Math.sin(T * 0.8) * 1.6 * drop });
       // sand: the upper bulb stays full — only a thin thread of grains begins to fall
       pose(gTop, { s: 1 });
       pose(gBot, { x: 0, y: hg.h / 2 - 12, sy: 0.08 + seg(t, 3.3, 4) * 0.06, sx: 0.4, oy: 0 });
@@ -116,7 +116,8 @@ export default {
       const sb = es(t, 4.2, 4.45, ease.back);
       pose(sBubble, { x: mx - 60, y: FLOOR - 200, s: 0.3 + sb * 0.7, o: sb });
 
-      S.cam.x = -50 + es(t, 1, 1.6) * 60 - es(t, 4, 4.5) * 50;
+      // phone: the wine corner (the tipped amphora, the servants) is on the left of the narrow stage
+      S.cam.x = S.portrait ? -300 + es(t, 1, 1.6) * 310 - es(t, 4, 4.5) * 210 : -50 + es(t, 1, 1.6) * 60 - es(t, 4, 4.5) * 50;
       S.cam.z = 1.2 + es(t, 1.8, 2.3) * 0.06 - es(t, 2.9, 3.4) * 0.1;
       S.cam.y = 90 - es(t, 2.9, 3.4) * 60 + es(t, 4, 4.4) * 60;
     };

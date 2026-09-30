@@ -15,7 +15,7 @@ export default {
     { v: 11, cont: true, text: 'Objawił swoją chwałę' },
     { v: 11, cont: true, text: 'i uwierzyli w Niego Jego uczniowie.' },
   ],
-  cam: { x: [0, 0], y: [-40, 80], z: [1, 1.18] },
+  cam: { x: [0, 0], y: [-40, 80], z: [0.94, 1.18] },
   build(S) {
     const c = S.c;
     const set = canaSet(S, { floorY: FLOOR, doorX: 1250, skyCols: EVENING });
@@ -41,7 +41,7 @@ export default {
 
     /* Jesus and the disciples */
     const L = S.layer({ par: 0.56, sh: 6 });
-    const SPOT = [[560, 0], [650, 0], [950, 1], [1040, 1], [1125, 1]];
+    const SPOT = S.portrait ? [[585, 0], [665, 0], [940, 1], [1015, 1], [1090, 1]] : [[560, 0], [650, 0], [950, 1], [1040, 1], [1125, 1]];
     const dis = DISC.map((o, i) => {
       const [x, right] = SPOT[i];
       return { i, x, right, seed: c.rr(0, 9), st: S.puppet(L.add(person(c, o))), kn: S.puppet(L.add(person(c, { ...o, pose: 'kneel' }))) };
@@ -61,7 +61,7 @@ export default {
       const bd = es(t, 0.05, 0.5, ease.out);
       pose(badge, { x: 800, y: 210 - (1 - bd) * 500, r: (1 - bd) * 6, s: 1 + bump(t, 0.45, 0.8) * 0.1 });
       row.forEach((r) => {
-        const k = es(t, 0.35 + r.i * 0.05, 0.6 + r.i * 0.05, ease.out);
+        const k = es(t, 0.3 + r.i * 0.04, 0.5 + r.i * 0.04, ease.out);
         pose(r.el, { x: r.x, y: 340 - (1 - k) * 500, r: (1 - k) * (r.i - 3) * 3 });
       });
       const pk = es(t, 0.5, 0.8, ease.out) * (1 - es(t, 1.05, 1.3));
@@ -90,7 +90,7 @@ export default {
         pose(lights[i].el, { x: x + (d.right ? -6 : 6), y: FLOOR - 150 - lk * 20 + Math.sin(T * 1.4 + i) * 3, s: lk, o: lk });
       });
 
-      S.cam.z = 1.04 + es(t, 0.9, 1.6) * 0.06 + es(t, 2, 2.8) * 0.04;
+      S.cam.z = (S.portrait ? 0.96 : 1.04) + es(t, 0.9, 1.6) * (S.portrait ? 0.03 : 0.06) + es(t, 2, 2.8) * (S.portrait ? 0.02 : 0.04);
       S.cam.y = -20 + es(t, 0.9, 1.6) * 60;
     };
   },

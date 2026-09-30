@@ -17,9 +17,10 @@ export default {
     { v: 22, text: 'Gdy więc zmartwychwstał, przypomnieli sobie uczniowie Jego, że to powiedział,' },
     { v: 22, cont: true, text: 'i uwierzyli Pismu i słowu, które wyrzekł Jezus.' },
   ],
-  cam: { x: [0, 0], y: [-20, 60], z: [1, 1.14] },
+  cam: { x: [0, 0], y: [-20, 60], z: [0.96, 1.14] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;
     const T0 = templeCourt(S, { skyCols: DUSK, floorY: FLOOR + 40, sanctX: 800, sunAt: [1210, 330] });
     const IW = FLOOR + 40 - 150;
     const tint = S.layer({ par: 0, sh: 1, flat: true });
@@ -41,7 +42,7 @@ export default {
     const sil = S.puppet(glowSil);
     const outline = L.add(`<g>${templeOutline(c, 1, C.sun, 5)}</g>`);
     const dis = [
-      { o: DISC[2], x: 470 }, { o: DISC[0], x: 555 }, { o: DISC[1], x: 640 }, { o: DISC[3], x: 965, f: true }, { o: DISC[4], x: 1060, f: true },
+      { o: DISC[2], x: P ? 490 : 470 }, { o: DISC[0], x: P ? 568 : 555 }, { o: DISC[1], x: P ? 646 : 640 }, { o: DISC[3], x: 965, f: true }, { o: DISC[4], x: P ? 1050 : 1060, f: true },
     ].map((d, i) => ({ ...d, i, seed: c.rr(0, 9), p: S.puppet(L.add(person(c, d.o))) }));
     const mem = [0, 1].map((i) => L.add(`<g>${thought(c, `<g transform="translate(0 22) scale(.2)">${templeOutline(c, 1, C.terracotta, 9)}</g>`, { w: 70, h: 60 })}</g>`));
     const lights = dis.map(() => L.add(`<g>${heart(c, 11, C.jesusMantle)}</g>`));
@@ -71,10 +72,11 @@ export default {
 
       /* v22a — after He was raised: the tomb plate, three days; they remember */
       const pk = es(t, 1.05, 1.4, ease.out);
-      pose(plate, { x: 800, y: 222 - (1 - pk) * 560, r: (1 - pk) * 4 });
+      const UP = P ? 900 : 560;
+      pose(plate, { x: 800, y: 222 - (1 - pk) * UP, r: (1 - pk) * 4 });
       days.forEach((d) => {
         fade(d.lit, es(t, 1.3 + d.i * 0.1, 1.4 + d.i * 0.1));
-        pose(d.el, { x: 690 + d.i * 110, y: 362 - (1 - pk) * 560, r: (1 - pk) * (d.i - 1) * 4 });
+        pose(d.el, { x: 690 + d.i * 110, y: 362 - (1 - pk) * UP, r: (1 - pk) * (d.i - 1) * 4 });
       });
       mem.forEach((m, i) => {
         const k = es(t, 1.45 + i * 0.1, 1.7 + i * 0.1, ease.back) * (1 - es(t, 2.05, 2.2));
@@ -83,8 +85,8 @@ export default {
 
       /* v22b — Scripture and the word shine; they believe */
       const sk = es(t, 2.05, 2.4, ease.out);
-      pose(scrollEl, { x: 560, y: 200 - (1 - sk) * 560, r: (1 - sk) * -5 });
-      pose(wordEl, { x: 1040, y: 230 - (1 - es(t, 2.15, 2.5, ease.out)) * 560, r: (1 - es(t, 2.15, 2.5)) * 5 });
+      pose(scrollEl, { x: P ? 590 : 560, y: 200 - (1 - sk) * UP, r: (1 - sk) * -5 });
+      pose(wordEl, { x: P ? 1010 : 1040, y: 230 - (1 - es(t, 2.15, 2.5, ease.out)) * UP, r: (1 - es(t, 2.15, 2.5)) * 5 });
       dis.forEach((d, i) => {
         const up = es(t, 1.2, 1.5);
         const bel = es(t, 2.3 + i * 0.06, 2.6 + i * 0.06);
@@ -93,7 +95,7 @@ export default {
         pose(lights[i], { x: d.x + (d.f ? -8 : 8), y: FLOOR - 225, s: lk, o: lk });
       });
 
-      S.cam.z = 1.02 + es(t, 0.3, 0.9) * 0.08 - es(t, 1.0, 1.4) * 0.08 + es(t, 2.2, 2.9) * 0.03;
+      S.cam.z = (P ? 0.98 : 1.02) + es(t, 0.3, 0.9) * 0.08 - es(t, 1.0, 1.4) * 0.08 + es(t, 2.2, 2.9) * 0.03;
       S.cam.y = 20 + es(t, 0.3, 0.9) * 30 - es(t, 1.0, 1.4) * 40;
     };
   },

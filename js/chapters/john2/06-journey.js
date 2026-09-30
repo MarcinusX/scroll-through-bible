@@ -123,12 +123,14 @@ export default {
       const dk = es(t, 1.2, 1.4) * (1 - es(t, 2.0, 2.15));
       pose(daysTag, { x: hx - 80, y: hy + 150, o: dk, s: 0.8 + dk * 0.2 });
       const pk = es(t, 2.05, 2.35, ease.out) * (1 - es(t, 2.85, 3.1));
-      pose(pascha, { x: hx + 190, y: hy + 60 + (1 - pk) * -600, r: Math.sin(T * 0.8) * 2, o: 1 });
-
-      // the camera follows the walkers
+      // the camera follows the walkers (phone: the Passover plate hangs in view all the way south)
       const fy = t < 2.2 ? lead[1] : lerp(MAP.caph[1], lead[1], es(t, 2.2, 2.5));
+      const camX = lead[0] * 0.5 - 20;
+      const px = S.portrait ? OX + camX * P + 150 : hx + 190, py = S.portrait ? OY + fy - 250 : hy + 60;
+      pose(pascha, { x: px, y: py + (1 - pk) * (S.portrait ? -1500 : -600), r: Math.sin(T * 0.8) * 2, o: 1 });
+
       S.cam.y = camTo(t < 1 ? lerp(MAP.cana[1], MAP.caph[1], u1) : fy);
-      S.cam.x = (lead[0] * P) / P * 0.5 - 20;
+      S.cam.x = camX;
       S.cam.z = 1.32 - bump(t, 2.3, 3.0) * 0.18;
     };
   },

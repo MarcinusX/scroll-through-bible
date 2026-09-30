@@ -34,7 +34,7 @@ export default {
     { v: 16, text: 'Do tych zaś, którzy sprzedawali gołębie, rzekł: «Weźcie to stąd,' },
     { v: 16, cont: true, text: 'a nie róbcie z domu mego Ojca targowiska!»' },
   ],
-  cam: { x: [-60, 80], y: [-60, 60], z: [0.98, 1.14] },
+  cam: { x: [-260, 200], y: [-60, 60], z: [0.98, 1.14] },
   build(S) {
     const c = S.c;
     const { sunEl, cl1 } = templeCourt(S, { skyCols: ['#cfe1dc', '#f1e6c9', '#f8ead0'], floorY: FLOOR + 40, sanctX: 800, sunAt: [1230, 140] });
@@ -159,7 +159,7 @@ export default {
 
       /* v16a — the dove seller takes his cages and goes */
       const lift = es(t, 4.35, 4.6);
-      const go = es(t, 4.55, 5.1, ease.in);
+      const go = es(t, S.portrait ? 4.7 : 4.55, 5.1, ease.in);   // phone: he is still in view while Jesus speaks to him
       const dx = BENCH.x - 60 - go * 600;
       const armD = 30 + lift * 80;
       dover.p.set({ x: dx, y: FLOOR - 10, s: 0.94, flip: go > 0.02 ? true : false, walk: go > 0 && go < 1 ? dx * 0.08 : undefined, armF: armD, armB: 20 + lift * 70, head: bump(t, 4.1, 4.4) * 10, blink: blinkAt(T, dover.seed), o: 1 - seg(t, 5.05, 5.12) });
@@ -185,7 +185,9 @@ export default {
       pose(holy, { x: 800, y: FLOOR - 330, s: 0.5 + hk * 0.6, r: t * 10, o: hk * 0.38 });
       pose(fatherTag, { x: 800, y: 130 - (1 - es(t, 5.25, 5.6, ease.out)) * 400, r: Math.sin(T * 0.7) * 1.2 });
 
-      S.cam.x = -40 + inK * 40 + es(t, 2.9, 3.3) * 70 - es(t, 3.9, 4.3) * 110 + es(t, 5.0, 5.4) * 40;
+      // phone: look right at the changers' tables going over, then left at the dove seller
+      S.cam.x = S.portrait ? -40 + inK * 40 + es(t, 2.9, 3.3) * 190 - es(t, 3.9, 4.3) * 430 + es(t, 5.0, 5.4) * 240
+        : -40 + inK * 40 + es(t, 2.9, 3.3) * 70 - es(t, 3.9, 4.3) * 110 + es(t, 5.0, 5.4) * 40;
       S.cam.z = 1.06 + es(t, 1.0, 1.3) * 0.06 * (1 - es(t, 1.8, 2.1)) - es(t, 5.0, 5.4) * 0.07;
       S.cam.y = es(t, 5.0, 5.4) * -40;
     };

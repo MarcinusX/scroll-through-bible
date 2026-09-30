@@ -19,9 +19,11 @@ export default {
     { v: 20, text: 'Powiedzieli do Niego Żydzi: «Czterdzieści sześć lat budowano tę świątynię,' },
     { v: 20, cont: true, text: 'a Ty ją wzniesiesz w przeciągu trzech dni?»' },
   ],
-  cam: { x: [-40, 40], y: [-30, 30], z: [0.98, 1.12] },
+  cam: { x: [-40, 40], y: [-30, 30], z: [0.94, 1.12] },
   build(S) {
     const c = S.c;
+    const UP = S.portrait ? 900 : 560;   // parked plates must clear the taller phone sky
+    const P = S.portrait;                // phone: both groups stand closer to Jesus, the scroll hangs further in
     const { sk, sunEl, cl1 } = templeCourt(S, { skyCols: ['#d3dfd6', '#f2e2c4', '#f6dcbc'], floorY: FLOOR + 40, sanctX: 1130, sunAt: [420, 150] });
 
     /* the scroll of the psalm */
@@ -56,9 +58,9 @@ export default {
 
     /* the disciples, Jesus, the leaders */
     const L = S.layer({ par: 0.52, sh: 6 });
-    const dis = [DISC[1], DISC[0], DISC[2]].map((o, i) => ({ i, x: [420, 505, 590][i], seed: c.rr(0, 9), p: S.puppet(L.add(person(c, o))) }));
+    const dis = [DISC[1], DISC[0], DISC[2]].map((o, i) => ({ i, x: (P ? [490, 562, 634] : [420, 505, 590])[i], seed: c.rr(0, 9), p: S.puppet(L.add(person(c, o))) }));
     const lead = [
-      { m: priest(c, 0), x: 1010 }, { m: elder(c, 1), x: 1095 }, { m: priest(c, 2), x: 1180 },
+      { m: priest(c, 0), x: P ? 975 : 1010 }, { m: elder(c, 1), x: P ? 1045 : 1095 }, { m: priest(c, 2), x: P ? 1115 : 1180 },
     ].map((l, i) => ({ ...l, i, seed: c.rr(0, 9), p: S.puppet(L.add(l.m)) }));
     const jesus = S.puppet(L.add(person(c, { ...CAST.jesus })));
     const qBubble = L.add(`<g>${iconBubble(c, `<g transform="scale(.46)">${signBadge(c, '?', { r: 60, icon: '' })}</g>`, { w: 110, h: 100, side: -1 })}</g>`);
@@ -72,10 +74,10 @@ export default {
       /* v17 — the scroll unrolls over the disciples */
       const sc = es(t, 0.1, 0.35, ease.out) * (1 - es(t, 0.95, 1.2, ease.in));
       const un = es(t, 0.3, 0.7);
-      const sy = 190 - (1 - sc) * 560;
-      pose(rodTop, { x: 600, y: sy, r: Math.sin(T * 0.7) * 0.8 });
-      pose(scrollSheet, { x: 600, y: sy, sy: Math.max(0.01, un), o: sc > 0.05 ? 1 : 0 });
-      pose(rodBot, { x: 600, y: sy + un * V.h, o: sc > 0.05 ? 1 : 0 });
+      const sy = 190 - (1 - sc) * UP, scx = P ? 700 : 600;
+      pose(rodTop, { x: scx, y: sy, r: Math.sin(T * 0.7) * 0.8 });
+      pose(scrollSheet, { x: scx, y: sy, sy: Math.max(0.01, un), o: sc > 0.05 ? 1 : 0 });
+      pose(rodBot, { x: scx, y: sy + un * V.h, o: sc > 0.05 ? 1 : 0 });
       dis.forEach((d) => {
         const up = bump(t, 0.25, 1.1);
         const react = es(t, 2.1, 2.4) * (1 - es(t, 3.9, 4.2));
@@ -85,13 +87,13 @@ export default {
       /* v18 — the leaders ask for a sign */
       const ask = bump(t, 1.05, 2.05);
       lead.forEach((l) => {
-        const step = es(t, 1.0, 1.3) * 30;
+        const step = es(t, 1.0, 1.3) * (P ? 15 : 30);
         const scoff = bump(t, 5.1, 6.1);
         const toTemple = bump(t, 4.05, 5.0);
         l.p.set({ x: l.x - step, y: FLOOR + 4 - (l.i % 2) * 8, s: 1, flip: !(toTemple > 0.5 && l.i === 1), armF: 20 + (l.i === 0 ? ask * 70 : ask * 20) + toTemple * (l.i === 1 ? 110 : 30) + scoff * 40, armB: 10 + scoff * (l.i % 2 ? 120 : 60), head: scoff * -14 + ask * 6, lean: scoff * 4, blink: blinkAt(T, l.seed) });
       });
       const qb = es(t, 1.1, 1.35, ease.back) * (1 - es(t, 1.95, 2.1));
-      pose(qBubble, { x: 1000, y: FLOOR - 190, s: 0.3 + 0.7 * qb, o: qb });
+      pose(qBubble, { x: P ? 985 : 1000, y: FLOOR - 190, s: 0.3 + 0.7 * qb, o: qb });
 
       /* v19 — Jesus speaks; the paper Temple comes apart; three days; it rises again */
       const speak = bump(t, 2.0, 4.0);
@@ -110,7 +112,7 @@ export default {
       days.forEach((d) => {
         const on = es(t, 3.05 + d.i * 0.14, 3.18 + d.i * 0.14);
         fade(d.lit, on);
-        pose(d.el, { x: MX - 120 + d.i * 120, y: 190 - (1 - es(t, 2.95, 3.15, ease.out) * (1 - es(t, 3.95, 4.2))) * 460, r: Math.sin(T + d.i) * 2 });
+        pose(d.el, { x: MX - 120 + d.i * 120, y: 190 - (1 - es(t, 2.95, 3.15, ease.out) * (1 - es(t, 3.95, 4.2))) * (UP - 100), r: Math.sin(T + d.i) * 2 });
       });
       const shine = es(t, 3.75, 3.95) * show;
       pose(outline, { x: MX, y: MY + lift, o: shine, s: 1 + shine * 0.02 });
@@ -118,7 +120,7 @@ export default {
 
       /* v20 — the balance: forty-six years of stones against three days */
       const bal = es(t, 4.05, 4.35, ease.out);
-      const BX = 800, BY = 180 - (1 - bal) * 560;
+      const BX = 800, BY = 180 - (1 - bal) * UP;
       const nS = Math.floor(es(t, 4.3, 4.7) * 12.99);
       const tilt = es(t, 4.4, 4.9) * 14 - es(t, 5.3, 5.6) * 0; // years weigh it down; three days stay light
       pose(balStand, { x: BX, y: BY });
@@ -141,12 +143,12 @@ export default {
       pose(daysTag, { x: pans[1].x, y: pans[1].y + 124, o: es(t, 5.3, 5.45) });
       laughs.forEach((l, i) => {
         const k = bump(t, 5.45 + i * 0.12, 6.0);
-        pose(l, { x: 1060 + i * 90, y: FLOOR - 230 - k * 20 - i * 16, r: (i ? 8 : -8), s: 0.6 + k * 0.4, o: k });
+        pose(l, { x: (P ? 1000 : 1060) + i * (P ? 76 : 90), y: FLOOR - 230 - k * 20 - i * 16, r: (i ? 8 : -8), s: 0.6 + k * 0.4, o: k });
       });
 
-      S.cam.x = -30 * bump(t, 0, 1.2) + es(t, 1, 1.3) * 20 * (1 - es(t, 1.9, 2.2));
+      S.cam.x = P ? 40 : -30 * bump(t, 0, 1.2) + es(t, 1, 1.3) * 20 * (1 - es(t, 1.9, 2.2));
       S.cam.y = 20 - es(t, 1.9, 2.2) * 20 + es(t, 4.0, 4.3) * -20;
-      S.cam.z = 1.04 + es(t, 1, 1.3) * 0.04 * (1 - es(t, 1.9, 2.1));
+      S.cam.z = (P ? 0.95 : 1.04) + es(t, 1, 1.3) * 0.04 * (1 - es(t, 1.9, 2.1));
     };
   },
 };

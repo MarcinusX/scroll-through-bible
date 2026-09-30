@@ -20,7 +20,7 @@ export default {
     { v: 1, cont: true, text: 'i była tam Matka Jezusa.' },
     { v: 2 },
   ],
-  cam: { x: [-30, 30], y: [-40, 60], z: [1, 1.14] },
+  cam: { x: [-30, 150], y: [-40, 60], z: [1, 1.14] },
   build(S) {
     const c = S.c;
     const set = canaSet(S, { floorY: FLOOR });
@@ -117,7 +117,8 @@ export default {
 
       S.cam.z = 1 + es(t, 0.6, 1.6) * 0.06 + es(t, 2.9, 3.6) * 0.04;
       S.cam.y = es(t, 0.6, 1.6) * 20 + es(t, 2.9, 3.6) * 30;
-      S.cam.x = bump(t, 1.9, 3.0) * 20;
+      // phone: follow the mother of Jesus, who stands by the door on the right
+      S.cam.x = S.portrait ? es(t, 1.9, 2.4) * (1 - es(t, 2.85, 3.2)) * 140 : bump(t, 1.9, 3.0) * 20;
     };
   },
 };

@@ -26,7 +26,7 @@ export default {
     { v: 10, text: 'i powiedział do niego: «Każdy człowiek stawia najpierw dobre wino, a gdy się napiją, wówczas gorsze.' },
     { v: 10, cont: true, text: 'Ty zachowałeś dobre wino aż do tej pory».' },
   ],
-  cam: { x: [-60, 60], y: [0, 110], z: [1, 1.26] },
+  cam: { x: [-200, 60], y: [0, 110], z: [1, 1.26] },
   build(S) {
     const c = S.c;
     const set = canaSet(S, { floorY: FLOOR, doorX: 300, lanterns: [340, 500, 660, 940, 1100, 1260] });
@@ -107,7 +107,7 @@ export default {
       const q = es(t, 1.05, 1.3, ease.back) * (1 - es(t, 1.85, 2.0));
       pose(qThought, { x: sx + 14, y: FLOOR - 215, s: (0.3 + 0.7 * q) * 1.25, o: q });
       const sk = es(t, 1.3, 1.55, ease.back) * (1 - es(t, 1.9, 2.05));
-      pose(sThought, { x: 400, y: FLOOR - 205, s: (0.3 + 0.7 * sk) * 1.25, o: sk });
+      pose(sThought, { x: S.portrait ? 450 : 400, y: FLOOR - 205, s: (0.3 + 0.7 * sk) * 1.25, o: sk });
 
       /* v9c — he calls the bridegroom, who comes over */
       rings(sx + 30, FLOOR - 200, call, T, { dir: 1, spread: 2 });
@@ -119,11 +119,13 @@ export default {
       /* v10 — the boards */
       const b1 = es(t, 3.1, 3.45, ease.out) * (1 - es(t, 3.95, 4.15));
       const b2 = es(t, 4.1, 4.45, ease.out);
-      pose(board1, { x: 800, y: 178 - (1 - b1) * 520, r: Math.sin(T * 0.7) * 1.2 });
-      pose(board2, { x: 800, y: 178 - (1 - b2) * 520, r: Math.sin(T * 0.7 + 1) * 1.2 });
+      const UP = S.portrait ? 860 : 520;
+      pose(board1, { x: 800, y: 178 - (1 - b1) * UP, r: Math.sin(T * 0.7) * 1.2 });
+      pose(board2, { x: 800, y: 178 - (1 - b2) * UP, r: Math.sin(T * 0.7 + 1) * 1.2 });
 
-      S.cam.x = -40 + es(t, 1.9, 2.8) * 50;
-      S.cam.z = 1.24 - es(t, 2.9, 3.3) * 0.1;
+      // phone: the servants who know stand on the left; pull back a little and look their way
+      S.cam.x = S.portrait ? -60 - es(t, 0.95, 1.3) * 120 + es(t, 1.9, 2.8) * 190 : -40 + es(t, 1.9, 2.8) * 50;
+      S.cam.z = 1.24 - (S.portrait ? es(t, 0.95, 1.3) * 0.14 * (1 - es(t, 1.9, 2.8)) : 0) - es(t, 2.9, 3.3) * 0.1;
       S.cam.y = 100 - es(t, 2.9, 3.3) * 50;
     };
   },

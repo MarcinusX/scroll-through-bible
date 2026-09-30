@@ -8,7 +8,8 @@ import { canaSet, canaIdle, SERVANTS, LOOK, AFTERNOON, EVENING, stoneJar, liquid
 
 const FLOOR = 690;
 const JS = 1.04;                                   // jar scale
-const JX = [440, 546, 652, 948, 1054, 1160];
+const JX_WIDE = [440, 546, 652, 948, 1054, 1160];
+const JX_PHONE = [500, 592, 684, 916, 1008, 1100];   // phone: all six jars on the narrow stage
 const MOUTH = FLOOR - JAR.h * JS;                  // y of the jars' mouths
 const WIN0 = FLOOR + JAR.win.y0 * JS;              // bottom of the windows
 
@@ -22,9 +23,11 @@ export default {
     { v: 8, text: 'Potem do nich powiedział: «Zaczerpnijcie teraz i zanieście staroście weselnemu!»' },
     { v: 8, cont: true, text: 'Oni zaś zanieśli.' },
   ],
-  cam: { x: [-20, 120], y: [0, 90], z: [1, 1.2] },
+  cam: { x: [-20, 120], y: [0, 90], z: [0.85, 1.2] },
   build(S) {
     const c = S.c;
+    const JX = S.portrait ? JX_PHONE : JX_WIDE;
+    const UP = S.portrait ? 760 : 420;               // how far the plates are pulled up into the flies
     const set = canaSet(S, { floorY: FLOOR, doorX: 1330 });
 
     /* words on the flies */
@@ -89,8 +92,8 @@ export default {
         pose(g.brim, { x: g.x, y: MOUTH + 6 - brim * 6, s: 0.8 + brim * 0.5, o: brim });
         pose(glows[g.i], { x: g.x, y: FLOOR - 70, s: 0.6 + w * 0.6, o: bump(t, 4.3 + d * 0.08, 6) * 0.9 });
       });
-      pose(washTag, { x: 800, y: 140 - (1 - es(t, 0.25, 0.6, ease.out)) * 420 - es(t, 0.95, 1.2) * 420, r: Math.sin(T * 0.8) * 1.5 });
-      pose(measureBoard, { x: 800, y: 150 - (1 - es(t, 1.1, 1.45, ease.out)) * 420 - es(t, 1.95, 2.2) * 420, r: Math.sin(T * 0.7 + 1) * 1.2 });
+      pose(washTag, { x: 800, y: 140 - (1 - es(t, 0.25, 0.6, ease.out)) * UP - es(t, 0.95, 1.2) * UP, r: Math.sin(T * 0.8) * 1.5 });
+      pose(measureBoard, { x: 800, y: 150 - (1 - es(t, 1.1, 1.45, ease.out)) * UP - es(t, 1.95, 2.2) * UP, r: Math.sin(T * 0.7 + 1) * 1.2 });
 
       /* the servants: come in (v7a), pour (v7b), draw and carry (v8) */
       serv.forEach((s, i) => {
@@ -153,7 +156,7 @@ export default {
       const k8 = es(t, 4.05, 4.25, ease.back) * (1 - es(t, 4.8, 4.95));
       pose(b8, { x: 826, y: FLOOR - 180, s: 0.3 + 0.7 * k8, o: k8 });
 
-      S.cam.z = 1.14 + es(t, 3.9, 4.4) * 0.05 - es(t, 5, 5.6) * 0.05;
+      S.cam.z = (S.portrait ? 0.88 : 1.14) + es(t, 3.9, 4.4) * 0.05 - es(t, 5, 5.6) * 0.05;
       S.cam.y = 80 + es(t, 0.9, 1.2) * -40 * (1 - es(t, 1.9, 2.2)) + es(t, 3.9, 4.4) * 10;
       S.cam.x = es(t, 5.1, 5.9) * 80;
     };
