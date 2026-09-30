@@ -219,6 +219,10 @@ if (!LIB) addEventListener('scroll', function mark() {
   removeEventListener('scroll', mark);
 }, { passive: true });
 
+// the narrator: only chapters with recorded narration (audio/<book>/<ch>/<lang>.json) get the controls
+import('./core/voice.js').then((m) => m.startNarrator(theatre, { book: BOOK, ch: CH, lang: LANG, title: `${name.plain} · ${UI.chapterName(CH)}` }))
+  .then((n) => { window.__narrator = n; }).catch((err) => console.warn('narrator unavailable', err));
+
 /* ---------- language picker: two little paper flags ---------- */
 function paperFlag(lang) {
   const c = makeCutter('flag-' + lang);
