@@ -81,10 +81,10 @@ export default {
       jesus.set({ x: 800, y: F + 8, s: 1.06, flip: t > 4, armF: 16 + bump(t, 0.1, 1.9) * 40 + turn * 50, armB: 10 + bump(t, 2.1, 2.9) * 120 + bump(t, 1.2, 1.9) * 50, head: -turn * 10 + bow * 8, blink: bow > 0.5 ? 1 : blinkAt(T) });
       /* v34 — the crowd answers */
       const lk = es(t, 4.1, 4.35, ease.back) * (1 - es(t, 4.95, 5.1));
-      vis(law, { x: 1000, y: 430, s: lk, o: lk > 0.01 ? 1 : 0 });
+      vis(law, { x: S.portrait ? 970 : 1000, y: 430, s: lk, o: lk > 0.01 ? 1 : 0 });
       drawRing(law, es(t, 4.2, 4.6));
       const hk = es(t, 5.1, 5.3, ease.back) * (1 - es(t, 5.95, 6.05));
-      vis(how, { x: 520, y: 450, s: hk, o: hk > 0.01 ? 1 : 0 });
+      vis(how, { x: S.portrait ? 580 : 520, y: 450, s: hk, o: hk > 0.01 ? 1 : 0 });
       const wk = es(t, 6.05, 6.35, ease.out);
       swing(who, 800, 330 - (1 - wk) * 700, wk > 0.001 ? T : 0, 1.3, 0.8);
       fade(who, wk > 0.001 ? 1 : 0);

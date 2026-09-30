@@ -78,9 +78,10 @@ export default {
       fade(tagLaz, lk > 0.001 ? 1 : 0);
       /* v10 — the chief priests' plot */
       const pk = es(t, 2.05, 2.45, ease.out) * (1 - es(t, 3.0, 3.25, ease.in));
-      vis(plotEl, { x: 1120, y: 150 - (1 - pk) * 700, r: pk > 0.01 && T ? Math.sin(T * 0.6) * 0.6 : 0, o: pk > 0.001 ? 1 : 0 });
+      const PX = S.portrait ? 950 : 1120, PY = S.portrait ? 70 : 150;   // phone: the whole plate in view, above Lazarus' tag
+      vis(plotEl, { x: PX, y: PY - (1 - pk) * 700, r: pk > 0.01 && T ? Math.sin(T * 0.6) * 0.6 : 0, o: pk > 0.001 ? 1 : 0 });
       const sk = es(t, 2.45, 2.6, ease.back) * (1 - es(t, 3.0, 3.25));
-      vis(seal, { x: 1120 - 160 + 196, y: 150 - (1 - pk) * 700 + 134, s: sk, o: sk > 0.01 ? 1 : 0 });
+      vis(seal, { x: PX - 160 + 196, y: PY - (1 - pk) * 700 + 134, s: sk, o: sk > 0.01 ? 1 : 0 });
       const creep = es(t, 2.3, 2.9) * (1 - es(t, 3.2, 3.9) * 0.6);
       vis(shadow, { x: 1500, y: G + 30, sx: 0.2 + creep * 0.85, o: creep > 0.01 ? 1 : 0 });
       S.cam.x = kf(t, [[0, -30], [1, 10], [1.9, 40], [2.3, 120], [3.0, 100], [3.4, 20], [4, 30]]);

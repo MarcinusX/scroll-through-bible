@@ -20,19 +20,21 @@ export default {
     { v: 45 },
     { v: 46 },
   ],
-  cam: { x: [-60, 100], y: [-120, 40], z: [0.98, 1.14] },
+  cam: { x: [-150, 100], y: [-120, 40], z: [0.84, 1.14] },
   build(S) {
     const c = S.c;
+    const PT = S.portrait;               // phone: leaders, Pharisees and the synagogue door stand closer together
     const st = darkStage(S, { skyCols: ['#1b1f42', '#282d58', '#3a3a68'] });
     const F = st.FLOOR;
+    const JX = PT ? 795 : 820;
     /* the synagogue portal on the right */
     const wallL = S.layer({ par: 0.36, sh: 4 });
-    const DX = 1290, DW = 96, DT = F - 210;
+    const DX = PT ? 1095 : 1290, W0 = PT ? 960 : 1150, DW = 96, DT = F - 210;
     const w = sheet();
     const door = [[DX - DW / 2, F - 30], [DX - DW / 2, DT + DW / 2], ...c.arc(DX, DT + DW / 2, DW / 2, DW / 2, PI, 2 * PI, 10), [DX + DW / 2, F - 30]];
-    w.p(c.cut([[1150, F - 30], [1150, F - 330], [1700, F - 330], [1700, F - 30]], 0.8, 12) + c.hole(door, 0.4, 6), mix(C.stone, C.indigo, 0.45));
+    w.p(c.cut([[W0, F - 30], [W0, F - 330], [1700, F - 330], [1700, F - 30]], 0.8, 12) + c.hole(door, 0.4, 6), mix(C.stone, C.indigo, 0.45));
     let bl = '';
-    for (let y = F - 320; y < F - 40; y += 36) for (let x = 1150 + ((y / 36) % 2 ? 40 : 0); x < 1700; x += 90) { if (x + 86 > DX - DW / 2 - 8 && x < DX + DW / 2 + 8 && y + 32 > DT) continue; bl += c.cut(c.rect(x + 2, y + 2, 84, 30), 0.4, 8); }
+    for (let y = F - 320; y < F - 40; y += 36) for (let x = W0 + ((y / 36) % 2 ? 40 : 0); x < 1700; x += 90) { if (x + 86 > DX - DW / 2 - 8 && x < DX + DW / 2 + 8 && y + 32 > DT) continue; bl += c.cut(c.rect(x + 2, y + 2, 84, 30), 0.4, 8); }
     w.x(bl, mix(C.stone2, C.indigo, 0.5), 'opacity=".5"');
     w.p(c.ribbon(c.arc(DX, DT + DW / 2, DW / 2 + 6, DW / 2 + 6, PI, 2 * PI, 10), 10), mix(C.wood2, C.indigo, 0.3));
     wallL.add(`<path d="${c.poly(door)}" fill="${mix(C.lampFlame, C.clay, 0.3)}"/>` + w.out());
@@ -40,8 +42,8 @@ export default {
     st.back.el.before(wallL.el);
     const outcast = S.puppet(st.back.add(person(c, man(c, { robe: mix(C.stone2, C.indigo, 0.3), mantle: null }))));
     /* the leaders who believe, the Pharisees who watch */
-    const rulers = people(S, st.act, [[440, 4, 0], [510, -8, 1], [580, 6, 2], [650, -4, 3]].map(([x, dy, i]) => ({ x, y: F + dy, s: 0.96, look: leader(i) })), 'r');
-    const phar = people(S, st.act, [[1100, 4, 0], [1170, -6, 1]].map(([x, dy, i]) => ({ x, y: F + dy, s: 0.98, flip: true, look: leader(i + 2), face: true })), 'p');
+    const rulers = people(S, st.act, [[440, 4, 0], [510, -8, 1], [580, 6, 2], [650, -4, 3]].map(([x, dy, i]) => ({ x: PT ? 500 + i * 48 : x, y: F + dy, s: 0.96, look: leader(i) })), 'r');
+    const phar = people(S, st.act, [[1100, 4, 0], [1170, -6, 1]].map(([x, dy, i]) => ({ x: PT ? 930 + i * 60 : x, y: F + dy, s: 0.98, flip: true, look: leader(i + 2), face: true })), 'p');
     const col = st.glowL.add(`<g><path d="M-70 0L70 0L36 -1100L-36 -1100Z" fill="#fff3cf" opacity=".42"/>${glowDisc(200, 'halo-glow', 1)}</g>`);
     const jesus = S.puppet(st.act.add(person(c, CAST.jesus)));
     const fx = st.fx;
@@ -84,7 +86,7 @@ export default {
       const shut = es(t, 1.4, 1.65);
       pose(leaf, { x: DX - DW / 2, y: 0, sx: Math.max(0.05, shut), o: shut > 0.02 ? 1 : 0 });
       const oo = es(t, 1.15, 1.45);
-      outcast.set({ x: lerp(DX, DX + 110, oo), y: F - 30, s: 0.84, flip: false, o: oo > 0 ? 1 - es(t, 2.9, 3.1) : 0, walk: oo > 0 && oo < 1 ? t * 30 : undefined, head: 10, armF: 10, blink: blinkAt(T, 9) });
+      outcast.set({ x: lerp(DX, DX + (PT ? 50 : 110), oo), y: F - 30, s: 0.84, flip: false, o: oo > 0 ? 1 - es(t, 2.9, 3.1) : 0, walk: oo > 0 && oo < 1 ? t * 30 : undefined, head: 10, armF: 10, blink: blinkAt(T, 9) });
       /* v43 — human praise outweighs God's glory */
       const bk = es(t, 2.05, 2.35, ease.out) * (1 - es(t, 2.95, 3.15, ease.in));
       const by = 220 - (1 - bk) * 800;
@@ -97,15 +99,15 @@ export default {
       pose(panR, { x: 800 + Math.cos(rr) * bw, y: by - Math.sin(rr) * bw, o: bk > 0.001 ? 1 : 0 });
       /* v44a — Jesus cries out */
       const jIn = es(t, 3.05, 3.35);
-      jesus.set({ x: 820, y: F + 10, s: 1.08, o: jIn, armF: 30 + jIn * 40 + bump(t, 4.1, 4.9) * 30 + es(t, 6.1, 6.4) * 30, armB: 10 + jIn * 80 * (1 - es(t, 5.0, 5.3)) + bump(t, 4.1, 4.9) * 60, head: -4 - bump(t, 4.1, 4.9) * 8, blink: blinkAt(T) });
-      vis(col, { x: 820, y: F + 10, sx: 0.6 + jIn * 0.5, o: jIn * 0.9 });
-      const [jhx, jhy] = headAt(820, F + 10, 1.08, false);
+      jesus.set({ x: JX, y: F + 10, s: 1.08, o: jIn, armF: 30 + jIn * 40 + bump(t, 4.1, 4.9) * 30 + es(t, 6.1, 6.4) * 30, armB: 10 + jIn * 80 * (1 - es(t, 5.0, 5.3)) + bump(t, 4.1, 4.9) * 60, head: -4 - bump(t, 4.1, 4.9) * 8, blink: blinkAt(T) });
+      vis(col, { x: JX, y: F + 10, sx: 0.6 + jIn * 0.5, o: jIn * 0.9 });
+      const [jhx, jhy] = headAt(JX, F + 10, 1.08, false);
       rings(jhx, jhy + 10, bump(t, 3.1, 3.95), T, { spread: 3.4 });
       /* v44b — believes in Him who sent Me */
       const rk = es(t, 4.05, 4.4) * (1 - es(t, 6.0, 6.3) * 0.3);
-      vis(rad, { x: 820, y: lerp(90, 250, es(t, 5.05, 5.45)), s: 1 + (T ? Math.sin(T * 1.1) * 0.02 : 0), o: rk });
+      vis(rad, { x: JX, y: lerp(90, 250, es(t, 5.05, 5.45)), s: 1 + (T ? Math.sin(T * 1.1) * 0.02 : 0), o: rk });
       const tk = es(t, 4.2, 4.6) * (1 - es(t, 5.0, 5.2));
-      vis(thread, { x: 820, y: jhy - 30, o: tk > 0.01 ? 1 : 0 });
+      vis(thread, { x: JX, y: jhy - 30, o: tk > 0.01 ? 1 : 0 });
       attr(threadP, 'd', `M0 0V${(-(jhy - 30 - 110) * tk).toFixed(1)}`);
       /* v45 — who sees Me sees Him */
       const ek = es(t, 5.1, 5.35, ease.back) * (1 - es(t, 5.95, 6.1));
@@ -120,9 +122,9 @@ export default {
       fade(worldEl.querySelector('.shade'), 1 - lit);
       fade(worldEl.querySelector('.lit'), lit);
 
-      S.cam.x = kf(t, [[0, -60], [1.1, -40], [1.8, 60], [2.2, 0], [3.1, 0], [4.1, 0], [5.1, -20], [6.2, 40]]);
+      S.cam.x = PT ? kf(t, [[0, -150], [1.0, -150], [1.4, 30], [2.0, 30], [2.3, 0], [7, 0]]) : kf(t, [[0, -60], [1.1, -40], [1.8, 60], [2.2, 0], [3.1, 0], [4.1, 0], [5.1, -20], [6.2, 40]]);
       S.cam.y = kf(t, [[0, 0], [1.1, 0], [2.1, -70], [3.1, -20], [4.1, -80], [5.1, -40], [6.2, -40]]);
-      S.cam.z = kf(t, [[0, 1.08], [1.1, 1.06], [2.1, 1.0], [3.1, 1.04], [4.1, 1.0], [5.1, 1.06], [6.2, 1.04]]);
+      S.cam.z = PT ? kf(t, [[0, 1.04], [1.0, 1.04], [1.4, 0.84], [2.0, 0.84], [2.3, 1.0], [7, 1.0]]) : kf(t, [[0, 1.08], [1.1, 1.06], [2.1, 1.0], [3.1, 1.04], [4.1, 1.0], [5.1, 1.06], [6.2, 1.04]]);
     };
   },
 };

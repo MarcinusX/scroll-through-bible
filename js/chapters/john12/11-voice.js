@@ -87,9 +87,9 @@ export default {
       left.forEach((m, i) => place(m, T, { armF: 20 + hear * 30 + (i === 1 ? bump(t, 3.1, 3.9) * 70 : 0) + bump(t, 5.2, 5.95) * 20, armB: hear * (i === 1 ? bump(t, 3.1, 3.9) * 140 : 20), head: -hear * 10 + bump(t, 1.2, 1.9) * 6 * (i % 2 ? -1 : 1), lean: -shake * 4 }));
       right.forEach((m, i) => place(m, T, { armF: 20 + hear * 30 + (i === 1 ? bump(t, 4.1, 4.9) * 80 : 0) + bump(t, 5.2, 5.95) * 20, armB: hear * 20, head: -hear * 10, lean: shake * 4 }));
       const tk = es(t, 3.1, 3.3, ease.back) * (1 - es(t, 3.95, 4.1));
-      vis(thunder, { x: 560, y: 450, s: tk, o: tk > 0.01 ? 1 : 0, r: tk > 0.01 && T ? Math.sin(T * 30) * 1.5 : 0 });
+      vis(thunder, { x: S.portrait ? 595 : 560, y: 450, s: tk, o: tk > 0.01 ? 1 : 0, r: tk > 0.01 && T ? Math.sin(T * 30) * 1.5 : 0 });
       const ak = es(t, 4.1, 4.3, ease.back) * (1 - es(t, 4.95, 5.1));
-      vis(angel, { x: 1040, y: 450, s: ak, o: ak > 0.01 ? 1 : 0 });
+      vis(angel, { x: S.portrait ? 995 : 1040, y: 450, s: ak, o: ak > 0.01 ? 1 : 0 });
       /* v30 — "not for My sake but for yours" */
       outL(jhx - 20, jhy + 20, bump(t, 5.15, 5.95), T, { dir: -1, spread: 3 });
       outR(jhx + 20, jhy + 20, bump(t, 5.2, 5.98), T, { dir: 1, spread: 3 });

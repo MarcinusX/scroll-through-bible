@@ -17,7 +17,7 @@ export default {
     { v: 22, cont: true, text: 'Z kolei Andrzej i Filip poszli i powiedzieli Jezusowi.' },
     { v: 23 },
   ],
-  cam: { x: [-120, 80], y: [-80, 40], z: [1, 1.16] },
+  cam: { x: [-220, 80], y: [-80, 40], z: [1, 1.16] },
   build(S) {
     const c = S.c;
     const st = courtStage(S, { skyCols: DAY });
@@ -94,7 +94,8 @@ export default {
       const glo = es(t, 5.55, 5.95);
       pose(glowEl, { x: 880, y: 360, s: 0.4 + glo * 0.8, r: T ? T * 2 : 0, o: glo * 0.8 });
 
-      S.cam.x = kf(t, [[0, -100], [1, -60], [2.1, -60], [3.1, -20], [4.1, 20], [5.0, 40], [6, 50]]);
+      // phone: the camera starts further left, with the Greeks, and follows the message to Jesus
+      S.cam.x = S.portrait ? kf(t, [[0, -220], [1, -180], [2.1, -180], [3.1, -100], [4.1, -60], [5.0, 20], [6, 40]]) : kf(t, [[0, -100], [1, -60], [2.1, -60], [3.1, -20], [4.1, 20], [5.0, 40], [6, 50]]);
       S.cam.y = kf(t, [[0, 0], [2, 10], [5.0, 0], [5.6, -50], [6, -50]]);
       S.cam.z = kf(t, [[0, 1.02], [1, 1.06], [2.1, 1.1], [3.1, 1.06], [4.6, 1.08], [5.6, 1.02]]);
     };

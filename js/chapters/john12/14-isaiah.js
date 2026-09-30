@@ -27,6 +27,8 @@ export default {
   cam: { x: [-60, 80], y: [-140, 40], z: [0.98, 1.14] },
   build(S) {
     const c = S.c;
+    const PT = S.portrait;               // phone: prophet, people and signs drawn together so that all fit the narrow screen
+    const IX = PT ? 500 : 450;
     const st = darkStage(S);
     const F = st.FLOOR;
     /* the vision (behind everything, in the heights) */
@@ -38,6 +40,7 @@ export default {
     const folk = [[740, 6], [805, -8], [870, 8], [935, -4], [1000, 6], [1065, -6], [1130, 4]].map(([x, dy], i) => {
       const o = i % 2 ? crowdPerson(c) : man(c);
       const p = S.puppet(st.act.add(addToHead(person(c, o), blind)));
+      if (PT) x = 750 + i * 50;
       return { i, x, y: F + dy, s: 0.94, p, band: p.el.querySelector('.blind'), seed: c.rr(0, 9) };
     });
     const isa = S.puppet(st.act.add(person(c, { ...ISAIAH, holdF: `<g transform="rotate(70)"><path d="${c.cut(c.rect(-8, -30, 16, 60), 0.3, 4)}" fill="${C.parchment}"/></g>` })));
@@ -66,7 +69,7 @@ export default {
       /* v37 — the signs, and backs turned */
       badges.forEach((b) => {
         const k = es(t, 0.05 + b.i * 0.06, 0.4 + b.i * 0.06, ease.out);
-        const x = 820 + Math.cos(b.a) * 330, y = 320 + Math.sin(b.a) * 160;
+        const x = PT ? 800 + Math.cos(b.a) * 270 : 820 + Math.cos(b.a) * 330, y = (PT ? 270 : 320) + Math.sin(b.a) * 160;
         const glow = 1 + bump(t, 7.1, 7.9) * 0.15;
         swing(b.el, x, y - (1 - k) * 700 - es(t, 6.95, 7.35, ease.in) * 700, k > 0.001 ? T : 0, 1.4, 0.7, b.i);
         pose(b.el.querySelector('.obj') || b.el, { s: glow });
@@ -85,15 +88,15 @@ export default {
       /* v38a — Isaiah */
       const isIn = es(t, 1.05, 1.45);
       const kneel = es(t, 7.2, 7.28);
-      const ix = lerp(260, 450, isIn);
+      const ix = lerp(260, IX, isIn);
       isa.set({ x: ix, y: F + 6, s: 1.0, o: (isIn > 0 ? 1 : 0) * (1 - kneel), walk: isIn > 0 && isIn < 1 ? ix * 0.05 : undefined, armF: 60 + bump(t, 2.1, 2.9) * 20 + bump(t, 4.1, 4.9) * 20, armB: 10 + bump(t, 2.1, 2.9) * 110 + bump(t, 3.1, 3.9) * 130, head: -2 - bump(t, 3.1, 3.9) * 14 + bump(t, 4.2, 4.9) * 8, blink: blinkAt(T, 4) });
-      isaK.set({ x: 450, y: F + 6, s: 1.0, o: kneel, armF: 80, armB: 120, lean: 10, head: -18, blink: 1 });
-      vis(spot, { x: 450, y: F - 90, s: 1, o: isIn * 0.8 });
+      isaK.set({ x: IX, y: F + 6, s: 1.0, o: kneel, armF: 80, armB: 120, lean: 10, head: -18, blink: 1 });
+      vis(spot, { x: IX, y: F - 90, s: 1, o: isIn * 0.8 });
       const ik = es(t, 1.2, 1.5, ease.out) * (1 - es(t, 1.95, 2.15, ease.in));
-      swing(tagI, 450, 400 - (1 - ik) * 700, ik > 0.001 ? T : 0, 1.2, 0.8); fade(tagI, ik > 0.001 ? 1 : 0);
+      swing(tagI, IX, (PT ? 418 : 400) - (1 - ik) * 700, ik > 0.001 ? T : 0, 1.2, 0.8); fade(tagI, ik > 0.001 ? 1 : 0);
       /* v38b — "who has believed our report?" */
       const s1 = es(t, 1.4, 1.75) * (1 - es(t, 3.95, 4.1));
-      vis(scroll1, { x: 640, y: 360, sy: Math.max(0.02, s1), o: s1 > 0.02 ? 1 : 0 });
+      vis(scroll1, { x: PT ? 655 : 640, y: PT ? 300 : 360, sy: Math.max(0.02, s1), o: s1 > 0.02 ? 1 : 0 });
       const [ihx, ihy] = headAt(ix, F + 6, 1, false);
       rings(ihx + 14, ihy + 4, bump(t, 2.05, 2.95), T, { dir: 1, spread: 3.4 });
       const ok = es(t, 2.5, 2.7) * (1 - es(t, 4.9, 5.1));
@@ -104,10 +107,10 @@ export default {
       vis(arm, { x: 1250, y: -120, r: 36, sy: Math.max(0.02, ak), o: ak > 0.02 ? 0.9 : 0 });
       /* v39–40 — the second passage */
       const s2 = es(t, 4.1, 4.45) * (1 - es(t, 6.95, 7.1));
-      vis(scroll2, { x: 640, y: 350, sy: Math.max(0.02, s2), o: s2 > 0.02 ? 1 : 0 });
+      vis(scroll2, { x: PT ? 655 : 640, y: PT ? 290 : 350, sy: Math.max(0.02, s2), o: s2 > 0.02 ? 1 : 0 });
       might.forEach((el, i) => {
         const k = es(t, 6.1 + i * 0.1, 6.35 + i * 0.1, ease.back) * (1 - es(t, 6.95, 7.1));
-        vis(el, { x: 860 + i * 84, y: 425, s: k, o: k > 0.01 ? 0.85 : 0 });
+        vis(el, { x: PT ? 875 + i * 64 : 860 + i * 84, y: PT ? 370 : 425, s: k * (PT ? 0.9 : 1), o: k > 0.01 ? 0.85 : 0 });
       });
       /* v41 — Isaiah saw His glory */
       const gk = es(t, 7.05, 7.5);
@@ -115,9 +118,9 @@ export default {
       sera.forEach((el, i) => vis(el, { x: 820 + (i ? 170 : -170), y: 170 + (T ? Math.sin(T * 1.4 + i * 2) * 6 : 0), s: 0.7, o: gk }));
       st.sk.blend(['#171a38', '#22284f', '#2f335f'], ['#2b2f63', '#4a4a7e', '#6d628a'], gk);
 
-      S.cam.x = kf(t, [[0, 60], [1, 40], [1.6, -30], [2.4, 0], [3.2, 60], [4.1, -20], [5.2, 60], [6.2, 60], [7.1, 0]]);
+      S.cam.x = PT ? kf(t, [[0, 20], [1, 0], [1.6, -30], [8, -30]]) : kf(t, [[0, 60], [1, 40], [1.6, -30], [2.4, 0], [3.2, 60], [4.1, -20], [5.2, 60], [6.2, 60], [7.1, 0]]);
       S.cam.y = kf(t, [[0, -60], [1, -20], [2.2, -40], [3.2, -80], [4.1, -40], [5.2, 0], [6.2, -20], [7.1, -130]]);
-      S.cam.z = kf(t, [[0, 1.02], [1, 1.04], [2.2, 1.06], [3.2, 1.0], [5.2, 1.08], [6.2, 1.04], [7.1, 0.98]]);
+      S.cam.z = PT ? 1 - es(t, 6.2, 7.1) * 0.02 : kf(t, [[0, 1.02], [1, 1.04], [2.2, 1.06], [3.2, 1.0], [5.2, 1.08], [6.2, 1.04], [7.1, 0.98]]);
     };
   },
 };

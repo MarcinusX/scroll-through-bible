@@ -78,7 +78,8 @@ export default {
     const held = fx.add(`<g><circle r="30" fill="url(#halo-glow)"/>${grain(C.wheat)}</g>`);
     const dust = Array.from({ length: 10 }, (_, i) => ({ i, dx: c.rr(-10, 60), dy: c.rr(-60, 10), el: fx.add(`<g><path d="${c.cut(c.circ(0, 0, c.rr(1.6, 3), 6), 0.2, 2)}" fill="${mix(C.dune, C.stone2, 0.4)}"/></g>`) }));
     const gift = fx.add(`<g><circle r="30" fill="url(#halo-glow)"/>${grain(C.wheat)}</g>`);
-    const GX = 1110;
+    const GX = S.portrait ? 1005 : 1110;   // phone: both men stand closer in
+    const CX = S.portrait ? 575 : 520;
     const ear2 = act.add(wheatStalk(c, { h: 120, color: C.wheatGreen, ear: C.sun }));
     const ear2Stem = ear2.querySelector('.stem'), ear2Ear = ear2.querySelector('.ear');
     const ring = fx.add(`<g>${glowDisc(120, 'halo-glow', 0.8)}${eternityRing(c, 80, 6, 24, C.haloRim)}</g>`);
@@ -114,13 +115,13 @@ export default {
       pose(mineEar, { x: 0, y: -170 * grow, s: es(t, 1.7, 1.95) });
       rows.forEach((L, i) => L.shift(0, (1 - es(t, 1.55 + i * 0.1, 1.95 + i * 0.05, ease.out)) * (160 + i * 30)));
       const pk = es(t, 1.45, 1.7, ease.out) * (1 - es(t, 2.05, 2.25, ease.in));
-      swing(tagP, 560, 280 - (1 - pk) * 700, pk > 0.001 ? T : 0, 1.2, 0.8); fade(tagP, pk > 0.001 ? 1 : 0);
+      swing(tagP, S.portrait ? 620 : 560, 280 - (1 - pk) * 700, pk > 0.001 ? T : 0, 1.2, 0.8); fade(tagP, pk > 0.001 ? 1 : 0);
       vis(glow, { x: SX, y: GY - 100, s: 0.5 + es(t, 1.6, 2) * 0.8, o: bump(t, 1.55, 2.3) * 0.8 });
       /* v25a — clutching his life, he loses it */
       const inL = es(t, 2.0, 2.25);
       const crumble = es(t, 2.35, 2.62);
-      clutch.set({ x: lerp(300, 520, inL), y: GY, s: 1.0, walk: inL > 0 && inL < 1 ? t * 30 : undefined, armF: 34, armB: 24, lean: 4 - crumble * 6, head: 12 + crumble * 6, o: inL > 0 ? 1 : 0, blink: blinkAt(T, 3) });
-      const [chx, chy] = hand(lerp(300, 520, inL), GY, 1.0, false, 34, 4 - crumble * 6);
+      clutch.set({ x: lerp(300, CX, inL), y: GY, s: 1.0, walk: inL > 0 && inL < 1 ? t * 30 : undefined, armF: 34, armB: 24, lean: 4 - crumble * 6, head: 12 + crumble * 6, o: inL > 0 ? 1 : 0, blink: blinkAt(T, 3) });
+      const [chx, chy] = hand(lerp(300, CX, inL), GY, 1.0, false, 34, 4 - crumble * 6);
       vis(held, { x: chx + 2, y: chy - 2, s: 1 - crumble * 0.6, o: inL > 0.2 ? 1 - crumble : 0 });
       fade(held.querySelector('circle'), 1 - crumble);
       dust.forEach((d) => { const k = seg(t, 2.4 + d.i * 0.02, 2.85 + d.i * 0.02); vis(d.el, { x: chx + d.dx * k * 2 + k * 40, y: chy + d.dy * k * 2 - k * 30, o: k > 0 && k < 1 ? 1 - k : 0 }); });

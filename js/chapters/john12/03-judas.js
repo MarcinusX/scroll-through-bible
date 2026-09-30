@@ -22,14 +22,15 @@ export default {
     { v: 7, cont: true, text: 'Przechowała to, aby [Mnie namaścić] na dzień mojego pogrzebu.' },
     { v: 8 },
   ],
-  cam: { x: [-80, 160], y: [-60, 60], z: [1, 1.2] },
+  cam: { x: [-380, 680], y: [-60, 60], z: [1, 1.2] },
   build(S) {
     const c = S.c;
+    const PT = S.portrait;               // phone: the camera goes to Judas at the far end of the table, then to the door
     const R = supperRoom(S, { skyCols: ['#3f416f', '#6f5f86', '#a98594'] });
     const { FLOOR, SEAT, TOP, JX, MX } = SR;
     // Judas' long shadow on the wall
     const shadowL = S.layer({ par: 0.32, sh: 0, flat: true });
-    shadowL.add(`<g transform="translate(1340 ${FLOOR}) scale(1.7 1.55) skewX(-12)" opacity=".22">${shadowPerson(c, JUDAS, '#2a1d2c')}</g>`);
+    shadowL.add(`<g transform="translate(${PT ? 1270 : 1340} ${FLOOR}) scale(1.7 1.55) skewX(-12)" opacity=".22">${shadowPerson(c, JUDAS, '#2a1d2c')}</g>`);
     // the poor at the doorway
     const poor = [0, 1].map((i) => S.puppet(R.backL.add(person(c, { ...poorOpts(i), holdF: `<g transform="rotate(70)">${bowl(c, { food: '', color: C.clay })}</g>` }))));
     const mar = S.puppet(R.backL.add(martha(c, { holdF: `<g transform="rotate(80) translate(0 -6)">${platter(c)}</g>` })));
@@ -79,15 +80,15 @@ export default {
       const steal = es(t, 3.1, 3.6);
       judUp.set({ x: 1300, y: SEAT + 30, s: 0.95, flip: turn < 0.5, o: up, armF: 16 + point * 70 + bump(t, 3.2, 3.9) * 30, armB: 10 + steal * 40 * (1 - es(t, 3.9, 4.1)), head: -4 + bump(t, 2.1, 2.9) * 6 + steal * 10, blink: blinkAt(T, 7) });
       const tj = es(t, 0.3, 0.6, ease.out) * (1 - es(t, 1.9, 2.1));
-      swing(tagJ, 1240, 360 - (1 - tj) * 600, tj > 0.001 ? T : 0, 1.1, 0.7);
+      swing(tagJ, PT ? 1190 : 1240, (PT ? 310 : 360) - (1 - tj) * 600, tj > 0.001 ? T : 0, 1.1, 0.7);
       fade(tagJ, tj > 0.001 ? 1 : 0);
       /* v5 — "300 denarii for the poor?" */
       const sk = es(t, 1.1, 1.3, ease.back) * (1 - es(t, 2.0, 2.15));
-      vis(say, { x: 1180, y: 480, s: sk, o: sk > 0.01 ? 1 : 0 });
+      vis(say, { x: PT ? 1170 : 1180, y: PT ? 485 : 480, s: sk * (PT ? 1.3 : 1), o: sk > 0.01 ? 1 : 0 });
       const ck = es(t, 1.35, 1.6, ease.back) * (1 - es(t, 2.8, 3.0));
-      vis(coins, { x: MX + 10, y: 500 - ck * 20, s: ck * 1.4, o: ck > 0.01 ? 1 : 0 });
+      vis(coins, { x: PT ? 900 : MX + 10, y: (PT ? 330 : 500) - ck * 20, s: ck * 1.4, o: ck > 0.01 ? 1 : 0 });
       const pk = es(t, 1.45, 1.75, ease.out) * (1 - es(t, 2.95, 3.2, ease.in));
-      swing(poorPlate, 1060, 250 - (1 - pk) * 600 + es(t, 2.25, 2.7) * 0, pk > 0.001 ? T : 0, 1.2 + turn * 4, 0.8, 2);
+      swing(poorPlate, PT ? 1128 : 1060, (PT ? 225 : 250) - (1 - pk) * 600 + es(t, 2.25, 2.7) * 0, pk > 0.001 ? T : 0, 1.2 + turn * 4, 0.8, 2);
       fade(poorPlate, pk > 0.001 ? 1 - es(t, 2.2, 2.5) * 0.55 : 0);
       /* v6b — the money-bag: coins slip out into his hand */
       const bx = 1300 + (turn > 0.5 ? 18 : -18), by = SEAT + 30 - 92;
@@ -118,13 +119,13 @@ export default {
       mar.set({ x: mx, y: SEAT - 8, s: 0.96, flip: true, walk: give > 0 && give < 1 ? mx * 0.06 : undefined, armF: 70 + bump(t, 6.6, 7) * 10, armB: 16, blink: blinkAt(T, 3) });
       guests.forEach((g) => g.p.set({ x: g.x, y: SEAT, s: 0.92, flip: true, armF: 20, armB: 10, head: -2 + bump(t, 1.1, 1.9) * (g.i === 3 ? 0 : 0) + (turn > 0.5 && g.i === 3 ? 6 : 0), blink: blinkAt(T, g.i + 1) }));
       const dk = es(t, 6.2, 6.5, ease.out);
-      swing(days, 800, 150 - (1 - dk) * 500, T, 0.6, 0.5);
+      swing(days, PT ? 690 : 800, 150 - (1 - dk) * 500, T, 0.6, 0.5);
       fade(days, dk > 0.001 ? 1 : 0);
       litDays(days, (i) => (i === 0 ? 1 : 0));
 
-      S.cam.x = kf(t, [[0, 120], [1, 140], [1.8, 80], [2.3, 120], [3.2, 150], [4.0, 40], [4.8, 0], [5.4, 0], [6.1, -40], [6.9, -20]]);
+      S.cam.x = PT ? kf(t, [[0, 500], [0.4, 560], [2.9, 560], [3.2, 680], [3.85, 680], [4.25, 40], [4.8, 0], [5.4, 0], [6.1, -200], [6.5, -380]]) : kf(t, [[0, 120], [1, 140], [1.8, 80], [2.3, 120], [3.2, 150], [4.0, 40], [4.8, 0], [5.4, 0], [6.1, -40], [6.9, -20]]);
       S.cam.y = kf(t, [[0, 0], [1, 10], [3.2, 20], [4.0, 30], [5.1, -30], [6.1, 0]]);
-      S.cam.z = kf(t, [[0, 1.08], [1, 1.12], [1.8, 1.02], [3.2, 1.16], [4.0, 1.12], [5.1, 1.02], [6.1, 1.04]]);
+      S.cam.z = PT ? kf(t, [[0, 1], [2.9, 1], [3.2, 1.1], [4.0, 1.1], [5.1, 1.02], [6.1, 1.04]]) : kf(t, [[0, 1.08], [1, 1.12], [1.8, 1.02], [3.2, 1.16], [4.0, 1.12], [5.1, 1.02], [6.1, 1.04]]);
     };
   },
 };

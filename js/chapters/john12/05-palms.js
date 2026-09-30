@@ -96,11 +96,11 @@ export default {
       disc.forEach((p, i) => { const x = jx + 90 + i * 70; p.set({ x, y: G + 2 - i * 4, s: 0.94, flip: true, walk: walking ? x * 0.055 + i : undefined, armF: 12, head: 2, blink: blinkAt(T, i + 3) }); });
       /* v13b — Hosanna! */
       const pd = es(t, 2.05, 2.4, ease.back);
-      pose(penEl, { x: 920, y: 110 - (1 - pd) * 600 - high * 30, r: T ? Math.sin(T * 2.2) * 1.2 : 0, oy: 0 });
+      pose(penEl, { x: S.portrait ? 855 : 920, y: 110 - (1 - pd) * 600 - high * 30, r: T ? Math.sin(T * 2.2) * 1.2 : 0, oy: 0 });
       voices.forEach((v, i) => { const m = crowd[[4, 2, 3, 1][i]]; const x = lerp(m.x0, m.x1, run(m)); const [hx, hy] = headAt(x, m.y, m.s, false); v(hx + 14, hy + 4, cry * (0.7 + high * 0.3), T, { dir: 1 }); });
       /* v13c — the banner and the crown */
       const un = es(t, 3.05, 3.45);
-      pose(banner, { x: 900, y: 205, sy: Math.max(0.01, un), o: un > 0.01 ? 1 : 0 });
+      pose(banner, { x: S.portrait ? 860 : 900, y: 205, sy: Math.max(0.01, un), o: un > 0.01 ? 1 : 0 });
       const ck = es(t, 3.25, 3.65, ease.back);
       swing(crown, 900, 340 - (1 - ck) * 700, ck > 0.001 ? T : 0, 1.6, 0.8, 2);
       fade(crown, ck > 0.001 ? 1 : 0);

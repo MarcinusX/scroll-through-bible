@@ -361,7 +361,8 @@ export const SR = { FLOOR: 700, CEIL: 210, JX: 800, MX: 596, TX0: 880, TX1: 1230
  */
 export function supperRoom(S, { skyCols = EVE } = {}) {
   const c = S.c;
-  const { FLOOR, CEIL } = SR;
+  const { FLOOR } = SR;
+  const CEIL = S.portrait ? -80 : SR.CEIL;    // phone: the ceiling sits higher, so the tall screen is not a third wood
   const [W0, W1, WT, WB] = SR.WIN;
   const sk = sky(S, skyCols);
   const starL = S.layer({ par: 0.03, sh: 1, flat: true });
@@ -398,7 +399,7 @@ export function supperRoom(S, { skyCols = EVE } = {}) {
   wallL.add(`<rect x="${D0}" y="${DT - 60}" width="${D1 - D0}" height="${FLOOR - DT + 70}" fill="${mix(C.night, C.plumRobe, 0.35)}"/>` + w.out());
   // the lamps
   const lampL = S.layer({ par: 0.34, sh: 3 });
-  const lamps = [[650, 300], [1000, 280]].map(([x, y]) => { const el = hanging(lampL, `<g transform="translate(-20 0)">${hangLamp(c)}</g>`, { x, y, len: 120 }); return { el, x, y, fl: el.querySelector('.flame') }; });
+  const lamps = [[650, 300], [1000, 280]].map(([x, y]) => { const el = hanging(lampL, `<g transform="translate(-20 0)">${hangLamp(c)}</g>`, { x, y, len: 120 + SR.CEIL - CEIL }); return { el, x, y, fl: el.querySelector('.flame') }; });
   // the floor and a woven rug
   const floorL = S.layer({ par: 0.4, sh: 3 });
   const fl = sheet();

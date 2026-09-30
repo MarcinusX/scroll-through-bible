@@ -18,6 +18,7 @@ export default {
     const c = S.c;
     const set = roadSet(S, { skyCols: ['#dfe3d6', '#f3e6c8', '#f8ecd4'], sunAt: [1180, 170] });
     const G = RD.GROUND;
+    const ZX = S.portrait ? 600 : RD.GATE;   // phone: the Daughter of Zion stands further along the wall, in view
     // the Daughter of Zion on the wall over the gate
     const wallP = S.layer({ par: 0.24, sh: 4, pad: 200 });
     const zGlow = wallP.add(`<g><circle r="90" fill="url(#halo-glow)"/></g>`);
@@ -80,23 +81,23 @@ export default {
       vis(halo, { x: cx - 10, y: G - 250, s: bless, o: bless * (T ? 0.85 + Math.sin(T * 2) * 0.1 : 0.9) });
       /* "as it is written" — the scroll unrolls */
       const un = es(t, 0.55, 0.95);
-      const sy = 100;
-      pose(rodT, { x: 840, y: sy });
-      pose(scSheet, { x: 840, y: sy, sy: Math.max(0.01, un), o: un > 0.01 ? 1 : 0 });
-      pose(rodB, { x: 840, y: sy + un * sc.h, o: 1 });
-      const txt = (el, a) => pose(el, { x: 840, y: sy, o: es(t, a, a + 0.2) * (un > 0.95 ? 1 : 0) });
+      const sy = S.portrait ? 50 : 100, sx = S.portrait ? 820 : 840;   // phone: the scroll hangs clear of her name tag
+      pose(rodT, { x: sx, y: sy });
+      pose(scSheet, { x: sx, y: sy, sy: Math.max(0.01, un), o: un > 0.01 ? 1 : 0 });
+      pose(rodB, { x: sx, y: sy + un * sc.h, o: 1 });
+      const txt = (el, a) => pose(el, { x: sx, y: sy, o: es(t, a, a + 0.2) * (un > 0.95 ? 1 : 0) });
       txt(l0, 0.85); txt(l1, 1.1); txt(l2, 2.08); txt(l3, 2.3);
       /* v15a — the Daughter of Zion: afraid, then at peace */
       const zIn = es(t, 1.02, 1.3, ease.out);
       const calm = es(t, 1.45, 1.8);
       const welcome = es(t, 2.3, 2.7);
-      zion.set({ x: RD.GATE, y: RD.WT + 6, s: 0.8, flip: false, o: zIn, armF: 150 * (1 - calm) + 20 * calm + welcome * 60, armB: 140 * (1 - calm) + 20 * calm + welcome * 110, head: 10 * (1 - calm) - welcome * 6, lean: (1 - calm) * 6 + (T ? Math.sin(T * 14) * 1.4 * (1 - calm) * zIn : 0), blink: calm < 0.5 ? 1 : blinkAt(T, 8) });
-      vis(zGlow, { x: RD.GATE, y: RD.WT - 110, s: 0.7 + welcome * 0.8, o: zIn * (0.3 + calm * 0.3 + welcome * 0.4) });
+      zion.set({ x: ZX, y: RD.WT + 6, s: 0.8, flip: false, o: zIn, armF: 150 * (1 - calm) + 20 * calm + welcome * 60, armB: 140 * (1 - calm) + 20 * calm + welcome * 110, head: 10 * (1 - calm) - welcome * 6, lean: (1 - calm) * 6 + (T ? Math.sin(T * 14) * 1.4 * (1 - calm) * zIn : 0), blink: calm < 0.5 ? 1 : blinkAt(T, 8) });
+      vis(zGlow, { x: ZX, y: RD.WT - 110, s: 0.7 + welcome * 0.8, o: zIn * (0.3 + calm * 0.3 + welcome * 0.4) });
       const zk = es(t, 1.05, 1.35, ease.out) * (1 - es(t, 2.85, 3));
-      swing(zTag, RD.GATE, 220 - (1 - zk) * 600, zk > 0.001 ? T : 0, 1.2, 0.8);
+      swing(zTag, ZX, 220 - (1 - zk) * 600, zk > 0.001 ? T : 0, 1.2, 0.8);
       fade(zTag, zk > 0.001 ? 1 : 0);
 
-      S.cam.x = kf(t, [[0, 140], [0.6, 150], [1.0, 60], [1.8, -20], [2.2, 20], [3, 0]]);
+      S.cam.x = S.portrait ? kf(t, [[0, 140], [0.6, 150], [1.0, 0], [1.8, -60], [2.2, 0], [3, 0]]) : kf(t, [[0, 140], [0.6, 150], [1.0, 60], [1.8, -20], [2.2, 20], [3, 0]]);
       S.cam.y = kf(t, [[0, 0], [0.6, -20], [1.4, -50], [2.1, -20], [3, -30]]);
       S.cam.z = kf(t, [[0, 1.06], [0.6, 1.04], [1.4, 1.08], [2.1, 1.04], [3, 1.02]]);
     };

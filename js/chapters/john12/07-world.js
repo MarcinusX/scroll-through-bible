@@ -21,9 +21,10 @@ export default {
     { v: 19, text: 'Faryzeusze zaś mówili jeden do drugiego: «Widzicie, że nic nie zyskujecie?' },
     { v: 19, cont: true, text: 'Patrz - świat poszedł za Nim».' },
   ],
-  cam: { x: [-80, 120], y: [-80, 40], z: [1, 1.14] },
+  cam: { x: [-200, 120], y: [-80, 40], z: [1, 1.14] },
   build(S) {
     const c = S.c;
+    const PT = S.portrait;               // phone: scroll and bubbles move inward, the camera goes over to the Pharisees
     const set = roadSet(S, { skyCols: ['#d6e3da', '#f1e7cb', '#f8ecd2'], sunAt: [1180, 150] });
     const G = RD.GROUND, GATE = RD.GATE;
     // people streaming out of the gate, far off (flat silhouettes in the city layer's depth)
@@ -83,7 +84,7 @@ export default {
         vis(lights[i], { x: hx, y: hy - 50, s: lk, o: lk > 0.01 ? 1 : 0 });
       });
       vis(later, { x: 1060, y: 300 - (1 - glor) * 40, s: 0.6 + glor * 0.4, o: glor });
-      vis(scrollEl, { x: 640, y: 210 - (1 - glor) * 30, s: 0.9, o: glor });
+      vis(scrollEl, { x: PT ? 730 : 640, y: 210 - (1 - glor) * 30, s: 0.9, o: glor });
       /* v17 — those who were at the tomb bear witness */
       const cheer = es(t, 2.05, 2.3);
       crowd.forEach((m, j) => {
@@ -98,7 +99,7 @@ export default {
         const m = crowd[i ? 3 : 1];
         const k = es(t, 2.3 + i * 0.15, 2.45 + i * 0.15, ease.back) * (1 - es(t, 2.95, 3.1));
         const [hx, hy] = headAt(m.cx, m.y, m.s, true);
-        vis(el, { x: hx + (i ? 30 : -30), y: hy - 40, s: k, o: k > 0.01 ? 1 : 0 });
+        vis(el, { x: hx + (PT ? (i ? -50 : 30) : (i ? 30 : -30)), y: hy - 40, s: k, o: k > 0.01 ? 1 : 0 });
       });
       /* v18 — the sign; more people pour out of the gate */
       const bk = es(t, 3.05, 3.4, ease.back) * (1 - es(t, 3.9, 4.1));
@@ -124,7 +125,7 @@ export default {
         pose(el, { x: Math.cos(a) * 74, y: Math.sin(a) * 74 + 12, r: (a * 180) / PI + 90, s: 1.1, o: gk });
       });
 
-      S.cam.x = kf(t, [[0, 90], [1, 90], [1.5, 60], [2.2, 100], [3.2, 60], [4.1, -40], [5.2, -60], [6, -50]]);
+      S.cam.x = PT ? kf(t, [[0, 90], [1, 90], [1.5, 60], [2.2, 100], [3.2, 60], [4.1, -200], [6, -200]]) : kf(t, [[0, 90], [1, 90], [1.5, 60], [2.2, 100], [3.2, 60], [4.1, -40], [5.2, -60], [6, -50]]);
       S.cam.y = kf(t, [[0, 0], [1.2, -40], [2.2, -30], [3.2, -20], [4.1, 0], [5.2, -40]]);
       S.cam.z = kf(t, [[0, 1.1], [1, 1.12], [1.5, 1.02], [2.2, 1.04], [3.2, 1.02], [4.1, 1.08], [5.2, 1.02]]);
     };

@@ -79,9 +79,9 @@ export default {
       const k1 = tk(1.3, 2.05), k2 = tk(1.5, 2.05), k3 = tk(2.3, 3.1);
       swing(tagM, 790, 380 - (1 - k1) * 600, k1 > 0.001 ? T : 0, 1.3, 0.8); fade(tagM, k1 > 0.001 ? 1 : 0);
       swing(tagLz, 935, 440 - (1 - k2) * 600, k2 > 0.001 ? T : 0, 1.3, 0.8, 2); fade(tagLz, k2 > 0.001 ? 1 : 0);
-      swing(tagMa, 470, 440 - (1 - k3) * 600, k3 > 0.001 ? T : 0, 1.3, 0.8, 1); fade(tagMa, k3 > 0.001 ? 1 : 0);
+      swing(tagMa, S.portrait ? 640 : 470, 440 - (1 - k3) * 600, k3 > 0.001 ? T : 0, 1.3, 0.8, 1); fade(tagMa, k3 > 0.001 ? 1 : 0);
       const pk = tk(2.35, 3.05);
-      swing(pound, 700, 270 - (1 - pk) * 600, pk > 0.001 ? T : 0, 1, 0.7, 3); fade(pound, pk > 0.001 ? 1 : 0);
+      swing(pound, S.portrait ? 830 : 700, 270 - (1 - pk) * 600, pk > 0.001 ? T : 0, 1, 0.7, 3); fade(pound, pk > 0.001 ? 1 : 0);
 
       /* Jesus */
       const bless = bump(t, 3.55, 4.1);

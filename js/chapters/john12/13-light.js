@@ -23,9 +23,10 @@ export default {
     { v: 36, text: 'Dopóki światłość macie, wierzcie w światłość, abyście byli synami światłości».' },
     { v: 36, cont: true, text: 'To powiedział Jezus i odszedł, i ukrył się przed nimi.' },
   ],
-  cam: { x: [-60, 80], y: [-60, 40], z: [1, 1.14] },
+  cam: { x: [-160, 80], y: [-60, 40], z: [1, 1.14] },
   build(S) {
     const c = S.c;
+    const PT = S.portrait;               // phone: the man lost in the dark stands nearer, the camera and the darkness reach him
     const sk = sky(S, SKY0);
     const starL = S.layer({ par: 0.02, sh: 1, flat: true });
     starL.add(stars(c, { x0: -700, x1: 2300, y0: -700, y1: 380, n: 90 }));
@@ -67,7 +68,7 @@ export default {
     S.defs(`<linearGradient id="${dg}" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#1c1f45" stop-opacity=".9"/><stop offset="1" stop-color="#1c1f45" stop-opacity="0"/></linearGradient>`);
     const edge = [];
     for (let y = -1400; y <= 2200; y += 60) edge.push([470 + Math.sin(y * 0.013) * 26 + c.rr(-8, 8), y]);
-    darkL.add(`<path d="${c.poly([[-2600, -1400], ...edge, [-2600, 2200]])}" fill="#1c1f45" opacity=".9"/><rect x="470" y="-1400" width="260" height="3600" fill="url(#${dg})"/>`);
+    darkL.add(`<path d="${c.poly([[-2600, -1400], ...edge, [-2600, 2200]])}" fill="#1c1f45" opacity=".9"/><path d="${c.poly([...edge, [760, 2200], [760, -1400]])}" fill="url(#${dg})"/>`);   // the fade follows the torn edge (a straight rect showed as a line)
     const fx = S.layer({ par: 0.6, sh: 4 });
     const lost = S.puppet(fx.add(person(c, man(c, { robe: mix(C.stone2, C.indigo, 0.3), mantle: null }))));
     const sign = fx.add(`<g>${sheet().p(c.cut(c.rect(-3, -110, 6, 110), 0.2, 4), shade(C.wood2, -0.3)).p(c.cut([[0, -100], [70, -104], [84, -92], [70, -80], [0, -84]], 0.3, 4) + c.cut([[0, -70], [-64, -74], [-78, -62], [-64, -50], [0, -54]], 0.3, 4), mix(C.wood3, C.night, 0.5)).out()}</g>`);
@@ -92,7 +93,7 @@ export default {
       /* v35b — walk while you have the light */
       lamps.forEach((l) => { const k = es(t, 1.1 + l.i * 0.1, 1.25 + l.i * 0.1); vis(l.fl, { x: l.x, y: l.y, s: l.s * (1 + (T ? Math.sin(T * 8 + l.i) * 0.05 : 0)), o: k }); });
       const creep = es(t, 1.2, 2.2, ease.out) * (1 - es(t, 3.05, 3.5) * 0.4) + night * 0.4;
-      darkL.shift(-900 + creep * 820, 0);
+      darkL.shift(-900 + creep * (PT ? 900 : 820), 0);
       const go = es(t, 1.2, 1.9);
       walkers.forEach((m, i) => {
         const x = m.x + (i < 3 ? go * 90 : 0);
@@ -103,14 +104,14 @@ export default {
       });
       /* v35c — walking in the dark */
       const lk = es(t, 2.05, 2.3);
-      lost.set({ x: 330 + (T ? Math.sin(T * 0.8) * 10 : 0), y: G + 16, s: 0.98, o: lk * (1 - es(t, 3.2, 3.5)), armF: 90 + (T ? Math.sin(T * 1.3) * 10 : 0), armB: 70, head: -6 + (T ? Math.sin(T * 0.9) * 6 : 0), walk: T ? T * 1.2 : undefined, amt: 0.3, blink: 1 });
-      vis(sign, { x: 430, y: G + 10, o: lk * (1 - es(t, 3.2, 3.5)) });
-      vis(qm, { x: 350, y: 430, s: lk * 0.9, r: T ? Math.sin(T * 1.5) * 8 : 0, o: lk * (1 - es(t, 2.95, 3.1)) });
+      lost.set({ x: (PT ? 430 : 330) + (T ? Math.sin(T * 0.8) * 10 : 0), y: G + 16, s: 0.98, o: lk * (1 - es(t, 3.2, 3.5)), armF: 90 + (T ? Math.sin(T * 1.3) * 10 : 0), armB: 70, head: -6 + (T ? Math.sin(T * 0.9) * 6 : 0), walk: T ? T * 1.2 : undefined, amt: 0.3, blink: 1 });
+      vis(sign, { x: PT ? 530 : 430, y: G + 10, o: lk * (1 - es(t, 3.2, 3.5)) });
+      vis(qm, { x: PT ? 450 : 350, y: 430, s: lk * 0.9, r: T ? Math.sin(T * 1.5) * 8 : 0, o: lk * (1 - es(t, 2.95, 3.1)) });
       /* v36a — children of light */
       const ck = es(t, 3.3, 3.55, ease.out) * (1 - es(t, 3.95, 4.15, ease.in));
       swing(tagL, 800, 360 - (1 - ck) * 700, ck > 0.001 ? T : 0, 1.2, 0.8); fade(tagL, ck > 0.001 ? 1 : 0);
 
-      S.cam.x = kf(t, [[0, 0], [1, 0], [2, -40], [3, 0], [4, 20], [5, 60]]);
+      S.cam.x = PT ? kf(t, [[0, 0], [1, 0], [2, -160], [2.95, -160], [3.3, 0], [4, 20], [5, 60]]) : kf(t, [[0, 0], [1, 0], [2, -40], [3, 0], [4, 20], [5, 60]]);
       S.cam.y = kf(t, [[0, -20], [1, 0], [3, 10], [4.2, 0], [5, -30]]);
       S.cam.z = kf(t, [[0, 1.06], [1, 1.04], [2, 1.06], [3.1, 1.08], [4.1, 1.04], [5, 1.08]]);
     };

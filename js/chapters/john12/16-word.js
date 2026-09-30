@@ -22,9 +22,11 @@ export default {
     { v: 50, text: 'A wiem, że przykazanie Jego jest życiem wiecznym.' },
     { v: 50, cont: true, text: 'To, co mówię, mówię tak, jak Mi Ojciec powiedział».' },
   ],
-  cam: { x: [-60, 80], y: [-120, 40], z: [0.98, 1.2] },
+  cam: { x: [-70, 80], y: [-120, 40], z: [0.93, 1.2] },
   build(S) {
     const c = S.c;
+    const PT = S.portrait;               // phone: the two listeners stand a little closer to Him
+    const HX = PT ? 1040 : 1060, SX = PT ? 570 : 540;
     const st = darkStage(S, { skyCols: ['#1d2147', '#2a2f5c', '#3c3d6c'] });
     const F = st.FLOOR;
     const fin = S.layer({ par: 0.43, sh: 0, flat: true });
@@ -32,8 +34,8 @@ export default {
     st.glowL.el.before(fin.el);
     const rad = st.heav.add(`<g><circle r="220" fill="url(#halo-glow)"/>${radiance(c, 60)}</g>`);
     const pool = st.glowL.add(`<g>${glowDisc(240, 'halo-glow', 1)}</g>`);
-    const hearer = people(S, st.act, [{ x: 1060, y: F + 6, s: 0.98, flip: true, look: man(c, { robe: C.tealRobe }) }], 'h')[0];
-    const scorner = people(S, st.act, [{ x: 540, y: F + 4, s: 0.98, look: man(c, { robe: C.clayMantle, mantle: C.plumRobe, beard: 'full' }), face: true }], 's')[0];
+    const hearer = people(S, st.act, [{ x: HX, y: F + 6, s: 0.98, flip: true, look: man(c, { robe: C.tealRobe }) }], 'h')[0];
+    const scorner = people(S, st.act, [{ x: SX, y: F + 4, s: 0.98, look: man(c, { robe: C.clayMantle, mantle: C.plumRobe, beard: 'full' }), face: true }], 's')[0];
     const jesus = S.puppet(st.act.add(person(c, CAST.jesus)));
     const fx = st.fx;
     const slipsA = Array.from({ length: 4 }, () => fx.add(wordSlip(c, 30)));
@@ -61,7 +63,7 @@ export default {
       const speak = bump(t, 0.1, 0.9) + bump(t, 2.1, 2.9) * 0.6;
       slipsA.forEach((el, i) => {
         const k = seg(t, 0.15 + i * 0.08, 0.55 + i * 0.08);
-        const x = lerp(840, 1030, Math.min(1, k / 0.6)), y = k < 0.6 ? 500 - Math.sin((k / 0.6) * PI) * 50 : lerp(500, F + 4, (k - 0.6) / 0.4);
+        const x = lerp(840, HX - 30, Math.min(1, k / 0.6)), y = k < 0.6 ? 500 - Math.sin((k / 0.6) * PI) * 50 : lerp(500, F + 4, (k - 0.6) / 0.4);
         vis(el, { x: x + i * 6, y, r: k * 180 + i * 30, o: k > 0 ? 1 - es(t, 1.9, 2.1) : 0 });
       });
       place(hearer, T, { armF: 50 - es(t, 0.5, 0.8) * 30, head: 4 + es(t, 0.6, 0.9) * 8, armB: 10, o: 1 - es(t, 7.1, 7.6) * 0.6 });
@@ -81,11 +83,11 @@ export default {
         const back = es(t, 2.55 + i * 0.03, 2.8 + i * 0.03);
         const gather = es(t, 3.15, 3.5);
         const x0 = lerp(760, 600, k), y0 = 500 - Math.sin(k * PI) * 40;
-        const x1 = lerp(x0, 500 - i * 30, back), y1 = lerp(y0, F + 4, back);
-        vis(el, { x: lerp(x1, 540, gather), y: lerp(y1, 330, gather), s: 1 - gather * 0.6, r: k * 180 + i * 40 + back * 90, o: k > 0 ? 1 - es(t, 3.45, 3.55) : 0 });
+        const x1 = lerp(x0, SX - 40 - i * (PT ? 20 : 30), back), y1 = lerp(y0, F + 4, back);
+        vis(el, { x: lerp(x1, SX, gather), y: lerp(y1, 330, gather), s: 1 - gather * 0.6, r: k * 180 + i * 40 + back * 90, o: k > 0 ? 1 - es(t, 3.45, 3.55) : 0 });
       });
       const jk = es(t, 3.45, 3.7) * (1 - es(t, 3.95, 4.15));
-      vis(judge, { x: 540, y: 330, s: 0.8 + jk * 0.2, o: jk });
+      vis(judge, { x: SX, y: 330, s: 0.8 + jk * 0.2, o: jk });
       /* v49 — not from Myself: from the One who sent Me */
       const rk = es(t, 4.05, 4.4) * (1 - es(t, 7.2, 7.6) * 0.4);
       vis(rad, { x: 800, y: lerp(60, 120, rk), s: 1 + (T ? Math.sin(T * 1.2) * 0.02 : 0), o: rk });
@@ -110,9 +112,9 @@ export default {
       vis(pool, { x: 800, y: F - 120, s: 1 - dark * 0.3, o: 0.5 + bump(t, 1.2, 2) * 0.4 + dark * 0.2 });
       jesus.set({ x: 800, y: F + 10, s: 1.08, armF: 20 + speak * 40 + wk * 40 * (1 - es(t, 1.95, 2.15)) + bump(t, 4.1, 4.9) * 0 + es(t, 5.3, 5.6) * 50 * (1 - es(t, 6.0, 6.2)) + lk * 44, armB: 10 + bump(t, 0.5, 1.0) * 90 + bump(t, 4.05, 4.95) * 130 + bump(t, 6.1, 6.9) * 90, head: -2 - bump(t, 4.05, 4.95) * 14 + wk * 6 * (1 - es(t, 1.95, 2.1)) - bump(t, 6.1, 6.9) * 8, blink: blinkAt(T) });
 
-      S.cam.x = kf(t, [[0, 60], [1, 40], [1.9, 0], [2.2, -40], [3.4, -60], [4.1, 0], [6, 0], [7.2, 0]]);
+      S.cam.x = PT ? kf(t, [[0, 20], [1.9, 0], [2.2, -40], [3.4, -70], [4.1, 0], [8, 0]]) : kf(t, [[0, 60], [1, 40], [1.9, 0], [2.2, -40], [3.4, -60], [4.1, 0], [6, 0], [7.2, 0]]);
       S.cam.y = kf(t, [[0, 0], [1.2, -20], [2.2, 0], [3.4, -40], [4.1, -100], [5.1, -60], [6.1, -80], [7.2, -40], [8, -30]]);
-      S.cam.z = kf(t, [[0, 1.06], [1.2, 1.1], [2.2, 1.04], [3.4, 1.06], [4.1, 0.98], [5.1, 1.04], [6.1, 1.0], [7.2, 1.1], [8, 1.16]]);
+      S.cam.z = kf(t, [[0, 1.06], [1.2, 1.1], [2.2, 1.04], [3.4, 1.06], [4.1, 0.98], [5.1, 1.04], [6.1, 1.0], [7.2, 1.1], [8, 1.16]]) * (PT ? 0.95 : 1);
     };
   },
 };
