@@ -15,10 +15,10 @@ import {
 } from './lib.js';
 
 const JX = 800;
-const AX = [380, 452];          // "the Prophet"
-const BX = [540, 612];          // "the Christ"
-const DX = [1000, 1080, 1160];  // the doubters
-const MAPS = 0.5, MX = 600, MY = 336;
+const AXW = [380, 452];          // "the Prophet"
+const BXW = [540, 612];          // "the Christ"
+const DXW = [1000, 1080, 1160];  // the doubters
+const MAPS = 0.5, MXW = 600, MY = 336;
 
 export default {
   id: 'j7-division',
@@ -30,9 +30,11 @@ export default {
     { v: 43 },
     { v: 44 },
   ],
-  cam: { x: [-40, 40], y: [-60, 40], z: [1, 1.16] },
+  cam: { x: [-40, 40], y: [-60, 40], z: [0.85, 1.16] },
   build(S) {
     const c = S.c;
+    const ph = (wide, phone) => (S.portrait ? phone : wide);   // phone: plates and people at the sides come inward
+    const AX = ph(AXW, [452, 514]), BX = ph(BXW, [580, 644]), DX = ph(DXW, [990, 1058, 1126]), MX = ph(MXW, 630), AP = ph(1, 0.5);
     const set = feastCourt(S, { skyCols: GREAT, lit: 0.3 });
     const F = set.F + 20;
 
@@ -54,7 +56,7 @@ export default {
     /* words and plates */
     const X = S.layer({ par: 0.5, sh: 6 });
     const sp = scrollParts(c, { w: 150, h: 90, lines: 4 });
-    const prophetP = hanging(X, `${sp.rod}<g>${sp.sheet}</g><g transform="translate(0 90)">${sp.rod}</g><g transform="translate(0 120)">${strip(c, tr('Prorok', 'the Prophet'), { size: 18 })}</g>`, { x: 470, y: 290, len: 600 });
+    const prophetP = hanging(X, `${sp.rod}<g>${sp.sheet}</g><g transform="translate(0 90)">${sp.rod}</g><g transform="translate(0 120)">${strip(c, tr('Prorok', 'the Prophet'), { size: 18 })}</g>`, { x: ph(470, 580), y: 290, len: 600 });
     const prophetB = X.add(`<g>${bubble5(c, tr(['Ten prawdziwie', 'jest prorokiem!'], ['This is truly', 'the prophet!']), { size: 19, dir: -1 })}</g>`);
     const christP = hanging(X, `${roundel(c, `<rect x="-80" y="-80" width="160" height="160" fill="${mix(C.parchment, C.halo, 0.4)}"/><circle r="60" fill="url(#halo-glow)"/><g transform="translate(0 70) scale(2.2)">${crown(c)}</g><g transform="translate(-34 -6) scale(1.1)">${oilHorn(c)}</g>`, { r: 62, face: C.parchment, id: S.id('christ') })}<g transform="translate(0 82)">${strip(c, tr('Mesjasz', 'the Christ'), { size: 18 })}</g>`, { x: 700, y: 310, len: 600 });
     const christB = X.add(`<g>${bubble5(c, tr('To jest Mesjasz!', 'This is the Christ!'), { size: 20, dir: -1 })}</g>`);
@@ -73,7 +75,7 @@ export default {
       set.update(t, T, { lit: 0.3 });
 
       /* the sides step apart in v43; some reach out in v44 */
-      const apart = es(t, 4.1, 4.5);
+      const apart = es(t, 4.1, 4.5) * AP;
       const reach = es(t, 5.1, 5.4) * (1 - es(t, 5.75, 5.95));
       const stop = es(t, 5.35, 5.5);
       jesus.set({ x: JX, y: F, s: 1.04, flip: t > 1.9 && t < 4, armF: 20 + bump(t, 0.1, 0.9) * 20, armB: 10, head: bump(t, 4.1, 4.9) * 8, blink: blinkAt(T, 1) });
@@ -85,7 +87,7 @@ export default {
       const [ax, ay] = headAt(AX[1], F + 12, 0.94, false);
       vpose(prophetB, { x: ax + 10, y: ay - 18, s: es(t, 0.1, 0.3, ease.back), o: seg(t, 0.1, 0.15) * (1 - es(t, 0.9, 1.0)) });
       const pk = es(t, 0.3, 0.6, ease.out), pu = es(t, 0.95, 1.1, ease.in);
-      hangAt(prophetP, 470, lerp(-300, 290, pk) - pu * 700, T, pk > 0 && pu < 1 ? 1 : 0, 1.2, 0.9, 1);
+      hangAt(prophetP, ph(470, 580), lerp(-300, ph(290, 250), pk) - pu * 700, T, pk > 0 && pu < 1 ? 1 : 0, 1.2, 0.9, 1);
 
       /* v41a — the Christ */
       const [bx, by] = headAt(BX[0], F + 6, 0.94, false);
@@ -122,7 +124,7 @@ export default {
       vpose(ring, { x: JX, y: F + 4, s: 0.7 + rg * 0.3, o: rg });
 
       S.cam.y = 30 - bump(t, 2.0, 4.0) * 30;
-      S.cam.z = 1.12 - bump(t, 2.0, 4.0) * 0.03;
+      S.cam.z = (1.12 - bump(t, 2.0, 4.0) * 0.03) * (S.portrait ? 0.85 : 1);   // phone: a wider view, so the plates and the people at the sides fit
     };
   },
 };

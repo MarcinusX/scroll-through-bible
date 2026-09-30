@@ -12,7 +12,7 @@ import {
 } from './lib.js';
 
 const JX = 800;
-const LX = [1000, 1086, 1170];
+const LXW = [1000, 1086, 1170];
 
 /** a small stone held in the back hand (hold coords) */
 function stoneHeld(c) { return `<g transform="translate(1 8)">${sheet().p(c.cut(c.blob(0, 0, 10, 8, 9, 0.2), 0.5, 3), C.rock2).x(c.poly(c.ell(-3, -3, 3, 2, 6)), C.stone, 'opacity=".7"').out()}</g>`; }
@@ -39,15 +39,17 @@ export default {
     { v: 19, cont: true, text: '[bo] czemuż usiłujecie Mnie zabić?»' },
     { v: 20 },
   ],
-  cam: { x: [-40, 40], y: [-60, 40], z: [1, 1.16] },
+  cam: { x: [-40, 40], y: [-60, 40], z: [0.85, 1.16] },
   build(S) {
     const c = S.c;
+    const ph = (wide, phone) => (S.portrait ? phone : wide);   // phone: plates and people at the sides come inward
+    const LX = ph(LXW, [990, 1058, 1126]), CRX = ph([400, 470, 540, 600], [466, 528, 590, 652]);
     const set = feastCourt(S, { skyCols: FEAST });
     const F = set.F + 20;
 
     /* people: the crowd on the left, Jesus, the leaders with hidden stones on the right */
     const P = S.layer({ par: 0.5, sh: 5 });
-    const crowdL = [[400, 0], [470, 1], [540, 2], [600, 3]].map(([x, i]) => ({ x, i, seed: c.rr(0, 9), p: S.puppet(P.add(i === 1 ? person(c, townWoman(c)) : i === 3 ? pilgrim(c, 7, { lulavA: 60 }) : person(c, townMan(c)))) }));
+    const crowdL = CRX.map((x, i) => ({ x, i, seed: c.rr(0, 9), p: S.puppet(P.add(i === 1 ? person(c, townWoman(c)) : i === 3 ? pilgrim(c, 7, { lulavA: 60 }) : person(c, townMan(c)))) }));
     const jesus = S.puppet(P.add(person(c, { ...CAST.jesus })));
     const voice = voiceRings(P, c, { n: 3, r: 30, w: 4 });
     const leaders = LX.map((x, i) => ({ x, i, seed: c.rr(0, 9), p: S.puppet(P.add(person(c, { ...PH(c, i), holdB: stoneHeld(c) }))) }));
@@ -73,7 +75,7 @@ export default {
     const killGlow = tabEl.querySelector('.killGlow');
     const keepT = X.add(`<g>${strip(c, tr('nikt nie zachowuje Prawa', 'none of you keeps the Law'), { size: 17 })}</g>`);
     const why = X.add(`<g>${bubble5(c, tr(['Czemu chcecie', 'Mnie zabić?'], ['Why do you seek', 'to kill me?']), { size: 20, dir: -1 })}</g>`);
-    const demon = X.add(`<g>${bubble5(c, tr(['Masz złego ducha!', 'Któż chce Cię zabić?'], ['You have a demon!', 'Who seeks to kill you?']), { size: 20, dir: 1, jag: true, fill: '#4a3f52', ink: C.cream })}</g>`);
+    const demon = X.add(`<g>${bubble5(c, tr(['Masz złego ducha!', 'Któż chce Cię zabić?'], ['You have a demon!', 'Who seeks to kill you?']), { size: ph(20, 18), dir: 1, jag: true, fill: '#4a3f52', ink: C.cream })}</g>`);
 
     return (t, time) => {
       const T = time;
@@ -104,11 +106,11 @@ export default {
       vpose(why, { x: wx + 10, y: wy - 24, s: es(t, 2.1, 2.3, ease.back), o: seg(t, 2.1, 2.15) * (1 - es(t, 2.95, 3.05)) });
       const shout = es(t, 3.05, 3.25);
       crowdL.forEach((m) => m.p.set({ x: m.x, y: F + 6 + (m.i % 2) * 6, s: 0.95, armF: m.i === 3 ? 60 : 16 + shout * (m.i === 0 ? 80 : m.i === 2 ? 60 : 20), armB: 10 + shout * (m.i === 2 ? 60 : 0), head: -shout * 6, lean: shout * 4, blink: blinkAt(T, m.seed) }));
-      const [cx, cy] = headAt(470, F + 12, 0.95, false);
+      const [cx, cy] = headAt(ph(470, CRX[3]), F + 12, 0.95, false);
       vpose(demon, { x: cx + 30, y: cy - 20, s: es(t, 3.1, 3.3, ease.back), o: seg(t, 3.1, 3.15) });
 
       S.cam.y = 30 - bump(t, 0, 1.2) * 40;
-      S.cam.z = 1.12 - bump(t, 0, 1.2) * 0.05;
+      S.cam.z = (1.12 - bump(t, 0, 1.2) * 0.05) * (S.portrait ? 0.85 : 1);   // phone: a wider view, so the plates and the people at the sides fit
     };
   },
 };

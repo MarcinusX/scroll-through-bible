@@ -35,7 +35,7 @@ export default {
     { v: 39, text: 'A powiedział to o Duchu, którego mieli otrzymać wierzący w Niego;' },
     { v: 39, cont: true, text: 'Duch bowiem jeszcze nie był, ponieważ Jezus nie został jeszcze uwielbiony.' },
   ],
-  cam: { x: [-40, 160], y: [-60, 60], z: [1, 1.16] },
+  cam: { x: [-40, 160], y: [-60, 60], z: [0.85, 1.16] },
   build(S) {
     const c = S.c;
     const set = feastCourt(S, { skyCols: GREAT, lit: 0.3 });
@@ -203,15 +203,15 @@ export default {
       const vk = es(t, 5.1, 5.4, ease.out);
       vpose(veil, { x: 800, y: lerp(-300, 214, vk), o: vk > 0 ? 0.72 : 0 });
       const ck = es(t, 5.3, 5.55, ease.out);
-      vpose(crownEl, { x: 1040, y: lerp(-200, 300, ck), o: ck > 0 ? 0.5 + Math.sin(T * 1.5) * 0.05 : 0 });
+      vpose(crownEl, { x: S.portrait ? 1005 : 1040, y: lerp(-200, 300, ck), o: ck > 0 ? 0.5 + Math.sin(T * 1.5) * 0.05 : 0 });
       W.fade(1 - es(t, 5.2, 5.5) * 0.35);
       if (ck > 0) pose(hg.el, { x: 560, y: lerp(-200, 330, ck), r: Math.sin(T * 0.9) * 1.2, o: 1 }); else fade(hg.el, 0);
       hg.set(0.55, 1);
-      vpose(notYetT, { x: 1040, y: 370, o: seg(t, 5.5, 5.6) });
+      vpose(notYetT, { x: S.portrait ? 1005 : 1040, y: 370, o: seg(t, 5.5, 5.6) });
 
       S.cam.x = lerp(150, 0, es(t, 0.9, 1.5)) + 0;
       S.cam.y = 30 + es(t, 2.9, 3.4) * 20 - es(t, 4.0, 4.4) * 50;
-      S.cam.z = lerp(1.14, 1.08, es(t, 0.9, 1.5)) - es(t, 2.9, 3.4) * 0.04;
+      S.cam.z = (lerp(1.14, 1.08, es(t, 0.9, 1.5)) - es(t, 2.9, 3.4) * 0.04) * (S.portrait ? 0.85 : 1);   // phone: a wider view, so the plates and the people at the sides fit
     };
   },
 };

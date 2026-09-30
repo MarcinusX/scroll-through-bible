@@ -13,8 +13,8 @@ import {
 } from './lib.js';
 
 const JX = 800;
-const LX = [420, 510, 600];
-const OX = [1060, 1130, 1200];
+const LXW = [420, 510, 600];
+const OXW = [1060, 1130, 1200];
 const AFTER = ['#dccfb4', '#f1d9ae', '#f6dcb2'];
 const STEPS = 9;
 const stepAt = (i) => [850 + i * 22, 612 - i * 36];
@@ -30,9 +30,11 @@ export default {
     { v: 35, cont: true, text: 'Czyżby miał zamiar udać się do Żydów rozproszonych wśród Greków i uczyć Greków?' },
     { v: 36 },
   ],
-  cam: { x: [-40, 60], y: [-60, 40], z: [1, 1.16] },
+  cam: { x: [-40, 60], y: [-60, 40], z: [0.85, 1.16] },
   build(S) {
     const c = S.c;
+    const ph = (wide, phone) => (S.portrait ? phone : wide);   // phone: plates and people at the sides come inward
+    const LX = ph(LXW, [480, 552, 624]), OX = ph(OXW, [1040, 1100, 1160]);
     const set = feastCourt(S, { skyCols: AFTER, lit: 0.5 });
     const F = set.F + 20;
 
@@ -111,7 +113,7 @@ export default {
         vpose(qs[i], { x: qx + 8, y: qy - 52 + Math.sin(T * 2 + i) * 3, s: es(t, 5.1 + i * 0.07, 5.3 + i * 0.07, ease.back) * 0.8, o: seg(t, 5.1 + i * 0.07, 5.15 + i * 0.07) });
       });
       const nk = es(t, 2.2, 2.5, ease.out), nu = es(t, 2.95, 3.1, ease.in);
-      hangAt(notFound, 520, lerp(-300, 330, nk) - nu * 700, T, nk > 0 && nu < 1 ? 1 : 0, 1.3, 0.9, 1);
+      hangAt(notFound, ph(520, 580), lerp(-300, 330, nk) - nu * 700, T, nk > 0 && nu < 1 ? 1 : 0, 1.3, 0.9, 1);
 
       /* v35a — "where will he go?" */
       const [bx, by] = headAt(LX[1], F + 6, 0.97, false);
@@ -139,7 +141,7 @@ export default {
 
       S.cam.x = 20 + bump(t, 1.0, 3.0) * 30;
       S.cam.y = 30 - bump(t, 1.0, 3.0) * 40;
-      S.cam.z = 1.12 - bump(t, 1.0, 3.0) * 0.04;
+      S.cam.z = (1.12 - bump(t, 1.0, 3.0) * 0.04) * (S.portrait ? 0.85 : 1);   // phone: a wider view, so the plates and the people at the sides fit
     };
   },
 };

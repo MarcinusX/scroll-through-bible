@@ -14,7 +14,7 @@ import {
 
 const F = YARD.F;
 const JX = 690, SITX = 560;
-const BX = [880, 968, 1056, 1144];
+const BXL = [880, 968, 1056, 1144];
 
 export default {
   id: 'j7-time',
@@ -27,9 +27,12 @@ export default {
     { v: 8, cont: true, text: 'Ja jeszcze nie idę na to święto, bo czas mój jeszcze się nie wypełnił».' },
     { v: 9 },
   ],
-  cam: { x: [-300, 80], y: [-60, 40], z: [1, 1.16] },
+  cam: { x: [-300, 110], y: [-60, 40], z: [0.94, 1.16] },
   build(S) {
     const c = S.c;
+    // phone: the four brothers stand closer together and the camera sits further right, so all of them are in view
+    const BX = S.portrait ? [856, 932, 1008, 1084] : BXL;
+    const CX0 = S.portrait ? 100 : 30, HGX = S.portrait ? 640 : 560, RDX = S.portrait ? 1080 : 1180, PZ = S.portrait ? 0.95 : 1;
     const Y = yardSet(S, { skyCols: ['#d3e2d9', '#f0e6c8', '#f7e4c2'], sunAt: [1230, 150] });
 
     /* people */
@@ -74,7 +77,7 @@ export default {
 
     return (t, time) => {
       const T = time;
-      Y.update(t, T, { sunX: 1230 - es(t, 6.0, 6.9) * 120, sunY: 150 + es(t, 6.0, 6.9) * 40 });
+      Y.update(t, T, { sunX: 1230 - es(t, 6.0, 6.9) * (S.portrait ? 210 : 120), sunY: 150 + es(t, 6.0, 6.9) * 40 });
 
       /* Jesus: speaks, then sits under the fig tree (v9) */
       const speak = es(t, 0.05, 0.3) * (1 - es(t, 5.9, 6.05));
@@ -104,9 +107,9 @@ export default {
       /* v6b — the hourglass (still full) and the open gate */
       const hk = es(t, 1.1, 1.4, ease.out) * (1 - es(t, 1.9, 2.1, ease.in)) + es(t, 5.1, 5.4, ease.out) * (1 - es(t, 5.95, 6.15, ease.in));
       const hy2 = lerp(-300, 300, hk);
-      if (hk > 0.001) pose(hg.el, { x: 560, y: hy2, r: Math.sin(T * 0.9) * 1.4, o: 1 }); else fade(hg.el, 0);
+      if (hk > 0.001) pose(hg.el, { x: HGX, y: hy2, r: Math.sin(T * 0.9) * 1.4, o: 1 }); else fade(hg.el, 0);
       hg.set(t < 3 ? 0.97 - seg(t, 1.3, 1.9) * 0.04 : 0.93 - seg(t, 5.2, 6.0) * 0.1, t < 3 ? seg(t, 1.3, 1.35) : seg(t, 5.2, 5.25));
-      vpose(hgT, { x: 560, y: hy2 + 88, o: hk > 0.3 ? seg(hk, 0.3, 1) : 0 });
+      vpose(hgT, { x: HGX, y: hy2 + 88, o: hk > 0.3 ? seg(hk, 0.3, 1) : 0 });
       const gk = es(t, 1.35, 1.65, ease.out), gu = es(t, 1.95, 2.15, ease.in);
       const gy = lerp(-300, 250, gk) - gu * 800;
       hangAt(gate, 1040, gy, T, gk > 0 && gu < 1 ? 1 : 0, 1.3, 0.8, 1);
@@ -129,15 +132,15 @@ export default {
 
       /* v8a — to the feast */
       const rk = es(t, 4.1, 4.35, ease.out), ru = es(t, 4.95, 5.1, ease.in);
-      hangAt(road, 1180, lerp(-300, 320, rk) - ru * 700, T, rk > 0 && ru < 1 ? 1 : 0, 1.2, 0.9, 3);
+      hangAt(road, RDX, lerp(-300, 320, rk) - ru * 700, T, rk > 0 && ru < 1 ? 1 : 0, 1.2, 0.9, 3);
 
       /* v9 — He stayed in Galilee */
       const tk = es(t, 6.3, 6.6, ease.out);
       hangAt(galTag, 700, lerp(-300, 300, tk), T, tk > 0 ? 1 : 0, 1.3, 0.8, 4);
 
-      S.cam.x = 30 - es(t, 5.0, 5.8) * 90 - es(t, 6.05, 6.7) * 200;
+      S.cam.x = CX0 - es(t, 5.0, 5.8) * (60 + CX0) - es(t, 6.05, 6.7) * 200;
       S.cam.y = -20;
-      S.cam.z = 1.06 + bump(t, 3.0, 4.0) * 0.04;
+      S.cam.z = (1.06 + bump(t, 3.0, 4.0) * 0.04) * PZ;
     };
   },
 };

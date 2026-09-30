@@ -26,6 +26,8 @@ export default {
   cam: { x: [-80, 80], y: [-30, 40], z: [1, 1.12] },
   build(S) {
     const c = S.c;
+    // phone: the signpost, the cloud and the shadow plate come inward so the screen edge doesn't slice them
+    const SGX = S.portrait ? 1040 : 1110, PLX = S.portrait ? 990 : 1110, CLX = S.portrait ? 950 : 1030;
     const G = galileeSet(S, { skyCols: ['#d3e2d9', '#f0e6c8', '#f7e4c2'], sunAt: [1210, 160], fg: false });
 
     /* the booth by the road (left): poles, then the roof of branches */
@@ -36,8 +38,8 @@ export default {
 
     /* the signpost to Judea (right) and the dark cloud over it */
     const signL = S.layer({ par: 0.46, sh: 4 });
-    signL.add(`<g transform="translate(1110 ${RY - 20})">${signpost(c, tr('Judea', 'Judea'), { size: 22, dir: 1 })}</g>`);
-    const cloudEl = hanging(signL, `<g opacity=".92">${stormCloud(c, 280)}</g>`, { x: 1030, y: 200, len: 700 });
+    signL.add(`<g transform="translate(${SGX} ${RY - 20})">${signpost(c, tr('Judea', 'Judea'), { size: 22, dir: 1 })}</g>`);
+    const cloudEl = hanging(signL, `<g opacity=".92">${stormCloud(c, 280)}</g>`, { x: CLX, y: 200, len: 700 });
 
     /* people (in front of the booth and the signpost) */
     const A = S.layer({ par: 0.5, sh: 5 });
@@ -49,7 +51,7 @@ export default {
     const dark = mix(C.night, C.storm2, 0.4);
     const plateIn = `<rect x="-120" y="-120" width="240" height="240" fill="${mix(C.dusk, C.storm, 0.55)}"/><g transform="translate(0 64)">${walledCity(c, 0, 0, 0.9, { wall: dark, wall2: dark, temple: dark })}</g>` +
       [[-66, 0.5, false], [66, 0.5, true], [0, 0.56, false]].map(([x, s, f], i) => `<g transform="translate(${x} 110) scale(${s}) scale(${f ? -1 : 1} 1)">${shadowPerson(c, { ...pharisee(c, i), pose: 'stand' }, '#1f1a2c').replace('class="armFr"', 'class="armFr" transform="rotate(-100)"')}</g>`).join('');
-    const plate = hanging(X, roundel(c, plateIn, { r: 104, face: C.storm, rim: mix(C.storm2, C.wood2, 0.4), id: S.id('judea-clip') }), { x: 1110, y: 300, len: 600 });
+    const plate = hanging(X, roundel(c, plateIn, { r: 104, face: C.storm, rim: mix(C.storm2, C.wood2, 0.4), id: S.id('judea-clip') }), { x: PLX, y: 300, len: 600 });
     const plateTag = X.add(`<g>${strip(c, tr('szukali, by Go zabić', 'they sought to kill Him'), { size: 16, fill: C.cream })}</g>`);
     const galTag = hanging(X, nameTag(c, tr('Galilea', 'Galilee'), { size: 20 }), { x: 560, y: 250, len: 600 });
 
@@ -97,10 +99,10 @@ export default {
 
       const pk = es(t, 2.1, 2.4, ease.out), pu = es(t, 2.9, 3.1, ease.in);
       const py = lerp(-340, 300, pk) - pu * 800;
-      hangAt(plate, 1110, py, T, pk > 0 && pu < 1 ? 1 : 0, 1.2, 0.8, 2);
-      vpose(plateTag, { x: 1110, y: py + 128, o: pk > 0 && pu < 1 ? seg(t, 2.35, 2.45) : 0 });
+      hangAt(plate, PLX, py, T, pk > 0 && pu < 1 ? 1 : 0, 1.2, 0.8, 2);
+      vpose(plateTag, { x: PLX, y: py + 128, o: pk > 0 && pu < 1 ? seg(t, 2.35, 2.45) : 0 });
       const ck = es(t, 2.05, 2.35, ease.out) * (1 - es(t, 2.95, 3.3, ease.in));
-      pose(cloudEl, { x: 1030 + Math.sin(T * 0.3) * 8, y: lerp(-300, 200, ck), r: Math.sin(T * 0.7) * 1, o: ck > 0 ? 1 : 0 });
+      pose(cloudEl, { x: CLX + Math.sin(T * 0.3) * 8, y: lerp(-300, 200, ck), r: Math.sin(T * 0.7) * 1, o: ck > 0 ? 1 : 0 });
 
       /* v2 — the feast draws near: moons wax, villagers bring branches, the booth goes up */
       moons.forEach((m) => {

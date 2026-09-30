@@ -17,8 +17,8 @@ import {
 } from './lib.js';
 
 const JX = 800, JY = 626;
-const TX = [420, 500, 580];            // people of Jerusalem
-const LX = [1010, 1094, 1176];         // the leaders
+const TXW = [420, 500, 580];            // people of Jerusalem
+const LXW = [1010, 1094, 1176];         // the leaders
 
 export default {
   id: 'j7-whence',
@@ -32,9 +32,11 @@ export default {
     { v: 28, cont: true, text: 'Ja jednak nie przyszedłem sam od siebie; lecz prawdziwy jest Ten, który Mnie posłał, którego wy nie znacie.' },
     { v: 29 },
   ],
-  cam: { x: [-40, 40], y: [-80, 40], z: [1, 1.16] },
+  cam: { x: [-40, 40], y: [-80, 40], z: [0.85, 1.16] },
   build(S) {
     const c = S.c;
+    const ph = (wide, phone) => (S.portrait ? phone : wide);   // phone: plates and people at the sides come inward
+    const TX = ph(TXW, [470, 540, 610]), LX = ph(LXW, [990, 1058, 1126]);
     const set = feastCourt(S, { skyCols: GREAT });
     const F = set.F + 24;
 
@@ -103,21 +105,21 @@ export default {
         vpose(silent[i], { x: lhx - 24, y: lhy - 16, s: es(t, 1.2 + i * 0.06, 1.4 + i * 0.06, ease.back) * 0.8, o: seg(t, 1.2 + i * 0.06, 1.25 + i * 0.06) * (1 - es(t, 1.95, 2.05)) });
       });
       const mk = es(t, 2.1, 2.4, ease.out), mu = es(t, 2.95, 3.1, ease.in);
-      hangAt(messiah, 1090, lerp(-300, 330, mk) - mu * 700, T, mk > 0 && mu < 1 ? 1 : 0, 1.2, 0.9, 2);
+      hangAt(messiah, ph(1090, 1030), lerp(-300, 330, mk) - mu * 700, T, mk > 0 && mu < 1 ? 1 : 0, 1.2, 0.9, 2);
 
       /* v27 — Nazareth; and the clouds */
       const nk = es(t, 3.05, 3.35, ease.out) * (1 - es(t, 4.9, 5.05, ease.in)) + es(t, 5.3, 5.6, ease.out) * (1 - es(t, 5.95, 6.1, ease.in));
-      hangAt(naz, 520, lerp(-300, 320, nk), T, nk > 0.001 ? 1 : 0, 1.2, 0.9, 3);
+      hangAt(naz, ph(520, 570), lerp(-300, 320, nk), T, nk > 0.001 ? 1 : 0, 1.2, 0.9, 3);
       const yk = es(t, 4.05, 4.35, ease.out), yu = es(t, 4.9, 5.05, ease.in);
-      hangAt(myst, 1080, lerp(-300, 320, yk) - yu * 700, T, yk > 0 && yu < 1 ? 1 : 0, 1.2, 0.9, 4);
+      hangAt(myst, ph(1080, 1020), lerp(-300, 320, yk) - yu * 700, T, yk > 0 && yu < 1 ? 1 : 0, 1.2, 0.9, 4);
 
       /* v28b — the light of the One who sent Him; a veil before the leaders */
       const bm = es(t, 6.1, 6.4);
       vpose(beam, { x: JX + 4, y: 60, sx: 0.5 + bm * 0.5, o: bm * 0.85 });
       vpose(glo, { x: JX, y: 80, s: 0.6 + bm * 0.5, r: T * 2, o: bm * 0.75 });
       const vk = es(t, 6.35, 6.65, ease.out);
-      vpose(veil, { x: 930, y: lerp(-400, 300, vk), r: Math.sin(T * 0.7) * 0.6, o: vk > 0 ? 0.92 : 0 });
-      vpose(unknownT, { x: 1094, y: 420, o: es(t, 6.55, 6.7) * (1 - es(t, 6.95, 7.05)) });
+      vpose(veil, { x: ph(930, 908), y: lerp(-400, 300, vk), r: Math.sin(T * 0.7) * 0.6, o: vk > 0 ? 0.92 : 0 });
+      vpose(unknownT, { x: ph(1094, 1040), y: 420, o: es(t, 6.55, 6.7) * (1 - es(t, 6.95, 7.05)) });
 
       /* v29 — I know Him: a golden thread joins Him to the light */
       const th = es(t, 7.1, 7.45);
@@ -125,7 +127,7 @@ export default {
       vpose(knowT, { x: JX, y: 250, o: es(t, 7.35, 7.5) });
 
       S.cam.y = 20 - es(t, 5.9, 6.4) * 50;
-      S.cam.z = 1.12 - es(t, 5.9, 6.4) * 0.05;
+      S.cam.z = (1.12 - es(t, 5.9, 6.4) * 0.05) * (S.portrait ? 0.85 : 1);   // phone: a wider view, so the plates and the people at the sides fit
     };
   },
 };

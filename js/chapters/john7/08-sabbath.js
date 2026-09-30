@@ -19,7 +19,7 @@ import {
 } from './lib.js';
 
 const JX = 800;
-const LX = [1010, 1094, 1176];
+const LXW = [1010, 1094, 1176];
 const BAL = { x: 800, y: 196, arm: 170 };
 const sep = (o) => { const r = {}; for (const [k, v] of Object.entries(o)) r[k] = typeof v === 'string' && v[0] === '#' ? mix(v, '#b9a78c', 0.55) : v; return r; };
 
@@ -34,15 +34,17 @@ export default {
     { v: 23, cont: true, text: 'to dlaczego złościcie się na Mnie, że w szabat uzdrowiłem całego człowieka?' },
     { v: 24 },
   ],
-  cam: { x: [-40, 40], y: [-60, 40], z: [1, 1.16] },
+  cam: { x: [-40, 40], y: [-60, 40], z: [0.85, 1.16] },
   build(S) {
     const c = S.c;
+    const ph = (wide, phone) => (S.portrait ? phone : wide);   // phone: plates and people at the sides come inward
+    const LX = ph(LXW, [990, 1058, 1126]), CRX = ph([400, 470, 540, 606], [466, 528, 590, 652]);
     const set = feastCourt(S, { skyCols: FEAST });
     const F = set.F + 20;
 
     /* people */
     const P = S.layer({ par: 0.5, sh: 5 });
-    const crowdL = [[400, 0], [470, 1], [540, 2], [606, 3]].map(([x, i]) => ({ x, i, seed: c.rr(0, 9), p: S.puppet(P.add(person(c, i % 2 ? townWoman(c) : townMan(c)))) }));
+    const crowdL = CRX.map((x, i) => ({ x, i, seed: c.rr(0, 9), p: S.puppet(P.add(person(c, i % 2 ? townWoman(c) : townMan(c)))) }));
     const jesus = S.puppet(P.add(person(c, { ...CAST.jesus })));
     const voice = voiceRings(P, c, { n: 3, r: 30, w: 4 });
     const leaders = LX.map((x, i) => ({ x, i, seed: c.rr(0, 9), p: S.puppet(P.add(person(c, { ...PH(c, i) }))) }));
@@ -104,14 +106,14 @@ export default {
 
       /* v21b — the one work: Bethesda */
       const pk = es(t, 1.05, 1.35, ease.out), pu = es(t, 1.95, 2.15, ease.in);
-      hangAt(poolP, 1040, lerp(-300, 320, pk) - pu * 800, T, pk > 0 && pu < 1 ? 1 : 0, 1.2, 0.8, 1);
+      hangAt(poolP, ph(1040, 1020), lerp(-300, 320, pk) - pu * 800, T, pk > 0 && pu < 1 ? 1 : 0, 1.2, 0.8, 1);
       const mar = bump(t, 1.2, 2.0);
       crowdL.forEach((m) => m.p.set({ x: m.x, y: F + 6 + (m.i % 2) * 6, s: 0.95, armF: 16 + mar * (m.i % 2 ? 40 : 20), armB: 10 + mar * 50 * (m.i === 2 ? 1 : 0), head: -mar * 6, lean: -mar * 3, blink: blinkAt(T, m.seed) }));
 
       /* v22a — Moses, and before him the fathers */
       const mk = es(t, 2.05, 2.3, ease.out), ak = es(t, 2.3, 2.6, ease.out), mu = es(t, 2.95, 3.1, ease.in);
-      hangAt(mosesP, 880, lerp(-300, 330, mk) - mu * 800, T, mk > 0 && mu < 1 ? 1 : 0, 1.2, 0.9, 2);
-      hangAt(abrahamP, 1080, lerp(-300, 320, ak) - mu * 800, T, ak > 0 && mu < 1 ? 1 : 0, 1.2, 0.9, 3);
+      hangAt(mosesP, ph(880, 850), lerp(-300, 330, mk) - mu * 800, T, mk > 0 && mu < 1 ? 1 : 0, 1.2, 0.9, 2);
+      hangAt(abrahamP, ph(1080, 1020), lerp(-300, 320, ak) - mu * 800, T, ak > 0 && mu < 1 ? 1 : 0, 1.2, 0.9, 3);
 
       /* v22b — on the Sabbath: the baby, the candles */
       const bk = es(t, 3.05, 3.3, ease.back), bu = es(t, 4.1, 4.3);
@@ -162,7 +164,7 @@ export default {
       hangAt(judgeT, 800, lerp(-300, 396, jk), T, jk > 0 ? 1 : 0, 1.2, 0.9, 5);
 
       S.cam.y = 30 - es(t, 3.9, 4.4) * 40;
-      S.cam.z = 1.12 - es(t, 3.9, 4.4) * 0.04;
+      S.cam.z = (1.12 - es(t, 3.9, 4.4) * 0.04) * (S.portrait ? 0.85 : 1);   // phone: a wider view, so the plates and the people at the sides fit
     };
   },
 };

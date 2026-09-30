@@ -15,7 +15,7 @@ import {
 
 const F = YARD.F;
 const JX = 690;
-const BX = [880, 968, 1056, 1144];
+const BXL = [880, 968, 1056, 1144];
 const LAMP = 790;
 
 export default {
@@ -27,9 +27,12 @@ export default {
     { v: 4, cont: true, text: 'Skoro takich rzeczy dokonujesz, to okaż się światu!»' },
     { v: 5 },
   ],
-  cam: { x: [-40, 80], y: [-60, 40], z: [1, 1.16] },
+  cam: { x: [-40, 120], y: [-60, 40], z: [0.94, 1.16] },
   build(S) {
     const c = S.c;
+    // phone: the four brothers stand closer together and the camera sits further right, so all of them are in view
+    const BX = S.portrait ? [856, 932, 1008, 1084] : BXL;
+    const PUT = S.portrait ? 970 : 1010, JUX = S.portrait ? 1070 : 1130, PZ = S.portrait ? 0.95 : 1;
     const Y = yardSet(S, { skyCols: ['#d3e2d9', '#f0e6c8', '#f7e4c2'], sunAt: [1230, 150] });
 
     /* the hidden lamp under a basket, on a low stool */
@@ -97,7 +100,7 @@ export default {
 
       /* v3b — go to Judea; your disciples will see your works */
       const jk = es(t, 1.2, 1.45, ease.out), ju = es(t, 1.9, 2.1, ease.in);
-      hangAt(judea, 1130, lerp(-300, 330, jk) - ju * 700, T, jk > 0 && ju < 1 ? 1 : 0, 1.2, 0.9, 1);
+      hangAt(judea, JUX, lerp(-300, 330, jk) - ju * 700, T, jk > 0 && ju < 1 ? 1 : 0, 1.2, 0.9, 1);
       const wk = es(t, 1.4, 1.7, ease.out), wu = es(t, 1.95, 2.15, ease.in);
       const wy = lerp(-300, 250, wk) - wu * 800;
       hangAt(works, 930, wy, T, wk > 0 && wu < 1 ? 1 : 0, 1.2, 0.8, 2);
@@ -107,7 +110,7 @@ export default {
       const lift = es(t, 2.25, 2.5) * (1 - es(t, 3.0, 3.2)), up = es(t, 2.25, 2.55), put = es(t, 3.0, 3.25);
       const [lhx, lhy] = hand(BX[1] + away * 24, F + 6, 0.95, true, 20 + 110 * lift);
       let bx = lerp(LAMP, lhx + 4, up), by = lerp(F - 34, lhy + 58, up);
-      bx = lerp(bx, 1010, put); by = lerp(by, F + 16, put);
+      bx = lerp(bx, PUT, put); by = lerp(by, F + 16, put);
       pose(basket, { x: bx, y: by, r: up * (1 - put) * -8 });
       const shine = es(t, 2.35, 2.6);
       pose(lamp.flame, { x: 35, y: -16, sy: 1 + Math.sin(T * 9) * 0.06, o: shine > 0 ? 1 : 0 });
@@ -130,9 +133,9 @@ export default {
       });
       vpose(notT, { x: 1010, y: F - 330, o: es(t, 4.4, 4.55) });
 
-      S.cam.x = 40 + bump(t, 1.0, 2.1) * 20;
+      S.cam.x = (S.portrait ? 100 : 40) + bump(t, 1.0, 2.1) * 20;
       S.cam.y = -10 - bump(t, 3.0, 4.1) * 30;
-      S.cam.z = 1.06 + es(t, 4.1, 4.6) * 0.06;
+      S.cam.z = (1.06 + es(t, 4.1, 4.6) * (S.portrait ? 0 : 0.06)) * PZ;
     };
   },
 };

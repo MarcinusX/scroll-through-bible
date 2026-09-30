@@ -27,9 +27,10 @@ export default {
     { v: 18, text: 'Kto mówi we własnym imieniu, ten szuka własnej chwały.' },
     { v: 18, cont: true, text: 'Kto zaś szuka chwały Tego, który go posłał, ten godzien jest wiary i nie ma w nim nieprawości.' },
   ],
-  cam: { x: [-40, 40], y: [-60, 40], z: [1, 1.16] },
+  cam: { x: [-40, 40], y: [-60, 40], z: [0.85, 1.16] },
   build(S) {
     const c = S.c;
+    const ph = (wide, phone) => (S.portrait ? phone : wide);   // phone: plates and people at the sides come inward
     const set = feastCourt(S, { skyCols: FEAST });
     const F = set.F + 20;
 
@@ -46,7 +47,7 @@ export default {
     const listener = S.puppet(P.add(person(c, { ...townMan(c), pose: 'kneel' })));
     const jesus = S.puppet(P.add(person(c, { ...CAST.jesus })));
     const voice = voiceRings(P, c, { n: 3, r: 30, w: 4 });
-    const SX = [1010, 1090, 1170];
+    const SX = ph([1010, 1090, 1170], [990, 1058, 1126]);
     const scholars = SX.map((x, i) => ({ x, i, seed: c.rr(0, 9), p: S.puppet(P.add(i === 1 ? councilScribe(c, 1, {}) : person(c, PH(c, i + 2)))) }));
     const scrollInHand = P.add(`<g>${sheet().p(c.cut(c.rect(-30, -18, 60, 36), 0.4, 5), C.parchment).p(c.cut(c.rect(-38, -22, 9, 44), 0.3, 4) + c.cut(c.rect(29, -22, 9, 44), 0.3, 4), C.wood2).x(c.ribbon([[-22, -8], [20, -8]], 1.6) + c.ribbon([[-22, 0], [16, 0]], 1.6) + c.ribbon([[-22, 8], [18, 8]], 1.6), C.ink, 'opacity=".45"').out()}</g>`);
 
@@ -68,7 +69,7 @@ export default {
       const pupils = [0, 1].map((i) => `<g transform="translate(${20 + i * 44} 64) scale(.4) scale(-1 1)">${person(c, { ...townMan(c), pose: 'sit' })}</g>`).join('');
       return s.out() + rabbi + pupils;
     })();
-    const schoolP = hanging(X, roundel(c, school, { r: 92, face: C.parchment, id: S.id('school') }) + `<g transform="translate(70 -64)">${sheet().p(c.cut(c.circ(0, 0, 30, 20), 0.3, 4), C.cream).out()}<g transform="translate(0 -2)">${bigQuestion(c, 22, C.terracotta)}</g></g>`, { x: 1080, y: 250, len: 600 });
+    const schoolP = hanging(X, roundel(c, school, { r: 92, face: C.parchment, id: S.id('school') }) + `<g transform="translate(70 -64)">${sheet().p(c.cut(c.circ(0, 0, 30, 20), 0.3, 4), C.cream).out()}<g transform="translate(0 -2)">${bigQuestion(c, 22, C.terracotta)}</g></g>`, { x: ph(1080, 1020), y: 250, len: 600 });
     const howB = X.add(`<g>${say(c, tr(['Skąd zna Pisma,', 'skoro się nie uczył?'], ['How does he know letters,', 'having never studied?']), { size: 19, side: -1 })}</g>`);
     // the scroll that comes down in the light
     const sp = scrollParts(c, { w: 150, h: 100, lines: 5 });
@@ -122,7 +123,7 @@ export default {
       const [sx0, sy0] = headAt(SX[0], F, 0.98, true);
       vpose(howB, { x: sx0 - 24, y: sy0 - 20, s: es(t, 1.1, 1.3, ease.back), o: seg(t, 1.1, 1.15) * (1 - es(t, 1.9, 2.0)) });
       const sk = es(t, 1.25, 1.55, ease.out), su = es(t, 1.95, 2.15, ease.in);
-      hangAt(schoolP, 1080, lerp(-300, 320, sk) - su * 800, T, sk > 0 && su < 1 ? 1 : 0, 1.2, 0.8, 1);
+      hangAt(schoolP, ph(1080, 1020), lerp(-300, 320, sk) - su * 800, T, sk > 0 && su < 1 ? 1 : 0, 1.2, 0.8, 1);
 
       /* v16b — the light, and the scroll coming down into His hands */
       const bm = es(t, 3.05, 3.3) * (1 - es(t, 4.0, 4.2)) + es(t, 6.2, 6.5) * 0.8;
@@ -152,15 +153,15 @@ export default {
       /* v18 — his own glory / the glory of the One who sent him */
       const pk = es(t, 5.05, 5.35, ease.out), pu = es(t, 6.85, 7.0, ease.in);
       const py = lerp(-300, 310, pk) - pu * 800;
-      hangAt(selfP, 1060, py, T, pk > 0 && pu < 1 ? 1 : 0, 1.2, 0.8, 2);
+      hangAt(selfP, ph(1060, 1030), py, T, pk > 0 && pu < 1 ? 1 : 0, 1.2, 0.8, 2);
       const lift = es(t, 6.1, 6.55, ease.sine);
-      const cx = lerp(1054, JX, lift), cy = lerp(py - 44, 190, lift);
+      const cx = lerp(ph(1054, 1024), JX, lift), cy = lerp(py - 44, 190, lift);
       vpose(selfCrown, { x: cx, y: cy + Math.sin(T * 2) * 2, s: 0.9 + lift * 0.5, o: pk > 0.3 ? 1 : 0 });
-      vpose(ownT, { x: 1060, y: py + 104, o: pk > 0 ? seg(t, 5.3, 5.4) * (1 - seg(t, 6.05, 6.15)) : 0 });
+      vpose(ownT, { x: ph(1060, 1030), y: py + 104, o: pk > 0 ? seg(t, 5.3, 5.4) * (1 - seg(t, 6.05, 6.15)) : 0 });
       vpose(trueT, { x: JX, y: F - 250, s: es(t, 6.35, 6.55, ease.back), o: seg(t, 6.35, 6.4) });
 
       S.cam.y = 30 - bump(t, 2.9, 4.1) * 60 - es(t, 6.0, 6.5) * 50;
-      S.cam.z = 1.12 + bump(t, 0.4, 3.0) * 0.03 - bump(t, 2.9, 4.1) * 0.06;
+      S.cam.z = (1.12 + bump(t, 0.4, 3.0) * 0.03 - bump(t, 2.9, 4.1) * 0.06) * (S.portrait ? 0.85 : 1);   // phone: a wider view, so the plates and the people at the sides fit
     };
   },
 };

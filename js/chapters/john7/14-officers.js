@@ -13,7 +13,7 @@ import {
   waterChunks, waterGlowDef, LIVING, hangAt, vpose, tr, PI,
 } from './lib.js';
 
-const OX = [1040, 1120, 1200];
+const OXW = [1040, 1120, 1200];
 
 export default {
   id: 'j7-officers',
@@ -25,9 +25,11 @@ export default {
     { v: 48 },
     { v: 49 },
   ],
-  cam: { x: [-40, 60], y: [-60, 40], z: [1, 1.2] },
+  cam: { x: [-290, 120], y: [-60, 40], z: [0.8, 1.2] },
   build(S) {
     const c = S.c;
+    const ph = (wide, phone) => (S.portrait ? phone : wide);
+    const OX = ph(OXW, [1020, 1090, 1160]);   // phone: the officers stand closer to the table
     const K = councilSet(S);
     const F = K.F;
     const gid = waterGlowDef(S);
@@ -44,7 +46,7 @@ export default {
       const s2 = waterChunks(c, [[-90, 20], [-30, 36], [20, 50], [100, 62]], 1, [8, 14], gid);
       return `<rect x="-110" y="-110" width="220" height="220" fill="${mix(C.night, C.indigo, 0.3)}"/><circle r="80" fill="url(#${gid})"/>${s.chunks[0].markup}${s2.chunks[0].markup}<circle cx="-50" cy="-40" r="30" fill="url(#halo-glow)"/>`;
     })();
-    const echo = hanging(X, roundel(c, echoIn, { r: 74, face: C.night, rim: C.haloRim, id: S.id('echo') }), { x: 1110, y: 300, len: 600 });
+    const echo = hanging(X, roundel(c, echoIn, { r: 74, face: C.night, rim: C.haloRim, id: S.id('echo') }), { x: ph(1110, 1080), y: 300, len: 600 });
     const neverB = X.add(`<g>${bubble5(c, tr(['Nikt jeszcze tak', 'nie przemawiał!'], ['No man ever', 'spoke like this man!']), { size: 19, dir: 1 })}</g>`);
     const astrayB = X.add(`<g>${bubble5(c, tr(['Czyż i wy daliście', 'się zwieść?'], ['Are you also', 'led astray?']), { size: 19, dir: -1, jag: true, fill: '#4a3f52', ink: C.cream })}</g>`);
     const anyB = X.add(`<g>${bubble5(c, tr(['Czy ktoś ze zwierzchników', 'uwierzył w Niego?'], ['Has any of the rulers', 'believed in him?']), { size: 18, dir: 1 })}</g>`);
@@ -85,7 +87,7 @@ export default {
 
       /* v46 — no one ever spoke like this man */
       const ek = es(t, 2.1, 2.45, ease.out), eu = es(t, 2.95, 3.1, ease.in);
-      hangAt(echo, 1110, lerp(-300, 330, ek) - eu * 700, T, ek > 0 && eu < 1 ? 1 : 0, 1.2, 0.8, 1);
+      hangAt(echo, ph(1110, 1080), lerp(-300, 330, ek) - eu * 700, T, ek > 0 && eu < 1 ? 1 : 0, 1.2, 0.8, 1);
       const [ox, oy] = headAt(OX[0], F + 8, 0.98, true);
       vpose(neverB, { x: ox - 150, y: oy - 22, s: es(t, 2.2, 2.4, ease.back), o: seg(t, 2.2, 2.25) * (1 - es(t, 2.95, 3.05)) });
 
@@ -107,9 +109,10 @@ export default {
       vpose(cursedB, { x: ax - 20, y: ay - 16, s: es(t, 5.2, 5.4, ease.back), o: seg(t, 5.2, 5.25) });
       vpose(lawScroll, { x: COUNCIL.PHA - 20, y: F - 90, r: -20, o: es(t, 5.05, 5.2) });
 
-      S.cam.x = 30 - es(t, 2.9, 3.3) * 60 + es(t, 4.9, 5.3) * 10;
+      // phone: the camera follows the talk — the officers and the high priest first, then the Pharisees on the left
+      S.cam.x = S.portrait ? 110 - es(t, 3.9, 4.25) * 390 : 30 - es(t, 2.9, 3.3) * 60 + es(t, 4.9, 5.3) * 10;
       S.cam.y = 10;
-      S.cam.z = 1.1;
+      S.cam.z = S.portrait ? 0.84 : 1.1;   // phone: a wider view of the chamber
     };
   },
 };

@@ -11,8 +11,8 @@ import {
 } from './lib.js';
 
 const JX = 800;
-const CX = [400, 474, 548, 622];
-const PX = [990, 1072, 1154];
+const CXW = [400, 474, 548, 622];
+const PXW = [990, 1072, 1154];
 const OX = [920, 1000, 1080];
 
 export default {
@@ -25,9 +25,11 @@ export default {
     { v: 32, text: 'Faryzeusze usłyszeli, że tłum tak mówił o Nim w podnieceniu.' },
     { v: 32, cont: true, text: 'Kapłani więc wraz z faryzeuszami wysłali strażników celem pojmania Go.' },
   ],
-  cam: { x: [-40, 60], y: [-60, 40], z: [1, 1.16] },
+  cam: { x: [-40, 60], y: [-60, 40], z: [0.85, 1.16] },
   build(S) {
     const c = S.c;
+    const ph = (wide, phone) => (S.portrait ? phone : wide);   // phone: plates and people at the sides come inward
+    const CX = ph(CXW, [466, 528, 590, 652]), PX = ph(PXW, [990, 1058, 1126]);
     const set = feastCourt(S, { skyCols: FEAST });
     const F = set.F + 20;
 
@@ -88,7 +90,7 @@ export default {
         const [hx, hy2] = headAt(m.x, F + 6 + (m.i % 2) * 6, 0.95, false);
         vpose(hearts[i], { x: hx + 2, y: hy2 - 46 + Math.sin(T * 2 + i) * 2, s: es(t, 2.15 + i * 0.08, 2.35 + i * 0.08, ease.back), o: seg(t, 2.15 + i * 0.08, 2.2 + i * 0.08) * (1 - es(t, 4.9, 5.1)) });
       });
-      vpose(believeT, { x: 510, y: 420, o: es(t, 2.4, 2.55) * (1 - es(t, 2.95, 3.05)) });
+      vpose(believeT, { x: ph(510, 560), y: 420, o: es(t, 2.4, 2.55) * (1 - es(t, 2.95, 3.05)) });
       signs.forEach((sg) => {
         const k = es(t, 3.05 + sg.i * 0.07, 3.3 + sg.i * 0.07, ease.out) * (1 - es(t, 3.95, 4.15, ease.in));
         pose(sg.el, { x: 610 + sg.i * 95, y: lerp(-300, 330 + (sg.i % 2) * 24, k) + Math.sin(T * 0.9 + sg.i) * 2, o: k > 0 ? 1 : 0 });
@@ -98,14 +100,14 @@ export default {
 
       /* v32a — the Pharisees hear the murmuring */
       const mr = es(t, 4.05, 4.2) * (1 - es(t, 4.95, 5.05));
-      vpose(murmur, { x: 520, y: 430, o: mr });
+      vpose(murmur, { x: ph(520, 560), y: 430, o: mr });
       const [ex, ey] = headAt(CX[3], F + 12, 0.95, false);
       cup(ex + 30, ey, mr, T, { dir: 1, spread: 2.6, speed: 0.6 });
 
       /* v32b — the chief priests come; together they send the officers */
       const pin = es(t, 5.0, 5.35, ease.sine);
       priests.forEach((m) => {
-        const x = lerp(1500 + m.i * 60, 1110 + m.i * 76, pin);
+        const x = lerp(1500 + m.i * 60, ph(1110, 1086) + m.i * ph(76, 62), pin);
         m.p.set({ x, y: F - 30 + m.i * 4, s: 0.92, flip: true, walk: pin > 0 && pin < 1 ? x * 0.05 : undefined, armF: 20 + bump(t, 5.35, 5.9) * 70 * (m.i ? 0 : 1), armB: 10, head: 4, blink: blinkAt(T, m.seed), o: pin > 0 ? 1 : 0 });
       });
       const march = es(t, 5.25, 5.8, ease.sine);
@@ -117,11 +119,11 @@ export default {
         vpose(m.sp, { x: shx, y: shy, s: 0.98, r: -4, o: march > 0 ? 1 : 0 });
       });
       const sk = es(t, 5.5, 5.75, ease.out);
-      hangAt(sentT, 1060, lerp(-300, 330, sk), T, sk > 0 ? 1 : 0, 1.3, 0.9, 3);
+      hangAt(sentT, ph(1060, 1010), lerp(-300, 330, sk), T, sk > 0 ? 1 : 0, 1.3, 0.9, 3);
 
       S.cam.x = bump(t, 4.9, 6.4) * 40;
       S.cam.y = 30;
-      S.cam.z = 1.12;
+      S.cam.z = (1.12) * (S.portrait ? 0.85 : 1);   // phone: a wider view, so the plates and the people at the sides fit
     };
   },
 };
