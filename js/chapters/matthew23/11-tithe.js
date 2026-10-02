@@ -10,8 +10,8 @@ import { es, ease, bump, seg } from '../../core/anim.js';
 import { vain, PH, woeDrop, herb, sprig, titheDish, table, greatWeight, virtueIcon, cobweb, handAt, tr } from './lib.js';
 
 const GY = 650;
-const TX = 700;                               // the table
-const STONES = [[900, 'justice', ['sprawiedliwość', 'justice'], 12], [1030, 'mercy', ['miłosierdzie', 'mercy'], -9], [1160, 'faith', ['wiara', 'faith'], 7]];
+const TX0 = 700;                              // the table
+const STONES0 = [[900, 'justice', ['sprawiedliwość', 'justice'], 12], [1030, 'mercy', ['miłosierdzie', 'mercy'], -9], [1160, 'faith', ['wiara', 'faith'], 7]];
 
 export default {
   id: 'mt23-tithe',
@@ -24,9 +24,17 @@ export default {
   cam: { x: [-20, 120], y: [-30, 10], z: [1, 1.1] },
   build(S) {
     const c = S.c;
+    // phone: the garden is drawn together — the herbs, the Pharisee and his table a step to the right, the three
+    // stones of the Law a little closer and smaller — so he is not cut by the left edge and "faith" is not lost
+    // under the progress thread
+    const PH_ = S.portrait;
+    const TX = PH_ ? 715 : TX0, HD = PH_ ? 70 : 0, SS = PH_ ? 0.9 : 1;
+    const STONES = PH_ ? STONES0.map((s, i) => [858 + i * 95, ...s.slice(1)]) : STONES0;
+    const PL = PH_ ? [812, 822, 1103, 1113] : [830, 840, 1230, 1240];
+    const SUNX = PH_ ? 520 : 420;   // phone: the sun hangs whole in the sky, not a sliver at the left edge
     sky(S, ['#d2e2d8', '#f0e8cf', '#f7e6c6']);
     const hangL = S.layer({ par: 0.04, sh: 4 });
-    const sunEl = hanging(hangL, sun(c, 38), { x: 420, y: 140, len: 800 });
+    const sunEl = hanging(hangL, sun(c, 38), { x: SUNX, y: 140, len: 800 });
     const cl = hanging(hangL, cloud(c, 160), { x: 1060, y: 160, len: 800 });
 
     /* the courtyard wall with a trellised vine, the paving */
@@ -45,17 +53,17 @@ export default {
     const G = S.layer({ par: 0.35, sh: 3 });
     G.add(sheet().p(c.cut([[-900, GY - 24], [2500, GY - 26], [2500, 1700], [-900, 1700]], 1, 16), mix(C.stone, C.sand, 0.4)).out());
     // the herb bed
-    const bed = sheet().p(c.cut(c.blob(360, GY - 10, 170, 22, 14, 0.1), 0.8, 8), C.soil);
+    const bed = sheet().p(c.cut(c.blob(360 + HD, GY - 10, 170, 22, 14, 0.1), 0.8, 8), C.soil);
     G.add(bed.out());
     const HERBS = [['mint', 230], ['dill', 285], ['cumin', 335], ['mint', 385], ['dill', 440], ['cumin', 490]];
-    G.add(`<g>${HERBS.map(([k, x]) => `<g transform="translate(${x} ${GY - 14})">${herb(c, k, 64)}</g>`).join('')}</g>`);
+    G.add(`<g>${HERBS.map(([k, x]) => `<g transform="translate(${x + HD} ${GY - 14})">${herb(c, k, 64)}</g>`).join('')}</g>`);
 
     /* the three great stones of the Law, sunk in the weeds */
     const P = S.layer({ par: 0.4, sh: 5 });
-    P.add(sheet().p(c.cut([[830, GY + 4], [840, GY - 20], [1230, GY - 22], [1240, GY + 4]], 0.6, 10), mix(C.stone2, C.rock, 0.3)).out());
+    P.add(sheet().p(c.cut([[PL[0], GY + 4], [PL[1], GY - 20], [PL[2], GY - 22], [PL[3], GY + 4]], 0.6, 10), mix(C.stone2, C.rock, 0.3)).out());
     const glows = STONES.map(([x]) => P.add(`<g><circle cy="-60" r="110" fill="url(#halo-glow)"/></g>`));
     const stones = STONES.map(([x, k, word, r], i) => ({ x, r, i, el: P.add(`<g>${greatWeight(c, tr(word[0], word[1]), virtueIcon(c, k), { w: 126, h: 104 })}</g>`) }));
-    const weeds = P.add(`<g>${grass(c, { x0: 830, x1: 1240, y: GY + 6, n: 26, h: 34, color: C.olive })}</g>`);
+    const weeds = P.add(`<g>${grass(c, { x0: PL[0], x1: PL[3], y: GY + 6, n: 26, h: 34, color: C.olive })}</g>`);
     const webs = STONES.map(([x], i) => P.add(`<g>${cobweb(c, 40)}</g>`));
 
     /* the table, the counting, the tithe dish */
@@ -64,17 +72,17 @@ export default {
     const dish = P.add(`<g>${titheDish(c, 46)}</g>`);
     const sprigs = Array.from({ length: 10 }, (_, i) => ({ i, el: P.add(`<g>${sprig(c, [C.leaf, C.olive, C.moss][i % 3])}</g>`) }));
     const phar = S.puppet(P.add(vain(c, PH)));
-    const woe = woeDrop(P, c, 4, { x: 1150, y: 150 });
+    const woe = woeDrop(P, c, 4, { x: PH_ ? 1000 : 1150, y: 150 });   // phone: the woe-tag inside the screen
 
     return (t, time) => {
       const T = time;
-      swing(sunEl, 420, 140, T, 1, 0.6);
+      swing(sunEl, SUNX, 140, T, 1, 0.6);
       swing(cl, 1060 + (T ? Math.sin(T * 0.1) * 20 : 0), 160, T, 1.2, 0.7, 1);
       woe(es(t, 0.02, 0.25, ease.out) * (1 - es(t, 0.9, 1.05)), T);
 
       /* v23a — he stoops over the herbs; v23b — at the table, counting to ten, the tenth into the dish */
       const toTable = es(t, 0.9, 1.08);
-      const px = lerp(530, 620, toTable);
+      const px = lerp(530 + HD, TX - 80, toTable);
       const pick = t < 1 ? Math.max(0, Math.sin(t * 16)) * es(t, 0.2, 0.3) * (1 - es(t, 0.8, 0.9)) : 0;
       const count = es(t, 1.1, 1.55);
       const tenth = es(t, 1.55, 1.7);
@@ -95,13 +103,13 @@ export default {
       /* the neglected stones; v23c — they rise upright on their step and glow */
       stones.forEach((st) => {
         const k = es(t, 2.05 + st.i * 0.08, 2.4 + st.i * 0.08, ease.back);
-        pose(st.el, { x: st.x, y: lerp(GY + 26, GY - 20, k), r: lerp(st.r, 0, k), s: 1 });
+        pose(st.el, { x: st.x, y: lerp(GY + 26, GY - 20, k), r: lerp(st.r, 0, k), s: SS });
         pose(glows[st.i], { x: st.x, y: GY - 20, o: k * (0.8 + (T ? Math.sin(T * 1.5 + st.i) * 0.1 : 0)) });
         pose(webs[st.i], { x: st.x + 40, y: GY - 60, sx: -1, sy: 1, o: 1 - es(t, 2.05, 2.25) });
       });
       pose(weeds, { y: es(t, 2.05, 2.35) * 60, o: 1 - es(t, 2.05, 2.3) });
 
-      S.cam.x = lerp(-10, 110, es(t, 1.35, 1.75)) * (1 - es(t, 2.0, 2.3)) + es(t, 2.0, 2.3) * 60;
+      S.cam.x = lerp(PH_ ? 10 : -10, 110, es(t, 1.35, 1.75)) * (1 - es(t, 2.0, 2.3)) + es(t, 2.0, 2.3) * (PH_ ? 75 : 60);
       S.cam.z = 1.04 + es(t, 1.35, 1.75) * 0.04 * (1 - es(t, 2.0, 2.3));
       S.cam.y = -10;
     };

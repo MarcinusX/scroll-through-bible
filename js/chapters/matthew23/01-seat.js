@@ -7,7 +7,7 @@ import { es, ease, bump } from '../../core/anim.js';
 import { templeCourt, voiceRings, kf, moving, nameTag, pose3, mosesSeat, vain, PH, SC, folk, TWELVE, tr } from './lib.js';
 
 const JX = 760;
-const SX = 1045;                 // the seat of Moses
+const SX0 = 1045;                // the seat of Moses (phone: further in, clear of the progress thread)
 
 export default {
   id: 'mt23-seat',
@@ -21,6 +21,9 @@ export default {
     const c = S.c;
     const set = templeCourt(S);
     const F = set.FLOOR;
+    const PH_ = S.portrait;
+    const SX = PH_ ? 975 : SX0;
+    const DSP = PH_ ? 44 : 58, D0 = PH_ ? 624 : 610;   // phone: the disciples closer together, all on the screen
 
     /* the crowd sitting on the steps of the porch, and a few standing (still sheets) */
     const stepL = S.layer({ par: 0.45, sh: 4 });
@@ -46,7 +49,7 @@ export default {
     }));
 
     /* Jesus and the disciples */
-    const dis = [TWELVE[2].o, TWELVE[0].o, TWELVE[1].o, TWELVE[3].o, TWELVE[6].o].map((o, i) => ({ p: S.puppet(people.add(person(c, o))), x: 610 - i * 58, y: F + 10 + (i % 2) * 10, i }));
+    const dis = [TWELVE[2].o, TWELVE[0].o, TWELVE[1].o, TWELVE[3].o, TWELVE[6].o].map((o, i) => ({ p: S.puppet(people.add(person(c, o))), x: D0 - i * DSP, y: F + 10 + (i % 2) * 10, i }));
     const jesus = S.puppet(people.add(person(c, { ...CAST.jesus })));
     const voice = voiceRings(people, c, { n: 3, r: 26, w: 4 });
 
@@ -76,7 +79,7 @@ export default {
       const hdir = toDis > 0.5 && show < 0.5 ? -1 : 1;
       voice(jx + 28 * hdir, F - 180, speak * (1 - es(t, 2.6, 2.9)), T, { dir: hdir });
       dis.forEach((d) => {
-        const x = Math.min(d.x, jx - 150 - d.i * 58);
+        const x = Math.min(d.x, jx - 150 + (D0 - 610) - d.i * DSP);
         d.p.set({ x, y: d.y, s: 0.92, walk: walking && x < d.x ? x * 0.05 + d.i : undefined, blink: blinkAt(T, d.i + 2), head: -speak * 4 + toDis * 6 * (1 - show) });
       });
 

@@ -27,8 +27,12 @@ export default {
     const phar = S.puppet(L.add(vain(c, PH, { pose: 'sit' })));
 
     /* the listeners: left and right of the seat */
-    const LEFT = [[430, F + 4, 0.9], [505, F + 16, 0.94], [585, F + 8, 0.92], [655, F + 22, 0.96]];
-    const RIGHT = [[1140, F + 6, 0.92], [1215, F + 18, 0.94], [1285, F + 8, 0.9]];
+    // phone: the listeners a little further in, so the golden words land on people we can see (the mother and her
+    // boy make room on the right)
+    const PH_ = S.portrait;
+    const LEFT = PH_ ? [[490, F + 4, 0.9], [555, F + 16, 0.94], [620, F + 8, 0.92], [680, F + 22, 0.96]] : [[430, F + 4, 0.9], [505, F + 16, 0.94], [585, F + 8, 0.92], [655, F + 22, 0.96]];
+    const RIGHT = PH_ ? [[1100, F + 6, 0.92], [1175, F + 18, 0.94], [1260, F + 8, 0.9]] : [[1140, F + 6, 0.92], [1215, F + 18, 0.94], [1285, F + 8, 0.9]];
+    const BX = PH_ ? 935 : 960, MUMX = PH_ ? 1030 : 1060;
     const lis = [...LEFT.map((p, i) => ({ side: -1, i })), ...RIGHT.map((p, i) => ({ side: 1, i }))].map((m, j) => {
       const [x, y, s] = (m.side < 0 ? LEFT : RIGHT)[m.i];
       return { ...m, j, x, y, s, seed: c.rr(0, 9), p: S.puppet(L.add(person(c, folk(c, j % 3 !== 1)))) };
@@ -89,12 +93,12 @@ export default {
       /* the boy struts like the Pharisee; his mother turns him round */
       const copy = es(t, 0.42, 0.56) * (1 - es(t, 0.86, 0.98));
       const catchK = es(t, 0.6, 0.72) * (1 - es(t, 0.92, 1.02));
-      const bx = 960 + copy * 40 - catchK * 16;
+      const bx = BX + copy * 40 - catchK * 16;
       const vainOn = es(t, 0.44, 0.5) * (1 - es(t, 0.9, 0.96));
       const bo = { x: bx, y: F + 40, s: 0.72, flip: catchK > 0.5, walk: copy > 0.05 && copy < 0.95 && catchK < 0.5 ? t * 40 : undefined, amt: 0.6, head: -copy * 22 * (1 - catchK * 0.6), lean: -copy * 10 * (1 - catchK), armF: copy * 20, armB: copy * 70, blink: blinkAt(T, 7) };
       boy.set({ ...bo, o: 1 - vainOn });
       boyV.set({ ...bo, o: vainOn });
-      mum.set({ x: 1060, y: F + 26, s: 0.9, flip: true, armF: 20 + catchK * 62, armB: 10, head: 6 * catchK + (T ? Math.sin(T * 5) * 4 * catchK : 0), lean: catchK * 8, blink: blinkAt(T, 8) });
+      mum.set({ x: MUMX, y: F + 26, s: 0.9, flip: true, armF: 20 + catchK * 62, armB: 10, head: 6 * catchK + (T ? Math.sin(T * 5) * 4 * catchK : 0), lean: catchK * 8, blink: blinkAt(T, 8) });
 
       /* v3b — nobody moves on the seat: a spider spins its web between his feet and the dais */
       const drop = es(t, 1.3, 1.55, ease.out), up = es(t, 1.82, 2.0);

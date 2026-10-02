@@ -9,7 +9,7 @@ import { es, ease, bump, seg } from '../../core/anim.js';
 import { templeCourt, voiceRings, pose3, folk, TWELVE, vain, PH, seesaw, hang2, basinBowl, ewer, towel, sparkle } from './lib.js';
 
 const JX = 560;
-const PIV = [960, 0];            // the see-saw's pivot (y set from the floor)
+const PIV0 = [960, 0];           // the see-saw's pivot (y set from the floor)
 const HALF = 210, TILT = 15;
 
 export default {
@@ -24,6 +24,11 @@ export default {
     const set = templeCourt(S);
     const F = set.FLOOR;
     const PY = F - 74;
+    // phone: the see-saw stands further left, so the Pharisee brought down at its far end sits on the screen; the
+    // two disciples who only stand by step off the left edge instead of being cut in half by it
+    const PH_ = S.portrait;
+    const PIV = [PH_ ? 900 : PIV0[0], 0];
+    const DX = PH_ ? -50 : 0;               // Jesus, Peter, John and the basin move with it
 
     const stepL = S.layer({ par: 0.45, sh: 4 });
     stepL.sprite(pose3(c, Array.from({ length: 6 }, (_, i) => ({ x: i * 52 + c.rr(-6, 6), y: c.rr(-3, 3), s: 0.66, flip: false, head: c.rr(-6, 2), o: { ...folk(c), pose: 'sit' } }))), 300, 604);
@@ -38,7 +43,7 @@ export default {
     const glow = P.add(`<g><circle r="150" fill="url(#halo-glow)"/></g>`);
 
     /* the disciples: Peter serves John */
-    const others = [[380, 3, 10], [455, 1, 0]].map(([x, k, dy], i) => ({ i, x, y: F + dy, seed: c.rr(0, 9), p: S.puppet(P.add(person(c, TWELVE[k].o))) }));
+    const others = (PH_ ? [[300, 3, 10], [370, 1, 0]] : [[380, 3, 10], [455, 1, 0]]).map(([x, k, dy], i) => ({ i, x, y: F + dy, seed: c.rr(0, 9), p: S.puppet(P.add(person(c, TWELVE[k].o))) }));
     const john = S.puppet(P.add(person(c, TWELVE[2].o)));
     const peter = S.puppet(P.add(person(c, { ...TWELVE[0].o, pose: 'kneel', holdF: `<g transform="translate(0 4) rotate(-60)">${ewer(c)}</g>` })));
     const basin = P.add(`<g>${basinBowl(c, 60)}</g>`);
@@ -71,12 +76,12 @@ export default {
       /* v11 — Peter kneels and pours water over John's hands */
       const pour = es(t, 0.15, 0.35) * (1 - es(t, 0.9, 1.05));
       const onPlank = es(t, 1.22, 1.32);
-      const kx = lerp(800, lx, onPlank), ky = lerp(F + 4, ly, onPlank);
+      const kx = lerp(800 + DX, lx, onPlank), ky = lerp(F + 4, ly, onPlank);
       const lifted = tip;
       peter.set({ x: kx, y: ky, s: 0.92, flip: true, armF: 40 + pour * 50, armB: 20 + pour * 30, head: 10 * (1 - lifted) - lifted * 12, lean: 8 * (1 - lifted), blink: blinkAt(T, 2) });
-      pose(basin, { x: 745, y: F + 8, o: 1 - es(t, 1.0, 1.15) });
-      pose(stream, { x: 750, y: F - 118, sy: pour, o: pour > 0.05 ? 0.9 : 0 });
-      john.set({ x: 700, y: F + 10, s: 0.92, armF: 60 * (1 - es(t, 0.95, 1.1)) + es(t, 1.6, 1.8) * 30, armB: 50 * (1 - es(t, 0.95, 1.1)), head: 8 * (1 - es(t, 0.95, 1.1)) - es(t, 1.6, 1.8) * 16, blink: blinkAt(T, 3) });
+      pose(basin, { x: 745 + DX, y: F + 8, o: 1 - es(t, 1.0, 1.15) });
+      pose(stream, { x: 750 + DX, y: F - 118, sy: pour, o: pour > 0.05 ? 0.9 : 0 });
+      john.set({ x: 700 + DX, y: F + 10, s: 0.92, armF: 60 * (1 - es(t, 0.95, 1.1)) + es(t, 1.6, 1.8) * 30, armB: 50 * (1 - es(t, 0.95, 1.1)), head: 8 * (1 - es(t, 0.95, 1.1)) - es(t, 1.6, 1.8) * 16, blink: blinkAt(T, 3) });
       others.forEach((o) => o.p.set({ x: o.x, y: o.y, s: 0.9, armF: 10 + es(t, 1.6, 1.8) * 30, head: -es(t, 1.6, 1.8) * 16, blink: blinkAt(T, o.seed) }));
       pose(glow, { x: lx, y: ly - 110, s: 1 + (T ? Math.sin(T * 1.5) * 0.04 : 0), o: es(t, 1.62, 1.85) });
       glints.forEach((g) => {
@@ -87,15 +92,15 @@ export default {
       /* v12 — the Pharisee struts up to the high end, is brought down and sits humbled */
       const walkIn = es(t, 1.05, 1.3), climb = es(t, 1.3, 1.52);
       const sat = es(t, 1.66, 1.72);
-      let px = lerp(1320, 1180, walkIn), py = F;
+      let px = lerp(1320, PH_ ? 1130 : 1180, walkIn), py = F;
       px = lerp(px, rx, climb); py = lerp(py, ry, climb);
       const proud = es(t, 1.4, 1.55) * (1 - tip);
       pharS.set({ x: px, y: py, s: 0.92, flip: true, walk: (walkIn > 0 && walkIn < 1) || (climb > 0 && climb < 1) ? px * 0.06 : undefined, head: -proud * 18 + tip * 14, lean: -proud * 6 + tip * 10, armF: 20 + proud * 20 + tip * 50, armB: 10 + tip * 90, o: (t > 1.0 ? 1 : 0) * (1 - sat), blink: blinkAt(T, 5) });
-      pharSit.set({ x: rx + 50, y: F + 4, s: 0.9, flip: true, head: 16, lean: 12, armF: 30, armB: 10, o: sat, blink: blinkAt(T, 5) });
+      pharSit.set({ x: rx + (PH_ ? 22 : 50), y: F + 4, s: 0.9, flip: true, head: 16, lean: 12, armF: 30, armB: 10, o: sat, blink: blinkAt(T, 5) });
 
       /* Jesus teaches */
-      jesus.set({ x: JX, y: F, s: 1.04, armF: 40 + bump(t, 0.02, 0.9) * 30 + es(t, 1.05, 1.3) * 30, armB: 20, head: -4, blink: blinkAt(T) });
-      voice(JX + 26, F - 180, bump(t, 0.02, 0.8) + bump(t, 1.02, 1.8) * 0.8, T, { dir: 1 });
+      jesus.set({ x: JX + DX, y: F, s: 1.04, armF: 40 + bump(t, 0.02, 0.9) * 30 + es(t, 1.05, 1.3) * 30, armB: 20, head: -4, blink: blinkAt(T) });
+      voice(JX + DX + 26, F - 180, bump(t, 0.02, 0.8) + bump(t, 1.02, 1.8) * 0.8, T, { dir: 1 });
 
       S.cam.x = 20 + es(t, 0.9, 1.3) * 30;
       S.cam.z = 1.02 + es(t, 1.3, 1.7) * 0.04;

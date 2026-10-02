@@ -9,7 +9,7 @@ import { es, ease, bump, seg } from '../../core/anim.js';
 import { templeCourt, EVENING, voiceRings, pose3, folk, vain, PH, SC, pharisees, scribes, snakeShadow, shadowPerson, bakeArms, scrollOpen, stick, TWELVE, PI } from './lib.js';
 import { shadowScreen } from '../mark13/lib.js';
 
-const JX = 780;
+const JX0 = 780;
 const INK = '#3b2a22';
 const PROPHET = { robe: mix(C.clay, C.wood3, 0.5), mantle: C.wood2, hair: C.greyHair, hairStyle: 'wild', beard: 'wild', beardColor: C.greyHair, skin: C.skin3, belt: C.rope };
 const WISE = { robe: C.tealRobe, mantle: C.ochreRobe, hair: C.greyHair, hairStyle: 'wrap', veil: C.cream, veil2: C.ochre, beard: 'full', beardColor: '#e9e2d6', skin: C.skin2 };
@@ -25,20 +25,26 @@ export default {
   cam: { x: [-10, 30], y: [-40, 10], z: [1, 1.06] },
   build(S) {
     const c = S.c;
+    // phone: the four leaders (the "brood of vipers" and their serpent shadows) stand inside the screen instead of
+    // off its right edge; Jesus, His three and the messengers move left with them
+    const PH_ = S.portrait;
+    const JX = PH_ ? 735 : JX0;
+    const LX = PH_ ? [935, 985, 1035, 1080] : [1060, 1140, 1220, 1300];
+    const SS = PH_ ? 0.92 : 1;   // phone: the shadow-play screen a little narrower, its right end clear of the progress thread
     const set = templeCourt(S, { skyCols: EVENING, sunY: 250 });
     const F = set.FLOOR;
 
     /* the serpents: the leaders' shadows on the porch wall */
     const wall = S.layer({ par: 0.45, sh: 1, flat: true });
-    const SNAKES = [1060, 1140, 1220, 1300].map((x, i) => ({ x, i, el: wall.add(`<g>${snakeShadow(c, 230, INK)}</g>`) }));
+    const SNAKES = LX.map((x, i) => ({ x, i, el: wall.add(`<g>${snakeShadow(c, 230, INK)}</g>`) }));
 
     const stepL = S.layer({ par: 0.45, sh: 4 });
     stepL.sprite(pose3(c, Array.from({ length: 5 }, (_, i) => ({ x: i * 52 + c.rr(-6, 6), y: c.rr(-3, 3), s: 0.66, flip: false, head: c.rr(-6, 2), o: { ...folk(c), pose: 'sit' } }))), 330, 604);
 
     /* the leaders */
     const P = S.layer({ par: 0.5, sh: 5 });
-    const LEAD = [[1060, PH, 0], [1140, SC, 8], [1220, pharisees(2), 2], [1300, scribes(1), 10]].map(([x, o, dy], i) => ({ x, y: F + dy, i, seed: c.rr(0, 9), p: S.puppet(P.add(vain(c, o))) }));
-    P.sprite(pose3(c, [TWELVE[0].o, TWELVE[2].o, TWELVE[1].o].map((o, i) => ({ x: -i * 64, y: (i % 2) * 10, s: 0.92, flip: false, head: -4, o }))), 560, F + 10);
+    const LEAD = [[LX[0], PH, 0], [LX[1], SC, 8], [LX[2], pharisees(2), 2], [LX[3], scribes(1), 10]].map(([x, o, dy], i) => ({ x, y: F + dy, i, seed: c.rr(0, 9), p: S.puppet(P.add(vain(c, o))) }));
+    P.sprite(pose3(c, [TWELVE[0].o, TWELVE[2].o, TWELVE[1].o].map((o, i) => ({ x: -i * 64, y: (i % 2) * 10, s: 0.92, flip: false, head: -4, o }))), PH_ ? 590 : 560, F + 10);
     /* the three sent */
     const SENT = [[PROPHET, { holdF: `<g transform="translate(0 -6)">${stick(c, 170)}</g>` }], [WISE, {}], [GOOD, { holdF: `<g transform="translate(4 8) rotate(-70)">${scrollOpen(c, 44, 30)}</g>` }]].map(([o, x], i) => ({ i, p: S.puppet(P.add(person(c, { ...o, ...x }))) }));
     const light = P.add(`<g><circle r="160" fill="url(#halo-glow)"/></g>`);
@@ -85,17 +91,17 @@ export default {
       /* v34a — the three sent come out from behind Him into the light and go towards them */
       SENT.forEach((m) => {
         const k = es(t, 1.08 + m.i * 0.1, 1.6 + m.i * 0.1);
-        const x = lerp(JX - 40, 880 + m.i * 50, k);
+        const x = lerp(JX - 40, PH_ ? 805 + m.i * 45 : 880 + m.i * 50, k);
         const fade = es(t, 2.04, 2.14);
         m.p.set({ x, y: F + 14 + m.i * 4, s: 0.9, walk: k > 0.02 && k < 0.98 ? x * 0.05 + m.i : undefined, armF: 30 + (m.i === 1 ? 40 : 10), head: -4 + fade * 16, o: es(t, 1.05 + m.i * 0.1, 1.15 + m.i * 0.1) * (1 - fade), blink: blinkAt(T, m.i + 3) });
       });
-      pose(light, { x: 890, y: F - 110, o: bump(t, 1.05, 2.2) * 0.8 });
+      pose(light, { x: PH_ ? 830 : 890, y: F - 110, o: bump(t, 1.05, 2.2) * 0.8 });
 
       /* v34b — the shadow-play */
       const sk = es(t, 2.02, 2.28, ease.out);
-      pose(screen, { x: 800, y: lerp(-500, 140, sk), o: sk > 0.01 ? 1 : 0 });
+      pose(screen, { x: 800, y: lerp(-500, 140, sk), s: SS, o: sk > 0.01 ? 1 : 0 });
       const run = seg(t, 2.35, 2.95);
-      pose(runner, { x: 800 + W / 2 - 165 + run * 120, y: lerp(-500, 140, sk) + H - 14, s: 0.42, o: sk > 0.9 ? 1 : 0 });
+      pose(runner, { x: 800 + (W / 2 - 165 + run * 120) * SS, y: lerp(-500, 140, sk) + (H - 14) * SS, s: 0.42 * SS, o: sk > 0.9 ? 1 : 0 });
 
       S.cam.y = -es(t, 1.9, 2.3) * 30;
       S.cam.x = 10;

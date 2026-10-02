@@ -40,9 +40,11 @@ export default {
 
     /* the bearers */
     const P = S.layer({ par: 0.45, sh: 5 });
+    // phone: the street drawn in a little, so the first bearer and the pointing scribe are both on the screen
+    const PH_ = S.portrait;
     const BEAR = [
-      { x: 430, o: folk(c, true, { robe: C.ochreRobe, belt: C.rope }), n: 2 },
-      { x: 610, o: folk(c, false, { robe: C.sageRobe }), n: 1 },
+      { x: PH_ ? 485 : 430, o: folk(c, true, { robe: C.ochreRobe, belt: C.rope }), n: 2 },
+      { x: PH_ ? 645 : 610, o: folk(c, false, { robe: C.sageRobe }), n: 1 },
       { x: 850, o: { robe: C.stone2, mantle: C.dustyBlue, hair: C.greyHair, hairStyle: 'wrap', veil: C.linen2, beard: 'full', beardColor: C.greyHair, skin: C.skin3 }, n: 2 },
     ].map((b, i) => ({ ...b, i, seed: c.rr(0, 9), p: S.puppet(P.add(person(c, b.o))) }));
     const loads = [];
@@ -86,8 +88,8 @@ export default {
       /* the scribe points at them; the Pharisee lifts one finger to the sliding load… and takes it back */
       const reach = bump(t, 0.56, 0.93);
       const away = es(t, 0.8, 0.95);
-      scribe.set({ x: 1120, y: GY + 6, s: 0.96, flip: true, armF: 10 + bump(t, 0.03, 0.5) * 70, armB: 10 + bump(t, 0.03, 0.5) * 40, head: -8 - es(t, 0.5, 0.7) * 6, blink: blinkAt(T, 3) });
-      phar.set({ x: 975, y: GY + 2, s: 1, flip: true, armF: 20 + reach * 62 * (1 - away * 0.6), armB: 10 + away * 40, head: -10 + reach * 8 - away * 10, lean: -away * 5, blink: blinkAt(T, 5) });
+      scribe.set({ x: PH_ ? 1065 : 1120, y: GY + 6, s: 0.96, flip: true, armF: 10 + bump(t, 0.03, 0.5) * 70, armB: 10 + bump(t, 0.03, 0.5) * 40, head: -8 - es(t, 0.5, 0.7) * 6, blink: blinkAt(T, 3) });
+      phar.set({ x: PH_ ? 960 : 975, y: GY + 2, s: 1, flip: true, armF: 20 + reach * 62 * (1 - away * 0.6), armB: 10 + away * 40, head: -10 + reach * 8 - away * 10, lean: -away * 5, blink: blinkAt(T, 5) });
 
       S.cam.x = 20;
       S.cam.z = 1.02 + es(t, 0.4, 0.8) * 0.04;

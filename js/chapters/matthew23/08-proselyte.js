@@ -12,7 +12,7 @@ import { vain, parts, PH, SC, woeDrop, shadowPerson, scrollOpen, GLOOM, PI } fro
 
 const SHORE = 700;
 const GY = 620;
-const HX = 1100;                 // the convert's house
+const HX0 = 1100;                // the convert's house (phone: 1000, so he and the two beside him are on the screen)
 const CONVERT = { robe: C.ochreRobe, mantle: C.terracotta, hair: C.hair2, hairStyle: 'curly', beard: 'short', skin: C.skin2, belt: C.leather, veil2: C.terracotta };
 
 export default {
@@ -25,6 +25,7 @@ export default {
   cam: { x: [-40, 120], y: [-40, 20], z: [1, 1.14] },
   build(S) {
     const c = S.c;
+    const HX = S.portrait ? 1000 : HX0;
     sky(S, ['#c9dcd9', '#efe6cd', '#f6e2c2']);
     const gloom = sky(S, ['#8c7a95', '#d69a7e', '#f0c08c'], { name: 'dusk', rise: 0 }).layer;
     gloom.fade(0);
@@ -44,7 +45,7 @@ export default {
     land.p(c.cut(lp, 1, 10), mix(C.hillNear, C.sand, 0.35));
     landL.add(sheet().p(c.cut(c.blob(1250, 600, 520, 110, 16, 0.12), 1, 10), C.hillMid).out());
     landL.add(land.out());
-    landL.add(olive(c, 880, GY - 8, 0.7) + cypress(c, 1390, GY - 6, 130) + rock(c, 960, GY + 6, 60, 20, C.rock2) + grass(c, { x0: SHORE, x1: 2400, y: GY, fn: gfn, n: 30, h: 12, color: C.olive }));
+    landL.add(olive(c, S.portrait ? 790 : 880, GY - 8, 0.7) + cypress(c, 1390, GY - 6, 130) + rock(c, 960, GY + 6, 60, 20, C.rock2) + grass(c, { x0: SHORE, x1: 2400, y: GY, fn: gfn, n: 30, h: 12, color: C.olive }));
     // the convert's house with its white wall
     const houseL = S.layer({ par: 0.2, sh: 4 });
     const hs = sheet();
@@ -78,7 +79,7 @@ export default {
     const convV = S.puppet(P.add(vain(c, CONVERT)));
     const cParts = parts(convV.el);
     const pParts = pair.map((p) => parts(p.p.el));
-    const woe = woeDrop(P, c, 2, { x: 1290, y: 150 });
+    const woe = woeDrop(P, c, 2, { x: S.portrait ? 1040 : 1290, y: 150 });   // phone: the woe-tag inside the screen
 
     return (t, time) => {
       const T = time;

@@ -9,7 +9,7 @@ import { es, ease, bump, seg } from '../../core/anim.js';
 import { vain, PH, woeDrop, roomFlat, goblet, greedHeap, littleHouse, sparkle, jug, blindBand, addToHead, handAt, hang2, PI } from './lib.js';
 
 const GY = 660;
-const PX = 725, CX = 860, DX = 1085;
+const PX = 725, CX = 860, DX0 = 1085;
 const TOP = GY - 84;              // the table top
 
 export default {
@@ -24,6 +24,7 @@ export default {
   cam: { x: [0, 80], y: [-60, 10], z: [1, 1.1] },
   build(S) {
     const c = S.c;
+    const DX = S.portrait ? 1020 : DX0, DS = S.portrait ? 0.88 : 1;   // phone: the dish comes in (a little narrower) from under the progress thread
     sky(S, ['#d8c9a8', '#ead8b4', '#f2e2c2']);
     const back = S.layer({ par: 0.2, sh: 3 });
     back.add(roomFlat(c, { gy: GY - 30, mid: 380, wall: mix(C.plaster, C.parchment, 0.5) }));
@@ -46,7 +47,7 @@ export default {
     const dishS = sheet();
     dishS.p(c.cut([[-110, -40], [110, -40], [70, -6], [30, 0], [-30, 0], [-70, -6]], 0.4, 6), C.sun);
     dishS.p(c.cut(c.ell(0, -40, 112, 22, 30), 0.4, 5), shade(C.sun, 0.12));
-    P.add(`<g transform="translate(${DX} ${TOP})">${dishS.out()}</g>`);
+    P.add(`<g transform="translate(${DX} ${TOP})${DS !== 1 ? ` scale(${DS} 1)` : ''}">${dishS.out()}</g>`);
     const dishDirt = P.add(`<g><path d="${c.cut(c.ell(0, 0, 96, 16, 24), 0.8, 5)}" fill="${mix(C.soilDark, C.thorn2, 0.4)}"/><path d="${c.cut(c.ell(-30, -2, 9, 4, 10), 0.2, 3) + c.cut(c.ell(20, 3, 8, 4, 10), 0.2, 3) + c.cut(c.ell(50, -3, 7, 3, 10), 0.2, 3)}" fill="${mix(C.sun, C.clay, 0.3)}"/></g>`);
     const dishClean = P.add(`<g><path d="${c.poly(c.ell(0, 0, 96, 16, 24))}" fill="#e6f2f2"/><circle r="90" fill="url(#halo-glow)" opacity=".7"/></g>`);
     const glints = Array.from({ length: 8 }, (_, i) => ({ i, el: P.add(`<g>${sparkle(c, 12)}</g>`) }));
@@ -57,7 +58,7 @@ export default {
     const pharB = S.puppet(P.add(addToHead(vain(c, PH, { eyes: 'closed', holdF: cloth }), blindBand(c))));
     const jugEl = P.add(`<g>${hang2(`<g transform="rotate(0)">${jug(c, C.skyVeil)}</g>`, 20, 900)}</g>`);
     const pourEl = P.add(`<g><path d="${c.ribbon([[0, 0], [4, 60], [2, 130]], (u) => 8 - u * 3)}" fill="#cfe7f1" opacity=".9"/></g>`);
-    const woe = woeDrop(P, c, 5, { x: 1230, y: 150 });
+    const woe = woeDrop(P, c, 5, { x: S.portrait ? 1030 : 1230, y: 150 });   // phone: the woe-tag inside the screen
 
     return (t, time) => {
       const T = time;
@@ -78,8 +79,8 @@ export default {
       const clean = es(t, 3.2, 3.5);
       pose(heap, { x: CX, y: TOP - 165 + clean * 40, s: 0.85 - clean * 0.3, o: 1 - clean });
       pose(water, { x: CX, y: TOP - G.H + 24 + (1 - clean) * 60, sx: 0.7 + clean * 0.3, sy: 1, o: clean });
-      pose(dishDirt, { x: DX, y: TOP - 40, o: es(t, 1.2, 1.4) * (1 - es(t, 3.3, 3.55)) });
-      pose(dishClean, { x: DX, y: TOP - 40, o: es(t, 3.35, 3.6) });
+      pose(dishDirt, { x: DX, y: TOP - 40, sx: DS, sy: 1, o: es(t, 1.2, 1.4) * (1 - es(t, 3.3, 3.55)) });
+      pose(dishClean, { x: DX, y: TOP - 40, sx: DS, sy: 1, o: es(t, 3.35, 3.6) });
       pose(glow, { x: CX, y: TOP - 150, o: es(t, 3.5, 3.8) * (0.85 + (T ? Math.sin(T * 1.6) * 0.1 : 0)) });
 
       /* v26b — the jug pours clear water in from above */

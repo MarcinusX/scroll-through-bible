@@ -83,7 +83,7 @@ export default {
       const g = bump(t, 0.86, 0.99);
       pose(gulp, { x: PX + 80, y: GY - 240 - g * 14, s: 0.8 + g * 0.3, o: g });
 
-      S.cam.x = 40 + es(t, 0.35, 0.6) * 30;
+      S.cam.x = (S.portrait ? 5 : 40) + es(t, 0.35, 0.6) * 30;   // phone: a little to the left, so the Pharisee is not cut by the edge
       S.cam.z = 1.2;
       S.cam.y = 25;
     };

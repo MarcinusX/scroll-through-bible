@@ -68,11 +68,11 @@ export default {
 
       /* Jesus turns away and walks to the gate; v39 — He looks back once */
       const go = es(t, 0.45, 1.35);
-      const jx = lerp(JX0, 470, go);
+      const jx = lerp(JX0, S.portrait ? 545 : 470, go);   // phone: He stops where the screen still shows Him
       const back = es(t, 1.2, 1.35);
       jesus.set({ x: jx, y: F, s: 1.04, flip: go > 0.02 && back < 0.5, walk: go > 0.02 && go < 0.98 ? jx * 0.05 : undefined, head: 10 * (1 - back) - back * 6, armF: 20 + back * 40, armB: 10 + back * 20, blink: blinkAt(T) });
       DIS.forEach((d) => {
-        const x = lerp(640 - d.i * 60, 300 - d.i * 60, go);
+        const x = lerp(640 - d.i * 60, (S.portrait ? 370 : 300) - d.i * 60, go);
         d.p.set({ x, y: F + 10 + (d.i % 2) * 8, s: 0.92, flip: go > 0.02 && back < 0.5, walk: go > 0.02 && go < 0.98 ? x * 0.05 + d.i : undefined, head: 6, blink: blinkAt(T, d.i + 2) });
       });
 

@@ -68,7 +68,7 @@ export default {
     const passers = [0, 1].map((i) => ({ i, p: S.puppet(P.add(person(c, folk(c, i === 0)))) }));
     const phar = S.puppet(P.add(vain(c, PH)));
     const maskEl = P.add(`<g>${maskOnStick(c)}</g>`);
-    const woe = woeDrop(P, c, 6, { x: 1230, y: 150 });
+    const woe = woeDrop(P, c, 6, { x: S.portrait ? 1005 : 1230, y: 150 });   // phone: the woe-tag inside the screen
 
     return (t, time) => {
       const Tm = time;
@@ -104,7 +104,8 @@ export default {
       phar.set({ x: px, y: GY + 8, s: 1, flip: true, walk: walkIn > 0.02 && walkIn < 0.98 ? px * 0.05 : undefined, armF: 20 + mask * 50, armB: 10, head: -mask * 4, o: es(t, 1.9, 2.0), blink: blinkAt(Tm, 5) });
       passers.forEach((pp) => {
         const bow = bump(t, 2.4 + pp.i * 0.08, 3.0);
-        pp.p.set({ x: [470, 1150][pp.i], y: GY + 14, s: 0.94, flip: pp.i === 1, lean: bow * 22, head: bow * 16, armF: bow * 40, o: es(t, 1.95, 2.1), blink: blinkAt(Tm, pp.i + 7) });
+        pp.p.set({ x: (S.portrait ? [545, 1075] : [470, 1150])[pp.i],   // phone: the passers-by who bow are on the screen
+           y: GY + 14, s: 0.94, flip: pp.i === 1, lean: bow * 22, head: bow * 16, armF: bow * 40, o: es(t, 1.95, 2.1), blink: blinkAt(Tm, pp.i + 7) });
       });
       pose(maskEl, { x: px - 26, y: lerp(GY - 60, GY + 8 - 110, mask), sx: -1, sy: 1, o: mask > 0.02 ? 1 : 0 });
       const sh = es(t, 2.45, 2.7);

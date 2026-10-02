@@ -12,7 +12,7 @@ import { vain, parts, PH, SC, folk, streetFlat, roomFlat, honourCouch, arkNiche,
 import { secretShaft } from '../matthew6/lib.js';
 
 const GY = 650;
-const COUCH = 540, CHAIRS = 1090;
+const COUCH = 540;
 
 export default {
   id: 'mt23-show',
@@ -26,6 +26,10 @@ export default {
   cam: { x: [-30, 30], y: [-30, 20], z: [1, 1.1] },
   build(S) {
     const c = S.c;
+    // phone: the feast is laid a little tighter and the synagogue's first chairs come in from under the progress
+    // thread; in the market the people who bow and their "Rabbi!" stand inside the screen
+    const PH_ = S.portrait;
+    const CHAIRS = PH_ ? 1000 : 1090;
     sky(S, ['#cfe0da', '#f0e7cd', '#f7e6c8']);
     const hangL = S.layer({ par: 0.04, sh: 4 });
     const sunEl = hanging(hangL, sun(c, 40), { x: 1230, y: 140, len: 700 });
@@ -40,7 +44,7 @@ export default {
     /* flat B: the feast and the synagogue */
     const B = S.layer({ par: 0.25, sh: 3, pad: 170 });
     B.add(roomFlat(c, { gy: GY - 30, mid: 800 }));
-    B.add(`<g><g transform="translate(380 300)">${garland(c, 420, 40)}</g><g transform="translate(${COUCH} ${GY - 22})">${honourCouch(c)}</g><g transform="translate(1260 ${GY - 30})">${arkNiche(c)}</g><g transform="translate(${CHAIRS} ${GY - 24})">${firstChairs(c)}</g></g>`);
+    B.add(`<g><g transform="translate(${PH_ ? 430 : 380} 300)">${garland(c, 420, 40)}</g><g transform="translate(${COUCH} ${GY - 22})">${honourCouch(c)}</g><g transform="translate(${PH_ ? 1120 : 1260} ${GY - 30})">${arkNiche(c)}</g><g transform="translate(${CHAIRS} ${GY - 24})">${firstChairs(c)}</g></g>`);
 
     /* the people */
     const P = S.layer({ par: 0.45, sh: 5 });
@@ -124,18 +128,19 @@ export default {
       LOOKERS.forEach((m) => {
         const stare = es(t, 0.3 + m.i * 0.05, 0.5 + m.i * 0.05) * (1 - toB);
         const bow = bump(t, 3.3 + m.i * 0.08, 3.98);
-        m.p.set({ x: m.x, y: GY + 10 + (m.i % 2) * 8, s: m.s, flip: m.x > 800, head: -stare * 8 + bow * 18 + bump(t, 1.2, 1.9) * 6, lean: bow * 24 - bump(t, 1.2, 1.9) * 4, armF: bow * 40 + (m.i === 1 ? stare * 60 * (1 - es(t, 0.9, 1.1)) : 0), armB: bow * 30, o: street ? 1 : 0, blink: blinkAt(T, m.seed) });
+        const mx = PH_ ? (t > 2.5 ? [480, 580, 1005, 1060][m.i] : m.i > 1 ? m.x + 60 : m.x) : m.x;
+        m.p.set({ x: mx, y: GY + 10 + (m.i % 2) * 8, s: m.s, flip: mx > 800, head: -stare * 8 + bow * 18 + bump(t, 1.2, 1.9) * 6, lean: bow * 24 - bump(t, 1.2, 1.9) * 4, armF: bow * 40 + (m.i === 1 ? stare * 60 * (1 - es(t, 0.9, 1.1)) : 0), armB: bow * 30, o: street ? 1 : 0, blink: blinkAt(T, m.seed) });
       });
       /* the feast and the synagogue */
-      guests.forEach((g) => g.p.set({ x: 700 + g.i * 70, y: GY - 6, s: 0.78, flip: true, armF: 40, head: -bump(t, 2.4, 2.95) * 10, o: bK, blink: blinkAt(T, g.i + 4) }));
-      pose(table, { x: 740, y: GY + 12, o: bK });
-      cong.forEach((g) => g.p.set({ x: 900 + g.i * 70, y: GY + 2, s: 0.8, armF: 20, head: -8, o: bK, blink: blinkAt(T, g.i + 7) }));
+      guests.forEach((g) => g.p.set({ x: PH_ ? 655 + g.i * 58 : 700 + g.i * 70, y: GY - 6, s: 0.78, flip: true, armF: 40, head: -bump(t, 2.4, 2.95) * 10, o: bK, blink: blinkAt(T, g.i + 4) }));
+      pose(table, { x: PH_ ? 705 : 740, y: GY + 12, ...(PH_ ? { sx: 0.84, sy: 1 } : {}), o: bK });
+      cong.forEach((g) => g.p.set({ x: PH_ ? 862 + g.i * 52 : 900 + g.i * 70, y: GY + 2, s: 0.8, armF: 20, head: -8, o: bK, blink: blinkAt(T, g.i + 7) }));
 
       /* v7 — "Rabbi!" */
       const r1 = es(t, 3.32, 3.48, ease.back) * (1 - es(t, 3.92, 4.0));
-      pose(rabbi, { x: 1150, y: GY - 200, s: r1, o: r1 > 0.02 ? 1 : 0 });
+      pose(rabbi, { x: PH_ ? 1020 : 1150, y: GY - 200, s: r1, o: r1 > 0.02 ? 1 : 0 });
       const r2 = es(t, 3.45, 3.6, ease.back) * (1 - es(t, 3.92, 4.0));
-      pose(rabbi2, { x: 540, y: GY - 195, s: r2, o: r2 > 0.02 ? 1 : 0 });
+      pose(rabbi2, { x: PH_ ? 595 : 540, y: GY - 195, s: r2, o: r2 > 0.02 ? 1 : 0 });
       glints.forEach((g) => {
         const k = T ? (T * 0.6 + g.i / 6) % 1 : 0.5;
         const who = g.i % 2 ? [px, GY - 200] : [sx, GY - 200];

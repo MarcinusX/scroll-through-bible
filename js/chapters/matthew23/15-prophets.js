@@ -11,8 +11,8 @@ import { vain, PH, SC, woeDrop, monument, measureJar, garland, bubble, shadowPer
 import { shadowScreen } from '../mark13/lib.js';
 
 const GY = 650;
-const MX = 540;                 // the new monument
-const SX = 1010, SY = 170, SW = 380, SH = 260;   // the shadow screen (top centre)
+const MX0 = 540;                // the new monument
+const SX0 = 1010, SY0 = 170, SW = 380, SH = 260;   // the shadow screen (top centre)
 const INK = '#3b2a22';
 
 export default {
@@ -28,6 +28,11 @@ export default {
   cam: { x: [-10, 40], y: [-30, 10], z: [1, 1.08] },
   build(S) {
     const c = S.c;
+    // phone: the monument and its builders move right (the scribe stood off the left edge), the shadow screen comes
+    // left out from under the progress thread and hangs a little higher, clear of the Pharisee's speech bubble
+    const PH_ = S.portrait;
+    const JR = PH_ ? 945 : SX0 + 10;   // the measuring jar (phone: where it stood before the screen moved)
+    const MX = PH_ ? 625 : MX0, SX = PH_ ? 910 : SX0, SY = PH_ ? 110 : SY0;
     sky(S, ['#d6ddd2', '#efe3c6', '#f4d9b0']);
     const hangL = S.layer({ par: 0.04, sh: 4 });
     const sunEl = hanging(hangL, sun(c, 38), { x: 1230, y: 130, len: 800 });
@@ -71,7 +76,7 @@ export default {
     const phar = S.puppet(Q.add(vain(c, PH)));
     const scribe = S.puppet(Q.add(vain(c, SC)));
     const say = Q.add(`<g>${bubble(c, tr(['Gdybyśmy żyli za dni ojców,', 'nie bylibyśmy ich wspólnikami!'], ['Had we lived in our fathers’ days,', 'we would have had no part in it!']), { size: 17, tail: -1 })}</g>`);
-    const woe = woeDrop(Q, c, 7, { x: 1230, y: 150 });
+    const woe = woeDrop(Q, c, 7, { x: PH_ ? 1030 : 1230, y: 150 });   // phone: the woe-tag inside the screen
 
     return (t, time) => {
       const T = time;
@@ -90,7 +95,7 @@ export default {
       const wk = es(t, 1.5, 1.7, ease.back);
       pose(wreath, { x: MX, y: GY - 100, s: wk, o: wk > 0.02 ? 1 : 0 });
       const lift = bump(t, 0.2, 0.9);
-      scribe.set({ x: MX - 150, y: GY + 4, s: 0.96, armF: 40 + lift * 50 + bump(t, 1.35, 1.7) * 60, armB: 20 + lift * 60, lean: lift * 6, head: -6 - es(t, 1.7, 1.9) * 8, blink: blinkAt(T, 3) });
+      scribe.set({ x: MX - (PH_ ? 108 : 150), y: GY + 4, s: 0.96, armF: 40 + lift * 50 + bump(t, 1.35, 1.7) * 60, armB: 20 + lift * 60, lean: lift * 6, head: -6 - es(t, 1.7, 1.9) * 8, blink: blinkAt(T, 3) });
 
       /* v30 — the screen: the fathers stone a prophet; the Pharisee disowns them */
       const scrIn = es(t, 1.95, 2.25, ease.out) * (1 - es(t, 4.0, 4.25, ease.in));
@@ -106,22 +111,22 @@ export default {
       const startle = bump(t, 3.2, 3.95);
       const pour = bump(t, 4.3, 4.95);
       const pxw = es(t, 1.8, 2.2);
-      const px = lerp(MX + 170, 780, pxw);
+      const px = lerp(MX + (PH_ ? 150 : 170), PH_ ? 815 : 780, pxw);
       phar.set({
         x: px, y: GY + 6, s: 1, flip: false, walk: pxw > 0.02 && pxw < 0.98 ? px * 0.05 : undefined,
         armF: 30 + bump(t, 0.3, 1.7) * 30 + disown * 70 + startle * 40, armB: 10 + disown * 30 + startle * 90 + pour * 40, head: -6 - bump(t, 1.5, 1.9) * 10 + (T ? Math.sin(T * 7) * 6 * disown : 0) + startle * 10, lean: -startle * 8, blink: blinkAt(T, 5),
       });
       const b = es(t, 2.3, 2.45, ease.back) * (1 - es(t, 2.9, 3.0));
-      pose(say, { x: 760, y: GY - 205, s: b, o: b > 0.02 ? 1 : 0 });
+      pose(say, { x: PH_ ? 790 : 760, y: GY - 205, s: b, o: b > 0.02 ? 1 : 0 });
 
       /* v32 — the measure fills to the brim and spills over */
       const jk = es(t, 4.05, 4.3, ease.out);
-      pose(jar, { x: SX + 10, y: lerp(-900, GY - 214, jk), o: jk > 0.01 ? 1 : 0 });
+      pose(jar, { x: JR, y: lerp(-900, GY - 214, jk), o: jk > 0.01 ? 1 : 0 });
       const fill = es(t, 4.35, 4.6);
-      pose(tide, { x: SX + 10, y: GY - 214, sx: 0.4 + fill * 0.6, sy: 0.2 + fill * 0.8, o: fill > 0.02 ? 1 : 0 });
+      pose(tide, { x: JR, y: GY - 214, sx: 0.4 + fill * 0.6, sy: 0.2 + fill * 0.8, o: fill > 0.02 ? 1 : 0 });
       const over = es(t, 4.55, 4.85);
-      spills.forEach((sp) => pose(sp.el, { x: SX + 10 + sp.d * 52, y: GY - 212, sx: 1, sy: Math.max(0.001, over), o: over > 0.02 ? 1 : 0 }));
-      pose(pool, { x: SX + 10, y: GY + 2, sx: over, sy: 1, o: over > 0.02 ? 1 : 0 });
+      spills.forEach((sp) => pose(sp.el, { x: JR + sp.d * 52, y: GY - 212, sx: 1, sy: Math.max(0.001, over), o: over > 0.02 ? 1 : 0 }));
+      pose(pool, { x: JR, y: GY + 2, sx: over, sy: 1, o: over > 0.02 ? 1 : 0 });
 
       S.cam.x = 20 + es(t, 1.9, 2.3) * 20;
       S.cam.z = 1.03;

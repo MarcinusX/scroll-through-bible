@@ -46,10 +46,10 @@ export default {
     stepL.sprite(pose3(c, Array.from({ length: 5 }, (_, i) => ({ x: i * 52 + c.rr(-6, 6), y: c.rr(-3, 3), s: 0.66, flip: true, head: c.rr(-6, 2), o: { ...folk(c), pose: 'sit' } }))), 1010, 604);
     const P = S.layer({ par: 0.5, sh: 5 });
     P.sprite(pose3(c, [TWELVE[2].o, TWELVE[0].o, TWELVE[3].o].map((o, i) => ({ x: -i * 62, y: (i % 2) * 10, s: 0.92, flip: false, head: -6, o }))), 430, F + 10);
-    P.sprite(pose3(c, Array.from({ length: 4 }, (_, i) => ({ x: i * 58 + c.rr(-6, 6), y: (i % 2) * 10, s: 0.88, flip: true, head: -4, armF: c.rr(0, 20), o: folk(c) }))), 1150, F + 10);
+    P.sprite(pose3(c, Array.from({ length: 4 }, (_, i) => ({ x: i * 58 + c.rr(-6, 6), y: (i % 2) * 10, s: 0.88, flip: true, head: -4, armF: c.rr(0, 20), o: folk(c) }))), S.portrait ? 1215 : 1150, F + 10);   // phone: off the edge, not half under the thread
     const jesus = S.puppet(P.add(person(c, { ...CAST.jesus })));
     const voice = voiceRings(P, c, { n: 3, r: 30, w: 5, color: C.clay });
-    const woe = woeDrop(P, c, 1, { x: 1210, y: 170 });
+    const woe = woeDrop(P, c, 1, { x: S.portrait ? 1040 : 1210, y: 170 });   // phone: the woe-tag inside the screen
 
     set.front();
 

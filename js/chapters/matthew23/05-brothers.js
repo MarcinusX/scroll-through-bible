@@ -37,7 +37,9 @@ export default {
     /* Jesus and six of the Twelve */
     const P = S.layer({ par: 0.5, sh: 5 });
     const SPOT = [[500, 12, 2], [585, 4, 0], [665, 16, 3], [935, 16, 1], [1015, 4, 6], [1100, 12, 7]];
-    const dis = SPOT.map(([x, dy, k], i) => ({ i, x, y: F + dy, left: x < JX, seed: c.rr(0, 9), p: S.puppet(P.add(person(c, TWELVE[k].o))) }));
+    // phone: the six stand a little closer round Him, so the outermost are not cut by the frame and the thread
+    const sx = (x) => (S.portrait ? JX + (x - JX) * 0.85 : x);
+    const dis = SPOT.map(([x, dy, k], i) => ({ i, x: sx(x), y: F + dy, left: x < JX, seed: c.rr(0, 9), p: S.puppet(P.add(person(c, TWELVE[k].o))) }));
     const glow = P.add(`<g><circle r="120" fill="url(#halo-glow)"/></g>`);
     const jesus = S.puppet(P.add(person(c, { ...CAST.jesus })));
     const voice = voiceRings(P, c, { n: 3, r: 26, w: 4 });

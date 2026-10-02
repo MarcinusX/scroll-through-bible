@@ -36,14 +36,16 @@ export default {
     /* the people */
     const P = S.layer({ par: 0.5, sh: 5 });
     P.sprite(pose3(c, [TWELVE[0].o, TWELVE[2].o, TWELVE[1].o, TWELVE[3].o].map((o, i) => ({ x: -i * 62, y: (i % 2) * 10, s: 0.92, flip: false, head: -6, o }))), 600, F + 10);
-    const LEAD = [[1000, PH, 0], [1080, SC, 8], [1160, pharisees(3), 2], [1240, scribes(2), 10]].map(([x, o, dy], i) => ({ x, y: F + dy, i, seed: c.rr(0, 9), p: S.puppet(P.add(vain(c, o))) }));
+    const LX = S.portrait ? [925, 972, 1018, 1062] : [1000, 1080, 1160, 1240];   // phone: the leaders inside the screen
+    const LEAD = [[LX[0], PH, 0], [LX[1], SC, 8], [LX[2], pharisees(3), 2], [LX[3], scribes(2), 10]].map(([x, o, dy], i) => ({ x, y: F + dy, i, seed: c.rr(0, 9), p: S.puppet(P.add(vain(c, o))) }));
     const jesus = S.puppet(P.add(person(c, { ...CAST.jesus })));
     const voice = voiceRings(P, c, { n: 3, r: 30, w: 5 });
 
     /* the frieze: parchment strip with Abel, the red thread, Zechariah */
     const fr = S.layer({ par: 0.3, sh: 6 });
     const W = FX1 - FX0;
-    const PS = S.portrait ? 0.86 : 1, X0 = 800 - (W * PS) / 2;
+    const PS = S.portrait ? 0.78 : 1,   // phone: narrower still, so Zechariah's name is clear of the progress thread
+      X0 = 800 - (W * PS) / 2;
     const bg = sheet().p(c.cut(c.rect(0, 0, W, FH), 0.6, 10), C.wood3).p(c.cut(c.rect(10, 10, W - 20, FH - 20), 0.5, 10), mix(C.parchment, C.cream, 0.3));
     const GL = FH - 30;   // the ground line on the frieze
     bg.p(c.cut([[10, GL], [W - 10, GL - 2], [W - 10, FH - 10], [10, FH - 10]], 0.5, 10), mix(C.sand2, C.dune, 0.3));

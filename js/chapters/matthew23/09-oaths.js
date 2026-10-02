@@ -10,8 +10,7 @@ import { es, ease, bump, seg } from '../../core/anim.js';
 import { templeCourt, pose3, folk, vain, PH, woeDrop, bubble, goldVessels, goldCord, templeModel, altar, lamb, balance, blindBand, addToHead, handAt, hang2, tr, SWEARER } from './lib.js';
 
 const BX = 800;                       // the balance
-const GOLD = [690, 0], ALT = [1150, 0];
-const MX = 1000;                      // the man who swears
+const GOLD = [690, 0];
 const FX = 560;                       // the Pharisee
 
 export default {
@@ -27,6 +26,9 @@ export default {
   cam: { x: [0, 90], y: [-50, 10], z: [1, 1.1] },
   build(S) {
     const c = S.c;
+    // phone: the altar with its lamb comes in from under the progress thread, the man who swears with it
+    const ALT = [S.portrait ? 1025 : 1150, 0];
+    const MX = S.portrait ? 905 : 1000;   // the man who swears
     const set = templeCourt(S);
     const F = set.FLOOR;
     const stepL = S.layer({ par: 0.45, sh: 4 });
@@ -63,7 +65,7 @@ export default {
     const onL2 = balL.add(`<g>${lamb(c)}</g>`);
     const onR2 = balL.add(`<g>${altar(c, 84, 50)}</g>`);
     const beamLight = balL.add(`<g><path d="M0 -8L1 -34L1 34L0 8Z" fill="#fff3cf" opacity=".55"/><path d="M0 -3L1 -12L1 12L0 3Z" fill="#fff8e2" opacity=".6"/></g>`);
-    const woe = woeDrop(balL, c, 3, { x: 1240, y: 150 });
+    const woe = woeDrop(balL, c, 3, { x: S.portrait ? 1005 : 1240, y: 150 });   // phone: the woe-tag inside the screen
 
     set.front();
 
