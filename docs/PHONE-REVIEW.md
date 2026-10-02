@@ -2,7 +2,8 @@
 
 How the Gospel of John was audited and repaired for phones (portrait, 390×844) on 2026-09-29/30,
 written down so the other books can get the same pass. John had 316 findings in 286 scenes; the
-other books were drawn the same way, so expect the same amount.
+other books were drawn the same way, so expect the same amount. Matthew followed on 2026-10-02
+(559 repairs in 28 chapters, 1765 beats).
 
 ## What goes wrong on a phone
 
@@ -52,7 +53,10 @@ width is about x 450–1150**. Scenes composed for a wide screen fail in the sam
 4. Check the agents' work yourself: rebuild the sheets after the fixes and look at every
    before/after pair. In John, four chapters of 21 still had a leftover (a hidden figure, parked
    plates exposed by a zoom-out, stripes). Expect the agents to be honest but not thorough about
-   desktop checks.
+   desktop checks. In Matthew the look was handed to a **second pass**: fresh agents, three chapters
+   each, who re-judged every after sheet (including what the first agent called "acceptable") and
+   ran the desktop compare. They found half as many again (181 on top of 378): suns half under the thread,
+   the last of a row of figures still touching it, things a first fix had moved onto something else.
 5. Prove the desktop is unchanged: `tools/compare.sh john:3 /tmp/cmp/j3 http://localhost:5191 http://localhost:5190`
    prints the changed fraction of every beat; anything above ~1 % that is not idle motion (lamps,
    rays, swaying tags) gets looked at.
