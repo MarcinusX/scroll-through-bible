@@ -6,7 +6,6 @@ import { es, ease, bump } from '../../core/anim.js';
 import { templeCourt, pharisee, sadducee, herodian, scribe, moodPuppet, question, voiceRings } from './lib.js';
 
 const JX = 780;
-const QX = [920, 990, 1060, 1130];
 
 export default {
   id: 'mt22-silence',
@@ -17,6 +16,9 @@ export default {
   cam: { x: [-20, 20], y: [-30, 30], z: [1, 1.08] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;
+    // phone: all four questioners and their "?" inside the screen; the disciples make room nearer the middle
+    const QX = P ? [905, 965, 1025, 1085] : [920, 990, 1060, 1130];
     const set = templeCourt(S);
     const F = set.FLOOR;
     // evening over the court (a warm veil over the set, under the people)
@@ -50,7 +52,7 @@ export default {
         q.p.mood({ sad: mute * 0.8, angry: 0 });
         const up = es(t, 1.1 + q.i * 0.12, 1.5 + q.i * 0.12, ease.in);
         const droop = mute * 10;
-        pose(tags[q.i], { x: q.x - 6, y: lerp(F - 250 + droop, -520, up), r: Math.sin(T * 0.9 + q.i) * 3 * (1 - up) + (q.i % 2 ? -1 : 1) * droop * 0.8, s: 1.2 });
+        pose(tags[q.i], { x: q.x - 6, y: lerp(F - 250 + droop, -520, up), r: Math.sin(T * 0.9 + q.i) * 3 * (1 - up) + (q.i % 2 ? -1 : 1) * droop * 0.8, s: 1.2, ...(P ? { o: 1 - es(t, 1.2 + q.i * 0.1, 1.35 + q.i * 0.1) } : {}) });
       });
 
       /* Jesus */
@@ -59,7 +61,7 @@ export default {
       const jx = lerp(JX, 660, walk);
       jesus.set({ x: jx, y: F, s: 1.04, flip: walk > 0.02, walk: walk > 0 && walk < 1 ? jx * 0.05 : undefined, blink: blinkAt(T), head: 4 - es(t, 1.2, 1.8) * 8, armF: 30 + (1 - mute) * 30 + es(t, 1.7, 1.85) * 20, armB: 16 });
       voice(JX + 26, F - 176, 1 - mute, T, { dir: 1 });
-      dis.forEach((d) => { const x = lerp(d.x, d.x - 110, walk); d.p.set({ x, y: F + 10 + (d.i % 2) * 8, s: 0.9, walk: walk > 0 && walk < 1 ? x * 0.05 + d.i : undefined, head: -4, armF: es(t, 1.5, 1.8) * (d.i === 0 ? 40 : 0), blink: blinkAt(T, d.i + 2) }); });
+      dis.forEach((d) => { const x = lerp(d.x, d.x - (P ? 70 : 110), walk); d.p.set({ x, y: F + 10 + (d.i % 2) * 8, s: 0.9, walk: walk > 0 && walk < 1 ? x * 0.05 + d.i : undefined, head: -4, armF: es(t, 1.5, 1.8) * (d.i === 0 ? 40 : 0), blink: blinkAt(T, d.i + 2) }); });
       sitters.forEach((m) => m.p.set({ x: m.x, y: m.y, s: m.s, flip: m.x > JX, head: -4, blink: blinkAt(T, m.seed) }));
 
       S.cam.z = 1.02 + es(t, 1.2, 1.8) * 0.04;

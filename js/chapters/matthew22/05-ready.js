@@ -38,7 +38,7 @@ export default {
 
     /* the king and his servants */
     const pl = S.layer({ par: 0.5, sh: 5 });
-    const serv = [0, 1, 2].map((i) => ({ i, p: S.puppet(pl.add(person(c, { ...SERVANTS[i], holdF: heldInvite(c) }))), x: [930, 1030, 1130][i] }));
+    const serv = [0, 1, 2].map((i) => ({ i, p: S.puppet(pl.add(person(c, { ...SERVANTS[i], holdF: heldInvite(c) }))), x: (S.portrait ? [860, 940, 1020] : [930, 1030, 1130])[i] }));
     const king = S.puppet(pl.add(kingPuppet(c, { holdF: `<g transform="rotate(6)">${guestList(c, 110)}</g>` })));
     const listEl = pl.add(`<g>${guestList(c, 110)}</g>`);
 
@@ -63,7 +63,7 @@ export default {
 
       /* v9 — to the crossroads */
       const pd = es(t, 1.1, 1.45, ease.out);
-      pose(pic, { x: 1000, y: lerp(-900, 150, pd), s: 1.25, r: Math.sin(T * 0.8) * 1.2 * pd });
+      pose(pic, { x: S.portrait ? 900 : 1000, y: lerp(-900, 150, pd), s: 1.25, r: Math.sin(T * 0.8) * 1.2 * pd });
       serv.forEach((s) => {
         const go = es(t, 1.45 + s.i * 0.06, 1.95, ease.in);
         const x = lerp(s.x, 1500 + s.i * 60, go);

@@ -7,7 +7,6 @@ import { es, ease, bump, seg } from '../../core/anim.js';
 import { templeCourt, pharisee, moodPuppet, davidPuppet, voiceRings, bubble, dove, harp, throne, footstool, shard, glory, strip, disc, crown, bigQuestion, popBubble, tr, sheet } from './lib.js';
 
 const JX = 720;
-const GX = [1000, 1060, 1120, 1180];
 const PX0 = 560, PX1 = 1040, PY0 = 150, PY1 = 430;
 const GROUND = 414;
 
@@ -24,6 +23,8 @@ export default {
   cam: { x: [-30, 30], y: [-30, 30], z: [1, 1.1] },
   build(S) {
     const c = S.c;
+    // phone: the Pharisees stand closer together, clear of the right edge
+    const GX = S.portrait ? [925, 970, 1015, 1060] : [1000, 1060, 1120, 1180];
     const set = templeCourt(S);
     const F = set.FLOOR;
     const stepL = S.layer({ par: 0.45, sh: 4 });

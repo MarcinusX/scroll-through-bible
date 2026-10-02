@@ -25,7 +25,8 @@ export default {
     ]);
     const pl = S.layer({ par: 0.5, sh: 5 });
     const standers = crowd(S, pl, [{ y: F + 10, s: 0.86, n: 3, x0: 380, x1: 560 }]);
-    const leaders = [LOOK.priest, pharisee(c, 0), pharisee(c, 1)].map((o, i) => ({ p: S.puppet(pl.add(person(c, o))), x: 1010 + i * 64, y: F + 6 + (i % 2) * 8, i }));
+    // phone: the leaders closer together, the last one clear of the progress thread
+    const leaders = [LOOK.priest, pharisee(c, 0), pharisee(c, 1)].map((o, i) => ({ p: S.puppet(pl.add(person(c, o))), x: S.portrait ? 965 + i * 50 : 1010 + i * 64, y: F + 6 + (i % 2) * 8, i }));
     const dis = [CAST.peter, CAST.john].map((o, i) => ({ p: S.puppet(pl.add(person(c, o))), x: 640 - i * 56, i }));
     const jesus = S.puppet(pl.add(person(c, { ...CAST.jesus })));
     const voice = voiceRings(pl, c, { n: 3, r: 26, w: 4 });

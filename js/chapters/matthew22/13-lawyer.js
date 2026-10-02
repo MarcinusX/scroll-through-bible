@@ -5,8 +5,7 @@ import { C, person, CAST, blinkAt, pose, lerp, crowd } from '../kit.js';
 import { es, ease, bump } from '../../core/anim.js';
 import { templeCourt, pharisee, scribe, moodPuppet, voiceRings, bubble, wordSlip, popBubble, tr } from './lib.js';
 
-const JX = 700, LX = 950;
-const GX = [1020, 1080, 1140, 1070];            // the gathered Pharisees
+const JX = 700;
 
 export default {
   id: 'mt22-lawyer',
@@ -18,6 +17,10 @@ export default {
   cam: { x: [-30, 30], y: [-40, 30], z: [1, 1.1] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;
+    // phone: the knot of Pharisees and the lawyer stand clear of the right edge
+    const LX = P ? 900 : 950;
+    const GX = P ? [940, 990, 1040, 988] : [1020, 1080, 1140, 1070];   // the gathered Pharisees
     const set = templeCourt(S);
     const F = set.FLOOR;
     const stepL = S.layer({ par: 0.45, sh: 4 });
@@ -56,7 +59,7 @@ export default {
 
       /* v35 — the lawyer steps out; v36 — his question, and a flurry of the Law's commands */
       const come = es(t, 1.08, 1.55);
-      const x = lerp(1150, LX, come);
+      const x = lerp(P ? 1090 : 1150, LX, come);
       law.set({ x, y: F + 6, s: 0.95, flip: true, walk: come > 0 && come < 1 ? x * 0.05 : undefined, blink: blinkAt(T, 3), head: -bump(t, 2.1, 2.9) * 6, armF: 26 + bump(t, 2.1, 2.9) * 40, armB: bump(t, 2.1, 2.9) * 60 });
       popBubble(ask, t, 2.1, 2.97, LX - 30, F - 210);
       const fly = es(t, 2.2, 2.55);

@@ -28,7 +28,8 @@ export default {
 
     /* Jesus, his disciples, the chief priests and the Pharisees */
     const people = S.layer({ par: 0.5, sh: 5 });
-    const leaders = [LOOK.priest, pharisee(c, 0), LOOK.elder, pharisee(c, 1)].map((o, i) => ({ p: S.puppet(people.add(person(c, o))), x: 990 + i * 62, y: F + 6 + (i % 2) * 8, i }));
+    // phone: the leaders closer together, the last one clear of the progress thread
+    const leaders = [LOOK.priest, pharisee(c, 0), LOOK.elder, pharisee(c, 1)].map((o, i) => ({ p: S.puppet(people.add(person(c, o))), x: S.portrait ? 945 + i * 50 : 990 + i * 62, y: F + 6 + (i % 2) * 8, i }));
     const dis = [CAST.john, CAST.peter, CAST.james, CAST.andrew].map((o, i) => ({ p: S.puppet(people.add(person(c, o))), x: 610 - i * 62, y: F + 10 + (i % 2) * 8, i }));
     const jesus = S.puppet(people.add(person(c, { ...CAST.jesus })));
     const voice = voiceRings(people, c, { n: 3, r: 26, w: 4 });

@@ -26,6 +26,9 @@ export default {
   cam: { x: [-30, 30], y: [-40, 30], z: [1, 1.1] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;
+    // phone: the two plates and the angels hang inside the screen; the right-hand crowd comes in to where the Sadducees stood
+    const PLX = P ? [575, 1010] : [540, 1060];
     const set = templeCourt(S);
     const F = set.FLOOR;
     const stepL = S.layer({ par: 0.45, sh: 4 });
@@ -36,7 +39,7 @@ export default {
     const light = heav.add(`<g opacity="0">${glory(c, 520, 24)}</g>`);
     const angels = [0, 1, 2].map((i) => {
       const el = heav.add(`<g><path d="M0 -1400V-190" stroke="rgba(74,54,34,.55)" stroke-width="1.2" fill="none"/>${angel(c, { k: 'ang' + i })}</g>`);
-      return { el, p: S.puppet(el.querySelector('.fig')), x: [520, 800, 1080][i], y: [300, 250, 300][i], i };
+      return { el, p: S.puppet(el.querySelector('.fig')), x: (P ? [555, 800, 1045] : [520, 800, 1080])[i], y: [300, 250, 300][i], i };
     });
     const rings = [0, 1].map(() => heav.add(`<g>${ring(c, 22)}</g>`));
 
@@ -74,6 +77,7 @@ export default {
     /* people */
     const pl = S.layer({ par: 0.5, sh: 5 });
     const more = crowd(S, pl, [{ y: F + 16, s: 0.88, n: 3, x0: 300, x1: 450 }, { y: F + 18, s: 0.88, n: 3, x0: 1130, x1: 1300 }]);
+    if (P) more.forEach((m) => { if (m.x > 800) m.x -= 215; });
     more.forEach((m) => { m.from = m.x < 800 ? m.x - 460 : m.x + 460; });
     const dis = [CAST.peter, CAST.john].map((o, i) => ({ p: S.puppet(pl.add(person(c, o))), x: 500 - i * 60, i }));
     const jesus = S.puppet(pl.add(person(c, { ...CAST.jesus })));
@@ -91,8 +95,8 @@ export default {
 
       /* v29 — the two plates */
       const pk = es(t, 0.15, 0.55, ease.out) * (1 - es(t, 0.95, 1.2, ease.in));
-      pose(plA, { x: 540, y: lerp(-800, 250, pk), r: Math.sin(T * 0.9) * 1.5 });
-      pose(plB, { x: 1060, y: lerp(-800, 250, es(t, 0.3, 0.7, ease.out) * (1 - es(t, 0.95, 1.2, ease.in))), r: Math.sin(T * 0.8 + 1) * 1.5 });
+      pose(plA, { x: PLX[0], y: lerp(-800, 250, pk), r: Math.sin(T * 0.9) * 1.5 });
+      pose(plB, { x: PLX[1], y: lerp(-800, 250, es(t, 0.3, 0.7, ease.out) * (1 - es(t, 0.95, 1.2, ease.in))), r: Math.sin(T * 0.8 + 1) * 1.5 });
 
       /* v30 — angels, the light of heaven; rings float away */
       const hv = es(t, 1.05, 1.45) * (1 - es(t, 1.9, 2.15));

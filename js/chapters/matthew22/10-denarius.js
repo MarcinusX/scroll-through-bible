@@ -4,7 +4,7 @@
 // and a glowing heart rises to God's house. Taken aback, heads down, they leave him and go away.
 import { C, person, CAST, blinkAt, pose, lerp, crowd, hanging } from '../kit.js';
 import { es, ease, bump, seg } from '../../core/anim.js';
-import { templeCourt, QX, pupil, herodian, moodPuppet, voiceRings, bubble, snare, maskOnStick, denarius, coin, purse, taxChest, glowHeart, headAt, hand, popBubble, tr } from './lib.js';
+import { templeCourt, QX as QX_WIDE, pupil, herodian, moodPuppet, voiceRings, bubble, snare, maskOnStick, denarius, coin, purse, taxChest, glowHeart, headAt, hand, popBubble, tr } from './lib.js';
 
 const JX = 770;
 
@@ -22,6 +22,10 @@ export default {
   cam: { x: [-30, 30], y: [-40, 30], z: [1, 1.12] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;
+    // phone: the questioners stand closer, and Caesar's chest appears inside the screen
+    const QX = P ? [900, 958, 1016, 1074] : QX_WIDE;
+    const CHX = P ? 516 : 404;
     const set = templeCourt(S);
     const F = set.FLOOR;
 
@@ -111,11 +115,11 @@ export default {
       /* v20 — the great denarius comes down */
       const dk = es(t, 3.05, 3.5, ease.out);
       const toCaesar = es(t, 5.1, 5.5, ease.io);
-      pose(big, { x: lerp(800, 404, toCaesar), y: lerp(lerp(-800, 272, dk), 560, toCaesar), s: lerp(1, 0.12, toCaesar), r: Math.sin(T * 0.7) * 2 * (1 - toCaesar), o: 1 - es(t, 5.45, 5.55) });
+      pose(big, { x: lerp(800, CHX, toCaesar), y: lerp(lerp(-800, 272, dk), 560, toCaesar), s: lerp(1, 0.12, toCaesar), r: Math.sin(T * 0.7) * 2 * (1 - toCaesar), o: 1 - es(t, 5.45, 5.55) });
       /* v21b — to Caesar his coin, to God the heart */
       const chk = es(t, 4.9, 5.15, ease.back);
-      pose(chest, { x: 404, y: F + 8, s: chk, o: chk > 0.01 ? 1 : 0 });
-      pose(chestTag, { x: 404, y: F - 120, s: chk * (1 - es(t, 6.2, 6.4)), o: chk > 0.02 ? 1 : 0 });
+      pose(chest, { x: CHX, y: F + 8, s: chk, o: chk > 0.01 ? 1 : 0 });
+      pose(chestTag, { x: CHX, y: F - 120, s: chk * (1 - es(t, 6.2, 6.4)), o: chk > 0.02 ? 1 : 0 });
       const hk = es(t, 5.3, 5.5, ease.back), up = es(t, 5.55, 5.95, ease.io);
       const [bx, by] = hand(JX, F, 1.04, false, 150);
       pose(heartEl, { x: lerp(bx - 60, 800, up), y: lerp(by - 20, 300, up), s: hk * (1 - up * 0.3), o: hk > 0.01 ? 1 - es(t, 6.3, 6.6) : 0 });

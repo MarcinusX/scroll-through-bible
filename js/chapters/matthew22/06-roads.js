@@ -32,6 +32,7 @@ export default {
   build(S) {
     const c = S.c;
     const set = crossSet(S);
+    const hx = (x) => (S.portrait ? 800 + (x - 800) * 0.84 : x);   // phone: the people gather inside the screen
 
     const pl = S.layer({ par: 0.42, sh: 5 });
     const folk = FOLK.map((f, i) => {
@@ -39,7 +40,7 @@ export default {
       const holdF = f.hold === 'crutch' ? crutchHeld(cc) : f.hold === 'stick' ? stickHeld(cc) : f.hold === 'baby' ? babyHeld(cc) : '';
       const flipped = f.from[0] > f.home[0] + 100;
       const m = baked(cc, [{ x: 0, y: 0, s: 0.92, flip: flipped, o: { ...ROADFOLK[i], holdF }, armF: f.armF || 10, head: i === 3 || i === 7 ? 6 : -2 }]);
-      return { ...f, i, sp: pl.sprite(m, f.home[0], f.home[1]), d: i * 0.045 };
+      return { ...f, home: [hx(f.home[0]), f.home[1]], i, sp: pl.sprite(m, hx(f.home[0]), f.home[1]), d: i * 0.045 };
     });
     const serv = [0, 1].map((i) => ({ i, p: S.puppet(pl.add(person(c, { ...SERVANTS[i + 1], holdF: heldInvite(c) }))), x: [770, 880][i], y: [700, 690][i] }));
 

@@ -4,10 +4,10 @@
 // beggar weighing the same). Then the trap: "Is it lawful to pay tax to Caesar, or not?" — and a net comes down.
 import { C, person, CAST, blinkAt, pose, lerp, crowd, hanging } from '../kit.js';
 import { es, ease, bump } from '../../core/anim.js';
-import { templeCourt, QX, pupil, pharisee, herodian, moodPuppet, voiceRings, bubble, thought, snare, maskOnStick, balance, headAt, popBubble, kingPuppet, ROADFOLK, crutchHeld, tr, sheet, mix } from './lib.js';
+import { templeCourt, QX as QX_WIDE, pupil, pharisee, herodian, moodPuppet, voiceRings, bubble, thought, snare, maskOnStick, balance, headAt, popBubble, kingPuppet, ROADFOLK, crutchHeld, tr, sheet, mix } from './lib.js';
 
 const JX = 770;
-const PX = [392, 452, 512];                     // the Pharisees in council, left
+const PX_WIDE = [392, 452, 512];                // the Pharisees in council, left
 
 export default {
   id: 'mt22-snare',
@@ -19,14 +19,19 @@ export default {
     { v: 17, text: 'Powiedz nam więc, jak Ci się zdaje?' },
     { v: 17, cont: true, text: 'Czy wolno płacić podatek Cezarowi, czy nie?»' },
   ],
-  cam: { x: [-30, 30], y: [-40, 30], z: [1, 1.12] },
+  cam: { x: [-150, 30], y: [-40, 30], z: [1, 1.12] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;
+    // phone: the council moves in a little and the camera looks left while they plot; the questioners stand closer
+    const PX = P ? [430, 488, 546] : PX_WIDE;
+    const QX = P ? [900, 958, 1016, 1074] : QX_WIDE;
     const set = templeCourt(S);
     const F = set.FLOOR;
 
     const stepL = S.layer({ par: 0.45, sh: 4 });
-    const sitters = crowd(S, stepL, [{ y: 604, s: 0.66, n: 3, x0: 1010, x1: 1200, pose: 'sit' }, { y: 604, s: 0.66, n: 2, x0: 250, x1: 360, pose: 'sit' }]);
+    // phone: the right-hand sitters sit further off, not half-peeping at the edge while the camera is on the Pharisees
+    const sitters = crowd(S, stepL, [{ y: 604, s: 0.66, n: 3, x0: S.portrait ? 1200 : 1010, x1: S.portrait ? 1300 : 1200, pose: 'sit' }, { y: 604, s: 0.66, n: 2, x0: 250, x1: 360, pose: 'sit' }]);
     // the golden way of God, from his feet up the stairs to the sanctuary
     const wayL = S.layer({ par: 0.47, sh: 1 });
     const way = wayL.add(`<g><path d="${c.cut([[JX - 64, 0], [JX + 64, 0], [818, -250], [782, -250]], 0.6, 8)}" fill="${C.halo}" opacity=".85"/><path d="${c.ribbon([[JX, -4], [800, -246]], 3)}" fill="${C.star}"/></g>`);
@@ -75,7 +80,7 @@ export default {
         p.p.set({ x, y: F + 4 + (p.i % 2) * 10, s: 0.92, flip: k < 1 ? true : p.i === 2, walk: k > 0 && k < 1 ? x * 0.05 + p.i : undefined, head: huddle * 14 * (1 - send), lean: huddle * (p.i === 2 ? -6 : 6) * (1 - send), armF: 26 + huddle * 30 + (p.i === 1 ? send * 70 : 0), blink: blinkAt(T, p.seed) });
         p.p.mood({ angry: huddle * 0.8, sad: 0 });
       });
-      popBubble(plot, t, 0.55, 0.98, PX[1] - 10, F - 206);
+      popBubble(plot, t, 0.55, 0.98, PX[1] + (P ? 40 : -10), F - 206);
       popBubble(bb.go, t, 1.1, 1.6, PX[1] + 30, F - 206);
 
       /* v16a — the pupils and Herod's men come across from the right */
@@ -113,6 +118,7 @@ export default {
 
       S.cam.z = 1 + es(t, 5.1, 5.6) * 0.05;
       S.cam.y = -es(t, 5.1, 5.6) * 20;
+      if (P) S.cam.x = -140 * (1 - es(t, 1.0, 1.5));
     };
   },
 };

@@ -21,6 +21,9 @@ export default {
   cam: { x: [-30, 30], y: [-50, 30], z: [1, 1.1] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;
+    // phone: the two neighbours meet inside the screen; the Pharisees stand clear of the right edge
+    const NX = P ? 488 : 450;
     const set = templeCourt(S);
     const F = set.FLOOR;
     const stepL = S.layer({ par: 0.45, sh: 4 });
@@ -55,7 +58,7 @@ export default {
     const nb = [man(c, { robe: C.sageRobe }), woman(c, { robe: C.roseRobe })].map((o, i) => ({ i, p: S.puppet(pl.add(person(c, o))), seed: c.rr(0, 9) }));
     const hearts = [0, 1].map(() => pl.add(`<g>${glowHeart(c, 11)}</g>`));
     const bridge = pl.add(`<g>${lightArc(c, 120, 36)}</g>`);
-    const phar = [0, 1, 4].map((k, i) => ({ i, p: moodPuppet(S, pl, c, pharisee(c, k)), x: [1040, 1100, 1160][i], seed: c.rr(0, 9) }));
+    const phar = [0, 1, 4].map((k, i) => ({ i, p: moodPuppet(S, pl, c, pharisee(c, k)), x: (P ? [985, 1030, 1075] : [1040, 1100, 1160])[i], seed: c.rr(0, 9) }));
     const jesus = S.puppet(pl.add(person(c, { ...CAST.jesus })));
     const law = S.puppet(pl.add(person(c, scribe(c, 0))));
     const voice = voiceRings(pl, c, { n: 3, r: 26, w: 4 });
@@ -86,13 +89,13 @@ export default {
       /* v39 — two neighbours; a bridge of light between their hearts */
       const nk = es(t, 2.1, 2.45);
       nb.forEach((n) => {
-        const x = n.i ? lerp(300, 548, nk) : lerp(200, 450, nk);
+        const x = n.i ? lerp(300, NX + 98, nk) : lerp(200, NX, nk);
         n.p.set({ x, y: F + 14, s: 0.9, flip: n.i === 1, walk: nk > 0 && nk < 1 ? x * 0.05 : undefined, armF: es(t, 2.45, 2.6) * 50, blink: blinkAt(T, n.seed), o: nk > 0 ? 1 : 0 });
         const hk = es(t, 2.5 + n.i * 0.05, 2.65 + n.i * 0.05, ease.back);
         pose(hearts[n.i], { x: x + (n.i ? -6 : 6), y: F + 14 - 120, s: hk * (1 + Math.sin(T * 3 + n.i) * 0.05), o: hk > 0.02 ? 1 : 0 });
       });
       const bk = es(t, 2.62, 2.85);
-      pose(bridge, { x: 456, y: F + 14 - 124, sx: Math.max(0.01, bk * (98 / 120)), o: bk > 0.01 ? 1 : 0 });
+      pose(bridge, { x: NX + 6, y: F + 14 - 124, sx: Math.max(0.01, bk * (98 / 120)), o: bk > 0.01 ? 1 : 0 });
 
       /* v40 — all the Law and the Prophets hang on these two */
       scrolls.forEach((s) => {
@@ -106,7 +109,7 @@ export default {
       const speak = 1 - es(t, 3.9, 4.0);
       jesus.set({ x: JX, y: F, s: 1.02, blink: blinkAt(T), head: -bump(t, 0.0, 4.0) * 10, armF: 40 + bump(t, 0.1, 0.9) * 50 + bump(t, 2.1, 2.9) * 20 + bump(t, 3.1, 3.9) * 50, armB: 16 + bump(t, 1.1, 1.9) * 110 });
       voice(JX + 26, F - 176, speak, T, { dir: 1 });
-      law.set({ x: LX, y: F + 6, s: 0.95, flip: true, blink: blinkAt(T, 3), head: -bump(t, 0.0, 4.0) * 12 + es(t, 3.4, 3.8) * 8, armF: 26 });
+      law.set({ x: P ? 920 : LX, y: F + 6, s: 0.95, flip: true, blink: blinkAt(T, 3), head: -bump(t, 0.0, 4.0) * 12 + es(t, 3.4, 3.8) * 8, armF: 26 });
       phar.forEach((p) => {
         p.p.set({ x: p.x, y: F + 2 + (p.i % 2) * 10, s: 0.9, flip: true, head: -bump(t, 0.0, 4.0) * 10, armF: 30, blink: blinkAt(T, p.seed) });
         p.p.mood({ angry: 0.5 * (1 - es(t, 1.0, 2.0)), sad: 0 });

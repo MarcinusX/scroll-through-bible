@@ -7,8 +7,7 @@ import { C, person, CAST, blinkAt, pose, lerp, crowd, hanging, mix, shade } from
 import { es, ease, bump, seg, fade } from '../../core/anim.js';
 import { templeCourt, sadducee, moodPuppet, voiceRings, bubble, thought, scrollOpen, flipPortrait, vignette, bigQuestion, popBubble, tr, sheet } from './lib.js';
 
-const PX = [540, 644, 748, 852, 956, 1060, 1164], PY = 200;     // the brothers' portraits
-const WX = 852, WY = 346;                                      // the woman's portrait
+const PY = 200, WY = 346;                                       // the brothers' portraits, the woman's portrait
 const JX = 640;
 const SX = [900, 972, 1044];
 const BRO = (i) => ({ robe: [C.dustyBlue, C.sageRobe, C.ochreRobe, C.tealRobe, C.mauve, C.wheatRobe, C.clayMantle][i], hair: [C.hair2, C.hair, C.hair2, C.hair3, C.hair2, C.hair, C.hair3][i], hairStyle: i % 3 === 2 ? 'curly' : 'short', beard: i < 2 ? 'full' : i < 5 ? 'short' : 'none', skin: [C.skin2, C.skin, C.skin3][i % 3], belt: C.leather });
@@ -29,6 +28,10 @@ export default {
   cam: { x: [-30, 30], y: [-40, 30], z: [1, 1.1] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;
+    // phone: the seven portraits close up so all seven fit, the woman under the middle; Moses' law hangs nearer the middle
+    const PX = P ? [512, 604, 696, 788, 880, 972, 1064] : [540, 644, 748, 852, 956, 1060, 1164];
+    const WX = P ? 788 : 852;
     const set = templeCourt(S);
     const F = set.FLOOR;
     const stepL = S.layer({ par: 0.45, sh: 4 });
@@ -89,9 +92,9 @@ export default {
 
       /* v24 — the scroll of Moses, then the law in a little picture */
       const sd = es(t, 1.03, 1.22, ease.out) * (1 - es(t, 1.3, 1.45, ease.in));
-      pose(scrollEl, { x: 1060, y: lerp(-800, 250, sd), r: Math.sin(T * 0.9) * 1.5 });
+      pose(scrollEl, { x: P ? 930 : 1060, y: lerp(-800, 250, sd), r: Math.sin(T * 0.9) * 1.5 });
       const ld = es(t, 1.3, 1.5, ease.out) * (1 - es(t, 1.95, 2.1, ease.in));
-      pose(lawPic, { x: 1010, y: lerp(-900, 130, ld), s: 1.3 });
+      pose(lawPic, { x: P ? 870 : 1010, y: lerp(-900, 130, ld), s: 1.3 });
       const aGo = es(t, 1.5, 1.56), bIn = es(t, 1.56, 1.63), child = es(t, 1.63, 1.7, ease.back);
       pose(lawA, { x: -70, y: 150, s: 0.5, o: 1 - aGo });
       pose(lawB, { x: lerp(150, 50, bIn), y: 150, s: 0.5 });
@@ -116,7 +119,7 @@ export default {
       fade(wife.front, wf < 0.5 ? 1 : 0); fade(wife.back, wf < 0.5 ? 0 : 1);
       pose(wifeGlow, { x: WX, y: WY, o: rise * (1 - es(t, 7.0, 7.2)) * 0.8 });
       const qk = es(t, 6.4, 6.7, ease.out);
-      pose(qEl, { x: 980, y: lerp(-800, 340, qk), s: 0.9, r: Math.sin(T) * 3 });
+      pose(qEl, { x: P ? 920 : 980, y: lerp(-800, 340, qk), s: 0.9, r: Math.sin(T) * 3 });
 
       /* Jesus listens quietly; the crowd follows the pictures */
       const look = es(t, 2.0, 2.3) * (1 - es(t, 7.0, 7.4));

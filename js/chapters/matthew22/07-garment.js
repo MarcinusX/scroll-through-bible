@@ -9,8 +9,7 @@ import { hallSet, HALL, kingPuppet, SERVANTS, DRAB, tableSpread, seatedGuests, r
 import { makeCutter } from '../../core/paper.js';
 
 const F = HALL.FRONT;
-const MX = 1070, MY = F + 8;          // the man without a wedding garment
-const KX = 880;                       // where the king stops
+const MY = F + 8;                     // the man without a wedding garment (MX: where he sits)
 const OUT = [990, 548];               // outside, seen through the window
 
 export default {
@@ -27,6 +26,8 @@ export default {
   build(S) {
     const c = S.c;
     const set = hallSet(S);
+    const MX = S.portrait ? 990 : 1070;   // phone: he and the servants who bind him stay clear of the edge
+    const KX = S.portrait ? 810 : 880;    // where the king stops
     set.tableL.add(tableSpread(c, set.TOP));
     const [gl, gr] = seatedGuests(makeCutter('mt22-guests'));
     set.seatL.sprite(gl, 360, HALL.SEAT);
