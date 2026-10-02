@@ -45,14 +45,16 @@ export default {
     street.add(pv.out());
     /* the townsfolk, in groups (sprites: drawn once, never repainted) */
     const crowdL = S.layer({ par: 0.45, sh: 4 });
-    const GR = [[700, 690], [900, 700], [1110, 694], [1300, 704], [270, 700], [80, 690]].map(([x, y], i) => {
+    const GR = (S.portrait ? [[820, 690], [980, 700], [1130, 694], [1300, 704], [270, 700], [80, 690]] : [[700, 690], [900, 700], [1110, 694], [1300, 704], [270, 700], [80, 690]]).map(   // phone: see the soldiers below
+      ([x, y], i) => {
       const mem = Array.from({ length: 3 }, (_, k) => ({ x: (k - 1) * 34 + c.rr(-6, 6), y: c.rr(-6, 6), s: 1, flip: k === 0 ? x > 600 : k === 2 ? false : x > 800, o: folk(c) }));
       return { i, x, y, sp: crowdL.sprite(`<g transform="scale(.84)">${group(c, mem)}</g>`, x, y) };
     });
     /* the soldiers with their silver */
     const PL = S.layer({ par: 0.5, sh: 5 });
     const man = S.puppet(PL.add(person(c, folk(c, true))));
-    const SO = [{ i: 0, x: 480 }, { i: 1, x: 360 }].map((s) => ({ ...s, seed: c.rr(0, 9), p: S.puppet(PL.add(soldier(c, s.i, { spear: false, extra: s.i ? { holdF: `<g transform="translate(0 40) scale(.9)">${silverBag(c, 1)}</g>` } : { holdB: `<g transform="translate(0 40) scale(.9)">${silverBag(c, 1)}</g>` } }))) }));
+    const DXP = S.portrait ? 100 : 0;   // phone: the soldiers and the man a step to the right, inside the left edge
+    const SO = [{ i: 0, x: 480 + DXP }, { i: 1, x: 360 + DXP + (S.portrait ? 30 : 0) }].map((s) => ({ ...s, seed: c.rr(0, 9), p: S.puppet(PL.add(soldier(c, s.i, { spear: false, extra: s.i ? { holdF: `<g transform="translate(0 40) scale(.9)">${silverBag(c, 1)}</g>` } : { holdB: `<g transform="translate(0 40) scale(.9)">${silverBag(c, 1)}</g>` } }))) }));
     const curl = PL.add(`<g>${whisper(c)}</g>`);
     /* the slips */
     const fx = S.layer({ par: 0.5, sh: 3 });
@@ -69,12 +71,12 @@ export default {
       const lean = es(t, 0.15, 0.4);
       SO.forEach((s, k) => s.p.set({ x: s.x, y: FLOOR + k * 6, s: 1.02, armF: 16 + (k === 0 ? lean * 8 : 0), armB: 14, head: k === 0 ? lean * 12 : -4, lean: k === 0 ? lean * 12 : 0, blink: blinkAt(time, s.seed) }));
       const listen = es(t, 0.4, 0.6);
-      man.set({ x: 600, y: FLOOR, s: 1.0, flip: true, armF: 20 + listen * 30, armB: 10, head: -listen * 8 + listen * 14 * (t > 0.7 ? 1 : 0), blink: blinkAt(time, 4) });
-      const [sx, sy] = headAt(480, FLOOR, 1.02, false);
+      man.set({ x: 600 + DXP, y: FLOOR, s: 1.0, flip: true, armF: 20 + listen * 30, armB: 10, head: -listen * 8 + listen * 14 * (t > 0.7 ? 1 : 0), blink: blinkAt(time, 4) });
+      const [sx, sy] = headAt(480 + DXP, FLOOR, 1.02, false);
       const ck = es(t, 0.25, 0.4) * (1 - es(t, 0.95, 1.1));
       pose(curl, { x: sx + 52, y: sy + 14, s: ck * 1.4, o: ck });
       // the slip hops along the heads down the street
-      const chain = [[sx + 40, sy], [600 - 20, sy - 6], [GR[0].x, GR[0].y - 160], [GR[1].x, GR[1].y - 160], [GR[2].x, GR[2].y - 160], [GR[3].x, GR[3].y - 160]];
+      const chain = [[sx + 40, sy], [600 + DXP - 20, sy - 6], [GR[0].x, GR[0].y - 160], [GR[1].x, GR[1].y - 160], [GR[2].x, GR[2].y - 160], [GR[3].x, GR[3].y - 160]];
       const u = seg(t, 0.45, 1.0) * (chain.length - 1);
       const k = Math.min(chain.length - 2, Math.floor(u)), f = u - k;
       const [ax, ay] = chain[k], [bx, by] = chain[k + 1];
@@ -91,7 +93,7 @@ export default {
       const dk = es(t, 1.05, 1.3, ease.back);
       const spin = seg(t, 1.2, 1.95) * 4;       // four days and nights … and on
       const cs = Math.cos(spin * PI);
-      swing(disc, 1080, lerp(-900, 250, dk), time, 1, 0.7, 2);
+      swing(disc, S.portrait ? 990 : 1080, lerp(-900, 250, dk), time, 1, 0.7, 2);
       pose(disc.querySelector('.obj'), { sx: Math.max(0.03, Math.abs(cs)) });
       fade(dDay, Math.floor(spin + 0.5) % 2 === 0 ? 1 : 0);
       fade(dNight, Math.floor(spin + 0.5) % 2 === 1 ? 1 : 0);

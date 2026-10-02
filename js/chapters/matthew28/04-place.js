@@ -8,7 +8,7 @@ import { C, person, blinkAt, pose, lerp, hanging, swing, sheet, mix } from '../k
 import { seg, es, ease, bump, fade, attr } from '../../core/anim.js';
 import { MAGD, MARYJ, ANGEL, ELEVEN, tombInside, IN, angelPerson, medallion, landMap, MAP, along, headAt, sparkle, seal, voiceRings, PI } from './lib.js';
 
-const MX = 850, MY = 360, MS = 0.82;       // the map
+const MY = 360, MS = 0.82;                  // the map (MX below: inside the phone screen in portrait)
 const GAL = [MAP.lake[0] - 52, MAP.lake[1] + 6];   // the mountain by the lake (map coords)
 
 export default {
@@ -24,6 +24,8 @@ export default {
   build(S) {
     const c = S.c;
     const R = tombInside(S);
+    const MX = S.portrait ? 770 : 850;
+    const MD = S.portrait ? -90 : 0;           // phone: the Eleven come down clear of the progress thread
     const { FLOOR, DOOR_X, LEDGE } = IN;
     /* the angel's light at the doorway, and the angel himself seen through it */
     const outGlow = R.outside.add(`<g><circle r="160" fill="url(#halo-glow)"/></g>`);
@@ -39,7 +41,7 @@ export default {
     const fx = S.layer({ par: 0.6, sh: 7 });
     const MED = ELEVEN.map((m, i) => {
       const row = i < 6 ? 0 : 1;
-      const x = row ? 740 + (i - 6) * 74 : 700 + i * 66, y = row ? 330 : 250;
+      const x = (row ? 740 + (i - 6) * 74 : 700 + i * 66) + MD, y = row ? 330 : 250;
       return { i, x, y, el: hanging(fx, medallion(c, m.o, { r: i === 0 ? 30 : 25 }), { x: 0, y: -1500, len: 900 }) };
     });
     const mapL = S.layer({ par: 0.62, sh: 8, rise: 0 });
@@ -67,7 +69,7 @@ export default {
       W.forEach((w) => {
         const d = w.i * 0.12;
         const e = es(t, 0.05 + d, 0.6 + d, ease.out);
-        const x = lerp(DOOR_X - 10, [640, 560][w.i], e) - toDoor * [110, 60][w.i] - go * 120;
+        const x = lerp(DOOR_X - 10, [640, 560][w.i], e) - toDoor * (S.portrait ? [40, 10] : [110, 60])[w.i] - go * 120;   // phone: they turn back without leaving the screen
         const walking = (e > 0 && e < 1) || (toDoor > 0 && toDoor < 1) || (go > 0 && go < 1);
         w.p.set({ x, y: FLOOR, s: 1.02, flip: turn > 0.5, o: seg(t, d, 0.06 + d), walk: walking ? x * 0.05 + w.i : undefined, amt: 0.8, lean: (1 - e) * 16 + bump(t, 0.45, 1.0) * 6, armF: 22 + bump(t, 0.5, 1.0) * 40 + es(t, 3.2, 3.5) * 20 * (1 - go), armB: 10 + bump(t, 0.55, 1.0) * (w.i ? 90 : 30), head: bump(t, 0.4, 1.0) * 10 - es(t, 1.2, 1.5) * 12 * (1 - go), blink: blinkAt(time, w.seed) });
       });
@@ -104,7 +106,8 @@ export default {
       const st = es(t, 4.05, 4.2, ease.in);
       pose(stamp, { x: MX + 210 * MS, y: MY + 150 * MS, s: lerp(2.2, 1, st), r: -12, o: st > 0.01 ? 1 : 0 });
 
-      S.cam.x = S.portrait ? -120 + es(t, 1.9, 2.3) * 60 : lerp(-40, 40, es(t, 0.2, 0.9)) + es(t, 1.9, 2.3) * 40;
+      S.cam.x = S.portrait ? lerp(0, -60, es(t, 1.0, 1.4)) :   // phone: the whole ledge in view, then the doorway
+      lerp(-40, 40, es(t, 0.2, 0.9)) + es(t, 1.9, 2.3) * 40;
       S.cam.y = 30 - es(t, 1.9, 2.3) * 30;
       S.cam.z = (1.04 - es(t, 1.9, 2.3) * 0.04) * (S.portrait ? 0.92 : 1);
     };

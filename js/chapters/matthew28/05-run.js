@@ -36,8 +36,9 @@ export default {
       swing(cl, 620 + (time ? Math.sin(time * 0.1) * 30 : 0), 150, time, 1.2, 0.6, 1);
       birds(time, 1);
       const burst = es(t, 0.3, 0.9);
-      swing(sunEl, 1180, 190, time, 0.8, 0.5);
-      pose(sunGlow, { x: 1180, y: 190, s: 0.6 + burst * 0.6, r: t * 5, o: 0.4 + burst * 0.6 });
+      const SUNX = S.portrait ? 1020 : 1180;   // phone: the rising sun inside the screen, not half under the thread
+      swing(sunEl, SUNX, 190, time, 0.8, 0.5);
+      pose(sunGlow, { x: SUNX, y: 190, s: 0.6 + burst * 0.6, r: t * 5, o: 0.4 + burst * 0.6 });
 
       /* v8a: out from the tomb, quickly, with fear and great joy; v8b: running to the city */
       const u = es(t, 0.02, 0.95, ease.sine) * 0.45 + es(t, 1.0, 1.95, ease.sine) * 0.55;
@@ -63,7 +64,8 @@ export default {
       /* the Eleven, waiting in the city */
       MED.forEach((m) => {
         const k = es(t, 1.15 + m.i * 0.03, 1.5 + m.i * 0.03, ease.back);
-        swing(m.el, 380 + m.i * 44, lerp(-900, 300 + (m.i % 2) * 34, k), k > 0.001 ? time : 0, 1.2, 0.8, m.i);
+        swing(m.el, (S.portrait ? 440 : 380) + m.i * 44,   // phone: the first faces clear of the left edge
+         lerp(-900, 300 + (m.i % 2) * 34, k), k > 0.001 ? time : 0, 1.2, 0.8, m.i);
       });
 
       // the camera runs with them

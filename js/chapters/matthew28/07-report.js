@@ -22,7 +22,8 @@ export default {
 
     /* the chief priests */
     const PL = S.layer({ par: 0.5, sh: 5 });
-    const PR = [{ i: 0, x: 1000 }, { i: 1, x: 1110 }, { i: 2, x: 1210 }].map((p) => {
+    const PR = (S.portrait ? [{ i: 0, x: 925 }, { i: 1, x: 1005 }, { i: 2, x: 1085 }] : [{ i: 0, x: 1000 }, { i: 1, x: 1110 }, { i: 2, x: 1210 }]).map(   // phone: the third priest inside the screen
+      (p) => {
       const el = PL.add(withFace(priest(c, p.i), faceBits(c)));
       return { ...p, seed: c.rr(0, 9), p: S.puppet(el), angry: el.querySelector('[data-part="angry"]') };
     });

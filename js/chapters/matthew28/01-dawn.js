@@ -17,7 +17,7 @@ export default {
     { v: 1, text: 'Po upływie szabatu, o świcie pierwszego dnia tygodnia' },
     { v: 1, cont: true, text: 'przyszła Maria Magdalena i druga Maria obejrzeć grób.' },
   ],
-  cam: { x: [-40, 160], y: [-20, 40], z: [1, 1.08] },
+  cam: { x: [-70, 160], y: [-20, 40], z: [1, 1.08] },
   build(S) {
     const c = S.c;
     sky(S, NIGHT);
@@ -73,7 +73,7 @@ export default {
       const go = es(t, 1.85, 2.72, ease.out);
       const heads = [];
       W.forEach((w) => {
-        const [x, y] = along(PATH, go - w.i * 0.085);
+        const [x, y] = along(PATH, go - w.i * (S.portrait ? 0.05 : 0.085));   // phone: the second Mary a step closer, inside the screen
         const s = pathS(y) * 1.02;
         const walking = go > 0 && go < 1;
         const up = es(t, 2.62, 2.8);
@@ -87,7 +87,7 @@ export default {
         pose(el, { x: heads[i][0] + 22, y: heads[i][1] - 34, s: b, r: time * 30, o: b });
       });
 
-      S.cam.x = S.portrait ? lerp(140, -40, es(t, 1.9, 2.6)) : lerp(120, 40, es(t, 1.8, 2.6));
+      S.cam.x = S.portrait ? lerp(140, -70, es(t, 1.9, 2.6)) : lerp(120, 40, es(t, 1.8, 2.6));
       S.cam.y = 20 - es(t, 0.8, 2) * 20;
       S.cam.z = 1.02 + es(t, 1.9, 2.8) * 0.03;
     };

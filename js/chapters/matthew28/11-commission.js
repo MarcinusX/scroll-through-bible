@@ -48,7 +48,8 @@ export default {
     const sunH = heavL.add(`<g><circle r="90" fill="url(#warm-glow)"/>${sun(c, 44)}</g>`);
     const moonH = heavL.add(`<g><circle r="70" fill="url(#halo-glow)"/>${moon(c, 30)}</g>`);
     const lakeGlints = [[420, 430], [640, 440], [1000, 436], [1220, 428], [300, 500], [1330, 510]].map(([x, y]) => ({ x, y, el: H.lake.add(`<g>${sparkle(c, 12)}</g>`) }));
-    const STARS = [[500, 230], [600, 110], [740, 70], [880, 80], [1010, 120], [1140, 180], [540, 270], [1080, 260]].map(([x, y], i) => ({ x, y, i, el: hanging(heavL, `<circle r="30" fill="url(#halo-glow)"/>${sheet().p(c.cut(c.star(0, 0, 13, 5, 5, -PI / 2), 0.3, 3), C.star).out()}`, { x: 0, y: -1500, len: 1200 }) }));
+    const STARS = [[500, 230], [600, 110], [740, 70], [880, 80], S.portrait ? [985, 300] : [1010, 120], [S.portrait ? 1090 : 1140, S.portrait ? 270 : 180], [540, 270], [S.portrait ? 900 : 1080, S.portrait ? 250 : 260]].map(([x, y], i) =>   // phone: the stars by the sun clear of it and of the thread
+      ({ x, y, i, el: hanging(heavL, `<circle r="30" fill="url(#halo-glow)"/>${sheet().p(c.cut(c.star(0, 0, 13, 5, 5, -PI / 2), 0.3, 3), C.star).out()}`, { x: 0, y: -1500, len: 1200 }) }));
     /* the light of the Father: rays from above, never a figure */
     const fatherL = S.layer({ par: 0.05, sh: 0, flat: true, rise: 0 });
     const father = fatherL.add(`<g opacity="0"><g opacity=".7">${rays(c, { n: 16, r0: 30, r1: 1100, spread: 0.035, color: '#fff3cf' })}</g><circle r="260" fill="url(#halo-glow)"/></g>`);
@@ -78,9 +79,10 @@ export default {
     const PL = S.layer({ par: 0.52, sh: 5 });
     const setThread = threads(PL, 11, { color: C.haloRim, w: 2.4 });
     const M = ELEVEN.map((m, i) => {
-      const [x, dy] = RING[i];
+      const [x0, dy] = RING[i];
       // the road on his own side, out towards the people nearest him
-      const aim = KX + (x - KX) * 1.3;
+      const aim = KX + (x0 - KX) * 1.3;
+      const x = S.portrait ? KX - 30 + (x0 - KX) * 0.52 : x0;   // phone: the ring drawn in (as in mt28-mountain)
       const road = roads.reduce((b, r) => (Math.abs(r.x - aim) < Math.abs(b.x - aim) && (r.x < KX) === (x < KX) ? r : b), roads[x < KX ? 0 : roads.length - 1]);
       return { ...m, i, x, y: gfn(x) + dy, s: 0.9 + dy * 0.0014, flip: x > KX, seed: c.rr(0, 9), road, kneel: !DOUBT.includes(i) };
     }).sort((a, b) => a.y - b.y);
@@ -146,15 +148,16 @@ export default {
       // day after day: the sun crosses the sky from horizon to horizon, then the moon, then the sun again…
       const cyc = 0.35 + seg(t, 5.1, 5.95) * 2.6;
       const k = Math.floor(cyc), f = cyc - k;
-      const a = PI + f * PI, rx = 610, ry = 420, oc = [800, 560];
+      const a = PI + f * PI, rx = S.portrait ? 330 : 610, ry = 420, oc = [800, 560];   // phone: a narrower arc, so the sun and moon never ride along the screen edges
       const arc = [oc[0] + Math.cos(a) * rx, oc[1] + Math.sin(a) * ry];
       const edge = Math.min(1, f * 7, (1 - f) * 7);
-      const SUN0 = [1180, 150], MOON0 = [480, 260];
+      const SUN0 = S.portrait ? [1030, 150] : [1180, 150], MOON0 = S.portrait ? [560, 260] : [480, 260];   // phone: both inside the screen
       const blend = es(t, 5.02, 5.25);
       const up = Math.min(hk, 1);
+      const park = S.portrait ? -650 : -300;   // phone: parked above the tall screen until they come down
       const sunOn = k % 2 === 0 ? edge : 0, moonOn = k % 2 === 1 ? edge : 0;
-      pose(sunH, { x: lerp(SUN0[0], arc[0], blend), y: lerp(-300, lerp(SUN0[1], arc[1], blend), up), r: time ? Math.sin(time * 0.6) * 2 : 0, o: lerp(1, sunOn, blend) });
-      pose(moonH, { x: lerp(MOON0[0], arc[0], blend), y: lerp(-300, lerp(MOON0[1], arc[1], blend), up), o: lerp(1, moonOn, blend) });
+      pose(sunH, { x: lerp(SUN0[0], arc[0], blend), y: lerp(park, lerp(SUN0[1], arc[1], blend), up), r: time ? Math.sin(time * 0.6) * 2 : 0, o: lerp(1, sunOn, blend) });
+      pose(moonH, { x: lerp(MOON0[0], arc[0], blend), y: lerp(park, lerp(MOON0[1], arc[1], blend), up), o: lerp(1, moonOn, blend) });
       lakeGlints.forEach((g, i) => { const b = bump(t, 1.3 + i * 0.07, 1.95); pose(g.el, { x: g.x, y: g.y, s: b, r: time * 30, o: b }); });
       STARS.forEach((st) => {
         const k = es(t, 1.15 + st.i * 0.04, 1.5 + st.i * 0.04, ease.back) * (1 - es(t, 2.0, 2.3, ease.in));
@@ -178,8 +181,8 @@ export default {
       const dv = es(t, 3.45, 3.75, ease.out) * (1 - es(t, 3.95, 4.2));
       pose(doveEl, { x: KX + 6, y: lerp(60, jhy - 150, dv), r: 18, s: 0.9, o: dv > 0.01 ? Math.min(1, dv * 3) * (1 - es(t, 3.95, 4.2)) : 0 });
       const pk = es(t, 3.05, 3.35, ease.back) * (1 - es(t, 3.95, 4.2, ease.in));
-      swing(plA, S.portrait ? 540 : 420, lerp(-1200, S.portrait ? 120 : 250, pk), time, 0.8, 0.6, 1);
-      swing(plB, S.portrait ? 1060 : 1180, lerp(-1200, S.portrait ? 120 : 250, pk), time, 0.8, 0.6, 2);
+      swing(plA, S.portrait ? 590 : 420, lerp(-1200, S.portrait ? 120 : 250, pk), time, 0.8, 0.6, 1);
+      swing(plB, S.portrait ? 1005 : 1180, lerp(-1200, S.portrait ? 120 : 250, pk), time, 0.8, 0.6, 2);
 
       /* v20a: teaching them — what He commanded goes out along the roads; a scroll lights up among each people */
       gifts.forEach((g) => {

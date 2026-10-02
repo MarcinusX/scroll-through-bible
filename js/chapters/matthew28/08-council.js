@@ -28,7 +28,8 @@ export default {
       const el = PL.add(withFace(priest(c, p.i), faceBits(c)));
       return { ...p, seed: c.rr(0, 9), p: S.puppet(el), angry: el.querySelector('[data-part="angry"]') };
     });
-    const EL = [{ i: 0, x: 960 }, { i: 1, x: 1050 }, { i: 2, x: 1140 }].map((e) => ({ ...e, seed: c.rr(0, 9), p: S.puppet(PL.add(elder(c, e.i))) }));
+    const EL = (S.portrait ? [{ i: 0, x: 945 }, { i: 1, x: 1015 }, { i: 2, x: 1085 }] : [{ i: 0, x: 960 }, { i: 1, x: 1050 }, { i: 2, x: 1140 }]).map(   // phone: the last elder clear of the thread
+      (e) => ({ ...e, seed: c.rr(0, 9), p: S.puppet(PL.add(elder(c, e.i))) }));
     const knot = PL.add(`<g>${[0, 1, 2, 3].map((i) => `<g transform="rotate(${i * 90 + 20}) translate(14 0)">${whisper(c)}</g>`).join('')}</g>`);
     /* the table and the chest */
     const TL = S.layer({ par: 0.52, sh: 5 });
@@ -37,7 +38,8 @@ export default {
     TL.add(`<g transform="translate(800 ${FLOOR - 80})"><path d="${c.cut([[-46, 0], [46, 0], [44, -38], [-44, -38]], 0.4, 5)}" fill="${C.wood2}"/><path d="${c.ribbon([[-46, -12], [46, -12]], 3)}" fill="${C.sun}"/></g>`);
     const glint = TL.add(`<g><circle r="60" fill="url(#halo-glow)"/>${sparkle(c, 16)}</g>`);
     /* the soldiers, on the left */
-    const SO = [{ i: 0, x: 470 }, { i: 1, x: 380 }].map((s) => ({ ...s, seed: c.rr(0, 9), p: S.puppet(TL.add(soldier(c, s.i, { spear: false }))), sh: TL.add(`<g>${shakeLines(c, 24)}</g>`) }));
+    const SO = (S.portrait ? [{ i: 0, x: 520 }, { i: 1, x: 455 }] : [{ i: 0, x: 470 }, { i: 1, x: 380 }]).map(   // phone: both soldiers inside the left edge
+      (s) => ({ ...s, seed: c.rr(0, 9), p: S.puppet(TL.add(soldier(c, s.i, { spear: false }))), sh: TL.add(`<g>${shakeLines(c, 24)}</g>`) }));
     const bags = [0, 1, 2].map((i) => ({ i, el: TL.add(`<g>${silverBag(c, i === 2 ? 1.1 : 0.9)}</g>`) }));
     const coins = [0, 1, 2, 3, 4].map(() => TL.add(`<g>${silver(c, 7)}</g>`));
 

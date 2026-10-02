@@ -26,7 +26,7 @@ export default {
     { v: 3, cont: true, text: 'a szaty jego były białe jak śnieg.' },
     { v: 4 },
   ],
-  cam: { x: [-40, 260], y: [-140, 40], z: [1, 1.2] },
+  cam: { x: [-40, 320], y: [-140, 40], z: [1, 1.2] },
   build(S) {
     const c = S.c;
     sky(S, ROSE);
@@ -51,7 +51,9 @@ export default {
 
     /* the guard */
     const L = G.P;
-    const guards = GUARD.map((g) => ({ ...g, seed: c.rr(0, 9), p: S.puppet(L.add(soldier(c, g.i, { spear: 30 }))), sh: L.add(`<g>${shakeLines(c, 26)}</g>`) }));
+    // phone: the two guards on the far side of the stone stand off-screen to the right (on a phone they could only
+    // ever be seen sliced by the edge, next to the angel on the stone)
+    const guards = GUARD.map((g) => ({ ...g, x: S.portrait && g.i ? g.x + 200 : g.x, seed: c.rr(0, 9), p: S.puppet(L.add(soldier(c, g.i, { spear: 30 }))), sh: L.add(`<g>${shakeLines(c, 26)}</g>`) }));
 
     /* the angel: his light, his lightning, standing (coming down), seated on the stone */
     const aura = L.add(`<g opacity="0"><circle r="230" fill="url(#halo-glow)"/><g opacity=".24">${rays(c, { n: 22, r0: 60, r1: 320, spread: 0.035, color: '#fff3cf' })}</g></g>`);
@@ -162,7 +164,11 @@ export default {
       /* the camera: wide for the quake, up to the sky, on to the stone, close on the angel, wide for the guard */
       const up = es(t, 0.95, 1.2) * (1 - es(t, 1.7, 2.05));
       const close = es(t, 2.85, 3.3) * (1 - es(t, 4.95, 5.3));
-      S.cam.x = lerp(lerp(40, 160, es(t, 1.9, 2.4)), 250, close) - es(t, 5.0, 5.4) * 70;
+      // phone: the women inside the left edge for the quake; then far enough right that the angel on the stone is
+      // not under the progress thread; back between the fallen guard and the angel for v4
+      // and for v4 on the guard by the women and the angel, the kneeling women just out of sight on the left
+      S.cam.x = S.portrait ? lerp(lerp(-40, 300, es(t, 1.9, 2.4)), 320, close) - es(t, 5.0, 5.4) * 25
+        : lerp(lerp(40, 160, es(t, 1.9, 2.4)), 250, close) - es(t, 5.0, 5.4) * 70;
       S.cam.y = 20 - up * 150 - close * 60;
       S.cam.z = 1.02 + close * 0.14 - es(t, 5.0, 5.4) * 0.02;
     };

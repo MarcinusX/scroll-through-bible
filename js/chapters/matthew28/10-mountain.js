@@ -34,8 +34,11 @@ export default {
 
     /* the Eleven: standing (walking up), kneeling */
     const PL = S.layer({ par: 0.52, sh: 5 });
+    // phone: the ring round the knoll drawn in, so all Eleven (and the three who doubt, at its ends) are on screen
+    const ringX = (x) => (S.portrait ? KX - 30 + (x - KX) * 0.52 : x);
     const M = ELEVEN.map((m, i) => {
-      const [x, dy] = RING[i];
+      const [x0, dy] = RING[i];
+      const x = ringX(x0);
       return { ...m, i, x, y: gfn(x) + dy, s: 0.9 + dy * 0.0014, flip: x > KX, seed: c.rr(0, 9), doubt: DOUBT.includes(i) };
     }).sort((a, b) => a.y - b.y);
     // each walks the path, then leaves it for his own place round the knoll

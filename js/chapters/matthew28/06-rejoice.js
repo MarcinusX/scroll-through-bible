@@ -89,7 +89,7 @@ export default {
       const off = es(t, 3.8, 4.0, ease.in);
       const heads = [];
       W.forEach((w) => {
-        const x0 = [1010, 1120][w.i];
+        const x0 = (S.portrait ? [950, 1040] : [1010, 1120])[w.i];   // phone: both inside the screen when He appears
         const xk = [JX + 122, JX + 214][w.i];
         const x = lerp(x0, xk, near) + (up ? -off * (700 + w.i * 60) : 0);
         const y = JY + 4 + w.i * 6;
@@ -108,7 +108,8 @@ export default {
       /* v10b: go and tell my brothers — Galilee, far to the north */
       const nk = es(t, 3.1, 3.4);
       fade(northM, nk);
-      pose(northGlow, { x: 1170, y: 350, s: 0.6 + nk * 0.5 + (time ? Math.sin(time * 1.3) * 0.03 : 0), r: time * 20, o: nk });
+      if (S.portrait) pose(northM, { x: -190, y: 0 });   // phone: Galilee on the horizon inside the screen
+      pose(northGlow, { x: S.portrait ? 980 : 1170, y: 350, s: 0.6 + nk * 0.5 + (time ? Math.sin(time * 1.3) * 0.03 : 0), r: time * 20, o: nk });
       MED.forEach((m) => {
         const k = es(t, 3.1 + m.i * 0.03, 3.45 + m.i * 0.03, ease.back);
         const row = m.i < 6 ? 0 : 1;

@@ -23,7 +23,7 @@ export default {
     { v: 5, cont: true, text: 'Gdyż wiem, że szukacie Jezusa Ukrzyżowanego.' },
     { v: 6, text: 'Nie ma Go tu, bo zmartwychwstał, jak powiedział.' },
   ],
-  cam: { x: [20, 160], y: [-20, 40], z: [0.88, 1.08] },
+  cam: { x: [20, 210], y: [-20, 40], z: [0.88, 1.08] },
   build(S) {
     const c = S.c;
     sky(S, GOLD);
@@ -35,7 +35,9 @@ export default {
     const G = tombGarden(S);
     const L = G.P;
     /* the guards, lying like dead men, their spears beside them */
-    const lying = GUARD.map((g, k) => {
+    // phone: the two on the far side of the stone lie off-screen to the right, as they fell in the quake scene
+    const lying = GUARD.map((g0, k) => {
+      const g = S.portrait && g0.i ? { ...g0, x: g0.x + 200 } : g0;
       L.add(`<g transform="translate(${g.x + FALL[k] * 60} ${g.y + 14})">${spearLying(c, 220)}</g>`);
       return { g, k, p: S.puppet(L.add(soldier(c, g.i, { spear: false }))) };
     });
@@ -50,7 +52,8 @@ export default {
     const warm = G.front.add(`<g opacity="0"><ellipse cx="0" cy="-90" rx="170" ry="150" fill="url(#halo-glow)"/></g>`);
     const W = [MAGD, MARYJ].map((o, i) => {
       const mk = (P) => { const el = G.front.add(withFace(person(c, { ...o, pose: P }), faceBits(c))); return { p: S.puppet(el), sad: el.querySelector('[data-part="sad"]') }; };
-      return { i, x: WOMEN_AT[i][0], y: WOMEN_AT[i][1], seed: c.rr(0, 9), k: mk('kneel'), s: mk('stand') };
+      return { i, x: WOMEN_AT[i][0] + (S.portrait ? 100 : 0), y: WOMEN_AT[i][1],   // phone: a step in from the left edge
+        seed: c.rr(0, 9), k: mk('kneel'), s: mk('stand') };
     });
 
     /* the disc: crucified → risen; His own word */
@@ -79,7 +82,7 @@ export default {
       pose(aura, { x: ahx, y: ahy + 50, s: 1 + (time ? Math.sin(time * 1.2) * 0.02 : 0), r: t * 4 });
       voice(ahx - 26, ahy, bump(t, 0.02, 0.95) + bump(t, 1.02, 1.95) * 0.6 + bump(t, 2.02, 2.95) * 0.6, time, { spread: 2, dir: -1 });
       const lift = es(t, 0.2, 0.55);
-      pose(warm, { x: 548, y: 736, s: 0.7 + lift * 0.4, o: lift * (1 - es(t, 1.6, 2.2) * 0.5) });
+      pose(warm, { x: S.portrait ? 648 : 548, y: 736, s: 0.7 + lift * 0.4, o: lift * (1 - es(t, 1.6, 2.2) * 0.5) });
       const stand = seg(t, 0.5, 0.56);
       W.forEach((w) => {
         const bow = bump(t, 1.2, 2.0);
@@ -108,13 +111,13 @@ export default {
       const eb = bump(t, 2.3, 2.95);
       pose(empty, { x: DX, y: DYD - 70, s: eb * 1.3, r: time * 30, o: eb });
       const sk = es(t, 2.45, 2.75, ease.back);
-      swing(said, S.portrait ? 600 : 470, lerp(-900, S.portrait ? 180 : 330, sk), time, 1, 0.8, 2);
+      swing(said, S.portrait ? 650 : 470, lerp(-900, S.portrait ? 180 : 330, sk), time, 1, 0.8, 2);
       const bb = es(t, 2.6, 2.78, ease.back);
-      pose(saidB, { x: S.portrait ? 720 : 590, y: S.portrait ? 168 : 318, s: bb, o: bb > 0.01 ? 1 : 0 });
+      pose(saidB, { x: S.portrait ? 770 : 590, y: S.portrait ? 168 : 318, s: bb, o: bb > 0.01 ? 1 : 0 });
 
-      S.cam.x = S.portrait ? 60 : 100;
+      S.cam.x = S.portrait ? 210 : 100;   // phone: the angel on the stone clear of the progress thread
       S.cam.y = 20 - es(t, 1.0, 1.4) * 20;
-      S.cam.z = S.portrait ? 0.9 : 1.02;
+      S.cam.z = S.portrait ? 0.88 : 1.02;
     };
   },
 };
