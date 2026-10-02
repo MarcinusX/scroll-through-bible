@@ -5,7 +5,7 @@
 // of the prophets.
 import { C, person, CAST, blinkAt, pose, lerp } from '../kit.js';
 import { es, ease, bump } from '../../core/anim.js';
-import { kf, headAt, speech, GLYPH, portrait, signpost, hangAt, caesareaSet, caesareaFront, CZ, DIS16, LOOK, JEREMIAH, tr } from './lib.js';
+import { kf, headAt, speech, GLYPH, portrait, signpost, hangAt, nameTag, caesareaSet, caesareaFront, CZ, DIS16, LOOK, JEREMIAH, tr } from './lib.js';
 
 const GY = CZ.GROUND, JX = 780;
 
@@ -21,7 +21,7 @@ export default {
   build(S) {
     const c = S.c;
     const Z = caesareaSet(S);
-    Z.ground.add(`<g transform="translate(430 ${GY - 22})">${signpost(c, tr('Cezarea Filipowa', 'Caesarea Philippi'), { size: 18, dir: 1 })}</g>`);
+    Z.ground.add(`<g transform="translate(${S.portrait ? 470 : 430} ${GY - 22})">${signpost(c, tr('Cezarea Filipowa', 'Caesarea Philippi'), { size: 18, dir: 1 })}</g>`);
 
     /* ---------- the portraits ---------- */
     const pL = S.layer({ par: 0.1, sh: 7 });
@@ -34,6 +34,8 @@ export default {
       { o: JEREMIAH, name: tr('Jeremiasz', 'Jeremiah'), t0: 3.1, extra: yoke },
       { o: LOOK.prophet, name: tr('jeden z proroków', 'one of the prophets'), t0: 3.4, extra: '' },
     ].map((p, i) => ({ ...p, i, x: PORTS[i], el: pL.add(`<g><path d="M0 -84V-1500" stroke="rgba(74,54,34,.55)" stroke-width="1.2"/>${portrait(S, p.o, p.name, { w: 112, h: 144, extra: p.extra })}</g>`) }));
+    // phone: the walkers always cover the signpost, so the place's name also hangs in the sky while they arrive
+    const placeTag = S.portrait ? pL.add(`<g><path d="M0 -14V-1500" stroke="rgba(74,54,34,.55)" stroke-width="1.2"/>${nameTag(c, tr('Cezarea Filipowa', 'Caesarea Philippi'), { size: 20 })}</g>`) : null;
 
     /* ---------- people on the road ---------- */
     const P = S.layer({ par: 0.5, sh: 5 });
@@ -81,6 +83,8 @@ export default {
         const [ax, ay] = headAt(d.x, GY + 4 + (a.di % 2) * 8, 0.88, d.x > JX);
         pose(a.el, { x: ax + (d.x > JX ? -12 : 12), y: ay - 30, s: k * 0.9, o: k > 0.02 ? 1 : 0 });
       });
+
+      if (placeTag) { const pk = es(t, 0.05, 0.35, ease.back) * (1 - es(t, 1.75, 1.95)); hangAt(placeTag, 800, 300 - (1 - pk) * 900, T, 1.2, 0.8, 9); }
 
       /* the portraits come down */
       ports.forEach((p) => {

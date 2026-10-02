@@ -52,9 +52,11 @@ export default {
       const clip = S.id('mc' + nLoaves);
       return `${memoryCard(c, CW, CH)}<defs><clipPath id="${clip}"><rect x="${-CW / 2}" y="0" width="${CW}" height="${CH}"/></clipPath></defs><g clip-path="url(#${clip})" opacity=".85">${hill}${crowdM}</g><g transform="translate(${CW / 2 - 50} 12)">${tag(c, label, { size: 18, w: 76, fill: C.parchment })}</g>`;
     };
+    // phone: the two cards a little smaller and closer, so both fit between the frame and the thread
+    const CS = S.portrait ? 0.86 : 1, CX = S.portrait ? [630, 970] : [610, 1000];
     const cards = [
-      { x: 610, n: 5, nb: 12, el: hanging(cardL, mkCard(5, 24, '5000', 12), { x: 610, y: 170, len: 900 }) },
-      { x: 1000, n: 7, nb: 7, el: hanging(cardL, mkCard(7, 18, '4000', 7), { x: 1000, y: 170, len: 900 }) },
+      { x: CX[0], n: 5, nb: 12, el: hanging(cardL, mkCard(5, 24, '5000', 12), { x: CX[0], y: 170, len: 900 }) },
+      { x: CX[1], n: 7, nb: 7, el: hanging(cardL, mkCard(7, 18, '4000', 7), { x: CX[1], y: 170, len: 900 }) },
     ].map((cd, j) => ({
       ...cd, j,
       lf: Array.from({ length: cd.n }, () => cardL.add(`<g>${loaf(c, 11)}</g>`)),
@@ -67,7 +69,7 @@ export default {
       const s = sheet().p(c.cut(c.circ(0, 0, 104, 44), 0.6, 6), C.ochre).p(c.cut(c.circ(0, 0, 96, 44), 0.6, 6), C.cream).out();
       return `${s}<g transform="translate(0 44)">${doughBowl(c, { w: 120 })}</g><g transform="translate(58 -56)">${icon}</g><g transform="translate(0 104)">${tag(c, word, { size: 17 })}</g>`;
     };
-    const PX = S.portrait ? [620, 980] : [570, 1030];
+    const PX = S.portrait ? [635, 965] : [570, 1030];
     const plates = [
       { x: PX[0], el: hanging(plL, plate(`<g transform="scale(1.3)">${phylactery(c)}</g>`, tr('faryzeusze', 'Pharisees')), { x: PX[0], y: 270, len: 900 }) },
       { x: PX[1], el: hanging(plL, plate(templeIcon(c, 1.1), tr('saduceusze', 'Sadducees')), { x: PX[1], y: 270, len: 900 }) },
@@ -98,17 +100,18 @@ export default {
         const down = es(t, t0, t0 + 0.35, ease.back) * (1 - es(t, 3.05, 3.4));
         const cy = 170 - (1 - down) * 700;
         const sw = T ? Math.sin(T * 0.7 + cd.j) * 1 : 0;
-        hangAt(cd.el, cd.x, cy, T, 0.6, 0.7, cd.j);
+        if (CS === 1) hangAt(cd.el, cd.x, cy, T, 0.6, 0.7, cd.j);
+        else pose(cd.el, { x: cd.x, y: cy, r: Math.sin(T * 0.7 + cd.j) * 0.6, oy: 0, s: CS, o: cy < -120 ? 0 : 1 });
         const vis = cy > -200 ? 1 : 0;
         cd.lf.forEach((l, i) => {
           const k = es(t, t0 + 0.2 + i * 0.05, t0 + 0.34 + i * 0.05, ease.back);
-          pose(l, { x: cd.x + (i - (cd.n - 1) / 2) * 30 + sw, y: cy + 76, s: k, o: vis * (k > 0.01 ? 1 : 0) });
+          pose(l, { x: cd.x + (i - (cd.n - 1) / 2) * 30 * CS + sw, y: cy + 76 * CS, s: k * CS, o: vis * (k > 0.01 ? 1 : 0) });
         });
         const nB = cd.bk.length, per = cd.j === 0 ? 6 : 7;
         cd.bk.forEach((b, i) => {
           const k = es(t, t0 + 0.45 + i * (0.3 / nB), t0 + 0.55 + i * (0.3 / nB), ease.back);
           const row = Math.floor(i / per), col = i % per;
-          pose(b, { x: cd.x + (col - (per - 1) / 2) * 34 + sw, y: cy + 200 + row * 22 - (cd.j === 0 ? 11 : 0), s: k, o: vis * (k > 0.01 ? 1 : 0) });
+          pose(b, { x: cd.x + (col - (per - 1) / 2) * 34 * CS + sw, y: cy + (200 + row * 22 - (cd.j === 0 ? 11 : 0)) * CS, s: k * CS, o: vis * (k > 0.01 ? 1 : 0) });
         });
       });
 

@@ -38,7 +38,7 @@ export default {
     groundL.add(sheet().p(c.ridge(gfn, -900, 2500, 1700, 12, 1), mix(C.sand, C.dune, 0.2)).out());
     groundL.add(sheet().p(c.ribbon(c.cbez([200, 760], [700, 700], [1000, 640], [1260, 560], 24), (u) => 120 - u * 100), mix(C.sand, C.cream, 0.35)).out());
     groundL.add(grass(c, { x0: -600, x1: 2200, y: GY - 60, fn: gfn, n: 30, h: 12, color: C.olive }) + olive(c, 250, GY - 56, 1) + cypress(c, 1380, GY - 54, 170));
-    groundL.add(`<g transform="translate(1070 ${GY - 20})">${signpost(c, tr('Jerozolima', 'Jerusalem'), { size: 19, dir: 1 })}</g>`);
+    groundL.add(`<g transform="translate(${S.portrait ? 1000 : 1070} ${GY - 20})">${signpost(c, tr('Jerozolima', 'Jerusalem'), { size: 19, dir: 1 })}</g>`);
 
     /* ---------- the plates of the things of God and of men ---------- */
     const plL = S.layer({ par: 0.12, sh: 7 });
@@ -51,7 +51,8 @@ export default {
     /* ---------- people ---------- */
     const P = S.layer({ par: 0.5, sh: 5 });
     const shadowEl = P.add(`<g>${tempterAura(c, 150)}<g opacity=".82">${shadowPerson(c, TEMPTER, '#2b2640')}</g></g>`);
-    const rest = REST.map((d, i) => ({ ...d, i, p: S.puppet(P.add(person(c, d.o))), seed: c.rr(0, 9) }));
+    const rest = REST.map((d, i) => ({ ...d, x: S.portrait ? 548 + (d.x - 430) * 0.5 : d.x, i,   // phone: the others closer together, not sliced by the left edge
+      p: S.puppet(P.add(person(c, d.o))), seed: c.rr(0, 9) }));
     const stone = P.add(`<g>${sheet().p(c.cut(c.blob(0, -30, 38, 30, 12, 0.14), 0.8, 5), C.rock2).x(c.ribbon([[-14, -34], [6, -40]], 2), shade(C.rock2, 0.3), 'opacity=".6"').out()}</g>`);
     const jesus = S.puppet(P.add(person(c, { ...CAST.jesus })));
     const peter = S.puppet(P.add(person(c, CAST.peter)));

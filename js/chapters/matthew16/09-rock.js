@@ -28,6 +28,8 @@ export default {
   build(S) {
     const c = S.c;
     const P = {};
+    // phone: the cliff with its grotto is slid 70 to the left, so the gates of Hades are on screen
+    const DX = S.portrait ? -70 : 0, GXr = CZ.GX + DX;
     const Z = caesareaSet(S, {
       between(S2) {
         // the gates of Hades in the grotto
@@ -54,6 +56,7 @@ export default {
         P.surgeL = S2.layer({ par: 0.36, sh: 4 });
         P.shield = P.surgeL.add(`<g><circle r="210" fill="url(#halo-glow)" opacity=".5"/><circle r="206" fill="none" stroke="${C.halo}" stroke-width="7" opacity=".9"/><circle r="196" fill="none" stroke="#fff8e2" stroke-width="3"/></g>`);
         P.surges = SURGE.map(([x0, y0, x1, y1], i) => {
+          x0 += DX;
           const len = Math.hypot(x1 - x0, y1 - y0);
           return { i, x0, y0, x1, y1, len, a: (Math.atan2(y1 - y0, x1 - x0) * 180) / PI + 180, el: P.surgeL.add(`<g>${darkSurge(c, len, 64)}</g>`), flash: P.surgeL.add(`<g><circle r="46" fill="url(#halo-glow)"/><path d="${c.poly(c.star(0, 0, 30, 9, 8, 0.2))}" fill="#fff8e2"/></g>`), shards: [0, 1, 2, 3, 4, 5].map(() => P.surgeL.add(`<g>${shard(c, 16)}</g>`)) };
         });
@@ -62,7 +65,8 @@ export default {
 
     /* ---------- people ---------- */
     const L = S.layer({ par: 0.5, sh: 5 });
-    const dis = DIS16.filter((d) => d.k !== 'peter').map((d, i) => ({ ...d, x: d.x < 800 ? d.x - 30 : d.x + 60, i, p: S.puppet(L.add(person(c, d.o))), seed: c.rr(0, 9) }));
+    const dis = DIS16.filter((d) => d.k !== 'peter').map((d, i) => ({ ...d, x: d.x < 800 ? d.x - 30 : d.x + (S.portrait ? 15 : 60), i,   // phone: the last two out from under the thread
+      p: S.puppet(L.add(person(c, d.o))), seed: c.rr(0, 9) }));
     const peterK = S.puppet(L.add(person(c, { ...CAST.peter, pose: 'kneel' })));
     const peter = S.puppet(L.add(person(c, { ...CAST.peter })));
     const jesus = S.puppet(L.add(person(c, { ...CAST.jesus })));
@@ -74,6 +78,7 @@ export default {
     return (t, time) => {
       const T = time;
       Z.update(T, { gold: 0.25 * (1 - es(t, 0, 0.5)) });
+      if (DX) Z.cliffL.shift(DX, 0);
 
       /* v18a — Peter rises; his name turns over; the rock heaves up behind him */
       const rise = es(t, 0.06, 0.12);
@@ -114,9 +119,9 @@ export default {
       const gloom = es(t, 2.02, 2.22) * (1 - es(t, 2.78, 2.98));
       P.gloom.fade(gloom);
       const gates = es(t, 1.9, 2.04);          // the iron gates appear in the grotto, then swing open
-      pose(P.leafL, { x: CZ.GX - GW / 2, y: CZ.GY, sx: 1 - open * 0.85, o: gates });
-      pose(P.leafR, { x: CZ.GX + GW / 2, y: CZ.GY, sx: 1 - open * 0.85, o: gates });
-      pose(P.pit, { x: CZ.GX, y: CZ.GY - 50, s: 0.6 + open * 0.6, o: open });
+      pose(P.leafL, { x: GXr - GW / 2, y: CZ.GY, sx: 1 - open * 0.85, o: gates });
+      pose(P.leafR, { x: GXr + GW / 2, y: CZ.GY, sx: 1 - open * 0.85, o: gates });
+      pose(P.pit, { x: GXr, y: CZ.GY - 50, s: 0.6 + open * 0.6, o: open });
       let flare = 0;
       P.surges.forEach((sg) => {
         const t0 = 2.12 + sg.i * 0.08;

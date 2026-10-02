@@ -49,7 +49,8 @@ export default {
 
     /* ---------- people ---------- */
     const P = S.layer({ par: 0.5, sh: 5 });
-    const dis = DIS16.filter((d) => d.k !== 'peter').map((d, i) => ({ ...d, x: d.x < 800 ? d.x - 30 : d.x + 60, i, p: S.puppet(P.add(person(c, d.o))), seed: c.rr(0, 9) }));
+    const dis = DIS16.filter((d) => d.k !== 'peter').map((d, i) => ({ ...d, x: d.x < 800 ? d.x - 30 : d.x + (S.portrait ? 15 : 60), i,   // phone: the last two out from under the thread
+      p: S.puppet(P.add(person(c, d.o))), seed: c.rr(0, 9) }));
     const peter = S.puppet(P.add(person(c, { ...CAST.peter })));
     const peterK = S.puppet(P.add(person(c, { ...CAST.peter, pose: 'kneel' })));
     const jesus = S.puppet(P.add(person(c, { ...CAST.jesus })));

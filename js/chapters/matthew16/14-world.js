@@ -51,7 +51,7 @@ export default {
     const P = S.layer({ par: 0.5, sh: 5 });
     const manA = S.puppet(P.add(person(c, { ...folk4(c, true), robe: C.tealRobe, mantle: C.ochreRobe, belt: C.leather })));
     const jesus = S.puppet(P.add(person(c, { ...CAST.jesus })));
-    const dis = [{ o: CAST.peter, x: 1000 }, { o: CAST.john, x: 1070 }, { o: CAST.james, x: 1140 }].map((d, i) => ({ ...d, i, p: S.puppet(P.add(person(c, d.o))) }));
+    const dis = (S.portrait ? [{ o: CAST.peter, x: 955 }, { o: CAST.john, x: 1005 }, { o: CAST.james, x: 1055 }] : [{ o: CAST.peter, x: 1000 }, { o: CAST.john, x: 1070 }, { o: CAST.james, x: 1140 }]).map((d, i) => ({ ...d, i, p: S.puppet(P.add(person(c, d.o))) }));
     const fx = S.layer({ par: 0.5, sh: 4 });
     const q = fx.add(`<g>${speech(c, GLYPH.q(c), { w: 44, h: 44 })}</g>`);
 
@@ -74,7 +74,8 @@ export default {
       pose(panR, { x: rx, y: ry, r: T ? Math.sin(T * 1.4 + 1) * 1.5 : 0, o: vis });
       const panTop = 98;
       pose(world, { x: lerp(560, lx, worldIn), y: lerp(540, ly + panTop - 44, worldIn) - Math.sin(worldIn * PI) * 90, r: T * 6, o: vis * (t > 0.1 ? 1 : 0) });
-      pose(soul, { x: rx + soulOff * 150, y: ry + panTop - 26 - soulOff * 50, s: 1 - soulOff * 0.3 + outweigh * 0.25 + (T ? Math.sin(T * 4) * 0.04 : 0), o: vis * (1 - soulOff * 0.45) });
+      // (phone: the soul drifts up rather than off the right edge)
+      pose(soul, { x: rx + soulOff * (S.portrait ? 60 : 150), y: ry + panTop - 26 - soulOff * (S.portrait ? 110 : 50), s: 1 - soulOff * 0.3 + outweigh * 0.25 + (T ? Math.sin(T * 4) * 0.04 : 0), o: vis * (1 - soulOff * 0.45) });
       riches.forEach((r, i) => {
         const k = es(t, 1.05 + i * 0.08, 1.3 + i * 0.08);
         pose(r, { x: lerp(470 - i * 30, lx - 40 + i * 26, k), y: lerp(600, ly + panTop - 6 - (i === 3 ? 10 : 0), k) - Math.sin(k * PI) * 90, o: k > 0.01 && vis ? 1 : 0 });

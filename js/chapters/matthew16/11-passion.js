@@ -75,7 +75,8 @@ export default {
     /* ---------- the circle of disciples round Jesus ---------- */
     const P = S.layer({ par: 0.55, sh: 5 });
     P.add(rock(c, JX, GY + 6, 110, 40, C.rock2));
-    const dis = DIS.map((d, i) => ({ ...d, i, p: S.puppet(P.add(person(c, { ...d.o, pose: 'sit' }))), seed: c.rr(0, 9) }));
+    const dis = DIS.map((d, i) => ({ ...d, x: S.portrait && d.x > 800 ? 925 + (d.x - 925) * 0.75 : d.x, i,   // phone: the right row out from under the thread
+      p: S.puppet(P.add(person(c, { ...d.o, pose: 'sit' }))), seed: c.rr(0, 9) }));
     const jesus = S.puppet(P.add(person(c, { ...CAST.jesus, pose: 'sit' })));
     const fg = S.layer({ par: 0.95, sh: 6 });
     fg.add(bush(c, 120, 900, 220, '#8fa58a', C.moss) + rock(c, 1480, 920, 240, 90, C.rock2) + bush(c, 1640, 900, 170, C.moss));

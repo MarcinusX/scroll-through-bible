@@ -11,8 +11,8 @@ import { makeCutter } from '../../core/paper.js';
 import { angel, glory, crown, fruitBasket, pose3, folk4, headAt, hangAt, rayBurst, DAY, HEAVEN, PI } from './lib.js';
 
 const GY = 690, JX = 800;
-const FOLK = [[430, 5], [510, 2], [590, 6], [1010, 3], [1090, 1], [1170, 4]];     // x, fruit
-const DIS = [{ o: CAST.andrew, x: 560 }, { o: CAST.matthew, x: 500 }, { o: CAST.thomas, x: 620 }, { o: CAST.peter, x: 990, k: 1 }, { o: CAST.james, x: 1060, k: 1 }, { o: CAST.john, x: 1130, k: 1 }];
+const FOLK0 = [[430, 5], [510, 2], [590, 6], [1010, 3], [1090, 1], [1170, 4]];     // x, fruit
+const DIS0 = [{ o: CAST.andrew, x: 560 }, { o: CAST.matthew, x: 500 }, { o: CAST.thomas, x: 620 }, { o: CAST.peter, x: 990, k: 1 }, { o: CAST.james, x: 1060, k: 1 }, { o: CAST.john, x: 1130, k: 1 }];
 
 export default {
   id: 'mt16-glory',
@@ -24,6 +24,10 @@ export default {
   cam: { x: [-20, 40], y: [-120, 40], z: [0.94, 1.1] },
   build(S) {
     const c = S.c;
+    // phone: the two groups, the outer angels and the far summit drawn in, clear of the frame and the thread
+    const PH = S.portrait;
+    const FOLK = PH ? [[490, 5], [540, 2], [590, 6], [985, 3], [1030, 1], [1075, 4]] : FOLK0;
+    const DIS = PH ? DIS0.map((d, i) => ({ ...d, x: [580, 520, 640, 950, 1000, 1050][i] })) : DIS0;
     const sk = sky(S, DAY);
     const goldL = sky(S, HEAVEN, { name: 'gold', rise: 0 }).layer;
     const eveL = sky(S, ['#9b8fb2', '#e6ae90', '#f4cea3'], { name: 'eve', rise: 0 }).layer;
@@ -34,7 +38,7 @@ export default {
 
     /* ---------- land and the high mountain far off ---------- */
     const mtL = S.layer({ par: 0.06, sh: 2 });
-    const mx = 1120, my = 470;
+    const mx = PH ? 1010 : 1120, my = 470;
     mtL.add(sheet().p(c.cut([[mx - 330, my], [mx - 150, my - 170], [mx - 60, my - 250], [mx, my - 280], [mx + 50, my - 246], [mx + 170, my - 150], [mx + 360, my]], 2, 12), mix(C.lavender, C.hillFar, 0.4)).p(c.cut([[mx - 60, my - 250], [mx, my - 280], [mx + 50, my - 246], [mx + 20, my - 232], [mx - 10, my - 250], [mx - 34, my - 232]], 1, 6), C.linen).out());
     const summit = mtL.add(`<g><circle r="150" fill="url(#halo-glow)"/>${rayBurst(c, { n: 16, r0: 20, r1: 190, spread: 0.06, o: 0.7 })}</g>`);
     S.layer({ par: 0.08, sh: 2 }).add(band(c, { y: 480, amps: [16, 7, 3], lens: [1100, 380, 140], color: C.hillFar }).markup);
@@ -48,7 +52,7 @@ export default {
     const glL = S.layer({ par: 0.3, sh: 1, flat: true, rise: 0 });
     const gl = glL.add(`<g>${glory(c, 700, 28)}</g>`);
     const angL = S.layer({ par: 0.2, sh: 6 });
-    const angels = [[430, 250, false], [590, 170, false], [1010, 170, true], [1170, 250, true]].map(([x, y, flip], i) => {
+    const angels = (PH ? [[500, 270, false], [640, 170, false], [950, 170, true], [1072, 270, true]] : [[430, 250, false], [590, 170, false], [1010, 170, true], [1170, 250, true]]).map(([x, y, flip], i) => {
       const el = hanging(angL, `<g data-k="ang${i}">${angel(c)}</g>`, { x, y, len: 1100 });
       return { i, x, y, flip, el, p: S.puppet(S.$('ang' + i).firstElementChild) };
     });

@@ -10,7 +10,7 @@ import { say, pharisee, sadducee, headAt, hangAt, magadan, magadanFront, weather
 
 const GY = MG.GY, JX = 800;
 const DIS = [{ o: CAST.peter, x: 660 }, { o: CAST.andrew, x: 596 }, { o: CAST.john, x: 540 }];
-const TEST = [0, 1, 2, 3, 4].map((i) => ({ i, sad: i >= 3, x: 922 + i * 54 + (i >= 3 ? 20 : 0), y: GY - 6 + (i % 2) * 10 }));
+const testers = (ph) => [0, 1, 2, 3, 4].map((i) => ({ i, sad: i >= 3, x: ph ? 868 + i * 40 + (i >= 3 ? 10 : 0) : 922 + i * 54 + (i >= 3 ? 20 : 0), y: GY - 6 + (i % 2) * 10 }));
 
 export default {
   id: 'mt16-sky',
@@ -22,6 +22,7 @@ export default {
   cam: { x: [-20, 40], y: [-80, 40], z: [1, 1.12] },
   build(S) {
     const c = S.c;
+    const TEST = testers(S.portrait);
     const M = magadan(S, { skies: [EVENING, MORNING_RED] });
     const [eveL, mornL] = M.extra;
 
@@ -72,8 +73,13 @@ export default {
       const fk = es(t, 0.35, 0.65, ease.back);
       const wk = es(t, 1.35, 1.65, ease.back);
       const up = es(t, 2.05, 2.35);
-      hangAt(fair, lerp(990, 1000, up), 250 - (1 - fk) * 800 - up * 10, T, 1.2, 0.8, 1);
-      hangAt(foul, lerp(1170, 1190, up), 236 - (1 - wk) * 800 - up * 10, T, 1.2, 0.8, 2);
+      if (S.portrait) {   // phone: both plates inside the screen; lifted clear of the signs of the times in v3b
+        hangAt(fair, lerp(925, 935, up), 250 - (1 - fk) * 800 - up * 60, T, 1.2, 0.8, 1);
+        hangAt(foul, lerp(1030, 1035, up), 236 - (1 - wk) * 800 - up * 60, T, 1.2, 0.8, 2);
+      } else {
+        hangAt(fair, lerp(990, 1000, up), 250 - (1 - fk) * 800 - up * 10, T, 1.2, 0.8, 1);
+        hangAt(foul, lerp(1170, 1190, up), 236 - (1 - wk) * 800 - up * 10, T, 1.2, 0.8, 2);
+      }
 
       /* Jesus speaks, points to the sky; then the signs light up round Him */
       const point = bump(t, 0.1, 0.95) + bump(t, 1.1, 1.95);

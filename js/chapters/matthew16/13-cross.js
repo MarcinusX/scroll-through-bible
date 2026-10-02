@@ -92,13 +92,14 @@ export default {
 
       /* Jesus: speaks, then walks up the path and turns back to them */
       const up = es(t, 1.3, 1.95, (x) => x);
-      const [jx, jy, jl] = along(up * 0.46);
+      const JU = S.portrait ? 0.36 : 0.46;   // phone: He stops lower on the path, away from the edge
+      const [jx, jy, jl] = along(up * JU);
       const climbing = t > 1.3 && t < 1.95;
       const speak = bump(t, 0.05, 0.95);
       const turnBack = es(t, 1.98, 2.1);
       pose(topGlow, { x: 1420, y: 500, s: 1 + es(t, 1.3, 2) * 0.6, o: 0.5 + es(t, 1.3, 2) * 0.5 });
       jesus.set({ x: jx, y: jy, s: lerp(0.98, 0.74, up), flip: climbing ? jl : turnBack > 0.5, walk: climbing ? (jx + jy) * 0.06 : undefined, armF: 16 + speak * 50 + bump(t, 1.0, 1.3) * 80 + turnBack * 30, armB: 8 + speak * 40 + turnBack * 20, blink: blinkAt(T) });
-      const [tx, ty] = along(0.46);
+      const [tx, ty] = along(JU);
 
       /* the disciples set down their bundles (v24a), take up crosses and follow (v24b) */
       F.forEach((f) => {
@@ -108,7 +109,7 @@ export default {
         const fu = es(t, 1.3 + f.i * 0.05, 1.98, (x) => x);
         let al = false;
         if (fu > 0) {
-          const [ax, ay, a2] = along(Math.max(0, up * 0.46 - 0.06 - f.i * 0.055));
+          const [ax, ay, a2] = along(Math.max(0, up * JU - 0.06 - f.i * 0.055));
           al = a2;
           const k = Math.min(1, fu * 3);
           x = lerp(x, ax, k); y = lerp(y, ay + 4, k); s = lerp(0.86, lerp(0.86, 0.66, up), k);
@@ -124,7 +125,7 @@ export default {
       });
 
       /* v25a — the keeper hugs his jar, locks it in a chest; its flame goes out */
-      const KX = S.portrait ? 540 : 480, GX = S.portrait ? 1080 : 1120, VY = GY + 64;
+      const KX = S.portrait ? 575 : 480, GX = S.portrait ? 1050 : 1120, VY = GY + 64;
       const vIn = es(t, 1.95, 2.15);
       keeper.set({ x: KX - (1 - vIn) * 300, y: VY, s: 0.95, flip: false, walk: vIn < 1 && vIn > 0 ? KX * 0.05 + vIn * 10 : undefined, armF: 40 + bump(t, 2.2, 2.5) * 20 + es(t, 2.3, 2.45) * 10, armB: 30 + bump(t, 2.2, 2.5) * 20, head: 14, lean: bump(t, 2.3, 2.55) * 10, blink: blinkAt(T, 4) });
       pose(chestBase, { x: KX + 86, y: VY, o: vIn });
@@ -153,7 +154,7 @@ export default {
         pose(sp.el, { x: gx + Math.cos(a) * 70, y: gy - 70 + Math.sin(a) * 40, s: back * (0.7 + (T ? Math.sin(T * 4 + sp.i) * 0.3 : 0)), o: back > 0.05 ? 1 : 0 });
       });
 
-      S.cam.x = es(t, 1.3, 1.95) * 110 - es(t, 1.95, 2.3) * 60;
+      S.cam.x = es(t, 1.3, 1.95) * 110 - es(t, 1.95, 2.3) * (S.portrait ? 0 : 60);   // phone: stay up the path, so Jesus is not at the edge
       S.cam.z = 1.06 + es(t, 0.3, 0.7) * 0.06 - es(t, 1.9, 2.3) * 0.08;
       S.cam.y = 20 + es(t, 0.3, 0.7) * 30 - es(t, 1.3, 1.9) * 40 + es(t, 1.9, 2.3) * 50;
     };

@@ -10,7 +10,7 @@ import { sun } from '../../assets/nature.js';
 
 const GY = MG.GY, JX = 800;
 const DIS = [{ o: CAST.peter, x: 660 }, { o: CAST.andrew, x: 596 }, { o: CAST.john, x: 540 }];
-const TEST = [0, 1, 2, 3, 4].map((i) => ({ i, sad: i >= 3, x: 922 + i * 54 + (i >= 3 ? 20 : 0), y: GY - 6 + (i % 2) * 10 }));
+const testers = (ph) => [0, 1, 2, 3, 4].map((i) => ({ i, sad: i >= 3, x: ph ? 868 + i * 40 + (i >= 3 ? 10 : 0) : 922 + i * 54 + (i >= 3 ? 20 : 0), y: GY - 6 + (i % 2) * 10 }));
 const BW = 540, BH = 270, BT = 112;      // the Jonah board (top centre at 800, BT)
 
 export default {
@@ -23,6 +23,7 @@ export default {
   cam: { x: [-160, 20], y: [-90, 40], z: [1, 1.1] },
   build(S) {
     const c = S.c;
+    const TEST = testers(S.portrait);
     const M = magadan(S);
 
     /* ---------- the flat of heaven ---------- */
@@ -116,7 +117,7 @@ export default {
         pose(b, { x: mx - 30, y: my - 44 - (i % 2) * 14, s: k * 0.9, r: T ? Math.sin(T * 3 + i) * 5 : 0, o: k > 0.02 ? 1 : 0 });
       });
 
-      S.cam.x = -es(t, 2.1, 2.95) * 150;
+      S.cam.x = -es(t, 2.1, 2.95) * (S.portrait ? 70 : 150);   // phone: follow Him less, so the testers left behind are not sliced by the edge
       S.cam.z = 1.04 - es(t, 1.05, 1.4) * 0.04 + es(t, 2.4, 2.9) * 0.04;
       S.cam.y = -30 - es(t, 1.05, 1.4) * 50 + es(t, 2.4, 2.9) * 70;
     };

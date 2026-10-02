@@ -82,7 +82,7 @@ export default {
       /* v6 — the bowls hang down; the dough swells over the rim */
       const pl = es(t, 1.02, 1.35, ease.back) * (1 - es(t, 2.05, 2.4));
       plates.forEach((p) => {
-        swing(p.el, p.x, 290 - (1 - pl) * 700, T, 1.2, 0.8, p.i * 2);
+        swing(p.el, p.x, 290 - (1 - pl) * (S.portrait ? 1100 : 700), T, 1.2, 0.8, p.i * 2);   // phone: parked out of sight above the tag
         const rise = es(t, 1.2 + p.i * 0.1, 1.9 + p.i * 0.05);
         pose(p.dough, { x: 0, y: -31, sx: 1 + rise * 0.28, sy: 1 + rise * 1.3 });
         p.bubs.forEach((b, j) => {

@@ -9,7 +9,8 @@ import { kf, moving, speech, GLYPH, wordSlip, pharisee, sadducee, heavenPanel, b
 const GY = MG.GY, JX = 800;
 const DIS = [{ o: CAST.peter, x: 660 }, { o: CAST.andrew, x: 596 }, { o: CAST.john, x: 540 }];
 // the testers: three Pharisees, then two Sadducees
-const TEST = [0, 1, 2, 3, 4].map((i) => ({ i, sad: i >= 3, x: 922 + i * 54 + (i >= 3 ? 20 : 0), from: 1560 + i * 90, y: GY - 6 + (i % 2) * 10 }));
+// (phone: the row is closer together, so the last Sadducee and his tag stay inside the screen)
+const testers = (ph) => [0, 1, 2, 3, 4].map((i) => ({ i, sad: i >= 3, x: ph ? 868 + i * 40 + (i >= 3 ? 10 : 0) : 922 + i * 54 + (i >= 3 ? 20 : 0), from: 1560 + i * 90, y: GY - 6 + (i % 2) * 10 }));
 
 export default {
   id: 'mt16-test',
@@ -21,6 +22,7 @@ export default {
   cam: { x: [-40, 60], y: [-80, 40], z: [1, 1.12] },
   build(S) {
     const c = S.c;
+    const TEST = testers(S.portrait);
     const M = magadan(S);
 
     /* ---------- the flat of heaven, up in the flies ---------- */
