@@ -27,7 +27,7 @@ export default {
 
     /* ---------- the Pharisees (right), Jesus, Peter and John ---------- */
     const L = S.layer({ par: 0.55, sh: 5 });
-    const PH = [{ i: 0, x: 1010 }, { i: 3, x: 1066 }, { i: 1, x: 1118 }, { i: 4, x: 1170 }].map((m, j) => ({ ...m, j, seed: c.rr(0, 9), p: S.puppet(L.add(pharisee(c, m.i))) }));
+    const PH = [{ i: 0, x: 1010 }, { i: 3, x: 1066 }, { i: 1, x: 1118 }, { i: 4, x: 1170 }].map((m, j) => (S.portrait ? { ...m, x: 958 + j * 44 } : m)).map((m, j) => ({ ...m, j, seed: c.rr(0, 9), p: S.puppet(L.add(pharisee(c, m.i))) }));
     const DS = [{ o: CAST.andrew, x: 560 }, { o: CAST.james, x: 500 }].map((d, i) => ({ ...d, i, seed: c.rr(0, 9), p: S.puppet(L.add(person(c, d.o))) }));
     const peter = S.puppet(L.add(person(c, CAST.peter)));
     const john = S.puppet(L.add(person(c, CAST.john)));

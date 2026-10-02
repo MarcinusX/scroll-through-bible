@@ -26,6 +26,7 @@ export default {
   cam: { x: [-60, 40], y: [-60, 30], z: [1, 1.1] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;
     sky(S, LAKE);
     const hangL = S.layer({ par: 0.05, sh: 4 });
     const sunEl = hanging(hangL, sun(c, 40), { x: 1230, y: 140, len: 700 });
@@ -57,9 +58,11 @@ export default {
 
     /* ---------- people ---------- */
     const ppl = S.layer({ par: 0.6, sh: 5 });
-    const PH = [{ i: 3, x: 440 }, { i: 4, x: 494 }, { i: 1, x: 552 }, { i: 2, x: 608 }, { i: 0, x: 664 }]
+    const PH = [{ i: 3, x: 440 }, { i: 4, x: 494 }, { i: 1, x: 552 }, { i: 2, x: 608 }, { i: 0, x: 664 }].map((m, j) => (P ? { ...m, x: 508 + j * 44 } : m))   // phone: the whole row on screen
+     
       .map((m, j) => ({ ...m, j, seed: c.rr(0, 9), p: S.puppet(ppl.add(pharisee(c, m.i))) }));
-    const DS = [{ o: CAST.peter, x: 960 }, { o: CAST.andrew, x: 1016 }, { o: CAST.john, x: 1074 }, { o: CAST.james, x: 1130 }]
+    const DS = [{ o: CAST.peter, x: 960 }, { o: CAST.andrew, x: 1016 }, { o: CAST.john, x: 1074 }, { o: CAST.james, x: 1130 }].map((d, i) => (P ? { ...d, x: 940 + i * 46 } : d))
+     
       .map((d, i) => ({ ...d, i, seed: c.rr(0, 9), p: S.puppet(ppl.add(person(c, d.o))) }));
     const jesus = S.puppet(ppl.add(person(c, { ...CAST.jesus })));
     const held = PH.map((m, j) => ppl.add(`<g>${ruleScroll(c, TIES[j], 1.1)}</g>`));
@@ -119,7 +122,7 @@ export default {
       const glowK = es(t, 1.0, 1.3);
       pose(glow, { x: GLOW.x, y: GLOW.y + Math.sin(T * 0.9) * 3, s: 0.7 + glowK * 0.3, o: glowK });
       const away = es(t, 1.35, 1.9, ease.io);
-      swing(heartEl, lerp(FACE.x - 20, 470, away), lerp(FACE.y + 90, 400, away) - (1 - faceK) * 1150, T, 2.2, 0.9, 2);
+      swing(heartEl, lerp(FACE.x - 20, P ? 530 : 470, away), lerp(FACE.y + 90, 400, away) - (1 - faceK) * 1150, T, 2.2, 0.9, 2);
       pose(heartObj, { s: 1 - away * 0.3, o: faceK > 0.01 ? 1 : 0 });
       const mouth = [FACE.x + 12, FACE.y - (1 - faceK) * 1150];
       praise.forEach((p) => {

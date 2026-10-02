@@ -13,7 +13,7 @@ import { hand, headAt, room, feastTable, paperDoll, dollHeart, heartBox, darkThi
 const SEAT = 706;
 const TABLE = { x: 800, y: 722 };
 const BOX = { x: 790, y: 390 };
-const DOLL = { x: 1070, h: 200, top: 180 };
+const DOLL0 = { x: 1070, h: 200, top: 180 };
 const KINDS = ['cloud', 'snuff', 'ring', 'torn', 'grab', 'mask', 'jag'];
 
 export default {
@@ -27,6 +27,7 @@ export default {
   cam: { x: [-20, 60], y: [-80, 60], z: [1, 1.12] },
   build(S) {
     const c = S.c;
+    const DOLL = { ...DOLL0, x: S.portrait ? 990 : DOLL0.x };   // phone: the doll and its dark word clear of the thread
     const R = room(S, { sky: ['#232a55', '#3a3f72', '#6b5d86'], night: true });
     const FLOOR = R.FLOOR;
 

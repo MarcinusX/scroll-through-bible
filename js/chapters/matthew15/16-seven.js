@@ -103,7 +103,8 @@ export default {
 
       /* the disciples: Andrew's basket, John's tray; then out to the crowd with full baskets */
       dis.forEach((d) => {
-        const keys = [[4.0, d.x], [4.12, JX + (d.x > JX ? 90 : -90)], [4.22, JX + (d.x > JX ? 90 : -90)], [4.6, d.out], [4.95, d.out]];
+        const out = S.portrait ? ({ peter: 1250, james: 1045, andrew: 360 })[d.k] ?? d.out : d.out;   // phone: nobody stops half out of the frame or under the thread
+        const keys = [[4.0, d.x], [4.12, JX + (d.x > JX ? 90 : -90)], [4.22, JX + (d.x > JX ? 90 : -90)], [4.6, out], [4.95, out]];
         const x = kf(t, keys);
         const walk = moving(t, keys, 1);
         const dir = kf(t + 0.02, keys) - kf(t - 0.02, keys);
@@ -136,7 +137,7 @@ export default {
       const a = es(t, 0.1, 0.3, ease.back) * (1 - es(t, 0.95, 1.05));
       pose(askB, { x: JX + 24, y: JY - 222, s: a, o: a > 0.02 ? 1 : 0, r: T ? Math.sin(T * 2) * 3 : 0 });
       const sv = es(t, 1.1, 1.3, ease.back) * (1 - es(t, 1.95, 2.05));
-      pose(sevenB, { x: 700, y: JY - 200, s: sv, o: sv > 0.02 ? 1 : 0 });
+      pose(sevenB, { x: S.portrait ? 730 : 700, y: JY - 200, s: sv, o: sv > 0.02 ? 1 : 0 });
 
       /* camera: close on the loaves → wide for the crowd sitting → close for the blessing → wide */
       S.cam.z = kf(t, [[0, 1.18], [1.9, 1.18], [2.3, 1.0], [2.95, 1.0], [3.3, 1.14], [3.95, 1.14], [4.3, 0.98]]);

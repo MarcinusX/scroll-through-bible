@@ -10,6 +10,7 @@ import { hillSet, meadowRows, folk, crowdGroup, kid, womanOf, pose3, basket, cru
 
 const JX = 800;
 const BASKETS = [440, 515, 590, 665, 935, 1010, 1085];
+const BASKETS_P = [486, 548, 610, 672, 928, 990, 1052];   // phone: all seven on screen
 
 export default {
   id: 'mt15-baskets',
@@ -34,18 +35,20 @@ export default {
     /* ---------- the near people eating, the disciples, Jesus ---------- */
     const L = S.layer({ par: 0.5, sh: 5 });
     const JY = gfn(JX) + 4;
-    const NEAR = [[360, 0], [480, 1], [1120, 2], [1235, 3]].map(([x, i]) => ({ x, i, seed: c.rr(0, 9), p: S.puppet(L.add(person(c, { ...folk(c, i % 2 === 0), pose: 'sit' }))), piece: L.add(`<g>${i % 2 ? loaf(c, 10) : crumb(c, 9)}</g>`) }));
+    const NEAR = (S.portrait ? [[360, 0], [522, 1], [1078, 2], [1235, 3]] : [[360, 0], [480, 1], [1120, 2], [1235, 3]]).map(   // phone: the near eaters not sliced by the edge or the thread
+      ([x, i]) => ({ x, i, seed: c.rr(0, 9), p: S.puppet(L.add(person(c, { ...folk(c, i % 2 === 0), pose: 'sit' }))), piece: L.add(`<g>${i % 2 ? loaf(c, 10) : crumb(c, 9)}</g>`) }));
     const DIS = [
       { o: CAST.peter, side: -1, row: 4 }, { o: CAST.andrew, side: 1, row: 9 }, { o: CAST.john, side: -1, row: 14 }, { o: CAST.james, side: 1, row: 20 },
     ].map((d, i) => ({ ...d, i, p: S.puppet(L.add(person(c, { ...d.o, holdF: `<g transform="translate(-36 13) rotate(70)">${basket(c, { w: 38, h: 22 })}</g>` }))), seed: c.rr(0, 9) }));
     const jesus = S.puppet(L.add(person(c, { ...CAST.jesus })));
-    const BK = BASKETS.map((x, i) => ({ i, x, el: L.add(`<g>${basket(c, { w: 56, h: 38, full: true })}</g>`), num: L.add(`<g>${tag(c, String(i + 1), { size: 20, w: 34 })}</g>`) }));
+    const BK = (S.portrait ? BASKETS_P : BASKETS).map((x, i) => ({ i, x, el: L.add(`<g>${basket(c, { w: 56, h: 38, full: true })}</g>`), num: L.add(`<g>${tag(c, String(i + 1), { size: 20, w: 34 })}</g>`) }));
     const fx = S.layer({ par: 0.5, sh: 4 });
     const pick = Array.from({ length: 14 }, (_, i) => ({ i, el: fx.add(`<g>${crumb(c, 6)}</g>`), sx: c.rr(300, 1300) }));
 
     /* ---------- women and children come forward ---------- */
     const famL = S.layer({ par: 0.55, sh: 5 });
-    const fam = [[-1, 360], [1, 1240]].map(([side, x], i) => {
+    const fam = (S.portrait ? [[-1, 552], [1, 1040]] : [[-1, 360], [1, 1240]]).map(   // phone: the women and children step into the picture
+      ([side, x], i) => {
       const cc = makeCutter('mt15-fam' + i);
       const m = pose3(cc, [
         { x: 0, y: 0, s: 0.86, flip: side > 0, armF: 30, armB: 40, o: womanOf(cc) },

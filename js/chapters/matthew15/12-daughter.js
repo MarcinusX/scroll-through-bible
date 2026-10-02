@@ -10,7 +10,7 @@ import { L7, MUREX, spiritCloud, spark, heart, PI } from './lib.js';
 const FLOOR = 690;
 const BED = { x: 760, y: 680, s: 1.1 };
 const GIRL = { x: 790, y: 610, s: 0.62 };
-const WIN = { x: 500, y: 400 };
+const WIN0 = { x: 500, y: 400 };
 
 export default {
   id: 'mt15-daughter',
@@ -20,6 +20,7 @@ export default {
   cam: { x: [-60, 40], y: [0, 120], z: [1, 1.2] },
   build(S) {
     const c = S.c;
+    const WIN = { ...WIN0, x: S.portrait ? 548 : WIN0.x };   // phone: the window (where the spirit leaves, the sun comes in) inside the screen
     sky(S, ['#b9b3d2', '#ead2c2', '#f3dfca']);
     const day = sky(S, ['#d7e7e6', '#f8ead0', '#fdf2dc'], { name: 'day', rise: 0 }).layer;
     day.fade(0);

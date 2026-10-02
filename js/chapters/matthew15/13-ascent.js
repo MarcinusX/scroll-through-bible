@@ -20,7 +20,8 @@ export default {
   build(S) {
     const M = mountSet(S, { skyCols: ['#cde0da', '#f0e9d0', '#f7e9cc'] });
     const c = M.c;
-    const tagEl = hanging(M.hangL, nameTag(c, tr('Jezioro Galilejskie', 'Sea of Galilee'), { size: 17 }), { x: 1060, y: 250, len: 800 });
+    const TAGX = S.portrait ? 930 : 1060;   // phone: the lake's tag clear of the thread
+    const tagEl = hanging(M.hangL, nameTag(c, tr('Jezioro Galilejskie', 'Sea of Galilee'), { size: 17 }), { x: TAGX, y: 250, len: 800 });
 
     const L = S.layer({ par: MP, sh: 5 });
     const DIS = [CAST.peter, CAST.andrew, CAST.john, CAST.james].map((o, i) => ({ i, o, p: S.puppet(L.add(person(c, o))), sit: S.puppet(L.add(person(c, { ...o, pose: 'sit' }))), seed: c.rr(0, 9) }));
@@ -38,7 +39,7 @@ export default {
       const RK = [[-0.15, 1340], [0.9, FOOT]];
       const rx = kf(t, RK, (u) => u);
       const tk = es(t, 0.2, 0.55, ease.back);
-      pose(tagEl, { x: 1060, y: 250 - (1 - tk) * 1150, r: T ? Math.sin(T * 0.7) * 1.2 : 0 });
+      pose(tagEl, { x: TAGX, y: 250 - (1 - tk) * 1150, r: T ? Math.sin(T * 0.7) * 1.2 : 0 });
 
       /* v29b — up the winding path, and He sits down on the top */
       const uJ = es(t, 1.0, 1.55, (u) => u);

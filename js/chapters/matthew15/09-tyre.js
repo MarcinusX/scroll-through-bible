@@ -32,7 +32,7 @@ export default {
     road.add(dyeLine(c, -300, -80, 560, GY - 10) + dyeLine(c, 330, 520, 570, GY - 10));
     road.add(`<g transform="translate(250 ${GY - 4})">${vat(c)}</g><g transform="translate(-160 ${GY - 4})">${vat(c, 0.8)}</g>`);
     road.add(`<g transform="translate(${DOOR} ${GY - 2})">${tyreHouse(c, 260, 200)}</g>`);
-    road.add(`<g transform="translate(560 ${GY})">${signpost(c, tr('Tyr · Sydon', 'Tyre · Sidon'), { size: 18 })}</g>`);
+    road.add(`<g transform="translate(${S.portrait ? 710 : 560} ${GY})">${signpost(c, tr('Tyr · Sydon', 'Tyre · Sidon'), { size: 18 })}</g>`);
 
     /* ---------- the walkers, the woman ---------- */
     const L = S.layer({ par: 0.5, sh: 5 });

@@ -31,7 +31,8 @@ export default {
 
     /* ---------- people ---------- */
     const L = S.layer({ par: 0.5, sh: 5 });
-    const DIS = [{ o: CAST.peter, x: 1010 }, { o: CAST.john, x: 1070 }, { o: CAST.andrew, x: 1126 }].map((d, i) => ({ ...d, i, seed: c.rr(0, 9), p: S.puppet(L.add(person(c, d.o))) }));
+    const DIS = [{ o: CAST.peter, x: S.portrait ? 972 : 1010 }, { o: CAST.john, x: S.portrait ? 1012 : 1070 }, { o: CAST.andrew, x: S.portrait ? 1050 : 1126 }].map(   // phone: the last one out from under the thread
+      (d, i) => ({ ...d, i, seed: c.rr(0, 9), p: S.puppet(L.add(person(c, d.o))) }));
     const jesus = S.puppet(L.add(person(c, { ...CAST.jesus })));
     const wStand = S.puppet(L.add(woman(c)));
     const wKneel = S.puppet(L.add(woman(c, { pose: 'kneel' })));
@@ -136,7 +137,7 @@ export default {
 
       S.cam.z = 1.04 + es(t, 0, 0.6) * 0.03 - es(t, 0.95, 1.3) * 0.02 + es(t, 3.0, 3.4) * 0.05;
       S.cam.y = -es(t, 0.95, 1.3) * 30 + es(t, 3.0, 3.4) * 40;
-      S.cam.x = -es(t, 3.0, 3.4) * 20;
+      S.cam.x = -es(t, 3.0, 3.4) * (S.portrait ? 0 : 20);   // phone: no pan left, the disciples stay clear of the thread
     };
   },
 };

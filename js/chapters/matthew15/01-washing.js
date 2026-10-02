@@ -40,12 +40,14 @@ export default {
     const birds = flock(S, hangL, 4, (cc) => bird(cc, { color: C.bird }), { y: 220, speed: 40, scale: 0.5 });
 
     /* ---------- far hills with Jerusalem on the right, the road coming down ---------- */
+    const P = S.portrait;
     const far = S.layer({ par: 0.1, sh: 2 });
     const h1 = band(c, { y: 360, amps: [30, 10, 3], lens: [1300, 420, 140], color: C.hillFar });
     far.add(h1.markup);
-    const CITY = { x: 1150, y: h1.fn(1150) + 8 };
+    const CX = P ? 1050 : 1150;   // phone: Jerusalem and its tag inside the screen
+    const CITY = { x: CX, y: h1.fn(CX) + 8 };
     far.add(`<g transform="translate(${CITY.x} ${CITY.y})">${farCity(c, 0.62)}</g>`);
-    const road = [[CITY.x - 10, CITY.y + 2], [1080, 392], [1170, 408], [1040, 424], [990, 440]];
+    const road = [[CITY.x - 10, CITY.y + 2], [1080, 392], [1170, 408], [1040, 424], [990, 440]].map(([x, y], i) => [i && P ? x - 90 : x, y]);
     far.add(sheet().p(c.ribbon(road, (u) => 4 + u * 7), mix(C.sand, C.hillFar, 0.3)).out());
     const walkers = [0, 1, 2, 3].map((i) => ({ i, p: S.puppet(far.add(person(c, { robe: [C.linen2, C.stone, C.linen, C.wheatRobe][i], mantle: [C.dustyBlue, C.skyVeil, C.tealRobe, C.dustyBlue][i], hairStyle: 'wrap', veil: C.linen, beard: 'full' }))) }));
     const jTag = hanging(far, nameTag(c, tr('Jerozolima', 'Jerusalem'), { size: 16 }), { x: CITY.x, y: 250, len: 600 });
@@ -85,7 +87,7 @@ export default {
     const PH = [
       { i: 0, x: 1030, from: 1560 }, { i: 3, x: 1086, from: 1620 }, { i: 1, x: 1138, from: 1680 },
       { i: 4, x: 1186, from: 1740 }, { i: 2, x: 1236, from: 1800 },
-    ].map((m, j) => ({ ...m, j, seed: c.rr(0, 9), p: S.puppet(standL.add(pharisee(c, m.i))) }));
+    ].map((m, j) => (P ? { ...m, x: 930 + j * 33 } : m)).map((m, j) => ({ ...m, j, seed: c.rr(0, 9), p: S.puppet(standL.add(pharisee(c, m.i))) }));
 
     /* ---------- the disciples at their bread, Jesus in the middle ---------- */
     const eatL = S.layer({ par: 0.6, sh: 5 });
@@ -107,7 +109,8 @@ export default {
     /* ---------- the flies: the tradition's tag, the hand plate, the tablets ---------- */
     const fx = S.layer({ par: 0.6, sh: 6 });
     const ask = fx.add(`<g>${bubble(c, tr('Dlaczego…?', 'Why…?'), { size: 24, dir: 1 })}</g>`);
-    const tradTag = hanging(fx, `<g>${nameTag(c, tr(['tradycja', 'starszych'], ['the tradition', 'of the elders']), { size: 17 })}</g><g transform="translate(0 -40) scale(.55)">${scrollOpen(c, 80, 50)}</g>`, { x: 1030, y: 290, len: 700 });
+    const TX = P ? 990 : 1030;   // the tradition's tag
+    const tradTag = hanging(fx, `<g>${nameTag(c, tr(['tradycja', 'starszych'], ['the tradition', 'of the elders']), { size: 17 })}</g><g transform="translate(0 -40) scale(.55)">${scrollOpen(c, 80, 50)}</g>`, { x: TX, y: 290, len: 700 });
     const handPlate = hanging(fx, `<g>${plate(c, `<g transform="translate(-8 4) scale(.9)">${bigHand(c, { dirty: true })}</g><g transform="translate(40 -10)">${loaf(c, 14)}</g>`, { r: 62 })}</g>`, { x: 620, y: 250, len: 700 });
     const frowns = [1, 3].map((j) => ({ j, el: fx.add(`<g>${thought(c, GLYPH.frown(c))}</g>`) }));
     const tab = hanging(fx, `<g transform="translate(0 150)">${tablets(c, { w: 84, h: 118 })}</g>`, { x: TAB.x, y: TAB.y, len: 700 });
@@ -166,7 +169,7 @@ export default {
 
       /* v2a — the tradition of the elders */
       const tagK = es(t, 2.2, 2.55, ease.back) * (1 - es(t, 4.75, 5.1));
-      swing(tradTag, 1030, 290 - (1 - tagK) * 1150, T, 1.3, 0.8, 2);
+      swing(tradTag, TX, 290 - (1 - tagK) * 1150, T, 1.3, 0.8, 2);
 
       /* v2b — hands not washed: a dusty hand with bread; the basin stands by, unused */
       const plK = es(t, 3.05, 3.4, ease.back) * (1 - es(t, 4.0, 4.3));
@@ -192,11 +195,11 @@ export default {
       fade(tabObj.querySelector('[data-g="iv"]'), es(t, 4.3, 4.5) * 0.7);
       // a rule-scroll flies from the tradition's tag and is pasted over the tablets
       const pk = es(t, 4.45, 4.72);
-      pose(paste, { x: lerp(1030, TAB.x - 38, pk), y: lerp(250, TAB.y + 100, pk) - Math.sin(pk * PI) * 90, r: lerp(20, 88, pk), o: pk > 0.01 ? 1 : 0 });
+      pose(paste, { x: lerp(TX, TAB.x - 38, pk), y: lerp(250, TAB.y + 100, pk) - Math.sin(pk * PI) * 90, r: lerp(20, 88, pk), o: pk > 0.01 ? 1 : 0 });
       const pk2 = es(t, 4.55, 4.82);
-      pose(paste2, { x: lerp(1030, TAB.x + 40, pk2), y: lerp(250, TAB.y + 80, pk2) - Math.sin(pk2 * PI) * 70, r: lerp(-20, 96, pk2), o: pk2 > 0.01 ? 1 : 0 });
+      pose(paste2, { x: lerp(TX, TAB.x + 40, pk2), y: lerp(250, TAB.y + 80, pk2) - Math.sin(pk2 * PI) * 70, r: lerp(-20, 96, pk2), o: pk2 > 0.01 ? 1 : 0 });
 
-      S.cam.x = es(t, 0.8, 1.6) * 40 * (1 - es(t, 2.9, 3.4)) - es(t, 2.9, 3.4) * 20 + es(t, 4.0, 4.4) * 10;
+      S.cam.x = (P ? 0.5 : 1) * es(t, 0.8, 1.6) * 40 * (1 - es(t, 2.9, 3.4)) - es(t, 2.9, 3.4) * 20 + es(t, 4.0, 4.4) * (P ? 30 : 10);
       S.cam.y = es(t, 0.7, 1.6) * 20 - es(t, 4.0, 4.4) * 50;
       S.cam.z = 1 + es(t, 0.7, 1.6) * 0.05 - es(t, 4.0, 4.4) * 0.04;
     };

@@ -80,7 +80,7 @@ export default {
         const look = d.i < 2 ? bump(t, 0.3, 1.9) : 0;
         d.p.set({ x, y: GY + d.dy, s: 0.9, flip: point > 0.3 || look > 0.5 ? true : turn > 0.5 && d.dx > 0, walk: !stop ? x * 0.05 + d.i : undefined, armF: 10 + point * 80 + cover * 150, armB: cover * 160 + point * 30, head: cover * 10 - look * 6 + (turn > 0.5 ? 4 : 0), blink: blinkAt(T, d.seed) });
       });
-      const WK = [[-0.2, 330], [1.9, 560]];
+      const WK = S.portrait ? [[-0.2, 410], [1.9, 590]] : [[-0.2, 330], [1.9, 560]];   // phone: she stays on screen
       const wx = kf(t, WK, (u) => u);
       const hush = es(t, 2.05, 2.3);
       W.set({ x: wx, y: GY + 4, s: 0.94, walk: t < 1.9 ? wx * 0.06 : undefined, armF: 30 + (60 + Math.sin(t * 24) * 12) * (1 - hush * 0.5), armB: 20 + 140 * (1 - hush * 0.6), head: -14 + hush * 10, lean: -4, blink: blinkAt(T, 3) });

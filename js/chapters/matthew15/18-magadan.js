@@ -20,6 +20,8 @@ export default {
   cam: { x: [-40, 90], y: [-20, 40], z: [1, 1.1] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;
+    const B1 = P ? { x: 1010, y: 600 } : BOAT1;   // phone: the boat and Magadan stay on screen
     sky(S, ['#cdbfd2', '#f0d2b6', '#f6dfbf']);
     const eve = sky(S, SUNSET, { name: 'eve', rise: 0 }).layer;
     eve.fade(0);
@@ -31,7 +33,8 @@ export default {
     const far = S.layer({ par: 0.08, sh: 2 });
     const fb = band(c, { y: 452, amps: [12, 5, 2], lens: [1000, 360, 120], color: mix(C.hillFar, C.duskViolet, 0.3) });
     far.add(fb.markup);
-    const MG = { x: 1150, y: fb.fn(1150) + 10 };
+    const MGX = P ? 1010 : 1150;
+    const MG = { x: MGX, y: fb.fn(MGX) + 10 };
     const tw = sheet().p(c.cut(c.rect(MG.x + 40, MG.y - 64, 26, 66), 0.4, 5), C.stone).p(c.cut([[MG.x + 36, MG.y - 64], [MG.x + 70, MG.y - 64], [MG.x + 53, MG.y - 84]], 0.3, 4), C.roof).out();
     far.add(town(c, { x: MG.x, y: MG.y, n: 6, spread: 170, sc: 0.46 }) + tw);
     const mTag = hanging(far, nameTag(c, tr('Magedan', 'Magdala'), { size: 18 }), { x: MG.x + 20, y: 300, len: 900 });
@@ -44,7 +47,10 @@ export default {
     const hfn = (x) => 520 + Math.max(0, x - 200) * 0.3 + Math.sin(x / 90) * 6;
     hillL.add(sheet().p(c.cut([[-900, 440], [-400, 450], [0, 480], [200, 520], ...Array.from({ length: 20 }, (_, i) => { const x = 200 + i * 30; return [x, hfn(x)]; }), [790, 724], [860, 760], [640, 1300], [-900, 1700]], 1.2, 12), mix(C.hillNear, C.wheat, 0.25)).out());
     hillL.add(olive(c, 110, 500, 0.8) + cypress(c, 320, 560, 110) + grass(c, { x0: -600, x1: 760, y: 560, fn: (x) => (x < 200 ? 480 + x * 0.2 : hfn(x)) + 6, n: 30, h: 12, color: C.moss }));
-    const GR = [[40, 500, 5, 0.38], [230, 540, 5, 0.42], [400, 590, 4, 0.48], [560, 636, 4, 0.54], [330, 620, 3, 0.5]].map(([x, y, n, s], i) => ({ i, x, y, sp: hillL.sprite(crowdGroup('mt15-mg-' + i, n, { s, flip: true, spread: 34, rows: 1 }), x, y) }));
+    // phone: the crowds start further right on the slope (same height above it) and walk a shorter way, so they are seen going
+    const hillY = (x) => (x < 200 ? 480 + x * 0.2 : hfn(x));
+    const GPX = [300, 420, 520, 600, 470];
+    const GR = [[40, 500, 5, 0.38], [230, 540, 5, 0.42], [400, 590, 4, 0.48], [560, 636, 4, 0.54], [330, 620, 3, 0.5]].map(([x, y, n, s], i) => (P ? [GPX[i], y - hillY(x) + hillY(GPX[i]), n, s] : [x, y, n, s])).map(([x, y, n, s], i) => ({ i, x, y, sp: hillL.sprite(crowdGroup('mt15-mg-' + i, n, { s, flip: true, spread: 34, rows: 1 }), x, y) }));
     const beach = S.layer({ par: 0.5, sh: 3 });
     beach.add(sheet().p(c.cut([[-900, SHORE - 20], [640, SHORE - 24], [770, SHORE - 8], [850, SHORE + 26], [820, SHORE + 120], [700, SHORE + 330], [520, 1300], [-900, 1700]], 1, 12), mix(C.sand, C.sand2, 0.4)).out() + sheet().x(c.ribbon([[640, SHORE - 20], [770, SHORE - 4], [846, SHORE + 30], [816, SHORE + 124], [696, SHORE + 334]], 5), C.foam, 'opacity=".7"').out() + rock(c, 260, SHORE + 40, 120, 40, C.rock2) + bush(c, 90, SHORE + 20, 90, C.sage, C.moss));
 
@@ -69,7 +75,7 @@ export default {
       const bless = es(t, 0.05, 0.25) * (1 - es(t, 0.9, 1.05));
       GR.forEach((g) => {
         const k = es(t, 0.12 + g.i * 0.06, 1.3 + g.i * 0.05, (u) => u);
-        const x = g.x - k * 380;
+        const x = g.x - k * (P ? 220 : 380);
         g.sp.set({ x, y: g.y - k * (g.i * 14 + 40), s: 1 - k * 0.3, o: 1 - seg(k, 0.8, 1) });
       });
 
@@ -81,7 +87,7 @@ export default {
       const [jhx, jhy] = headAt(700, SHORE, 0.96, false);
       voice(jhx + 8, jhy + 4, bless, T, { dir: -1 });
       const sail = es(t, 1.25, 2.0, ease.io);
-      const bx = lerp(BOAT0.x, BOAT1.x, sail), by = lerp(BOAT0.y, BOAT1.y, sail);
+      const bx = lerp(BOAT0.x, B1.x, sail), by = lerp(BOAT0.y, B1.y, sail);
       const bob = T ? Math.sin(T * 1.4) * 2 : 0;
       pose(B.g, { x: bx, y: by + bob, s: lerp(0.66, 0.52, sail), r: T ? Math.sin(T * 1.1) * 1.2 : 0 });
       B.jesus.set({ x: -8, y: -2, s: 0.95, o: inBoat, armF: 20 + es(t, 1.4, 1.7) * 60, armB: 10, head: 0, blink: 0 });

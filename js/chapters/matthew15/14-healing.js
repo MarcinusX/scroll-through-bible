@@ -54,7 +54,7 @@ export default {
     const voice = voiceRings(L, c, { n: 3, r: 30, color: shade(C.ochre, 0.3) });
 
     /* ---------- the sick, and how they are brought ---------- */
-    const LX = 515, BX = 650, MX = 950, AX = 1095;
+    const LX = S.portrait ? 545 : 515, BX = 650, MX = 950, AX = S.portrait ? 1040 : 1095;   // phone: the lame and the maimed man on screen
     // the lame man carried on a mat by two friends (one moving cut-out), then set down
     const matGround = L.add(`<g>${mat(c, 150)}</g>`);
     const crutchEl = L.add(`<g>${crutch(c)}</g>`);
@@ -117,7 +117,7 @@ export default {
       const LY = gfn(LX) + 18;
       const standL = es(t, 1.42, 1.48);
       lameSit.set({ x: LX, y: LY, s: 0.9, o: es(t, 0.82, 0.86) * (1 - standL), armF: 50 + bump(t, 1.1, 1.4) * 40, armB: 20, head: -6, blink: blinkAt(T, 2) });
-      const LW = [[2.05, LX], [2.45, LX - 90], [2.85, LX]];
+      const LW = [[2.05, LX], [2.45, LX - (S.portrait ? 60 : 90)], [2.85, LX]];
       const lx = kf(t, LW);
       const leap = Math.abs(Math.sin(t * 24)) * es(t, 1.6, 1.8) * (1 - es(t, 2.0, 2.05) * 0.4);
       lameUp.set({ x: lx, y: LY - leap * 22, s: 0.94, flip: t > 2.05 && t < 2.45, o: standL, walk: moving(t, LW) ? lx * 0.05 : undefined, armF: 40 + leap * 60 + praise * 60, armB: 30 + leap * 100 + praise * 110, head: -10, blink: blinkAt(T, 2) });

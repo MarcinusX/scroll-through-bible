@@ -74,12 +74,13 @@ export function drapeCloth(c, w, h) {
   s.p(c.ribbon([[-w / 2 - 6, 2], [w / 2 + 6, 2]], 7), C.wood2);
   return s.out();
 }
-/** a rope strung between two posts with a red seal in the middle; origin: centre of the rope */
-export function ropeBarrier(c) {
+/** a rope strung between two posts with a red seal in the middle; origin: centre of the rope.
+ *  `half`: half the distance between the posts (optional; the default keeps the original width) */
+export function ropeBarrier(c, { half = 115 } = {}) {
   const s = sheet();
-  s.p(c.cut(c.rect(-120, -14, 10, 240), 0.3, 6) + c.cut(c.rect(110, -14, 10, 240), 0.3, 6), C.wood2);
-  s.p(c.cut(c.circ(-115, -16, 8, 10), 0.2, 3) + c.cut(c.circ(115, -16, 8, 10), 0.2, 3), C.wood3);
-  s.p(c.ribbon(c.qbez([-115, -6], [0, 30], [115, -6], 18), 4), C.rope);
+  s.p(c.cut(c.rect(-half - 5, -14, 10, 240), 0.3, 6) + c.cut(c.rect(half - 5, -14, 10, 240), 0.3, 6), C.wood2);
+  s.p(c.cut(c.circ(-half, -16, 8, 10), 0.2, 3) + c.cut(c.circ(half, -16, 8, 10), 0.2, 3), C.wood3);
+  s.p(c.ribbon(c.qbez([-half, -6], [0, 30], [half, -6], 18), 4), C.rope);
   s.p(c.cut(c.circ(0, 14, 16, 16), 0.4, 4), C.terracotta);
   s.p(c.cut(c.star(0, 14, 9, 4, 6), 0.2, 3), shade(C.terracotta, -0.25));
   s.p(c.cut([[-6, 28], [-12, 50], [-2, 44]], 0.3, 3) + c.cut([[6, 28], [12, 50], [2, 44]], 0.3, 3), C.terracotta);
