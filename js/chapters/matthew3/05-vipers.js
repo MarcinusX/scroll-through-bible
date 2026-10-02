@@ -37,6 +37,8 @@ export default {
   cam: { x: [-40, 40], y: [0, 80], z: [1, 1.14] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;   // phone: the leaders, their name tags and the picture move inward; the picture waits higher
+    const DX = P ? 75 : 0, PFX = P ? 770 : FX;
     const J = jordanSet(S, { skyCols: DAY, sunAt: [1250, 150], city: false, path: false });
     // the world dims (a violet wash over the sky and the far bank; the people stay in the light)
     const gid = S.id('dim');
@@ -63,14 +65,15 @@ export default {
     const LEAD = [
       { o: pharisee(c, 0), x: 380, s: 0.98 }, { o: pharisee(c, 1), x: 480, s: 1.0 }, { o: sadducee(0), x: 580, s: 0.97 },
       { o: pharisee(c, 3), x: 670, s: 1.02 }, { o: sadducee(1), x: 760, s: 0.99 },
-    ].map((m, i) => ({ ...m, i, p: S.puppet(N.add(person(c, m.o))), seed: c.rr(0, 9) }));
+    ].map((m, i) => ({ ...m, x: P ? 525 + (m.x - 380) * 0.8 : m.x, i,   // phone: the row a little tighter, the first leader inside the frame
+      p: S.puppet(N.add(person(c, m.o))), seed: c.rr(0, 9) }));
     const qEl = N.add(`<g opacity="0">${question(c)}</g>`);
 
     /* name tags for the two parties */
     const tagL = S.layer({ par: 0.45, sh: 5 });
     const tags = [
-      { el: tagL.add(hang2(nameTag(c, tr('faryzeusze', 'Pharisees'), { size: 16 }), 0, 500)), x: 430, y: 440 },
-      { el: tagL.add(hang2(nameTag(c, tr('saduceusze', 'Sadducees'), { size: 16 }), 0, 500)), x: 680, y: 450 },
+      { el: tagL.add(hang2(nameTag(c, tr('faryzeusze', 'Pharisees'), { size: 16 }), 0, 500)), x: P ? 560 : 430, y: 440 },
+      { el: tagL.add(hang2(nameTag(c, tr('saduceusze', 'Sadducees'), { size: 16 }), 0, 500)), x: P ? 775 : 680, y: 450 },
     ];
 
     /* the hung picture: fire in the field, vipers fleeing */
@@ -101,7 +104,7 @@ export default {
         const k = es(t, 0.45 + i * 0.1, 0.7 + i * 0.1, ease.out), up = es(t, 1.0, 1.15, ease.in);
         pose(tg.el, { x: tg.x, y: lerp(-300, tg.y, k) - up * 600, r: Math.sin(time * 0.9 + i) * 2, o: k > 0.01 && up < 1 ? 1 : 0 });
       });
-      pose(qEl, { x: 610, y: BANK - 250, s: es(t, 1.55, 1.7, ease.back), o: seg(t, 1.55, 1.6) });
+      pose(qEl, { x: 610 + DX, y: BANK - 250, s: es(t, 1.55, 1.7, ease.back), o: seg(t, 1.55, 1.6) });
 
       const seeK = es(t, 0.55, 0.75);
       const point = es(t, 1.02, 1.18);
@@ -124,15 +127,15 @@ export default {
 
       /* … and the picture of the vipers fleeing the fire */
       const pk = es(t, 1.08, 1.4, ease.out);
-      const fy = lerp(-420, FY, pk);
-      pose(frame, { x: FX, y: fy });
+      const fy = lerp(P ? -700 : -420, FY, pk);
+      pose(frame, { x: PFX, y: fy });
       const fireK = es(t, 1.3, 1.5);
       const flick = time ? 1 + Math.sin(time * 9) * 0.08 : 1;
-      pose(fire, { x: FX + FW / 2 - 80, y: fy + FH * 0.74, sx: 1, sy: fireK * flick, o: pk > 0.99 ? 1 : 0 });
-      pose(fireGlow, { x: FX + FW / 2 - 80, y: fy + FH * 0.66, o: fireK * 0.8 });
+      pose(fire, { x: PFX + FW / 2 - 80, y: fy + FH * 0.74, sx: 1, sy: fireK * flick, o: pk > 0.99 ? 1 : 0 });
+      pose(fireGlow, { x: PFX + FW / 2 - 80, y: fy + FH * 0.66, o: fireK * 0.8 });
       snakes.forEach((sn) => {
         const u = seg(t, 1.35 + sn.i * 0.1, 2.2 + sn.i * 0.1);
-        const x = FX + FW / 2 - 150 - u * (FW - 190) - sn.i * 30;
+        const x = PFX + FW / 2 - 150 - u * (FW - 190) - sn.i * 30;
         const y = fy + FH * (0.78 + sn.i * 0.07);
         const wig = time ? Math.sin(time * 7 + sn.i * 2) * 0.12 : 0;
         pose(sn.el, { x, y, s: 1 - sn.i * 0.08, sy: (1 - sn.i * 0.08) * (1 + wig), o: pk > 0.99 ? seg(t, 1.35 + sn.i * 0.1, 1.45 + sn.i * 0.1) : 0 });

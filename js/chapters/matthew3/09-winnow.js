@@ -13,8 +13,8 @@ const PI = Math.PI;
 const GY = 652;               // the threshing floor
 const WX = 880;               // the winnower
 const HX = 745;               // the heap
-const BX = 515;               // the granary
-const FX = 1105;              // the fire
+const BX0 = 515;              // the granary
+const FX0 = 1105;             // the fire
 
 export default {
   id: 'mt3-winnow',
@@ -27,6 +27,8 @@ export default {
   cam: { x: [-90, 90], y: [0, 60], z: [1, 1.16] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;   // phone: granary and fire move inward and the camera turns further to each of them
+    const BX = PH ? 590 : BX0, FX = PH ? 1035 : FX0, PAN = PH ? 1.5 : 1;
     sky(S, HARVEST);
     const hangL = S.layer({ par: 0.04, sh: 5 });
     const sunEl = hanging(hangL, sun(c, 52, { disc: C.sunDeep, inner: C.sun }), { x: 1180, y: 250, len: 700 });
@@ -132,7 +134,7 @@ export default {
       pose(fGlow, { x: FX, y: GY - 40, s: 0.7 + burn * 0.9, o: 0.5 + burn * 0.45 });
 
       const toB = es(t, 1.2, 1.6) * (1 - es(t, 1.95, 2.25));
-      S.cam.x = -toB * 60 + es(t, 2.0, 2.4) * 50;
+      S.cam.x = (-toB * 60 + es(t, 2.0, 2.4) * 50) * PAN;
       S.cam.z = 1.04 + es(t, 0, 0.4) * 0.06 - toB * 0.04;
       S.cam.y = 30;
     };

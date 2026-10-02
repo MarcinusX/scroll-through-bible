@@ -20,6 +20,7 @@ export default {
   cam: { x: [-20, 30], y: [60, 130], z: [1.08, 1.22] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;   // phone: stones a little closer together, the leaders closer, Abraham inside the screen
     const J = jordanSet(S, { skyCols: DAY, sunAt: [1220, 150], city: false, path: false });
     const { N } = J.nearBank();
 
@@ -33,7 +34,7 @@ export default {
     /* the stones on the bank and the children they become */
     const P = S.layer({ par: 0.45, sh: 5 });
     const STONES = [[640, 758, 40], [706, 770, 34], [776, 764, 44], [846, 772, 36], [912, 760, 40]].map(([x, y, w], i) => ({
-      x, y, w, i,
+      x: PH ? 624 + i * 60 : x, y, w, i,
       el: P.add(`<g>${rock(c, 0, 0, w, w * 0.55, i % 2 ? C.rock : C.rock2)}</g>`),
       kid: S.puppet(P.add(person(c, child(c, i)))),
       spark: P.add(`<g opacity="0">${sparkle(c, 16, C.halo)}</g>`),
@@ -46,7 +47,7 @@ export default {
     const LEAD = [
       { o: pharisee(c, 1), x: 1010, s: 1.0 }, { o: sadducee(0), x: 1090, s: 0.98 },
       { o: pharisee(c, 3), x: 1170, s: 1.02 }, { o: sadducee(1), x: 1250, s: 0.97 },
-    ].map((m, i) => ({ ...m, i, p: S.puppet(P.add(person(c, m.o))), seed: c.rr(0, 9) }));
+    ].map((m, i) => ({ ...m, x: PH ? 868 + i * 44 : m.x, i, p: S.puppet(P.add(person(c, m.o))), seed: c.rr(0, 9) }));
 
     /* Abraham's portrait, from the flies */
     const fly = S.layer({ par: 0.3, sh: 6 });
@@ -71,7 +72,7 @@ export default {
       /* v9a — "we have Abraham for our father": chins up, the portrait comes down over them */
       const proud = es(t, 1.08, 1.3) * (1 - es(t, 2.05, 2.25));
       const ak = es(t, 1.15, 1.45, ease.out);
-      pose(abr, { x: 1100, y: lerp(-420, 290, ak), r: Math.sin(time * 0.7) * 1.2, o: ak > 0.01 ? 1 : 0 });
+      pose(abr, { x: PH ? 990 : 1100, y: lerp(-420, 290, ak), r: Math.sin(time * 0.7) * 1.2, o: ak > 0.01 ? 1 : 0 });
 
       /* v9b — the stones hop and stand up as children */
       const pointS = es(t, 2.05, 2.2);

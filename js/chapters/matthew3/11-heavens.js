@@ -61,7 +61,8 @@ export default {
 
     /* the near bank */
     const { N } = J.nearBank();
-    const LIS = [[430, false, 0.84], [535, false, 0.8], [1070, true, 0.82], [1175, true, 0.86]].map(([x, flip, s], i) => ({ x, flip, s, i, p: S.puppet(N.add(person(c, folk(c)))), seed: c.rr(0, 9) }));
+    const LIS = (S.portrait ? [[515, false, 0.84], [600, false, 0.8], [990, true, 0.82], [1045, true, 0.86]]   // phone: the listeners inside the frame
+      : [[430, false, 0.84], [535, false, 0.8], [1070, true, 0.82], [1175, true, 0.86]]).map(([x, flip, s], i) => ({ x, flip, s, i, p: S.puppet(N.add(person(c, folk(c)))), seed: c.rr(0, 9) }));
     [[-1, 260, 3], [1, 1350, 3]].forEach(([side, x, n]) => {
       const mem = Array.from({ length: n }, (_, k) => ({ x: (k - (n - 1) / 2) * 44 + c.rr(-6, 6), y: c.rr(-6, 6), s: 1, flip: side > 0, o: folk(c) }));
       N.add(`<g transform="translate(${x} ${BANK + 4}) scale(.8)">${group(c, mem)}</g>`);

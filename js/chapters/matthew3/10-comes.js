@@ -25,6 +25,8 @@ export default {
   cam: { x: [-40, 40], y: [0, 90], z: [1, 1.2] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;   // phone: the map hangs further in; the map and the balance are parked higher
+    const MXP = PH ? 925 : MX;
     const J = jordanSet(S, { skyCols: DAY, sunAt: [1240, 150], city: false, path: false });
     const { far, fbFn } = J;
     [[260, 3], [480, 2], [1150, 3], [1360, 2]].forEach(([x, n], i) => {
@@ -75,12 +77,12 @@ export default {
 
       /* v13 — from Galilee to the Jordan */
       const mk = es(t, 0.02, 0.3, ease.out), mUp = es(t, 1.0, 1.2, ease.in);
-      const my = lerp(-420, MY, mk) - mUp * 800;
-      pose(mapEl, { x: MX, y: my, o: mk > 0.01 && mUp < 1 ? 1 : 0 });
+      const my = lerp(PH ? -700 : -420, MY, mk) - mUp * (PH ? 1250 : 800);
+      pose(mapEl, { x: MXP, y: my, o: mk > 0.01 && mUp < 1 ? 1 : 0 });
       const u = es(t, 0.25, 0.9);
       const [px, py] = at(u);
-      pose(route, { x: MX, y: my, o: mk > 0.99 && mUp < 1 ? 1 : 0 });
-      pose(pinEl, { x: MX + px * MS, y: my + py * MS, s: 0.9, o: mk > 0.99 && mUp < 1 ? 1 : 0 });
+      pose(route, { x: MXP, y: my, o: mk > 0.99 && mUp < 1 ? 1 : 0 });
+      pose(pinEl, { x: MXP + px * MS, y: my + py * MS, s: 0.9, o: mk > 0.99 && mUp < 1 ? 1 : 0 });
 
       const walk = seg(t, 0.05, 0.9);
       const toWater = es(t, 1.05, 1.3);
@@ -118,7 +120,7 @@ export default {
 
       /* v15a — the balance comes down and settles level */
       const bk = es(t, 3.05, 3.4, ease.out), bUp = es(t, 4.1, 4.4, ease.in);
-      const by = lerp(-400, BAL[1], bk) - bUp * 700;
+      const by = lerp(PH ? -700 : -400, BAL[1], bk) - bUp * (PH ? 1000 : 700);
       const tilt = (1 - es(t, 3.35, 3.75, ease.back)) * 16;
       pose(bString, { x: BAL[0], y: by });
       pose(beam, { x: BAL[0], y: by, r: tilt });

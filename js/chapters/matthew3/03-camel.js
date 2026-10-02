@@ -78,7 +78,7 @@ export default {
 
       /* v4a — the camel comes up behind him; its hair drifts over to John's coat */
       const cw = es(t, 0.02, 0.55);
-      const cx = lerp(1640, 1060, cw);
+      const cx = lerp(1640, S.portrait ? 1000 : 1060, cw);   // phone: the camel stops inside the screen
       pose(camelEl, { x: cx, y: gfn(cx) + 40, s: 1.02, sx: -1.02, sy: 1.02 });
       walkCamel(camelEl, cx * 0.06, cw > 0 && cw < 1 ? 1 : 0);
       wisps.forEach((w, i) => {

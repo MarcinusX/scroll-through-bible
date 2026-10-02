@@ -57,13 +57,14 @@ export default {
     ground.add(acacia(c, 250, 560, 1.05) + acacia(c, 1390, 552, 0.8) + scrub(c, 520, 560, 30) + scrub(c, 1100, 566, 34) + rock(c, 1240, 570, 90, 34, C.rock2) + rock(c, 360, 580, 70, 26, C.rock));
 
     /* the travellers on the road */
+    const PH = S.portrait;   // phone: the travellers come back to places inside the screen
     const road = S.layer({ par: 0.3, sh: 4 });
     const TR = [
-      { o: manOf(c, { belt: C.leather }), x0: 690, x1: 380, back: 590, dir: -1 },
-      { o: womanOf(c), x0: 610, x1: 300, back: 520, dir: -1 },
-      { o: manOf(c, { mantle: C.clayMantle }), x0: 540, x1: 200, back: 440, dir: -1 },
-      { o: womanOf(c, { robe: C.tealRobe }), x0: 940, x1: 1250, back: 1010, dir: 1 },
-      { o: manOf(c, { robe: C.wheatRobe }), x0: 1010, x1: 1340, back: 1090, dir: 1 },
+      { o: manOf(c, { belt: C.leather }), x0: 690, x1: 380, back: PH ? 650 : 590, dir: -1 },
+      { o: womanOf(c), x0: 610, x1: 300, back: PH ? 585 : 520, dir: -1 },
+      { o: manOf(c, { mantle: C.clayMantle }), x0: 540, x1: 200, back: PH ? 515 : 440, dir: -1 },
+      { o: womanOf(c, { robe: C.tealRobe }), x0: 940, x1: 1250, back: PH ? 975 : 1010, dir: 1 },
+      { o: manOf(c, { robe: C.wheatRobe }), x0: 1010, x1: 1340, back: PH ? 1045 : 1090, dir: 1 },
     ].map((m, i) => ({ ...m, i, p: S.puppet(road.add(person(c, m.o))), seed: c.rr(0, 9) }));
 
     /* John and his stone */
@@ -115,7 +116,7 @@ export default {
         const stop = es(t, 2.12, 2.2);
         const turn = t > 2.3 + m.i * 0.03;
         const back = es(t, 2.36 + m.i * 0.04, 2.9 + m.i * 0.02);
-        const xAway = lerp(m.x0, m.x1, away * 0.55);
+        const xAway = lerp(m.x0, m.x1, away * (PH ? 0.15 : 0.55));   // phone: they walk a shorter way, not out through the frame
         const x = lerp(xAway, m.back, back);
         const walking = (away > 0 && away < 1 && stop < 1) || (back > 0 && back < 1);
         const look = es(t, 3.15 + m.i * 0.04, 3.45 + m.i * 0.04);

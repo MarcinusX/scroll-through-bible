@@ -24,6 +24,8 @@ export default {
   cam: { x: [-80, 40], y: [0, 80], z: [1, 1.16] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;   // phone: the one who comes walks further in, the listeners and the Spirit's plate move inward
+    const SPX = PH ? 985 : 1060;
     const J = jordanSet(S, { skyCols: DAY, sunAt: [1240, 150], city: false, path: false });
     // the golden sky of the Spirit, over the day sky (behind the mountains' layer order is fine: it's a wash)
     const gid = S.id('gold');
@@ -54,7 +56,7 @@ export default {
       const mem = Array.from({ length: n }, (_, k) => ({ x: (k - (n - 1) / 2) * 44 + c.rr(-6, 6), y: c.rr(-6, 6), s: 1, flip: side > 0, o: folk(c) }));
       N.add(`<g transform="translate(${x} ${BANK + 4}) scale(.8)">${group(c, mem)}</g>`);
     });
-    const LIS = [[430, false, 0.84], [540, false, 0.8], [1110, true, 0.82], [1215, true, 0.84]].map(([x, flip, s], i) => ({ x, flip, s, i, p: S.puppet(N.add(person(c, folk(c)))), seed: c.rr(0, 9) }));
+    const LIS = (PH ? [[495, false, 0.84], [590, false, 0.8], [1000, true, 0.82], [1062, true, 0.84]] : [[430, false, 0.84], [540, false, 0.8], [1110, true, 0.82], [1215, true, 0.84]]).map(([x, flip, s], i) => ({ x, flip, s, i, p: S.puppet(N.add(person(c, folk(c)))), seed: c.rr(0, 9) }));
     const flames = LIS.map((l) => ({ l, el: N.add(`<g>${flame(c, 28)}</g>`) }));
 
     /* from the flies: the sandals, the plates of water and of the Spirit */
@@ -64,7 +66,7 @@ export default {
     const waterIcon = `<path d="${c.cut([[0, -30], [16, -4], [14, 12], [0, 20], [-14, 12], [-16, -4]], 0.4, 4)}" fill="${C.lake2}"/><path d="${c.ribbon([[-32, 26], [-16, 22], [0, 26], [16, 22], [32, 26]], 4)}" fill="${C.lake}"/><path d="${c.cut(c.ell(-5, -2, 4, 7, 8), 0.2, 3)}" fill="${C.foam}"/>`;
     const waterPlate = hanging(fly, plate(c, waterIcon, { r: 50, fill: '#e7f0ec', rim: C.lake }), { x: 560, y: 230, len: 700 });
     const spiritIcon = `<g opacity=".9">${rays(c, { n: 12, r0: 34, r1: 54, spread: 0.08, color: C.sun })}</g><g transform="translate(0 30)">${flame(c, 64, C.sunRay, C.lampFlame)}</g>`;
-    const spiritPlate = hanging(fly, `<circle r="130" fill="url(#halo-glow)"/>${plate(c, spiritIcon, { r: 58, fill: C.halo, rim: C.sun })}`, { x: 1060, y: 230, len: 700 });
+    const spiritPlate = hanging(fly, `<circle r="130" fill="url(#halo-glow)"/>${plate(c, spiritIcon, { r: 58, fill: C.halo, rim: C.sun })}`, { x: SPX, y: 230, len: 700 });
     const doveEl = fly.add(dove(c));
 
     J.foreground();
@@ -88,7 +90,7 @@ export default {
 
       /* v11b — the one who comes after, far away in a warm light */
       const come = seg(t, 1.1, 1.9);
-      const cx = lerp(160, 500, ease.sine(come));
+      const cx = PH ? lerp(260, 640, ease.sine(come)) : lerp(160, 500, ease.sine(come));
       comer.set({ x: cx, y: 588, s: 0.3, o: seg(t, 1.05, 1.15), walk: come > 0 && come < 1 ? cx * 0.12 : undefined, blink: blinkAt(time, 3) });
       pose(farGlow, { x: cx, y: 590, s: 0.7 + es(t, 1.2, 1.7) * 0.5, o: es(t, 1.1, 1.4) });
 
@@ -114,7 +116,7 @@ export default {
       /* v11d — the Holy Spirit and fire */
       gold.fade(spirit * 0.8);
       const pIn = es(t, 3.02, 3.35, ease.out);
-      swing(spiritPlate, 1060, lerp(-380, 230, pIn), time, 1.2, 0.7, 1);
+      swing(spiritPlate, SPX, lerp(-380, 230, pIn), time, 1.2, 0.7, 1);
       fade(spiritPlate, pIn > 0 ? 1 : 0);
       const dv = seg(t, 3.1, 3.95);
       pose(doveEl, { x: lerp(260, 1320, dv), y: 330 - Math.sin(dv * PI) * 70, s: 0.9, o: dv > 0 && dv < 1 ? 1 : 0 });

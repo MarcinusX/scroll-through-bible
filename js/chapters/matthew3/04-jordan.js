@@ -19,6 +19,7 @@ export default {
   cam: { x: [-60, 60], y: [0, 140], z: [0.94, 1.34] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;   // phone: the third name, the last of the queue and the right-hand group come inside the screen
     const J = jordanSet(S, { skyCols: DAY, sunAt: [1230, 150], city: true, tents: true });
     const { fbFn, far, PATH, hill } = J;
 
@@ -50,14 +51,14 @@ export default {
     const kneel = S.puppet(R.add(person(c, { robe: C.dustyBlue, hairStyle: 'short', hair: C.hair2, beard: 'short', skin: C.skin2, pose: 'kneel', holdF: SIN })));
     const held0 = S.$('s0');
     const queue = [{ robe: C.roseRobe, hairStyle: 'veil', veil: C.blushVeil, skin: C.skin }, { robe: C.sageRobe, hairStyle: 'curly', hair: C.hair3, beard: 'full', skin: C.skin4, belt: C.leather }]
-      .map((o, i) => ({ p: S.puppet(R.add(person(c, { ...o, holdF: `<g data-k="s${i + 1}" transform="translate(0 4)">${scrap(c, 9)}</g>` }))), held: S.$(`s${i + 1}`), x: 1000 + i * 92, i }));
+      .map((o, i) => ({ p: S.puppet(R.add(person(c, { ...o, holdF: `<g data-k="s${i + 1}" transform="translate(0 4)">${scrap(c, 9)}</g>` }))), held: S.$(`s${i + 1}`), x: P ? 990 + i * 72 : 1000 + i * 92, i }));
     J.waterFront(R);
     const splash = R.add(`<g opacity="0">${[-1, 1].map((sd) => `<path d="${c.cut([[0, 0], [sd * 20, -30], [sd * 30, -26], [sd * 12, 2]], 0.4, 4)}" fill="${C.foam}"/>`).join('')}</g>`);
-    const SC = [{ x: 890, y: 610 }, { x: 1004, y: 590 }, { x: 1096, y: 590 }].map((s, i) => ({ ...s, i, el: R.add(`<g>${scrap(c, 11 + (i % 2) * 3)}</g>`), foam: R.add(`<g opacity="0"><path d="${c.ribbon(c.arc(0, 0, 18, 5, 0, PI * 2, 16), 2.4)}" fill="${C.foam}"/></g>`) }));
+    const SC = [{ x: 890, y: 610 }, { x: P ? 994 : 1004, y: 590 }, { x: P ? 1066 : 1096, y: 590 }].map((s, i) => ({ ...s, i, el: R.add(`<g>${scrap(c, 11 + (i % 2) * 3)}</g>`), foam: R.add(`<g opacity="0"><path d="${c.ribbon(c.arc(0, 0, 18, 5, 0, PI * 2, 16), 2.4)}" fill="${C.foam}"/></g>`) }));
 
     /* the near bank and its people */
     const { N } = J.nearBank();
-    const NEAR = [[-1, 330, 3], [-1, 520, 2], [1, 1110, 2], [1, 1300, 3]].map(([side, x, n], i) => {
+    const NEAR = [[-1, 330, 3], [-1, P ? 570 : 520, 2], [1, P ? 1050 : 1110, 2], [1, 1300, 3]].map(([side, x, n], i) => {
       const mem = Array.from({ length: n }, (_, k) => ({ x: (k - (n - 1) / 2) * 44 + c.rr(-6, 6), y: c.rr(-6, 6), s: 1, flip: side > 0, o: folk(c) }));
       return { i, side, x, sp: N.sprite(`<g transform="scale(.82)">${group(c, mem)}</g>`, x, 776) };
     });
@@ -67,8 +68,8 @@ export default {
     const fly = S.layer({ par: 0.12, sh: 6 });
     const NAMES = [
       { el: fly.add(hungWord(c, tr('Jerozolima', 'Jerusalem'), { size: 22 })), x: 590, y: 214, a: 0.05 },
-      { el: fly.add(hungWord(c, tr('cała Judea', 'all Judea'), { size: 22 })), x: 860, y: 262, a: 0.25 },
-      { el: fly.add(hungWord(c, tr('okolica nad Jordanem', 'the region around the Jordan'), { size: 22 })), x: 1140, y: 318, a: 0.42 },
+      { el: fly.add(hungWord(c, tr('cała Judea', 'all Judea'), { size: 22 })), x: P ? 820 : 860, y: 262, a: 0.25 },
+      { el: fly.add(hungWord(c, tr('okolica nad Jordanem', 'the region around the Jordan'), { size: 22 })), x: P ? 985 : 1140, y: 318, a: 0.42 },
     ];
 
     return (t, time) => {
