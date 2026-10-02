@@ -38,11 +38,12 @@ export default {
     { cover: true },
     { v: 1 },
   ],
-  cam: { x: [0, 420], y: [-10, 40], z: [1, 1.14] },
+  cam: { x: [0, 480], y: [-10, 40], z: [1, 1.14] },
   build(S) {
     const H = hillsSet(S, { gy: GY - 12, midY: 520 });
     const c = H.c;
     const P = 0.5;
+    const PH = S.portrait;
 
     /* the town on the right */
     const townL = S.layer({ par: 0.44, sh: 4 });
@@ -53,7 +54,7 @@ export default {
     const SEAT = [-300, -240, -175, -112, 112, 175, 240, 300, -60, 60];
     const seatedM = TWELVE.map((m, i) => {
       const back = i >= 8;
-      const dx = back ? [-220, -140, 140, 220][i - 8] : SEAT[i];
+      const dx = (back ? [-220, -140, 140, 220][i - 8] : SEAT[i]) * (PH ? 0.85 : 1);   // phone: the ring inside the screen
       return { x: dx, y: -(back ? 34 : 0), s: back ? 0.72 : 0.8, flip: dx > 0, head: dx > 0 ? 4 : -4, armF: 14 + (i % 3) * 8, o: { ...m.o, pose: 'sit' } };
     });
     const seated = L.sprite(pose3(c, seatedM), JX0, GY);
@@ -111,12 +112,12 @@ export default {
 
       /* the townspeople come out of the gate */
       const come1 = es(t, 1.36, 1.66), come2 = es(t, 1.42, 1.7);
-      G1.set({ x: lerp(GATE, JX1 + 190, come1), y: GY - 30 - Math.abs(Math.sin(come1 * 9)) * 3 * (come1 < 1), s: 1, o: seg(t, 1.3, 1.36) });
-      G2.set({ x: lerp(GATE + 20, JX1 + 290, come2), y: GY - 4 - Math.abs(Math.sin(come2 * 9)) * 3 * (come2 < 1), s: 1, o: seg(t, 1.36, 1.42) });
+      G1.set({ x: lerp(GATE, JX1 + (PH ? 170 : 190), come1), y: GY - 30 - Math.abs(Math.sin(come1 * 9)) * 3 * (come1 < 1), s: 1, o: seg(t, 1.3, 1.36) });
+      G2.set({ x: lerp(GATE + 20, JX1 + (PH ? 250 : 290), come2), y: GY - 4 - Math.abs(Math.sin(come2 * 9)) * 3 * (come2 < 1), s: 1, o: seg(t, 1.36, 1.42) });
 
       /* camera: follow Him to the town */
       const pan = es(t, 1.14, 1.62);
-      S.cam.x = pan * 400;
+      S.cam.x = pan * (PH ? 470 : 400);   // phone: the townspeople clear of the thread
       S.cam.z = 1.04 + es(t, 0.3, 0.9) * 0.04 + es(t, 1.55, 1.8) * 0.04;
       S.cam.y = 10 + pan * 20;
     };

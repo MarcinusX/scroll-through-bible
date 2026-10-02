@@ -35,7 +35,7 @@ export default {
     const beamL = S.layer({ par: 0.45, sh: 0, flat: true });
     const beam = beamL.add(`<g>${lightShaft(c, { w0: 30, w1: 90, h: 640, o: 0.5 })}</g>`);
     const act = S.layer({ par: 0.45, sh: 5 });
-    act.sprite(throng(makeCutter('mt11-kn'), 5, { s: 0.8, rows: 1, spread: 64, P: 'sit', men: true }), 440, GY + 6);
+    act.sprite(throng(makeCutter('mt11-kn'), 5, { s: 0.8, rows: 1, spread: 64, P: 'sit', men: true }), S.portrait ? 590 : 440, GY + 6);   // phone: the seated disciples on screen
     const jesus = S.puppet(act.add(person(c, { ...CAST.jesus })));
     const john = S.puppet(act.add(person(c, { ...CAST.john, pose: 'kneel' })));
     const jGlow = act.add(`<circle r="90" fill="url(#halo-glow)"/>`);

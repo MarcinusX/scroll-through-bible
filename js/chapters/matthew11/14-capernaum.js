@@ -11,7 +11,7 @@ import { makeCutter } from '../../core/paper.js';
 import { cityIcon, sparkle, nameTag, scalesParts, poseScales, strip, kf, KINGDOM, tr, PI } from './lib.js';
 
 const CX = 540, CY = 664;             // Capernaum
-const SX = 1130, SY = 664;            // Sodom
+const SX0 = 1130, SY = 664;           // Sodom
 const BX = 800, BY = 170, ARM = 190;
 
 /** ruins: broken walls and fallen stones (origin: ground centre) */
@@ -33,9 +33,13 @@ export default {
     { v: 23, cont: true, text: 'Bo gdyby w Sodomie działy się cuda, które się w tobie dokonały, zostałaby aż do dnia dzisiejszego.' },
     { v: 24 },
   ],
-  cam: { x: [-500, 700], y: [-200, 200], z: [1, 1.5] },
+  cam: { x: [-660, 700], y: [-200, 200], z: [1, 1.5] },
   build(S) {
     const c = S.c;
+    // phone: the camera stands further left over Capernaum, so the green/sand seam of the two halves is not left
+    // as a narrow stripe at the right edge
+    const X0 = S.portrait ? -660 : -500;
+    const SX = S.portrait ? 1000 : SX0;   // phone: Sodom stands inside the final wide view (it was under the thread)
     sky(S, ['#c7d6d8', '#eee4cf', '#f4e2c4']);
     const gold = sky(S, KINGDOM, { name: 'judg', rise: 0 }).layer;
     gold.fade(0);
@@ -121,7 +125,7 @@ export default {
       S.cam.z = kf(t, [[0, 1.2], [0.5, 1.2], [0.7, 1.5], [0.95, 1.5], [1.1, 1.3], [2.0, 1.3], [2.3, 1.0]]);
     };
     function kf2(t) {
-      return t < 1 ? -500 * (1 - es(t, 0.9, 1.0) * 0) : lerp(-500, 700, es(t, 0.95, 1.2)) * (1 - es(t, 2.0, 2.3));
+      return t < 1 ? X0 * (1 - es(t, 0.9, 1.0) * 0) : lerp(X0, 700, es(t, 0.95, 1.2)) * (1 - es(t, 2.0, 2.3));
     }
   },
 };

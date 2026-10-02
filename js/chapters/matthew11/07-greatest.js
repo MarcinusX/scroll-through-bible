@@ -27,6 +27,7 @@ export default {
   ],
   cam: { x: [-20, 20], y: [-260, 40], z: [0.96, 1.2] },
   build(S) {
+    const px = (x) => (S.portrait ? 800 + (x - 800) * 0.8 : x);   // phone: the row of plinths inside the screen
     const H = hillsSet(S, { skyCols: ['#cfdcd8', '#f1e6cc', '#f7e6c6'], sky2: HEAVEN, lake: false, gy: 740, midY: 560, villages: false, clouds: false });
     const c = H.c;
 
@@ -69,9 +70,9 @@ export default {
       ones.forEach((o) => {
         const k = riseAt(0.05 + o.i * 0.07);
         const top = lerp(GND + 40, o.top, k);
-        pose(o.pl, { x: o.x, y: top });
-        o.pp.set({ x: o.x, y: top, s: 0.82, flip: !!o.flip, armF: o.hold ? 60 : 20, armB: 10 + bump(t, 1.35, 1.9) * 40, head: -es(t, 1.2, 1.4) * 12 * (1 - es(t, 1.5, 1.7)), blink: blinkAt(T, o.i + 2), o: k > 0.02 ? 1 : 0 });
-        pose(o.tag, { x: o.x, y: top + 8, o: k > 0.5 ? 1 : 0 });
+        pose(o.pl, { x: px(o.x), y: top });
+        o.pp.set({ x: px(o.x), y: top, s: 0.82, flip: !!o.flip, armF: o.hold ? 60 : 20, armB: 10 + bump(t, 1.35, 1.9) * 40, head: -es(t, 1.2, 1.4) * 12 * (1 - es(t, 1.5, 1.7)), blink: blinkAt(T, o.i + 2), o: k > 0.02 ? 1 : 0 });
+        pose(o.tag, { x: px(o.x), y: top + 8, o: k > 0.5 ? 1 : 0 });
       });
       const kj = riseAt(0.35);
       const jtop = lerp(GND + 40, JT, kj);

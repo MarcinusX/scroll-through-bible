@@ -26,7 +26,7 @@ export default {
   cam: { x: [-60, 60], y: [-60, 40], z: [1, 1.2] },
   build(S) {
     const c = S.c;
-    const PX = S.portrait ? { chorazin: 540, bethsaida: 1070, capernaum: 800 } : {};
+    const PX = S.portrait ? { chorazin: 560, bethsaida: 1020, capernaum: 800 } : {};
     const TOWNS_ = TOWNS.map((tw) => ({ ...tw, x: PX[tw.k] ?? tw.x, w: S.portrait && tw.k !== 'capernaum' ? 130 : tw.w }));
     sky(S, ['#c4d8d6', '#ece8d4', '#f5e6c9']);
     const gloom = sky(S, GLOOM, { name: 'gloom', rise: 0 }).layer;
@@ -61,7 +61,7 @@ export default {
     G.add(sheet().p(c.ridge(gfn, -900, 2500, 1800, 12, 1), mix(C.hillNear, C.sage2, 0.4)).out());
     G.add(grass(c, { x0: -900, x1: 2500, y: GY - 40, fn: gfn, n: 50, h: 14, color: C.moss }) + olive(c, 250, GY - 30, 1.1) + rock(c, 1300, GY - 20, 110, 36, C.rock2));
     const act = S.layer({ par: 0.5, sh: 5 });
-    act.sprite(throng(makeCutter('mt11-wd'), 4, { s: 0.86, rows: 1, spread: 56, P: 'sit', men: true }), 1140, GY + 4);
+    act.sprite(throng(makeCutter('mt11-wd'), 4, { s: 0.86, rows: 1, spread: 56, P: 'sit', men: true }), S.portrait ? 1010 : 1140, GY + 4);
     const jesus = S.puppet(act.add(person(c, { ...CAST.jesus })));
     const voice = voiceRings(act, c, { n: 3, color: C.clay, r: 38, w: 5 });
 

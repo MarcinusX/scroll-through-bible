@@ -27,6 +27,8 @@ export default {
   ],
   cam: { x: [-60, 60], y: [-80, 40], z: [1, 1.3] },
   build(S) {
+    const PH = S.portrait;
+    const OX = PH ? 870 : 440, OD = PH ? 85 : 110;   // phone: the prophets of old on screen, clear of John
     const W = wildSet(S, { sunAt: [300, 160], gy: 710 });
     const c = W.c;
 
@@ -37,7 +39,7 @@ export default {
     /* the prophets of old on the ridge */
     const ridge = S.layer({ par: 0.2, sh: 3 });
     const PROPH = [{ ...ISAIAH }, { ...L6.prophet }, { ...L9.elijah }].map((o) => ({ ...o, robe: mix(o.robe, C.parchment, 0.45), mantle: o.mantle ? mix(o.mantle, C.parchment, 0.45) : null }));
-    const old = ridge.sprite(pose3(c, PROPH.map((o, i) => ({ x: (i - 1) * 110, y: (i % 2) * 6, s: 0.6, armF: 86, armB: 20, head: -4, o }))), 440, 560);
+    const old = ridge.sprite(pose3(c, PROPH.map((o, i) => ({ x: (i - 1) * OD, y: (i % 2) * 6, s: 0.6, armF: 86, armB: 20, head: -4, o }))), OX, 560);
 
     /* the road down from the light */
     const roadL = S.layer({ par: 0.45, sh: 2 });
@@ -48,7 +50,7 @@ export default {
     const act = S.layer({ par: 0.45, sh: 5 });
     act.add(`<g transform="translate(${RX} ${RY})">${sheet().p(c.cut([[-90, 80], [-80, 20], [-60, 0], [60, -4], [84, 16], [96, 80]], 1.2, 10), C.rock2).x(c.ribbon([[-50, 8], [50, 4]], 3), shade(C.rock2, 0.25), 'opacity=".6"').out()}</g>`);
     const crowdL = S.layer({ par: 0.45, sh: 4 });
-    crowdL.sprite(throng(makeCutter('mt11-pr-a'), 6, { s: 0.84, rows: 2, spread: 46 }), 380, GY + 10);
+    crowdL.sprite(throng(makeCutter('mt11-pr-a'), 6, { s: 0.84, rows: 2, spread: 46 }), PH ? 545 : 380, GY + 10);
     crowdL.sprite(throng(makeCutter('mt11-pr-b'), 5, { s: 0.84, rows: 2, spread: 46, flip: true }), 1300, GY + 10);
     const jL = S.layer({ par: 0.45, sh: 5 });
     const glow = jL.add(`<circle r="170" fill="url(#halo-glow)" opacity="0"/>`);
@@ -82,11 +84,11 @@ export default {
       const [hx, hy] = headAt(jx, jy, 1.0, turn);
       voice(hx, hy, cry * (1 - point * 0.5), T, { dir: 1, spread: 2.4 });
       const qk = es(t, 0.3, 0.5, ease.back) * (1 - es(t, 0.95, 1.05));
-      pose(q, { x: 420, y: 520 + (T ? Math.sin(T * 2) * 3 : 0), s: qk, r: T ? Math.sin(T * 1.6) * 6 : 0, o: qk > 0.02 ? 1 : 0 });
+      pose(q, { x: PH ? 545 : 420, y: 520 + (T ? Math.sin(T * 2) * 3 : 0), s: qk, r: T ? Math.sin(T * 1.6) * 6 : 0, o: qk > 0.02 ? 1 : 0 });
 
       /* v9b — more than a prophet: the prophets of old appear; the light rises; John points to it */
       const pk = es(t, 1.05, 1.35);
-      old.set({ x: 440, y: 560 + (1 - pk) * 30, o: pk * 0.85 * (1 - es(t, 2.9, 3.1)) });
+      old.set({ x: OX, y: 560 + (1 - pk) * 30, o: pk * 0.85 * (1 - es(t, 2.9, 3.1)) });
       const rise = es(t, 1.2, 1.6);
       pose(dawn, { x: LIGHT[0], y: LIGHT[1] + (1 - rise) * 60, s: 0.6 + rise * 0.5 + es(t, 3.0, 3.4) * 0.3, o: rise });
       pose(glow, { x: hx, y: hy + 50, s: 0.8 + point * 0.4, o: point * 0.7 + toJesus * 0.3 });

@@ -33,8 +33,9 @@ export default {
 
     /* the near bank, the crowd, the two disciples, Jesus */
     const { N } = R.nearBank();
-    N.sprite(throng(makeCutter('mt11-rd-a'), 6, { s: 0.84, rows: 2, spread: 46 }), 400, GY + 6);
-    N.sprite(throng(makeCutter('mt11-rd-b'), 5, { s: 0.84, rows: 2, spread: 46, flip: true }), 1230, GY + 6);
+    // phone: the crowds He speaks to stand inside the screen
+    N.sprite(throng(makeCutter('mt11-rd-a'), 6, { s: 0.84, rows: 2, spread: 46 }), S.portrait ? 630 : 400, GY + 6);
+    N.sprite(throng(makeCutter('mt11-rd-b'), 5, { s: 0.84, rows: 2, spread: 46, flip: true }), S.portrait ? 1000 : 1230, GY + 6);
     const act = S.layer({ par: 0.45, sh: 5 });
     const dis = JD.map((o, i) => ({ i, p: S.puppet(act.add(person(c, o))) }));
     const jesus = S.puppet(act.add(person(c, { ...CAST.jesus })));

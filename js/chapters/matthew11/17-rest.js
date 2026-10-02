@@ -42,6 +42,8 @@ export default {
       { o: manOf(c, { robe: C.mauve, mantle: C.stone }), from: 1800, to: 1120, load: greyBundle(c, 34), lx: -30, ly: -118, side: 1 },
       { o: womanOf(c, { robe: C.tealRobe }), from: 1950, to: 1240, load: greyBundle(c, 30, mix(C.wood3, C.stone2, 0.4)), lx: -28, ly: -120, side: 1 },
     ];
+    const GO = S.portrait ? 60 : 130;   // how far the two walk on under the yoke (phone: not over the resting people)
+    if (S.portrait) WEARY.forEach((w) => { w.to = 800 + (w.to - 800) * 0.68; });   // phone: all the weary inside the screen
     const act = S.layer({ par: 0.5, sh: 5 });
     const lamb = act.add(`<g>${sheep(c)}</g>`);
     const ppl = WEARY.map((w, i) => ({
@@ -72,7 +74,7 @@ export default {
       const lift = es(t, 2.05, 2.25);          // He bends for the yoke
       const onSh = es(t, 2.3, 2.5);
       const go = es(t, 4.05, 4.7, (u) => u);
-      const jx = JX + go * 130;
+      const jx = JX + go * GO;
       const bob = go > 0 && go < 1 ? Math.abs(Math.sin(jx * 0.05)) * 3 : 0;
       jesus.set({
         x: jx, y: GY - bob, s: 1.06, walk: go > 0 && go < 1 ? jx * 0.05 : undefined,
@@ -96,7 +98,7 @@ export default {
         let x = x0, flip = face;
         if (partner) {
           const step = es(t, 2.05, 2.3);
-          x = lerp(x0, JX + 116, step) + go * 130;
+          x = lerp(x0, JX + 116, step) + go * GO;
           if (step > 0 && step < 1) flip = true;
           if (step >= 1) flip = false;
         }
@@ -129,7 +131,7 @@ export default {
 
       /* the yoke: lying by Him, lifted, laid across both their shoulders */
       const ps = ppl[PARTNER];
-      const pX = lerp(lerp(ps.from, ps.to, 1), JX + 116, es(t, 2.05, 2.3)) + go * 130;
+      const pX = lerp(lerp(ps.from, ps.to, 1), JX + 116, es(t, 2.05, 2.3)) + go * GO;
       const shJ = [jx + 2, GY - 124 * 1.06 - bob], shP = [pX + 2, GY + 18 - 124 * 0.96];
       const onGround = [JX + 60, GY + 22];
       const held = [jx + 56, GY - 90];
@@ -140,7 +142,7 @@ export default {
       pose(yk, { x: yx, y: yy, r: lerp(0, ang, y2), s: 0.62, o: es(t, 1.9, 2.05) });
 
       /* camera */
-      S.cam.x = kf(t, [[0, 0], [3.9, 20], [4.6, 120]]);
+      S.cam.x = kf(t, [[0, 0], [3.9, 20], [4.6, S.portrait ? 60 : 120]]);
       S.cam.z = kf(t, [[0, 1.06], [1.0, 1.06], [1.4, 1.14], [2.0, 1.2], [3.9, 1.2], [4.5, 1.08]]);
       S.cam.y = kf(t, [[0, 10], [1.4, 30], [3.9, 30], [4.5, -30]]);
     };

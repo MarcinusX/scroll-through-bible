@@ -12,8 +12,8 @@ import { makeCutter } from '../../core/paper.js';
 import { hillsSet, scribe, scrollOpen, fatherLight, rayBurst, lightShaft, soulLight, heart, kid, kidHead, manOf, womanOf, headAt, hand, GOLDEN, HEAVEN, PI } from './lib.js';
 
 const GY = 736, JX = 800;
-const SCR = [[430, 0], [540, 1]];
-const KIDS = [[980, 0], [1050, 5], [1120, 2], [1190, 3]];
+const SCR0 = [[430, 0], [540, 1]];
+const KIDS0 = [[980, 0], [1050, 5], [1120, 2], [1190, 3]];
 const LX = 800, LY = 110;          // the Father's light
 
 export default {
@@ -26,6 +26,10 @@ export default {
   ],
   cam: { x: [-40, 40], y: [-140, 40], z: [1, 1.3] },
   build(S) {
+    // phone: the wise and the little ones inside the screen
+    const SCR = S.portrait ? [[505, 0], [605, 1]] : SCR0;
+    const KIDS = S.portrait ? [[900, 0], [960, 5], [1020, 2], [1080, 3]] : KIDS0;
+    const SHX = S.portrait ? 990 : 1085;
     const H = hillsSet(S, { skyCols: GOLDEN, sky2: HEAVEN, sunAt: [1300, 300], gy: GY - 30, midY: 540 });
     const c = H.c;
 
@@ -78,7 +82,7 @@ export default {
       const puzzled = es(t, 2.3, 2.5);
       wise.forEach((w) => w.p.set({ x: w.x, y: GY + w.i * 6, s: 0.96, flip: false, armF: 70, armB: 20 + puzzled * 60, head: 16 + puzzled * 6, lean: 4, blink: blinkAt(T, w.i + 2) }));
       const sk = es(t, 2.3, 2.55);
-      pose(shaft, { x: 1085, y: GY + 4, sx: 0.3 + sk * 0.7, o: sk });
+      pose(shaft, { x: SHX, y: GY + 4, sx: 0.3 + sk * 0.7, o: sk });
       const skip = (i) => (T ? Math.abs(Math.sin(T * 5 + i * 1.3)) : 0.5) * bow;
       kids.forEach((k) => {
         const up = es(t, 2.45 + k.i * 0.04, 2.65 + k.i * 0.04);

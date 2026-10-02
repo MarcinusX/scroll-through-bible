@@ -8,7 +8,7 @@ import { es, ease, bump, seg } from '../../core/anim.js';
 import { makeCutter } from '../../core/paper.js';
 import { riverSet, JOHN_B, L9, throng, earGlyph, headAt, voiceRings, kf, moving, manOf, womanOf, PI } from './lib.js';
 
-const GY = 752, JX = 780, JNX = 1080;
+const GY = 752, JX = 780;
 const MANTLE = shade(C.clay, -0.08);
 
 /** a horse of fire, galloping to the right (origin: its belly) */
@@ -51,6 +51,8 @@ export default {
   cam: { x: [-40, 80], y: [-60, 40], z: [1, 1.24] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;
+    const JNX = PH ? 1030 : 1080;   // phone: John and the listeners inside the screen
     const skL = S.layer({ par: 0, sky: true });
     const skyId = S.id('sky');
     S.defs(`<linearGradient id="${skyId}" gradientUnits="userSpaceOnUse" x1="0" y1="-400" x2="0" y2="700"><stop offset="0" stop-color="#b9b3cc"/><stop offset=".55" stop-color="#efcfae"/><stop offset="1" stop-color="#f6dcb4"/></linearGradient>`);
@@ -73,8 +75,8 @@ export default {
     const john = S.puppet(act.add(person(c, JOHN_B)));
     const johnM = S.puppet(act.add(person(c, { ...JOHN_B, mantle: MANTLE })));
     const cloak = act.add(`<g>${mantle(c)}</g>`);
-    const LIS = [manOf(c, { robe: C.dustyBlue }), womanOf(c, { robe: C.roseRobe }), manOf(c, { robe: C.sageRobe, mantle: C.ochre })].map((o, i) => ({ i, x: 490 + i * 75, p: S.puppet(act.add(person(c, o))) }));
-    const AWAY = [manOf(c, { robe: C.stone, mantle: C.teal2 }), manOf(c, { robe: C.wheatRobe })].map((o, i) => ({ i, x: 380 + i * 60, p: S.puppet(act.add(person(c, o))) }));
+    const LIS = [manOf(c, { robe: C.dustyBlue }), womanOf(c, { robe: C.roseRobe }), manOf(c, { robe: C.sageRobe, mantle: C.ochre })].map((o, i) => ({ i, x: PH ? 525 + i * 62 : 490 + i * 75, p: S.puppet(act.add(person(c, o))) }));
+    const AWAY = [manOf(c, { robe: C.stone, mantle: C.teal2 }), manOf(c, { robe: C.wheatRobe })].map((o, i) => ({ i, x: (PH ? 440 : 380) + i * 60, p: S.puppet(act.add(person(c, o))) }));
     const jesus = S.puppet(act.add(person(c, { ...CAST.jesus })));
     const voice = voiceRings(act, c, { n: 3, color: C.clay, r: 38, w: 5 });
     const ears = [0, 1, 2].map((i) => act.add(`<g>${earGlyph(c, 20 + (i === 1 ? 6 : 0), [C.skin2, C.skin, C.skin3][i])}</g>`));
@@ -85,7 +87,9 @@ export default {
 
       /* v14 — "he is Elijah": the vision of John, the chariot, the mantle */
       const vis = es(t, 0.05, 0.25) * (1 - es(t, 1.0, 1.2));
-      const [cx, cy] = kf(t, [[0.02, [1680, 600]], [0.4, [1260, 450]], [0.75, [1020, 390]], [1.1, [720, 290]]], (u) => u);
+      // phone: the chariot's path runs CSH further left, so at the pause it is not under the progress thread
+      const CSH = PH ? 90 : 0;
+      const [cx0, cy] = kf(t, [[0.02, [1680, 600]], [0.4, [1260, 450]], [0.75, [1020, 390]], [1.1, [720, 290]]], (u) => u), cx = cx0 - CSH;
       const onSky = t > 0.02 && t < 1.2 ? 1 : 0;
       const gal = T ? Math.sin(T * 14) : 0;
       const CS = 1.25;
@@ -95,7 +99,7 @@ export default {
       // the mantle drops from the chariot as it passes over John, and settles on him
       const drop = seg(t, 0.38, 0.62);
       const [jhx, jhy] = headAt(JNX, GY, 1.0, true);
-      const mx = lerp(1230, jhx + 4, drop) + Math.sin(drop * 9) * 30 * (1 - drop), my = lerp(480, jhy + 14, ease.io(drop));
+      const mx = lerp(1230 - CSH, jhx + 4, drop) + Math.sin(drop * 9) * 30 * (1 - drop), my = lerp(480, jhy + 14, ease.io(drop));
       const settled = es(t, 0.6, 0.64);
       pose(cloak, { x: mx, y: my, r: Math.sin(drop * 7) * 30 * (1 - drop), s: 0.9, o: drop > 0 ? (1 - settled) * vis : 0 });
       john.set({ x: JNX, y: GY, s: 1.0, flip: true, armF: 20 + bump(t, 0.3, 0.7) * 40, armB: 20 + es(t, 0.3, 0.5) * 60 * (1 - settled), head: -10 * (1 - settled), o: vis * (1 - settled), blink: blinkAt(T, 2) });

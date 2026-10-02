@@ -43,13 +43,15 @@ export default {
   ],
   cam: { x: [-60, 60], y: [0, 170], z: [1, 1.6] },
   build(S) {
+    const PH = S.portrait;
+    const kx = (x) => (PH ? 800 + (x - 800) * 0.65 : x);   // phone: both groups of children inside the zoomed screen
     const T0 = townSet(S, { gy: 650, market: true, gap: [600, 1000] });
     const c = T0.c;
 
     /* this generation: grown-ups standing about */
     const back = S.layer({ par: 0.45, sh: 4 });
-    back.sprite(throng(makeCutter('mt11-mk-a'), 5, { s: 0.74, rows: 2, spread: 40, arms: 70 }), 330, 676);
-    back.sprite(throng(makeCutter('mt11-mk-b'), 5, { s: 0.74, rows: 2, spread: 40, arms: 70, flip: true }), 1280, 676);
+    back.sprite(throng(makeCutter('mt11-mk-a'), 5, { s: 0.74, rows: 2, spread: 40, arms: 70 }), PH ? 480 : 330, 676);
+    back.sprite(throng(makeCutter('mt11-mk-b'), 5, { s: 0.74, rows: 2, spread: 40, arms: 70, flip: true }), PH ? 1120 : 1280, 676);
     back.add(`<g transform="translate(${JX} ${JY + 4})">${fountain(c)}</g>`);
 
     /* Jesus on the step of the fountain */
@@ -61,11 +63,11 @@ export default {
     /* the children */
     const kidsL = S.layer({ par: 0.5, sh: 5 });
     const board = kidsL.add(`<g>${doll(c)}</g>`);
-    const callers = A.map(([x, look], i) => ({
-      i, x,
+    const callers = A.map(([x0, look], i) => ({
+      i, x: kx(x0),
       p: S.puppet(kidsL.add(kid(c, look, { pose: 'sit', holdF: i === 1 ? `<g transform="translate(4 6) scale(1.2)">${tambourine(c)}</g>` : `<g transform="rotate(-30) scale(1.1)">${flute(c)}</g>` }))),
     }));
-    const friends = B.map(([x, look], i) => ({ i, x, p: S.puppet(kidsL.add(kid(c, look))) }));
+    const friends = B.map(([x0, look], i) => ({ i, x: kx(x0), p: S.puppet(kidsL.add(kid(c, look))) }));
     const fx = S.layer({ par: 0.5, sh: 3 });
     const calls = callers.map((cl) => voiceRings(fx, c, { n: 2, color: C.ochre, r: 22, w: 4, both: false }));
     const notes = Array.from({ length: 7 }, (_, i) => ({ i, el: fx.add(`<g>${note(c, 8, [C.teal2, C.terracotta, C.plumRobe][i % 3])}</g>`) }));
@@ -106,11 +108,11 @@ export default {
       // the notes float across to them, and fall flat
       notes.forEach((n) => {
         const k = T ? (T * 0.35 + n.i / 7) % 1 : n.i / 7;
-        const x = lerp(560, 1080, k), y = KY - 150 - Math.sin(k * PI) * 90 + (n.i % 3) * 16 + k * k * 60;
+        const x = lerp(kx(560), kx(1080), k), y = KY - 150 - Math.sin(k * PI) * 90 + (n.i % 3) * 16 + k * k * 60;
         pose(n.el, { x, y, r: Math.sin(k * 8) * 16, s: 1.2, o: play * Math.sin(k * PI) });
       });
       // the pretend funeral: the doll on its board, tears
-      pose(board, { x: 560, y: KY + 6, o: es(t, 2.98, 3.1) });
+      pose(board, { x: kx(560), y: KY + 6, o: es(t, 2.98, 3.1) });
       tears.forEach((tr_) => {
         const cl = callers[tr_.i % 3];
         const [kx, ky] = kidHead(cl.x, KY, 0.8, false, 62);

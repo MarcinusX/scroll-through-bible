@@ -34,11 +34,12 @@ export default {
     const cl = hanging(hangL, cloud(c, 170), { x: 420, y: 190, len: 900 });
 
     /* the sea, Sidon far off, Tyre on its island, ships */
-    S.layer({ par: 0.06, sh: 2 }).add(band(c, { y: 440, amps: [12, 5, 2], lens: [900, 300, 110], color: mix(C.hillFar, C.duskViolet, 0.15), x1: 400 }).markup + `<g transform="translate(160 450)">${cityIcon(makeCutter('mt11-sidon'), 110)}</g>`);
+    const farM = band(c, { y: 440, amps: [12, 5, 2], lens: [900, 300, 110], color: mix(C.hillFar, C.duskViolet, 0.15), x1: 400 }).markup + `<g transform="translate(160 450)">${cityIcon(makeCutter('mt11-sidon'), 110)}</g>`;
+    S.layer({ par: 0.06, sh: 2 }).add(S.portrait ? `<g transform="translate(360 0)">${farM}</g>` : farM);   // phone: Sidon's coast slides into view
     const sea = S.layer({ par: 0.1, sh: 2 });
     sea.add(waterBand(c, { y: 470, color: mix(C.lake2, C.skyBlue, 0.2), foamN: 30, bottom: 900 }).markup);
     const isle = S.layer({ par: 0.16, sh: 3 });
-    isle.add(sheet().p(c.cut([[880, 540], [920, 510], [1300, 500], [1400, 530], [1380, 548], [900, 552]], 0.8, 10), C.sand2).out() + `<g transform="translate(1110 520)">${cityIcon(makeCutter('mt11-tyre'), 250, { tower: true, dome: true })}</g>`);
+    isle.add((S.portrait ? (m) => `<g transform="translate(-170 0)">${m}</g>` : (m) => m)(sheet().p(c.cut([[880, 540], [920, 510], [1300, 500], [1400, 530], [1380, 548], [900, 552]], 0.8, 10), C.sand2).out() + `<g transform="translate(1110 520)">${cityIcon(makeCutter('mt11-tyre'), 250, { tower: true, dome: true })}</g>`));   // phone: Tyre's island clear of the thread
     const shipL = S.layer({ par: 0.2, sh: 3 });
     const ships = [[560, 580, 0.5], [1480, 600, 0.6]].map(([x, y, s], i) => ({ i, x, y, s, el: shipL.add(`<g>${ship(makeCutter('mt11-sh' + i), 200)}</g>`) }));
     const shL = S.layer({ par: 0.2, sh: 1, flat: true });
@@ -54,15 +55,16 @@ export default {
 
     /* the people: fine clothes → sackcloth, sitting in ashes */
     const act = S.layer({ par: 0.45, sh: 5 });
-    const piles = PEN.map(([x], i) => act.add(`<g>${ashPile(c, 110)}</g>`));
-    const ppl = PEN.map(([x, i]) => {
+    const PN = S.portrait ? PEN.map(([x, i]) => [800 + (x - 800) * 0.85, i]) : PEN;   // phone: the row of penitents inside the screen
+    const piles = PN.map(([x], i) => act.add(`<g>${ashPile(c, 110)}</g>`));
+    const ppl = PN.map(([x, i]) => {
       const o = penitent(c, i);
       const fine = { ...o, robe: PURPLE[i % 3], mantle: i % 2 ? C.sun : C.linen, belt: C.sun, veil: i % 3 === 1 ? C.roseRobe : o.veil };
       return { i, x, fine: S.puppet(act.add(person(c, fine))), sack: S.puppet(act.add(person(c, { ...o, pose: 'sit', eyes: 'closed' }))) };
     });
     const fx = S.layer({ par: 0.45, sh: 3 });
     const sparks = Array.from({ length: 10 }, (_, i) => ({ i, el: fx.add(`<g>${sparkle(c, 12, i % 2 ? C.halo : C.star)}</g>`), x: 400 + ((i * 97) % 820) }));
-    const ash = Array.from({ length: 18 }, (_, i) => ({ i, el: fx.add(ashFlake(c, 5)), x: PEN[i % 6][0] + ((i * 13) % 30) - 15 }));
+    const ash = Array.from({ length: 18 }, (_, i) => ({ i, el: fx.add(ashFlake(c, 5)), x: PN[i % 6][0] + ((i * 13) % 30) - 15 }));
 
     /* the balance of the day of judgment */
     const balL = S.layer({ par: 0.12, sh: 6 });
@@ -93,7 +95,7 @@ export default {
         const bowK = es(t, 0.4 + p.i * 0.04, 0.6);
         p.sack.set({ x: p.x, y: GY - (p.i % 2) * 14, s: 0.9, flip: p.x > 800, armF: 50 + bowK * 40, armB: 20 + bowK * 140, head: bowK * 22, lean: bowK * 8, o: sw });
       });
-      piles.forEach((pl, i) => pose(pl, { x: PEN[i][0] + (PEN[i][0] > 800 ? -10 : 10), y: GY - (i % 2) * 14 + 4, o: es(t, 0.28 + i * 0.03, 0.4 + i * 0.03) }));
+      piles.forEach((pl, i) => pose(pl, { x: PN[i][0] + (PN[i][0] > 800 ? -10 : 10), y: GY - (i % 2) * 14 + 4, o: es(t, 0.28 + i * 0.03, 0.4 + i * 0.03) }));
       ash.forEach((a) => {
         const k = T ? (T * 0.3 + a.i / 18) % 1 : a.i / 18;
         pose(a.el, { x: a.x + Math.sin(k * 9 + a.i) * 12, y: lerp(430, GY - 110, k), r: k * 300, o: es(t, 0.45, 0.6) * Math.sin(k * PI) });

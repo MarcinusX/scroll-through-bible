@@ -14,8 +14,8 @@ import {
 
 const GY = 744;
 const JX = 800, JS = 1.06;
-const BX = 440, LX = 565, PX = 690;               // blind, lame, leper (left)
-const DX = 950, BIX = 1075, BGX = [1215, 1280];   // deaf, bier, beggars (right)
+const BX = 440, LX0 = 565, PX0 = 690;             // blind, lame, leper (left)
+const DX0 = 950;                                  // the deaf man (right)
 const BACK = 690;                                 // the back row
 
 export default {
@@ -27,8 +27,13 @@ export default {
     { v: 5, cont: true, text: 'głusi słyszą, umarli zmartwychwstają, ubogim głosi się Ewangelię.' },
     { v: 6 },
   ],
-  cam: { x: [-260, 360], y: [0, 60], z: [1, 1.4] },
+  cam: { x: [-260, 440], y: [0, 60], z: [1, 1.4] },
   build(S) {
+    const PH = S.portrait;
+    // phone: the lame man and the leper a little further left (the leper was half in view while the right half is shown)
+    const LX = PH ? 530 : LX0, PX = PH ? 650 : PX0;
+    const DX = PH ? 995 : DX0;   // phone: the deaf man stands a little further right, off the edge while the left half is shown
+    const BIX = PH ? 1045 : 1075, BGX = PH ? [1170, 1225] : [1215, 1280];   // bier, beggars (phone: inside the screen)
     const T0 = townSet(S, { gy: 660 });
     const c = T0.c;
 
@@ -81,7 +86,7 @@ export default {
     const earBig = fx.add(`<g>${earGlyph(c, 30, C.skin)}</g>`);
     const eyeBig = fx.add(`<g>${eyeGlyph(c, 30)}</g>`);
     const sparks = Array.from({ length: 6 }, (_, i) => fx.add(`<g>${sparkle(c, 16, i % 2 ? C.halo : C.star)}</g>`));
-    const SPARK_AT = [[BX, GY - 190, 2.1], [LX, GY - 150, 2.3], [PX, BACK - 150, 2.48], [DX, BACK - 175, 3.1], [BIX, GY - 120, 3.26], [1215, GY - 110, 3.45]];
+    const SPARK_AT = [[BX, GY - 190, 2.1], [LX, GY - 150, 2.3], [PX, BACK - 150, 2.48], [DX, BACK - 175, 3.1], [BIX, GY - 120, 3.26], [BGX[0], GY - 110, 3.45]];
 
     return (t, time) => {
       const T = time;
@@ -191,7 +196,8 @@ export default {
       pose(bless, { x: hx + 22, y: hy - 64, s: bb, o: bb > 0.02 ? 1 : 0 });
 
       /* camera */
-      S.cam.x = kf(t, [[0, 250], [1.9, 250], [2.08, -260], [2.9, -260], [3.08, 360], [3.9, 360], [4.1, 300]]);
+      S.cam.x = PH ? kf(t, [[0, 250], [1.9, 250], [2.08, -260], [2.9, -260], [3.08, 440], [3.9, 440], [4.1, 440]])   // phone: the beggars and the stone in view
+        : kf(t, [[0, 250], [1.9, 250], [2.08, -260], [2.9, -260], [3.08, 360], [3.9, 360], [4.1, 300]]);
       S.cam.z = kf(t, [[0, 1.3], [1.9, 1.3], [2.08, 1.38], [4.0, 1.38], [4.2, 1.3]]);
       S.cam.y = kf(t, [[0, 50], [2.0, 60], [4.2, 50]]);
     };

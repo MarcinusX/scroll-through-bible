@@ -24,9 +24,10 @@ export default {
     { v: 19, cont: true, text: 'a oni mówią: "Oto żarłok i pijak, przyjaciel celników i grzeszników".' },
     { v: 19, cont: true, text: 'A jednak mądrość usprawiedliwiona jest przez swe czyny».' },
   ],
-  cam: { x: [-560, 660], y: [0, 90], z: [1, 1.55] },
+  cam: { x: [-680, 780], y: [0, 90], z: [0.85, 1.55] },
   build(S) {
     const c = S.c;
+    const PCX = [-680, -258, 750, 630, 630], PCZ = [1.55, 1.08, 1.1, 0.87, 0.87];   // phone camera per beat
     sky(S, ['#cadbd6', '#f0e4c9', '#f7e4c3']);
     const wis = S.layer({ par: 0.04, sh: 0, flat: true, rise: 0 });
     const wisGlow = wis.add(`<g><circle r="700" fill="url(#warm-glow)"/></g>`);
@@ -112,14 +113,16 @@ export default {
       const atS = es(t, 3.05, 3.2) * (1 - es(t, 3.95, 4.05));
       const face = t > 2.5 ? 1 : -1;       // −1: towards John (left)
       const shame = es(t, 4.2, 4.5);
+      // phone: when they turn on Jesus the critics walk up to the table, so they and the meal fit on one screen
+      const toT = S.portrait ? es(t, 2.96, 3.2) * 120 : 0, crWalk = S.portrait && t > 2.96 && t < 3.2;
       critics.forEach((cr) => {
         const pnt = face < 0 ? atJ : atS;
-        cr.p.set({ x: cr.x, y: GY + (cr.i % 2) * 8, s: 0.94, flip: face < 0, armF: 20 + pnt * (60 + cr.i * 10), armB: 10 + pnt * (cr.i === 1 ? 140 : 30), head: -pnt * 6 + shame * 14, lean: pnt * 6, blink: blinkAt(T, cr.i + 2) });
+        cr.p.set({ x: cr.x + toT, y: GY + (cr.i % 2) * 8, s: 0.94, flip: face < 0, walk: crWalk ? (cr.x + toT) * 0.05 : undefined, armF: 20 + pnt * (60 + cr.i * 10), armB: 10 + pnt * (cr.i === 1 ? 140 : 30), head: -pnt * 6 + shame * 14, lean: pnt * 6, blink: blinkAt(T, cr.i + 2) });
       });
       const sj = es(t, 1.15, 1.35, ease.back) * (1 - es(t, 1.9, 2.0));
       pose(shoutJ, { x: CR[0] - 20, y: GY - 200, s: sj, r: T ? Math.sin(T * 3) * 2 : 0, o: sj > 0.02 ? 1 : 0 });
       const ss = es(t, 3.15, 3.35, ease.back) * (1 - es(t, 3.95, 4.05));
-      pose(shoutS, { x: CR[2] + 20, y: GY - 200, s: ss, r: T ? Math.sin(T * 3) * 2 : 0, o: ss > 0.02 ? 1 : 0 });
+      pose(shoutS, { x: CR[2] + 20 + toT, y: GY - 200, s: ss, r: T ? Math.sin(T * 3) * 2 : 0, o: ss > 0.02 ? 1 : 0 });
 
       /* v19a — the Son of Man eats and drinks with them */
       const brk = es(t, 2.1, 2.3), raise = es(t, 2.35, 2.55);
@@ -151,9 +154,15 @@ export default {
       pose(wisGlow, { x: 800, y: 260, s: 0.6 + bless * 0.5, o: bless * 0.7 });
 
       /* camera: John — the critics — the table — all */
-      const pr = S.portrait ? 1 : 0;
-      S.cam.x = kf(t, [[0, -520], [0.95, -520], [1.2, -250], [1.95, -250], [2.1, 520 + pr * 60], [2.95, 520 + pr * 60], [3.15, 250 + pr * 200], [3.95, 250 + pr * 200], [4.15, 250 + pr * 400]]);
-      S.cam.z = kf(t, [[0, 1.55], [0.95, 1.55], [1.2, 1.35], [1.95, 1.35], [2.1, 1.55], [2.95, 1.55], [3.15, 1.35], [3.95, 1.35], [4.15, 1.0]]);
+      if (S.portrait) {
+        // phone: the stage is wider than the screen; each beat frames its own part whole (the table with its
+        // beggar, the critics with the table), and the close-up on John keeps the critics out of the corner
+        S.cam.x = kf(t, [[0, PCX[0]], [0.95, PCX[0]], [1.2, PCX[1]], [1.95, PCX[1]], [2.1, PCX[2]], [2.95, PCX[2]], [3.15, PCX[3]], [3.95, PCX[3]], [4.15, PCX[4]]]);
+        S.cam.z = kf(t, [[0, 1.55], [0.95, 1.55], [1.2, PCZ[1]], [1.95, PCZ[1]], [2.1, PCZ[2]], [2.95, PCZ[2]], [3.15, PCZ[3]], [3.95, PCZ[3]], [4.15, PCZ[4]]]);
+      } else {
+        S.cam.x = kf(t, [[0, -520], [0.95, -520], [1.2, -250], [1.95, -250], [2.1, 520], [2.95, 520], [3.15, 250], [3.95, 250], [4.15, 250]]);
+        S.cam.z = kf(t, [[0, 1.55], [0.95, 1.55], [1.2, 1.35], [1.95, 1.35], [2.1, 1.55], [2.95, 1.55], [3.15, 1.35], [3.95, 1.35], [4.15, 1.0]]);
+      }
       S.cam.y = kf(t, [[0, 90], [3.95, 90], [4.15, 30]]);
     };
   },

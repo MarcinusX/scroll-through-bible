@@ -34,9 +34,10 @@ export default {
     { v: 12, cont: true, text: 'i ludzie gwałtowni zdobywają je.' },
     { v: 13 },
   ],
-  cam: { x: [-420, 360], y: [-40, 40], z: [1, 1.3] },
+  cam: { x: [-420, 480], y: [-40, 40], z: [1, 1.3] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;
     const sk = sky(S, ['#c9d9d6', '#efe6cf', '#f6e5c4']);
     const sk2 = sky(S, KINGDOM, { name: 'sky2', rise: 0 }).layer;
     sk2.fade(0);
@@ -82,7 +83,7 @@ export default {
     /* the violent: groups surging up from the right, two on ladders, three at the doors */
     const mob = S.layer({ par: P, sh: 5 });
     const surge = [0, 1, 2].map((i) => ({ i, sp: mob.sprite(throng(makeCutter('mt11-vi' + i), 4, { s: 0.8, flip: true, rows: 2, spread: 40, arms: 90 }), 800, 600) }));
-    const lad = [GX + 250, GX + 420].map((x, i) => ({ i, x, el: mob.add(`<g>${ladder(c, 190)}</g>`) }));
+    const lad = (PH ? [GX + 200, GX + 310] : [GX + 250, GX + 420]).map((x, i) => ({ i, x, el: mob.add(`<g>${ladder(c, 190)}</g>`) }));
     const climbers = [0, 1].map((i) => ({ i, p: S.puppet(mob.add(person(c, { ...throngOpts(i), pose: 'stand' }))) }));
     const pushers = [0, 1, 2].map((i) => ({ i, p: S.puppet(mob.add(person(c, throngOpts(i + 2)))) }));
 
@@ -100,7 +101,7 @@ export default {
       wallL.shift(shake, 0);
       surge.forEach((s) => {
         const k = es(t, 0.05 + s.i * 0.08, 0.6 + s.i * 0.08);
-        const tx = GX + 210 + s.i * 110;
+        const tx = PH ? GX + 190 + s.i * 80 : GX + 210 + s.i * 110;
         const x = lerp(1700 + s.i * 120, tx, k);
         const inside = es(t, 1.05 + s.i * 0.2, 1.45 + s.i * 0.35);
         const xx = lerp(x, GX + 20, inside);
@@ -147,7 +148,7 @@ export default {
       pose(flame, { x: fx, y: fy - 10, s: fk * (1 + es(t, 2.72, 2.9) * 0.6), o: fk });
 
       /* camera: the gate, then down the hill to the prophets */
-      S.cam.x = kf(t, [[0, 330], [1.9, 330], [2.1, -380], [2.55, -80], [2.8, 60]]);
+      S.cam.x = kf(t, [[0, PH ? 480 : 330], [1.9, PH ? 480 : 330], [2.1, -380], [2.55, -80], [2.8, 60]]);
       S.cam.z = kf(t, [[0, 1.26], [1.0, 1.26], [1.3, 1.16], [2.0, 1.16], [2.1, 1.22], [2.8, 1.16]]);
       S.cam.y = kf(t, [[0, 0], [1.9, 0], [2.1, 30]]);
     };

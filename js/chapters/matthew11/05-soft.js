@@ -41,6 +41,8 @@ export default {
   cam: { x: [-10, 10], y: [-85, 15], z: [0.98, 1.62] },
   build(S) {
     const c = S.c;
+    // phone: the dais, throne and king stand at TX (the king sat under the progress thread), the third courtier at 905
+    const PH = S.portrait, TX = PH ? 1050 : 1120;
     sky(S, ['#8f86ad', '#e3a58e', '#f3c79e']);
     const view = S.layer({ par: 0.3, sh: 1 });
     view.add(band(c, { y: 400, amps: [16, 6, 2], lens: [700, 260, 100], color: mix(C.duskViolet, C.dune, 0.4) }).markup + town(c, { x: 650, y: 420, n: 6, spread: 200, sc: 0.5 }) + town(c, { x: 1100, y: 420, n: 5, spread: 160, sc: 0.5 }));
@@ -79,14 +81,14 @@ export default {
     B.x(chk, mix(C.plumRobe, C.stone, 0.55), 'opacity=".4"');
     base.add(B.out());
     // the dais and throne
-    base.add(`<g transform="translate(1120 ${FL})">${sheet().p(c.cut([[-110, 0], [-96, -24], [96, -24], [110, 0]], 0.4, 6), C.plumRobe).out()}</g><g transform="translate(1120 ${FL - 24}) scale(1.05)">${throne(c)}</g>`);
+    base.add(`<g transform="translate(${TX} ${FL})">${sheet().p(c.cut([[-110, 0], [-96, -24], [96, -24], [110, 0]], 0.4, 6), C.plumRobe).out()}</g><g transform="translate(${TX} ${FL - 24}) scale(1.05)">${throne(c)}</g>`);
     const glowJ = base.add(`<circle r="120" fill="url(#warm-glow)"/>`);
 
     /* people */
     const act = S.layer({ par: 0.8, sh: 5 });
     const john = S.puppet(act.add(person(c, { ...JOHN_B, pose: 'sit' })));
     const king = S.puppet(act.add(addToHead(person(c, { ...HEROD, pose: 'sit' }), crown(c))));
-    const CT = [[520, 0.9, 1], [650, 0.92, 2], [950, 0.9, 3]].map(([x, s, k], i) => ({ i, x, s, p: S.puppet(act.add(person(c, COURTIERS[k]))) }));
+    const CT = [[520, 0.9, 1], [650, 0.92, 2], [PH ? 905 : 950, 0.9, 3]].map(([x, s, k], i) => ({ i, x, s, p: S.puppet(act.add(person(c, COURTIERS[k]))) }));
     const hero = S.puppet(act.add(person(c, { ...COURTIERS[0], mantle: mix(C.lavender, C.roseRobe, 0.35) })));
     const heroPlain = S.puppet(act.add(person(c, { ...COURTIERS[0], mantle: null })));
     const servant = S.puppet(act.add(person(c, { robe: C.linen2, hair: C.hair3, hairStyle: 'short', beard: 'none', skin: C.skin4, belt: C.rope, holdB: `<g transform="translate(0 -8) rotate(180)">${fan(c)}</g>` })));
@@ -120,7 +122,7 @@ export default {
       /* v8b — the king's house: courtiers bow; below, John */
       const bow = es(t, 1.2, 1.45);
       CT.forEach((ct) => ct.p.set({ x: ct.x, y: FL, s: ct.s, flip: false, armF: 20 + bow * 40, armB: 20 + bow * 30, head: bow * 16, lean: bow * 10, blink: blinkAt(T, ct.i + 1) }));
-      king.set({ x: 1124, y: FL - 30, s: 0.95, flip: true, armF: 30 + bump(t, 1.3, 1.8) * 40, armB: 60, head: -4, blink: blinkAt(T, 8) });
+      king.set({ x: TX + 4, y: FL - 30, s: 0.95, flip: true, armF: 30 + bump(t, 1.3, 1.8) * 40, armB: 60, head: -4, blink: blinkAt(T, 8) });
       john.set({ x: 800, y: DF, s: 0.92, armF: 40, armB: 20, head: 12 - es(t, 1.4, 1.6) * 16, blink: blinkAt(T, 3) });
       pose(glowJ, { x: 800, y: DF - 90, o: es(t, 1.35, 1.65) * 0.8 });
       pose(barsEl, { x: 800, y: DF });

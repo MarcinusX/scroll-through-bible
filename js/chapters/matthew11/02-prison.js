@@ -17,9 +17,11 @@ export default {
   beats: [
     { v: 2 },
   ],
-  cam: { x: [-20, 280], y: [-180, 40], z: [1, 1.5] },
+  cam: { x: [-20, 340], y: [-180, 40], z: [1, 1.5] },
   build(S) {
     const c = S.c;
+    const OUT = S.portrait ? [1180, 1080] : [1500, 1400];   // where the two walk off to (phone: still in view at the pause)
+    const QDX = S.portrait ? -6 : 30;                       // phone: the question rides over the head, not under the thread
     sky(S, PRISON);
     const hangL = S.layer({ par: 0.04, sh: 5 });
     const sunEl = hanging(hangL, sun(c, 40, { rays: C.sunDeep, disc: '#f0a868', inner: '#f5c08a' }), { x: 1330, y: 330, len: 900 });
@@ -84,7 +86,7 @@ export default {
       const tellK = bump(t, 0.12, 0.42);
       const bow = bump(t, 0.6, 0.72);
       dis.forEach((d) => {
-        const KX = d.i === 0 ? [[-0.2, 1300], [0.12, 1000], [0.62, 1000], [0.95, 1500]] : [[-0.2, 1400], [0.14, 880], [0.64, 880], [0.97, 1400]];
+        const KX = d.i === 0 ? [[-0.2, 1300], [0.12, 1000], [0.62, 1000], [0.95, OUT[0]]] : [[-0.2, 1400], [0.14, 880], [0.64, 880], [0.97, OUT[1]]];
         const x = kf(t, KX);
         const leaving = t > 0.64;
         d.p.set({
@@ -105,14 +107,14 @@ export default {
       pose(patch, { o: 0.4 + hear * 0.6 });
       // the question goes with them
       const qk = es(t, 0.54, 0.64, ease.back);
-      const dx0 = kf(t, [[-0.2, 1300], [0.12, 1000], [0.62, 1000], [0.95, 1500]]);
+      const dx0 = kf(t, [[-0.2, 1300], [0.12, 1000], [0.62, 1000], [0.95, OUT[0]]]);
       const [qx, qy] = headAt(dx0, GY, 1.1, true);
       const follow = es(t, 0.62, 0.66);
-      pose(q, { x: lerp(WX + 70, qx + 30, follow), y: lerp(WY - 70, qy - 70, follow), s: qk * 1.1, r: T_ ? Math.sin(T_ * 2) * 6 : 0, o: qk > 0.02 ? 1 : 0 });
+      pose(q, { x: lerp(WX + 70, qx + QDX, follow), y: lerp(WY - 70, qy - 70, follow), s: qk * 1.1, r: T_ ? Math.sin(T_ * 2) * 6 : 0, o: qk > 0.02 ? 1 : 0 });
 
       S.cam.z = 1.3 + es(t, 0.2, 0.45) * 0.2 - es(t, 0.6, 0.85) * 0.2;
       S.cam.y = -40 - es(t, 0.2, 0.45) * 50 + es(t, 0.6, 0.85) * 70;
-      S.cam.x = es(t, 0.62, 0.95) * 260;
+      S.cam.x = es(t, 0.62, 0.95) * (S.portrait ? 330 : 260);   // phone: looks a little further after them
     };
   },
 };
