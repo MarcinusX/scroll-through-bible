@@ -73,7 +73,7 @@ export default {
       const fall = es(t, 2.2, 2.7, ease.in);
       pieces.forEach((p) => {
         const d = fall * (1 + p.i * 0.35);
-        vpose(p.el, { x: 1170 + (p.i % 2 ? 1 : -1) * d * 40, y: lerp(-300, 520, inK) + d * 420, r: (p.i % 2 ? 1 : -1) * d * 30, s: 0.9, o: inK * (1 - fall) });
+        vpose(p.el, { x: (S.portrait ? 1050 : 1170) + (p.i % 2 ? 1 : -1) * d * 40, y: lerp(S.portrait ? -500 : -300, S.portrait ? 300 : 520, inK) + d * 420, r: (p.i % 2 ? 1 : -1) * d * 30, s: 0.9, o: inK * (1 - fall) });
       });
       const day = es(t, 2.3, 2.9);
       dawn.layer.fade(day);

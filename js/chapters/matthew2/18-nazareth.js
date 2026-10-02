@@ -79,15 +79,16 @@ export default {
       const home = es(t, 0.8, 0.88);
       const jx2 = kf(t, JK2, ease.sine);
       joseph.set({ x: jx2, y: Y + 4, s: 0.92, flip: t > 1.15, walk: moving(t, JK2, 0.3) ? jx2 * 0.06 : undefined, armF: 30, armB: 30 + home * 20, head: home * 4, blink: blinkAt(T, 2) });
-      const dx = jx - 220;
+      const DXO = S.portrait ? 120 : 220;   // phone: the donkey stops whole inside the frame, not as a head at the edge
+      const dx = jx - DXO;
       donkey.set({ x: dx, y: Y + 10, s: 0.9, o: 1 - home, walk: walking ? dx * 0.05 : undefined });
-      plain.set({ x: 420, y: Y + 10, s: 0.9, o: home, nod: Math.sin(T * 0.8) * 3 - 8 });
-      mary.set({ x: 1070, y: Y, s: 0.95, flip: true, o: home, armF: 30 + es(t, 1.2, 1.5) * 40, armB: 20, head: 6, blink: blinkAt(T, 1) });
+      plain.set({ x: 640 - DXO, y: Y + 10, s: 0.9, o: home, nod: Math.sin(T * 0.8) * 3 - 8 });
+      mary.set({ x: S.portrait ? 985 : 1070, y: Y, s: 0.95, flip: true, o: home, armF: 30 + es(t, 1.2, 1.5) * 40, armB: 20, head: 6, blink: blinkAt(T, 1) });
       const kx = lerp(jx - 80, CX, es(t, 0.75, 1.05));
       const wonder = es(t, 1.3, 1.6);
       kid.set({ x: kx, y: Y + 10, s: 0.58, walk: t < 1.05 && (walking || t > 0.75) ? kx * 0.1 : undefined, armF: 20 + wonder * 50, armB: 10 + wonder * 130, head: -wonder * 12, blink: blinkAt(T, 4) });
       const nk = es(t, 0.3, 0.6, ease.out) * (1 - es(t, 1.0, 1.2, ease.in));
-      hangAt(tagN, 1060, lerp(-500, 260, nk), T, nk > 0.001 ? 1 : 0, 1.2, 0.9, 1);
+      hangAt(tagN, S.portrait ? 990 : 1060, lerp(-500, 260, nk), T, nk > 0.001 ? 1 : 0, 1.2, 0.9, 1);
 
       /* v23b — "He will be called a Nazarene": the word comes down, the shoot springs up */
       const wk = es(t, 1.1, 1.45, ease.out);

@@ -6,7 +6,8 @@ import { es, ease, bump, attr } from '../../core/anim.js';
 import { LOOK, HALL, HY, palaceSet, herodPuppet, noble, withBits, speech, wordSlip, infant, crown, GLYPH, headAt, vpose, hangAt, kf, jerusalem, placeTag, tr, PI } from './lib.js';
 import { hanging } from '../kit.js';
 
-const COURT = [[430, 0], [510, 1], [590, 2], [1010, 3], [1090, 4], [1170, 5]];
+const COURT0 = [[430, 0], [510, 1], [590, 2], [1010, 3], [1090, 4], [1170, 5]];
+const COURTP = [[526, 0], [576, 1], [626, 2], [964, 3], [1010, 4], [1056, 5]];   // phone: the outermost courtiers inside the frame
 
 export default {
   id: 'mt2-herod',
@@ -27,6 +28,7 @@ export default {
 
     /* the court */
     const act = S.layer({ par: 0.55, sh: 5 });
+    const COURT = S.portrait ? COURTP : COURT0;
     const court = COURT.map(([x, i]) => {
       const el = act.add(withBits(person(c, noble(c, i)), c));
       return { x, i, p: S.puppet(el), sad: el.querySelector('[data-part="sad"]'), seed: c.rr(0, 6) };

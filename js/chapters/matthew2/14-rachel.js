@@ -58,15 +58,15 @@ export default {
       const T = time;
       /* v17 — Jeremiah's words are fulfilled */
       const jk = es(t, -0.2, 0.4, ease.out);
-      jer.set({ x: lerp(300, 500, jk), y: Y + 10, s: 0.95, walk: jk > 0 && jk < 1 ? jk * 12 : undefined, armF: 70, armB: 20 + bump(t, 0.4, 1.0) * 70, head: 6, blink: blinkAt(T, 2), o: 1 - es(t, 1.9, 2.1) });
+      jer.set({ x: lerp(300, S.portrait ? 575 : 500, jk), y: Y + 10, s: 0.95, walk: jk > 0 && jk < 1 ? jk * 12 : undefined, armF: 70, armB: 20 + bump(t, 0.4, 1.0) * 70, head: 6, blink: blinkAt(T, 2), o: 1 - es(t, 1.9, 2.1) });
       const tj = es(t, 0.2, 0.45, ease.out) * (1 - es(t, 1.0, 1.15, ease.in));
-      hangAt(tagJ, 520, lerp(-500, 330, tj), T, tj > 0.001 ? 1 : 0, 1.2, 0.9, 1);
+      hangAt(tagJ, S.portrait ? 595 : 520, lerp(-500, 330, tj), T, tj > 0.001 ? 1 : 0, 1.2, 0.9, 1);
 
       /* v18a — a cry heard in Ramah */
       const cry = es(t, 1.0, 1.25) * (1 - es(t, 2.6, 3.0) * 0.6);
       rings(540, mfn(540) - 50, cry, T, { spread: 3.2, speed: 0.4 });
       const tr_ = es(t, 1.05, 1.3, ease.out) * (1 - es(t, 1.95, 2.1, ease.in));
-      hangAt(tagR, 540, lerp(-500, 250, tr_), T, tr_ > 0.001 ? 1 : 0, 1.2, 0.9, 2);
+      hangAt(tagR, S.portrait ? 600 : 540, lerp(-500, 250, tr_), T, tr_ > 0.001 ? 1 : 0, 1.2, 0.9, 2);
 
       /* Rachel weeps among the empty cradles */
       const rk = es(t, 0.9, 1.3);

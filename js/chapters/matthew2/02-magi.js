@@ -10,7 +10,8 @@ import {
 } from './lib.js';
 
 const Y = 700;
-const CX = [1010, 1150, 1290];      // where the camels stop
+const CX0 = [1010, 1150, 1290];     // where the camels stop
+const CXP = [900, 1010, 1120];      // phone: closer in
 const MX = [760, 870, 980];          // where the Magi stand
 
 export default {
@@ -23,6 +24,7 @@ export default {
   cam: { x: [-40, 120], y: [0, 60], z: [1, 1.14] },
   build(S) {
     const c = S.c;
+    const CX = S.portrait ? CXP : CX0;
     sky(S, DAWN);
     const hangL = S.layer({ par: 0.04, sh: 5 });
     const sunEl = hanging(hangL, sun(c, 40, { rays: C.apricot, disc: mix(C.sun, C.peach, 0.3), inner: C.dawn }), { x: 0, y: 0, len: 800 });
@@ -56,9 +58,10 @@ export default {
 
     /* the townspeople by the gate */
     const P = S.layer({ par: 0.5, sh: 5 });
+    const TO = S.portrait ? 60 : 0;   // phone: the townspeople at the gate come in from the left edge
     P.add(`<g>${group(c, [
-      { x: 470, y: Y - 8, s: 0.86, flip: true, o: folk(c, false) },
-      { x: 540, y: Y + 4, s: 0.9, flip: true, o: folk(c, true) },
+      { x: 470 + TO, y: Y - 8, s: 0.86, flip: true, o: folk(c, false) },
+      { x: 540 + TO, y: Y + 4, s: 0.9, flip: true, o: folk(c, true) },
     ])}</g>`);
     const answer = S.puppet(P.add(person(c, folk(c, true, { robe: C.sageRobe, mantle: C.wood3 }))));
     const kid = S.puppet(P.add(person(c, folk(c, true, { robe: C.skyVeil, beard: 'none', hairStyle: 'curly' }))));
@@ -104,7 +107,7 @@ export default {
       const nk = es(t, 0.15, 0.45, ease.out) * (1 - es(t, 1.0, 1.2, ease.in));
       hangAt(name, 430, lerp(-500, 330, nk), T, nk > 0.001 ? 1 : 0, 1.3, 0.9, 1);
       const ek = es(t, 0.35, 0.6, ease.out) * (1 - es(t, 1.0, 1.2, ease.in));
-      hangAt(east, 1150, lerp(-500, 250, ek), T, ek > 0.001 ? 1 : 0, 1.3, 0.9, 3);
+      hangAt(east, S.portrait ? 1000 : 1150, lerp(-500, 250, ek), T, ek > 0.001 ? 1 : 0, 1.3, 0.9, 3);
 
       /* v2a — they get down and ask the people at the gate */
       const kneel = es(t, 2.42, 2.5);
@@ -120,8 +123,8 @@ export default {
       const ak = es(t, 1.35, 1.5, ease.back) * (1 - es(t, 2.02, 2.1));
       vpose(ask, { x: MX[0] - 30, y: Y - 200, s: ak, o: ak > 0.01 ? 1 : 0 });
       const puzzled = es(t, 1.55, 1.8);
-      answer.set({ x: 610, y: Y + 8, s: 0.92, flip: false, armF: puzzled * 50 * (1 - es(t, 2.1, 2.3)), armB: puzzled * 70 * (1 - es(t, 2.1, 2.3)), head: -puzzled * 8, blink: blinkAt(T, 2) });
-      kid.set({ x: 580, y: Y + 14, s: 0.55, flip: false, armF: 30, head: -6, blink: blinkAt(T, 5) });
+      answer.set({ x: 610 + TO * 0.7, y: Y + 8, s: 0.92, flip: false, armF: puzzled * 50 * (1 - es(t, 2.1, 2.3)), armB: puzzled * 70 * (1 - es(t, 2.1, 2.3)), head: -puzzled * 8, blink: blinkAt(T, 2) });
+      kid.set({ x: 580 + TO * 0.7, y: Y + 14, s: 0.55, flip: false, armF: 30, head: -6, blink: blinkAt(T, 5) });
       qs.forEach((q, i) => {
         const k = es(t, 1.6 + i * 0.1, 1.8 + i * 0.1, ease.back) * (1 - es(t, 2.02, 2.12));
         vpose(q, { x: 560 + i * 60, y: Y - 230 - i * 20 + Math.sin(T * 2 + i) * 4, s: k * 1.2, r: Math.sin(T * 1.5 + i) * 10, o: k > 0.01 ? 1 : 0 });

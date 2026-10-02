@@ -10,7 +10,9 @@ import {
 } from './lib.js';
 import { palm } from '../../assets/nature.js';
 
-const JX = 600;             // Joseph's mat
+const JX0 = 600;            // Joseph's mat
+const JXP = 720;            // phone: room for the angel by his head
+const AX0 = 440, AXP = 580; // the angel
 const MX = 930;             // Mary and the Child
 
 export default {
@@ -24,6 +26,7 @@ export default {
   cam: { x: [-40, 60], y: [0, 80], z: [1, 1.16] },
   build(S) {
     const c = S.c;
+    const JX = S.portrait ? JXP : JX0, AX = S.portrait ? AXP : AX0;
     const room = roomSet(S, { night: true, bench: false, doorX: 1210 });
 
     const glowL = S.layer({ par: 0.45, sh: 0, flat: true });
@@ -58,14 +61,14 @@ export default {
 
       /* v13a — the angel of the Lord appears in the dream */
       const ak = es(t, 0.2, 0.7);
-      vpose(glow, { x: 470, y: 470, s: 0.4 + ak * 0.6, o: ak * 0.9 });
+      vpose(glow, { x: AX + 30, y: 470, s: 0.4 + ak * 0.6, o: ak * 0.9 });
       const speak = bump(t, 1.0, 1.9) + bump(t, 2.0, 2.9) + bump(t, 3.0, 3.9);
       const point = es(t, 1.1, 1.35) * (1 - es(t, 1.9, 2.1));
       const warn = es(t, 3.1, 3.4);
-      ang.set({ x: 440, y: FLOOR - 20 - ak * 20 + Math.sin(T * 1.3) * 3, s: 1.02, o: ak, armF: 30 + point * 100 + speak * 20 + warn * 50, armB: 20 + es(t, 2.1, 2.3) * (1 - es(t, 2.9, 3.1)) * 140 + warn * 60, head: 6 - point * 8, blink: blinkAt(T, 3) });
+      ang.set({ x: AX, y: FLOOR - 20 - ak * 20 + Math.sin(T * 1.3) * 3, s: 1.02, o: ak, armF: 30 + point * 100 + speak * 20 + warn * 50, armB: 20 + es(t, 2.1, 2.3) * (1 - es(t, 2.9, 3.1)) * 140 + warn * 60, head: 6 - point * 8, blink: blinkAt(T, 3) });
       sparks.forEach((sp, i) => {
         const k = es(t, 0.4 + i * 0.05, 0.7 + i * 0.05), a = T * 0.6 + i * 1.6;
-        vpose(sp, { x: 440 + Math.cos(a) * 110, y: 460 + Math.sin(a) * 140, s: k * 0.8, r: T * 30, o: k });
+        vpose(sp, { x: AX + Math.cos(a) * 110, y: 460 + Math.sin(a) * 140, s: k * 0.8, r: T * 30, o: k });
       });
 
       /* v13b–d — the dream: flee into Egypt; stay until I tell you; Herod will seek the Child */

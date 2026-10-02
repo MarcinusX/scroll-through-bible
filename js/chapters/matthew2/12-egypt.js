@@ -26,7 +26,7 @@ export default {
     const sunEl = set.hangL.add(`<g>${sun(c, 40)}</g>`);
 
     const P = S.layer({ par: 0.45, sh: 5 });
-    P.add(`<g transform="translate(520 ${Y})">${workbench(c, 180)}</g>`);
+    P.add(`<g transform="translate(${S.portrait ? 590 : 520} ${Y})">${workbench(c, S.portrait ? 140 : 180)}</g>`);   // phone: a shorter bench further in, so Joseph stands inside the frame
     const joseph = S.puppet(P.add(person(c, { ...LOOK.joseph })));
     const marySit = S.puppet(P.add(person(c, { ...LOOK.mary, pose: 'sit' })));
     const babyEl = P.add(`<g>${infant(c)}</g>`);
@@ -56,16 +56,16 @@ export default {
       pose(sunEl, { x: lerp(300, 1320, f), y: 470 - up * 330, r: T * 3, o: t < 1.0 ? (up > 0.05 ? 1 : 0) : 1 });
       if (t >= 1.0) pose(sunEl, { x: 1200, y: 170, r: T * 3, o: 1 });
       const run = es(t, 0.0, 0.95, (u) => u);
-      hangAt(glassEl, 1080, lerp(-400, 300, es(t, -0.1, 0.2, ease.out)) - es(t, 1.0, 1.2, ease.in) * 800, T, t < 1.2 ? 1 : 0, 1.2, 0.9, 1);
+      hangAt(glassEl, S.portrait ? 990 : 1080, lerp(-400, 300, es(t, -0.1, 0.2, ease.out)) - es(t, 1.0, 1.2, ease.in) * 800, T, t < 1.2 ? 1 : 0, 1.2, 0.9, 1);
       pose(sandT, { x: 0, y: -3, sy: 1 - run * 0.9, oy: 0 });
       pose(sandB, { x: 0, y: 40, sy: 0.15 + run * 0.85 });
       const hk = es(t, 0.2, 0.45, ease.out) * (1 - es(t, 1.0, 1.2, ease.in));
-      hangAt(tagH, 1080, lerp(-500, 400, hk), T, hk > 0.001 ? 1 : 0, 1.2, 0.9, 2);
+      hangAt(tagH, S.portrait ? 990 : 1080, lerp(-500, 400, hk), T, hk > 0.001 ? 1 : 0, 1.2, 0.9, 2);
 
       // Joseph at his bench; Mary with the baby, then standing as the boy plays and walks
       const turn = es(t, 1.2, 1.45);
       const plane = t < 1.1 ? Math.sin(t * 40) : 0;
-      joseph.set({ x: 440, y: Y, s: 0.92, flip: turn > 0.5 ? false : false, armF: 60 + plane * 12 + turn * 30, armB: 50 + plane * 10, lean: 8 - turn * 8, head: 8 - turn * 14, blink: blinkAt(T, 2) });
+      joseph.set({ x: S.portrait ? 525 : 440, y: Y, s: 0.92, flip: turn > 0.5 ? false : false, armF: 60 + plane * 12 + turn * 30, armB: 50 + plane * 10, lean: 8 - turn * 8, head: 8 - turn * 14, blink: blinkAt(T, 2) });
       const g1 = es(t, 0.32, 0.38), g2 = es(t, 0.62, 0.68);
       marySit.set({ x: 700, y: Y + 4, s: 1.0, o: 1 - g1, armF: 56, armB: 40, head: 12, blink: blinkAt(T, 1) });
       pose(babyEl, { x: 738, y: Y - 60, s: 0.85, r: -10, o: 1 - g1 });
@@ -88,7 +88,7 @@ export default {
         vpose(sp, { x: 860 + Math.cos(a) * 190, y: 250 + Math.sin(a) * 80, s: k * 0.8, r: T * 30, o: k });
       });
 
-      S.cam.x = lerp(-20, 30, es(t, 1.0, 1.5));
+      S.cam.x = lerp(-20, S.portrait ? 0 : 30, es(t, 1.0, 1.5));   // phone: the pan stops short, so Joseph stays in the frame
       S.cam.y = 30;
       S.cam.z = 1.04 + es(t, 0.6, 1.0) * 0.03;
     };

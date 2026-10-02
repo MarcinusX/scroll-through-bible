@@ -9,7 +9,8 @@ import {
 } from './lib.js';
 
 const MY = 660;                 // Mary
-const KX = [950, 1060, 1170];   // where the Magi kneel
+const KX0 = [950, 1060, 1170];  // where the Magi kneel
+const KXP = [915, 1000, 1085];  // phone: inside the frame
 const GX = [790, 860, 920];     // the gifts
 
 export default {
@@ -19,10 +20,11 @@ export default {
     { v: 11, cont: true, text: 'upadli na twarz i oddali Mu pokłon.' },
     { v: 11, cont: true, text: 'I otworzywszy swe skarby, ofiarowali Mu dary: złoto, kadzidło i mirrę.' },
   ],
-  cam: { x: [-20, 60], y: [0, 80], z: [1, 1.18] },
+  cam: { x: [-20, 100], y: [0, 80], z: [1, 1.18] },
   build(S) {
     const c = S.c;
-    const room = roomSet(S, { night: true, bench: false, doorX: 1200 });
+    const KX = S.portrait ? KXP : KX0;
+    const room = roomSet(S, { night: true, bench: false, doorX: S.portrait ? 1060 : 1200 });   // phone: the door whole behind the Magi, not a dark strip at the edge
     const starEl = hanging(room.out, bigStar(c, 12), { x: 0, y: 0, len: 600 });
 
     /* the light of the star through the window */
@@ -102,7 +104,7 @@ export default {
         hangAt(el, [770, 860, 950][i], lerp(-500, [500, 450, 500][i], k), T, k > 0.001 ? 1 : 0, 1.2, 0.9, i);
       });
 
-      S.cam.x = lerp(60, 40, es(t, 0.5, 1.2)) + es(t, 1.8, 2.2) * 10;
+      S.cam.x = lerp(60, 40, es(t, 0.5, 1.2)) + es(t, 1.8, 2.2) * 10 + (S.portrait ? 40 : 0);
       S.cam.y = 40 + es(t, 0.7, 1.3) * 20;
       S.cam.z = 1.08 + es(t, 0.7, 1.3) * 0.08;
     };

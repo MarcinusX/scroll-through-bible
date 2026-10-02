@@ -19,7 +19,7 @@ export default {
     { v: 12, text: 'A otrzymawszy we śnie nakaz, żeby nie wracali do Heroda,' },
     { v: 12, cont: true, text: 'inną drogą udali się do swojej ojczyzny.' },
   ],
-  cam: { x: [-40, 80], y: [0, 60], z: [1, 1.12] },
+  cam: { x: [-40, 140], y: [0, 60], z: [1, 1.12] },
   build(S) {
     const c = S.c;
     sky(S, NIGHT);
@@ -95,14 +95,15 @@ export default {
       resting.forEach((el, i) => pose(el, { x: 1080 + i * 120, y: Y - 26 + i * 4, s: 0.6, o: 1 - up }));
       riders.forEach((m) => {
         const k = es(t, 1.1 + m.i * 0.08, 1.95, ease.io);
-        const x = lerp(900 - m.i * 130, 1200 - m.i * 60, k), y = lerp(Y + 6, gfn(1200 - m.i * 60) + 40, k), s = lerp(0.72, 0.36, k);
+        const ex = (S.portrait ? 1110 : 1200) - m.i * 60;
+        const x = lerp(900 - m.i * 130, ex, k), y = lerp(Y + 6, gfn(ex) + 40, k), s = lerp(0.72, 0.36, k);
         pose(m.el, { x, y, s, o: up });
         walkCamel(m.el, k > 0 && k < 1 ? x * 0.06 + m.i : 0, k > 0 && k < 1 ? 1 : 0);
       });
       const ok = es(t, 1.3, 1.55, ease.out);
       hangAt(tagO, 960, lerp(-500, 250, ok), T, ok > 0.001 ? 1 : 0, 1.2, 0.9, 4);
 
-      S.cam.x = lerp(-10, 60, es(t, 1.0, 1.7));
+      S.cam.x = lerp(-10, S.portrait ? 130 : 60, es(t, 1.0, 1.7));
       S.cam.y = 30;
       S.cam.z = 1.02 + es(t, 0.1, 0.5) * 0.05 * (1 - es(t, 1.0, 1.4));
     };

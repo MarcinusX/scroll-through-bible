@@ -22,7 +22,7 @@ export default {
     { v: 22, text: 'Lecz gdy posłyszał, że w Judei panuje Archelaos w miejsce ojca swego, Heroda, bał się tam iść.' },
     { v: 22, cont: true, text: 'Otrzymawszy zaś we śnie nakaz, udał się w strony Galilei.' },
   ],
-  cam: { x: [-360, 360], y: [0, 60], z: [1, 1.12] },
+  cam: { x: [-360, 540], y: [0, 60], z: [1, 1.12] },
   build(S) {
     const c = S.c;
     sky(S, DESERT);
@@ -92,10 +92,11 @@ export default {
       hangAt(tagI, 1000, lerp(-500, 280, ik), T, ik > 0.001 ? 1 : 0, 1.2, 0.9, 1);
 
       /* v22a — news of Archelaus; Joseph is afraid to go on to Judea */
-      const tx = kf(t, [[1.9, 1700], [2.25, 1360], [2.9, 1380], [3.1, 1800]], ease.io);
-      trav.set({ x: tx, y: Y + 8, s: 0.9, flip: t < 2.9, walk: moving(t, [[1.9, 1700], [2.25, 1360], [2.9, 1380], [3.1, 1800]]) ? tx * 0.06 : undefined, armF: bump(t, 2.2, 2.8) * 80, armB: 10, head: 4, blink: blinkAt(T, 5) });
+      const TK = S.portrait ? [[1.9, 1700], [2.25, 1320], [2.9, 1330], [3.1, 1800]] : [[1.9, 1700], [2.25, 1360], [2.9, 1380], [3.1, 1800]];
+      const tx = kf(t, TK, ease.io);
+      trav.set({ x: tx, y: Y + 8, s: 0.9, flip: t < 2.9, walk: moving(t, TK) ? tx * 0.06 : undefined, armF: bump(t, 2.2, 2.8) * 80, armB: 10, head: 4, blink: blinkAt(T, 5) });
       const nk = es(t, 2.2, 2.35, ease.back) * (1 - es(t, 2.85, 2.95));
-      vpose(news, { x: 1350, y: Y - 196, s: nk, o: nk > 0.01 ? 1 : 0 });
+      vpose(news, { x: S.portrait ? 1305 : 1350, y: Y - 196, s: nk, o: nk > 0.01 ? 1 : 0 });
       const ak = es(t, 2.25, 2.55, ease.out) * (1 - es(t, 3.05, 3.2, ease.in));
       hangAt(arch, 1150, lerp(-500, 220, ak), T, ak > 0.001 ? 1 : 0, 1.1, 0.8, 3);
 
@@ -104,7 +105,7 @@ export default {
       dusk.layer.fade(eve);
       duskL.fade(eve);
       const dk = es(t, 3.25, 3.45, ease.back);
-      vpose(dream, { x: FORK - 330, y: Y - 150, s: dk, o: dk > 0.01 ? 1 : 0 });
+      vpose(dream, { x: FORK - (S.portrait ? 400 : 330), y: Y - 150, s: dk, o: dk > 0.01 ? 1 : 0 });
       const gk = es(t, 3.4, 3.6);
       vpose(signGlow, { x: FORK - 80, y: Y - 153, s: 0.5 + gk * 0.6, o: gk });
       const tg = es(t, 3.45, 3.7, ease.out);
@@ -114,7 +115,7 @@ export default {
         vpose(sp, { x: FORK - 80 + Math.cos(a) * 70, y: Y - 150 + Math.sin(a) * 40, s: k * 0.7, r: T * 30, o: k });
       });
 
-      S.cam.x = kf(t, [[0, -330], [1.0, -60], [1.95, 280], [2.3, 330]], ease.sine);
+      S.cam.x = kf(t, S.portrait ? [[0, -330], [1.0, -60], [1.95, 340], [2.3, 520]] : [[0, -330], [1.0, -60], [1.95, 280], [2.3, 330]], ease.sine);
       S.cam.y = 30;
       S.cam.z = 1.02 + es(t, 3.0, 3.4) * 0.04;
     };

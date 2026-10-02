@@ -97,9 +97,9 @@ export default {
         vpose(g, { x: HX + Math.cos(a) * 70, y: 200 + Math.sin(a) * 50, s: k * (0.8 + 0.2 * Math.sin(T * 3 + i)), r: T * 30, o: k });
       });
       const nk = es(t, 1.05, 1.35, ease.out) * 1;
-      hangAt(name, 470, lerp(-500, 330, nk), T, nk > 0.001 ? 1 : 0, 1.4, 0.9, 2);
+      hangAt(name, S.portrait ? 590 : 470, lerp(-500, 330, nk), T, nk > 0.001 ? 1 : 0, 1.4, 0.9, 2);
       const hk = es(t, 1.35, 1.7, ease.out);
-      hangAt(herodM, 1120, lerp(-500, 200, hk), T, hk > 0.001 ? 1 : 0, 1.2, 0.8, 4);
+      hangAt(herodM, S.portrait ? 1040 : 1120, lerp(-500, 200, hk), T, hk > 0.001 ? 1 : 0, 1.2, 0.8, 4);
 
       S.cam.z = 1 + es(t, 0.4, 1.3) * 0.08;
       S.cam.y = es(t, 0.4, 1.3) * 30;

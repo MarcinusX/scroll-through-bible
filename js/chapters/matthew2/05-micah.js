@@ -78,10 +78,10 @@ export default {
       const tb = es(t, 0.08, 0.35, ease.out);
       hangAt(tagB, BX - es(t, 1.0, 1.3) * 190, lerp(-500, 330 - rise * 60, tb), T, tb > 0.001 ? 1 : 0, 1.2, 0.9, 1);
       const tj = es(t, 0.15, 0.4, ease.out) * (1 - es(t, 0.95, 1.1, ease.in));
-      hangAt(tagJ, 1190, lerp(-500, 220, tj), T, tj > 0.001 ? 1 : 0, 1.2, 0.9, 2);
-      micah.set({ x: 470, y: 716, s: 0.9, armF: 70, armB: 20 + bump(t, 0.3, 0.9) * 60, head: 6, blink: blinkAt(T, 2) });
+      hangAt(tagJ, S.portrait ? 1000 : 1190, lerp(-500, 220, tj), T, tj > 0.001 ? 1 : 0, 1.2, 0.9, 2);
+      micah.set({ x: S.portrait ? 545 : 470, y: 716, s: 0.9, armF: 70, armB: 20 + bump(t, 0.3, 0.9) * 60, head: 6, blink: blinkAt(T, 2) });
       const tm = es(t, 0.05, 0.3, ease.out) * (1 - es(t, 1.0, 1.15, ease.in));
-      hangAt(tagM, 470, lerp(-500, 420, tm), T, tm > 0.001 ? 1 : 0, 1.2, 0.9, 4);
+      hangAt(tagM, S.portrait ? 610 : 470, lerp(-500, 420, tm), T, tm > 0.001 ? 1 : 0, 1.2, 0.9, 4);
 
       /* v6b — a ruler comes from her, the shepherd of Israel: the crook rises, the flock gathers */
       const ck = es(t, 1.05, 1.45, ease.out);
@@ -93,7 +93,7 @@ export default {
         pose(f.el, { x, y: f.hy - hop, s: 0.9, sx: f.side > 0 ? -1 : 1, o: k > 0.01 ? 1 : 0 });
       });
       const ti = es(t, 1.4, 1.7, ease.out);
-      hangAt(tagI, 1150, lerp(-500, 360, ti), T, ti > 0.001 ? 1 : 0, 1.2, 0.9, 5);
+      hangAt(tagI, S.portrait ? 1030 : 1150, lerp(-500, 360, ti), T, ti > 0.001 ? 1 : 0, 1.2, 0.9, 5);
       glints.forEach((g, i) => {
         const k = es(t, 1.3 + i * 0.05, 1.5 + i * 0.05), a = T * 0.7 + i * 1.6;
         vpose(g, { x: BX + Math.cos(a) * 120, y: 300 + Math.sin(a) * 70, s: k * 0.8, r: T * 30, o: k });

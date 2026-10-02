@@ -8,9 +8,11 @@ import {
   bigStar, sparkle, tr, PI,
 } from './lib.js';
 
-const PRI = [[360, 0], [440, 1], [520, 2]];
-const SCR = [[1000, 1], [1080, 2], [1160, 3]];
-const RX = 590;             // where the reading scribe stands
+const PRI0 = [[360, 0], [440, 1], [520, 2]];
+const SCR0 = [[1000, 1], [1080, 2], [1160, 3]];
+const PRIP = [[505, 0], [550, 1], [595, 2]];      // phone: the priests and scribes inside the frame
+const SCRP = [[970, 1], [1020, 2], [1068, 3]];
+const RX0 = 590;             // where the reading scribe stands
 
 export default {
   id: 'mt2-scribes',
@@ -26,6 +28,7 @@ export default {
 
     const act = S.layer({ par: 0.55, sh: 5 });
     const scroll = (i) => `<g transform="translate(0 4) rotate(${-60 + i * 8})">${scrollRolled(c, 40)}</g>`;
+    const PH = S.portrait, PRI = PH ? PRIP : PRI0, SCR = PH ? SCRP : SCR0, RX = PH ? 635 : RX0;
     const pri = PRI.map(([x, i], k) => ({ x, i, k, p: S.puppet(act.add(priest(c, i, { holdF: k === 1 ? scroll(k) : '' }))), seed: c.rr(0, 6) }));
     const scr = SCR.map(([x, i], k) => ({ x, i, k, p: S.puppet(act.add(scribe(c, i, { holdF: k !== 0 ? scroll(k) : '' }))), seed: c.rr(0, 6) }));
     const reader = S.puppet(act.add(scribe(c, 0, { hair: '#e8e2d6', beardColor: '#eee8dc' })));
@@ -83,7 +86,7 @@ export default {
 
       S.cam.z = 1.02 + es(t, 0.9, 1.3) * 0.08 - es(t, 1.9, 2.3) * 0.02;
       S.cam.y = 40 - es(t, 0.9, 1.3) * 10;
-      S.cam.x = lerp(0, -30, es(t, 2.1, 2.5));
+      S.cam.x = lerp(0, PH ? -10 : -30, es(t, 2.1, 2.5));
     };
   },
 };

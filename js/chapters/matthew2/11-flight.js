@@ -19,7 +19,7 @@ export default {
     { v: 14, text: 'On wstał, wziął w nocy Dziecię i Jego Matkę' },
     { v: 14, cont: true, text: 'i udał się do Egiptu;' },
   ],
-  cam: { x: [-440, 360], y: [0, 60], z: [1, 1.12] },
+  cam: { x: [-440, 540], y: [0, 60], z: [1, 1.12] },
   build(S) {
     const c = S.c;
     const { hangL } = nightSky(S, { cols: NIGHT, n: 200 });
@@ -72,7 +72,7 @@ export default {
       const ek = es(t, 1.5, 1.8, ease.out);
       hangAt(tagE, 420, lerp(-500, 280, ek), T, ek > 0.001 ? 1 : 0, 1.2, 0.9, 2);
 
-      S.cam.x = kf(t, [[0, 340], [0.9, 250], [1.95, -420]], ease.sine);
+      S.cam.x = kf(t, [[0, 340], [0.9, 250], [1.95, -420]], ease.sine) + (S.portrait ? 180 * (1 - es(t, 0.9, 1.5)) : 0);
       S.cam.y = 30;
       S.cam.z = 1.04;
     };

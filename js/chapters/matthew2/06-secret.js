@@ -12,7 +12,8 @@ import {
 
 const FL = 690;                 // the floor
 const HX = 880;                 // Herod
-const MX = [440, 540, 640];     // the Magi
+const MX0 = [440, 540, 640];    // the Magi
+const MXP = [525, 605, 685];    // phone: inside the frame
 const LX = 750;                 // the lamp
 
 function sword(c) {
@@ -72,6 +73,7 @@ export default {
 
     /* people */
     const P = S.layer({ par: 0.5, sh: 5 });
+    const MX = S.portrait ? MXP : MX0;
     const magi = MX.map((x, i) => ({ i, x, p: S.puppet(P.add(magus(c, i, i === 1 ? { holdF: '' } : {}))), seed: c.rr(0, 9) }));
     const herod = S.puppet(P.add(herodPuppet(c, {})));
 
@@ -132,7 +134,7 @@ export default {
       const bow = es(t, 3.05, 3.3);
       herod.set({ x: HX, y: FL + 2, s: 1.02, flip: true, armF: 20 + beckon * 30 + count * 50 + point * 125 + bow * 30, armB: beckon * 100 + bow * 10, head: -beckon * 6 + count * 6 - point * 12 + bow * 16, lean: count * 5 + bow * 10, blink: blinkAt(T, 1) });
       const drawn = es(t, 3.25, 3.6);
-      shadow.set({ x: HX + 250, y: FL - 44, s: 1.6, flip: true, armF: 20 + beckon * 30 + count * 50 + point * 125 + drawn * 70, armB: beckon * 100 + bow * 10, head: -beckon * 6 + count * 6 - point * 12 + bow * 10 - drawn * 18, lean: count * 5 + bow * 6 - drawn * 4 });
+      shadow.set({ x: HX + (S.portrait ? 170 : 250), y: FL - 44, s: 1.6, flip: true, armF: 20 + beckon * 30 + count * 50 + point * 125 + drawn * 70, armB: beckon * 100 + bow * 10, head: -beckon * 6 + count * 6 - point * 12 + bow * 10 - drawn * 18, lean: count * 5 + bow * 6 - drawn * 4 });
       fade(swd, drawn);
       const bk = es(t, 2.15, 2.4, ease.out) * (1 - es(t, 3.0, 3.15, ease.in));
       hangAt(tagB, 550, lerp(-400, 318, bk), T, bk > 0.001 ? 1 : 0, 1.2, 0.9, 3);
