@@ -20,20 +20,23 @@ export default {
     { v: 52 },
     { v: 53 },
   ],
-  cam: { x: [-80, 20], y: [-30, 60], z: [1, 1.16] },
+  cam: { x: [-80, 300], y: [-30, 60], z: [1, 1.16] },
   build(S) {
     const R = roomSet(S);
     const c = R.c;
+    // phone: the outer disciples and Matthew close in, the plates make a narrower row, and for v52 the camera pans
+    // right onto Matthew, his chest and the words "old" and "new"
+    const P = S.portrait;
 
     /* the chest of things new and old, against the wall on the right */
     const chestL = S.layer({ par: 0.46, sh: 4 });
-    const box = chestL.add(`<g transform="translate(1210 666) scale(1.5)">${chest(c, { w: 90, h: 50 })}</g>`);
+    const box = chestL.add(`<g transform="translate(${P ? 1150 : 1210} 666) scale(1.5)">${chest(c, { w: 90, h: 50 })}</g>`);
     const lid = box.querySelector('.lid'), glow = box.querySelector('.glow');
 
     /* people */
     const ppl = S.layer({ par: 0.5, sh: 5 });
     const SEATS = [
-      { o: CAST.thomas, x: 470, y: 700, s: 0.86 }, { o: CAST.andrew, x: 560, y: 736, s: 0.94 }, { o: CAST.james, x: 1040, y: 736, s: 0.94 },
+      { o: CAST.thomas, x: P ? 548 : 470, y: 700, s: 0.86 }, { o: CAST.andrew, x: P ? 600 : 560, y: 736, s: 0.94 }, { o: CAST.james, x: P ? 990 : 1040, y: 736, s: 0.94 },
       { o: CAST.peter, x: 650, y: 768, s: 1.0 }, { o: CAST.john, x: 950, y: 768, s: 1.0 },
     ].map((d, i) => ({ ...d, i, flip: d.x > JX, seed: c.rr(0, 6), p: S.puppet(ppl.add(person(c, { ...d.o, pose: 'sit' }))), st: S.puppet(ppl.add(person(c, d.o))) }));
     const mSit = S.puppet(ppl.add(person(c, { ...CAST.matthew, pose: 'sit' })));
@@ -58,6 +61,7 @@ export default {
     ];
     const plates = ICONS.map((m, i) => {
       const a = (-0.5 + i / (ICONS.length - 1)) * 2.3;
+      if (P) return { i, x: 800 + (-1 + (2 * i) / (ICONS.length - 1)) * 255, y: 360 - Math.cos(a) * 90 + (i % 2) * 28, el: hanging(fx, `<g transform="scale(.84)">${sheet().p(c.cut(c.circ(0, 0, 44, 30), 0.6, 5), C.cream).p(c.cut(c.circ(0, 0, 38, 28), 0.4, 5), C.parchment).out()}${m}</g>`, { x: 0, y: 0, len: 900 }) };
       return { i, x: 870 + Math.sin(a) * 330, y: 360 - Math.cos(a) * 90 + (i % 2) * 28, el: hanging(fx, `<g>${sheet().p(c.cut(c.circ(0, 0, 44, 30), 0.6, 5), C.cream).p(c.cut(c.circ(0, 0, 38, 28), 0.4, 5), C.parchment).out()}${m}</g>`, { x: 0, y: 0, len: 900 }) };
     });
     const ask = fx.add(`<g>${speech(c, GLYPH.q(c), { w: 46, h: 40 })}</g>`);
@@ -95,16 +99,16 @@ export default {
       /* v52 — the scribe of the Kingdom brings out things new and old */
       const go = seg(t, 2.02, 2.08);
       const show = seg(t, 2.42, 2.48);
-      mSit.set({ x: 1130, y: 700, s: 0.86, flip: true, o: 1 - go, armF: 20, head: -6, blink: blinkAt(T, 7) });
-      const mx = kf(t, [[2.05, 1130], [2.3, 1150], [2.5, 1150], [2.7, 1080]]);
+      mSit.set({ x: P ? 1015 : 1130, y: 700, s: 0.86, flip: true, o: 1 - go, armF: 20, head: -6, blink: blinkAt(T, 7) });
+      const mx = kf(t, P ? [[2.05, 1015], [2.3, 1100], [2.5, 1100], [2.7, 1040]] : [[2.05, 1130], [2.3, 1150], [2.5, 1150], [2.7, 1080]]);
       mWalk.set({ x: mx, y: 706, s: 0.92, flip: false, o: go * (1 - show), walk: t > 2.05 && t < 2.3 ? mx * 0.05 : undefined, armF: 70 + bump(t, 2.25, 2.45) * 30, lean: bump(t, 2.28, 2.45) * 10, blink: blinkAt(T, 7) });
       mShow.set({ x: mx, y: 706, s: 0.92, flip: true, o: show * (1 - es(t, 3.2, 3.35)), armF: 120, armB: 110, head: -8, blink: blinkAt(T, 7) });
       const open = es(t, 2.22, 2.4) * (1 - es(t, 3.1, 3.3));
       pose(lid, { x: -46, y: -50, r: -open * 90 });
       fade(glow, open);
       const wo = es(t, 2.5, 2.7, ease.back) * (1 - es(t, 3.05, 3.25)), wn = es(t, 2.58, 2.78, ease.back) * (1 - es(t, 3.05, 3.25));
-      hangAt(wOld, 990, lerp(-500, 370, wo), T, 1.4, 0.8, 1);
-      hangAt(wNew, 1180, lerp(-500, 350, wn), T, 1.4, 0.8, 2);
+      hangAt(wOld, P ? 960 : 990, lerp(-500, 370, wo), T, 1.4, 0.8, 1);
+      hangAt(wNew, P ? 1140 : 1180, lerp(-500, 350, wn), T, 1.4, 0.8, 2);
 
       /* v53 — He finishes and goes out; they follow */
       const jUp = es(t, 3.05, 3.15);
@@ -114,7 +118,7 @@ export default {
       jWalk.set({ x: jx, y: JY - 10, s: 1.04, flip: true, o: jUp * (1 - seg(t, 3.72, 3.8)), walk: moving(t, JK) ? jx * 0.05 : undefined, blink: blinkAt(T) });
       pose(R.doorLeaf, { x: 250, y: 646, sx: 1 - es(t, 3.0, 3.2) * 0.85 });
 
-      S.cam.x = kf(t, [[0, 0], [2.0, 0], [2.3, 20], [3.0, 20], [3.4, -60]]);
+      S.cam.x = kf(t, [[0, 0], [2.0, 0], [2.3, P ? 300 : 20], [3.0, P ? 300 : 20], [3.4, -60]]);
       S.cam.z = kf(t, [[0, 1.04], [0.9, 1.06], [2.0, 1.06], [2.3, 1.12], [3.0, 1.12], [3.4, 1.06]]);
       S.cam.y = kf(t, [[0, 0], [0.9, 20], [2.0, 20], [2.3, 40], [3.0, 40], [3.4, 30]]);
     };

@@ -106,7 +106,7 @@ export default {
         const q = Math.max(es(t, 0.55 + p.i * 0.05, 0.72 + p.i * 0.05, ease.back) * (1 - es(t, 1.0, 1.15)), es(t, 2.5 + p.i * 0.05, 2.68 + p.i * 0.05, ease.back) * (1 - es(t, 2.95, 3.1)));
         pose(p.q, { x: p.hx + 16, y: p.hy - 24, s: q * 0.8, r: Math.sin(T * 2 + p.i) * 5, o: q > 0.02 ? 1 : 0 });
       });
-      const pp = seg(t, 0.15, 0.9);
+      const pp = seg(t, 0.15, S.portrait ? 1.05 : 0.9);   // phone: the plate is still mid-screen at the pause
       pose(plate, { x: lerp(1300, 300, pp), y: 480 + Math.sin(pp * PI * 2) * 16, r: pp * 30 - 15, o: pp > 0 && pp < 1 ? 1 : 0 });
       waves.forEach((w) => {
         const on = es(t, 2.1, 2.25) * (1 - es(t, 2.95, 3.05));
@@ -131,10 +131,11 @@ export default {
 
       /* v15b: the healing light comes and waits; they turn away */
       const lk = es(t, 4.05, 4.4);
-      pose(heal, { x: lerp(1500, 1210, lk), y: 470, s: 0.7 + Math.sin(T * 1.5) * 0.03, o: lk * 0.95 });
+      const HX = S.portrait ? 1000 : 1210;   // phone: the light waits inside the screen
+      pose(heal, { x: lerp(1500, HX, lk), y: 470, s: 0.7 + Math.sin(T * 1.5) * 0.03, o: lk * 0.95 });
       hsparks.forEach((h) => {
         const a = T * 0.8 + h.i * 1.25;
-        pose(h.el, { x: lerp(1500, 1210, lk) + Math.cos(a) * 70, y: 470 + Math.sin(a) * 60, s: 0.8, o: lk * 0.9 });
+        pose(h.el, { x: lerp(1500, HX, lk) + Math.cos(a) * 70, y: 470 + Math.sin(a) * 60, s: 0.8, o: lk * 0.9 });
       });
 
       S.cam.z = 1.04 + es(t, 0, 1) * 0.04 + es(t, 3, 3.5) * 0.04;

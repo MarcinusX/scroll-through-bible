@@ -7,7 +7,6 @@ import { sheaf, sickle } from '../../assets/things.js';
 import { seg, es, ease, bump, fade } from '../../core/anim.js';
 import { farmSet, growRow, FARM, MASTER, REAPERS, darnelBundle, bonfire, storyFrame, kf, moving, arcAt, HARVEST, PI } from './lib.js';
 
-const FIRE = [370, 732];
 
 export default {
   id: 'mt13-harvest',
@@ -17,9 +16,13 @@ export default {
     { v: 30, cont: true, text: 'a w czasie żniwa powiem żeńcom: Zbierzcie najpierw chwast i powiążcie go w snopki na spalenie;' },
     { v: 30, cont: true, text: 'pszenicę zaś zwieźcie do mego spichlerza"».' },
   ],
-  cam: { x: [-60, 60], y: [0, 100], z: [1, 1.2] },
+  cam: { x: [-110, 60], y: [0, 100], z: [1, 1.2] },
   build(S) {
-    const F = farmSet(S, { skyCols: ['#d0e2dc', '#f0e8cf', '#f8ebd2'], sky2: HARVEST });
+    // phone: the fire, the reapers and the barn close in so all of them stay on the screen
+    const P = S.portrait;
+    const FIRE = P ? [515, 732] : [370, 732];
+    const F = farmSet(S, { skyCols: ['#d0e2dc', '#f0e8cf', '#f8ebd2'], sky2: HARVEST, barnX: P ? 1020 : FARM.BARN });
+    const BARN = F.barnX;
     const c = F.c;
     const wheatG = F.rows('wheat'), wheatY = F.rows('wheat', { gold: true });
     const darG = F.rows('darnel'), darY = F.rows('darnel', { gold: true });
@@ -35,7 +38,7 @@ export default {
     const master = S.puppet(F.ppl.add(person(c, MASTER)));
     const bundleM = `<g transform="translate(0 4) rotate(180) scale(.6)">${darnelBundle(c, 80)}</g>`;
     const R = REAPERS.map((o, i) => ({
-      i, seed: c.rr(0, 6), x: [640, 820, 1000][i],
+      i, seed: c.rr(0, 6), x: (P ? [650, 765, 875] : [640, 820, 1000])[i],
       cut: S.puppet(F.ppl.add(person(c, { ...o, holdF: `<g transform="translate(0 4) rotate(200) scale(.5)">${sickle(c)}</g>` }))),
     }));
     /* the darnel bundles and the sheaves */
@@ -60,7 +63,7 @@ export default {
       darY.forEach((r) => growRow(r, tall * (1 - pull * 0.5), ripe * (1 - pull)));
 
       /* the householder watches, then rejoices */
-      master.set({ x: 540, y: FARM.PATH, s: 1.0, flip: false, armF: 20 + es(t, 0.1, 0.4) * 20 + es(t, 2.5, 2.7) * 90, armB: 10 + es(t, 2.5, 2.7) * 120, head: -4 - es(t, 2.5, 2.7) * 8, blink: blinkAt(T) });
+      master.set({ x: P ? 600 : 540, y: FARM.PATH, s: 1.0, flip: false, armF: 20 + es(t, 0.1, 0.4) * 20 + es(t, 2.5, 2.7) * 90, armB: 10 + es(t, 2.5, 2.7) * 120, head: -4 - es(t, 2.5, 2.7) * 8, blink: blinkAt(T) });
 
       /* v30b — the reapers pull the darnel, bind it, throw it on the fire */
       const come = es(t, 1.0, 1.25);
@@ -86,16 +89,16 @@ export default {
 
       /* v30c — the wheat is cut, bound in sheaves and carried into the barn */
       const open = es(t, 2.0, 2.2);
-      pose(F.barnDoor, { x: FARM.BARN - 36, y: FARM.BY, sx: FARM.BS * 2 * (1 - open * 0.85), sy: FARM.BS });
-      pose(F.barnIn, { x: FARM.BARN, y: FARM.BY, s: FARM.BS * (0.4 + es(t, 2.4, 2.9) * 0.8), o: open });
+      pose(F.barnDoor, { x: BARN - 36, y: FARM.BY, sx: FARM.BS * 2 * (1 - open * 0.85), sy: FARM.BS });
+      pose(F.barnIn, { x: BARN, y: FARM.BY, s: FARM.BS * (0.4 + es(t, 2.4, 2.9) * 0.8), o: open });
       sheaves.forEach((sh) => {
         const up = es(t, 2.12 + sh.i * 0.04, 2.3 + sh.i * 0.04, ease.back);
         const go = seg(t, 2.45 + sh.i * 0.08, 2.8 + sh.i * 0.08);
-        const [x, y] = arcAt(ease.io(go), [sh.x, FARM.WHEAT[2] + 26], [FARM.BARN, FARM.BY - 20], 90);
+        const [x, y] = arcAt(ease.io(go), [sh.x, FARM.WHEAT[2] + 26], [BARN, FARM.BY - 20], 90);
         pose(sh.el, { x, y, s: up * (1 - go * 0.45), o: up > 0.02 && go < 0.97 ? 1 : 0 });
       });
 
-      S.cam.x = kf(t, [[0, 0], [1.0, 0], [1.4, -40], [2.0, -40], [2.4, 40]]);
+      S.cam.x = kf(t, [[0, 0], [1.0, 0], [1.4, P ? -100 : -40], [2.0, P ? -100 : -40], [2.4, P ? 0 : 40]]);
       S.cam.z = kf(t, [[0, 1.04], [1.0, 1.06], [1.4, 1.12], [2.0, 1.12], [2.4, 1.1]]);
       S.cam.y = kf(t, [[0, 40], [1.0, 50], [1.4, 80], [2.0, 80], [2.4, 70]]);
     };

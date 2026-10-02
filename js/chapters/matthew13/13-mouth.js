@@ -49,6 +49,8 @@ export default {
     const ring = ICONS.map((m, i) => {
       const disc = sheet().p(c.cut(c.circ(0, 0, 44, 30), 0.6, 5), C.cream).p(c.cut(c.circ(0, 0, 38, 28), 0.4, 5), C.parchment).out();
       const a = (-0.5 + i / (ICONS.length - 1)) * 2.2;
+      // phone: an even, narrower row of slightly smaller plates that stays inside the screen
+      if (S.portrait) return { i, x: 800 + (-1 + (2 * i) / (ICONS.length - 1)) * 255, y: 350 - Math.cos(a) * 120 + (i % 2) * 30, el: hanging(top, `<g transform="scale(.84)">${disc}${m}</g>`, { x: 0, y: 0, len: 700 }) };
       return { i, x: 800 + Math.sin(a) * 420, y: 350 - Math.cos(a) * 120 + (i % 2) * 30, el: hanging(top, `<g>${disc}${m}</g>`, { x: 0, y: 0, len: 700 }) };
     });
 

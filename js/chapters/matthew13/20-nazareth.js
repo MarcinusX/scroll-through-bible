@@ -38,7 +38,7 @@ export default {
     { v: 57, cont: true, text: 'A Jezus rzekł do nich: «Tylko w swojej ojczyźnie i w swoim domu może być prorok lekceważony».' },
     { v: 58 },
   ],
-  cam: { x: [-180, 180], y: [-40, 70], z: [1, 1.24] },
+  cam: { x: [-240, 180], y: [-40, 70], z: [1, 1.24] },
   build(S) {
     const c = S.c;
     sky(S, ['#bcd6d6', '#e2ecdf', '#f3ead3']);
@@ -143,7 +143,8 @@ export default {
     const fg = S.layer({ par: 0.9, sh: 8 });
     const colm = (x) => { const s = sheet(); s.p(c.cut(c.rect(x - 60, -1400, 120, 2600), 0.8, 20), C.stone2); s.p(c.cut(c.rect(x - 76, 900, 152, 40), 0.6, 10) + c.cut(c.rect(x - 70, 40, 140, 30), 0.6, 10), shade(C.stone2, -0.1)); s.x(c.ribbon([[x - 30, 80], [x - 30, 880]], 5) + c.ribbon([[x + 18, 80], [x + 18, 880]], 5), shade(C.stone2, -0.15), 'opacity=".5"'); return s.out(); };
     fg.add(colm(90) + colm(1510));
-    fg.add(sheet().p(c.cut([[-1200, -1400], [2800, -1400], [2800, 50], [-1200, 62]], 0.8, 16), C.wood2).out());
+    // phone: the ceiling is a beam, not a sheet filling the top of the tall screen
+    fg.add(sheet().p(c.cut([[-1200, S.portrait ? -16 : -1400], [2800, S.portrait ? -16 : -1400], [2800, 50], [-1200, 62]], 0.8, 16), C.wood2).out());
 
     return (t, time) => {
       const T = time;
@@ -243,7 +244,8 @@ export default {
       const [shx, shy] = headAt(RIGHT[3].x, RIGHT[3].y, RIGHT[3].s, true, DY.sit);
       pose(stone, { x: shx - 6, y: shy - 22, s: sk * 0.9, r: Math.sin(T * 1.3) * 3, o: sk > 0.02 ? 1 : 0 });
 
-      S.cam.x = kf(t, [[0, 0], [2.9, 0], [3.2, -120], [3.95, -120], [4.25, 130], [4.9, 130], [5.2, 0], [7.9, 0], [8.2, 60]]);
+      S.cam.x = kf(t, [[0, 0], [2.9, 0], [3.2, S.portrait ? -230 : -120], [3.95, S.portrait ? -230 : -120],   // phone: Judas and his name in sight
+       [4.25, 130], [4.9, 130], [5.2, 0], [7.9, 0], [8.2, 60]]);
       S.cam.z = kf(t, [[0, 1.12], [0.9, 1.08], [2.9, 1.08], [3.2, 1.2], [4.9, 1.2], [5.2, 1.06], [7.9, 1.06], [8.2, 1.08]]);
       S.cam.y = kf(t, [[0, 30], [3.2, 50], [4.9, 50], [5.2, 30], [7.9, 30], [8.2, -40]]);
     };

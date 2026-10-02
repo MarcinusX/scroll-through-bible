@@ -8,8 +8,8 @@ import { sun, cloud, grass } from '../../assets/nature.js';
 import { seg, es, ease, bump, fade } from '../../core/anim.js';
 import { BAKER, trough, flourSack, leaven, oven, storeJar, discPlate, storyFrame, bubbleDot, hangAt, kf, moving, PI } from './lib.js';
 
-const TX = 890, TY = 700;                 // the trough's foot
-const SACKS = [[470, 704], [530, 712], [410, 716]];
+const TXD = 890, TY = 700;                // the trough's foot
+const SACKSD = [[470, 704], [530, 712], [410, 716]];
 
 export default {
   id: 'mt13-yeast',
@@ -22,6 +22,10 @@ export default {
   ],
   cam: { x: [-30, 40], y: [0, 110], z: [1, 1.28] },
   build(S) {
+    // phone: the sacks, the woman and the trough move right so the three measures stay on the screen
+    const P = S.portrait;
+    const TX = P ? 915 : TXD;
+    const SACKS = P ? [[580, 704], [636, 712], [524, 716]] : SACKSD;
     const c = S.c;
     const MORN = ['#d6e3dc', '#f2e6cc', '#f8ead0'], NOONC = ['#e9d2a8', '#f5dfb8', '#f9ead0'];
     sky(S, MORN);
@@ -59,7 +63,8 @@ export default {
 
     /* the oven, the sacks, the trough */
     const props = S.layer({ par: 0.5, sh: 5 });
-    const ovenEl = props.add(`<g transform="translate(1130 690)">${oven(c, 130, 110)}</g>`);
+    const OVX = P ? 1300 : 1130;   // phone: the oven (not in the verse) stands off-screen instead of half under the thread
+    const ovenEl = props.add(`<g transform="translate(${OVX} 690)">${oven(c, 130, 110)}</g>`);
     const sacks = SACKS.map(([x, y], i) => ({ i, x, y, el: props.add(`<g>${flourSack(c, 64, 74, i === 1 ? C.linen : C.linen2)}</g>`) }));
     const Tr = trough(c, 340, 72);
     const flour = props.add(`<g>${sheet().p(c.cut([[-150, 0], ...c.arc(0, 0, 150, 46, PI, 2 * PI, 16), [150, 0]], 0.6, 5), '#fbf8f0').x(c.ribbon(c.arc(-30, -14, 60, 16, PI * 1.1, PI * 1.7, 8), 2), '#e9e1cf').out()}</g>`);
@@ -77,7 +82,7 @@ export default {
     const plate = hanging(props, `<g transform="scale(1.3)">${discPlate(c, `<circle r="26" fill="url(#warm-glow)"/><g transform="scale(1.9)">${leaven(c, 12)}</g>`, { r: 54 })}</g>`, { x: 0, y: 0, len: 900 });
     storyFrame(S);
 
-    const WK = [[0.35, 300], [0.95, 650], [1.2, 650]];
+    const WK = [[0.35, 300], [0.95, P ? 700 : 650], [1.2, P ? 700 : 650]];
 
     return (t, time) => {
       const T = time;
@@ -123,10 +128,10 @@ export default {
         pose(b.el, { x: TX + b.dx * 0.9, y: TY - 20 - b.dy * (0.3 + rise * 1.3) * (1 - Math.abs(b.dx) / 300), s: rise * (0.4 + Math.sin(k * PI) * 0.8), o: rise > 0.05 ? Math.sin(k * PI) : 0 });
       });
       pose(glow, { x: TX, y: TY - 110, s: 0.5 + rise * 0.6, o: rise * 0.75 });
-      pose(ovenEl, { x: 1130, y: 690 });
+      pose(ovenEl, { x: OVX, y: 690 });
 
       S.cam.x = kf(t, [[0, 0], [0.9, -10], [1.2, 0], [2.0, 10], [2.6, 10]]);
-      S.cam.z = kf(t, [[0, 1.02], [0.9, 1.1], [1.2, 1.2], [2.0, 1.2], [2.6, 1.14]]);
+      S.cam.z = kf(t, P ? [[0, 1.02], [0.9, 1.08], [1.2, 1.12], [2.0, 1.12], [2.6, 1.1]] : [[0, 1.02], [0.9, 1.1], [1.2, 1.2], [2.0, 1.2], [2.6, 1.14]]);
       S.cam.y = kf(t, [[0, 20], [0.9, 50], [1.2, 90], [2.0, 90], [2.6, 70]]);
     };
   },

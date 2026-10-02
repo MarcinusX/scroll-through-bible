@@ -57,11 +57,12 @@ export default {
     /* Jesus and the six */
     const ppl = S.layer({ par: 0.5, sh: 5 });
     ppl.add(rock(c, JX, JY + 8, 120, 40, C.rock2));
+    const P = S.portrait;   // phone: the outer four sit closer in, so no one is sliced by the frame or the thread
     const SEATS = [
-      { o: CAST.matthew, x: 470, y: 676, s: 0.84, back: true },
-      { o: CAST.thomas, x: 1130, y: 676, s: 0.84, back: true },
-      { o: CAST.andrew, x: 560, y: 736, s: 0.94 },
-      { o: CAST.james, x: 1040, y: 736, s: 0.94 },
+      { o: CAST.matthew, x: P ? 520 : 470, y: 676, s: 0.84, back: true },
+      { o: CAST.thomas, x: P ? 1050 : 1130, y: 676, s: 0.84, back: true },
+      { o: CAST.andrew, x: P ? 590 : 560, y: 736, s: 0.94 },
+      { o: CAST.james, x: P ? 995 : 1040, y: 736, s: 0.94 },
       { o: CAST.peter, x: 660, y: 766, s: 1.0 },
       { o: CAST.john, x: 940, y: 766, s: 1.0 },
     ].map((d, i) => ({ ...d, i, flip: d.x > JX, seed: c.rr(0, 6), p: S.puppet(ppl.add(person(c, { ...d.o, pose: 'sit' }))) }));

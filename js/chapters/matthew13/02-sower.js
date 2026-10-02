@@ -153,7 +153,7 @@ export default {
       }
       return keys[0][1];
     };
-    const CAMK = [[0, camFor(PATCH.path)], [3.0, camFor(PATCH.path)], [3.3, camFor(PATCH.rocky)], [5.8, camFor(PATCH.rocky)], [6.02, camFor(PATCH.thorns)], [7.0, camFor(PATCH.thorns)], [7.3, camFor(PATCH.good)], [8.2, camFor(PATCH.good)], [8.8, camFor(1040)]];
+    const CAMK = [[0, camFor(PATCH.path)], [3.0, camFor(PATCH.path)], [3.3, camFor(PATCH.rocky)], [5.8, camFor(PATCH.rocky)], [6.02, camFor(PATCH.thorns)], [7.0, camFor(PATCH.thorns)], [7.3, camFor(PATCH.good)], [8.2, camFor(PATCH.good)], [8.8, camFor(S.portrait ? 1090 : 1040)]];   // phone: the thirtyfold stays clear of the thread
 
     return (t, time) => {
       const hot = es(t, 5.0, 5.5) * (1 - es(t, 5.85, 6.3) * 0.7);

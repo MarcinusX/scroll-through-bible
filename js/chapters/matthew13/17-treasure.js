@@ -46,7 +46,7 @@ export default {
     { v: 45 },
     { v: 46 },
   ],
-  cam: { x: [camFor(420) - 20, camFor(1380) + 20], y: [0, 110], z: [1, 1.3] },
+  cam: { x: [camFor(420) - 20, camFor(1450) + 20], y: [0, 110], z: [1, 1.3] },
   build(S) {
     const c = S.c;
     sky(S, ['#cfe1db', '#f1e8cf', '#f8ebd2']);
@@ -109,7 +109,7 @@ export default {
     const lookQ = ppl.add(`<g><circle r="16" fill="${C.cream}"/><text x="0" y="6" text-anchor="middle" font-family="EB Garamond, Georgia, serif" font-size="20" fill="${C.terracotta}">…</text></g>`);
     storyFrame(S);
 
-    const CAMX = [[0, camFor(420)], [2.9, camFor(420)], [3.3, camFor(1380)]];
+    const CAMX = [[0, camFor(420)], [2.9, camFor(420)], [3.3, camFor(S.portrait ? 1450 : 1380)]];   // phone: the pearl seller stays on the screen
 
     return (t, time) => {
       const T = time;
@@ -167,7 +167,7 @@ export default {
       pose(bigPearl, { x: 1580, y: GY - 96 - found * 10, s: 0.8 + found * 0.35 + Math.sin(T * 2) * 0.02, o: 1 });
       bales.forEach((b) => {
         const k = seg(t, 4.12 + b.i * 0.08, 4.35 + b.i * 0.08);
-        const [x, y] = arcAt(ease.io(k), [1420 - b.i * 50, GY], [1740, GY - 20], 70);
+        const [x, y] = arcAt(ease.io(k), [1420 - b.i * 50, GY], [S.portrait ? 1690 : 1740, GY - 20], 70);
         pose(b.el, { x, y, o: k < 0.98 && t > 3.0 ? 1 : 0 });
       });
       seller.set({ x: 1650, y: GY, s: 0.98, flip: true, armF: 30 + bump(t, 4.2, 4.5) * 60, blink: blinkAt(T, 6) });

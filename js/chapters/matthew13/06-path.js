@@ -92,7 +92,7 @@ export default {
 
       /* v19a: the man hears, doesn't understand; the evil one snatches the word */
       const walk = seg(t, 1.1, 1.95);
-      const px = lerp(XP.L + 40, XP.L - 260, walk);
+      const px = lerp(XP.L + 40, XP.L - (S.portrait ? 170 : 260), walk);   // phone: he walks off but stays in sight
       pathMan.set({
         x: px, y: FEET, s: 1.06, flip: walk > 0, walk: walk > 0 && walk < 1 ? -px * 0.085 : undefined, amt: 1.1,
         head: bump(t, 0.3, 0.6) * 10 - 3 - bump(t, 0.62, 0.9) * 8, armF: 6 + bump(t, 0.35, 0.6) * 40, armB: 4, blink: blinkAt(time, 1),

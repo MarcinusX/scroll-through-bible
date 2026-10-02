@@ -46,11 +46,12 @@ export default {
     /* the boat with Jesus; the disciples wading on either side */
     const B = boatIn(Z.boatL, c, () => S.puppet(Z.boatL.add(person(c, { ...CAST.jesus, pose: 'sit' }))));
     const jesus = B.inside;
+    const P = S.portrait;   // phone: the outer disciples close in on the boat, the plates and the parked casket move in
     const DIS = [
-      { o: CAST.james, x: 548, from: -160, flip: false },
-      { o: CAST.andrew, x: 610, from: -90, flip: false },
-      { o: CAST.peter, x: 1000, from: 1700, flip: true },
-      { o: CAST.john, x: 1066, from: 1770, flip: true },
+      { o: CAST.james, x: P ? 588 : 548, from: -160, flip: false },
+      { o: CAST.andrew, x: P ? 640 : 610, from: -90, flip: false },
+      { o: CAST.peter, x: P ? 972 : 1000, from: 1700, flip: true },
+      { o: CAST.john, x: P ? 1022 : 1066, from: 1770, flip: true },
     ].map((d, i) => ({ ...d, i, seed: c.rr(0, 6), p: S.puppet(Z.boatL.add(person(c, d.o))) }));
 
     /* over the scene: questions, the casket, sparks, the two plates */
@@ -60,7 +61,7 @@ export default {
     const lid = box.querySelector('.lid'), glow = box.querySelector('.glow'), rays = box.querySelector('.rays'), cord = box.querySelector('.cord'), seal = box.querySelector('.seal');
     const sparks = DIS.map((d) => ({ d, el: fx.add(`<g>${spark(c, 12)}</g>`) }));
     // "whoever has": a basket that fills and overflows
-    const P1 = [600, 330], P2 = [1000, 330];
+    const P1 = [P ? 630 : 600, 330], P2 = [P ? 960 : 1000, 330];
     const plate1 = hanging(fx, discPlate(c, '', { r: 92 }), { x: 0, y: 0, len: 900 });
     const bask = fx.add(`<g>${basket(c, { w: 76, h: 46, full: true, heapK: 'mt13-heap' })}</g>`);
     const heap = S.$('mt13-heap');
@@ -122,7 +123,7 @@ export default {
       const bIn = es(t, 2.0, 2.3, ease.out) * (1 - es(t, 3.9, 4.1));
       const open = es(t, 2.25, 2.5) * (1 - es(t, 3.0, 3.12));
       const toBeach = es(t, 3.05, 3.3);
-      hangAt(box, lerp(800, 800, toBeach), lerp(-200, lerp(470, 400, toBeach), bIn), T, 1.2, 0.8);
+      hangAt(box, lerp(800, 800, toBeach), lerp(P ? -600 : -200, lerp(470, 400, toBeach), bIn), T, 1.2, 0.8);
       const tie = es(t, 3.2, 3.4);
       pose(cord, { s: 1, sx: tie, o: tie });
       const stamp = es(t, 3.35, 3.5, ease.back);
@@ -142,7 +143,7 @@ export default {
 
       /* v12 — the two plates */
       const p1 = es(t, 4.0, 4.3, ease.back), p2 = es(t, 5.0, 5.3, ease.back);
-      const y1 = lerp(-300, P1[1], p1), y2 = lerp(-300, P2[1], p2);
+      const y1 = lerp(P ? -650 : -300, P1[1], p1), y2 = lerp(P ? -650 : -300, P2[1], p2);   // phone: parked out of sight
       pose(plate1, { x: P1[0], y: y1, o: y1 < -150 ? 0 : 1 });
       pose(plate2, { x: P2[0], y: y2, o: y2 < -150 ? 0 : 1 });
       const fill = es(t, 4.3, 4.8);

@@ -83,7 +83,7 @@ export default {
       x: c.rr(XP.R - 200, XP.R + 200), y0: c.rr(430, 600), off: c.rr(0, 1), sp: c.rr(0.7, 1.3),
     }));
 
-    const CAMX = [[0, camFor(640)], [0.3, camFor(XP.L)], [1.95, camFor(XP.L)], [2.3, camFor(XP.R)], [3.2, camFor(XP.R)], [3.7, camFor(1090)]];
+    const CAMX = [[0, camFor(640)], [0.3, camFor(XP.L)], [1.95, camFor(XP.L)], [2.3, camFor(XP.R)], [3.2, camFor(XP.R)], [3.7, camFor(S.portrait ? 1130 : 1090)]];   // phone: the thirtyfold stays clear of the thread
     const CAMZ = [[0, 1.14], [0.3, 1.28], [1.0, 1.28], [1.3, 1.2], [1.95, 1.2], [2.3, 1.3], [2.6, 1.3], [2.9, 1.24], [3.2, 1.24], [3.7, 1.02]];
     const CAMY = [[0, 70], [0.3, 90], [1.0, 90], [1.3, 70], [1.95, 70], [2.3, 90], [2.6, 90], [2.9, 118], [3.2, 118], [3.7, 60]];
     const X_T = XP.L + 30, X_G = XP.R - 160;

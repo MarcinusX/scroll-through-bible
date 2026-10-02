@@ -16,7 +16,7 @@ import {
 const SEA = 500;                 // the water's surface
 const SHORE = 540;               // the top of the sand bank
 const FEETY = 660;               // where people stand on the beach
-const PIT = [330, 704];
+const PITD = [330, 704];
 
 export default {
   id: 'mt13-net',
@@ -29,8 +29,13 @@ export default {
     { v: 49 },
     { v: 50 },
   ],
-  cam: { x: [-60, 60], y: [0, 110], z: [1, 1.24] },
+  cam: { x: [-80, 300], y: [0, 110], z: [1, 1.24] },
   build(S) {
+    // phone: the boats sweep a shorter stretch with the camera on them; the catch, the fishermen, the righteous and
+    // the furnace move right, so the net, the sorting and the furnace all stay on the screen
+    const P = S.portrait;
+    const DX = P ? 90 : 0, RX = P ? 340 : 0;
+    const PIT = P ? [560, 704] : PITD;
     const c = S.c;
     sky(S, ['#c9dfdd', '#eceadb', '#f6ecd6']);
     const gold = sky(S, HARVEST, { name: 'gold' }).layer;
@@ -70,7 +75,7 @@ export default {
       const bad = i % 5 === 3;
       const cc = makeCutter('mt13-fish-' + i);
       const m = bad ? badFish(cc) : fish(cc, { color: KINDS[i % KINDS.length] });
-      return { i, bad, x0: cc.rr(1050, 1750), y0: cc.rr(SEA + 60, 800), sp: cc.rr(0.6, 1.2) * (i % 2 ? 1 : -1), ph: cc.rr(0, 6), s: cc.rr(0.9, 1.3), el: fishL.add(`<g>${m}</g>`), bx: 420 + (i % 6) * 22 + cc.rr(-6, 6), by: FEETY - 26 - Math.floor(i / 6) * 11 };
+      return { i, bad, x0: cc.rr(1050, 1750), y0: cc.rr(SEA + 60, 800), sp: cc.rr(0.6, 1.2) * (i % 2 ? 1 : -1), ph: cc.rr(0, 6), s: cc.rr(0.9, 1.3), el: fishL.add(`<g>${m}</g>`), bx: 420 + DX + (i % 6) * 22 + cc.rr(-6, 6), by: FEETY - 26 - Math.floor(i / 6) * 11 };
     });
 
     /* the boats and the net */
@@ -113,7 +118,7 @@ export default {
       const drop = es(t, 0.05, 0.35);
       const sweep = es(t, 0.3, 0.85);
       const haul = es(t, 1.05, 1.6);
-      const bx1 = lerp(980, 900, sweep) - haul * 110, bx2 = lerp(1460, 1280, sweep) - haul * 320;
+      const bx1 = lerp(P ? 900 : 980, P ? 840 : 900, sweep) - haul * (P ? 50 : 110), bx2 = lerp(P ? 1270 : 1460, P ? 1130 : 1280, sweep) - haul * (P ? 180 : 320);
       const bob = Math.sin(T * 1.4) * 2;
       placeBoat(B1, bx1, SEA + 8 + bob, 0.62, Math.sin(T * 1.1));
       placeBoat(B2, bx2, SEA + 8 - bob, 0.62, -Math.sin(T * 1.1));
@@ -123,7 +128,7 @@ export default {
       const nx = (bx1 + bx2) / 2, ny = SEA + 4;
       pose(net, { x: nx, y: ny, sx: (bx2 - bx1) / 520, sy: 0.2 + drop * 0.8 - haul * 0.4, o: drop > 0.01 && haul < 0.5 ? 1 : 0 });
       const onBeach = es(t, 1.35, 1.7);
-      pose(catchNet, { x: lerp(nx, 470, onBeach), y: lerp(SEA + 150, FEETY - 4, onBeach), s: lerp(1.3, 1, onBeach), o: es(t, 1.1, 1.3) * (1 - es(t, 2.85, 3.0)) });
+      pose(catchNet, { x: lerp(nx, 470 + DX, onBeach), y: lerp(SEA + 150, FEETY - 4, onBeach), s: lerp(1.3, 1, onBeach), o: es(t, 1.1, 1.3) * (1 - es(t, 2.85, 3.0)) });
 
       /* the fish: swimming, caught, landed, sorted */
       FISH.forEach((f) => {
@@ -137,7 +142,7 @@ export default {
         const sort = seg(t, 2.05 + (f.i % 8) * 0.07, 2.3 + (f.i % 8) * 0.07);
         let r = caught > 0.99 ? (f.i % 2 ? 20 : -20) : 0, o = 1, sc = f.s * (1 - land * 0.25);
         if (sort > 0) {
-          const [tx, ty] = f.bad ? [900, SEA + 30] : f.i % 3 === 0 ? [668, FEETY - 70] : [600, FEETY - 40];
+          const [tx, ty] = f.bad ? [900 + DX, SEA + 30] : f.i % 3 === 0 ? [668 + DX * 0.5, FEETY - 70] : [600 + DX * 0.5, FEETY - 40];
           const [ax, ay] = arcAt(ease.io(sort), [x, y], [tx, ty], f.bad ? 120 : 70);
           x = ax; y = ay; r = sort * (f.bad ? 400 : 200);
           o = sort > 0.96 ? 0 : 1;
@@ -149,31 +154,31 @@ export default {
       /* v48 — hauled ashore, they sit down and sort */
       const sitK = es(t, 1.95, 2.05);
       FS.forEach((f) => {
-        const x = [330, 440, 690][f.i], y = FEETY + 16 + (f.i === 1 ? 10 : 0);
+        const x = (P ? [500, 580, 760] : [330, 440, 690])[f.i], y = FEETY + 16 + (f.i === 1 ? 10 : 0);
         const come = es(t, 1.0 + f.i * 0.05, 1.3 + f.i * 0.05);
         const sx = lerp(-200 - f.i * 80, x, come);
         const tug = bump(t, 1.35, 1.75);
         f.stand.set({ x: sx, y, s: 0.82, flip: false, o: (1 - sitK) * (1 - es(t, 2.9, 3.05)), walk: come > 0 && come < 1 ? sx * 0.06 : undefined, armF: 60 + tug * 40, armB: 40 + tug * 30, lean: -tug * 10, blink: blinkAt(T, f.seed) });
         f.sit.set({ x, y, s: 0.82, flip: f.i === 2, o: sitK * (1 - es(t, 2.9, 3.05)), armF: 40 + bump(t, 2.05 + f.i * 0.1, 2.5 + f.i * 0.1) * 60, armB: 20, head: 10, blink: blinkAt(T, f.seed) });
       });
-      pose(bask, { x: 600, y: FEETY + 4, o: es(t, 1.9, 2.0) * (1 - es(t, 2.9, 3.05)) });
-      jars.forEach((j, i) => pose(j, { x: 650 + i * 36, y: FEETY + 2, o: es(t, 1.9, 2.0) * (1 - es(t, 2.9, 3.05)) }));
+      pose(bask, { x: 600 + DX * 0.5, y: FEETY + 4, o: es(t, 1.9, 2.0) * (1 - es(t, 2.9, 3.05)) });
+      jars.forEach((j, i) => pose(j, { x: 650 + DX * 0.5 + i * 36, y: FEETY + 2, o: es(t, 1.9, 2.0) * (1 - es(t, 2.9, 3.05)) }));
 
       /* v49–50 — at the end of the age: the angels part the wicked from the righteous */
       const ppl = es(t, 3.0, 3.2);
-      righteous.set({ x: 560, y: 712, o: ppl });
-      pose(lightR, { x: 560, y: 712, s: 0.6 + es(t, 3.4, 3.8) * 0.6, o: es(t, 3.3, 3.7) });
+      righteous.set({ x: 560 + RX, y: 712, o: ppl });
+      pose(lightR, { x: 560 + RX, y: 712, s: 0.6 + es(t, 3.4, 3.8) * 0.6, o: es(t, 3.3, 3.7) });
       const lead = es(t, 3.4, 3.9);
       const inPit = es(t, 4.1, 4.5);
       DARK.forEach((d) => {
-        const x0 = 500 + d.i * 56;
+        const x0 = 500 + RX + d.i * 56;
         const x = lerp(lerp(x0, PIT[0] + 60 + d.i * 30, lead), PIT[0] + (d.i - 1) * 30, inPit);
         const y = lerp(716 + (d.i % 2) * 14, PIT[1] + 6, inPit);
         pose(d.el, { x, y, s: 0.74 * (1 - inPit * 0.5), sx: lead > 0.05 ? -1 : 1, o: ppl * (1 - inPit) });
       });
       ANG.forEach((a) => {
         const down = es(t, 3.05 + a.i * 0.08, 3.35 + a.i * 0.08, ease.out);
-        const home = [[430, 650], [520, 626], [700, 640]][a.i];
+        const home = [[430 + RX, 650], [520 + RX, 626], [700 + RX, 640]][a.i];
         const walkL = a.i < 2 ? lead * 130 : 0;
         const x = lerp(760 + a.i * 90, home[0] - walkL, down);
         const y = lerp(180, home[1], down);
@@ -190,7 +195,7 @@ export default {
         pose(sm.el, { x: PIT[0] + Math.sin(k * 4 + sm.i) * 24, y: PIT[1] - 60 - k * 260, s: 0.6 + k * 1.2, o: es(t, 4.2, 4.5) * (1 - k) * 0.6 });
       });
 
-      S.cam.x = kf(t, [[0, 60], [0.9, 40], [1.3, -40], [2.9, -40], [3.2, -60], [4.0, -60]]);
+      S.cam.x = kf(t, [[0, P ? 300 : 60], [0.9, P ? 280 : 40], [1.3, P ? -70 : -40], [2.9, P ? -70 : -40], [3.2, P ? 0 : -60], [4.0, P ? 0 : -60]]);
       S.cam.z = kf(t, [[0, 1.04], [0.9, 1.06], [1.3, 1.12], [2.0, 1.2], [2.9, 1.2], [3.2, 1.08], [4.0, 1.1]]);
       S.cam.y = kf(t, [[0, 60], [0.9, 70], [1.3, 60], [2.0, 90], [2.9, 90], [3.2, 60], [4.0, 70]]);
     };

@@ -21,7 +21,9 @@ export default {
   ],
   cam: { x: [-90, 20], y: [-30, 140], z: [1, 1.26] },
   build(S) {
-    const Z = shoreSet(S, { house: true });
+    // phone: Peter's house moves right (as in mt13-home), so He is seen coming out of it, not out of the frame edge
+    const HX = S.portrait ? 190 : 0;
+    const Z = shoreSet(S, { house: true, houseX: 330 + HX });
     const c = Z.c;
 
     /* the crowd arrives from both sides (sprites) */
@@ -57,12 +59,14 @@ export default {
     const plates = ICONS.map((ic, i) => {
       const disc = sheet().p(c.cut(c.circ(0, 0, 42, 30), 0.6, 5), C.cream).out();
       const a = (-0.5 + i / (ICONS.length - 1)) * 1.9;
+      // phone: an even, narrower row of slightly smaller plates that stays inside the screen
+      if (S.portrait) return { i, x: 800 + (-1 + (2 * i) / (ICONS.length - 1)) * 205, y: 470 - Math.cos(a) * 110 + (i % 2) * 36, k: 0.82, el: hanging(Z.boatL, `<g>${disc}${ic}</g>`, { x: 0, y: 0, len: 500 }) };
       return { i, x: 800 + Math.sin(a) * 330, y: 470 - Math.cos(a) * 110 + (i % 2) * 36, el: hanging(Z.boatL, `<g>${disc}${ic}</g>`, { x: 0, y: 0, len: 500 }) };
     });
 
     const cur = curtains(S);
 
-    const WALK = [[1, 374], [1.62, 770], [1.72, 790]];
+    const WALK = [[1, 374 + HX], [1.62, 770], [1.72, 790]];
 
     return (t, time) => {
       cur.set(es(t, 0.05, 0.85), time);
@@ -109,7 +113,7 @@ export default {
       plates.forEach((p) => {
         const r = es(t, 3.08 + p.i * 0.08, 3.5 + p.i * 0.08, ease.back);
         const x = lerp(bx, p.x, r), y = lerp(by - 160, p.y, r) + Math.sin(time * 1.2 * hush + p.i) * 4;
-        pose(p.el, { x, y, s: 0.2 + 0.8 * r, o: seg(t, 3.05 + p.i * 0.08, 3.2 + p.i * 0.08), r: Math.sin(time * 0.9 + p.i * 2) * 3 });
+        pose(p.el, { x, y, s: (0.2 + 0.8 * r) * (p.k || 1), o: seg(t, 3.05 + p.i * 0.08, 3.2 + p.i * 0.08), r: Math.sin(time * 0.9 + p.i * 2) * 3 });
       });
 
       S.cam.x = kf(t, [[0.6, 0], [1.1, -80], [1.7, -20], [2.0, 0]]);

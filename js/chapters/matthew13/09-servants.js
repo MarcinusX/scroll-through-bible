@@ -9,7 +9,8 @@ import { farmSet, growRow, FARM, MASTER, SERVANTS, ENEMY, darnelStalk, discPlate
 import { moon as moonCut, stars as starsCut } from '../../assets/nature.js';
 
 const MX = 600;
-const SV = [870, 965, 1060];
+const SVD = [870, 965, 1060];
+const SVP = [830, 920, 1010];   // phone: the servants stand closer in, clear of the thread
 
 function hoe(c) {
   return sheet().p(c.ribbon([[0, 30], [0, -90]], 4.4), C.wood2).p(c.cut([[-2, -92], [22, -96], [24, -84], [-2, -82]], 0.3, 3), C.stone2).out();
@@ -27,6 +28,7 @@ export default {
   ],
   cam: { x: [-40, 40], y: [0, 110], z: [1, 1.24] },
   build(S) {
+    const SV = S.portrait ? SVP : SVD;
     const F = farmSet(S, { skyCols: ['#d0e2dc', '#f0e8cf', '#f8ebd2'] });
     const c = F.c;
     const wheat = F.rows('wheat');
@@ -95,7 +97,7 @@ export default {
 
       /* v29: roots knotted together; a darnel pulled up drags the wheat with it */
       const lift = es(t, 4.2, 4.5) * (1 - es(t, 4.85, 5));
-      pose(pair, { x: 1010, y: FARM.WHEAT[1] - lift * 170, s: 1.35, r: lift * -8, o: lift > 0.02 ? 1 : 0 });
+      pose(pair, { x: S.portrait ? 960 : 1010, y: FARM.WHEAT[1] - lift * 170, s: 1.35, r: lift * -8, o: lift > 0.02 ? 1 : 0 });
 
       S.cam.x = kf(t, [[0, 40], [0.5, 20], [2.0, 10], [2.3, 0], [3.0, 0], [3.3, 20], [4.0, 20], [4.3, 10]]);
       S.cam.z = kf(t, [[0, 1.1], [0.5, 1.16], [2.0, 1.16], [2.3, 1.06], [3.0, 1.06], [3.3, 1.14], [4.0, 1.14], [4.3, 1.1]]);

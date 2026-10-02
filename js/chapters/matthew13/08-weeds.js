@@ -51,8 +51,9 @@ export default {
     const plate = hanging(F.ppl, `<g transform="scale(1.3)">${discPlate(c, ic, { r: 54 })}</g>`, { x: 0, y: 0, len: 900 });
     storyFrame(S);
 
-    const MK = [[0.35, 520], [1.0, 540], [1.95, 1120], [2.15, 1120], [2.3, 1120]];
-    const EK = [[2.2, 1700], [2.35, 1320], [2.9, 380], [3.0, -300]];
+    // phone: the householder and the enemy sow a shorter stretch of the path, inside the screen
+    const MK = S.portrait ? [[0.35, 560], [1.0, 580], [1.95, 1040], [2.15, 1040], [2.3, 1040]] : [[0.35, 520], [1.0, 540], [1.95, 1120], [2.15, 1120], [2.3, 1120]];
+    const EK = S.portrait ? [[2.2, 1700], [2.35, 1200], [2.9, 520], [3.0, -300]] : [[2.2, 1700], [2.35, 1320], [2.9, 380], [3.0, -300]];
 
     return (t, time) => {
       /* day → night → day */

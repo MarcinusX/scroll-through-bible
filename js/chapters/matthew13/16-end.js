@@ -13,7 +13,7 @@ import {
 import { makeCutter } from '../../core/paper.js';
 
 const FY = 640;                         // the field's surface
-const PIT = [1150, 700];
+const PITD = [1150, 700];
 const KNOTS = [[470, 612], [590, 628], [720, 606], [880, 624], [990, 610], [620, 650], [930, 646]];
 
 export default {
@@ -30,6 +30,10 @@ export default {
   cam: { x: [-30, 30], y: [-80, 60], z: [0.94, 1.14] },
   build(S) {
     const c = S.c;
+    // phone: the furnace, the fire of the parable and the weeds the angels gather all move inside the screen
+    const P = S.portrait;
+    const PIT = P ? [1010, 700] : PITD;
+    const FIREX = P ? 1000 : 400;
     const sk = sky(S, HARVEST);
     const glowSky = sky(S, KINGDOM, { name: 'kingdom' });
     glowSky.layer.fade(0);
@@ -54,7 +58,7 @@ export default {
     field.add(sheet().p(c.ridge(top, -900, 2500, 1700, 12, 1), mix(C.wheat2, C.soil, 0.35)).out());
     const rows = S.layer({ par: 0.45, sh: 3 });
     [FY - 10, FY + 18, FY + 46].forEach((y, i) => rows.add(`<g transform="translate(0 ${y})">${stalkRow('mt13-end-' + i, { x0: -300, x1: 1900, n: 50 + i * 6, h: 96 + i * 10, kind: 'wheat', gold: true })}</g>`));
-    const knots = KNOTS.map(([x, y], i) => ({ i, x, y, el: rows.add(`<g>${darkKnot(c, 16)}</g>`) }));
+    const knots = KNOTS.map(([x0, y], i) => ({ i, x: P ? 800 + (x0 - 800) * 0.85 : x0, y, el: rows.add(`<g>${darkKnot(c, 16)}</g>`) }));
     // the fire of the parable at the left, the furnace at the right
     const fireL = S.layer({ par: 0.5, sh: 4 });
     const bundles = [0, 1].map((i) => ({ i, el: fireL.add(`<g>${darnelBundle(c, 80)}</g>`) }));
@@ -87,11 +91,11 @@ export default {
       /* v40 — the bundles burn, as it will be at the end of the age */
       bundles.forEach((b) => {
         const k = seg(t, 0.05 + b.i * 0.12, 0.4 + b.i * 0.12);
-        const [x, y] = arcAt(ease.io(k), [620 + b.i * 120, FY + 10], [400 + b.i * 20, 700], 120);
+        const [x, y] = arcAt(ease.io(k), [620 + b.i * 120, FY + 10], [FIREX + b.i * 20, 700], 120);
         pose(b.el, { x, y, r: -k * 90, s: 1.1 * (1 - k * 0.3), o: k < 0.98 ? 1 : 0 });
       });
       const burn = es(t, 0.2, 0.5) * (1 - es(t, 1.0, 1.3));
-      pose(fire, { x: 400, y: 712, s: 0.4 + burn * 0.6, o: burn });
+      pose(fire, { x: FIREX, y: 712, s: 0.4 + burn * 0.6, o: burn });
 
       /* v41 — the Son of Man sends His angels */
       const come = es(t, 0.95, 1.3, ease.out);
@@ -106,8 +110,8 @@ export default {
         const back = es(t, 2.8, 3.1);
         const tx = a.knots[0].x, ty = a.knots[0].y - 40;
         let x = lerp(800 + (a.i - 1.5) * 60, tx, dive), y = lerp(260, ty, dive) - Math.sin(dive * PI) * 80;
-        x = lerp(x, PIT[0] - 250 + a.i * 110, toPit); y = lerp(y, PIT[1] - 210 + (a.i % 2) * 36, toPit) - Math.sin(toPit * PI) * 60;
-        x = lerp(x, 800 + (a.i < 2 ? -1 : 1) * (190 + (a.i % 2) * 150), back); y = lerp(y, 300 + (a.i % 2) * 40, back);
+        x = lerp(x, P ? PIT[0] - 235 + a.i * 95 : PIT[0] - 250 + a.i * 110, toPit); y = lerp(y, PIT[1] - 210 + (a.i % 2) * 36, toPit) - Math.sin(toPit * PI) * 60;
+        x = lerp(x, 800 + (a.i < 2 ? -1 : 1) * (P ? 165 + (a.i % 2) * 115 : 190 + (a.i % 2) * 150), back); y = lerp(y, 300 + (a.i % 2) * 40, back);
         a.x = x; a.y = y;
         a.p.set({ x, y, s: 0.62, flip: x > 800 && toPit < 0.5 ? true : toPit > 0.5 && back < 0.5 ? false : x > 800, armF: 60 + bump(t, 1.7, 2.1) * 60 + toPit * 60 * (1 - back), armB: 40 + toPit * 80 * (1 - back), head: 4, o: es(t, 1.25, 1.35), blink: blinkAt(T, a.seed) });
       });

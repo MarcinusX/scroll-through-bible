@@ -134,13 +134,17 @@ export default {
     const KINDS = [['bean', tr('fasola', 'bean')], ['olive', tr('oliwka', 'olive')], ['wheat', tr('pszenica', 'wheat')], ['lentil', tr('soczewica', 'lentil')], ['mustard', tr('gorczyca', 'mustard')]];
     const lineup = KINDS.map(([k, name], i) => {
       const inner = `<g transform="translate(0 -10)">${seedIcon(c, k)}</g><g transform="translate(0 38) scale(.5)">${paperLabel(name, { size: 30, fill: C.parchment })}</g>`;
-      return { i, x: 540 + i * 130, y: 300, el: hanging(cards, card(c, 100, 104, inner), { x: 0, y: 0, len: 800 }) };
+      return { i, x: S.portrait ? 545 + i * 112 : 540 + i * 130, y: 300,   // phone: the row of cards fits the screen
+         el: hanging(cards, card(c, 100, 104, inner), { x: 0, y: 0, len: 800 }) };
     });
     const smallest = hanging(cards, paperLabel(tr('najmniejsze', 'the smallest'), { size: 26, fill: C.halo }), { x: 0, y: 0, len: 800 });
     const mag = hanging(cards, magnifier(c, `<g transform="scale(6.5)">${mustardSeed(c)}</g><circle cx="-5" cy="-5" r="4.5" fill="${C.cream}" opacity=".55"/>`), { x: 0, y: 0, len: 800 });
     storyFrame(S);
 
-    const MK = [[0.3, -120], [1.0, 640], [1.35, 700], [2.0, 700], [2.2, 470]];
+    const SITX = S.portrait ? 530 : 470;   // phone: he sits down inside the screen
+    // phone: he walks in earlier, so he is not half in the frame while the parable is announced
+    const MK = [S.portrait ? [0.1, 120] : [0.3, -120], [S.portrait ? 0.6 : 1.0, 640], [1.35, 700], [2.0, 700], [2.2, SITX]];
+    const LX = lineup[4].x;
 
     return (t, time) => {
       eveL.fade(es(t, 3, 5));
@@ -160,7 +164,7 @@ export default {
         armF: 30 + es(t, 0.5, 0.8) * 30 + bump(t, 1.3, 1.6) * 50, armB: 10, head: -es(t, 0.6, 0.9) * 8 + bump(t, 1.3, 1.6) * 8, blink: blinkAt(time),
       });
       fade(palmSeedEl, es(t, 0.55, 0.75) * (1 - seg(t, 1.35, 1.38)));
-      manSit.set({ x: 470, y: 700, s: 1.0, flip: false, o: sat, armF: 30, armB: 40, head: -8 - es(t, 3.1, 3.5) * 10, blink: blinkAt(time, 3) });
+      manSit.set({ x: SITX, y: 700, s: 1.0, flip: false, o: sat, armF: 30, armB: 40, head: -8 - es(t, 3.1, 3.5) * 10, blink: blinkAt(time, 3) });
       pose(tossed, { x: lerp(740, TX, toss), y: lerp(560, SEED_Y, toss) - Math.sin(toss * PI) * 120, o: toss > 0 && toss < 1 ? 1 : 0 });
       const planted = t >= 1.6 ? 1 : 0;
       const sprouted = es(t, 3.02, 3.2);
@@ -175,9 +179,9 @@ export default {
         pose(l.el, { x: l.x, y: l.y - (1 - inn) * 520 - out * 560, r: Math.sin(time * 0.8 + l.i * 1.7) * 2, o: inn > 0.001 && out < 0.999 ? 1 : 0 });
       });
       const mIn = es(t, 2.4, 2.58, ease.back) * (1 - es(t, 2.92, 3.05));
-      pose(mag, { x: 1060 + 8, y: 292 - (1 - mIn) * 600, s: 0.72, r: Math.sin(time * 0.9) * 2, o: mIn > 0.01 ? 1 : 0 });
+      pose(mag, { x: LX + 8, y: 292 - (1 - mIn) * 600, s: 0.72, r: Math.sin(time * 0.9) * 2, o: mIn > 0.01 ? 1 : 0 });
       const sIn = es(t, 2.5, 2.66, ease.back) * (1 - es(t, 2.92, 3.06));
-      pose(smallest, { x: 1060, y: 400 - (1 - sIn) * 700, r: Math.sin(time + 2) * 3, o: sIn > 0.01 ? 1 : 0 });
+      pose(smallest, { x: LX, y: 400 - (1 - sIn) * 700, r: Math.sin(time + 2) * 3, o: sIn > 0.01 ? 1 : 0 });
 
       /* v32b — it grows past the vegetables into a tree */
       const g1 = es(t, 3.1, 3.55);

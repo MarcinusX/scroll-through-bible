@@ -129,7 +129,7 @@ export function throng(seed, n, { s = 0.5, spread = 30, rows = 1, flip = false, 
  * Returns handles and update(time).
  */
 export const BEACH = 506, WATER = 560;
-export function shoreSet(S, { skyCols = MORNING, sky2 = null, sunAt = [1190, 170], moonAt = null, starsN = 0, house: withHouse = false, haze = false } = {}) {
+export function shoreSet(S, { skyCols = MORNING, sky2 = null, sunAt = [1190, 170], moonAt = null, starsN = 0, house: withHouse = false, houseX = 330, haze = false } = {}) {
   const c = S.c;
   const sk = sky(S, skyCols);
   let sk2 = null, starL = null;
@@ -152,7 +152,7 @@ export function shoreSet(S, { skyCols = MORNING, sky2 = null, sunAt = [1190, 170
   // Peter's house at the edge of the beach (Mt 13,1: "Jesus went out of the house")
   let houseDoor = null;
   if (withHouse) {
-    const hx = 330, hy = 512;
+    const hx = houseX, hy = 512;
     beach.add(house(c, hx, hy, 150, 108, { stairs: false }) + bush(c, hx - 100, hy + 4, 60, C.sage, C.moss));
     houseDoor = [hx + 43, hy];
   }
@@ -706,7 +706,7 @@ export function stalkRow(seed, { x0 = -600, x1 = 2200, n = 60, h = 110, kind = '
  * to rowsL (returns their elements, back to front). Returns handles and update(time).
  */
 export const FARM = { TOP: 560, FACE: 664, PATH: 724, X0: 240, X1: 1360, HOUSE: 470, BARN: 1150, BY: 566, BS: 0.78, ROOF: 566 - 142 * 0.78, WHEAT: [578, 606, 634], DARNEL: [590, 620, 648] };
-export function farmSet(S, { skyCols = MORNING, sky2 = null, night = false, sunAt = [1180, 160], moonAt = [760, 170] } = {}) {
+export function farmSet(S, { skyCols = MORNING, sky2 = null, night = false, sunAt = [1180, 160], moonAt = [760, 170], barnX = FARM.BARN } = {}) {
   const c = S.c;
   const sk = sky(S, skyCols);
   const sk2L = sky2 ? sky(S, sky2, { name: 'sky2' }).layer : null;
@@ -732,13 +732,13 @@ export function farmSet(S, { skyCols = MORNING, sky2 = null, night = false, sunA
   const bld = S.layer({ par: 0.36, sh: 4 });
   const H = farmHouse(c);
   const at = (x) => `translate(${x} ${FARM.BY}) scale(${FARM.BS})`;
-  bld.add(olive(c, FARM.HOUSE - 150, FARM.BY + 2, 0.7) + cypress(c, FARM.BARN + 150, FARM.BY + 2, 120) + bush(c, FARM.BARN - 150, FARM.BY + 4, 60, C.sage, C.moss));
+  bld.add(olive(c, FARM.HOUSE - 150, FARM.BY + 2, 0.7) + cypress(c, barnX + 150, FARM.BY + 2, 120) + bush(c, barnX - 150, FARM.BY + 4, 60, C.sage, C.moss));
   const houseG = bld.add(`<g transform="${at(FARM.HOUSE)}">${H.body}</g>`);
   const lit = bld.add(`<g transform="${at(FARM.HOUSE)}">${H.lit}</g>`);
   const Bn = barn(c);
-  bld.add(`<g transform="${at(FARM.BARN)}">${Bn.body}</g>`);
-  const barnIn = bld.add(`<g transform="${at(FARM.BARN)}">${Bn.inside}</g>`);
-  const barnDoor = bld.add(`<g transform="translate(${FARM.BARN - 36} ${FARM.BY}) scale(${FARM.BS * 2} ${FARM.BS})">${Bn.door}</g>`);
+  bld.add(`<g transform="${at(barnX)}">${Bn.body}</g>`);
+  const barnIn = bld.add(`<g transform="${at(barnX)}">${Bn.inside}</g>`);
+  const barnDoor = bld.add(`<g transform="translate(${barnX - 36} ${FARM.BY}) scale(${FARM.BS * 2} ${FARM.BS})">${Bn.door}</g>`);
   // the field and its cut front edge
   const field = S.layer({ par: 0.45, sh: 4 });
   const top = c.wave(FARM.TOP, [3, 1.5], [600, 170]);
@@ -773,7 +773,7 @@ export function farmSet(S, { skyCols = MORNING, sky2 = null, night = false, sunA
     });
   };
   return {
-    c, sk, sk2L, nightL, starL, hangL, sunEl, moonEl, cls, bld, lit, barnIn, barnDoor, field, rowsL, pathL, ppl, rows, houseG,
+    c, sk, sk2L, nightL, starL, hangL, sunEl, moonEl, cls, bld, lit, barnIn, barnDoor, barnX, field, rowsL, pathL, ppl, rows, houseG,
     update(time, { sunX = sunAt[0], sunY = sunAt[1], moonY = moonAt[1], moonX = moonAt[0] } = {}) {
       swing(sunEl, sunX, sunY, time, 1.1, 0.6);
       if (moonEl) swing(moonEl, moonX, moonY, time, 1, 0.5, 2);

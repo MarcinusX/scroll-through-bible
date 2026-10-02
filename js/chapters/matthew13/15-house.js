@@ -55,9 +55,10 @@ export default {
 
     /* people round the lamp */
     const ppl = S.layer({ par: 0.5, sh: 5 });
+    const P = S.portrait;   // phone: the outer disciples and the row of three cards close in
     const SEATS = [
-      { o: CAST.matthew, x: 450, y: 700, s: 0.86 }, { o: CAST.thomas, x: 1150, y: 700, s: 0.86 },
-      { o: CAST.andrew, x: 550, y: 736, s: 0.94 }, { o: CAST.james, x: 1050, y: 736, s: 0.94 },
+      { o: CAST.matthew, x: P ? 515 : 450, y: 700, s: 0.86 }, { o: CAST.thomas, x: P ? 1035 : 1150, y: 700, s: 0.86 },
+      { o: CAST.andrew, x: P ? 590 : 550, y: 736, s: 0.94 }, { o: CAST.james, x: P ? 985 : 1050, y: 736, s: 0.94 },
       { o: CAST.peter, x: 650, y: 768, s: 1.0 }, { o: CAST.john, x: 950, y: 768, s: 1.0 },
     ].map((d, i) => ({ ...d, i, flip: d.x > JX, seed: c.rr(0, 6), p: S.puppet(ppl.add(person(c, { ...d.o, pose: 'sit' }))) }));
     const jesus = S.puppet(ppl.add(person(c, { ...CAST.jesus, pose: 'sit' })));
@@ -81,9 +82,9 @@ export default {
     const cards = CARD.map((cd, i) => ({ i, el: hanging(cardsL, keyCard(c, S.id('kc' + i), cd.front, cd.back, cd.label), { x: 0, y: 0, len: 1000 }) }));
     const PLAN = [
       { i: 0, x: 800, y: 290, in: 1.05, flip: 1.4, out: 2.0 },
-      { i: 1, x: 590, y: 300, in: 2.0, flip: 2.2, out: 3.0 },
-      { i: 2, x: 830, y: 280, in: 2.06, flip: 2.34, out: 3.0 },
-      { i: 3, x: 1070, y: 300, in: 2.12, flip: 2.48, out: 3.0 },
+      { i: 1, x: P ? 612 : 590, y: 300, in: 2.0, flip: 2.2, out: 3.0 },
+      { i: 2, x: P ? 810 : 830, y: 280, in: 2.06, flip: 2.34, out: 3.0 },
+      { i: 3, x: P ? 998 : 1070, y: 300, in: 2.12, flip: 2.48, out: 3.0 },
       { i: 4, x: 800, y: 290, in: 3.02, flip: 3.35, out: 4.0 },
       { i: 5, x: 640, y: 300, in: 4.02, flip: 4.3, out: 9 },
       { i: 6, x: 960, y: 290, in: 4.1, flip: 4.5, out: 9 },

@@ -12,7 +12,9 @@ export default {
   ],
   cam: { x: [-80, 0], y: [0, 80], z: [1, 1.2] },
   build(S) {
-    const Z = shoreSet(S, { skyCols: DUSK, sunAt: [1150, 330], house: true });
+    // phone: Peter's house (and everything that walks to it) moves right, so the house is on the screen
+    const HX = S.portrait ? 190 : 0;
+    const Z = shoreSet(S, { skyCols: DUSK, sunAt: [1150, 330], house: true, houseX: 330 + HX });
     const c = Z.c;
     const crowd = beachCrowd(S, Z.crowdL, [
       { y: 508, s: 0.34, n: 24, x0: 520, x1: 1560 },
@@ -21,14 +23,14 @@ export default {
     ], { per: 4, gap: 0, arms: [0, 16], seed: 'mt13-home-crowd' });
     crowd.forEach((g) => { g.to = g.x < 1000 ? g.x - 1300 - g.d * 300 : g.x + 900 + g.d * 300; });
     // the lamp in the window of the house
-    const win = Z.beach.add(`<g><circle cx="432" cy="444" r="50" fill="url(#warm-glow)"/><path d="${c.poly(c.rect(420, 434, 24, 19))}" fill="${C.lampGlow}"/></g>`);
+    const win = Z.beach.add(`<g><circle cx="${432 + HX}" cy="444" r="50" fill="url(#warm-glow)"/><path d="${c.poly(c.rect(420 + HX, 434, 24, 19))}" fill="${C.lampGlow}"/></g>`);
     const walkL = S.layer({ par: 0.34, sh: 4 });
     const jWalk = S.puppet(walkL.add(person(c, { ...CAST.jesus })));
     const DIS = [CAST.peter, CAST.john, CAST.andrew, CAST.james].map((o, i) => ({ i, p: S.puppet(walkL.add(person(c, o))), seed: c.rr(0, 6) }));
     const B = boatIn(Z.boatL, c, () => S.puppet(Z.boatL.add(person(c, { ...CAST.jesus, pose: 'sit' }))));
     const jBoat = B.inside;
     placeBoat(B, 935, 590, 0.5, 0);
-    const JK = [[0.2, 930], [0.85, 390], [0.95, 374]];
+    const JK = [[0.2, 930], [0.85, 390 + HX], [0.95, 374 + HX]];
 
     return (t, time) => {
       Z.update(time * 0.6, { sunY: 330 + es(t, 0, 1) * 60 });
@@ -40,7 +42,7 @@ export default {
       const jx = kf(t, JK);
       jWalk.set({ x: jx, y: 548, s: 0.5, flip: true, o: seg(t, 0.14, 0.2) * (1 - seg(t, 0.93, 0.99)), walk: moving(t, JK) ? jx * 0.1 : undefined, blink: blinkAt(time) });
       DIS.forEach((d) => {
-        const keys = [[0.12 + d.i * 0.05, 1060 + d.i * 50], [0.9 + d.i * 0.03, 440 + d.i * 44]];
+        const keys = [[0.12 + d.i * 0.05, 1060 + d.i * 50], [0.9 + d.i * 0.03, 440 + HX + d.i * 44]];
         const x = kf(t, keys);
         d.p.set({ x, y: 540 + (d.i % 2) * 8, s: 0.46, flip: true, walk: moving(t, keys) ? x * 0.1 : undefined, blink: blinkAt(time, d.seed) });
       });
