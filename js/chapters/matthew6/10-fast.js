@@ -31,8 +31,10 @@ export default {
   build(S) {
     const c = S.c;
     sky(S, ['#c6dcd8', '#eee6cc', '#f7e8cc']);
+    const P = S.portrait;
+    const SUNX = P ? 1000 : 1180;   // phone: the sun hangs inside the screen, not half under the thread
     const hangL = S.layer({ par: 0.04, sh: 5 });
-    const sunEl = hanging(hangL, sun(c, 40), { x: 1180, y: 160, len: 800 });
+    const sunEl = hanging(hangL, sun(c, 40), { x: SUNX, y: 160, len: 800 });
     const cl = hanging(hangL, cloud(c, 160), { x: 640, y: 200, len: 800 });
     S.layer({ par: 0.08, sh: 2 }).add(band(c, { y: 430, amps: [14, 6, 3], lens: [1000, 340, 120], color: C.hillFar, x1: 3200 }).markup);
     const hl = S.layer({ par: 0.16, sh: 3 });
@@ -79,8 +81,8 @@ export default {
     const PASS = [
       { o: womanOf(c, { robe: C.tealRobe }), x: 330, y: 24, flip: false, x2: 560 },
       { o: manOf(c, { belt: C.leather }), x: 410, y: 34, flip: false, x2: 650 },
-      { o: womanOf(c), x: 760, y: 20, flip: true, x2: 1010 },
-      { o: manOf(c, { mantle: C.clayMantle }), x: 850, y: 36, flip: true, x2: 1090 },
+      { o: womanOf(c), x: P ? 730 : 760, y: 20, flip: true, x2: 1010 },
+      { o: manOf(c, { mantle: C.clayMantle }), x: P ? 818 : 850, y: 36, flip: true, x2: 1090 },   // phone: clear of the thread
     ].map((m, i) => ({ ...m, i, p: S.puppet(act.add(person(c, m.o))), seed: c.rr(0, 9) }));
     const ink = C.inkSoft;
     const sadBrows = `<path d="${c.ribbon([[-1, -6.6], [7.2, -10.4]], 2.6) + c.ribbon([[10, -10.4], [16.5, -6.8]], 2.4)}" fill="${ink}"/><path d="${c.ribbon(c.arc(10, 12, 3.4, 2.4, PI + 0.3, 2 * PI - 0.3, 6), 1.3)}" fill="${ink}"/>`;
@@ -114,7 +116,7 @@ export default {
 
     return (t, time) => {
       const T = time;
-      pose(sunEl, { x: 1180, y: 160, r: T ? Math.sin(T * 0.6) : 0 });
+      pose(sunEl, { x: SUNX, y: 160, r: T ? Math.sin(T * 0.6) : 0 });
       pose(cl, { x: 640 + (T ? Math.sin(T * 0.1) * 20 : 0), y: 200, r: T ? Math.sin(T * 0.6 + 1) * 1.2 : 0 });
 
       /* v16a — he drags himself along, long-faced; v16b — ashes, the street points */

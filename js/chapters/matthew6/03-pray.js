@@ -32,8 +32,10 @@ export default {
   build(S) {
     const c = S.c;
     sky(S, ['#cbdcd8', '#f1e3c8', '#f8e6c8']);
+    const P = S.portrait;
+    const SUNX = P ? 1000 : 1180;   // phone: the sun hangs inside the screen, not half under the thread
     const hangL = S.layer({ par: 0.04, sh: 5 });
-    const sunEl = hanging(hangL, sun(c, 40), { x: 1180, y: 160, len: 800 });
+    const sunEl = hanging(hangL, sun(c, 40), { x: SUNX, y: 160, len: 800 });
     const cl = hanging(hangL, cloud(c, 170), { x: 620, y: 200, len: 800 });
 
     S.layer({ par: 0.08, sh: 2 }).add(band(c, { y: 430, amps: [14, 6, 3], lens: [1000, 340, 120], color: C.hillFar, x1: 3200 }).markup);
@@ -86,10 +88,11 @@ export default {
     /* the people */
     const act = S.layer({ par: 0.8, sh: 5 });
     const PASS = [
-      { o: womanOf(c, { robe: C.tealRobe }), x0: -200, x1: 380, y: 22 },
-      { o: manOf(c, { belt: C.leather }), x0: 1100, x1: 760, y: 30 },
-      { o: manOf(c, { mantle: C.clayMantle }), x0: -300, x1: 300, y: 38 },
-      { o: womanOf(c), x0: 1200, x1: 860, y: 16 },
+      // phone: the onlookers stop a little closer in, so the outer ones are not cut by the edge and the thread
+      { o: womanOf(c, { robe: C.tealRobe }), x0: -200, x1: P ? 400 : 380, y: 22 },
+      { o: manOf(c, { belt: C.leather }), x0: 1100, x1: P ? 730 : 760, y: 30 },
+      { o: manOf(c, { mantle: C.clayMantle }), x0: -300, x1: P ? 330 : 300, y: 38 },
+      { o: womanOf(c), x0: 1200, x1: P ? 810 : 860, y: 16 },
     ].map((m, i) => ({ ...m, i, p: S.puppet(act.add(person(c, m.o))), seed: c.rr(0, 9) }));
     const hypO = hypocrite(1);
     const hyp = S.puppet(act.add(addToHead(person(c, hypO), `<g transform="translate(-2 -4)">${phylactery(c, 1.1)}</g>`)));
@@ -116,7 +119,7 @@ export default {
 
     return (t, time) => {
       const T = time;
-      pose(sunEl, { x: 1180, y: 160, r: T ? Math.sin(T * 0.6) : 0 });
+      pose(sunEl, { x: SUNX, y: 160, r: T ? Math.sin(T * 0.6) : 0 });
       pose(cl, { x: 620 + (T ? Math.sin(T * 0.1) * 20 : 0), y: 200, r: T ? Math.sin(T * 0.6 + 1) * 1.2 : 0 });
 
       /* v5a — the hypocrite takes his stand at the corner and spreads his arms */

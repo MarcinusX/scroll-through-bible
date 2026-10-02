@@ -83,9 +83,11 @@ export default {
 
     /* the street's people (they turn and clap) */
     const folkL = S.layer({ par: 0.45, sh: 5 });
+    const P = S.portrait;   // phone: the clapping street stands inside the screen, the herald stops short of the thread
+    const FX = P ? [545, 618, 690, 1290, 1370] : [300, 380, 690, 1210, 1290];
     const FOLK = [
-      { o: womanOf(c), x: 300, flip: false }, { o: manOf(c), x: 380, flip: false }, { o: manOf(c, { mantle: C.clayMantle }), x: 690, flip: true, y: -30, s: 0.84 },
-      { o: womanOf(c, { robe: C.tealRobe }), x: 1210, flip: true }, { o: manOf(c), x: 1290, flip: true },
+      { o: womanOf(c), x: FX[0], flip: false }, { o: manOf(c), x: FX[1], flip: false }, { o: manOf(c, { mantle: C.clayMantle }), x: FX[2], flip: true, y: -30, s: 0.84 },
+      { o: womanOf(c, { robe: C.tealRobe }), x: FX[3], flip: true }, { o: manOf(c), x: FX[4], flip: true },
     ].map((f, i) => ({ y: 0, s: 0.92, ...f, i, p: S.puppet(folkL.add(person(c, f.o))), claps: folkL.add(`<g>${clapMarks(c, 12)}</g>`), seed: c.rr(0, 9) }));
 
     /* the beggar at the door, his bowl */
@@ -143,7 +145,7 @@ export default {
       const walk = es(t, 0.04, 0.6, (u) => u);
       const hx = lerp(520, 880, walk);
       const hw = walk > 0 && walk < 1;
-      const hdx = lerp(700, 1110, es(t, 0.02, 0.56, (u) => u));
+      const hdx = lerp(700, P ? 1065 : 1110, es(t, 0.02, 0.56, (u) => u));
       const hdw = t > 0.02 && t < 0.56;
       herald.set({ x: hdx, y: GY - 34, s: 0.84, walk: hdw ? hdx * 0.07 : undefined, armF: 70, armB: 20, head: -8, blink: blinkAt(T, 3), o: 1 - gone });
       const [bx, by] = handAt(hdx, GY - 34, 0.84, false, 70);

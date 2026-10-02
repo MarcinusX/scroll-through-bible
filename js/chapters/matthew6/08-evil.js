@@ -79,6 +79,7 @@ export default {
     const fg = S.layer({ par: 0.8, sh: 6 });
     fg.add(thornBush(c, 100, 980, 260, mix(C.thorn2, C.night, 0.5)) + rock(c, 1500, 990, 260, 110, mix(C.rock3, C.night, 0.5)));
 
+    const P = S.portrait;
     const MK = [[0.0, 380], [0.55, 700], [1.0, 860], [1.55, 940], [2.0, 1020]];
     return (t, time) => {
       const T = time;
@@ -95,9 +96,11 @@ export default {
         pose(g, { x: BAIT[0] - 20 + i * 24, y: BAIT[1] - 60 - (i % 2) * 12, s: k, r: T * 30, o: 1 - es(t, 0.8, 1.0) * 0.7 });
       });
       const up = es(t, 0.72, 0.95, ease.in);
-      pose(net, { x: BAIT[0], y: BAIT[1] - 150 - up * 600, r: T ? Math.sin(T * 0.8) * 2 : 0 });
+      pose(net, { x: BAIT[0], y: BAIT[1] - 150 - up * (P ? 1100 : 600),   // phone: hauled right out of the tall sky
+        r: T ? Math.sin(T * 0.8) * 2 : 0 });
       const bk = T ? Math.sin(T * 3) : 0;
-      pose(beck, { x: BAIT[0] - 80, y: BAIT[1] - 16, r: -20 + bk * 14, o: 0.9 * (1 - es(t, 0.75, 0.95)) });
+      pose(beck, { x: BAIT[0] - (P ? 30 : 80), y: BAIT[1] - (P ? 34 : 16),   // phone: beckons from inside the screen
+        r: -20 + bk * 14, o: 0.9 * (1 - es(t, 0.75, 0.95)) });
       const lk = es(t, 0.3, 0.6);
       fade(strip, lk * (1 - es(t, 1.9, 2.0) * 0.3));
 

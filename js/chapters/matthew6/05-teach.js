@@ -7,7 +7,7 @@ import { seg, es, ease, bump, fade } from '../../core/anim.js';
 import { mount, mountFront, plateBoard, slipHeap, wordSlip, fatherLight, loaf, tunic, rewardStar, tr, PI } from './lib.js';
 import { jug } from '../mark2/lib.js';
 
-const PX = 1010, PY = 170, PW = 300, PH = 230;
+const PX0 = 1010, PY = 170, PW = 300, PH = 230;
 const LX = 700, LY = 180;          // the light of heaven
 
 export default {
@@ -20,6 +20,7 @@ export default {
   build(S) {
     const c = S.c;
     const M = mount(S, { sunAt: [1360, 130] });
+    const PX = S.portrait ? 900 : PX0;   // phone: the plate hangs clear of the edge and the thread
 
     /* the light of heaven and what it lets down */
     const heavenL = S.layer({ par: 0.1, sh: 2 });

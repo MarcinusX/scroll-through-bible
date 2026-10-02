@@ -7,7 +7,7 @@ import { seg, es, ease, bump, fade } from '../../core/anim.js';
 import { mount, mountFront, plateBoard, pose3, slate, noteHalf, scrap, sparkle, manOf, QUIET, tr, PI } from './lib.js';
 
 const PW = 330, PH = 270, PY = 175;
-const LXP = 648, RXP = 1010;      // plate centres (left, right)
+const LXP0 = 648, RXP0 = 1010;    // plate centres (left, right)
 
 function chain(c, w = 150) {
   let d = '';
@@ -25,6 +25,9 @@ export default {
   build(S) {
     const c = S.c;
     const M = mount(S, { sunAt: [1370, 110] });
+    // phone: the two plates hang side by side across the usable width, the right one a little lower and
+    // overlapping the left one's edge, so neither is cut by the frame or the thread
+    const LXP = S.portrait ? 640 : LXP0, RXP = S.portrait ? 915 : RXP0, BDY = S.portrait ? 26 : 0;
     const plateL = S.layer({ par: 0.12, sh: 6 });
     const debtorA = manOf(c, { robe: C.stone2, mantle: null, hairStyle: 'short', beard: 'short' });
     const debtorB = manOf(c, { robe: C.wheatRobe, mantle: null, hairStyle: 'curly', beard: 'none' });
@@ -64,7 +67,7 @@ export default {
 
       /* the plates come down */
       const ka = es(t, 0.0, 0.3, ease.out), kb = es(t, 1.0, 1.3, ease.out);
-      const ay = lerp(-600, PY, ka) + (T ? Math.sin(T * 0.8) * 2 : 0), by = lerp(-600, PY, kb) + (T ? Math.sin(T * 0.8 + 1) * 2 : 0);
+      const ay = lerp(-600, PY, ka) + (T ? Math.sin(T * 0.8) * 2 : 0), by = lerp(-600, PY + BDY, kb) + (T ? Math.sin(T * 0.8 + 1) * 2 : 0);
       const oa = ka > 0.005 ? 1 : 0, ob = kb > 0.005 ? 1 : 0;
       pose(boardA, { x: LXP, y: ay, o: oa });
       const ga = ay + PH * 0.78 + 6;

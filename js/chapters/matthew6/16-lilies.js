@@ -13,8 +13,8 @@ import { SPRING, QUIET, womanOf, worryCloud, tunic, oven, dayDisc, plateBoard, p
 import { cloak } from '../mark2/lib.js';
 
 const GY = 704;
-const MX = 520;                    // the man with his cloak
-const OX = 1110;                   // the oven
+const MX0 = 520;                   // the man with his cloak
+const OX0 = 1110;                  // the oven
 const PX = 720, PY = 150, PW = 300, PH = 250;   // Solomon's plate
 const LILX = 900;                  // the great lily
 
@@ -62,6 +62,8 @@ export default {
   cam: { x: [-40, 40], y: [-80, 40], z: [1, 1.14] },
   build(S) {
     const c = S.c;
+    // phone: the man with his cloak, the oven and "tomorrow" come inside the screen, clear of the edge and the thread
+    const MX = S.portrait ? 565 : MX0, OX = S.portrait ? 1050 : OX0, TMX = S.portrait ? 1020 : 1060;
     sky(S, SPRING);
     const hangL = S.layer({ par: 0.04, sh: 5 });
     const sunEl = hanging(hangL, sun(c, 42), { x: 1250, y: 140, len: 900 });
@@ -139,7 +141,7 @@ export default {
       /* v30a — today and tomorrow; the grass is thrown into the oven */
       const dk = es(t, 3.02, 3.3, ease.out) * (1 - es(t, 4.0, 4.2, ease.in));
       pose(today, { x: 860, y: lerp(-400, 190, dk), r: T ? Math.sin(T * 0.8) * 1.5 : 0, o: dk > 0.01 ? 1 : 0 });
-      pose(tomorrow, { x: 1060, y: lerp(-400, 230, dk), r: T ? Math.sin(T * 0.8 + 1) * 1.5 : 0, o: dk > 0.01 ? 1 : 0 });
+      pose(tomorrow, { x: TMX, y: lerp(-400, 230, dk), r: T ? Math.sin(T * 0.8 + 1) * 1.5 : 0, o: dk > 0.01 ? 1 : 0 });
       const WK = [[3.02, 900], [3.35, OX - 90]];
       const wx = t < 3.02 ? 900 : t > 3.35 ? OX - 90 : lerp(900, OX - 90, es(t, 3.02, 3.35));
       const gather = bump(t, 3.02, 3.2);

@@ -27,7 +27,9 @@ export default {
       `<g transform="translate(0 0) scale(.5)">${jug(c)}</g>`,
       `<g transform="translate(0 -14) scale(.62)">${tunic(c, C.dustyBlue)}</g>`,
     ];
-    const CL = [[520, 380, 0], [640, 330, 1], [960, 340, 2], [1080, 390, 0], [380, 420, 2], [1220, 430, 1]].map(([x, y, k], i) => ({ i, x, y, el: hanging(cloudL, `${worryCloud(c, 110)}<g transform="translate(0 -16)"><circle r="20" fill="${C.cream}" opacity=".85"/>${icons[k]}</g>`, { x: 0, y: 0, len: 900 }) }));
+    // phone: all six clouds hang inside the screen (the outer two higher up, over the middle)
+    const CLX = S.portrait ? [[525, 395, 0], [635, 320, 1], [960, 330, 2], [1010, 410, 0], [740, 220, 2], [880, 160, 1]] : [[520, 380, 0], [640, 330, 1], [960, 340, 2], [1080, 390, 0], [380, 420, 2], [1220, 430, 1]];
+    const CL = CLX.map(([x, y, k], i) => ({ i, x, y, el: hanging(cloudL, `${worryCloud(c, 110)}<g transform="translate(0 -16)"><circle r="20" fill="${C.cream}" opacity=".85"/>${icons[k]}</g>`, { x: 0, y: 0, len: 900 }) }));
 
     /* the balance */
     const balL = S.layer({ par: 0.12, sh: 6 });

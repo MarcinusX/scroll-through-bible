@@ -83,10 +83,11 @@ export default {
 
     /* the worshippers */
     const act = S.layer({ par: 0.4, sh: 5 });
+    const PX = S.portrait ? [640, 555, 722] : [560, 440, 680];   // phone: the standing one (who hopes) is not cut by the edge
     const PAG = [
-      { o: { robe: C.linen, mantle: C.terracotta, hair: C.hair2, hairStyle: 'curly', beard: 'short', skin: C.skin2 }, x: 560, pose: 'kneel' },
-      { o: { robe: C.wheatRobe, mantle: C.plumRobe, hair: C.hair3, hairStyle: 'short', beard: 'full', skin: C.skin3 }, x: 440, pose: 'stand' },
-      { o: { robe: C.roseRobe, hairStyle: 'veil', veil: C.ochreRobe, skin: C.skin, beard: 'none' }, x: 680, pose: 'kneel' },
+      { o: { robe: C.linen, mantle: C.terracotta, hair: C.hair2, hairStyle: 'curly', beard: 'short', skin: C.skin2 }, x: PX[0], pose: 'kneel' },
+      { o: { robe: C.wheatRobe, mantle: C.plumRobe, hair: C.hair3, hairStyle: 'short', beard: 'full', skin: C.skin3 }, x: PX[1], pose: 'stand' },
+      { o: { robe: C.roseRobe, hairStyle: 'veil', veil: C.ochreRobe, skin: C.skin, beard: 'none' }, x: PX[2], pose: 'kneel' },
     ].map((m, i) => ({ ...m, i, p: S.puppet(act.add(person(c, { ...m.o, pose: m.pose }))), seed: c.rr(0, 9) }));
     const SLIPS = Array.from({ length: 15 }, (_, i) => ({ i, m: PAG[i % 3], el: act.add(wordSlip(c, 30)) }));
     const hope = act.add(`<g>${thought(c, `<g transform="translate(-6 12) scale(.62)">${ear(c, C.skin2)}</g>`, { w: 70, h: 56 })}</g>`);
@@ -124,7 +125,7 @@ export default {
       });
       /* v7b — he hopes to be heard; the stone does not move */
       const hk = es(t, 1.2, 1.45, ease.back);
-      const [ex, ey] = headAt(440, GY - 4, 0.9, false);
+      const [ex, ey] = headAt(PX[1], GY - 4, 0.9, false);
       pose(hope, { x: ex + 10, y: ey - 20, s: hk, o: hk > 0.02 ? 1 : 0 });
 
       S.cam.z = 1.02 + es(t, 0.2, 1.0) * 0.04 - es(t, 1.1, 1.6) * 0.04;

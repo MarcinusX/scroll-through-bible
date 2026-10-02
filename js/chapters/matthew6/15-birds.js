@@ -12,8 +12,8 @@ import { seg, es, ease, bump, fade } from '../../core/anim.js';
 import { SPRING, CHILD, QUIET, manOf, granary, sack, scalesParts, poseScales, worryCloud, secretShaft, hourglass, headAt, handAt, tr, PI } from './lib.js';
 
 const GY = 700;
-const TREE = [470, 612];           // the olive where the birds sit
-const GRX = 1180;                  // the granary
+const TREE0 = [470, 612];          // the olive where the birds sit
+const GRX0 = 1180;                 // the granary
 const BX = 800, BY = 230, ARM = 130;
 const HGX = 900, HGY = 470;        // the hourglass (centre)
 
@@ -28,6 +28,9 @@ export default {
   cam: { x: [-40, 40], y: [-120, 40], z: [0.98, 1.14] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;
+    // phone: the tree with the birds and the granary come inside the screen; the reaper and his sheaf move left with it
+    const TREE = P ? [565, 612] : TREE0, GRX = P ? 1060 : GRX0, RPX = P ? 905 : 960, SHX = P ? 975 : 1040;
     sky(S, SPRING);
     const hangL = S.layer({ par: 0.04, sh: 5 });
     const sunEl = hanging(hangL, sun(c, 42), { x: 1240, y: 130, len: 900 });
@@ -101,9 +104,9 @@ export default {
         pose(sd, { x: hx + k * 60, y: hy + k * k * 110, o: work ? (1 - k) : 0 });
       });
       const cut = T ? Math.sin(T * 4) : 0;
-      reaper.set({ x: 960, y: GY - 40, s: 0.78, armF: 50 + cut * 30, armB: 30, lean: 10, head: 10, blink: blinkAt(T, 4), o: wo });
-      pose(sheafEl, { x: 1040, y: GY - 42, o: wo });
-      const cx = lerp(1000, GRX - 30, es(t, 1.0, 1.7, (u) => u));
+      reaper.set({ x: RPX, y: GY - 40, s: 0.78, armF: 50 + cut * 30, armB: 30, lean: 10, head: 10, blink: blinkAt(T, 4), o: wo });
+      pose(sheafEl, { x: SHX, y: GY - 42, o: wo });
+      const cx = lerp(P ? 960 : 1000, GRX - 30, es(t, 1.0, 1.7, (u) => u));
       carrier.set({ x: cx, y: GY - 30, s: 0.8, walk: t > 1.0 && t < 1.7 ? cx * 0.07 : undefined, armF: 150, armB: 150, head: 6, blink: blinkAt(T, 6), o: seg(t, 0.9, 0.95) * (1 - es(t, 1.64, 1.68)) });
       const fed = es(t, 1.4, 1.6);
       pose(shaft, { x: TREE[0] + 20, y: GY - 30, sx: 0.3 + fed * 0.7, o: fed * (1 - es(t, 1.95, 2.15)) });

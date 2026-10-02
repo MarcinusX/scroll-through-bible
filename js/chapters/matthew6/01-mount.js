@@ -8,7 +8,7 @@ import { seg, es, ease, bump } from '../../core/anim.js';
 import { mount, mountFront, plateBoard, watchEye, rewardStar, hypocrite, beggarBowl, coin, fatherLight, sparkle, headAt, tr, PI } from './lib.js';
 
 const PX = 720, PY = 200, PW = 430, PH = 240;   // the plate (top centre)
-const HX = 1110, HY = 190;                      // the light of heaven
+const HX0 = 1110, HY = 190;                     // the light of heaven
 
 export default {
   id: 'mt6-mount',
@@ -21,6 +21,7 @@ export default {
   build(S) {
     const c = S.c;
     const M = mount(S, { sunAt: [1360, 120] });
+    const HX = S.portrait ? 1000 : HX0;           // phone: the light and its star clear of the thread
 
     /* the light of heaven, and the star on its string */
     const heavenL = S.layer({ par: 0.1, sh: 2 });

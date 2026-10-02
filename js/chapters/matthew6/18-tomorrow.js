@@ -25,7 +25,8 @@ export default {
     const c = S.c;
     // on a phone the closing card covers more of the sky: hang the discs higher there
     const TY = S.portrait ? -10 : 170, NY = S.portrait ? -30 : 150;
-    const M = mount(S, { skyCols: GOLDEN, sky2: DUSK, sunAt: [1150, 300] });
+    const SUNX = S.portrait ? 1015 : 1150;   // phone: the setting sun inside the screen, not under the thread
+    const M = mount(S, { skyCols: GOLDEN, sky2: DUSK, sunAt: [SUNX, 300] });
     const dusk = M.sky2;
 
     /* the discs */
@@ -43,7 +44,7 @@ export default {
       /* the sun goes down (v34b) */
       const set = es(t, 1.05, 1.8);
       dusk.fade(set * 0.9);
-      M.update(T, { sunY: lerp(300, 440, set), sunX: 1150 });
+      M.update(T, { sunY: lerp(300, 440, set), sunX: SUNX });
       const lift = es(t, 0.35, 0.6) * (1 - es(t, 1.6, 1.9));
       M.jesus.set({ x: M.JX, y: M.JY, s: 0.92, armF: 20 + lift * 60, armB: 10 + lift * 110, head: -lift * 10, blink: blinkAt(T) });
       M.listen(T, (d) => ({ head: (d.flip ? 3 : -3) - 10 + set * 8, armF: 16 + (d.i % 3) * 8, blink: blinkAt(T, d.seed) }));

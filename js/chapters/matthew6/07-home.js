@@ -12,7 +12,7 @@ import { QUIET, WIFE, CHILD, manOf, loaf, scrap, slate, noteHalf, dayDisc, secre
 const GY = 668;                   // the floor line where they sit
 const TX = 760;                   // the table
 const WX0 = 330, WX1 = 1270, WT = 200;  // the room
-const SLX = 530, SLY = 330;       // the slate of debts
+const SLX0 = 530, SLY = 330;      // the slate of debts
 const DX = 1130;                  // the door (centre)
 
 /** a low table (origin: floor centre) */
@@ -31,6 +31,10 @@ export default {
   cam: { x: [-30, 60], y: [-60, 60], z: [1, 1.14] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;
+    const SLX = P ? 590 : SLX0;            // phone: the slate is inside the screen
+    const DAYX = P ? 702 : 680;            // … and the day's disc moves over to keep clear of it
+    const ROOF = P ? WT - 150 : -1400;     // phone: the roof is a band, not a sheet of wood filling the top third
     sky(S, ['#b8b4cf', '#f1c9ad', '#f8dfbd']);
     const sunL = S.layer({ par: 0.05, sh: 2 });
     const sunEl = sunL.add(`<g>${sun(c, 38)}</g>`);
@@ -42,7 +46,7 @@ export default {
     const rs = sheet();
     const win = c.rect(740, 236, 120, 96);
     rs.p(c.cut([[WX0, WT], [WX1, WT], [WX1, GY], [WX0, GY]], 0.5, 10) + c.hole(win, 0.3, 6), wall);
-    rs.p(c.cut([[-1100, -1400], [2700, -1400], [2700, WT], [-1100, WT]], 0.5, 12), mix(C.roof, C.wood2, 0.3));
+    rs.p(c.cut([[-1100, ROOF], [2700, ROOF], [2700, WT], [-1100, WT]], 0.5, 12), mix(C.roof, C.wood2, 0.3));
     rs.p(c.cut([[-1100, WT], [WX0, WT], [WX0, GY], [-1100, GY]], 0.5, 12) + c.cut([[WX1, WT], [2700, WT], [2700, GY], [WX1, GY]], 0.5, 12), mix(C.plaster2, C.dawn, 0.2));
     let beams = '';
     for (let x = WX0 + 10; x < WX1; x += 56) beams += c.cut(c.rect(x, WT, 14, 14), 0.2, 4);
@@ -93,7 +97,7 @@ export default {
       const rise = es(t, 0.0, 0.5);
       pose(sunEl, { x: 812, y: lerp(380, 290, rise), r: T ? Math.sin(T * 0.4) * 2 : 0 });
       const dk = es(t, 0.05, 0.3, ease.out);
-      pose(day, { x: 680, y: lerp(-400, 270, dk), r: T ? Math.sin(T * 0.8) * 1.5 : 0, o: dk > 0.01 ? 1 : 0 });
+      pose(day, { x: DAYX, y: lerp(-400, 270, dk), r: T ? Math.sin(T * 0.8) * 1.5 : 0, o: dk > 0.01 ? 1 : 0 });
       const lit = es(t, 0.3, 0.5);
       fade(dayLit, lit); fade(dayOff, 1 - lit);
       const ask = es(t, 0.1, 0.35) * (1 - es(t, 0.95, 1.15));

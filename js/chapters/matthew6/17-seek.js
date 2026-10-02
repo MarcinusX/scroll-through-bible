@@ -28,10 +28,11 @@ export default {
 
     /* the three questions */
     const qL = S.layer({ par: 0.35, sh: 5 });
+    const P = S.portrait;   // phone: the outer bubbles come in from the edge and the thread
     const Q = [
-      [tr('co będziemy jeść?', 'what will we eat?'), 460, 500, 1],
+      [tr('co będziemy jeść?', 'what will we eat?'), P ? 560 : 460, 500, 1],
       [tr('co będziemy pić?', 'what will we drink?'), 760, 400, 1],
-      [tr('czym się przyodziać?', 'what shall we wear?'), 1140, 500, -1],
+      [tr('czym się przyodziać?', 'what shall we wear?'), P ? 1010 : 1140, 500, -1],
     ].map(([txt, x, y, side], i) => ({ i, x, y, el: qL.add(`<g>${say(c, txt, { size: 20, side })}</g>`) }));
 
     /* heaven's light and the crown */

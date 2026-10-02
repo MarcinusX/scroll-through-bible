@@ -52,9 +52,13 @@ export default {
     { v: 20 },
     { v: 21 },
   ],
-  cam: { x: [-30, 30], y: [-160, 60], z: [0.94, 1.18] },
+  cam: { x: [-30, 80], y: [-160, 60], z: [0.94, 1.18] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;
+    // phone: the camera starts further right so the thief at the wall is in the screen, he stands a little closer,
+    // and the quiet man (whose stars and heart rise to heaven) stands inside the screen
+    const THX = RX1 + (P ? 40 : 70), QX = P ? 700 : 360;
     sky(S, GOLDEN);
     const gold = sky(S, HEAVEN, { name: 'gold', rise: 0 }).layer;
     gold.fade(0);
@@ -129,7 +133,7 @@ export default {
       pose(chestEl, { x: cx, y: GY - 12, s: 1 - take * 0.2, o: 1 - es(t, 0.82, 0.9) });
       CRUST.forEach((r) => { const k = es(t, 0.3 + r.i * 0.03, 0.52 + r.i * 0.03); pose(r.el, { x: cx + r.x * (1 - take * 0.2), y: GY - 12 + r.y * (1 - take * 0.2), s: k * (1 - take * 0.2), o: k > 0.02 ? 1 - es(t, 0.82, 0.9) : 0 }); });
       const dg = T ? Math.sin(T * 8) : 0;
-      thief.set({ x: RX1 + 70, y: GY - 6, s: 0.96, flip: true, armF: 70 + (dig < 1 ? dg * 20 : 0) + take * 20, armB: 60 + (dig < 1 ? -dg * 20 : 0), lean: -10 * (1 - take) + take * 8, head: 6, o: seg(t, 0.4, 0.45) * (1 - es(t, 0.9, 1.0)) });
+      thief.set({ x: THX, y: GY - 6, s: 0.96, flip: true, armF: 70 + (dig < 1 ? dg * 20 : 0) + take * 20, armB: 60 + (dig < 1 ? -dg * 20 : 0), lean: -10 * (1 - take) + take * 8, head: 6, o: seg(t, 0.4, 0.45) * (1 - es(t, 0.9, 1.0)) });
 
       /* v20 — heaven's treasury; his stars rise into it; a moth turns back */
       const hk = es(t, 1.02, 1.4);
@@ -138,8 +142,8 @@ export default {
       raysL.fade(hk);
       pose(light, { x: HX, y: HY - 40, s: 0.7 + hk * 0.3, o: hk });
       pose(hChest, { x: HX, y: HY + 90 });
-      quiet.set({ x: 360, y: GY + 10, s: 1.0, armF: 20 + es(t, 1.2, 1.4) * 60, armB: 10 + es(t, 1.2, 1.4) * 140, head: -es(t, 1.2, 1.5) * 30, blink: blinkAt(T, 2), o: seg(t, 1.0, 1.05) });
-      const [qx, qy] = handAt(360, GY + 10, 1.0, false, 100);
+      quiet.set({ x: QX, y: GY + 10, s: 1.0, armF: 20 + es(t, 1.2, 1.4) * 60, armB: 10 + es(t, 1.2, 1.4) * 140, head: -es(t, 1.2, 1.5) * 30, blink: blinkAt(T, 2), o: seg(t, 1.0, 1.05) });
+      const [qx, qy] = handAt(QX, GY + 10, 1.0, false, 100);
       STARS.forEach((st) => {
         const k = es(t, 1.2 + st.i * 0.12, 1.65 + st.i * 0.12, ease.io);
         const x = lerp(qx + st.i * 16, HX - 20 + st.i * 20, k), y = lerp(qy - st.i * 20, HY + 60, k) - Math.sin(k * PI) * 80;
@@ -153,12 +157,12 @@ export default {
 
       /* v21 — his heart goes where his treasure is */
       const hr = es(t, 2.1, 2.6, ease.io);
-      const [hx0, hy0] = headAt(360, GY + 10, 1.0, false);
+      const [hx0, hy0] = headAt(QX, GY + 10, 1.0, false);
       pose(heartEl, { x: lerp(hx0 + 4, HX, hr), y: lerp(hy0 + 60, HY + 30, hr) - Math.sin(hr * PI) * 60, s: 0.8 + hr * 0.4 + (T ? Math.sin(T * 3) * 0.05 : 0), o: seg(t, 2.02, 2.1) });
 
       S.cam.z = 1.12 - es(t, 0.95, 1.4) * 0.16;
       S.cam.y = 40 - es(t, 0.95, 1.4) * 170;
-      S.cam.x = 10 - es(t, 0.95, 1.4) * 20;
+      S.cam.x = (P ? 80 : 10) - es(t, 0.95, 1.4) * (P ? 90 : 20);
     };
   },
 };
