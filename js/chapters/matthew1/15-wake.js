@@ -20,8 +20,10 @@ export default {
   cam: { x: [-40, 30], y: [-40, 40], z: [1, 1.16] },
   build(S) {
     const c = S.c;
-    const N = nazarethSet(S, DAWN, { k: 0.08 });
-    const sunEl = hanging(N.hangL, sun(c, 42), { x: 1150, y: 420, len: 900 });
+    const JH = S.portrait ? 80 : 0;   // phone: Joseph's house (and him on its roof) comes in from the left edge
+    const N = nazarethSet(S, DAWN, { k: 0.08, jx: 350 + JH });
+    const SUNX = S.portrait ? 1050 : 1150;   // phone: the sun clear of the edge and the progress thread
+    const sunEl = hanging(N.hangL, sun(c, 42), { x: SUNX, y: 420, len: 900 });
     const sunGlow = N.G.add(`<g>${glowDisc(260, 'warm-glow', 1)}</g>`);
 
     /* ---------- on the roof: lying, sitting, standing; the little scroll ---------- */
@@ -39,13 +41,14 @@ export default {
     const G = S.layer({ par: 0.3, sh: 6 });
     const gar = G.add(`<g>${garland(c, 150, 26)}</g>`);
     const sparks = [0, 1, 2, 3, 4].map((i) => G.add(`<g>${sparkle(c, 9 + (i % 2) * 5)}</g>`));
-    const LX = 430;                 // where he lies on the roof
+    const LX = 430 + JH;            // where he lies on the roof
+    const BX = S.portrait ? 60 : 0;   // phone: the couple stop a little further from the edge on the way back
 
     return (t, time) => {
       /* the sun comes up */
       const rise = es(t, 0, 1.6);
       N.sk.blend(DAWN, DAY, rise);
-      swing(sunEl, 1150, lerp(420, 190, rise), time, 1, 0.5);
+      swing(sunEl, SUNX, lerp(420, 190, rise), time, 1, 0.5);
       pose(sunGlow, { x: 1150, y: lerp(420, 190, rise), s: 1, o: 0.6 });
 
       /* v24a: he wakes, sits up, stands, tears the scroll, comes down and out of his door */
@@ -62,14 +65,14 @@ export default {
       const out = es(t, 0.55, 0.62);
       const toM = es(t, 0.6, 1.02), back = es(t, 1.32, 1.72);
       const hand = es(t, 1.22, 1.32);
-      const jx = lerp(N.J.doorX, 876, toM) + (560 - 876) * back;
+      const jx = lerp(N.J.doorX, 876, toM) + (560 + BX - 876) * back;
       const jWalk = (toM > 0 && toM < 1) || (back > 0 && back < 1);
       walkJ.set({ x: jx, y: GY, s: 1, flip: back > 0.01, o: out, walk: jWalk ? t * 30 : undefined, armF: 10 + hand * 44 * (1 - back) + bump(t, 1.05, 1.25) * 30, armB: 10 - hand * 50 * es(t, 1.3, 1.4), head: 0, blink: blinkAt(time, 1) });
       houseLight(N.J, { open: es(t, 0.5, 0.58) * (1 - es(t, 0.7, 0.8) * 0.6) + es(t, 1.55, 1.7) * 0.6, lit: 0.5 });
 
       /* v24b: Mary comes out; he takes her hand; they go to his house together */
       const mOut = es(t, 1.02, 1.18);
-      const mx = lerp(N.M.doorX, 956, mOut) + (640 - 956) * back;
+      const mx = lerp(N.M.doorX, 956, mOut) + (640 + BX - 956) * back;
       walkM.set({ x: mx, y: GY, s: 0.96, flip: back < 0.01, o: mOut, walk: (mOut > 0 && mOut < 1) || (back > 0 && back < 1) ? t * 30 + 1 : undefined, armF: 10 + hand * 40, armB: 6, head: -hand * 6, blink: blinkAt(time, 3) });
       houseLight(N.M, { open: es(t, 0.98, 1.08), lit: 0.4 });
       const gk = es(t, 1.4, 1.62, ease.back);

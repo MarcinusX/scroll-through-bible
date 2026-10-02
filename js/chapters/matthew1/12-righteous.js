@@ -22,7 +22,8 @@ export default {
     const c = S.c;
     const DUSKY = ['#5d5b8c', '#b99aa6', '#e2b69a'];
     const N = nazarethSet(S, DUSKY, { k: 0.3 });
-    const moonEl = hanging(N.hangL, moon(c, 30), { x: 1150, y: 170, len: 800 });
+    const MOX = S.portrait ? 1040 : 1150;   // phone: the moon clear of the edge and the progress thread
+    const moonEl = hanging(N.hangL, moon(c, 30), { x: MOX, y: 170, len: 800 });
 
     /* ---------- the lamp and the scroll of the Law on the bench ---------- */
     const lampGlow = N.G.add(`<g>${glowDisc(160, 'warm-glow', 1)}</g>`);
@@ -56,7 +57,7 @@ export default {
     return (t, time) => {
       N.sk.blend(DUSKY, NIGHT, es(t, 0.6, 1.8));
       N.starL.fade(es(t, 0.8, 1.8));
-      swing(moonEl, 1150, lerp(260, 170, es(t, 0, 1.6)), time, 1, 0.5);
+      swing(moonEl, MOX, lerp(260, 170, es(t, 0, 1.6)), time, 1, 0.5);
       houseLight(N.J, { open: 0.25, lit: 0.9 });
       houseLight(N.M, { open: 0, lit: 0.6, shut: es(t, 0.55, 0.8) });
       const flick = time ? 1 + Math.sin(time * 6) * 0.04 : 1;

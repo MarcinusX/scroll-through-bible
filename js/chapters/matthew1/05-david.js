@@ -5,11 +5,11 @@
 import { C, pose, lerp, sky, hanging, swing, sheet, shade, mix } from '../kit.js';
 import { sun, cloud, olive, cypress } from '../../assets/nature.js';
 import {
-  GOLDEN, RIM, ICON, DAVID, medal, lineage, elder, mother, sanctuary, oilHorn, crown, harp, glowDisc, rayBurst, sparkle, hang2,
+  GOLDEN, RIM, ICON, DAVID, medal, lineage, phoneFit, elder, mother, sanctuary, oilHorn, crown, harp, glowDisc, rayBurst, sparkle, hang2,
   tr, es, ease, bump, seg, PI,
 } from './lib.js';
 
-const DX = 620, DY = 430, DR = 68;          // David's medallion
+const DX0 = 620, DY = 430, DR = 68;          // David's medallion
 
 export default {
   id: 'mt1-david',
@@ -23,7 +23,8 @@ export default {
     const EVE_GOLD = ['#d7b89c', '#f0c894', '#f6ddb2'];
     const sk = sky(S, GOLDEN);
     const hangL = S.layer({ par: 0.03, sh: 4 });
-    const sunEl = hanging(hangL, sun(c, 50), { x: 1180, y: 200, len: 700 });
+    const SUNX = S.portrait ? 1060 : 1180;   // phone: the sun clear of the edge and the progress thread
+    const sunEl = hanging(hangL, sun(c, 50), { x: SUNX, y: 200, len: 700 });
     const cl = hanging(hangL, cloud(c, 160, '#f8e6c8', '#ecd2ae'), { x: 470, y: 150, len: 700 });
 
     /* ---------- the hill of Zion, the walls, the Temple that rises for Solomon ---------- */
@@ -55,11 +56,13 @@ export default {
     const dO = { ...DAVID, holdF: '' };
     const nodes = [
       { key: 'jesse', x: 476, y: 620, r: 44, at: -1, markup: medal(S, elder(c, { robe: C.sageRobe, hairStyle: 'wrap', veil: C.wheatRobe, beard: 'full', hair: C.greyHair, beardColor: C.greyHair }), { r: 44, ...RIM.field, name: tr('Jesse', 'Jesse'), icon: ICON.crook(c) }) },
-      { key: 'david', parent: 'jesse', x: DX, y: DY, r: DR, at: 0.26,
+      { key: 'david', parent: 'jesse', x: DX0, y: DY, r: DR, at: 0.26,
         markup: medal(S, dO, { r: DR, ...K, name: tr('król Dawid', 'King David'), icon: ICON.harp(c), size: 25, front: `<g transform="translate(${DR * 0.34} ${DR * 0.62}) rotate(-8) scale(.62)">${harp(c)}</g>` }) },
       { key: 'solomon', parent: 'david', x: 990, y: 300, r: 54, at: 1.34, markup: medal(S, elder(c, { robe: C.linen, mantle: C.plumRobe, hairStyle: 'short', hair: C.hair3, beard: 'short', skin: C.skin }), { r: 54, ...K, king: true, flip: true, name: tr('Salomon', 'Solomon'), icon: ICON.temple(c) }) },
       { key: 'bathsheba', parent: 'solomon', mother: true, x: 1070, y: 520, r: 44, at: 1.56, markup: medal(S, mother(c, { robe: C.mauve, veil: C.lavender, veil2: shade(C.lavender, -0.14), skin: C.skin }), { r: 44, ...RIM.mother, flip: true, name: tr('żona Uriasza', 'Uriah’s wife'), size: 20, icon: ICON.lily(c) }) },
     ];
+    phoneFit(S, nodes, { cx: 790, k: 0.74 });   // phone: Jesse and Uriah's wife come in from the edges
+    const DX = nodes[1].x;
     const line = lineage(S, vineL, medL, nodes);
 
     /* ---------- the anointing and the crown ---------- */
@@ -74,7 +77,7 @@ export default {
     const sparks = [0, 1, 2, 3, 4].map((i) => glowL.add(`<g>${sparkle(c, 12 + (i % 2) * 6)}</g>`));
 
     return (t, time) => {
-      pose(sunEl, { x: 1180, y: lerp(200, 250, es(t, 1, 2)), r: Math.sin(time * 0.6) });
+      pose(sunEl, { x: SUNX, y: lerp(200, 250, es(t, 1, 2)), r: Math.sin(time * 0.6) });
       pose(cl, { x: 470 + Math.sin(time * 0.1) * 20, y: 150, r: Math.sin(time * 0.6 + 1) * 1.2 });
       sk.blend(GOLDEN, EVE_GOLD, es(t, 1.0, 1.8));
       line.update(t);

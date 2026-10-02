@@ -3,7 +3,7 @@
 // quiet centuries over the villages of the land, and the camera climbs with it.
 import { C, pose, lerp, mix } from '../kit.js';
 import { fieldSet } from '../john1/lib.js';
-import { RIM, ICON, medal, lineage, elder, kf, tr, es, ease } from './lib.js';
+import { RIM, ICON, medal, lineage, phoneFit, elder, kf, tr, es, ease } from './lib.js';
 
 const ROWS = [
   [['abiud', 'Abiud', 'Abiud', 690, 548, 'lamp'], ['eliakim', 'Eliakim', 'Eliakim', 890, 470, 'plough'], ['azor', 'Azor', 'Azor', 1076, 392, 'jar']],
@@ -33,12 +33,15 @@ export default {
         markup: medal(S, elder(c, { mantle: null }), { r: 40, ...H, flip: x > 800, name: tr(pl, en), icon: ICON[icon](c) }) });
       prev = key;
     }));
+    phoneFit(S, nodes, { cx: 790, k: 0.8 });   // phone: the outermost medallions come in from the edges
     const line = lineage(S, vineL, medL, nodes);
 
     return (t, time) => {
       // the sun crosses the sky as the generations pass
       const day = es(t, 0, 3);
-      set.update(t, time, { sunX: lerp(760, 1300, day), sunY: 160 + Math.sin(day * Math.PI) * -40 + 40 });
+      // phone: the sun stops short of the progress thread and stays clear of the topmost medallions
+      const PH = S.portrait;
+      set.update(t, time, { sunX: lerp(760, PH ? 1000 : 1300, day), sunY: 160 + Math.sin(day * Math.PI) * -40 + 40 - (PH ? day * 70 : 0) });
       line.update(t);
       S.cam.y = kf(t, [[0.85, 0], [1.3, -150], [1.85, -150], [2.3, -390]]);
     };

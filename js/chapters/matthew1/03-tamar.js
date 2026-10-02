@@ -5,7 +5,7 @@
 import { C, pose, lerp, sky, sheet, shade, mix } from '../kit.js';
 import { palm, stars } from '../../assets/nature.js';
 import {
-  DUSK, RIM, ICON, medal, lineage, elder, mother, pyramid, fireColumn, tent, tint, glowDisc, kf,
+  DUSK, RIM, ICON, medal, lineage, phoneFit, elder, mother, pyramid, fireColumn, tent, tint, glowDisc, kf,
   tr, es, ease, bump, seg, PI,
 } from './lib.js';
 
@@ -53,6 +53,7 @@ export default {
       { key: 'nahshon', parent: 'amminadab', x: 716, y: 196, r: 44, at: 2.45, markup: medal(S, elder(c, { robe: C.ochreRobe, mantle: C.terracotta }), { r: 44, ...D, name: tr('Naasson', 'Nahshon'), icon: ICON.banner(c) }) },
       { key: 'salmon', parent: 'nahshon', x: 520, y: 150, r: 40, at: 2.6, markup: medal(S, elder(c), { r: 40, ...D, name: tr('Salmon', 'Salmon') }) },
     ];
+    phoneFit(S, nodes, { cx: 785, k: 0.78 });   // phone: the outermost medallions come in from the edges
     const line = lineage(S, vineL, medL, nodes);
 
     return (t, time) => {

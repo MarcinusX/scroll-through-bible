@@ -6,7 +6,7 @@ import { C, person, blinkAt, pose, lerp, sky, hanging, sheet, shade, mix } from 
 import { sun, cloud, town, olive } from '../../assets/nature.js';
 import { sheaf } from '../../assets/things.js';
 import {
-  GOLDEN, RIM, ICON, medal, lineage, elder, mother, jerichoWall, sheep, kf,
+  GOLDEN, RIM, ICON, medal, lineage, phoneFit, elder, mother, jerichoWall, sheep, kf,
   tr, es, ease, bump, seg, PI,
 } from './lib.js';
 import { crowdPerson } from '../kit.js';
@@ -67,6 +67,7 @@ export default {
       { key: 'ruth', parent: 'obed', mother: true, x: 1090, y: 500, r: 40, at: 1.56, markup: medal(S, RUTH, { r: 40, ...RIM.mother, name: tr('Rut', 'Ruth'), flip: true, icon: ICON.sheaf(c) }) },
       { key: 'jesse', parent: 'obed', x: 760, y: 236, r: 46, at: 2.38, markup: medal(S, elder(c, { robe: C.sageRobe, hairStyle: 'wrap', veil: C.wheatRobe, beard: 'full', hair: C.greyHair, beardColor: C.greyHair }), { r: 46, ...F, name: tr('Jesse', 'Jesse'), icon: ICON.crook(c) }) },
     ];
+    phoneFit(S, nodes, { cx: 795, k: 0.78 });   // phone: the outermost medallions come in from the edges
     const line = lineage(S, vineL, medL, nodes);
 
     return (t, time) => {

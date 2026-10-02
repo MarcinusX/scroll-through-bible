@@ -4,7 +4,7 @@
 import { C, pose, lerp, sky, hanging, sheet, shade, mix } from '../kit.js';
 import { sun, cloud, stars } from '../../assets/nature.js';
 import {
-  GOLDEN, DUSK, RIM, ICON, medal, lineage, elder, sanctuary, kf,
+  GOLDEN, DUSK, RIM, ICON, medal, lineage, phoneFit, elder, sanctuary, kf,
   tr, es, ease, bump, seg, PI,
 } from './lib.js';
 
@@ -32,7 +32,8 @@ export default {
     const starL = S.layer({ par: 0.02, sh: 1, flat: true });
     starL.add(stars(c, { x0: -1000, x1: 2600, y0: -1200, y1: 300, n: 120 }));
     const hangL = S.layer({ par: 0.05, sh: 4 });
-    const sunEl = hanging(hangL, sun(c, 46), { x: 1190, y: 180, len: 900 });
+    const SUNX = S.portrait ? 1300 : 1190;   // phone: the sun wholly off-screen, not half under the progress thread
+    const sunEl = hanging(hangL, sun(c, 46), { x: SUNX, y: 180, len: 900 });
     const cls = [[430, 250, 170], [1010, 120, 130]].map(([x, y, w], i) => ({ x, y, i, el: hanging(hangL, cloud(c, w, '#f8e6c8', '#ecd2ae'), { x, y, len: 900 }) }));
 
     /* ---------- far below: the Temple and the palace on the hill ---------- */
@@ -60,6 +61,7 @@ export default {
         markup: medal(S, elder(c, { robe: c.pick([C.linen, C.plumRobe, C.dustyBlue, C.roseRobe, C.tealRobe]), mantle: c.pick([C.plumRobe, C.terracotta, C.ochre, C.clayMantle, null]) }), { r: 40, ...K, king: true, flip: x > 800, name: tr(pl, en), icon: icon ? ICON[icon](c) : '' }) });
       prev = key;
     }));
+    phoneFit(S, nodes, { cx: 790, k: 0.8 });   // phone: the outermost medallions come in from the edges
     const line = lineage(S, vineL, medL, nodes);
 
     return (t, time) => {
@@ -68,10 +70,11 @@ export default {
       const late = es(t, 0.5, 3.8);
       sk.blend(GOLDEN, LATE, late);
       starL.fade(es(t, 3.0, 3.9) * 0.8);
-      pose(sunEl, { x: 1190, y: lerp(180, 420, late), r: Math.sin(time * 0.6) });
+      pose(sunEl, { x: SUNX, y: lerp(180, 420, late), r: Math.sin(time * 0.6) });
       cls.forEach((cl) => pose(cl.el, { x: cl.x + Math.sin(time * 0.1 + cl.i) * 20, y: cl.y, r: Math.sin(time * 0.6 + cl.i) * 1.2 }));
 
-      S.cam.y = kf(t, [[0.85, 0], [1.3, -150], [1.85, -150], [2.3, -370], [2.85, -370], [3.3, -610]]);
+      // phone: the last climb stops a little lower, so Solomon stays hidden under the caption instead of peeping out below it
+      S.cam.y = kf(t, [[0.85, 0], [1.3, -150], [1.85, -150], [2.3, -370], [2.85, -370], [3.3, S.portrait ? -510 : -610]]);
     };
   },
 };

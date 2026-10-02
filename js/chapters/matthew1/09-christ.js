@@ -4,7 +4,7 @@
 import { C, CAST, pose, lerp, sky, sheet, shade, mix } from '../kit.js';
 import { stars } from '../../assets/nature.js';
 import {
-  NIGHT, RIM, ICON, JOSEPH, MARY, medal, lineage, elder, glowDisc, rayBurst, radiance, sparkle, glowStar, tint,
+  NIGHT, RIM, ICON, JOSEPH, MARY, medal, lineage, phoneFit, elder, glowDisc, rayBurst, radiance, sparkle, glowStar, tint,
   tr, es, ease, bump, seg, PI,
 } from './lib.js';
 import { town } from '../../assets/nature.js';
@@ -43,6 +43,8 @@ export default {
       { key: 'mary', parent: 'joseph', mother: true, x: 1000, y: 470, r: 56, at: 0.52, markup: medal(S, MARY, { r: 56, ...RIM.mother, back: mix(C.skyVeil, C.cream, 0.4), flip: true, name: tr('Maryja', 'Mary'), icon: ICON.lily(c), size: 23 }) },
       { key: 'jesus', parent: 'mary', x: JX, y: JY, r: JR, at: 1.42, grow: 0.36, vine: { gold: true, w: 11 }, markup: medal(S, { ...CAST.jesus }, { r: JR, ...RIM.holy, name: tr('Jezus, zwany Chrystusem', 'Jesus, who is called Christ'), icon: ICON.star(c), size: 24 }) },
     ];
+    phoneFit(S, nodes, { k: 0.7 });   // phone: Jacob and Mary come in from the edges
+    const MXp = nodes[2].x;
     const line = lineage(S, vineL, medL, nodes);
     const fx = S.layer({ par: 0.4, sh: 1, flat: true });
     const rad = fx.add(`<g>${glowDisc(JR * 2.4, 'halo-glow', 1)}</g>`);
@@ -56,7 +58,7 @@ export default {
       lamps.forEach((l) => pose(l.el, { x: l.x, y: hfn(l.x) - 10 - (l.i % 2) * 18, s: 1, o: 0.5 + es(t, 1.4, 1.7) * 0.5 }));
       /* v16b: the golden shoot rises from Mary — a bud — and opens into the medallion of Christ */
       const up = seg(t, 1.06, 1.42);
-      pose(budEl, { x: lerp(1000, JX, up), y: lerp(420, JY, ease.io(up)), s: 0.7 + up * 0.6, r: t * 80, o: t > 1.04 && t < 1.5 ? 1 - es(t, 1.4, 1.5) : 0 });
+      pose(budEl, { x: lerp(MXp, JX, up), y: lerp(420, JY, ease.io(up)), s: 0.7 + up * 0.6, r: t * 80, o: t > 1.04 && t < 1.5 ? 1 - es(t, 1.4, 1.5) : 0 });
       const lit = es(t, 1.4, 1.7);
       pose(rad, { x: JX, y: JY, s: 0.4 + lit * 0.7, o: lit });
       pose(bigGlow, { x: JX, y: JY, s: 0.5 + lit * 0.6, r: t * 3, o: lit * 0.85 });

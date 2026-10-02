@@ -4,7 +4,7 @@
 import { C, pose, lerp, sky, curtains, hanging, swing, sheet, shade, mix } from '../kit.js';
 import { band, stars } from '../../assets/nature.js';
 import {
-  PARCH, RIM, ICON, medal, lineage, bookParts, lectern, glowDisc, rayBurst, glowStar, DAVID, ABRAHAM, harp, sparkle,
+  PARCH, RIM, ICON, medal, lineage, phoneFit, bookParts, lectern, glowDisc, rayBurst, glowStar, DAVID, ABRAHAM, harp, sparkle,
   tr, es, ease, bump, seg, PI,
 } from './lib.js';
 import { CAST } from '../kit.js';
@@ -53,11 +53,12 @@ export default {
       { key: 'jesus', parent: 'david', x: 800, y: 158, r: 64, at: 1.34, linkAt: 1.34, grow: 0.1,
         markup: medal(S, J, { r: 64, ...RIM.holy, name: tr('Jezus Chrystus', 'Jesus Christ'), icon: ICON.star(c), size: 24 }) },
     ];
+    phoneFit(S, nodes, { k: 0.85 });   // phone: Abraham and David come in from the edges
     const line = lineage(S, vineL, medL, nodes);
     // the order the sentence names them: Jesus Christ, son of David, son of Abraham — a light runs down the vine
     const runL = S.layer({ par: 0.3, sh: 1, flat: true });
     const runner = runL.add(`<g>${glowDisc(70, 'halo-glow', 1)}<path d="${c.poly(c.star(0, 0, 18, 4, 4, 0))}" fill="${C.star}"/></g>`);
-    const PATH = [[800, 158], [596, 300], [1010, 372]];
+    const PATH = [2, 1, 0].map((i) => [nodes[i].x, nodes[i].y]);
     const rings = nodes.map((n) => runL.add(`<g><path d="${c.ribbon(c.arc(0, 0, n.r + 16, n.r + 16, 0, PI * 2, 40), 4)}" fill="#fff3cf"/></g>`));
     const sparks = [0, 1, 2, 3, 4, 5].map((i) => runL.add(`<g>${sparkle(c, 10 + (i % 3) * 4)}</g>`));
 

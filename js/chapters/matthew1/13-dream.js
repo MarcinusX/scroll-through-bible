@@ -65,7 +65,8 @@ export default {
     const stones = [[-70, -140], [-20, -160], [30, -138], [76, -156], [0, -120]].map(([x, y], i) => ({ x, y, i, el: V.add(`<g>${sheet().p(c.cut(c.blob(0, 0, 16, 12, 8, 0.35), 1, 3), mix(C.storm2, C.soilDark, 0.5)).out()}</g>`) }));
     const sparks = [0, 1, 2, 3, 4, 5].map((i) => V.add(`<g>${sparkle(c, 10 + (i % 3) * 4)}</g>`));
 
-    const AX = 1040, AY = 500, MX = 580, MY = 500, FX = 800, FY = 506;
+    const AX = S.portrait ? 985 : 1040, AY = 500,   // phone: the angel's wing clear of the edge and the thread
+      MX = 580, MY = 500, FX = 800, FY = 506;
 
     return (t, time) => {
       const breathe = time ? Math.sin(time * 1.4) * 1.2 : 0;

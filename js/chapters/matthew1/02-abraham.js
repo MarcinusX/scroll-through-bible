@@ -8,7 +8,7 @@ import {
   tr, es, ease, bump, seg, PI,
 } from './lib.js';
 
-const AX = 512, AY = 716;          // Abraham
+const AY = 716;                    // Abraham (x: AX below)
 const JX = 800, JY = 250;          // Judah, among his brothers
 
 export default {
@@ -21,6 +21,8 @@ export default {
   cam: { x: [-20, 20], y: [-60, 20], z: [0.94, 1.06] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;             // phone: Abraham, Isaac, Jacob and the brothers come in from the edges
+    const AX = PH ? 580 : 512;
     const NC = STARRY[1];
     const sk = sky(S, STARRY);
     S.layer({ par: 0.02, sh: 1, flat: true }).add(stars(c, { x0: -1000, x1: 2600, y0: -900, y1: 560, n: 110 }));
@@ -48,9 +50,9 @@ export default {
     const P = RIM.patriarch;
     const judahO = elder(c, { robe: C.clayMantle, mantle: C.ochre, hairStyle: 'curly', hair: C.hair3, beard: 'full', skin: C.skin3 });
     const nodes = [
-      { key: 'isaac', root: [630, 712], x: 742, y: 494, r: 52, at: 0.5, vine: { w: 11 },
+      { key: 'isaac', root: [PH ? 690 : 630, 712], x: PH ? 790 : 742, y: 494, r: 52, at: 0.5, vine: { w: 11 },
         markup: medal(S, { robe: C.wheatRobe, mantle: C.sageRobe, hair: C.hair2, hairStyle: 'short', beard: 'short', skin: C.skin2 }, { r: 52, ...P, name: tr('Izaak', 'Isaac'), icon: ICON.ram(c) }) },
-      { key: 'jacob', parent: 'isaac', x: 1062, y: 438, r: 52, at: 1.5,
+      { key: 'jacob', parent: 'isaac', x: PH ? 975 : 1062, y: 438, r: 52, at: 1.5,
         markup: medal(S, { robe: C.tealRobe, mantle: C.clayMantle, hair: C.hair, hairStyle: 'curly', beard: 'full', skin: C.skin2, belt: C.leather }, { r: 52, ...P, name: tr('Jakub', 'Jacob'), flip: true, icon: ICON.ladder(c) }) },
       { key: 'judah', parent: 'jacob', x: JX, y: JY, r: 46, at: 2.4,
         markup: medal(S, judahO, { r: 46, ...P, name: tr('Juda', 'Judah'), icon: ICON.lion(c), size: 21 }) },
@@ -61,9 +63,9 @@ export default {
     const BR = [];
     for (let i = 0; i < 11; i++) {
       const d = i < 6 ? -1 : 1, j = i < 6 ? i : i - 6;
-      const x = JX + d * (78 + j * 54), y = JY + 20 + Math.pow((x - JX) / 330, 2) * 62;
+      const x = JX + d * (PH ? 64 + j * 43 : 78 + j * 54), y = JY + 20 + Math.pow((x - JX) / (PH ? 280 : 330), 2) * 62;
       const o = elder(c);
-      BR.push({ x, y, d, j, el: medL.add(medal(S, o, { r: 24, ...P, flip: d > 0 })) });
+      BR.push({ x, y, d, j, el: medL.add(medal(S, o, { r: PH ? 21 : 24, ...P, flip: d > 0 })) });
     }
 
     /* ---------- the stars that come down as sons ---------- */
@@ -91,7 +93,7 @@ export default {
       /* v2c: Judah and his brothers, twelve at once */
       bough.forEach((b) => {
         const k = es(t, 2.35, 2.62, ease.out);
-        pose(b.el, { x: JX + b.d * 40, y: JY + 26, r: b.d < 0 ? 180 - 7 : 7, sx: Math.max(0.001, k), sy: b.d < 0 ? -1 : 1, o: k > 0.002 ? 1 : 0 });
+        pose(b.el, { x: JX + b.d * 40, y: JY + 26, r: b.d < 0 ? 180 - 7 : 7, sx: Math.max(0.001, k) * (PH ? 0.8 : 1), sy: b.d < 0 ? -1 : 1, o: k > 0.002 ? 1 : 0 });
       });
       BR.forEach((b) => {
         const k = es(t, 2.44 + b.j * 0.035, 2.62 + b.j * 0.035, ease.back);

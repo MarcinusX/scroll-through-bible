@@ -21,6 +21,8 @@ export default {
   cam: { x: [-20, 20], y: [-40, 40], z: [1, 1.08] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;   // phone: Isaiah and the outermost of the people come in from the edges
+    const IX = PH ? 575 : 500, FK = PH ? 0.8 : 1;
     const WARM = ['#e3c29e', '#f3d7ad', '#f8e7c9'];
     const sk = sky(S, DUSK);
     const glowL = S.layer({ par: 0.04, sh: 1, flat: true });
@@ -50,7 +52,7 @@ export default {
     const isa = S.puppet(P.add(person(c, ISAIAH)));
     const light = P.add(`<g>${glowDisc(240, 'halo-glow', 1)}</g>`);
     const maryC = S.puppet(P.add(person(c, { ...MARY, holdF: childInArms(c) })));
-    const FOLK = [[-330, 8, 0.86], [-250, -10, 0.8], [-170, 4, 0.9], [170, 2, 0.9], [250, -8, 0.82], [330, 8, 0.88]].map(([dx, dy, s], i) => ({ dx, dy, s, i, p: S.puppet(P.add(person(c, crowdPerson(c)))) }));
+    const FOLK = [[-330, 8, 0.86], [-250, -10, 0.8], [-170, 4, 0.9], [170, 2, 0.9], [250, -8, 0.82], [330, 8, 0.88]].map(([dx, dy, s], i) => ({ dx: dx * FK, dy, s, i, p: S.puppet(P.add(person(c, crowdPerson(c)))) }));
     const sparks = [0, 1, 2, 3, 4, 5, 6].map((i) => P.add(`<g>${sparkle(c, 10 + (i % 3) * 4)}</g>`));
 
     return (t, time) => {
@@ -63,7 +65,7 @@ export default {
       pose(rodB, { y: unroll * 190 });
       pose(mark, { x: -90 + seg(t, 0.55, 0.95) * 150, y: 70 + Math.floor(seg(t, 0.55, 0.95) * 3) * 26, o: unroll > 0.95 ? 0.9 : 0 });
       const out = es(t, 2.05, 2.35);
-      isa.set({ x: lerp(500, 380, out), y: GY, s: 1, o: 1 - out, armF: 30 + es(t, 0.1, 0.4) * 40, armB: 10 + es(t, 0.1, 0.4) * 140, head: -es(t, 0.1, 0.4) * 12, blink: blinkAt(time, 2) });
+      isa.set({ x: lerp(IX, 380, out), y: GY, s: 1, o: 1 - out, armF: 30 + es(t, 0.1, 0.4) * 40, armB: 10 + es(t, 0.1, 0.4) * 140, head: -es(t, 0.1, 0.4) * 12, blink: blinkAt(time, 2) });
 
       /* v23a: the virgin shall bear a son — the painted oval; his name Emmanuel */
       const ok = es(t, 1.1, 1.45, ease.out) * (1 - es(t, 2.0, 2.3, ease.in));

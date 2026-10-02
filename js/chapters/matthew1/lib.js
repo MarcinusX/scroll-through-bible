@@ -225,6 +225,16 @@ export function lineage(S, vineL, medL, nodes, { grow = 0.3, pop = 0.2, vineOpts
   return { nodes, by, update };
 }
 
+/**
+ * Phone (portrait) only: squeeze a line of medallions toward the middle so the outermost ones stay inside the
+ * usable width (x 450–1150). Remaps n.x (and n.root) in place; returns the x mapping (identity on a wide screen).
+ */
+export function phoneFit(S, nodes, { cx = 800, k = 0.85 } = {}) {
+  const f = S.portrait ? (x) => cx + (x - cx) * k : (x) => x;
+  if (S.portrait) nodes.forEach((n) => { n.x = f(n.x); if (n.root) n.root = [f(n.root[0]), n.root[1]]; });
+  return f;
+}
+
 /* ================================================================== sets */
 /** a band of ground whose top follows fn */
 export function groundBand(c, fn, col, { x0 = -1100, x1 = 2700, bottom = 1900 } = {}) {
@@ -371,7 +381,7 @@ export function roofTop(c, w = 240, col = C.plaster) {
  * k: how far the colours are tinted toward night (0 day … 0.5 night).
  */
 export const GY = 706;
-export function nazarethSet(S, skyCols, { k = 0, NC = NIGHT[1], starsOn = false, bench = true } = {}) {
+export function nazarethSet(S, skyCols, { k = 0, NC = NIGHT[1], starsOn = false, bench = true, jx = 350 } = {}) {
   const c = S.c;
   const T = (m, f = 1) => tintM(m, NC, k * f);
   const sk = skyK(S, skyCols);
@@ -394,8 +404,8 @@ export function nazarethSet(S, skyCols, { k = 0, NC = NIGHT[1], starsOn = false,
     return { x, w, h, d, inside, leaf, shut, doorX: x + d.door[0] + d.door[1] / 2, doorL: x + d.door[0], winX: x + d.win[0], winY: GY + d.win[1] };
   };
   // Joseph's house: roof at GY - 170, stairs on its right side
-  const J = mk(350, 214, 170, C.plaster);
-  H.add(T(`<g transform="translate(350 ${GY - 170})">${roofTop(c, 214)}</g>`));
+  const J = mk(jx, 214, 170, C.plaster);
+  H.add(T(`<g transform="translate(${jx} ${GY - 170})">${roofTop(c, 214)}</g>`));
   const M = mk(996, 180, 150, mix(C.plaster, C.peach, 0.3));
   // the workbench before Joseph's house
   if (bench) H.add(T(`<g transform="translate(724 ${GY + 4})">${wbench(c, 150)}</g>`));

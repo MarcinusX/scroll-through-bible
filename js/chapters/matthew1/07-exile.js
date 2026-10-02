@@ -5,7 +5,7 @@
 import { C, pose, lerp, sky, sheet, shade, mix } from '../kit.js';
 import { stars } from '../../assets/nature.js';
 import {
-  DUSK, NIGHT, DAWN, RIM, ICON, medal, lineage, elder, crown, ziggurat, willow, captives, vineLink, glowDisc, sparkle, kf,
+  DUSK, NIGHT, DAWN, RIM, ICON, medal, lineage, phoneFit, elder, crown, ziggurat, willow, captives, vineLink, glowDisc, sparkle, kf,
   tr, es, ease, bump, seg, PI,
 } from './lib.js';
 
@@ -39,7 +39,7 @@ export default {
     wp.push([450, 520], [450, 566]);
     js.p(c.cut(wp, 0.4, 6), mix(C.stone2, C.duskViolet, 0.35));
     js.x(smoke, mix(C.storm, C.stone2, 0.4), 'opacity=".55"');
-    jer.add(js.out());
+    jer.add(S.portrait ? `<g transform="translate(-260 0)">${js.out()}</g>` : js.out());   // phone: only a scrap of the smoke would peep in at the edge
     // Zerubbabel's new Temple: its stones laid again, at the far left at dawn
     const stonesL = S.layer({ par: 0.05, sh: 3 });
     const blocks = [[-50, 0], [0, 0], [50, 0], [-25, -30], [25, -30], [0, -60]].map(([x, y], i) => ({ x: 310 + x, y: 548 + y, i, el: stonesL.add(`<g>${sheet().p(c.cut(c.rect(-24, -28, 48, 30), 0.4, 5), mix(C.stone, C.cream, 0.3)).out()}</g>`) }));
@@ -66,6 +66,8 @@ export default {
       { key: 'shealtiel', parent: 'jechoniah', x: 590, y: 300, r: 40, at: 1.4, grow: 0.36, vine: { col: C.leaf, w: 7 }, markup: medal(S, elder(c, { robe: C.skyVeil, hairStyle: 'wrap', veil: C.stone }), { r: 40, ...E, name: tr('Salatiel', 'Shealtiel') }) },
       { key: 'zerubbabel', parent: 'shealtiel', x: 830, y: 190, r: 44, at: 2.4, markup: medal(S, elder(c, { robe: C.wheatRobe, mantle: C.sageRobe }), { r: 44, ...RIM.patriarch, flip: true, name: tr('Zorobabel', 'Zerubbabel'), icon: ICON.stones(c) }) },
     ];
+    phoneFit(S, nodes, { cx: JX, k: 0.78 });   // phone: Josiah and the brothers come in from the edges (Jechoniah stays)
+    const SH = nodes[5];
     const line = lineage(S, vineL, medL, nodes);
     // the crown that falls from Jechoniah
     const k = JR / 52;
@@ -100,7 +102,7 @@ export default {
 
       /* v12a: after the exile, a shoot from the stump */
       const bk = bump(t, 1.05, 1.45);
-      pose(bud, { x: lerp(JX - 20, 590, seg(t, 1.1, 1.4)), y: lerp(JY - JR, 300, seg(t, 1.1, 1.4)), s: 0.5 + bk * 0.8, o: bk });
+      pose(bud, { x: lerp(JX - 20, SH.x, seg(t, 1.1, 1.4)), y: lerp(JY - JR, SH.y, seg(t, 1.1, 1.4)), s: 0.5 + bk * 0.8, o: bk });
       /* v12b: Zerubbabel at dawn — the Temple's stones laid again */
       blocks.forEach((b) => { const kk = es(t, 2.2 + b.i * 0.06, 2.4 + b.i * 0.06, ease.out); pose(b.el, { x: b.x, y: b.y - (1 - kk) * 120, o: kk > 0.001 ? 1 : 0 }); });
 

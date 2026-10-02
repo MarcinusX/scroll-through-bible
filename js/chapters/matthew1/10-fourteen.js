@@ -8,7 +8,7 @@ import {
   tr, es, ease, bump, seg, PI,
 } from './lib.js';
 
-const X0 = 530, X1 = 1070;
+const X0L = 530, X1L = 1070;
 const ROWY = [586, 446, 306];           // Abraham→David (left→right), David→exile (right→left), exile→Christ (left→right)
 
 export default {
@@ -21,6 +21,9 @@ export default {
   cam: { x: [-20, 20], y: [-40, 30], z: [0.98, 1.04] },
   build(S) {
     const c = S.c;
+    // phone: the three strands are shorter and the beads a little smaller, so Abraham, David and Christ stay inside the screen
+    const PH = S.portrait;
+    const X0 = PH ? 584 : X0L, X1 = PH ? 1016 : X1L, EO = PH ? 40 : 44, BS = PH ? 0.86 : 1;
     const sk = sky(S, PARCH);
     const hangL = S.layer({ par: 0.03, sh: 4 });
     const hs = [[450, 250, 9], [1150, 180, 11], [1180, 420, 7], [420, 470, 8]].map(([x, y, r], i) => ({ x, y, i, el: hanging(hangL, `<path d="${c.cut(c.star(0, 0, r, r * 0.4, 5), 0.2, 3)}" fill="${C.sun}"/>`, { x, y, len: 600 }) }));
@@ -46,10 +49,10 @@ export default {
     /* ---------- the four ends ---------- */
     const endL = S.layer({ par: 0.3, sh: 6 });
     const ends = [
-      { x: X0 - 44, y: ROWY[0], m: medal(S, ABRAHAM, { r: 30, ...RIM.night, name: tr('Abraham', 'Abraham'), size: 18 }) },
-      { x: X1 + 44, y: ROWY[0] - 4, m: medal(S, DAVID, { r: 30, ...RIM.king, king: true, flip: true, name: tr('Dawid', 'David'), size: 18 }) },
-      { x: X0 - 44, y: ROWY[1], m: `<g>${badge(c, ICON.chain(c), { r: 26, rim: C.rock2, fill: mix(C.stone2, C.skyVeil, 0.4) })}<g transform="translate(0 34)">${nameStrip(c, tr('Babilon', 'Babylon'), { size: 18 })}</g></g>` },
-      { x: X1 + 46, y: ROWY[2] - 6, m: medal(S, { ...CAST.jesus }, { r: 36, ...RIM.holy, flip: true, name: tr('Chrystus', 'Christ'), size: 19 }) },
+      { x: X0 - EO, y: ROWY[0], m: medal(S, ABRAHAM, { r: 30, ...RIM.night, name: tr('Abraham', 'Abraham'), size: 18 }) },
+      { x: X1 + EO, y: ROWY[0] - 4, m: medal(S, DAVID, { r: 30, ...RIM.king, king: true, flip: true, name: tr('Dawid', 'David'), size: 18 }) },
+      { x: X0 - EO, y: ROWY[1], m: `<g>${badge(c, ICON.chain(c), { r: 26, rim: C.rock2, fill: mix(C.stone2, C.skyVeil, 0.4) })}<g transform="translate(0 34)">${nameStrip(c, tr('Babilon', 'Babylon'), { size: 18 })}</g></g>` },
+      { x: X1 + EO + 2, y: ROWY[2] - 6, m: medal(S, { ...CAST.jesus }, { r: 36, ...RIM.holy, flip: true, name: tr('Chrystus', 'Christ'), size: 19 }) },
     ].map((e) => ({ ...e, el: endL.add(e.m) }));
     const cGlow = litL.add(`<g>${glowDisc(140, 'halo-glow', 1)}${rayBurst(c, { n: 20, r0: 40, r1: 220, spread: 0.04, color: '#fff3cf', o: 0.6 })}</g>`);
 
@@ -66,9 +69,9 @@ export default {
         const grow = 1;
         pose(s.el, { x: s.xa, y: s.y, r: s.dir > 0 ? 0 : 180, sx: grow, sy: s.dir > 0 ? 1 : -1, o: 1 });
         s.beads.forEach((bd) => {
-          pose(bd.el, { x: bd.x, y: bd.y, s: 1, o: 1 });
+          pose(bd.el, { x: bd.x, y: bd.y, s: BS, o: 1 });
           const k = es(t, b + 0.05 + bd.i * 0.035, b + 0.12 + bd.i * 0.035, ease.back);
-          pose(bd.lit, { x: bd.x, y: bd.y - k * 0, s: Math.max(0.001, k), o: k > 0.002 ? 1 : 0 });
+          pose(bd.lit, { x: bd.x, y: bd.y - k * 0, s: Math.max(0.001, k) * BS, o: k > 0.002 ? 1 : 0 });
         });
       });
       turns.forEach((tu, i) => {
@@ -80,7 +83,7 @@ export default {
         swing(cd.el, 800, lerp(-400, cd.y - 58, k), time + cd.r, 1.2, 0.8, cd.r);
       });
       const cl = es(t, 2.55, 2.8);
-      pose(cGlow, { x: X1 + 46, y: ROWY[2] - 6, s: 0.5 + cl * 0.6, r: t * 5, o: cl });
+      pose(cGlow, { x: X1 + EO + 2, y: ROWY[2] - 6, s: 0.5 + cl * 0.6, r: t * 5, o: cl });
       sk.blend(PARCH, ['#ead3a6', '#f5e0b8', '#f9edd2'], cl);
       S.cam.y = -es(t, 0, 2.4) * 30;
     };
