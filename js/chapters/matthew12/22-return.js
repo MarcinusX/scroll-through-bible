@@ -29,6 +29,8 @@ export default {
   cam: { x: [-40, 40], y: [-30, 60], z: [1, 1.12] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;
+    const TX = P ? 960 : 1030;     // the dead thorn tree (phone: inside the screen)
     sky(S, DESERT);
     const dusk = sky(S, DUSK, { name: 'dusk' });
     dusk.layer.fade(0);
@@ -40,7 +42,7 @@ export default {
     let cracks = '';
     for (let i = 0; i < 26; i++) { const x = c.rr(-300, 1900), y = c.rr(650, 900); cracks += c.ribbon([[x, y], [x + c.rr(-30, 30), y + c.rr(6, 16)], [x + c.rr(-40, 40), y + c.rr(14, 28)]], 1.6); }
     ds.x(cracks, shade(C.dune, -0.3), 'opacity=".55"');
-    d2.add(ds.out() + rock(c, 640, 690, 150, 60, C.rock2) + thornBush(c, 1030, 660, 150, C.thorn2) + rock(c, 1300, 650, 90, 30, C.rock3));
+    d2.add(ds.out() + rock(c, 640, 690, 150, 60, C.rock2) + thornBush(c, TX, 660, 150, C.thorn2) + rock(c, 1300, 650, 90, 30, C.rock3));
     const desertL = [d1, d2];
     const man = S.puppet(d2.add(person(c, manOf(c, { robe: C.tealRobe, belt: C.leather, beard: 'short' }))));
     const freeGlow = d2.add(`<g opacity="0">${glow(120, 0.9)}</g>`);
@@ -94,10 +96,10 @@ export default {
         // tries the rock, then the thorn tree
         const a = es(t, 1.0, 1.3), b = es(t, 1.45, 1.75);
         const jitter = (bump(t, 1.25, 1.45) + bump(t, 1.7, 1.95)) * Math.sin(t * 90) * 6;
-        lx = lerp(lerp(840, 650, a), 1030, b) + jitter; ly = lerp(lerp(520, 610, a), 540, b) - Math.sin(b * PI) * 70; lr = jitter * 2;
+        lx = lerp(lerp(840, 650, a), TX, b) + jitter; ly = lerp(lerp(520, 610, a), 540, b) - Math.sin(b * PI) * 70; lr = jitter * 2;
       } else if (t < 3) {
-        const k = es(t, 2.3, 2.98, ease.in);
-        lx = lerp(1030, 1400, k); ly = lerp(540, 380, k) + wob; lr = k * 30;
+        const k = P ? es(t, 2.6, 2.98, ease.in) : es(t, 2.3, 2.98, ease.in);   // phone: lingers so its thought of home is seen
+        lx = lerp(TX, 1400, k); ly = lerp(540, 380, k) + wob; lr = k * 30;
       } else {
         // arrives at the window, then leads the seven in
         const a = es(t, 3.0, 3.4), b = es(t, 4.1, 4.45);

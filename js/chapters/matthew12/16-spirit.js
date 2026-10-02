@@ -96,7 +96,8 @@ export default {
       pose(shadow, { x: 1000, y: F + 10, sx: 0.9 + dark * 0.2, o: dark });
       ages.forEach((a, i) => {
         const k = es(t, 3.45 + i * 0.1, 3.7 + i * 0.1, ease.back);
-        pose(a, { x: 1030 + (i ? 70 : -60), y: lerp(-300, 340 + i * 44, k), r: Math.sin(T * 0.9 + i) * 1, oy: 0, o: k > 0.01 ? 1 : 0 });
+        pose(a, { x: S.portrait ? 950 + (i ? 50 : -10) : 1030 + (i ? 70 : -60),   // phone: both tags inside the screen
+        y: lerp(-300, 340 + i * 44, k), r: Math.sin(T * 0.9 + i) * 1, oy: 0, o: k > 0.01 ? 1 : 0 });
       });
 
       S.cam.x = kf(t, [[-0.5, 0], [1.1, 0], [1.4, 30], [1.95, 30], [2.2, -30], [2.95, -30], [3.2, 40]]);

@@ -110,7 +110,7 @@ export default {
       pose(inGlow, { x: (DOOR.x0 + DOOR.x1) / 2, y: 610, o: open });
       pose(rays, { x: (DOOR.x0 + DOOR.x1) / 2, y: 620, s: 0.6 + open * 0.6, r: T * 4, o: open * 0.9 });
       faces.forEach((f) => fade(f, 1 - open));
-      const DEST = [[905, Y + 26], [1000, Y + 36], [1095, Y + 26]];
+      const DEST = S.portrait ? [[880, Y + 26], [960, Y + 36], [1040, Y + 26]] : [[905, Y + 26], [1000, Y + 36], [1095, Y + 26]];   // phone: the freed stay clear of the thread
       PRIS.forEach((m) => {
         const k = es(t, 1.15 + m.i * 0.1, 1.45 + m.i * 0.1);
         const [dx, dy] = DEST[m.i];

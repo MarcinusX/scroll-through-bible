@@ -17,9 +17,10 @@ export default {
     { v: 10, text: 'A [był tam] człowiek, który miał uschłą rękę.' },
     { v: 10, cont: true, text: 'Zapytali Go, by móc Go oskarżyć: «Czy wolno uzdrawiać w szabat?»' },
   ],
-  cam: { x: [-40, 40], y: [0, 50], z: [1, 1.14] },
+  cam: { x: [-40, 150], y: [0, 50], z: [1, 1.14] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;
     const I = synagogueInterior(S);
     const L = S.layer({ par: I.P, sh: 4 });
     const [, FRONT] = I.benchY;
@@ -27,7 +28,7 @@ export default {
     /* the man with the withered hand, on the left front bench; the Pharisees on the right one */
     const manGlow = L.add(`<g opacity="0">${glow(120, 0.9)}</g>`);
     const man = S.puppet(L.add(person(c, { ...WITHERED, pose: 'sit', holdF: witheredHand(c) })));
-    const PH = [{ x: 1040, o: phOpts(0) }, { x: 1120, o: { ...scribeOpts(1), holdF: `<g transform="translate(8 -4) rotate(-20)">${waxTablet(c)}</g>` } }, { x: 1200, o: phOpts(2) }]
+    const PH = [{ x: P ? 990 : 1040, o: phOpts(0) }, { x: P ? 1036 : 1120, o: { ...scribeOpts(1), holdF: `<g transform="translate(8 -4) rotate(-20)">${waxTablet(c)}</g>` } }, { x: P ? 1082 : 1200, o: phOpts(2) }]
       .map((m, i) => ({ ...m, i, seed: c.rr(0, 9), sit: S.puppet(L.add(person(c, { ...m.o, pose: 'sit' }))), stand: i === 0 ? S.puppet(L.add(person(c, m.o))) : null }));
 
     /* Jesus and two disciples */
@@ -75,17 +76,17 @@ export default {
         m.sit.set({ x: m.x, y: FRONT, s: 0.9, flip: true, o: 1 - up, armF: 10 + write * (50 + Math.sin(t * 40) * 6), head: narrow * -4 + write * 8, blink: Math.max(narrow * 0.5, blinkAt(T, m.seed)) });
         if (m.stand) m.stand.set({ x: m.x - 20, y: FEET - 4, s: 0.94, flip: true, o: up, armF: 30 + es(t, 2.15, 2.3) * 60, armB: es(t, 2.15, 2.3) * 40, head: -4, blink: blinkAt(T, m.seed) });
       });
-      const [shx, shy2] = headAt(1020, FEET - 4, 0.94, true);
+      const [shx, shy2] = headAt(PH[0].x - 20, FEET - 4, 0.94, true);
       const sk = es(t, 2.2, 2.4, ease.back);
       pose(say, { x: shx - 70, y: shy2 - 34, s: sk, o: sk > 0.01 ? 1 : 0 });
-      const [whx, why] = handAt(1120, FRONT, 0.9, true, 60, 'sit');
+      const [whx, why] = handAt(PH[1].x, FRONT, 0.9, true, 60, 'sit');
       pose(writing, { x: whx - 8, y: why - 6, o: es(t, 2.45, 2.55) });
       const qd = es(t, 2.12, 2.45, ease.back);
-      pose(q, { x: 1150, y: lerp(-300, 250, qd), r: Math.sin(T * 1.1) * 1.5, oy: 0, o: qd > 0.01 ? 1 : 0 });
+      pose(q, { x: P ? 1060 : 1150, y: lerp(-300, 250, qd), r: Math.sin(T * 1.1) * 1.5, oy: 0, o: qd > 0.01 ? 1 : 0 });
       const td = es(t, 0.3, 0.7, ease.back);
       pose(tag, { x: 900, y: lerp(-300, 140, td), r: Math.sin(T * 0.8) * 0.8, oy: 0, o: td > 0.01 ? 1 : 0 });
 
-      S.cam.x = kf(t, [[-0.5, -30], [0.7, 0], [1.1, -30], [1.9, -30], [2.2, 30]]);
+      S.cam.x = kf(t, [[-0.5, -30], [0.7, 0], [1.1, -30], [1.9, -30], [2.2, P ? 120 : 30]]);   // phone: pans further, to the Pharisees (sitting closer together) and their question
       S.cam.z = kf(t, [[-0.5, 1.0], [0.7, 1.02], [1.1, 1.1], [1.9, 1.1], [2.2, 1.06]]);
       S.cam.y = kf(t, [[-0.5, 10], [1.1, 40], [1.9, 40], [2.2, 30]]);
     };

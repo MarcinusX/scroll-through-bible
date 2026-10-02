@@ -44,7 +44,7 @@ export default {
     starL.add(stars(c, { x0: -600, x1: 2200, y0: -500, y1: 420, n: 90 }));
     const hangL = S.layer({ par: 0.05, sh: 5 });
     const moonEl = hanging(hangL, moon(c, 36), { x: 1190, y: -300, len: 900 });
-    const sunEl = hanging(hangL, sun(c, 46, { rays: C.sunDeep, disc: '#f0b060', inner: '#f5ca8a' }), { x: 1150, y: 380, len: 900 });
+    const sunEl = hanging(hangL, sun(c, 46, { rays: C.sunDeep, disc: '#f0b060', inner: '#f5ca8a' }), { x: S.portrait ? 1040 : 1150, y: 380, len: 900 });   // phone: the sun inside the frame, not half under the thread
     const cls = [[520, 260, 190], [980, 220, 150]].map(([x, y, w], i) => ({ i, x, y, el: hanging(hangL, cloud(c, w, mix(C.cream, C.dusk, 0.35), mix(C.peach, C.duskViolet, 0.4)), { x, y, len: 900 }) }));
     const far = S.layer({ par: 0.1, sh: 2 });
     const fb = hillsWith(c, { y: 470, amps: [18, 8, 3], lens: [1000, 360, 130], color: mix(C.hillFar, C.duskViolet, 0.35), trees: 10, treeColor: mix(C.sage2, C.duskViolet, 0.35), treeH: 18 });
@@ -100,7 +100,7 @@ export default {
       night.layer.fade(nightK);
       starL.fade(nightK);
       tint.fade(nightK);
-      pose(sunEl, { x: 1150, y: 380 + nightK * 200, r: Math.sin(T * 0.6), oy: 0, o: 1 - nightK });
+      pose(sunEl, { x: S.portrait ? 1040 : 1150, y: 380 + nightK * 200, r: Math.sin(T * 0.6), oy: 0, o: 1 - nightK });
       cls.forEach((cl) => pose(cl.el, { x: cl.x + Math.sin(T * 0.1 + cl.i) * 20, y: cl.y, r: Math.sin(T * 0.6 + cl.i) * 1.1, oy: 0, o: 1 - nightK * 0.7 }));
       pose(moonEl, { x: 1190, y: lerp(-300, 160, es(t, 2.05, 2.45)), r: Math.sin(T * 0.6), oy: 0, o: nightK > 0.01 ? 1 : 0 });
 

@@ -43,6 +43,7 @@ export default {
   build(S) {
     const Q = squareSet(S, { sky2: JUDGE, dis: [], ph: 3, crowd: false });
     const c = Q.c;
+    const SX = LX - (S.portrait ? 75 : 100);   // Solomon's throne (phone: inside the screen)
     /* the far caravan on the hills */
     const farL = S.layer({ par: 0.1, sh: 2 });
     const caravan = [0, 1, 2].map((i) => farL.add(`<g opacity="0"><g transform="scale(.26)">${camel(c)}</g></g>`));
@@ -101,9 +102,9 @@ export default {
       const solIn = es(t, 4.1, 4.35);
       const solUp = es(t, 5.1, 5.18);
       const solBowK = es(t, 5.2, 5.45);
-      pose(throneEl, { x: LX - 100, y: F - 12, o: solIn });
-      solSit.set({ x: LX - 100, y: F - 40, s: 0.86, flip: false, o: solIn * (1 - solUp), armF: 30 + bump(t, 4.3, 4.9) * 50, armB: 10 + bump(t, 4.4, 4.95) * 60, head: -4, blink: blinkAt(T, 8) });
-      solBow.set({ x: LX - 70, y: F - 12, s: 0.88, flip: false, o: solUp, armF: 70, armB: 20, head: 14 * solBowK, lean: solBowK * 12, blink: solBowK * 0.8 });
+      pose(throneEl, { x: SX, y: F - 12, o: solIn });
+      solSit.set({ x: SX, y: F - 40, s: 0.86, flip: false, o: solIn * (1 - solUp), armF: 30 + bump(t, 4.3, 4.9) * 50, armB: 10 + bump(t, 4.4, 4.95) * 60, head: -4, blink: blinkAt(T, 8) });
+      solBow.set({ x: SX + 30, y: F - 12, s: 0.88, flip: false, o: solUp, armF: 70, armB: 20, head: 14 * solBowK, lean: solBowK * 12, blink: solBowK * 0.8 });
 
       /* Jesus and the Pharisees ("this generation") */
       Q.pose(t, T,

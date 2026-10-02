@@ -9,7 +9,7 @@ import { seg, es, ease, bump } from '../../core/anim.js';
 import { orchardTree, fruit, rottenFruit, worm, manOf, womanOf, handAt, headAt, kf, jug, sparkle, glow, PI } from './lib.js';
 
 const Y = 700;
-const GX = 600, BX = 1010;       // the good tree, the bad tree
+const GX0 = 600, BX0 = 1010;       // the good tree, the bad tree
 
 export default {
   id: 'mt12-tree',
@@ -22,6 +22,9 @@ export default {
   cam: { x: [-30, 30], y: [-30, 40], z: [1, 1.12] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;
+    const GX = P ? 640 : GX0, BX = P ? 945 : BX0;   // phone: both trees and the gardener inside the screen
+    const GD = P ? 118 : 150;
     sky(S, ['#cfe2d6', '#f0ead0', '#f8e9cf']);
     const hangL = S.layer({ par: 0.05, sh: 5 });
     const sunEl = hanging(hangL, sun(c, 40), { x: 820, y: 170, len: 800 });
@@ -54,7 +57,9 @@ export default {
     const pickB = act.add(`<g opacity="0">${rottenFruit(c, 10)}<g data-k="wm" transform="translate(4 -6)" opacity="0">${worm(c)}</g></g>`);
     const wm = S.$('wm');
     const sp = [0, 1, 2].map(() => act.add(`<g opacity="0">${sparkle(c, 10)}</g>`));
-    const gK = [[1.55, 1240], [2.05, 800]];
+    // phone: the girl comes in after the beat about the bad tree has settled (she stood under the thread at its pause)
+    const G0 = S.portrait ? 1.85 : 1.55, G1 = S.portrait ? 2.15 : 2.05;
+    const gK = [[G0, 1240], [G1, 800]];
 
     return (t, time) => {
       const T = time;
@@ -73,8 +78,8 @@ export default {
         pose(b.f, { x: GX + b.x * sG, y: Y + b.y * sG + 10, s: fr, o: fr > 0.01 ? 1 - picked : 0 });
       });
       const water = bump(t, -0.2, 0.55);
-      gard.set({ x: GX - 150, y: Y + 6, s: 0.96, flip: false, armF: 40 + water * 40, armB: 20, head: 8, lean: water * 5, blink: blinkAt(T, 3) });
-      const [wx, wy] = handAt(GX - 150, Y + 6, 0.96, false, 40 + water * 40);
+      gard.set({ x: GX - GD, y: Y + 6, s: 0.96, flip: false, armF: 40 + water * 40, armB: 20, head: 8, lean: water * 5, blink: blinkAt(T, 3) });
+      const [wx, wy] = handAt(GX - GD, Y + 6, 0.96, false, 40 + water * 40);
       drops.forEach((d, i) => {
         const k = time ? ((T * 1.4 + i / 4) % 1) : (i + 0.5) / 4;
         pose(d, { x: wx + 34 + k * 20, y: wy + 10 + k * 90, o: water > 0.3 ? 0.9 : 0 });
@@ -93,7 +98,7 @@ export default {
       const gx = kf(t, gK);
       const reachG = bump(t, 2.1, 2.4);
       const reachB = bump(t, 2.3, 2.6);
-      girl.set({ x: gx, y: Y + 10, s: 0.9, flip: true, o: es(t, 1.55, 1.65), walk: t > 1.55 && t < 2.05 ? gx * 0.07 : undefined, armF: 30 + Math.max(reachG, reachB) * 100, armB: 30, head: -4 - reachG * 10 + es(t, 2.55, 2.7) * 10, blink: blinkAt(T, 6) });
+      girl.set({ x: gx, y: Y + 10, s: 0.9, flip: true, o: es(t, G0, G0 + 0.1), walk: t > G0 && t < G1 ? gx * 0.07 : undefined, armF: 30 + Math.max(reachG, reachB) * 100, armB: 30, head: -4 - reachG * 10 + es(t, 2.55, 2.7) * 10, blink: blinkAt(T, 6) });
       pose(inB, { o: es(t, 2.38, 2.42) });
       const [hx, hy] = handAt(gx, Y + 10, 0.9, true, 130);
       const g0 = bloom[0];
@@ -109,7 +114,7 @@ export default {
         pose(s_, { x: GX - 40 + i * 50, y: 330 - (i % 2) * 30, s: k, r: T * 30, o: k > 0.01 ? 1 : 0 });
       });
 
-      S.cam.x = kf(t, [[-0.5, -30], [0.7, -30], [1.0, 30], [1.6, 30], [2.0, 0]]);
+      S.cam.x = kf(t, [[-0.5, -30], [0.7, -30], [1.0, P ? 14 : 30], [1.6, P ? 14 : 30], [2.0, 0]]);   // phone: a smaller pan right, so the gardener stays whole
       S.cam.z = kf(t, [[-0.5, 1.08], [0.7, 1.1], [1.0, 1.1], [2.0, 1.1]]);
       S.cam.y = kf(t, [[-0.5, 30], [2.0, 36]]);
     };

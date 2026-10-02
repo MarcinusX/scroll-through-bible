@@ -40,6 +40,7 @@ export default {
     seaL.add(`<g><rect x="-2000" y="${WY}" width="5600" height="2000" fill="url(#${deep})"/>${waveStrip(c, { y: WY, len: 110, amp: 10, x0: -1600, x1: 3200, bottom: WY + 30, color: C.lake })}</g>`);
     seaL.add(sheet().p(c.ridge(c.wave(820, [20, 8], [500, 160]), -900, 2500, 1700, 12, 1.4), mix(C.sand2, C.lakeDeep, 0.4)).out());
     const jonahFall = seaL.add(`<g>${person(c, JONAH)}</g>`);
+    const FSH = S.portrait ? 50 : 0;   // phone: the fish swims 50 further left (its tail was under the thread)
     const fishL = S.layer({ par: 0.3, sh: 5 });
     const fish = fishL.add(`<g>${greatFish(c, { w: 520 })}</g>`);
     const jaw = fish.querySelector('.jaw');
@@ -93,9 +94,9 @@ export default {
       pose(jonahFall, { x: 640 + drop * 60, y: WY - 30 + drop * 220, r: drop * 160, s: 0.36, o: 1 - es(t, 0.12, 0.2) });
       const rise = es(t, -0.1, 0.15);
       const gulp = bump(t, 0.02, 0.24);
-      pose(fish, { x: lerp(1100, 860, rise), y: lerp(720, 600, rise), r: -rise * 6 + es(t, 0.25, 0.4) * 6 });
+      pose(fish, { x: lerp(1100, 860, rise) - FSH, y: lerp(720, 600, rise), r: -rise * 6 + es(t, 0.25, 0.4) * 6 });
       pose(jaw, { x: -520 * 0.26, y: 520 * 0.36 * 0.02, r: gulp * 24 });
-      pose(win, { x: 870, y: 598, o: es(t, 0.3, 0.42) });
+      pose(win, { x: 870 - FSH, y: 598, o: es(t, 0.3, 0.42) });
       bubbles.forEach((b, i) => {
         const k = time ? ((T * 0.35 + i / 4) % 1) : (i + 0.5) / 4;
         pose(b, { x: 680 + i * 16 + Math.sin(k * 6 + i) * 8, y: 560 - k * 200, s: 0.6 + k, o: rise * (1 - k) * 0.8 });

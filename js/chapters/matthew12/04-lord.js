@@ -22,6 +22,7 @@ export default {
   build(S) {
     const F = fieldSet(S);
     const c = F.c;
+    const P = S.portrait;
 
     /* hanging things */
     const hangL = S.layer({ par: 0.12, sh: 6 });
@@ -35,9 +36,9 @@ export default {
     const aura = act.add(`<g opacity="0">${glow(230, 1, 'halo-glow')}</g>`);
     const rays = act.add(`<g opacity="0">${rayBurst(c, { n: 20, r0: 50, r1: 330, spread: 0.04, color: '#fff3cf', o: 0.45 })}</g>`);
     const disLight = act.add(`<g opacity="0">${glow(170, 0.8)}</g>`);
-    const DIS = [{ k: 'james', x: 468 }, { k: 'peter', x: 552 }, { k: 'andrew', x: 636 }].map((d, i) => ({ ...d, i, seed: c.rr(0, 9), p: S.puppet(act.add(person(c, { ...CAST[d.k] }))) }));
+    const DIS = (P ? [{ k: 'james', x: 505 }, { k: 'peter', x: 580 }, { k: 'andrew', x: 655 }] : [{ k: 'james', x: 468 }, { k: 'peter', x: 552 }, { k: 'andrew', x: 636 }]).map((d, i) => ({ ...d, i, seed: c.rr(0, 9), p: S.puppet(act.add(person(c, { ...CAST[d.k] }))) }));
     const jesus = S.puppet(act.add(person(c, { ...CAST.jesus })));
-    const PH = [{ x: 1000, o: phOpts(0) }, { x: 1090, o: scribeOpts(1) }, { x: 1170, o: phOpts(2) }].map((m, i) => ({ ...m, i, seed: c.rr(0, 9), p: S.puppet(act.add(person(c, m.o))) }));
+    const PH = (P ? [{ x: 960, o: phOpts(0) }, { x: 1030, o: scribeOpts(1) }, { x: 1095, o: phOpts(2) }] : [{ x: 1000, o: phOpts(0) }, { x: 1090, o: scribeOpts(1) }, { x: 1170, o: phOpts(2) }]).map((m, i) => ({ ...m, i, seed: c.rr(0, 9), p: S.puppet(act.add(person(c, m.o))) }));
     const sparks = [0, 1, 2].map(() => act.add(`<g opacity="0">${sparkle(c, 12)}</g>`));
     F.front();
 
@@ -57,11 +58,11 @@ export default {
       /* v7 — mercy outweighs sacrifice; the finger comes down; light on the guiltless */
       const sd = es(t, 1.05, 1.35, ease.back) * (1 - es(t, 2.0, 2.25));
       const tilt = es(t, 1.35, 1.65, ease.back) * -16;
-      poseScales(scl, 1000, lerp(-400, 250, sd), tilt + Math.sin(T * 0.9) * 0.8, sd > 0.01 ? 1 : 0, 1, 120);
+      poseScales(scl, P ? 930 : 1000, lerp(-400, 250, sd), tilt + Math.sin(T * 0.9) * 0.8, sd > 0.01 ? 1 : 0, 1, 120);
       pose(S.$('smk'), { x: Math.sin(T * 1.3) * 3, y: 18 - ((T * 10) % 14), s: 1 + Math.sin(T * 2) * 0.08 });
       const point = es(t, -0.3, 0.1) * (1 - es(t, 1.55, 1.75));
       const inno = es(t, 1.6, 1.8);
-      pose(disLight, { x: 552, y: FP - 110, o: inno * (1 - es(t, 2.6, 2.9) * 0.5) });
+      pose(disLight, { x: DIS[1].x, y: FP - 110, o: inno * (1 - es(t, 2.6, 2.9) * 0.5) });
       sparks.forEach((sp, i) => {
         const k = es(t, 1.65 + i * 0.05, 1.8 + i * 0.05, ease.back) * (1 - es(t, 2.1, 2.3));
         const [hx, hy] = headAt(DIS[i].x, FP, 0.95, false);
@@ -82,7 +83,7 @@ export default {
       });
       PH.forEach((m) => {
         const back = es(t, 2.35 + m.i * 0.05, 2.7);
-        m.p.set({ x: m.x + back * 40, y: FP + (m.i % 2 ? -6 : 4), s: 0.95, flip: true, armF: m.i === 0 ? 10 + point * 84 : 12, armB: m.i === 2 ? 30 : 8, head: m.i === 0 ? -point * 4 : 4 - back * 6, lean: -back * 4, blink: blinkAt(T, m.seed) });
+        m.p.set({ x: m.x + back * (P ? 20 : 40), y: FP + (m.i % 2 ? -6 : 4), s: 0.95, flip: true, armF: m.i === 0 ? 10 + point * 84 : 12, armB: m.i === 2 ? 30 : 8, head: m.i === 0 ? -point * 4 : 4 - back * 6, lean: -back * 4, blink: blinkAt(T, m.seed) });
       });
 
       S.cam.z = kf(t, [[-0.5, 1.04], [0.6, 1.08], [1.1, 1.05], [2.2, 1.05], [2.7, 1.1]]);

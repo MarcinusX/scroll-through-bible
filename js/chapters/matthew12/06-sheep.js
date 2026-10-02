@@ -21,7 +21,8 @@ export default {
     const c = S.c;
     sky(S, WARM);
     const hangL = S.layer({ par: 0.05, sh: 5 });
-    const sunEl = hanging(hangL, sun(c, 40), { x: 1180, y: 170, len: 800 });
+    const SUN = S.portrait ? [1010, 210] : [1180, 170];   // phone: the sun hangs inside the frame (only a sliver peeped under the thread)
+    const sunEl = hanging(hangL, sun(c, 40), { x: SUN[0], y: SUN[1], len: 800 });
     const cl = hanging(hangL, cloud(c, 170), { x: 560, y: 250, len: 800 });
     const tag = hanging(hangL, sabbathTag(c, tr('szabat', 'Sabbath')), { x: 800, y: -300, len: 900 });
     const far = S.layer({ par: 0.1, sh: 2 });
@@ -64,7 +65,7 @@ export default {
 
     return (t, time) => {
       const T = time;
-      pose(sunEl, { x: 1180, y: 170, r: Math.sin(T * 0.6) * 1 });
+      pose(sunEl, { x: SUN[0], y: SUN[1], r: Math.sin(T * 0.6) * 1 });
       pose(cl, { x: 560 + Math.sin(T * 0.1) * 20, y: 250, r: Math.sin(T * 0.6 + 1) * 1.1 });
       const tg = es(t, -0.5, -0.1, ease.back);
       pose(tag, { x: 800, y: lerp(-300, 150, tg), r: Math.sin(T * 0.9) * 0.8, oy: 0, o: tg > 0.01 ? 1 : 0 });

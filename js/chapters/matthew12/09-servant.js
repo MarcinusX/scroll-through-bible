@@ -25,9 +25,11 @@ export default {
   cam: { x: [-30, 40], y: [-20, 40], z: [1, 1.12] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;
+    const IX = P ? 545 : 470;      // Isaiah on his rock (phone: inside the screen)
     sky(S, GOLDEN, { rise: 0 });
     const hangL = S.layer({ par: 0.05, sh: 5, rise: 0 });
-    const sunEl = hanging(hangL, sun(c, 40, { rays: C.sunDeep, disc: '#f0b060', inner: '#f5ca8a' }), { x: 1240, y: 250, len: 800 });
+    const sunEl = hanging(hangL, sun(c, 40, { rays: C.sunDeep, disc: '#f0b060', inner: '#f5ca8a' }), { x: S.portrait ? 1060 : 1240, y: 250, len: 800 });
     const cl = hanging(hangL, cloud(c, 170, C.cream, C.peach), { x: 1010, y: 190, len: 800 });
     const far = S.layer({ par: 0.1, sh: 2 });
     const fb = hillsWith(c, { y: 470, amps: [18, 8, 3], lens: [1000, 360, 130], color: mix(C.hillFar, C.duskViolet, 0.2), trees: 12, treeColor: mix(C.sage2, C.duskViolet, 0.2), treeH: 18 });
@@ -40,11 +42,12 @@ export default {
     let hs = '';
     [[1000, 110, 90], [1120, 140, 110], [1280, 120, 96], [1420, 150, 120]].forEach(([x, w, h]) => { hs += house(c, x, mb.fn(x) + 14, w, h, { stairs: false }); });
     mid.add(mb.markup + hs + olive(c, 300, mb.fn(300) + 8, 0.7) + cypress(c, 940, mb.fn(940) + 12, 120));
-    /* the ground, Isaiah's rock, the street on the right */
+    /* the ground, Isaiah's rock, the street on the right (phone: it tapers off to the left like a road, instead of
+       ending in a square-cut grey slab in the middle of the screen) */
     const G = S.layer({ par: 0.4, sh: 3 });
     const gfn = c.wave(640, [4, 2], [700, 180]);
-    G.add(sheet().p(c.ridge(gfn, -900, 2500, 1700, 12, 1), mix(C.sand, C.hillNear, 0.3)).p(c.cut([[900, 700], [2500, 690], [2500, 760], [900, 770]], 0.8, 12), mix(C.stone, C.sand, 0.4)).out());
-    G.add(rock(c, 470, 660, 190, 70, C.rock2) + grass(c, { x0: -600, x1: 900, y: 650, fn: gfn, n: 24, h: 12, color: C.moss }));
+    G.add(sheet().p(c.ridge(gfn, -900, 2500, 1700, 12, 1), mix(C.sand, C.hillNear, 0.3)).p(c.cut(S.portrait ? [[640, 742], [900, 700], [2500, 690], [2500, 760], [900, 770]] : [[900, 700], [2500, 690], [2500, 760], [900, 770]], 0.8, 12), mix(C.stone, C.sand, 0.4)).out());
+    G.add(rock(c, IX, 660, 190, 70, C.rock2) + grass(c, { x0: -600, x1: 900, y: 650, fn: gfn, n: 24, h: 12, color: C.moss }));
 
     /* light from above (a second sheet, faded in) */
     const lightL = S.layer({ par: 0.3, sh: 1, flat: true, rise: 0 });
@@ -72,16 +75,16 @@ export default {
 
     return (t, time) => {
       const T = time;
-      pose(sunEl, { x: 1240, y: 250, r: Math.sin(T * 0.6) });
+      pose(sunEl, { x: S.portrait ? 1060 : 1240, y: 250, r: Math.sin(T * 0.6) });
       pose(cl, { x: 1010 + Math.sin(T * 0.1) * 20, y: 190, r: Math.sin(T * 0.6 + 1) * 1.1 });
 
       /* v17 — Isaiah and his scroll */
       const unroll = es(t, 0.05, 0.3);
       const fadeIsa = 1 - es(t, 1.9, 2.3) * 0.65;
-      isaiah.set({ x: 470, y: 628, s: 1.0, flip: false, armF: 70 + bump(t, 0.4, 1.0) * 10, armB: 20 + bump(t, 0.3, 0.9) * 60, head: -4, o: fadeIsa, blink: blinkAt(T, 4) });
+      isaiah.set({ x: IX, y: 628, s: 1.0, flip: false, armF: 70 + bump(t, 0.4, 1.0) * 10, armB: 20 + bump(t, 0.3, 0.9) * 60, head: -4, o: fadeIsa, blink: blinkAt(T, 4) });
       pose(S.$('isc'), { x: -6, y: -6, s: 0.62, sx: 0.15 + 0.85 * unroll, r: -90 });
-      pose(isaAura, { x: 470, y: 520, o: 0.7 * fadeIsa });
-      const [ihx, ihy] = handAt(470, 628, 1.0, false, 70);
+      pose(isaAura, { x: IX, y: 520, o: 0.7 * fadeIsa });
+      const [ihx, ihy] = handAt(IX, 628, 1.0, false, 70);
       const [jhx, jhy] = headAt(JX, Y, 1.06, false);
       slips.forEach((sl, i) => {
         const k = seg(t, 0.3 + i * 0.12, 0.75 + i * 0.12);
@@ -104,7 +107,7 @@ export default {
       const nk = es(t, 2.3, 2.6);
       NAT.forEach((n) => n.sp.set({ x: n.x - (1 - nk) * 60, y: fb.fn(n.x) + 30 + (1 - nk) * 40, o: nk }));
       const jd = es(t, 2.45, 2.75, ease.back) * (1 - es(t, 3.0, 3.2));
-      poseScales(scl, JX + 250, lerp(-300, 300, jd), Math.sin(T * 0.8) * 1.5, jd > 0.01 ? 1 : 0, 1, 90);
+      poseScales(scl, JX + (P ? 170 : 250), lerp(-300, 300, jd), Math.sin(T * 0.8) * 1.5, jd > 0.01 ? 1 : 0, 1, 90);
 
       /* v19 — two men quarrel in the street; He stays quiet */
       const q = es(t, 3.05, 3.2);

@@ -29,7 +29,7 @@ export default {
     { v: 36 },
     { v: 37 },
   ],
-  cam: { x: [-40, 40], y: [-60, 50], z: [1, 1.14] },
+  cam: { x: [-80, 80], y: [-60, 50], z: [1, 1.14] },
   build(S) {
     const Q = squareSet(S, { skyCols: WARM, dis: ['john'], ph: 3 });
     const c = Q.c;
@@ -44,7 +44,9 @@ export default {
     const gC = chest(c, { w: 84, h: 46 }), bC = chest(c, { w: 84, h: 46, dark: true });
     const gBox = act.add(`<g>${gC.box}</g>`), gLid = act.add(`<g>${gC.lid}</g>`);
     const bBox = act.add(`<g>${bC.box}</g>`), bLid = act.add(`<g>${bC.lid}</g>`);
-    const GCX = 580, BCX = 1030, CY = F + 22;
+    const P = S.portrait;
+    const GCX = P ? 600 : 580, BCX = P ? 1000 : 1030, CY = F + 22;   // phone: both chests and their men inside the screen
+    const MD = P ? 100 : 120;
     const goods = [loaf(c, 16), `<g transform="scale(.8)">${sheet().p(c.cut([[-20, 0], [-22, -6], [-12, -12], [8, -12], [18, -9], [26, -12], [28, -9], [20, -2], [10, 1], [-14, 1]], 0.4, 5), C.pot).out()}<path d="M26 -12C22 -16 23 -22 26 -30C29 -22 30 -16 26 -12Z" fill="${C.lampFlame}"/></g>`, flower(c, C.roseRobe), flower(c, C.lavender)]
       .map((m) => act.add(`<g opacity="0">${glow(40, 0.8)}${m}</g>`));
     const bads = [`<g transform="scale(.5)">${thornBush(c, 0, 20, 70)}</g>`, `<path d="${c.cut(c.blob(0, 0, 14, 10, 8, 0.3), 0.8, 4)}" fill="${C.rock3}"/>`, puff(c, 20, '#6b6076'), sinKnot(c, 12)]
@@ -94,8 +96,8 @@ export default {
       const gIn = es(t, 1.95, 2.05), bIn = es(t, 2.95, 3.05);
       const gOpen = es(t, 2.15, 2.35), bOpen = es(t, 3.15, 3.35);
       const goneC = 1 - es(t, 3.95, 4.05);
-      goodM.set({ x: GCX - 120, y: F + 20, s: 0.95, flip: false, o: gIn * goneC, armF: 40 + gOpen * 60, armB: 20 + es(t, 2.5, 2.7) * 90, head: 6 - es(t, 2.5, 2.7) * 12, blink: blinkAt(T, 5) });
-      badM.set({ x: BCX + 120, y: F + 20, s: 0.95, flip: true, o: bIn * goneC, armF: 40 + bOpen * 60, armB: 20, head: 8, blink: blinkAt(T, 6) });
+      goodM.set({ x: GCX - MD, y: F + 20, s: 0.95, flip: false, o: gIn * goneC, armF: 40 + gOpen * 60, armB: 20 + es(t, 2.5, 2.7) * 90, head: 6 - es(t, 2.5, 2.7) * 12, blink: blinkAt(T, 5) });
+      badM.set({ x: BCX + MD, y: F + 20, s: 0.95, flip: true, o: bIn * goneC, armF: 40 + bOpen * 60, armB: 20, head: 8, blink: blinkAt(T, 6) });
       pose(gBox, { x: GCX, y: CY, s: 1.3, o: gIn * goneC });
       pose(gLid, { x: GCX - 57, y: CY - 60, s: 1.3, r: -gOpen * 64, ox: -44, oy: 0, o: gIn * goneC });
       pose(bBox, { x: BCX, y: CY, s: 1.3, o: bIn * goneC });
@@ -125,7 +127,8 @@ export default {
         pose(s_.el, { x, y, r: (1 - k) * Math.sin(s_.i) * 30, s: 0.9, o: k > 0 && (k < 1 || toPan > 0) ? 1 : 0 });
       });
 
-      S.cam.x = kf(t, [[-0.5, 30], [0.9, 30], [1.1, -30], [1.9, -30], [2.1, -30], [2.9, -30], [3.1, 30], [3.9, 30], [4.1, 0]]);
+      const CW = P ? 70 : 30;   // phone: the camera goes further to each treasure
+      S.cam.x = kf(t, [[-0.5, 30], [0.9, 30], [1.1, -30], [1.9, -30], [2.1, -CW], [2.9, -CW], [3.1, CW], [3.9, CW], [4.1, 0]]);
       S.cam.z = kf(t, [[-0.5, 1.08], [0.9, 1.1], [1.1, 1.12], [3.9, 1.12], [4.1, 1.02]]);
       S.cam.y = kf(t, [[-0.5, 20], [0.9, 20], [1.1, 40], [3.9, 40], [4.1, -40]]);
     };

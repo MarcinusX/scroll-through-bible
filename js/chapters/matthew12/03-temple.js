@@ -20,6 +20,7 @@ export default {
   build(S) {
     const P = parchSet(S, { gy: 640, sunAt: null });
     const c = P.c;
+    const PH = S.portrait;
 
     /* the sanctuary behind its court wall */
     const back = S.layer({ par: 0.3, sh: 4 });
@@ -72,7 +73,7 @@ export default {
       const T = time;
       P.update(T);
       const lw = es(t, -0.4, 0.05, ease.back);
-      pose(law, { x: 1080, y: lerp(-300, 210, lw), r: Math.sin(T * 0.8) * 1.2, oy: 0, o: lw > 0.01 ? 1 : 0 });
+      pose(law, { x: PH ? 1010 : 1080, y: lerp(-300, 210, lw), r: Math.sin(T * 0.8) * 1.2, oy: 0, o: lw > 0.01 ? 1 : 0 });
       pose(lawSc, { sx: 0.1 + 0.9 * es(t, -0.05, 0.2) });
       const tg = es(t, 0.05, 0.3, ease.back);
       pose(tag, { x: 820, y: lerp(-300, 140, tg), r: Math.sin(T * 0.9) * 1.5, oy: 0, o: tg > 0.01 ? 1 : 0 });
@@ -94,7 +95,7 @@ export default {
       const cm = moving(t, cK);
       carrier.set({ x: cx, y: Y - (cx < 890 ? (890 - cx) * 0.625 : 0), s: 0.98, flip: true, walk: cm ? cx * 0.05 : undefined, armF: 62, armB: 130, head: -4, blink: blinkAt(T, 3) });
       const stack = bump(t, 0.1, 0.45) + bump(t, 0.5, 0.85);
-      wood.set({ x: 470, y: Y + 6, s: 0.98, flip: false, armF: 40 + stack * 50, armB: 30 + stack * 40, head: 6 + stack * 6, lean: 8 + stack * 6, blink: blinkAt(T, 5) });
+      wood.set({ x: PH ? 525 : 470, y: Y + 6, s: 0.98, flip: false, armF: 40 + stack * 50, armB: 30 + stack * 40, head: 6 + stack * 6, lean: 8 + stack * 6, blink: blinkAt(T, 5) });
       const tx = lerp(1180, 1040, es(t, -0.3, 0.5));
       trump.set({ x: tx, y: Y + 2, s: 0.98, flip: true, walk: t > -0.3 && t < 0.5 ? tx * 0.05 : undefined, armF: 90, armB: 70, head: -4, blink: blinkAt(T, 8) });
       pose(light, { x: 780, y: Y - 150, o: es(t, 0.55, 0.72) * 0.9 });

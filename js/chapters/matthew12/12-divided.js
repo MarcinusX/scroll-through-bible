@@ -136,7 +136,7 @@ export default {
       pair.forEach((m) => {
         const d = m.i ? 1 : -1;
         const run = es(t, 1.55, 1.9);
-        const x = 800 + d * 96 + d * run * 290;
+        const x = 800 + d * 96 + d * run * (S.portrait ? 210 : 290);   // phone: they flee only as far as the frame (the woman ended under the thread)
         m.p.set({ x, y: Y + 10, s: 0.96, flip: m.i ? run < 0.5 : run > 0.5, o: es(t, 1.2, 1.3) * (1 - es(t, 2.0, 2.1)), walk: run > 0 && run < 1 ? x * 0.07 : undefined, amt: 1.4, armF: 24 + bump(t, 1.2, 1.55) * 46, armB: 10 + bump(t, 1.25, 1.6) * (m.i ? 40 : 20), head: -6 + run * 10, lean: bump(t, 1.2, 1.55) * 8, blink: 0 });
       });
       shouts.forEach((sh, i) => {

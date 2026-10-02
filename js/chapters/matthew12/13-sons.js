@@ -61,7 +61,7 @@ export default {
       const [khx, khy] = headAt(520, F + 50, 0.9, false, 'kneel');
       pose(imp, { x: lerp(khx + 10, khx - 260, out), y: lerp(khy + 20, khy - 240, out), r: out * 120, s: 1 - out * 0.4, o: 1 - es(t, 0.85, 0.98) });
       const qd = es(t, 0.3, 0.6, ease.back) * (1 - es(t, 1.0, 1.2));
-      pose(q, { x: 1070, y: lerp(-300, 330, qd), r: Math.sin(T * 1.1) * 1.2, oy: 0, o: qd > 0.01 ? 1 : 0 });
+      pose(q, { x: S.portrait ? 1010 : 1070, y: lerp(-300, 330, qd), r: Math.sin(T * 1.1) * 1.2, oy: 0, o: qd > 0.01 ? 1 : 0 });
       const sd = es(t, 1.25, 1.55, ease.back) * (1 - es(t, 1.95, 2.2));
       poseScales(scl, 640, lerp(-300, 330, sd), Math.sin(T * 0.8) * 1.5, sd > 0.01 ? 1 : 0, 1, 60);
 

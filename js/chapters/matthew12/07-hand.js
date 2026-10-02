@@ -25,6 +25,7 @@ export default {
   cam: { x: [-40, 40], y: [0, 60], z: [1, 1.16] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;
     const I = synagogueInterior(S);
     /* the shadows on the wall (behind everything on the floor) */
     const shL = S.layer({ par: 0.22, sh: 1, flat: true });
@@ -34,7 +35,7 @@ export default {
     const [, FRONT] = I.benchY;
     const folk = I.congregation(L);
     const manSit = S.puppet(L.add(person(c, { ...WITHERED, pose: 'sit', holdF: witheredHand(c) })));
-    const PH = [{ x: 1040, o: phOpts(0) }, { x: 1120, o: scribeOpts(1) }, { x: 1200, o: phOpts(2) }]
+    const PH = [{ x: P ? 990 : 1040, o: phOpts(0) }, { x: P ? 1036 : 1120, o: scribeOpts(1) }, { x: P ? 1082 : 1200, o: phOpts(2) }]
       .map((m, i) => ({ ...m, i, seed: c.rr(0, 9), sit: S.puppet(L.add(person(c, { ...m.o, pose: 'sit' }))), stand: S.puppet(L.add(person(c, m.o))) }));
 
     /* Jesus, the man standing, two disciples */
@@ -53,7 +54,7 @@ export default {
     /* hanging: the Sabbath, the question that becomes a heart, the scales */
     const fx = S.layer({ par: 0.3, sh: 6 });
     const tag = hanging(fx, sabbathTag(c, tr('szabat', 'Sabbath')), { x: 900, y: 140, len: 800 });
-    const qh = hanging(fx, `<g data-k="qa"><g transform="scale(1.7)">${question(c)}</g></g><g data-k="qb" opacity="0">${sheet().p(c.cut(c.circ(0, 0, 44, 30), 0.5, 5), C.cream).out()}${heart(c, 28)}<text x="0" y="36" text-anchor="middle" font-family="EB Garamond, Georgia, serif" font-size="14" font-style="italic" fill="${C.ink}">${tr('dobrze czynić', 'do good')}</text></g>`, { x: 1150, y: 250, len: 800 });
+    const qh = hanging(fx, `<g data-k="qa"><g transform="scale(1.7)">${question(c)}</g></g><g data-k="qb" opacity="0">${sheet().p(c.cut(c.circ(0, 0, 44, 30), 0.5, 5), C.cream).out()}${heart(c, 28)}<text x="0" y="36" text-anchor="middle" font-family="EB Garamond, Georgia, serif" font-size="14" font-style="italic" fill="${C.ink}">${tr('dobrze czynić', 'do good')}</text></g>`, { x: P ? 1050 : 1150, y: 250, len: 800 });
     const qa = S.$('qa'), qb = S.$('qb');
     const sc = scalesParts(c, { arm: 110, drop: 70 });
     const mini = person(c, { ...WITHERED });
@@ -89,7 +90,7 @@ export default {
 
       /* v12b — the question turns into a heart */
       const flipK = seg(t, 1.2, 1.45);
-      pose(qh, { x: 1150, y: 250, sx: Math.max(0.04, Math.abs(Math.cos(flipK * PI))), r: Math.sin(T * 1.1) * 1.2, oy: 0 });
+      pose(qh, { x: P ? 1050 : 1150, y: 250, sx: Math.max(0.04, Math.abs(Math.cos(flipK * PI))), r: Math.sin(T * 1.1) * 1.2, oy: 0 });
       fade(qa, flipK < 0.5 ? 1 : 0); fade(qb, flipK < 0.5 ? 0 : 1);
       pose(tag, { x: 900, y: 140, r: Math.sin(T * 0.8) * 0.8, oy: 0 });
 
@@ -127,10 +128,10 @@ export default {
       const huddle = es(t, 4.35, 4.7);
       SH.forEach((m) => {
         const k = es(t, 4.2 + m.i * 0.05, 4.45 + m.i * 0.05);
-        const x = lerp(1000 + m.i * 110, 1090 + (m.i - 1) * 64, huddle);
+        const x = P ? lerp(900 + m.i * 100, 990 + (m.i - 1) * 60, huddle) : lerp(1000 + m.i * 110, 1090 + (m.i - 1) * 64, huddle);   // phone: the plot happens inside the screen
         pose(m.el, { x, y: 560, s: 1.1, sx: m.i === 2 ? -1 : 1, o: k * 0.32 });
       });
-      pose(knot, { x: 1100, y: 400, s: 0.6 + huddle * 0.5, r: Math.sin(T * 0.9) * 6, o: huddle * 0.6 });
+      pose(knot, { x: P ? 1000 : 1100, y: 400, s: 0.6 + huddle * 0.5, r: Math.sin(T * 0.9) * 6, o: huddle * 0.6 });
 
       S.cam.x = kf(t, [[-0.5, 0], [0.4, -20], [1.0, 20], [1.9, 20], [2.2, -30], [3.9, -30], [4.2, 30]]);
       S.cam.z = kf(t, [[-0.5, 1.04], [0.4, 1.06], [1.9, 1.06], [2.2, 1.12], [3.9, 1.12], [4.2, 1.04]]);

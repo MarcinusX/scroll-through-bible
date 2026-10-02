@@ -17,7 +17,7 @@ export default {
     { v: 1, cont: true, text: 'Uczniowie Jego, odczuwając głód, zaczęli zrywać kłosy i jeść.' },
     { v: 2 },
   ],
-  cam: { x: [-30, 40], y: [-30, 40], z: [1, 1.12] },
+  cam: { x: [-30, 80], y: [-30, 40], z: [1, 1.12] },
   build(S) {
     const F = fieldSet(S, { walk: WALK });
     const c = F.c;
@@ -26,8 +26,10 @@ export default {
     const tag = hanging(tagL, sabbathTag(c, tr('szabat', 'Sabbath')), { x: 800, y: -300, len: 800 });
 
     /* ---------- the Pharisees, back in the wheat ---------- */
+    const P = S.portrait;
     const phL = S.layer({ par: 0.6, sh: 4 });
-    const PH = [{ x: 1090, o: phOpts(0) }, { x: 1160, o: scribeOpts(1) }].map((m, i) => ({ ...m, i, seed: c.rr(0, 9), p: S.puppet(phL.add(person(c, m.o))) }));
+    const PHX = P ? 1050 : 1090;   // phone: the Pharisees stand inside the screen, clear of the thread
+    const PH = [{ x: PHX, o: phOpts(0) }, { x: PHX + (P ? 62 : 70), o: scribeOpts(1) }].map((m, i) => ({ ...m, i, seed: c.rr(0, 9), p: S.puppet(phL.add(person(c, m.o))) }));
     // a strip of wheat in front of them, to rise out of
     const hide = phL.add(`<g>${wheatField(c, { x0: 960, x1: 1260, y: FP - 20, h: 96, n: 60, color: C.wheat2, ear: C.wheat })}</g>`);
 
@@ -116,12 +118,12 @@ export default {
         m.p.set({ x: m.x, y: lerp(FP + 170, FP - 44, up), s: 0.86, flip: true, o: up > 0.01 ? 1 : 0, armF: point * 92 + up * 10, armB: m.i === 1 ? es(t, 3.35, 3.55) * 50 : 12, head: -point * 4, lean: point * 3, blink: blinkAt(T, m.seed) });
       });
       const lk = es(t, 3.35, 3.55, ease.back);
-      const [lhx, lhy] = headAt(1090, FP - 44, 0.86, true);
+      const [lhx, lhy] = headAt(PHX, FP - 44, 0.86, true);
       pose(look, { x: lhx - 40, y: lhy - 34, s: lk, o: lk > 0.01 ? 1 : 0 });
 
       S.cam.z = kf(t, [[0.8, 1.04], [1.9, 1.05], [2.3, 1.11], [2.95, 1.11], [3.2, 1.06]]);
       S.cam.y = kf(t, [[0.8, 20], [2.3, 36], [2.95, 36], [3.2, 10]]);
-      S.cam.x = kf(t, [[2.95, 0], [3.25, 30]]);
+      S.cam.x = kf(t, [[2.95, 0], [3.25, P ? 70 : 30]]);
     };
   },
 };
