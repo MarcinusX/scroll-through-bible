@@ -42,8 +42,10 @@ export default {
     const sk = sky(S, DAY, { name: 'day' });
     const dimL = sky(S, DIM, { name: 'dim' }).layer;
     const hangL = S.layer({ par: 0.04, sh: 4 });
-    const sunEl = hanging(hangL, sun(c, 42), { x: 1210, y: 150, len: 800 });
-    const shadowCloud = hanging(hangL, cloud(c, 260, mix(C.storm, C.stone2, 0.55), mix(C.storm2, C.stone2, 0.4)), { x: 1210, y: 170, len: 900 });
+    const PH = S.portrait;   // phone: the sun (off-screen at 1210) comes down at v12b inside the screen, and the cloud crosses it there
+    const SUNX = PH ? 960 : 1210, CLX = PH ? 950 : 1190;
+    const sunEl = hanging(hangL, sun(c, 42), { x: SUNX, y: PH ? -1000 : 150, len: 800 });
+    const shadowCloud = hanging(hangL, cloud(c, 260, mix(C.storm, C.stone2, 0.55), mix(C.storm2, C.stone2, 0.4)), { x: CLX, y: 170, len: 900 });
 
     // the valley far below, where a crowd is already waiting
     S.layer({ par: 0.08, sh: 2 }).add(band(c, { y: 470, amps: [22, 9, 3], lens: [1000, 330, 120], color: mix(C.hillFar, C.lavender, 0.3) }).markup);
@@ -99,8 +101,8 @@ export default {
       const T = time;
       const dim = es(t, 4.02, 4.5) * (1 - es(t, 5.3, 5.8) * 0.5);
       dimL.fade(dim);
-      swing(sunEl, 1210, 150, T, 1, 0.6);
-      swing(shadowCloud, 1190, lerp(-1000, 180, es(t, 4.02, 4.45)) - es(t, 5.3, 5.9) * 1200, T, 1, 0.6, 2);
+      swing(sunEl, SUNX, PH ? lerp(-1000, 120, es(t, 3.85, 4.15, ease.back)) : 150, T, 1, 0.6);
+      swing(shadowCloud, CLX, lerp(-1000, 180, es(t, 4.02, 4.45)) - es(t, 5.3, 5.9) * 1200, T, 1, 0.6, 2);
 
       /* walking: beat 0 down the path, then slowly on while they talk */
       const lead = lerp(0, 0.72, es(t, 0, 0.8)) + es(t, 1, 5.9) * 0.08;

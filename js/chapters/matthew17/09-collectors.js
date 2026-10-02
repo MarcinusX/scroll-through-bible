@@ -18,7 +18,7 @@ export default {
   cam: { x: [-40, 40], y: [0, 40], z: [1, 1.12] },
   build(S) {
     const set = capSet(S, { house: false, sign: false });
-    const SH = S.portrait ? -30 : 0;   // on a phone, the collectors' table a little further in
+    const SH = S.portrait ? -50 : 0;   // on a phone, the collectors' table a little further in
     const c = set.c;
 
     /* ---------- Peter's house on the left, the street ---------- */

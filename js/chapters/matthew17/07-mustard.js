@@ -24,7 +24,7 @@ export default {
   cam: { x: [-30, 30], y: [-40, 40], z: [1, 1.12] },
   build(S) {
     const c = S.c;
-    const HERE = S.portrait ? 580 : 540, THERE = S.portrait ? 1024 : 1070;
+    const HERE = S.portrait ? 600 : 540, THERE = S.portrait ? 975 : 1070;   // phone: the whole flat stays clear of the thread
     const sk = sky(S, EVENING, { name: 'eve' });
     const nightL = sky(S, NIGHT, { name: 'night' }).layer;
     const starL = S.layer({ par: 0.02, sh: 1, flat: true });
@@ -57,7 +57,7 @@ export default {
     const pL = S.layer({ par: 0.5, sh: 5 });
     const DIS = [
       { k: 'peter', x: 646 }, { k: 'andrew', x: 578 }, { k: 'john', x: 512 },
-      { k: 'james', x: 958 }, { k: 'matthew', x: 1024 }, { k: 'thomas', x: 1090 },
+      { k: 'james', x: S.portrait ? 946 : 958 }, { k: 'matthew', x: S.portrait ? 1006 : 1024 }, { k: 'thomas', x: S.portrait ? 1064 : 1090 },
     ].map((d, i) => {
       const o = TWELVE.find((m) => m.k === d.k).o;
       return { ...d, i, flip: d.x > 800, seed: c.rr(0, 9), st: S.puppet(pL.add(person(c, o))), kn: S.puppet(pL.add(person(c, { ...o, pose: 'kneel', eyes: 'closed' }))) };

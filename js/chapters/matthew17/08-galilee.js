@@ -54,7 +54,9 @@ export default {
     const pL = S.layer({ par: 0.45, sh: 5 });
     const SEAT = [[520, 0.86, 'sit'], [590, 0.9, 'sit'], [664, 0.92, 'sit'], [936, 0.92, 'sit'], [1010, 0.9, 'sit'], [1080, 0.86, 'sit'], [470, 0.84, 'stand'], [1130, 0.84, 'stand']];
     const KS = [0, 3, 6, 1, 2, 7, 4, 5];
-    const DIS = SEAT.map(([x, s, p], i) => {
+    const PH = S.portrait;   // phone: the circle sits closer round the fire, so the outer two aren't cut by the frame / the thread
+    const DIS = SEAT.map(([x0, s, p], i) => {
+      const x = PH ? (p === 'stand' ? (x0 < 800 ? 540 : 1046) : 800 + (x0 - 800) * 0.8) : x0;
       const o = TWELVE[KS[i]].o;
       const pp = S.puppet(pL.add(withFace(person(c, { ...o, pose: p }), faceBits(c))));
       return { i, x, s, p, flip: x > 800, seed: c.rr(0, 9), pp, sad: pp.el.querySelector('[data-part="sad"]'), tear: pp.el.querySelector('[data-part="tear"]') };

@@ -35,6 +35,7 @@ export default {
   cam: { x: [-70, 30], y: [-60, 40], z: [0.98, 1.1] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;   // phone: the three witnesses stand further in, clear of the frame and the thread
     /* ---------- skies: high clear morning → golden glory (crossfaded on the compositor) ---------- */
     sky(S, HIGH, { name: 'day' });
     const gold = sky(S, GLORY, { name: 'gold' }).layer;
@@ -96,9 +97,9 @@ export default {
     /* ---------- Peter, James and John ---------- */
     const dL = S.layer({ par: 0.6, sh: 5 });
     const DIS = [
-      { k: 'james', o: CAST.james, x: 470, flip: false },
-      { k: 'peter', o: CAST.peter, x: 566, flip: false },
-      { k: 'john', o: CAST.john, x: 1122, flip: true },
+      { k: 'james', o: CAST.james, x: PH ? 522 : 470, flip: false },
+      { k: 'peter', o: CAST.peter, x: PH ? 596 : 566, flip: false },
+      { k: 'john', o: CAST.john, x: PH ? 1068 : 1122, flip: true },
     ].map((d, i) => ({
       ...d, i, seed: c.rr(0, 9),
       st: S.puppet(dL.add(withFace(person(c, d.o), faceBits(c)))),
@@ -144,11 +145,11 @@ export default {
       jWhite.set({ ...jp, o: white, flip: t > 2.5 && t < 5.2 && Math.sin(T * 0.5) > 0.3 });
       const walk = es(t, 8.12, 8.6);
       const back = es(t, 9.1, 9.5);
-      const nx = lerp(lerp(800, 666, walk), 800, back), ny = lerp(lerp(TOP, LEDGE - 4, walk), 700, back);
+      const nx = lerp(lerp(800, PH ? 696 : 666, walk), 800, back), ny = lerp(lerp(TOP, LEDGE - 4, walk), 700, back);
       const reach = es(t, 8.55, 8.75) * (1 - es(t, 9.05, 9.2));
       jNear.set({ x: nx, y: ny, s: lerp(JS, 1.08, walk), o: down, flip: t < 9.1, walk: (walk > 0 && walk < 1) || (back > 0 && back < 1) ? nx * 0.05 : undefined, armF: 14 + reach * 64 + es(t, 9.5, 9.8) * 26, armB: 10 + reach * 30 + es(t, 9.5, 9.8) * 30, head: -2 + reach * 10, lean: reach * 8, blink: blinkAt(T, 1) });
-      pose(touch, { x: 606, y: LEDGE - 96, s: 0.6 + reach * 0.6, o: reach * 0.9 });
-      pose(jSays, { x: 720, y: LEDGE - 262, s: es(t, 8.6, 8.8, ease.back), o: bump(t, 8.55, 9.05) > 0.05 ? 1 : 0 });
+      pose(touch, { x: PH ? 636 : 606, y: LEDGE - 96, s: 0.6 + reach * 0.6, o: reach * 0.9 });
+      pose(jSays, { x: PH ? 750 : 720, y: LEDGE - 262, s: es(t, 8.6, 8.8, ease.back), o: bump(t, 8.55, 9.05) > 0.05 ? 1 : 0 });
 
       stars.forEach((st) => {
         const on = bump(t, 1.02 + st.i * 0.05, 1.9 + st.i * 0.01) * shine;
@@ -168,7 +169,7 @@ export default {
 
       /* v4b: the tents pop up, and fold away when the cloud comes */
       tents.forEach((tn) => {
-        const up = es(t, 4.1 + tn.i * 0.18, 4.4 + tn.i * 0.18, ease.back) * (1 - es(t, 5.4 + tn.i * 0.05, 5.75 + tn.i * 0.05));
+        const up = es(t, 4.1 + tn.i * 0.18, 4.4 + tn.i * 0.18, ease.back) * (1 - (PH ? es(t, 5.3 + tn.i * 0.04, 5.55 + tn.i * 0.04) : es(t, 5.4 + tn.i * 0.05, 5.75 + tn.i * 0.05)));   // phone: folded before the beat's rest point, no sliver left on the ground
         pose(tn.el, { x: tn.x, y: 722, s: tn.s, sy: Math.max(0.001, up), o: up > 0.01 ? 1 : 0 });
       });
 
@@ -198,14 +199,14 @@ export default {
         d.kn.set({ x: d.x + shake, y: LEDGE, s: 1.06, flip: turn, o: kneel, armF: 30 + fall * 70 + shield * 20, armB: 150 * shield + fall * 80 + lookUp * 20, head: -10 - shield * 4 + fall * 22 - lookUp * 6, lean: fall * 44 * (1 - touched * 0.7) + fear * 2, blink: blinkAt(T, d.seed) });
         d.sad.forEach((el) => pose(el, { o: fear }));
       });
-      const pX = 566;
+      const pX = PH ? 596 : 566;
       pose(peterSays, { x: pX - 26, y: LEDGE - 236, s: es(t, 3.1, 3.3, ease.back), o: t > 3.05 && t < 3.97 ? 1 : 0 });
       pose(peterTents, { x: pX - 22, y: LEDGE - 236, s: es(t, 4.05, 4.25, ease.back), o: t > 4.02 && t < 5.95 ? 1 - es(t, 5.82, 5.95) : 0 });
 
       /* camera */
       S.cam.z = 1 + es(t, 0.1, 0.9) * 0.08 - es(t, 1.9, 2.5) * 0.1 + es(t, 6, 6.5) * 0.03 + es(t, 7.9, 8.5) * 0.06 - es(t, 9.05, 9.5) * 0.06;
       S.cam.y = -es(t, 0.1, 0.9) * 40 + es(t, 1.9, 2.5) * 50 - es(t, 5, 5.8) * 30 + es(t, 6.9, 7.4) * 40 + es(t, 7.9, 8.5) * 10 - es(t, 9.05, 9.5) * 30;
-      S.cam.x = -es(t, 7.9, 8.5) * 60 * (1 - es(t, 9.05, 9.5));
+      S.cam.x = -es(t, 7.9, 8.5) * (PH ? 30 : 60) * (1 - es(t, 9.05, 9.5));
     };
   },
 };

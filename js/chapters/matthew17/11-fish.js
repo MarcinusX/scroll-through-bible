@@ -11,7 +11,7 @@ import { es, ease, bump, seg } from '../../core/anim.js';
 import { COLLECTORS, stater, bigFish, rod, lineDown, hook, handAt, sparkle, bubble, kf, tr, LAKE } from './lib.js';
 
 const PI = Math.PI;
-const JX = 890, JY = 690;
+const JY = 690;
 const ROCK = [676, 684];        // Peter's rock at the water's edge
 const HOOKX = 470;
 const SURF = 614, CREST = 700;  // back water surface, front wave crest
@@ -26,9 +26,11 @@ export default {
   cam: { x: [-40, 40], y: [-60, 40], z: [1, 1.14] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;   // phone: the hand-over, the big stater and the sun stay inside the screen
+    const JX = PH ? 850 : 890, SUNX = PH ? 530 : 470, BIGX = PH ? 990 : 1050, PBACK = PH ? 928 : 970;
     sky(S, LAKE);
     const hangL = S.layer({ par: 0.04, sh: 5 });
-    const sunEl = hanging(hangL, sun(c, 42), { x: 470, y: 140, len: 800 });
+    const sunEl = hanging(hangL, sun(c, 42), { x: SUNX, y: 140, len: 800 });
     const cls = [[700, 120, 170], [1330, 170, 150]].map(([x, y, w], i) => ({ i, x, y, el: hanging(hangL, cloud(c, w), { x, y, len: 800 }) }));
     S.layer({ par: 0.08, sh: 2 }).add(band(c, { y: 440, amps: [16, 7, 3], lens: [1000, 340, 120], color: C.hillFar }).markup);
     const farL = S.layer({ par: 0.12, sh: 2 });
@@ -64,7 +66,7 @@ export default {
 
     /* ---------- people ---------- */
     const pL = S.layer({ par: 0.5, sh: 5 });
-    const COLL = COLLECTORS.map((o, i) => ({ i, o, xe: [1060, 1130][i], seed: c.rr(0, 9), p: S.puppet(pL.add(person(c, o))) }));
+    const COLL = COLLECTORS.map((o, i) => ({ i, o, xe: (PH ? [1012, 1072] : [1060, 1130])[i], seed: c.rr(0, 9), p: S.puppet(pL.add(person(c, o))) }));
     const jesus = S.puppet(pL.add(person(c, CAST.jesus)));
     const rodEl = pL.add(`<g opacity="0">${rod(c, 180)}</g>`);
     const peter = S.puppet(pL.add(person(c, CAST.peter)));
@@ -76,14 +78,14 @@ export default {
 
     /* ---------- the big stater, from the flies ---------- */
     const bigL = S.layer({ par: 0.1, sh: 5 });
-    const big = hanging(bigL, `<g><circle r="150" fill="url(#halo-glow)"/>${rays(c, { n: 16, r0: 60, r1: 160, spread: 0.05, color: '#fff3cf' })}${stater(c, 62)}</g>`, { x: 1050, y: 250, len: 900 });
+    const big = hanging(bigL, `<g><circle r="150" fill="url(#halo-glow)"/>${rays(c, { n: 16, r0: 60, r1: 160, spread: 0.05, color: '#fff3cf' })}${stater(c, 62)}</g>`, { x: BIGX, y: 250, len: 900 });
 
     const fg = S.layer({ par: 0.85, sh: 6 });
     fg.add(rock(c, 1460, 990, 230, 90, C.rock) + rock(c, 250, 1000, 200, 70, C.rock2));
 
     return (t, time) => {
       const T = time;
-      swing(sunEl, 470, 140, T, 1, 0.6);
+      swing(sunEl, SUNX, 140, T, 1, 0.6);
       cls.forEach((cl) => swing(cl.el, cl.x + Math.sin(T * 0.1 + cl.i) * 20, cl.y, T, 1.2, 0.6, cl.i));
       frontW.shift(Math.sin(T * 0.5) * 14, 0);
 
@@ -95,12 +97,12 @@ export default {
       /* Peter: to the rock, casts; pulls the fish; back up the beach to the collectors */
       const toRock = es(t, 0.15, 0.5);
       const back = es(t, 2.05, 2.5);
-      const px = lerp(lerp(1010, ROCK[0], toRock), 970, back);
+      const px = lerp(lerp(1010, ROCK[0], toRock), PBACK, back);
       const py = lerp(lerp(698, ROCK[1], toRock), 698, back);
       const cast = es(t, 0.5, 0.62);
       const pull = es(t, 1.05, 1.25);
       const holding = es(t, 1.3, 1.36) * (1 - es(t, 2.95, 3));
-      const facing = t < 1.45;
+      const facing = t < 2.08;   // he opens the fish facing the water, so fish and coin stay off Jesus's face
       const give = es(t, 2.5, 2.7);
       const rodArm = 100 - cast * 20 + pull * 40;
       peter.set({ x: px, y: py, s: 1.0, flip: facing, walk: (toRock > 0 && toRock < 1) || (back > 0 && back < 1) ? px * 0.05 : undefined, amt: 0.9,
@@ -142,7 +144,7 @@ export default {
         pose(el, { x: gx - 6 + (i - 1) * 30, y: gy - 50 - (i % 2) * 20, s: on, r: T * 20, o: on });
       });
       const bg = es(t, 1.5, 1.72, ease.back);
-      swing(big, 1050, lerp(-1000, 230, bg), T, 1.1, 0.8, 2);
+      swing(big, BIGX, lerp(-1000, 230, bg), T, 1.1, 0.8, 2);
 
       /* the collectors come along the beach */
       COLL.forEach((m) => {
