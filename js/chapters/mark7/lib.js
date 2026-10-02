@@ -485,9 +485,11 @@ export function room(S, { sky: skyCols = ['#cfe0dc', '#efe5cb', '#f7ead3'], nigh
   const door = [[DOOR.x0, FLOOR + 6], [DOOR.x0, DOOR.top], ...c.arc((DOOR.x0 + DOOR.x1) / 2, DOOR.top, (DOOR.x1 - DOOR.x0) / 2, 50, PI, 2 * PI, 12), [DOOR.x1, FLOOR + 6]];
   const w = sheet();
   w.p(c.cut([[-900, -1200], [2500, -1200], [2500, FLOOR + 6], [-900, FLOOR + 6]], 1, 30) + c.hole(win, 0.5, 6) + c.hole(door, 0.5, 6), wcol);
-  w.p(c.cut([[-900, -1200], [2500, -1200], [2500, CEIL - 16], [-900, CEIL - 16]], 0.8, 30), shade(C.wood2, night ? -0.3 : -0.1));
+  // on a tall screen the ceiling is only a beam across the wall, so the planks do not fill the top of the picture
+  const CTOP = S.portrait ? CEIL - 150 : -1200;
+  w.p(c.cut([[-900, CTOP], [2500, CTOP], [2500, CEIL - 16], [-900, CEIL - 16]], 0.8, 30), shade(C.wood2, night ? -0.3 : -0.1));
   let planks = '';
-  for (let x = -900; x < 2500; x += 64) planks += c.ribbon([[x, -1200], [x + c.rr(-3, 3), CEIL - 18]], 2);
+  for (let x = -900; x < 2500; x += 64) planks += c.ribbon([[x, CTOP], [x + c.rr(-3, 3), CEIL - 18]], 2);
   w.x(planks, shade(C.wood2, night ? -0.45 : -0.28), 'opacity=".6"');
   let blotch = '';
   for (let i = 0; i < 16; i++) blotch += c.cut(c.blob(c.rr(-300, 1900), c.rr(CEIL + 40, FLOOR - 70), c.rr(24, 64), c.rr(10, 24), 10, 0.2), 0.8, 6);

@@ -21,6 +21,6 @@ for k in range(0, len(files), per):
     for i, f in enumerate(chunk):
         sheet.paste(Image.open(f).resize((tw, th)), ((i % cols) * tw, (i // cols) * th))
         d.text(((i % cols) * tw + 6, (i // cols) * th + 4), os.path.basename(f), fill='red')
-    sheet.save(f'{S}/sheet-{k // 9:02d}.jpg', quality=78)
+    sheet.save(f'{S}/sheet-{k // per:02d}.jpg', quality=78)
 print(len(files), 'shots')
 PY

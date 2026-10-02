@@ -624,7 +624,8 @@ export function golgothaSet(S, { pal = SKIES.storm, dial = false, dark = false, 
   const starL = dark ? S.layer({ par: 0.02, sh: 1, flat: true }) : null;
   if (starL) starL.add(stars(c, { x0: -600, x1: 2200, y0: -400, y1: 400, n: 40 }));
   const hangL = S.layer({ par: 0.04, sh: 4 });
-  const D = dial ? hourDial(S, hangL, { cx: 800, cy: 530, rx: 400, ry: 360 }) : null;
+  // on a phone the dial is drawn narrower, so the outer hours stay inside the frame
+  const D = dial ? hourDial(S, hangL, { cx: 800, cy: 530, rx: S.portrait ? 320 : 400, ry: 360 }) : null;
   const sunEl = dial ? hanging(hangL, `<circle r="90" fill="url(#halo-glow)" opacity=".7"/>${sunCut(c, 34)}`, { x: 0, y: 0, len: 900 }) : null;
   const disc = dial ? hanging(hangL, sheet().p(c.cut(c.circ(0, 0, 52, 30), 0.6, 5), '#15142a').x(c.ribbon(c.arc(0, 0, 52, 52, 0, PI * 2, 30), 3), '#f4e2b0', 'opacity=".35"').out(), { x: 0, y: 0, len: 900 }) : null;
   const clouds = [[360, 150, 300], [1250, 130, 280], [820, 90, 220]].map(([x, y, w], i) => ({ x, y, el: hanging(hangL, stormCloud(c, w, i === 2 ? C.storm2 : C.storm, C.storm2), { x, y, len: 700 }) }));

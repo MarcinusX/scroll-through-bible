@@ -535,8 +535,9 @@ export function upperRoom(S, { skyCols = DUSK } = {}) {
   w.x(blot, shade(wcol, -0.05), 'opacity=".55"');
   w.p(c.ribbon(winA.slice(0, -1), 10) + c.ribbon(winB.slice(0, -1), 10), C.wood2);
   w.p(c.cut(c.rect(456, 516, 148, 10), 0.3, 6) + c.cut(c.rect(996, 516, 148, 10), 0.3, 6), C.wood);
-  // ceiling & beams
-  w.p(c.cut([[-900, -1200], [2500, -1200], [2500, CEIL], [-900, CEIL]], 0.8, 30), shade(C.wood2, -0.15));
+  // ceiling & beams (on a tall screen only a beam across the wall, so the wood does not fill the top of the picture)
+  const CTOP = S.portrait ? CEIL - 150 : -1200;
+  w.p(c.cut([[-900, CTOP], [2500, CTOP], [2500, CEIL], [-900, CEIL]], 0.8, 30), shade(C.wood2, -0.15));
   let beams = '';
   for (let x = -300; x < 1900; x += 100) beams += c.cut(c.rect(x, CEIL - 6, 22, 28), 0.3, 5);
   w.p(beams, C.wood);
