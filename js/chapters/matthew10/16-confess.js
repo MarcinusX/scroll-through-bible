@@ -42,7 +42,8 @@ export default {
 
     /* the square below */
     const P = S.layer({ par: 0.5, sh: 5 });
-    const CROWD = [[470, 0.84, false], [700, 0.86, true], [760, 0.82, true], [880, 0.84, false], [1110, 0.86, true]].map(([x, s, flip], i) => ({ x, s, flip, i, seed: c.rr(0, 9), p: S.puppet(P.add(person(c, folk(c)))) }));
+    // phone: the outer two of the crowd and the question stand inside the frame
+    const CROWD = [[470, 0.84, false], [700, 0.86, true], [760, 0.82, true], [880, 0.84, false], [1110, 0.86, true]].map(([x, s, flip], i) => ({ x: S.portrait && (i === 0 || i === 4) ? (i ? 1082 : 498) : x, s, flip, i, seed: c.rr(0, 9), p: S.puppet(P.add(person(c, folk(c)))) }));
     const philip = S.puppet(P.add(person(c, L6.philip)));
     const denier = S.puppet(P.add(person(c, { robe: C.stone2, mantle: C.mauve, hair: C.hair3, hairStyle: 'wrap', veil: C.plumRobe, veil2: shade(C.plumRobe, -0.2), beard: 'short', skin: C.skin2, belt: C.leather })));
     const W = S.layer({ par: 0.52, sh: 4 });
@@ -59,7 +60,7 @@ export default {
 
       /* v32 — Philip confesses Him; Jesus acknowledges him before the Father */
       const ask = es(t, 0.05, 0.2, ease.back) * (1 - es(t, 0.35, 0.45));
-      pose(q, { x: 490, y: GY - 190, s: ask, o: ask > 0.01 ? 1 : 0 });
+      pose(q, { x: S.portrait ? 560 : 490, y: GY - 190, s: ask, o: ask > 0.01 ? 1 : 0 });
       const conf = es(t, 0.35, 0.5, ease.back) * (1 - es(t, 1.05, 1.15));
       pose(yes, { x: PX + 30, y: GY - 196, s: conf, o: conf > 0.01 ? 1 : 0 });
       philip.set({ x: PX, y: GY, s: 0.94, flip: false, armF: 20 + es(t, 0.35, 0.5) * 70, armB: 10 + es(t, 0.4, 0.55) * 150, head: -es(t, 0.4, 0.55) * 14, blink: blinkAt(T, 1) });

@@ -10,8 +10,8 @@ import { lightCrown } from '../mark8/lib.js';
 import { village, GOLDEN, openHouse, L6, child, radiance, rayBurst, cup, sparkle, staff, kf, moving, hand, headAt, PI } from './lib.js';
 
 const GY = 706, HB = 700;
-const HX = 440, HW = 250, HH = 240;
-const WX = 1060;                    // the well
+const HX0 = 440, HW = 250, HH = 240;
+const WX0 = 1060;                   // the well
 
 export default {
   id: 'mt10-receive',
@@ -24,6 +24,8 @@ export default {
   ],
   cam: { x: [-40, 60], y: [-50, 20], z: [1, 1.08] },
   build(S) {
+    // phone: the house and the well stand further in (the host's door was half off the screen, the middle empty)
+    const PH = S.portrait, HX = PH ? 516 : HX0, WX = PH ? 1004 : WX0;
     const V = village(S, { skyCols: GOLDEN, sunAt: [1240, 260] });
     const c = S.c;
 
@@ -107,7 +109,7 @@ export default {
         pose(s2, { x: cx - 20 + i * 22, y: cy - 30 - (i % 2) * 16, s: k, r: T * 40, o: k });
       });
 
-      S.cam.x = kf(t, [[0, 0], [3.8, 0], [4.1, 50]]);
+      S.cam.x = kf(t, [[0, 0], [3.8, 0], [4.1, PH ? 20 : 50]]);
       S.cam.y = -bump(t, 0.9, 2.2) * 40 + es(t, 3.8, 4.1) * 10;
       S.cam.z = 1.04 + es(t, 3.8, 4.1) * 0.04;
     };

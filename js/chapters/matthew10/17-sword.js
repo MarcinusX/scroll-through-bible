@@ -50,7 +50,8 @@ export default {
       { k: 'mil', o: { robe: C.tealRobe, mantle: C.stone2, hairStyle: 'veil', veil: C.linen2, veil2: C.stone, hair: C.greyHair, skin: C.skin, beard: 'none' }, x: 930, pair: 2 },
       { k: 'dil', o: { robe: C.ochreRobe, hairStyle: 'veil', veil: C.skyVeil, veil2: shade(C.skyVeil, -0.1), hair: C.hair3, skin: C.skin4, beard: 'none' }, x: 1008, pair: 2 },
       { k: 'brother', o: { robe: C.sageRobe, hair: C.hair3, hairStyle: 'curly', beard: 'short', skin: C.skin3, belt: C.leather }, x: 1086, pair: 3 },
-    ].map((m, i) => ({ ...m, i, y: gfn(m.x) + 40 + (i % 2) * 6, first: m.pair < 3 && (i % 2 === 0), seed: c.rr(0, 9), p: S.puppet(P.add(person(c, m.o))) }));
+    ].map((m) => (S.portrait ? { ...m, x: 800 + (m.x - 800) * 0.86 } : m))   // phone: the family stands a little closer in
+      .map((m, i) => ({ ...m, i, y: gfn(m.x) + 40 + (i % 2) * 6, first: m.pair < 3 && (i % 2 === 0), seed: c.rr(0, 9), p: S.puppet(P.add(person(c, m.o))) }));
     const slits = [0, 1, 2].map(() => P.add(`<g><path d="${c.poly([[-3, -260], [3, -260], [10, 0], [-10, 0]])}" fill="${C.star}" opacity=".85"/><ellipse cx="0" cy="-120" rx="26" ry="160" fill="url(#halo-glow)"/></g>`));
     const jGlow = P.add(`<g><circle r="150" fill="url(#halo-glow)"/></g>`);
     const jesus = S.puppet(P.add(person(c, { ...CAST.jesus })));

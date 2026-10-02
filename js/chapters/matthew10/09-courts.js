@@ -55,12 +55,15 @@ export default {
   ],
   cam: { x: [-40, 40], y: [-40, 40], z: [1, 1.1] },
   build(S) {
+    // phone: the council bench, the dais and the thrones hang OX further left (the king was off the screen),
+    // the watchers and the foreigners stand inside the frame, and the four keep a little closer together
+    const PH = S.portrait, OX = PH ? -110 : 0;
     const H = hallSet(S);
     const c = S.c;
 
     /* watchers in the arches */
     const watchL = S.layer({ par: 0.2, sh: 3 });
-    const WATCH = [[390, 0.6], [1170, 0.62], [650, 0.5], [910, 0.52]].map(([x, s], i) => ({ x, s, i, p: S.puppet(watchL.add(shadowPerson(c, crowdPerson(c), mix(INK, C.plumRobe, 0.3)))) }));
+    const WATCH = (PH ? [[830, 0.6], [1090, 0.62], [920, 0.5], [1010, 0.52]] : [[390, 0.6], [1170, 0.62], [650, 0.5], [910, 0.52]]).map(([x, s], i) => ({ x, s, i, p: S.puppet(watchL.add(shadowPerson(c, crowdPerson(c), mix(INK, C.plumRobe, 0.3)))) }));
 
     /* flats that come down: the council, the dais and thrones, the shadow screen, the hourglass */
     const flats = S.layer({ par: 0.3, sh: 6 });
@@ -86,7 +89,7 @@ export default {
     const natL = S.layer({ par: 0.36, sh: 4 });
     const NATIONS = [0, 1, 2, 3, 4].map((i) => {
       const o = crowdPerson(c, { skin: [C.skin4, C.skin, C.skin3, C.skin2, C.skin4][i], hairStyle: ['wrap', 'curly', 'short', 'wrap', 'bald'][i], veil: [C.terracotta, C.ochre, C.stone, C.tealRobe, C.stone][i], robe: [C.ochreRobe, C.tealRobe, C.clayMantle, C.mauve, C.wheatRobe][i], beard: ['full', 'short', 'none', 'full', 'short'][i] });
-      return { i, x: 300 + i * 46, p: S.puppet(natL.add(person(c, o))), seed: c.rr(0, 9) };
+      return { i, x: PH ? 476 + i * 38 : 300 + i * 46, p: S.puppet(natL.add(person(c, o))), seed: c.rr(0, 9) };
     });
 
     /* floor light and the people */
@@ -122,7 +125,7 @@ export default {
 
       /* council (beat 1) */
       const cIn = es(t, 1.0, 1.3, ease.out) * (1 - es(t, 2.0, 2.25));
-      pose(council, { x: 0, y: -(1 - cIn) * 700, o: cIn > 0.001 ? 1 : 0 });
+      pose(council, { x: OX, y: -(1 - cIn) * 700, o: cIn > 0.001 ? 1 : 0 });
       const sIn = es(t, 1.3, 1.55, ease.back) * (1 - es(t, 2.0, 2.3));
       const sy = lerp(-400, SCY, sIn), sOn = sIn > 0.001 ? 1 : 0;
       pose(scr, { x: SCX, y: sy, o: sOn });
@@ -134,36 +137,39 @@ export default {
 
       /* governors and kings (beats 2–5) */
       const dIn = es(t, 2.1, 2.4, ease.out);
-      pose(daisEl, { x: 0, y: -(1 - dIn) * 700, o: dIn > 0.001 ? 1 : 0 });
-      thr.forEach((el, i) => pose(el, { x: [990, 1150][i] + 20, y: 642 - (1 - dIn) * 700, o: dIn > 0.001 ? 1 : 0 }));
+      pose(daisEl, { x: OX, y: -(1 - dIn) * 700, o: dIn > 0.001 ? 1 : 0 });
+      thr.forEach((el, i) => pose(el, { x: [990, 1150][i] + 20 + OX, y: 642 - (1 - dIn) * 700, o: dIn > 0.001 ? 1 : 0 }));
       const listen = es(t, 2.5, 2.8) * (1 - es(t, 3.0, 3.2)) + es(t, 5.3, 5.6);
-      rulers.forEach((r, i) => r.p.set({ x: r.x + 12, y: 594 - (1 - dIn) * 700, s: 0.92, flip: true, o: dIn > 0.001 ? 1 : 0, lean: -listen * (i ? 7 : 4), head: listen * 6 - (1 - listen) * (i ? 4 : 0), armF: 20 + (i === 0 ? bump(t, 3.1, 3.7) * 60 : 0), blink: blinkAt(T, i + 3) }));
+      rulers.forEach((r, i) => r.p.set({ x: r.x + 12 + OX, y: 594 - (1 - dIn) * 700, s: 0.92, flip: true, o: dIn > 0.001 ? 1 : 0, lean: -listen * (i ? 7 : 4), head: listen * 6 - (1 - listen) * (i ? 4 : 0), armF: 20 + (i === 0 ? bump(t, 3.1, 3.7) * 60 : 0), blink: blinkAt(T, i + 3) }));
       NATIONS.forEach((n) => {
         const k = es(t, 2.3 + n.i * 0.05, 2.55 + n.i * 0.05) * (1 - es(t, 3.0, 3.25));
         n.p.set({ x: n.x - (1 - k) * 200, y: 640 + (n.i % 2) * 8, s: 0.72, o: k, walk: k > 0 && k < 1 ? t * 30 + n.i : undefined, head: -k * 6, armF: bump(t, 2.6, 3.0) * 50, blink: blinkAt(T, n.seed) });
       });
 
+      // (Philip and Bartholomew step back and fade out as the council lifts, so no see-through pair is left standing
+      // behind Thaddaeus and James before the thrones or over the foreigners; phone: they return after the foreigners go)
       /* the four: arrive and look about; led; stand before rulers; step back while Thaddaeus is led */
       dis.forEach((d) => {
         const enter = seg(t, -0.4 + d.i * 0.08, 0.35 + d.i * 0.08);
-        let x = lerp(-200 - d.i * 70, d.x, ease.out(enter));
+        let x = lerp(-200 - d.i * 70, d.x + (PH ? 40 : 0), ease.out(enter));
         let walking = enter > 0 && enter < 1, flip = false, armF = 14, armB = 0, head = 0, o = 1;
         const wary = es(t, 0.4, 0.55) * (1 - es(t, 1.0, 1.15));
         head = Math.sin(T * 1.6 + d.seed) * 8 * wary;
         if (wary > 0.5 && Math.sin(T * 0.8 + d.seed) > 0.4) flip = true;
-        if (d.k === 'philip' || d.k === 'bartholomew') { const f = es(t, 1.05, 1.45) * (1 - es(t, 2.9, 3.3)); x += f * 190; walking = walking || (t > 1.05 && t < 1.45); head += es(t, 1.6, 1.8) * 12 * (1 - es(t, 2.1, 2.3)); o = 1 - es(t, 2.05, 2.3) * 0.4 + es(t, 2.9, 3.1) * 0.4; }
-        if (d.k === 'jamesA') { const f = es(t, 2.2, 2.55) * (1 - es(t, 2.95, 3.3)); x += f * 180; walking = walking || (t > 2.2 && t < 2.55); armF += f * 60; }
+        if (d.k === 'philip' || d.k === 'bartholomew') { const f = es(t, 1.05, 1.45) * (1 - es(t, 1.95, 2.3)); x += f * (PH ? 120 : 190); walking = walking || (t > 1.05 && t < 1.45) || (t > 1.95 && t < 2.3); head += es(t, 1.6, 1.8) * 12 * (1 - es(t, 2.1, 2.3)); o = 1 - es(t, 2.05, 2.3) + (PH ? es(t, 3.1, 3.35) : es(t, 2.9, 3.1)); }
+        if (d.k === 'jamesA') { const f = es(t, 2.2, 2.55) * (1 - es(t, 2.95, 3.3)); x += f * (PH ? 80 : 180); walking = walking || (t > 2.2 && t < 2.55); armF += f * 60; }
         if (d.k === 'thaddaeus') {
-          const f = es(t, 2.2, 2.55); x += f * 250; walking = walking || (t > 2.2 && t < 2.55); armF += f * 60 * (1 - es(t, 2.95, 3.1));
-          const led = es(t, 3.05, 3.5); x = lerp(x, 800, led); walking = walking || (t > 3.05 && t < 3.5);
+          const f = es(t, 2.2, 2.55); x += f * (PH ? 200 : 250); walking = walking || (t > 2.2 && t < 2.55); armF += f * 60 * (1 - es(t, 2.95, 3.1));
+          const led = es(t, 3.05, 3.5); x = lerp(x, PH ? 720 : 800, led); walking = walking || (t > 3.05 && t < 3.5);
           const calm = es(t, 3.75, 3.95);
           head += es(t, 3.2, 3.4) * 12 * (1 - calm) - calm * 4;
           armF += es(t, 4.3, 4.6) * 50;
           armB += es(t, 5.2, 5.45) * 70;
         } else {
           const back = es(t, 3.05, 3.45);
-          x = lerp(x, 360 + d.i * 70, back); walking = walking || (t > 3.05 && t < 3.45);
-          o *= 1 - back * 0.45;
+          // phone: the three wait in a tight opaque queue inside the frame (faded, they ghosted over each other and the guard)
+          x = lerp(x, (PH ? 495 : 360) + d.i * (PH ? 40 : 70), back); walking = walking || (t > 3.05 && t < 3.45);
+          o *= 1 - back * (PH ? 0 : 0.45);
         }
         d.p.set({ x, y: GY + (d.i % 2) * 6, s: 0.94, flip, o, walk: walking ? x * 0.05 : undefined, armF, armB, head, blink: blinkAt(T, d.seed) });
         d.xNow = x;
@@ -171,11 +177,11 @@ export default {
       guards.forEach((g) => {
         const inn = es(t, 0.95, 1.3) * (1 - es(t, 2.0, 2.3));
         const lead = es(t, 3.05, 3.5);
-        const x = g.i === 0 ? lerp(lerp(1400, 900, inn), 690, lead) : lerp(-300, 380, inn);
+        const x = g.i === 0 ? lerp(lerp(1400, PH ? 860 : 900, inn), PH ? 625 : 690, lead) : lerp(-300, PH ? 470 : 380, inn);
         const walking = (t > 0.95 && t < 1.3) || (t > 2.0 && t < 2.3) || (g.i === 0 && t > 3.05 && t < 3.5);
         g.p.set({ x, y: GY + 4, s: 0.98, flip: g.i === 0 && lead < 0.5, o: g.i === 1 ? inn : Math.max(inn, lead), walk: walking ? x * 0.05 : undefined, armF: 12, armB: g.i === 0 ? lead * 30 : 0, blink: blinkAt(T, g.seed) });
       });
-      pose(spot, { x: lerp(lerp(620, 760, es(t, 1, 2.3)), 800, es(t, 3.05, 3.5)), y: GY + 6, s: 1, o: 0.8 });
+      pose(spot, { x: lerp(lerp(620, PH ? 720 : 760, es(t, 1, 2.3)), PH ? 720 : 800, es(t, 3.05, 3.5)), y: GY + 6, s: 1, o: 0.8 });
 
       /* testimony (beat 2) */
       testi.forEach((l, i) => {
@@ -210,7 +216,7 @@ export default {
       wordsL.forEach((w) => {
         const on = es(t, 5.3, 5.5);
         const k = T ? ((T * 0.35 + w.i / 6) % 1) : (w.i + 0.5) / 6;
-        const x = lerp(px + 30, 990, k), y = lerp(py + 10, 520, k) - Math.sin(k * PI) * 60;
+        const x = lerp(px + 30, 990 + OX, k), y = lerp(py + 10, 520, k) - Math.sin(k * PI) * 60;
         pose(w.el, { x, y, r: -10 + k * 20, s: 0.8 + 0.3 * Math.sin(k * PI), o: on * Math.sin(k * PI) });
       });
 

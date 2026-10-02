@@ -22,6 +22,8 @@ export default {
   ],
   cam: { x: [-30, 40], y: [-30, 30], z: [1, 1.16] },
   build(S) {
+    // phone: the Pharisees stop further in and shout from inside the screen (the cry and the first of them were cut)
+    const PH = S.portrait, SHX = PH ? 600 : 470;
     const V = village(S, { skyCols: DAY, sunAt: [1250, 150] });
     const c = S.c;
 
@@ -92,21 +94,21 @@ export default {
       /* v25b — "Beelzebul!" */
       phar.forEach((ph) => {
         const k = es(t, 2.0 + ph.i * 0.05, 2.3 + ph.i * 0.05);
-        const x = lerp(-150 - ph.i * 60, 440 - ph.i * 64, k);
+        const x = lerp(-150 - ph.i * 60, (PH ? 580 : 440) - ph.i * (PH ? 46 : 64), k);
         ph.p.set({ x, y: GY + (ph.i % 2) * 8, s: 0.92, flip: false, walk: k > 0 && k < 1 ? x * 0.06 : undefined, armF: 20 + es(t, 2.3, 2.45) * (ph.i === 0 ? 90 : 60), armB: es(t, 2.3, 2.45) * (ph.i === 1 ? 140 : 20), head: -4, blink: blinkAt(T, ph.seed) });
       });
       const sh = es(t, 2.3, 2.42, ease.back);
-      pose(shout, { x: 466, y: GY - 196, s: sh, o: sh > 0.01 ? 1 : 0 });
+      pose(shout, { x: SHX - 4, y: GY - 196, s: sh, o: sh > 0.01 ? 1 : 0 });
       const bk = es(t, 2.36, 2.55);
-      pose(bigTag, { x: lerp(470, DOOR + 38, bk), y: lerp(GY - 150, HB - 200, bk) - Math.sin(bk * PI) * 100, r: (1 - bk) * 360 + Math.sin(T) * 2, o: bk > 0.01 ? 1 : 0 });
-      const HH2 = [[dx, GY + 4, 0.9], [sx, GY + 2, 0.86], [1000, GY + 8, 0.86], [1070, GY + 12, 0.84]];
+      pose(bigTag, { x: lerp(SHX, DOOR + 38, bk), y: lerp(GY - 150, HB - 200, bk) - Math.sin(bk * PI) * 100, r: (1 - bk) * 360 + Math.sin(T) * 2, o: bk > 0.01 ? 1 : 0 });
+      const HH2 = [[dx, GY + 4, 0.9], [sx, GY + 2, 0.86], [1000, GY + 8, 0.86], [PH ? 1050 : 1070, GY + 12, 0.84]];
       small.forEach((el, i) => {
         const k = es(t, 2.55 + i * 0.06, 2.75 + i * 0.06);
         const [hx, hy] = headAt(HH2[i][0], HH2[i][1], HH2[i][2], false);
-        pose(el, { x: lerp(470, hx, k), y: lerp(GY - 160, hy - 64, k) - Math.sin(k * PI) * 70, r: (1 - k) * 300 + Math.sin(T + i) * 4, o: k > 0.01 ? 1 : 0 });
+        pose(el, { x: lerp(SHX, hx, k), y: lerp(GY - 160, hy - 64, k) - Math.sin(k * PI) * 70, r: (1 - k) * 300 + Math.sin(T + i) * 4, o: k > 0.01 ? 1 : 0 });
       });
       const hh = es(t, 2.1, 2.35);
-      const pxx = lerp(DOOR + 38, 1000, hh), axx = lerp(DOOR + 38, 1070, es(t, 2.18, 2.45));
+      const pxx = lerp(DOOR + 38, 1000, hh), axx = lerp(DOOR + 38, PH ? 1050 : 1070, es(t, 2.18, 2.45));
       peter.set({ x: pxx, y: lerp(HB, GY + 8, hh), s: lerp(0.8, 0.86, hh), flip: true, walk: hh > 0 && hh < 1 ? t * 30 : undefined, o: es(t, 2.08, 2.16), head: es(t, 2.5, 2.7) * 8, blink: blinkAt(T, 4) });
       andrew.set({ x: axx, y: lerp(HB, GY + 12, es(t, 2.18, 2.45)), s: 0.84, flip: true, walk: t > 2.18 && t < 2.45 ? t * 30 + 1 : undefined, o: es(t, 2.18, 2.26), head: es(t, 2.5, 2.7) * 8, blink: blinkAt(T, 5) });
 

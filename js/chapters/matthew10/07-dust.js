@@ -8,7 +8,7 @@ import { seg, es, ease, bump, fade } from '../../core/anim.js';
 import { village, DAY, EVENING, openHouse, wordSlip, dust, balance, ruinsIcon, strip, kf, moving, hand, headAt, folk, tr, PI } from './lib.js';
 
 const GY = 704, HB = 690;
-const LH = { x0: 380, w: 240, h: 250 }, RH = { x0: 962, w: 236, h: 244 };
+const LH0 = { x0: 380, w: 240, h: 250 }, RH0 = { x0: 962, w: 236, h: 244 };
 
 export default {
   id: 'mt10-dust',
@@ -19,6 +19,9 @@ export default {
   ],
   cam: { x: [-80, 20], y: [-60, 20], z: [1, 1.1] },
   build(S) {
+    // phone: the houses and townsfolk move in from the frame, and the pair shake off the dust nearer the middle
+    const PH = S.portrait;
+    const LH = PH ? { ...LH0, x0: 446 } : LH0, RH = PH ? { ...RH0, x0: 918 } : RH0;
     const V = village(S, { skyCols: DAY, sunAt: [1250, 150] });
     const c = S.c;
     const EV = [mix(EVENING[0], C.dusk, 0.3), EVENING[1], EVENING[2]];
@@ -37,7 +40,8 @@ export default {
 
     /* the people of the town */
     const P = S.layer({ par: 0.5, sh: 5 });
-    const FOLK = [[520, 0.8, 0], [590, 0.82, 1], [650, 0.8, 2], [920, 0.82, 3], [990, 0.8, 4], [1060, 0.82, 5]].map(([x, s, i]) => ({ x, s, i, seed: c.rr(0, 9), p: S.puppet(P.add(person(c, folk(c)))) }));
+    const FX = PH ? [478, 596, 540, 1000, 940, 1070] : [520, 590, 650, 920, 990, 1060];
+    const FOLK = [[FX[0], 0.8, 0], [FX[1], 0.82, 1], [FX[2], 0.8, 2], [FX[3], 0.82, 3], [FX[4], 0.8, 4], [FX[5], 0.82, 5]].map(([x, s, i]) => ({ x, s, i, seed: c.rr(0, 9), p: S.puppet(P.add(person(c, folk(c)))) }));
     const thomas = S.puppet(P.add(person(c, CAST.thomas)));
     const matthew = S.puppet(P.add(person(c, CAST.matthew)));
     const W = S.layer({ par: 0.52, sh: 4 });
@@ -53,7 +57,8 @@ export default {
     const panL = flies.add(`<g>${B.panL}<g transform="translate(0 ${120 - 26}) scale(.62)">${ruinsIcon(c, 150, 90)}</g><g transform="translate(0 ${120 + 44})">${strip(c, tr('Sodoma i Gomora', 'Sodom and Gomorrah'), { size: 17 })}</g></g>`);
     const panR = flies.add(`<g>${B.panR}<g transform="translate(-40 ${120 - 2})">${town(c, { x: 40, y: 0, n: 5, spread: 80, sc: 0.5 })}</g><g transform="translate(0 ${120 + 44})">${strip(c, tr('to miasto', 'that city'), { size: 17 })}</g></g>`);
 
-    const TK = [[-0.3, -160], [0.3, 740], [1.05, 740], [1.5, 540], [2.2, 540]];
+    const EDGE = PH ? 706 : 540;   // where they shake off the dust
+    const TK = [[-0.3, -160], [0.3, 740], [1.05, 740], [1.5, EDGE], [2.2, EDGE]];
 
     return (t, time) => {
       const T = time;
@@ -101,7 +106,7 @@ export default {
       pose(panL, { x: PIV[0] - Math.cos(a) * 190, y: py - Math.sin(a) * 190, o: dk > 0.002 ? 1 : 0 });
       pose(panR, { x: PIV[0] + Math.cos(a) * 190, y: py + Math.sin(a) * 190, o: dk > 0.002 ? 1 : 0 });
 
-      S.cam.x = kf(t, [[0, 0], [1.05, 0], [1.5, -30], [2.0, -30], [2.3, 0]]);
+      S.cam.x = kf(t, [[0, 0], [1.05, 0], [1.5, -30], [2.0, -30], [2.3, 0]]) * (PH ? 0 : 1);
       S.cam.y = -es(t, 2.0, 2.4) * 50;
       S.cam.z = 1 + bump(t, 1.4, 2.1) * 0.06;
     };

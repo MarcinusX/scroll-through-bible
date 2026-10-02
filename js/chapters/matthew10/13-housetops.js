@@ -24,6 +24,9 @@ export default {
   ],
   cam: { x: [-40, 60], y: [-120, 30], z: [1, 1.12] },
   build(S) {
+    // phone: the neighbour's roof is off the screen, so Peter proclaims from the left end of the same roof, and the
+    // people in the street stand clear of the thread
+    const PH = S.portrait, PRX = PH ? X0 + 66 : 360;
     const V = village(S, { skyCols: DAY, night: true, sunAt: [1260, 150] });
     const c = S.c;
     const H = houseSection(c, { x0: X0, x1: X1, floor: FLOOR, ceil: CEIL });
@@ -57,7 +60,7 @@ export default {
 
     /* outside: John goes out, up the stairs; Peter on the next roof; people in the street */
     const P = S.layer({ par: 0.47, sh: 5 });
-    const street = [[1000, 0.8], [1060, 0.78], [1120, 0.8]].map(([x, s], i) => ({ x, s, i, seed: c.rr(0, 9), p: S.puppet(P.add(person(c, crowdPerson(c)))) }));
+    const street = (PH ? [[984, 0.8], [1036, 0.78], [1088, 0.8]] : [[1000, 0.8], [1060, 0.78], [1120, 0.8]]).map(([x, s], i) => ({ x, s, i, seed: c.rr(0, 9), p: S.puppet(P.add(person(c, crowdPerson(c)))) }));
     const john = S.puppet(P.add(person(c, CAST.john)));
     const peterRoof = S.puppet(P.add(person(c, CAST.peter)));
     const W = S.layer({ par: 0.5, sh: 4 });
@@ -95,13 +98,13 @@ export default {
       const walking = t > 2.8 && t < 3.45;
       john.set({ x: jx, y: jy, s: lerp(0.86, 0.8, onRoof), flip: t > 3.35, o: out, walk: walking ? t * 40 : undefined, armF: 20 + bump(t, 2.62, 2.95) * 60 + onRoof * 40, armB: 10 + bump(t, 2.62, 2.95) * 100 + onRoof * 140, head: -onRoof * 8, blink: blinkAt(T, 4) });
       const pr = es(t, 3.4, 3.55);
-      peterRoof.set({ x: 360, y: FLOOR + 40 - 230 - 6, s: 0.72, flip: false, o: pr, armF: 60 * pr, armB: 150 * pr, head: -6, blink: blinkAt(T, 5) });
+      peterRoof.set({ x: PRX, y: PH ? H.roofY : FLOOR + 40 - 230 - 6, s: 0.72, flip: false, o: pr, armF: 60 * pr, armB: 150 * pr, head: -6, blink: blinkAt(T, 5) });
       street.forEach((m) => m.p.set({ x: m.x, y: FLOOR + 60, s: m.s, flip: true, o: es(t, 2.6, 2.8), head: -es(t, 3.4, 3.6) * 16, armF: 14 + es(t, 3.5, 3.7) * (m.i === 1 ? 110 : 20), blink: blinkAt(T, m.seed) }));
       // words: spoken in the light (beat 2), proclaimed from the roofs (beat 3)
       words.forEach((w) => {
         const roof = t > 3.4;
         const k = T ? ((T * 0.3 + w.i / 7) % 1) : (w.i + 0.5) / 7;
-        const ox = roof ? (w.i % 2 ? 360 : X1 - 60) : X0 + 108, oy = roof ? H.roofY - 150 : FLOOR - 120;
+        const ox = roof ? (w.i % 2 ? PRX : X1 - 60) : X0 + 108, oy = roof ? H.roofY - 150 : FLOOR - 120;
         const dir = w.i % 3 === 0 ? -1 : 1;
         const on = roof ? es(t, 3.45, 3.6) : es(t, 2.7, 2.85) * (1 - es(t, 2.95, 3.05));
         pose(w.el, { x: ox + dir * k * (roof ? 420 : 200), y: oy - Math.sin(k * PI) * 80 + k * (roof ? 120 : 30), r: k * 60 * dir, s: 0.9, o: on * Math.sin(k * PI) });

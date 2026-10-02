@@ -7,11 +7,13 @@ import { band, hillsWith, town, house, sun, cloud, grass, olive, cypress } from 
 import { seg, es, ease, bump, fade } from '../../core/anim.js';
 import { DAY, rayBurst, radiance, wordSlip, headAt, PI } from './lib.js';
 
-const ROAD = [[380, 736], [520, 700], [640, 664], [760, 640], [880, 606], [980, 566], [1070, 530], [1150, 500], [1220, 476]];
-const TOWNS = [[470, 706, 1.0], [720, 640, 0.78], [930, 586, 0.62], [1080, 526, 0.5], [1190, 482, 0.42]];
+const ROAD0 = [[380, 736], [520, 700], [640, 664], [760, 640], [880, 606], [980, 566], [1070, 530], [1150, 500], [1220, 476]];
+const TOWNS0 = [[470, 706, 1.0], [720, 640, 0.78], [930, 586, 0.62], [1080, 526, 0.5], [1190, 482, 0.42]];
 
+// phone: the whole land is squeezed towards x 800 so the first town and its angry people are on the screen
+const SQ = 0.76, sq = (x) => 800 + (x - 800) * SQ;
 /** the road position at u (0..1) */
-function along(u) {
+function along(u, ROAD) {
   const k = Math.max(0, Math.min(0.9999, u)) * (ROAD.length - 1), j = Math.floor(k), f = k - j;
   return [lerp(ROAD[j][0], ROAD[j + 1][0], f), lerp(ROAD[j][1], ROAD[j + 1][1], f)];
 }
@@ -25,6 +27,10 @@ export default {
   cam: { x: [-40, 40], y: [-60, 20], z: [1, 1.08] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;
+    const X = PH ? sq : (x) => x;
+    const ROAD = PH ? ROAD0.map(([x, y]) => [sq(x), y]) : ROAD0;
+    const TOWNS = PH ? TOWNS0.map(([x, y, s]) => [sq(x), y, s]) : TOWNS0;
     const sk = sky(S, DAY);
     const glory = S.layer({ par: 0.03, sh: 1, flat: true });
     glory.add(`<g transform="translate(800 190)">${rayBurst(c, { n: 26, r0: 40, r1: 900, spread: 0.04, o: 0.7 })}<circle r="380" fill="url(#halo-glow)"/></g>`);
@@ -38,7 +44,8 @@ export default {
 
     /* the land with the road and the towns */
     const G = S.layer({ par: 0.35, sh: 3 });
-    const gfn = (x) => 500 + (1220 - x) * 0.02 + Math.sin(x * 0.01) * 6;
+    const gfn0 = (x) => 500 + (1220 - x) * 0.02 + Math.sin(x * 0.01) * 6;
+    const gfn = PH ? (x) => gfn0(800 + (x - 800) / SQ) : gfn0;
     const gp = [];
     for (let x = -900; x <= 2500; x += 14) gp.push([x, gfn(x) + c.rr(-1, 1)]);
     gp.push([2500, 1700], [-900, 1700]);
@@ -46,7 +53,7 @@ export default {
     const L2 = [], R2 = [];
     ROAD.forEach(([x, y], i) => { const w = lerp(26, 6, i / (ROAD.length - 1)); L2.push([x, y - w]); R2.unshift([x, y + w * 0.7]); });
     G.add(sheet().p(c.cut([...L2, ...R2], 0.6, 8), C.sand).out());
-    G.add(olive(c, 300, 760, 0.8) + cypress(c, 820, 660, 90) + cypress(c, 1010, 600, 70) + olive(c, 1260, 560, 0.4));
+    G.add(olive(c, X(300), 760, 0.8) + cypress(c, X(820), 660, 90) + cypress(c, X(1010), 600, 70) + olive(c, X(1260), 560, 0.4));
     const lights = [];
     TOWNS.forEach(([x, y, s], i) => {
       const glow = G.add(`<g opacity="0"><circle r="${160 * s}" fill="url(#warm-glow)"/></g>`);
@@ -59,7 +66,7 @@ export default {
 
     /* the people */
     const P = S.layer({ par: 0.4, sh: 5 });
-    const ANGRY = [[410, 740], [455, 752], [510, 744]].map(([x, y], i) => ({ x, y, i, seed: c.rr(0, 9), p: S.puppet(P.add(person(c, { ...crowdPerson(c), hairStyle: ['wrap', 'short', 'curly'][i], beard: 'full' }))) }));
+    const ANGRY = [[410, 740], [455, 752], [510, 744]].map(([x, y], i) => ({ x: X(x), y, i, seed: c.rr(0, 9), p: S.puppet(P.add(person(c, { ...crowdPerson(c), hairStyle: ['wrap', 'short', 'curly'][i], beard: 'full' }))) }));
     const peter = S.puppet(P.add(person(c, CAST.peter)));
     const andrew = S.puppet(P.add(person(c, CAST.andrew)));
     const slips = [0, 1, 2].map(() => P.add(wordSlip(c, 26)));
@@ -84,19 +91,19 @@ export default {
         a.p.set({ x: a.x, y: a.y, s: 0.9, flip: false, armB: k * (140 + Math.sin(T * 8 + a.seed) * 10), armF: k * 60, head: -4, blink: blinkAt(T, a.seed) });
       });
       const shut = es(t, 0.45, 0.6);
-      pose(gate, { x: 540, y: 716, sx: Math.max(0.05, shut), o: shut > 0.01 ? 1 : 0 });
+      pose(gate, { x: X(540), y: 716, sx: Math.max(0.05, shut), o: shut > 0.01 ? 1 : 0 });
       // the pair runs along the road (beat 0 to the second town), then town to town (beat 1)
       const u = lerp(0.12, 0.34, es(t, 0.15, 0.8)) + es(t, 1.05, 1.9) * 0.34;
       const running = (t > 0.15 && t < 0.8) || (t > 1.05 && t < 1.9);
       [peter, andrew].forEach((p, i) => {
-        const [x, y] = along(u - i * 0.03);
+        const [x, y] = along(u - i * 0.03, ROAD);
         const s = lerp(0.95, 0.35, (u - i * 0.03 - 0.1) / 0.8);
         const preach = (u > 0.33 && u < 0.36) || (t > 0.8 && t < 1.05);
         p.set({ x, y, s, flip: false, walk: running ? t * 50 + i : undefined, amt: 1.4, lean: running ? 6 : 0, armF: preach ? 60 : 20, armB: preach && i === 0 ? 120 : 10, head: -open * 10, blink: blinkAt(T, i + 1) });
       });
       slips.forEach((w, i) => {
         const k = seg(t, 0.2 + i * 0.1, 0.55 + i * 0.1);
-        pose(w, { x: 500 + k * 180, y: 610 - Math.sin(k * PI) * 50, r: k * 200, s: 0.7, o: bump(t, 0.2 + i * 0.1, 0.55 + i * 0.1) });
+        pose(w, { x: X(500 + k * 180), y: 610 - Math.sin(k * PI) * 50, r: k * 200, s: 0.7, o: bump(t, 0.2 + i * 0.1, 0.55 + i * 0.1) });
       });
       lights.forEach((l, i) => {
         const at = [9, 0.82, 1.3, 1.62, 9][i];

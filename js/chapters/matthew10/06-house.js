@@ -8,7 +8,7 @@ import { seg, es, ease, bump, fade } from '../../core/anim.js';
 import { village, DAY, openHouse, bubble, question, dove, flapWings, heart, sparkle, kf, moving, hand, headAt, folk, tr, PI } from './lib.js';
 
 const GY = 704;
-const LH = { x0: 380, w: 240, h: 250 }, RH = { x0: 962, w: 236, h: 244 };
+const LH0 = { x0: 380, w: 240, h: 250 }, RH0 = { x0: 962, w: 236, h: 244 };
 const HB = 690;   // house base
 
 export default {
@@ -22,6 +22,9 @@ export default {
   ],
   cam: { x: [-60, 60], y: [-40, 20], z: [1, 1.1] },
   build(S) {
+    // phone: the two houses stand closer together, both whole on the screen (they were cut by the frame)
+    const PH = S.portrait;
+    const LH = PH ? { ...LH0, x0: 452 } : LH0, RH = PH ? { ...RH0, x0: 912 } : RH0;
     const V = village(S, { skyCols: DAY, night: true, sunAt: [1250, 150] });
     const c = S.c;
 
@@ -64,8 +67,9 @@ export default {
     const stars = [0, 1, 2].map(() => W.add(`<g>${sparkle(c, 12)}</g>`));
 
     // John and James: arrive, ask, go in, stay, come out, greet
-    const JK = [[-0.3, -150], [0.32, 700], [1.0, 700], [1.28, L.door[0] + 34], [1.98, L.door[0] + 34], [2.12, L.door[0] + 110]];
-    const AK = [[-0.26, -220], [0.36, 770], [1.0, 770], [1.3, L.door[0] + 80], [1.98, L.door[0] + 80], [2.14, 800], [2.42, R.door[0] - 50]];
+    const MJ = PH ? 680 : 700, MA = PH ? 750 : 770;   // where they meet the old woman (phone: a little to the left)
+    const JK = [[-0.3, -150], [0.32, MJ], [1.0, MJ], [1.28, L.door[0] + 34], [1.98, L.door[0] + 34], [2.12, L.door[0] + 110]];
+    const AK = [[-0.26, -220], [0.36, MA], [1.0, MA], [1.3, L.door[0] + 80], [1.98, L.door[0] + 80], [2.14, 800], [2.42, R.door[0] - 50]];
 
     return (t, time) => {
       const T = time;
@@ -73,10 +77,10 @@ export default {
       const nk = Math.max(0, Math.sin(seg(t, 1.42, 1.98) * PI));
       V.update(t, T, { night: Math.min(1, nk * 1.5), moonX: 1180, sunO: 1 - Math.min(1, nk * 3) });
 
-      const OLDX = 880;
+      const OLDX = PH ? 840 : 880;
       const ask = bump(t, 0.34, 0.62), point = es(t, 0.5, 0.65) * (1 - es(t, 1.0, 1.15));
       old.set({ x: OLDX, y: GY - 6, s: 0.84, flip: true, o: 1 - es(t, 1.3, 1.45) + es(t, 2.0, 2.15), armF: 20 + point * 90, armB: 10, head: -point * 4, blink: blinkAt(T, 5) });
-      pose(q, { x: 760, y: GY - 210, s: es(t, 0.34, 0.46, ease.back) * (1 - es(t, 0.62, 0.7)), o: t > 0.34 && t < 0.7 ? 1 : 0 });
+      pose(q, { x: PH ? 730 : 760, y: GY - 210, s: es(t, 0.34, 0.46, ease.back) * (1 - es(t, 0.62, 0.7)), o: t > 0.34 && t < 0.7 ? 1 : 0 });
 
       const jx = kf(t, JK), ax = kf(t, AK);
       const inside = es(t, 1.3, 1.4) * (1 - es(t, 1.98, 2.06));
@@ -128,7 +132,7 @@ export default {
         pose(st, { x: ahx - 20 + i * 22, y: ahy - 50 - (i % 2) * 14, s: k, r: T * 40, o: k });
       });
 
-      S.cam.x = kf(t, [[0, 0], [1.0, -30], [1.3, -60], [2.0, -60], [2.3, 0], [3.0, -50], [3.9, -50], [4.2, 50]]);
+      S.cam.x = kf(t, [[0, 0], [1.0, -30], [1.3, -60], [2.0, -60], [2.3, 0], [3.0, -50], [3.9, -50], [4.2, 50]]) * (PH ? 0.4 : 1);
       S.cam.z = 1 + bump(t, 1.2, 2.1) * 0.05 + es(t, 3.0, 3.3) * 0.05 * (1 - es(t, 4.9, 5)) ;
       S.cam.y = -bump(t, 3.0, 4.0) * 30;
     };

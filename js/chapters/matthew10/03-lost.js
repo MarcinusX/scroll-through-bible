@@ -47,6 +47,7 @@ export default {
   cam: { x: [-40, 40], y: [-60, 20], z: [1, 1.1] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;
     sky(S, DAY);
     const hangL = S.layer({ par: 0.04, sh: 5 });
     const sunEl = hanging(hangL, sun(c, 44), { x: 1240, y: 130, len: 800 });
@@ -75,9 +76,12 @@ export default {
     const G = S.layer({ par: 0.45, sh: 3 });
     const gfn = c.wave(640, [4, 2], [700, 200]);
     G.add(sheet().p(c.ridge(gfn, -900, 2500, 1700, 12, 1), mix(C.sage2, C.hillNear, 0.5)).out());
+    // phone: the roads run on down under the caption (widening towards us) instead of ending in a stub at y 900
+    const tail = PH ? 1700 : 0;
     const road = (pts, w0, w1, col) => {
       const L = [], R = [];
       pts.forEach(([x, y], i) => { const u = i / (pts.length - 1), w = lerp(w0, w1, u); L.push([x - w, y]); R.unshift([x + w, y]); });
+      if (tail) { L.unshift([pts[0][0] - w0 * 2.4, tail]); R.push([pts[0][0] + w0 * 2.4, tail]); }
       return c.cut([...L, ...R], 0.6, 8);
     };
     const RL = [[800, 900], [780, 700], [700, 640], [560, 600], [380, 570], [-100, 560]];
@@ -95,7 +99,8 @@ export default {
     /* Jesus and the Twelve */
     const P = S.layer({ par: 0.5, sh: 5 });
     const TW = MT12.map((m) => {
-      const [x, dy] = SPOT[m.i];
+      const [x0, dy] = SPOT[m.i];
+      const x = PH ? JX + (x0 - JX) * 0.84 : x0;   // phone: the outer pairs stay on the screen
       return { ...m, x, y: JY + dy, s: 0.84 + dy * 0.002, left: x < JX, seed: c.rr(0, 9) };
     }).sort((a, b) => a.y - b.y);
     TW.forEach((m) => { m.p = S.puppet(P.add(person(c, m.o))); });

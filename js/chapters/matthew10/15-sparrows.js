@@ -11,7 +11,7 @@ import { village, DAY, sparrow, flapWings, coin, nameTag, balance, lightShaft, h
 
 const GY = 704;
 const JX = 800, NX = 900;          // Jesus, John
-const SX = 520;                    // the seller's stall
+const SX0 = 520;                   // the seller's stall
 
 export default {
   id: 'mt10-sparrows',
@@ -25,6 +25,8 @@ export default {
   build(S) {
     const V = village(S, { skyCols: DAY, sunAt: [1250, 140] });
     const c = S.c;
+    // phone: the stall a little further in, and the balance hangs over the middle (the little man's pan was off)
+    const PH = S.portrait, SX = PH ? 566 : SX0;
 
     /* the stall */
     const st = S.layer({ par: 0.45, sh: 4 });
@@ -61,7 +63,7 @@ export default {
     const fl = S.layer({ par: 0.3, sh: 4 });
     const FLOCK = Array.from({ length: 14 }, (_, i) => ({ i, el: fl.add(`<g>${sparrow(c)}</g>`), seed: c.rr(0, 9), x0: c.rr(420, 640), y0: c.rr(560, 640), x1: c.rr(300, 1300), y1: c.rr(120, 380) }));
     const B = balance(c, { arm: 150, drop: 100, pan: 100, col: C.ochre });
-    const PIV = [1060, 230];
+    const PIV = PH ? [880, 220] : [1060, 230];
     const flies = S.layer({ par: 0.25, sh: 6 });
     const frame = flies.add(`<g><path d="M0 -80V-2000" stroke="rgba(74,54,34,.55)" stroke-width="1.2"/>${B.frame}</g>`);
     const beamB = flies.add(`<g>${B.beam}</g>`);

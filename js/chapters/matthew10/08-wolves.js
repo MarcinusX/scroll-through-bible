@@ -108,8 +108,9 @@ export default {
 
       /* v16b — wise as serpents, innocent as doves */
       const a = es(t, 1.05, 1.35, ease.back), b = es(t, 1.25, 1.55, ease.back);
-      pose(serp, { x: 520, y: lerp(-400, 250, a), r: Math.sin(T * 0.9) * 1.5, o: a > 0.002 ? 1 : 0 });
-      pose(dv, { x: 1080, y: lerp(-400, 240, b), r: Math.sin(T * 0.9 + 1) * 1.5, o: b > 0.002 ? 1 : 0 });
+      // phone: the two emblems hang inside the screen (they were cut in half by the frame)
+      pose(serp, { x: S.portrait ? 584 : 520, y: lerp(-400, 250, a), r: Math.sin(T * 0.9) * 1.5, o: a > 0.002 ? 1 : 0 });
+      pose(dv, { x: S.portrait ? 1000 : 1080, y: lerp(-400, 240, b), r: Math.sin(T * 0.9 + 1) * 1.5, o: b > 0.002 ? 1 : 0 });
 
       S.cam.y = -es(t, 1.0, 1.4) * 30;
       S.cam.z = 1 + es(t, 0.1, 0.8) * 0.04;

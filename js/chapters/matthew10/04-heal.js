@@ -10,7 +10,7 @@ import { village, DAY, L6, LEPER, LEPER_HEALED, POSSESSED, leperSpots, sickOnMat
 const GY = 700;
 const PX = 810, AX = 744;
 // the four at work: [apostle, sufferer x, y]
-const MAT = { x: 492, y: 736 }, BIER = { x: 1096, y: 736 }, LEP = { x: 570, y: 668 }, POS = { x: 1034, y: 668 };
+const MAT0 = { x: 492, y: 736 }, BIER0 = { x: 1096, y: 736 }, LEP0 = { x: 570, y: 668 }, POS0 = { x: 1034, y: 668 };
 
 export default {
   id: 'mt10-heal',
@@ -21,6 +21,10 @@ export default {
   ],
   cam: { x: [-30, 30], y: [-40, 30], z: [1, 1.08] },
   build(S) {
+    // phone: the four healings move in from the edges (the mat and the bier were cut by the frame)
+    const PH = S.portrait;
+    const MAT = PH ? { x: 566, y: 736 } : MAT0, BIER = PH ? { x: 1046, y: 736 } : BIER0;
+    const LEP = PH ? { x: 616, y: 668 } : LEP0, POS = PH ? { x: 1000, y: 668 } : POS0;
     const V = village(S, { skyCols: DAY });
     const c = S.c;
 
@@ -85,16 +89,16 @@ export default {
       const up = A[0];
       pose(mat, { x: MAT.x, y: MAT.y, s: 1, o: 1 });
       const walkTo = es(t, 2.0, 2.25);
-      const rx = lerp(MAT.x + 30, PX + 96, walkTo);
+      const rx = lerp(MAT.x + 30, PX + (PH ? 82 : 96), walkTo);
       risen.set({ x: rx, y: lerp(MAT.y - 6, GY + 22, walkTo), s: 0.9, flip: walkTo > 0.9, o: up > 0.5 ? 1 : 0, walk: walkTo > 0 && walkTo < 1 ? rx * 0.06 : undefined, armF: up * 60 + bump(t, 1.1, 1.9) * 60 + walkTo * 40, armB: up * 140 * (1 - walkTo), head: -8 + walkTo * 8, blink: blinkAt(T, 3) });
-      james.set({ x: MAT.x - 96, y: MAT.y - 4, s: 0.86, armF: 30 + W[0] * 50, armB: 10, head: 8 - up * 12, blink: blinkAt(T, 4) });
+      james.set({ x: MAT.x - (PH ? 84 : 96), y: MAT.y - 4, s: 0.86, armF: 30 + W[0] * 50, armB: 10, head: 8 - up * 12, blink: blinkAt(T, 4) });
       fade(mat.querySelector('g[transform*="rotate(-90)"]'), 1 - (up > 0.5 ? 1 : 0));
       // the girl on her bier sits up
       const sit = A[1];
       pose(bier, { x: BIER.x, y: BIER.y, sx: -1, o: 1 });
       fade(bier.querySelector('g[transform*="rotate(-90)"]'), sit > 0.5 ? 0 : 1);
       girlUp.set({ x: BIER.x + 30, y: BIER.y - 6, s: 0.74, flip: true, o: sit > 0.5 ? 1 : 0, armF: 40 + sit * 40, armB: sit * 80, head: -6, blink: blinkAt(T, 5) });
-      barth.set({ x: BIER.x - 104, y: BIER.y - 10, s: 0.86, armF: 30 + W[1] * 60, armB: W[1] * 40, head: 6 - sit * 8, blink: blinkAt(T, 6) });
+      barth.set({ x: BIER.x - (PH ? 88 : 104), y: BIER.y - 10, s: 0.86, armF: 30 + W[1] * 60, armB: W[1] * 40, head: 6 - sit * 8, blink: blinkAt(T, 6) });
       // the leper made clean
       const cl = A[2];
       leper.set({ x: LEP.x, y: LEP.y, s: 0.74, flip: true, o: 1 - es(t, 1.44, 1.5), head: 8 * (1 - cl), armF: 40, blink: blinkAt(T, 7) });
@@ -103,14 +107,14 @@ export default {
         const k = seg(t, 1.38 + sp.i * 0.008, 1.62 + sp.i * 0.008);
         pose(sp.el, { x: LEP.x - sp.x * 0.74 + sp.dx * k, y: LEP.y + sp.y * 0.74 + k * k * 110, r: k * sp.spin, s: 0.74, o: k < 1 ? 1 - k * 0.4 : 0 });
       });
-      john.set({ x: LEP.x - 70, y: LEP.y + 4, s: 0.76, armF: 30 + W[2] * 60, armB: 10, blink: blinkAt(T, 8) });
+      john.set({ x: LEP.x - (PH ? 60 : 70), y: LEP.y + 4, s: 0.76, armF: 30 + W[2] * 60, armB: 10, blink: blinkAt(T, 8) });
       // the spirit driven out
       const out = A[3];
       const shake = (1 - out) * Math.sin(T * 22) * 4 * es(t, 1.4, 1.5);
       poss.set({ x: POS.x, y: POS.y, s: 0.74, flip: false, lean: shake, armF: (1 - out) * 110 + out * 20, armB: (1 - out) * 150 + out * 10, head: shake * 2 - out * 6, blink: blinkAt(T, 9) });
       const [shx, shy] = headAt(POS.x, POS.y, 0.74, false);
       pose(spir, { x: shx + 6 + out * 260, y: shy - 36 - out * 300 + Math.sin(T * 2) * 5, r: out * 120 + Math.sin(T * 3) * 8, s: 1 - out * 0.5, o: 1 - es(t, 1.62, 1.72) });
-      philip.set({ x: POS.x + 72, y: POS.y + 4, s: 0.76, flip: true, armF: 30 + W[3] * 70, armB: W[3] * 80, blink: blinkAt(T, 10) });
+      philip.set({ x: POS.x + (PH ? 64 : 72), y: POS.y + 4, s: 0.76, flip: true, armF: 30 + W[3] * 70, armB: W[3] * 80, blink: blinkAt(T, 10) });
       [MAT, BIER, LEP, POS].forEach((q, i) => {
         const g = bump(t, 1.02 + i * 0.16, 1.02 + i * 0.16 + 0.5) + es(t, 1.02 + i * 0.16 + 0.2, 1.3 + i * 0.16) * 0.35 * (1 - es(t, 1.95, 2.1));
         pose(glows[i], { x: q.x, y: q.y - (i < 2 ? 60 : 110), s: 1 + g * 0.4, o: g });

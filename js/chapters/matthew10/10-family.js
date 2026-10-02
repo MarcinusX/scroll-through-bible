@@ -14,7 +14,10 @@ import { INK, shadowPerson, shadowScreen, handLamp, kf, moving, hand, headAt, PI
 const GY = 700;
 const SW = 560, SH = 290, SX = 800, SY = 150;
 const NIGHTS = ['#1a1f45', '#2b3262', '#4a4876'], DAWNS = ['#8d8fb5', '#e3b3a6', '#f4d2ae'];
-const ROAD = [[520, 712], [700, 700], [880, 672], [1000, 632], [1080, 596], [1130, 566]];
+const ROAD0 = [[520, 712], [700, 700], [880, 672], [1000, 632], [1080, 596], [1130, 566]];
+// phone: the hill, the road up it and the crown at its end are drawn narrower (squeezed towards x 800), so that
+// Andrew's arrival at the top is not under the thread
+const SQ = 0.8, sq = (x) => 800 + (x - 800) * SQ, unsq = (x) => 800 + (x - 800) / SQ;
 
 export default {
   id: 'mt10-family',
@@ -27,18 +30,21 @@ export default {
   cam: { x: [-20, 60], y: [-50, 20], z: [1, 1.1] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;
+    const ROAD = PH ? ROAD0.map(([x, y]) => [sq(x), y]) : ROAD0;
     const sk = sky(S, NIGHTS);
     const starL = S.layer({ par: 0.02, sh: 1, flat: true });
     starL.add(stars(c, { x0: -800, x1: 2400, y0: -500, y1: 400, n: 90 }));
     const far = S.layer({ par: 0.08, sh: 2 });
     far.add(band(c, { y: 440, amps: [16, 7, 3], lens: [1000, 360, 130], color: mix(C.hillFar, C.night, 0.55) }).markup);
     const dawnL = S.layer({ par: 0.06, sh: 1, flat: true });
-    dawnL.add(`<circle cx="1180" cy="470" r="420" fill="url(#warm-glow)"/>`);
+    dawnL.add(`<circle cx="${PH ? sq(1180) : 1180}" cy="470" r="420" fill="url(#warm-glow)"/>`);
     const mid = S.layer({ par: 0.2, sh: 3 });
     const mh = hillsWith(c, { y: 520, amps: [12, 5, 2], lens: [900, 300, 110], color: mix(C.hillMid, C.night, 0.45), trees: 14, treeColor: mix(C.moss2, C.night, 0.4), treeH: 22 });
     mid.add(mh.markup + town(c, { x: 420, y: mh.fn(420) + 20, n: 8, spread: 380, sc: 0.62, wall: mix(C.plaster, C.night, 0.45), shadow: mix(C.plaster2, C.night, 0.5) }));
     const G = S.layer({ par: 0.45, sh: 3 });
-    const gfn = (x) => 700 - Math.max(0, (x - 760) * 0.34);
+    const gfn0 = (x) => 700 - Math.max(0, (x - 760) * 0.34);
+    const gfn = PH ? (x) => gfn0(unsq(x)) : gfn0;
     const gp = [];
     for (let x = -900; x <= 2500; x += 14) gp.push([x, gfn(x) + c.rr(-1, 1)]);
     gp.push([2500, 1700], [-900, 1700]);
@@ -46,7 +52,8 @@ export default {
     const L2 = [], R2 = [];
     ROAD.forEach(([x, y], i) => { const w = lerp(34, 8, i / (ROAD.length - 1)); L2.push([x, y - w]); R2.unshift([x, y + w * 0.6]); });
     G.add(sheet().p(c.cut([...L2, ...R2], 0.6, 8), mix(C.sand, C.night, 0.35)).out());
-    G.add(cypress(c, 1230, gfn(1230) + 6, 120, mix(C.moss2, C.night, 0.4)) + olive(c, 330, 706, 0.8, { leaf: mix(C.olive, C.night, 0.4), leaf2: mix(C.sage, C.night, 0.4), trunk: mix(C.wood2, C.night, 0.3) }));
+    const CYX = PH ? sq(1230) : 1230;
+    G.add(cypress(c, CYX, gfn(CYX) + 6, 120, mix(C.moss2, C.night, 0.4)) + olive(c, 330, 706, 0.8, { leaf: mix(C.olive, C.night, 0.4), leaf2: mix(C.sage, C.night, 0.4), trunk: mix(C.wood2, C.night, 0.3) }));
     const crownEl = G.add(`<g opacity="0">${lightCrown(c, 36)}</g>`);
 
     /* the shadow screen */
@@ -69,7 +76,7 @@ export default {
 
     /* the street at night: Andrew, and the people who hate him */
     const P = S.layer({ par: 0.5, sh: 5 });
-    const HATERS = [[470, 0.84, false], [560, 0.88, false], [1000, 0.88, true], [1090, 0.84, true], [640, 0.8, false], [940, 0.8, true]].map(([x, s, flip], i) => ({ x, s, flip, i, seed: c.rr(0, 9), p: S.puppet(P.add(shadowPerson(c, crowdPerson(c), mix(INK, C.night, 0.3)))) }));
+    const HATERS = [[470, 0.84, false], [560, 0.88, false], [1000, 0.88, true], [1090, 0.84, true], [640, 0.8, false], [940, 0.8, true]].map(([x, s, flip], i) => ({ x: PH ? 800 + (x - 800) * 0.88 : x, s, flip, i, seed: c.rr(0, 9), p: S.puppet(P.add(shadowPerson(c, crowdPerson(c), mix(INK, C.night, 0.3)))) }));
     const andrew = S.puppet(P.add(person(c, { ...CAST.andrew, holdF: `<g transform="rotate(20)">${handLamp(c)}</g>` })));
     const aGlow = P.add(`<g><circle r="120" fill="url(#warm-glow)"/></g>`);
     const murs = HATERS.map((h) => P.add(`<g>${murmur(c, { side: h.flip ? -1 : 1 })}</g>`));
@@ -125,9 +132,9 @@ export default {
         pose(murs[i], { x: hx + (h.flip ? -10 : 10), y: hy - 22, s: mk, o: mk > 0.01 ? 1 : 0 });
       });
       const ck = es(t, 3.45, 3.75, ease.back);
-      pose(crownEl, { x: 1130, y: 460 - Math.sin(T * 1.2) * 4, s: ck, o: ck > 0.01 ? 1 : 0 });
+      pose(crownEl, { x: PH ? sq(1130) : 1130, y: 460 - Math.sin(T * 1.2) * 4, s: ck, o: ck > 0.01 ? 1 : 0 });
 
-      S.cam.x = es(t, 3.0, 3.7) * 60;
+      S.cam.x = es(t, 3.0, 3.7) * (PH ? 30 : 60);
       S.cam.y = -es(t, 3.0, 3.7) * 40;
       S.cam.z = 1 + bump(t, 2.0, 3.0) * 0.06;
     };

@@ -21,10 +21,15 @@ export default {
     { v: 39, text: 'Kto chce znaleźć swe życie, straci je.' },
     { v: 39, cont: true, text: 'a kto straci swe życie z mego powodu, znajdzie je.' },
   ],
-  cam: { x: [-40, 60], y: [-50, 20], z: [1, 1.08] },
+  cam: { x: [-40, 90], y: [-50, 20], z: [1, 1.08] },
   build(S) {
     const H = hill(S, { skyCols: SPRING, sunAt: [1250, 180] });
     const c = S.c;
+    // phone: the parents' house and the father with his children come in from the edges (the father, the kneeling
+    // dad and the children were off the screen), and the camera looks further right while the children are named
+    const PH = S.portrait;
+    const HOX = PH ? 420 : 330, FAX = PH ? 506 : 400, MOX = PH ? 600 : 540, YX0 = PH ? 538 : 470;
+    const DKX = PH ? 1004 : 1130, KX = PH ? 1050 : 1190, KD = PH ? 30 : 40, CLX = PH ? 650 : 540;
 
     /* the road up the hill, the parents' house */
     const R = S.layer({ par: 0.46, sh: 3 });
@@ -32,7 +37,7 @@ export default {
     ROAD.forEach(([x, y], i) => { const w = lerp(56, 14, i / (ROAD.length - 1)); L2.push([x - w, y]); R2.unshift([x + w, y]); });
     R.add(sheet().p(c.cut([...L2, ...R2], 0.6, 8), C.sand).out());
     const o = openHouse(c, { w: 200, h: 200, dw: 60, dh: 124 });
-    R.add(`<g transform="translate(330 700)">${o.inside}</g><g transform="translate(330 700)">${o.glow}</g><g transform="translate(330 700)">${o.wall}</g>`);
+    R.add(`<g transform="translate(${HOX} 700)">${o.inside}</g><g transform="translate(${HOX} 700)">${o.glow}</g><g transform="translate(${HOX} 700)">${o.wall}</g>`);
     const crosses = [[700, 770, -70], [960, 648, 70]].map(([x, y, r], i) => ({ x, y, r, i, el: R.add(`<g>${carryCross(c, 150)}</g>`) }));
     R.add(rock(c, 1150, 720, 120, 40, C.rock2) + grass(c, { x0: 300, x1: 1300, y: 760, n: 20, h: 12, color: C.moss }));
 
@@ -56,8 +61,8 @@ export default {
     const stars = [0, 1, 2].map(() => fx.add(`<g>${sparkle(c, 12)}</g>`));
 
     // the two who follow: from their homes to the crosses, then up the road behind Jesus
-    const YK = [[0.35, [470, 712]], [0.9, [650, 762]], [2.0, [650, 762]], [2.12, [700, 760]], [2.3, [700, 760]], [2.9, [880, 670]]];
-    const DK = [[1.4, [1120, 736]], [1.85, [1000, 700]], [2.0, [980, 672]], [2.12, [960, 660]], [2.3, [960, 660]], [2.9, [960, 632]]];
+    const YK = [[0.35, [YX0, 712]], [0.9, [650, 762]], [2.0, [650, 762]], [2.12, [700, 760]], [2.3, [700, 760]], [2.9, [880, 670]]];
+    const DK = [[1.4, [DKX - 10, 736]], [1.85, [1000, 700]], [2.0, [980, 672]], [2.12, [960, 660]], [2.3, [960, 660]], [2.9, [960, 632]]];
 
     return (t, time) => {
       const T = time;
@@ -65,25 +70,25 @@ export default {
       /* v37a — father and mother */
       const [yx, yy] = kf(t, YK);
       const letgo = es(t, 0.3, 0.45);
-      FA.set({ x: 400, y: 706, s: 0.9, flip: false, armF: 60 * (1 - letgo) + bump(t, 0.45, 1.0) * 100, armB: bump(t, 0.45, 1.0) * 60, head: bump(t, 0.4, 1.0) * -6, blink: blinkAt(T, 3) });
-      MO.set({ x: 540, y: 710, s: 0.86, flip: true, armF: 60 * (1 - letgo) + bump(t, 0.45, 1.0) * 110, head: bump(t, 0.4, 1.0) * -8, blink: blinkAt(T, 4) });
+      FA.set({ x: FAX, y: 706, s: 0.9, flip: false, armF: 60 * (1 - letgo) + bump(t, 0.45, 1.0) * 100, armB: bump(t, 0.45, 1.0) * 60, head: bump(t, 0.4, 1.0) * -6, blink: blinkAt(T, 3) });
+      MO.set({ x: MOX, y: 710, s: 0.86, flip: true, armF: 60 * (1 - letgo) + bump(t, 0.45, 1.0) * 110, head: bump(t, 0.4, 1.0) * -8, blink: blinkAt(T, 4) });
       const yCarry = es(t, 2.12, 2.3);
       young.set({ x: yx, y: yy, s: lerp(0.9, 0.7, es(t, 2.3, 2.9)), flip: false, walk: moving(t, YK) ? yx * 0.06 : undefined, armF: 40 * (1 - letgo) + 20 + yCarry * 120, armB: 10 + (t > 3.0 ? es(t, 4.05, 4.25) * 140 : 0), head: -bump(t, 0.0, 0.4) * 10, blink: blinkAt(T, 1) });
       /* v37b — a father and his children */
       const kneel = es(t, 1.08, 1.15) * (1 - es(t, 1.45, 1.52));
       const [dx, dy] = kf(t, DK);
       const dCarry = es(t, 2.12, 2.3);
-      dadK.set({ x: 1130, y: 736, s: 0.9, flip: true, o: kneel, armF: 80, armB: 60, head: 8, blink: blinkAt(T, 5) });
-      dad.set({ x: t < 1.4 ? 1130 : dx, y: t < 1.4 ? 736 : dy, s: lerp(0.9, 0.7, es(t, 2.3, 2.9)), flip: true, o: 1 - kneel, walk: moving(t, DK) ? dx * 0.06 : undefined, armF: 20 + dCarry * 120, armB: 10, blink: blinkAt(T, 5) });
-      kids.forEach((k, i) => k.set({ x: 1190 + i * 40, y: 740 + i * 4, s: 0.56, flip: true, armF: 70 * kneel + bump(t, 1.5, 2.0) * 120, head: -6, o: 1 - es(t, 2.3, 2.6) * 0.3, blink: blinkAt(T, 6 + i) }));
+      dadK.set({ x: DKX, y: 736, s: 0.9, flip: true, o: kneel, armF: 80, armB: 60, head: 8, blink: blinkAt(T, 5) });
+      dad.set({ x: t < 1.4 ? DKX : dx, y: t < 1.4 ? 736 : dy, s: lerp(0.9, 0.7, es(t, 2.3, 2.9)), flip: true, o: 1 - kneel, walk: moving(t, DK) ? dx * 0.06 : undefined, armF: 20 + dCarry * 120, armB: 10, blink: blinkAt(T, 5) });
+      kids.forEach((k, i) => k.set({ x: KX + i * KD, y: 740 + i * 4, s: 0.56, flip: true, armF: 70 * kneel + bump(t, 1.5, 2.0) * 120, head: -6, o: 1 - es(t, 2.3, 2.6) * 0.3, blink: blinkAt(T, 6 + i) }));
       hearts.forEach((h, i) => {
         const k = bump(t, i ? 1.1 : 0.4, i ? 1.7 : 1.0);
-        pose(h, { x: i ? 1170 : 470, y: (i ? 620 : 560) - k * 20, s: k, o: k });
+        pose(h, { x: i ? KX - 20 : YX0, y: (i ? 620 : 560) - k * 20, s: k, o: k });
       });
       /* v38 — the crosses taken up; Jesus leads up the road */
       crosses.forEach((cr, i) => {
         const pick = es(t, 2.1, 2.28);
-        const [px, py] = i === 0 ? [yx, yy] : [t < 1.4 ? 1130 : dx, t < 1.4 ? 736 : dy];
+        const [px, py] = i === 0 ? [yx, yy] : [t < 1.4 ? DKX : dx, t < 1.4 ? 736 : dy];
         const sc = lerp(0.9, 0.7, es(t, 2.3, 2.9));
         const [sx, sy] = [px + (i ? -6 : 6) * sc, py - 138 * sc];
         pose(cr.el, { x: lerp(cr.x, sx, pick), y: lerp(cr.y, sy, pick), r: lerp(cr.r, i ? -30 : 30, pick), s: lerp(1, sc, pick), o: 1 });
@@ -95,7 +100,7 @@ export default {
 
       /* v39a — the man who clutches his life: the flame goes out */
       const cIn = es(t, 2.95, 3.15);
-      const cx = 540;
+      const cx = CLX;
       const clutch = es(t, 3.1, 3.3);
       clutcher.set({ x: cx, y: 742, s: 0.92, flip: false, o: cIn, armF: 60 + clutch * 20, armB: 50 + clutch * 30, head: 10 + clutch * 6, lean: clutch * 4, blink: blinkAt(T, 7) });
       const [chx, chy] = hand(cx, 742, 0.92, false, 80);
@@ -115,7 +120,7 @@ export default {
         pose(st, { x: yhx - 30 + i * 30, y: yhy - 110 - (i % 2) * 20, s: k, r: T * 40, o: k });
       });
 
-      S.cam.x = kf(t, [[0, -30], [0.9, -30], [1.2, 40], [2.0, 40], [2.5, 20], [3.0, 0]]);
+      S.cam.x = kf(t, PH ? [[0, -30], [0.9, -30], [1.2, 80], [2.0, 80], [2.5, 30], [3.0, 0]] : [[0, -30], [0.9, -30], [1.2, 40], [2.0, 40], [2.5, 20], [3.0, 0]]);
       S.cam.y = -es(t, 2.3, 2.9) * 30;
       S.cam.z = 1 + bump(t, 0, 2) * 0.04;
     };

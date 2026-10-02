@@ -35,7 +35,7 @@ export default {
   ],
   cam: { x: [-40, 40], y: [-40, 30], z: [1, 1.1] },
   build(S) {
-    const H = hill(S, { skyCols: MORNING, sunAt: [1150, 200] });
+    const H = hill(S, { skyCols: MORNING, sunAt: S.portrait ? [1040, 200] : [1150, 200] });   // phone: the sun hangs inside the frame, not half under the thread
     const c = S.c;
     const { gfn } = H;
 
@@ -46,14 +46,15 @@ export default {
     bench.p(c.cut([[BX - 70, BY - 40], [BX + 70, BY - 40], [BX + 70, BY - 30], [BX - 70, BY - 30]], 0.3, 6), C.wood);
     bench.p(c.cut(c.rect(BX - 62, BY - 30, 8, 30), 0.2, 4) + c.cut(c.rect(BX + 54, BY - 30, 8, 30), 0.2, 4), C.wood2);
     G2.add(bench.out() + `<g transform="translate(${BX - 30} ${BY - 40})">${bowl(c, { w: 44, food: null })}</g>`);
-    const TX = 1090, TY = gfn(TX) + 20;
+    const PHN = S.portrait;   // phone: the olive with its pegs comes in from under the thread
+    const TX = PHN ? 1036 : 1090, TY = gfn(TX) + 20;
     G2.add(olive(c, TX, TY, 1.0));
     const pegs = [[TX - 70, TY - 150], [TX - 26, TY - 168], [TX + 22, TY - 160], [TX + 64, TY - 140]];
     G2.add(sheet().p(c.ribbon([[TX - 100, TY - 142], [TX + 90, TY - 168]], 7), C.wood2).p(pegs.map(([x, y]) => c.cut(c.rect(x - 3, y - 4, 6, 12), 0.2, 3)).join(''), C.wood3).out());
 
     /* people */
     const P = S.layer({ par: 0.5, sh: 5 });
-    const PX = 640, AX = 950;
+    const PX = 640, AX = PHN ? 922 : 950;   // phone: the tree and its pegs come in from under the thread
     const peter = S.puppet(P.add(person(c, CAST.peter)));
     const andrew = S.puppet(P.add(person(c, CAST.andrew)));
     const jesus = S.puppet(P.add(person(c, { ...CAST.jesus })));

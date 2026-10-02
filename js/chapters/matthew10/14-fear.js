@@ -60,7 +60,8 @@ export default {
       /* v28a — the shadow that can kill the body, and the soul it cannot touch */
       const rise = es(t, 0.08, 0.4);
       const shrink = es(t, 1.05, 1.4);
-      giant.set({ x: 520 + shrink * 60, y: 900 - shrink * 120, s: lerp(0.4, 3.0, rise) * (1 - shrink * 0.9), o: (1 - es(t, 1.2, 1.45)) * 0.6, armF: 30 + es(t, 0.35, 0.6) * 40, armB: 10 + es(t, 0.35, 0.6) * 150 * (1 - shrink), head: 6 });
+      // phone: the giant shadow and Gehenna move in from the edges (half of each was off the screen)
+      giant.set({ x: (S.portrait ? 586 : 520) + shrink * 60, y: 900 - shrink * 120, s: lerp(0.4, 3.0, rise) * (1 - shrink * 0.9), o: (1 - es(t, 1.2, 1.45)) * 0.6, armF: 30 + es(t, 0.35, 0.6) * 40, armB: 10 + es(t, 0.35, 0.6) * 150 * (1 - shrink), head: 6 });
       const up = es(t, 0.45, 0.85);
       const [mhx, mhy] = headAt(MX, MY, 0.94, false, 46);
       pose(soul, { x: mhx + up * 60, y: lerp(mhy + 30, 300, up) + Math.sin(T * 2) * 4 * up, s: 0.8 + up * 0.7 + Math.sin(T * 5) * 0.03, o: es(t, 0.4, 0.5) * (1 - es(t, 1.4, 1.6) * 0.5) });
@@ -72,11 +73,13 @@ export default {
       starL.fade(1 - lk);
       pose(rays, { x: 800, y: 230, s: 0.5 + lk * 0.6, r: T * 2, o: lk });
       pose(rad, { x: 800, y: lerp(-300, 230, lk), s: 0.9, o: lk > 0.01 ? 1 : 0 });
+      // phone: the ravine is drawn 0.56 as wide, x 840–1110, so its fiery end is not under the progress thread
+      if (S.portrait) { pose(ravine, { x: 336, sx: 0.56 }); pose(ghGlow, { x: 336, sx: 0.56 }); }
       fade(ravine, es(t, 1.2, 1.4));
       fade(ghGlow, es(t, 1.35, 1.6) * (0.85 + Math.sin(T * 3) * 0.1));
       smoke.forEach((sm, i) => {
         const k = T ? (T * 0.2 + i / 4) % 1 : (i + 0.5) / 4;
-        pose(sm, { x: 990 + i * 70, y: 640 - k * 60, s: 0.6 + k * 0.6, o: es(t, 1.35, 1.6) * Math.sin(k * PI) });
+        pose(sm, { x: S.portrait ? 890 + i * 39 : 990 + i * 70, y: 640 - k * 60, s: 0.6 + k * 0.6, o: es(t, 1.35, 1.6) * Math.sin(k * PI) });
       });
       jesus.set({ x: JX, y: JY, s: 1.04, flip: false, armB: 10 + bump(t, 0.05, 0.9) * 40 + es(t, 1.1, 1.4) * 140, armF: 20 + bump(t, 0.05, 0.9) * 60, head: -es(t, 1.1, 1.4) * 10, blink: blinkAt(T, 1) });
       pose(jGlow, { x: JX, y: JY - 180, o: 0.5 });
