@@ -39,13 +39,13 @@ export default {
       coolL.fade(0.3);
       /* v34b — blessed of my Father: light pours down on them */
       const bl = es(t, 1.05, 1.45);
-      pose(shaft, { x: JG.LX, y: JG.NY - 40, o: bl });
+      pose(shaft, { x: J.LX, y: JG.NY - 40, o: bl });
       /* v34c — the Kingdom prepared from the foundation of the world */
       const gk = es(t, 2.05, 2.55, ease.out);
       gate.set(gk, es(t, 2.4, 2.8));
       const wk = es(t, 2.2, 2.55, ease.out);
       pose(world, { x: 640, y: lerp(-1500, 250, wk), r: Math.sin(T * 0.7) * 2, o: wk > 0.01 ? 1 : 0 });
-      pose(sun, { x: JG.LX, y: lerp(-200, 120, bl) - es(t, 2.0, 2.4) * 60, o: bl * (1 - es(t, 2.0, 2.3) * 0.4) });
+      pose(sun, { x: J.LX, y: lerp(-200, 120, bl) - es(t, 2.0, 2.4) * 60, o: bl * (1 - es(t, 2.0, 2.3) * 0.4) });
 
       S.cam.x = S.portrait ? 0 : -es(t, 0.05, 0.6) * 50;
       S.cam.y = -es(t, 1.9, 2.4) * 30;

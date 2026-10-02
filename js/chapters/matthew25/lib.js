@@ -147,12 +147,17 @@ export function setMaiden(m, { x, y, s = 0.78, flip = false, armF = 46, armB = 8
 export const WD = { G: 708, DOOR: 1110, DW: 96, DH: 176, WIN: [972, 470], STALL: 392 };
 /** the ten stand here (x), the foolish on the left, the wise nearer the house */
 export const SPOTS = [452, 508, 564, 620, 676, 772, 828, 884, 940, 996];
+/** on a phone (portrait) the row closes up a little so all ten stay inside the screen */
+export const SPOTS_P = [516, 566, 616, 666, 716, 794, 844, 894, 944, 994];
+/** on a phone the oil-seller's stall stands further in, so he is not cut off by the edge (weddingSet's stall) */
+export const STALL_P = 440;
+export const spotsFor = (S) => (S.portrait ? SPOTS_P : SPOTS);
 /**
  * The street at dusk/night: dusk and night skies (fade night.layer), moon and a cloud on strings, far hills with a
  * lit village, the hill road the bridegroom comes down (with far torch lights), the wedding house on the right
  * (door opening, a small window), the oil-seller's stall on the left, the street. Returns handles.
  */
-export function weddingSet(S, { moonAt = [1260, 150] } = {}) {
+export function weddingSet(S, { moonAt = [1260, 150], stall = WD.STALL } = {}) {
   const c = S.c;
   const T = (m, k) => tint13(m, NIGHTC, k);
   sky(S, DUSK);
@@ -216,8 +221,8 @@ export function weddingSet(S, { moonAt = [1260, 150] } = {}) {
   // the oil-seller's stall down the lane on the left
   const lane = S.layer({ par: 0.36, sh: 3 });
   lane.add(T(house(c, 110, 600, 150, 120, { stairs: false, lit: true }) + house(c, 520, 598, 110, 90, { stairs: true }), 0.3));
-  lane.add(`<g transform="translate(${WD.STALL} 640) scale(.8)">${T(stall9(c, 190), 0.2)}</g>`);
-  lane.add(`<g transform="translate(${WD.STALL - 50} 598)">${jar13(c, 40, C.pot)}</g><g transform="translate(${WD.STALL + 36} 600)">${jar13(c, 34, C.clay)}</g>`);
+  lane.add(`<g transform="translate(${stall} 640) scale(.8)">${T(stall9(c, 190), 0.2)}</g>`);
+  lane.add(`<g transform="translate(${stall - 50} 598)">${jar13(c, 40, C.pot)}</g><g transform="translate(${stall + 36} 600)">${jar13(c, 34, C.clay)}</g>`);
   const stallGlow = lane.add(`<g><circle r="110" fill="url(#warm-glow)"/><path d="${c.cut(c.ell(0, 0, 9, 12, 12), 0.3, 3)}" fill="${C.apricot}"/></g>`);
   const seller = S.puppet(lane.add(person(c, SELLER)));
 
@@ -231,7 +236,7 @@ export function weddingSet(S, { moonAt = [1260, 150] } = {}) {
   groundL.add(g.out());
   groundL.add(T(palm(c, 790, G - 4, 250) + bush(c, 360, G + 4, 90, C.sage, C.moss), 0.35));
   return {
-    c, night, hangL, moonEl, cl, far, roadL, torches, ROAD, inside, houseL, lant, doorLeaf, bar, shutter, lane, stallGlow, seller, groundL, gfn, P,
+    c, STALL: stall, night, hangL, moonEl, cl, far, roadL, torches, ROAD, inside, houseL, lant, doorLeaf, bar, shutter, lane, stallGlow, seller, groundL, gfn, P,
     /** the door: open 0 (shut) … 1 (wide) */
     door(open) { pose(doorLeaf, { x: D - WD.DW / 2, y: G, sx: 1 - open * 0.86 }); },
     update(time, { moonY = moonAt[1], moonX = moonAt[0], moonO = 1 } = {}) {
@@ -659,21 +664,23 @@ export function judgementSet(S, { dusk = false, flock = true, nations = true, an
   const kingSit = S.puppet(kingL.add(kingMarkup(c, { pose: 'sit' })));
   const kingStand = S.puppet(kingL.add(kingMarkup(c)));
   // a warm blessing glow behind those on the King's right (faded by the scenes)
+  // on a phone the two peoples and the two flocks stand closer in, so neither is sliced by the screen's edge
+  const LX = S.portrait ? 580 : JG.LX, RX = S.portrait ? 1020 : JG.RX, SX = S.portrait ? 510 : 470, GX = S.portrait ? 890 : 930;
   const warmL = S.layer({ par: 0.4, sh: 0, flat: true });
-  warmL.add(`<g transform="translate(${JG.LX} ${JG.NY - 60})"><circle r="260" fill="url(#halo-glow)" opacity=".9"/></g>`);
+  warmL.add(`<g transform="translate(${LX} ${JG.NY - 60})"><circle r="260" fill="url(#halo-glow)" opacity=".9"/></g>`);
   warmL.fade(0);
   // the nations
   const natL = S.layer({ par: 0.4, sh: 4 });
   const natBack = (side) => nations12('mt25-nb' + side, 9, { s: 0.5, spread: 36, flip: side > 0, armF: [10, 40], armB: [0, 20] });
   const natFront = (side) => nations12('mt25-nf' + side, 7, { s: 0.6, spread: 44, flip: side > 0, armF: [10, 50], armB: [0, 20] });
-  const NL = nations ? { back: natL.sprite(natBack(-1), JG.LX, JG.NY - 30), front: natL.sprite(natFront(-1), JG.LX, JG.NY + 10) } : null;
-  const NR = nations ? { back: natL.sprite(natBack(1), JG.RX, JG.NY - 30), front: natL.sprite(natFront(1), JG.RX, JG.NY + 10) } : null;
+  const NL = nations ? { back: natL.sprite(natBack(-1), LX, JG.NY - 30), front: natL.sprite(natFront(-1), LX, JG.NY + 10) } : null;
+  const NR = nations ? { back: natL.sprite(natBack(1), RX, JG.NY - 30), front: natL.sprite(natFront(1), RX, JG.NY + 10) } : null;
   // the flock
   const flockL = S.layer({ par: 0.45, sh: 4 });
   const sheepEls = flock ? WOOLS.map((w, i) => ({ i, el: flockL.add(`<g>${ewe10(c, { wool: w })}</g>`) })) : [];
   const goatEls = flock ? GOATS.map((col, i) => ({ i, el: flockL.add(`<g>${goat(c, { coat: col })}</g>`) })) : [];
   return {
-    c, duskSky, raysL, rays, back, warmL, thL, throneEl, cloudFront, cf, kingL, kingSit, kingStand, angelsL, angL, angR, natL, NL, NR, flockL, sheepEls, goatEls,
+    c, LX, RX, SX, GX, duskSky, raysL, rays, back, warmL, thL, throneEl, cloudFront, cf, kingL, kingSit, kingStand, angelsL, angL, angR, natL, NL, NR, flockL, sheepEls, goatEls,
     /** the throne and its cloud at (x, y) (seat centre) */
     throne(x = JG.TX, y = JG.TY, o = 1) { pose(throneEl, { x, y, o }); pose(cf, { x, y: y + 72, o }); },
     glory(time, o = 1, x = JG.TX, y = JG.TY - 120) { pose(rays, { x, y, r: time * 1.2, s: 1, o }); },
@@ -813,7 +820,7 @@ export function onTable(el, who, n, i, o = 1) {
 }
 
 /** the six sheep and six goats: mixed together in front of the throne (k = 0), or parted (k = 1) */
-export function flockAt(J, k, time = 0, { x0 = 650, sheepX = 470, goatX = 930, y = JG.FY, goatO = 1 } = {}) {
+export function flockAt(J, k, time = 0, { x0 = 650, sheepX = J.SX ?? 470, goatX = J.GX ?? 930, y = JG.FY, goatO = 1 } = {}) {
   const hopT = (i) => (k > 0 && k < 1 ? Math.abs(Math.sin(k * PI * 5 + i)) * 6 : 0);
   J.sheepEls.forEach((m) => {
     const i = m.i, mx = x0 + i * 56 + 4, px = sheepX + i * 44;
@@ -834,7 +841,7 @@ export function judgeRest(J, T, { sit = 1, flip = false, armF = 30, armB = 10, h
   J.kingStand.set({ x, y: JG.TY + 72, s: 0.94, flip, o: 1 - sit, armF, armB, head, blink: blinkAt(T, 1) });
   if (J.angL) { J.angL.set({ x: JG.TX - 170, y: JG.CLOUD - 30 }); J.angR.set({ x: JG.TX + 170, y: JG.CLOUD - 30 }); }
   if (J.NL) {
-    const lx = lerp(700, JG.LX, natSpread), rx = lerp(900, JG.RX, natSpread);
+    const lx = lerp(700, J.LX ?? JG.LX, natSpread), rx = lerp(900, J.RX ?? JG.RX, natSpread);
     if (leftNat) { J.NL.back.set({ x: lx, y: JG.NY - 30, o: nat }); J.NL.front.set({ x: lx, y: JG.NY + 10, o: nat }); }
     if (rightNat) { J.NR.back.set({ x: rx, y: JG.NY - 30, o: nat }); J.NR.front.set({ x: rx, y: JG.NY + 10, o: nat }); }
   }
@@ -872,6 +879,6 @@ export function puffCloud(c, w = 420, col = C.cream, under = '#eadcc0') {
 /** the shade over those on the King's left: a soft (compositor-blurred) sheet, faded by the scene */
 export function shadeLayer(S) {
   const L = S.layer({ par: 0.4, sh: 0, flat: true, blur: 34 });
-  L.add(shadeSheet(S.c));
+  L.add(shadeSheet(S.c, S.portrait ? 1020 : 1040));
   return L;
 }

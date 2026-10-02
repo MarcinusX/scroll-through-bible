@@ -21,6 +21,7 @@ export default {
     const c = E.c;
     const L = S.layer({ par: E.P, sh: 5 });
     const K = court(S, L);
+    const RS = S.portrait ? [915, 975, 1035] : RK.S;   // phone: the three wait closer in, the third not under the thread
     const fx = S.layer({ par: E.P, sh: 6 });
     const tag = fx.add(`<g>${wordOn(c, '5 + 5', { size: 28 })}</g>`);
     const sp = Array.from({ length: 5 }, () => fx.add(`<g>${sparkle(c, 9)}</g>`));
@@ -44,7 +45,7 @@ export default {
       const come = (i) => es(t, 0.75 + i * 0.06, 0.98 + i * 0.06);
       const up5 = es(t, 1.05, 1.4);
       const set5 = es(t, 2.05, 2.5);
-      const sx = [lerp(RK.S[0] + 120, RK.S[0] + 30, come(0)) - up5 * 30, lerp(RK.S[1] + 200, RK.S[1] + 30, come(1)), lerp(RK.S[2] + 260, RK.S[2] + 30, come(2))];
+      const sx = [lerp(RS[0] + 120, RS[0] + 30, come(0)) - up5 * 30, lerp(RS[1] + 200, RS[1] + 30, come(1)), lerp(RS[2] + 260, RS[2] + 30, come(2))];
       K.s5.set({ x: sx[0], y: ES.G, s: 0.9, flip: true, o: come(0) > 0.01 ? 1 : 0, walk: (come(0) > 0 && come(0) < 1) || (up5 > 0 && up5 < 1) ? sx[0] * 0.07 : undefined, armF: 70 - set5 * 20, armB: 10, head: 2 + set5 * 8, blink: blinkAt(T, 3) });
       K.s2.set({ x: sx[1], y: ES.G + 3, s: 0.9, flip: true, o: come(1) > 0.01 ? 1 : 0, walk: come(1) > 0 && come(1) < 1 ? sx[1] * 0.07 : undefined, armF: 64, armB: 8, blink: blinkAt(T, 5) });
       K.s1.set({ x: sx[2], y: ES.G + 6, s: 0.9, flip: true, o: come(2) > 0.01 ? 1 : 0, walk: come(2) > 0 && come(2) < 1 ? sx[2] * 0.07 : undefined, armF: 56, armB: 8, head: 6, blink: blinkAt(T, 7) });

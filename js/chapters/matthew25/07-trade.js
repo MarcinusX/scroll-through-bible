@@ -3,7 +3,7 @@
 // Down the street the second does the same with his two, and has four. The camera walks on out of the town to a field
 // with a lone fig tree: the third servant digs a hole, lays his master's talent in it wrapped in a cloth, and covers
 // it over, glancing round.
-import { C, person, crowdPerson, blinkAt, pose, lerp } from '../kit.js';
+import { C, person, crowdPerson, blinkAt, pose, lerp, mix, swing } from '../kit.js';
 import { es, ease, bump, seg } from '../../core/anim.js';
 import { marketSet, MK, SERV5, SERV2, SERV1, TRADER, talent, bundle, bale, spade, mound, pilePos, wordOn, sparkle, kf, moving, tr } from './lib.js';
 
@@ -18,10 +18,18 @@ export default {
     { v: 17 },
     { v: 18 },
   ],
-  cam: { x: [camFor(560) - 20, camFor(1540) + 20], y: [-10, 30], z: [1, 1.08] },
+  cam: { x: [camFor(560) - 20, camFor(1600) + 20], y: [-10, 30], z: [1, 1.08] },
   build(S) {
     const M = marketSet(S);
     const c = M.c;
+    const PT = S.portrait;
+    if (PT) {
+      // phone: the paved street runs on into the field as a widening road, so the edge of the field is a slanting
+      // roadside rather than an upright cut down the screen (laid just over the field, under the houses and trees)
+      const road = M.ground.add(`<g><path d="${c.cut([[1270, G - 20], [1302, G - 20], [1390, 860], [1470, 1000], [1560, 1200], [1640, 1700], [1270, 1700]], 0.8, 14)}" fill="${mix(C.stone, C.sand, 0.45)}"/></g>`).parentNode;
+      const host = road.parentNode, first = host.querySelector(':scope > .piece');
+      host.insertBefore(road, first.nextSibling);
+    }
     const P = S.layer({ par: MK.P, sh: 5 });
     const hole = P.add(`<g><path d="${c.cut(c.ell(0, 0, 30, 8, 14), 0.4, 4)}" fill="${C.soilDark}"/></g>`);
     const dirt = P.add(`<g>${mound(c, 64, 22)}</g>`);
@@ -76,6 +84,7 @@ export default {
     return (t, time) => {
       const T = time;
       M.update(T);
+      if (PT) swing(M.sunEl, 1010, 140, T, 1, 0.6);   // phone: the sun hangs inside the screen, not under the thread
       /* v16 — five talents traded, five more gained */
       const x5 = deal(Math.min(t, 1), 5, s5, 500, 590, tr1, 360, by1, 690, baleA, g5, plus5);
       /* v17 — two traded, two more gained */
@@ -96,7 +105,8 @@ export default {
       pose(dirt, { x: cover > 0 ? lerp(MK.HOLE + 70, MK.HOLE + 10, cover) : MK.HOLE + 70, y: G + 8, sy: 0.2 + dig * 0.8, s: 1, oy: 0, o: 1 });
       pose(pack, { x: lerp(MK.HOLE - 20, MK.HOLE + 10, place), y: lerp(G + 6, G + 10, place) - Math.sin(place * Math.PI) * 30, s: 0.8, o: 1 - cover });
 
-      S.cam.x = kf(t, [[0, camFor(560)], [1.0, camFor(560)], [1.3, camFor(1080)], [2.0, camFor(1080)], [2.3, camFor(1540)]]);
+      // phone: in the field the camera goes a little further on, past the buyer at the last stall
+      S.cam.x = kf(t, [[0, camFor(560)], [1.0, camFor(560)], [1.3, camFor(1080)], [2.0, camFor(1080)], [2.3, camFor(PT ? 1600 : 1540)]]);
       S.cam.z = 1 + bump(t, 1.0, 1.3) * -0.02 + bump(t, 2.0, 2.3) * -0.02 + es(t, 2.3, 2.6) * 0.06;
       S.cam.y = es(t, 2.3, 2.6) * 20;
     };

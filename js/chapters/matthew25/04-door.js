@@ -5,7 +5,7 @@
 // bridegroom looks out and shakes his head: "I do not know you." Their lamps sink.
 import { C, person, blinkAt, pose, lerp } from '../kit.js';
 import { es, ease, bump, seg } from '../../core/anim.js';
-import { weddingSet, WD, SPOTS, maidens, setMaiden, GROOM, FRIENDS, torch, wreath, addToHead, say, voiceRings, kf, moving, tr } from './lib.js';
+import { weddingSet, WD, spotsFor, STALL_P, maidens, setMaiden, GROOM, FRIENDS, torch, wreath, addToHead, say, voiceRings, kf, moving, tr } from './lib.js';
 
 const D = WD.DOOR;
 const BACK = [806, 866, 926, 986, 1044];      // where the foolish stand knocking
@@ -20,9 +20,11 @@ export default {
     { v: 11 },
     { v: 12 },
   ],
-  cam: { x: [-40, 60], y: [-30, 30], z: [1, 1.12] },
+  cam: { x: [-40, 100], y: [-30, 30], z: [1, 1.12] },
   build(S) {
-    const W = weddingSet(S, { moonAt: [1000, 100] });
+    const W = weddingSet(S, { moonAt: [1000, 100], stall: S.portrait ? STALL_P : WD.STALL });
+    const P = S.portrait;
+    const SPOTS = spotsFor(S);
     const c = W.c;
     // the bridegroom at the little window (inside, behind the wall)
     const inGroom = S.puppet(W.inside.add(addToHead(person(c, GROOM), `<g transform="translate(0 -4)">${wreath(c)}</g>`)));
@@ -41,8 +43,8 @@ export default {
       W.night.layer.fade(1);
       W.update(T, { moonY: 100, moonX: 1000 });
       W.torches.forEach((el) => pose(el, { o: 0 }));
-      pose(W.stallGlow, { x: WD.STALL + 70, y: 530, s: 1.3, o: 1 });
-      W.seller.set({ x: WD.STALL - 10, y: 640, s: 0.62, armF: 60 * (1 - es(t, 2.6, 3)), blink: blinkAt(T, 4) });
+      pose(W.stallGlow, { x: W.STALL + 70, y: 530, s: 1.3, o: 1 });
+      W.seller.set({ x: W.STALL - 10, y: 640, s: 0.62, armF: 60 * (1 - es(t, 2.6, 3)), blink: blinkAt(T, 4) });
 
       /* v10a — the bridegroom comes with his torch-bearers */
       const GK = [[0.05, 1620], [0.75, 1040], [1.08, 1040], [1.35, D + 6]];
@@ -50,7 +52,8 @@ export default {
       const gin = es(t, 1.3, 1.42);
       groom.set({ x: gx, y: WD.G + 4, s: 0.88, flip: true, o: 1 - gin, walk: moving(t, GK) ? gx * 0.07 : undefined, armF: bump(t, 0.75, 1.1) * 60, armB: bump(t, 0.75, 1.1) * 40, head: -2, blink: blinkAt(T, 3) });
       fr.forEach((p, i) => {
-        const FK = [[0.12 + i * 0.08, 1720 + i * 70], [0.85 + i * 0.05, 1170 + i * 64], [1.65 + i * 0.1, 1170 + i * 64], [1.9 + i * 0.05, D + 4]];
+        const FX = P ? 1078 + i * 40 : 1170 + i * 64;   // phone: the torch-bearers wait inside the screen
+        const FK = [[0.12 + i * 0.08, 1720 + i * 70], [(P ? 0.62 : 0.85) + i * 0.05, FX], [1.65 + i * 0.1, FX], [1.9 + i * 0.05, D + 4]];
         const x = kf(t, FK, (u) => u);
         p.set({ x, y: WD.G + 2 - i * 4, s: 0.82, flip: true, o: 1 - es(t, 1.85 + i * 0.05, 1.95 + i * 0.05), walk: moving(t, FK) ? x * 0.07 : undefined, armF: 150, armB: 10, blink: blinkAt(T, 5 + i) });
       });
@@ -69,7 +72,7 @@ export default {
         } else {
           /* at the stall, buying (v10) — then back to the shut door (v11) */
           const back = es(t, 3.02, 3.45 + j * 0.04, (u) => u);
-          const x = lerp(318 + j * 36, BACK[j], ease.io(back));
+          const x = lerp((P ? 300 : 318) + j * 36, BACK[j], ease.io(back));   // phone: out of sight at the stall until they come back
           const knocker = j === 4;
           const knock = knocker ? es(t, 3.5, 3.6) * (1 - es(t, 4.0, 4.1)) : 0;
           const tap = knock * Math.abs(Math.sin(T ? T * 9 : 1.2)) * 18;
@@ -94,7 +97,7 @@ export default {
       const nk = es(t, 4.2, 4.45, ease.back) * (1 - es(t, 4.88, 4.98));
       pose(noW, { x: WD.WIN[0] - 30, y: WD.WIN[1] - 34, s: nk, o: nk > 0.01 ? 1 : 0 });
 
-      S.cam.x = kf(t, [[0, 30], [1.0, 40], [2.0, 50], [2.9, 20], [3.3, 20]]);
+      S.cam.x = kf(t, [[0, 30], [1.0, 40], [2.0, 50], [2.9, 20], [3.3, 20]]) + (P ? 40 : 0);   // phone: the door is not under the thread
       S.cam.z = 1 + es(t, 1.9, 2.3) * 0.06 * (1 - es(t, 2.9, 3.2)) + es(t, 3.9, 4.2) * 0.05;
       S.cam.y = es(t, 3.9, 4.2) * -20;
     };

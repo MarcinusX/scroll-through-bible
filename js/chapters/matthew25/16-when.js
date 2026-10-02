@@ -9,6 +9,7 @@ import { es, ease, bump, seg } from '../../core/anim.js';
 import { judgementSet, JG, judgeRest, shadeLayer, glowDisc, vignette, MERCY, LEAST, HELPERS, question, sparkle } from './lib.js';
 
 const REP = [[462, 0], [552, 2], [642, 5]];
+const REP_P = [[495, 0], [580, 2], [665, 5]];   // phone: the first of them is not sliced by the edge
 const PAIRS = [[1, [0, 1]], [2, [2, 3]], [3, [4, 5]]];
 const SPOT = [[600, 0], [652, 1], [704, 2], [896, 5], [948, 4], [1000, 3]];
 
@@ -38,7 +39,7 @@ export default {
     });
     // the righteous who ask
     const repL = S.layer({ par: 0.45, sh: 5 });
-    const reps = REP.map(([x, h], j) => ({ x, j, seed: c.rr(0, 9), p: S.puppet(repL.add(person(c, HELPERS[h]))) }));
+    const reps = (S.portrait ? REP_P : REP).map(([x, h], j) => ({ x, j, seed: c.rr(0, 9), p: S.puppet(repL.add(person(c, HELPERS[h]))) }));
     const vL = S.layer({ par: 0.32, sh: 6 });
     const V = MERCY.map((k) => vignette(S, vL, k, true));
     const Q = [0, 1].map(() => vL.add(`<g>${question(c)}</g>`));

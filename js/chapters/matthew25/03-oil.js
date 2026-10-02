@@ -4,7 +4,7 @@
 // lifts a jar — and the five foolish hurry off towards his stall.
 import { C, blinkAt, pose, lerp } from '../kit.js';
 import { es, ease, bump, seg } from '../../core/anim.js';
-import { weddingSet, WD, SPOTS, maidens, setMaiden, smoke, say, oilJar, question, oilDrop, tr } from './lib.js';
+import { weddingSet, WD, spotsFor, STALL_P, maidens, setMaiden, smoke, say, oilJar, question, oilDrop, tr } from './lib.js';
 
 export default {
   id: 'mt25-oil',
@@ -15,9 +15,12 @@ export default {
     { v: 9, text: 'Odpowiedziały roztropne: "Mogłoby i nam, i wam nie wystarczyć.' },
     { v: 9, cont: true, text: 'Idźcie raczej do sprzedających i kupcie sobie!"' },
   ],
-  cam: { x: [-120, 30], y: [-20, 30], z: [1, 1.1] },
+  cam: { x: [-160, 30], y: [-20, 30], z: [1, 1.1] },
   build(S) {
-    const W = weddingSet(S, { moonAt: [1060, 110] });
+    const W = weddingSet(S, { moonAt: [1060, 110], stall: S.portrait ? STALL_P : WD.STALL });
+    const P = S.portrait;
+    const SPOTS = spotsFor(S);
+    const STALLX = P ? 480 : 318;               // where the foolish crowd at the stall (phone: beside the seller, inside the screen)
     const c = W.c;
     const act = S.layer({ par: 0.45, sh: 5 });
     const fireL = S.layer({ par: 0.45, sh: 0, flat: true });
@@ -41,9 +44,9 @@ export default {
       });
       /* v9b — the seller's lantern, and his jar */
       const shop = es(t, 3.05, 3.35);
-      pose(W.stallGlow, { x: WD.STALL + 70, y: 530, s: 0.8 + shop * 0.5, o: 0.2 + shop * 0.8 });
-      W.seller.set({ x: WD.STALL - 10, y: 640, s: 0.62, armF: shop * 120, blink: blinkAt(T, 4) });
-      pose(jarUp, { x: WD.STALL - 10 + 40, y: 640 - 172 * 0.62 + (1 - shop) * 40, s: 0.8, o: shop });
+      pose(W.stallGlow, { x: W.STALL + 70, y: 530, s: 0.8 + shop * 0.5, o: 0.2 + shop * 0.8 });
+      W.seller.set({ x: W.STALL - 10, y: 640, s: 0.62, armF: shop * 120, blink: blinkAt(T, 4) });
+      pose(jarUp, { x: W.STALL - 10 + 40, y: 640 - 172 * 0.62 + (1 - shop) * 40, s: 0.8, o: shop });
 
       /* the ten: foolish ask (v8a), their lamps die (v8b), the wise refuse (v9a) and send them off (v9b) */
       const askK = es(t, 0.05, 0.3) * (1 - es(t, 3.2, 3.4));
@@ -61,7 +64,7 @@ export default {
         } else {
           const out = es(t, 1.05 + j * 0.12, 1.35 + j * 0.12);
           const x0 = SPOTS[m.i] - 16;
-          const x = lerp(x0, 318 + j * 36, ease.io(leave));
+          const x = lerp(x0, STALLX + j * (P ? 30 : 36), ease.io(leave));
           const turn = leave > 0.02;
           setMaiden(m, {
             x, y: WD.G + (m.i % 2) * 6, s: 0.8, flip: turn, walk: leave > 0 && leave < 1 ? x * 0.06 : 0,
@@ -79,7 +82,7 @@ export default {
       const gk = es(t, 3.1, 3.35, ease.back) * (1 - es(t, 3.9, 4));
       pose(go, { x: 770, y: WD.G - 176, s: gk, o: gk > 0.01 ? 1 : 0 });
 
-      S.cam.x = -es(t, 1.0, 1.4) * 30 * (1 - es(t, 2.0, 2.3)) - es(t, 3.05, 3.6) * 110;
+      S.cam.x = -es(t, 1.0, 1.4) * 30 * (1 - es(t, 2.0, 2.3)) - es(t, 3.05, 3.6) * (P ? 150 : 110);   // phone: far enough to see the seller
       S.cam.z = 1 + es(t, 0.0, 0.4) * 0.05 * (1 - es(t, 3.0, 3.4));
       S.cam.y = es(t, 0.0, 0.4) * 20;
     };

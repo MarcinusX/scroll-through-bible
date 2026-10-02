@@ -25,6 +25,8 @@ export default {
     const c = E.c;
     const L = S.layer({ par: E.P, sh: 5 });
     const K = court(S, L);
+    const P = S.portrait;
+    const [W2, W1] = P ? [1005, 1065] : [1040, 1110];   // where the second and third wait (phone: clear of the edge)
     const keys = [0, 1].map(() => L.add(`<g>${keyProp(c)}</g>`));
     const fx = S.layer({ par: 0.3, sh: 6 });
     const many = fx.add(`<g>${plateOn(c, `<g>${band(c, { y: 18, amps: [4, 2], lens: [80, 30], x0: -60, x1: 60, bottom: 60, color: C.hillNear, grain: false }).markup}</g>${town(c, { x: 0, y: 20, n: 9, spread: 90, sc: 0.36 })}`, { r: 56 })}</g>`);
@@ -52,14 +54,14 @@ export default {
       K.s5.set({ x: x5, y: ES.G, s: 0.9, flip: true, walk: moving(t, IN5) ? x5 * 0.07 : undefined, armF: 20 + es(t, 1.3, 1.45) * 40, armB: 8, head: bow * 16 - es(t, 2.7, 2.9) * 4, lean: -bow * 6, blink: blinkAt(T, 3) });
       /* the second: steps up, sets out four; praised; goes in */
       const up2 = es(t, 3.05, 3.35);
-      const IN2 = [[3.05, 1040], [3.35, 930], [4.4, 930], [4.85, RK.DOOR2]];
+      const IN2 = [[3.05, W2], [3.35, 930], [4.4, 930], [4.85, RK.DOOR2]];
       const x2 = kf(t, IN2, (u) => u);
       const set2 = es(t, 3.4, 3.7);
       const bow2 = bump(t, 4.05, 4.4);
       K.s2.set({ x: x2, y: ES.G + 3, s: 0.9, flip: true, walk: moving(t, IN2) ? x2 * 0.07 : undefined, armF: 64 - set2 * 40 + es(t, 4.4, 4.5) * 20, armB: 8, head: set2 * 8 * (1 - es(t, 3.9, 4)) + bow2 * 14, blink: blinkAt(T, 5) });
-      K.s1.set({ x: 1110, y: ES.G + 6, s: 0.9, flip: true, armF: 56, armB: 8, head: 6, blink: blinkAt(T, 7) });
+      K.s1.set({ x: W1, y: ES.G + 6, s: 0.9, flip: true, armF: 56, armB: 8, head: 6, blink: blinkAt(T, 7) });
       K.s1k.set({ o: 0 });
-      const [bx, by] = pilePos(1110, ES.G + 6, 0.9, true, 56, 1, 0);
+      const [bx, by] = pilePos(W1, ES.G + 6, 0.9, true, 56, 1, 0);
       pose(K.pack, { x: bx, y: by + 14, s: 0.8 });
       pose(K.dull, { o: 0 });
       K.g5.forEach((el, k) => {
@@ -91,7 +93,7 @@ export default {
         pose(el, { x: cx + Math.cos(a) * 70, y: ES.G - 190 + Math.sin(a) * 40, s: k, r: T * 40, o: k });
       });
 
-      S.cam.x = -es(t, 2.1, 2.6) * 70 * (1 - es(t, 2.95, 3.3)) - es(t, 4.4, 4.8) * 50;
+      S.cam.x = -es(t, 2.1, 2.6) * (P ? 40 : 70) * (1 - es(t, 2.95, 3.3)) - es(t, 4.4, 4.8) * (P ? 30 : 50);
       S.cam.z = 1 + es(t, 0, 0.3) * 0.04;
       S.cam.y = es(t, 0, 0.3) * 10;
     };

@@ -11,6 +11,7 @@ import { makeCutter } from '../../core/paper.js';
 
 const SPOT = [[600, 0], [652, 1], [704, 2], [896, 5], [948, 4], [1000, 3]];
 const REP = [960, 1050, 1140];
+const REP_P = [920, 1000, 1080];                 // phone: the last of them stays clear of the edge and the thread
 
 export default {
   id: 'mt25-end',
@@ -36,7 +37,7 @@ export default {
     });
     const repL = S.layer({ par: 0.45, sh: 5 });
     const oc = makeCutter('mt25-left-reps');
-    const reps = REP.map((x, j) => ({ x, j, seed: c.rr(0, 9), p: S.puppet(repL.add(person(c, { robe: [C.indigo, C.ochreRobe, C.terracotta][j], mantle: [C.sun, null, C.wheatRobe][j], skin: [C.skin4, C.skin2, C.skin3][j], hair: C.hair3, hairStyle: j === 1 ? 'veil' : 'wrap', veil: [C.ochre, C.linen, C.cream][j], beard: j === 1 ? 'none' : 'full', belt: C.sun }))) }));
+    const reps = (S.portrait ? REP_P : REP).map((x, j) => ({ x, j, seed: c.rr(0, 9), p: S.puppet(repL.add(person(c, { robe: [C.indigo, C.ochreRobe, C.terracotta][j], mantle: [C.sun, null, C.wheatRobe][j], skin: [C.skin4, C.skin2, C.skin3][j], hair: C.hair3, hairStyle: j === 1 ? 'veil' : 'wrap', veil: [C.ochre, C.linen, C.cream][j], beard: j === 1 ? 'none' : 'full', belt: C.sun }))) }));
     const vL = S.layer({ par: 0.3, sh: 6 });
     const V = MERCY.map((k) => vignette(S, vL, k, false));
     const Q = V.map(() => vL.add(`<g>${question(c)}</g>`));
@@ -73,15 +74,15 @@ export default {
         pose(sp[n], { x: m.x, y: JG.TY + 108 - 150, s: sk, r: T * 40, o: sk });
       });
       /* v46a — they go away into the shade */
-      J.NR.back.set({ x: JG.RX + leave * 360, y: JG.NY - 30 - leave * 30, s: 1 - leave * 0.15, o: 1 - es(t, 3.4, 3.95) });
-      J.NR.front.set({ x: JG.RX + leave * 420, y: JG.NY + 10 - leave * 30, s: 1 - leave * 0.15, o: 1 - es(t, 3.5, 3.95) });
+      J.NR.back.set({ x: J.RX + leave * 360, y: JG.NY - 30 - leave * 30, s: 1 - leave * 0.15, o: 1 - es(t, 3.4, 3.95) });
+      J.NR.front.set({ x: J.RX + leave * 420, y: JG.NY + 10 - leave * 30, s: 1 - leave * 0.15, o: 1 - es(t, 3.5, 3.95) });
       coolL.fade(0.3 + leave * 0.3 * (1 - es(t, 4.0, 4.6)));
       /* v46b — the righteous into eternal life: the gate opens, they go towards its light */
       const go = es(t, 4.1, 4.9, (u) => u);
       gate.set(es(t, 4.0, 4.4, ease.out), es(t, 4.3, 4.7));
-      J.NL.back.set({ x: JG.LX - go * 70, y: JG.NY - 30 - go * 30, s: 1 - go * 0.1 });
-      J.NL.front.set({ x: JG.LX - go * 90, y: JG.NY + 10 - go * 34, s: 1 - go * 0.1 });
-      flockAt(J, 1, T, { sheepX: 470 - go * 80, goatX: 930 + leave * 500, y: JG.FY, goatO: 1 - es(t, 3.5, 3.95) });
+      J.NL.back.set({ x: J.LX - go * 70, y: JG.NY - 30 - go * 30, s: 1 - go * 0.1 });
+      J.NL.front.set({ x: J.LX - go * 90, y: JG.NY + 10 - go * 34, s: 1 - go * 0.1 });
+      flockAt(J, 1, T, { sheepX: J.SX - go * 80, goatX: J.GX + leave * 500, y: JG.FY, goatO: 1 - es(t, 3.5, 3.95) });
       warmL.fade(0.8 + es(t, 4.1, 4.5) * 0.2);
 
       S.cam.x = S.portrait ? 0 : -es(t, 4.0, 4.5) * 60;

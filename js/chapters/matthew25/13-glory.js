@@ -46,7 +46,7 @@ export default {
       /* v32a — all the nations gathered; v32b–33 parted like sheep and goats */
       const gather = es(t, 2.05, 2.7, ease.out);
       const part = es(t, 3.35, 3.95);
-      const lx = lerp(700, JG.LX, part), rx = lerp(900, JG.RX, part);
+      const lx = lerp(700, J.LX, part), rx = lerp(900, J.RX, part);
       const s0 = lerp(0.8, 1, gather);
       J.NL.back.set({ x: lx - (1 - gather) * 400, y: JG.NY - 30 - (1 - gather) * 40, s: s0, o: gather });
       J.NL.front.set({ x: lx - (1 - gather) * 500, y: JG.NY + 10 - (1 - gather) * 30, s: s0, o: gather });

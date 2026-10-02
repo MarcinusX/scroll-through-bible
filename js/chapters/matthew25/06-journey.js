@@ -38,7 +38,8 @@ export default {
 
     return (t, time) => {
       const T = time;
-      E.update(T, { sunX: lerp(1300, 1180, es(t, 0, 4)), sunY: lerp(190, 130, es(t, 0, 4)) });
+      const PT = S.portrait;   // phone: the sun stays off to the right (it would peep out under the progress thread)
+      E.update(T, { sunX: PT ? 1450 : lerp(1300, 1180, es(t, 0, 4)), sunY: lerp(190, 130, es(t, 0, 4)) });
       E.joy(0);
       /* v14 — he calls his servants and opens his chest */
       const openK = es(t, 0.55, 0.8);
@@ -71,11 +72,14 @@ export default {
           const [px, py] = pilePos(x + leave * 60, ES.G + s.i * 3, 0.9, leave < 0.02, 12 + hold * 58, s.n, k);
           pose(el, { x: lerp(CX, px, f), y: lerp(ES.G - 50, py, f) - Math.sin(f * Math.PI) * 60, s: 0.72, o: f > 0.01 ? 1 : 0 });
         });
-        const nk = es(t, start + 0.2, start + 0.45, ease.out) * (1 - es(t, 1.95, 2.1));
+        // the numbers come down one after another within v15a, so the third one ("one") is seen before the vessels come
+        const n0 = 1.15 + s.i * 0.22;
+        const nk = es(t, n0, n0 + 0.25, ease.out) * (1 - es(t, 1.95, 2.1));
         pose(nums[s.i], { x: s.x, y: lerp(-1500, 330, nk), r: Math.sin(T * 0.9 + s.i) * 2, o: nk > 0.01 ? 1 : 0 });
         /* v15b — according to his ability: three vessels, big, middle, small, each full */
         const vk = es(t, 2.1 + s.i * 0.1, 2.45 + s.i * 0.1, ease.out) * (1 - es(t, 2.95, 3.1));
-        pose(vessels[s.i], { x: s.x, y: lerp(-1500, 300, vk), r: Math.sin(T * 0.8 + s.i) * 2, o: vk > 0.01 ? 1 : 0 });
+        // phone: smaller and set at two heights so the three vessels don't lie on top of one another
+        pose(vessels[s.i], { x: PT ? [870, 960, 1040][s.i] : s.x, y: lerp(-1500, PT ? [280, 345, 280][s.i] : 300, vk), s: PT ? 0.78 : 1, r: Math.sin(T * 0.8 + s.i) * 2, o: vk > 0.01 ? 1 : 0 });
       });
       sparks.forEach((sp, i) => {
         const k = bump(t, 1.1 + i * 0.08, 1.45 + i * 0.08);

@@ -20,7 +20,7 @@ export default {
     { v: 30, text: 'A sługę nieużytecznego wyrzućcie na zewnątrz - w ciemności!' },
     { v: 30, cont: true, text: 'Tam będzie płacz i zgrzytanie zębów".' },
   ],
-  cam: { x: [-20, 200], y: [-40, 30], z: [1, 1.1] },
+  cam: { x: [-20, 460], y: [-40, 30], z: [1, 1.1] },
   build(S) {
     let outside = null;
     const E = estateSet(S, {
@@ -35,6 +35,8 @@ export default {
     const L = S.layer({ par: E.P, sh: 5 });
     const heap = L.add(`<g>${talentHeap(c, { w: 150, h: 90 })}</g>`);
     const K = court(S, L);
+    const P = S.portrait;
+    const H2 = P ? 1055 : 1110;                 // where the second of the household stands (phone: clear of the edge)
     const hh = HOUSEHOLD.slice(0, 2).map((o, i) => ({ i, p: S.puppet(L.add(person(c, o))), seed: c.rr(0, 9) }));
     const cloth = L.add(`<g>${sheet().p(c.cut([[-22, -6], [0, -12], [24, -4], [20, 8], [-18, 8]], 0.8, 4), mix(C.linen2, C.soil, 0.25)).out()}</g>`);
     const shine = L.add(`<g>${talent(c)}</g>`);
@@ -77,7 +79,7 @@ export default {
       const ox = kf(t, OUT, (u) => u);
       const gone = seg(t, 3.85, 3.95);
       hh.forEach((h) => {
-        const HX = [[0.0, 1060 + h.i * 60], [0.1, h.i ? 1110 : 990], [0.6, h.i ? 1110 : 990], [3.1, h.i ? 1000 : 880], [3.2, ox + (h.i ? 44 : -44)], [3.9, ES.GATE + 6 + (h.i ? 30 : -30)]];
+        const HX = [[0.0, 1060 + h.i * 60], [0.1, h.i ? H2 : 990], [0.6, h.i ? H2 : 990], [3.1, h.i ? 1000 : 880], [3.2, ox + (h.i ? 44 : -44)], [3.9, ES.GATE + 6 + (h.i ? 30 : -30)]];
         const x = kf(t, HX, (u) => u);
         h.p.set({ x, y: G + 4, s: 0.9, flip: t < 3.2 ? true : false, o: 1 - gone, walk: moving(t, HX) ? x * 0.07 : undefined, armF: h.i ? 20 : 20 + lift * (1 - fly) * 90 + (t > 3.2 ? 40 : 0), head: -2, blink: blinkAt(T, h.seed) });
       });
@@ -87,7 +89,7 @@ export default {
       K.s1k.set({ x: 936, y: G + 6, s: 0.9, flip: true, o: kneel, armF: 30 + up * 60, armB: 10 + up * 50, head: 18 - up * 10, blink: blinkAt(T, 7) });
       K.s1.set({ x: ox, y: G + 6, s: 0.9, flip: false, o: (1 - kneel) * (1 - gone), walk: t > 3.2 && t < 3.9 ? ox * 0.07 : undefined, armF: 10, head: 16 });
       const pull = es(t, 2.3, 2.55);
-      pose(cloth, { x: lerp(960, 1080, pull), y: lerp(G - 70, G - 100, pull) - Math.sin(pull * Math.PI) * 40, r: pull * 30, s: 0.9, o: t > 2.2 && pull < 1 ? 1 : 0 });
+      pose(cloth, { x: lerp(960, P ? 1040 : 1080, pull), y: lerp(G - 70, G - 100, pull) - Math.sin(pull * Math.PI) * 40, r: pull * 30, s: 0.9, o: t > 2.2 && pull < 1 ? 1 : 0 });
       pose(K.pack, { o: 0 });
 
       /* the gate opens on the darkness, and shuts */
@@ -95,11 +97,12 @@ export default {
       E.dark.fade(es(t, 3.0, 3.4) * 0.92);
       /* v30b — over the wall, in the dark */
       const sit = es(t, 4.1, 4.3);
-      outside.set({ x: S.portrait ? 1122 : 1190, y: 578, s: 0.8, flip: true, o: sit, armF: 150, armB: 140, head: 18, lean: 6 });
+      outside.set({ x: S.portrait ? 1210 : 1190, y: 578, s: 0.8, flip: true, o: sit, armF: 150, armB: 140, head: 18, lean: 6 });
       const tk = T ? (T * 0.6) % 1 : 0.5;
-      pose(E.out.tear, { x: S.portrait ? 1107 : 1175, y: 452 + tk * 36, o: sit * (1 - tk) });
+      pose(E.out.tear, { x: S.portrait ? 1195 : 1175, y: 452 + tk * 36, o: sit * (1 - tk) });
 
-      S.cam.x = es(t, 3.9, 4.3) * 180;
+      // phone: the camera already follows them to the gate during v30a, and goes on far enough to show the dark beyond
+      S.cam.x = P ? es(t, 3.05, 3.6) * 300 + es(t, 3.9, 4.3) * 150 : es(t, 3.9, 4.3) * 180;
       S.cam.z = 1 + es(t, 1.0, 1.3) * 0.04 * (1 - es(t, 1.9, 2.1)) + es(t, 3.95, 4.3) * 0.06;
       S.cam.y = -es(t, 3.95, 4.3) * 30;
     };

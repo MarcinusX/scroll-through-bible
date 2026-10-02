@@ -5,7 +5,7 @@
 // foolish ones' already burn low and flutter.
 import { C, person, blinkAt, pose, lerp } from '../kit.js';
 import { es, ease, bump, seg } from '../../core/anim.js';
-import { weddingSet, WD, SPOTS, maidens, setMaiden, FRIENDS, torch, zzz, voiceRings, say, along, kf, moving, tr } from './lib.js';
+import { weddingSet, WD, spotsFor, STALL_P, maidens, setMaiden, FRIENDS, torch, zzz, voiceRings, say, along, kf, moving, tr } from './lib.js';
 
 export default {
   id: 'mt25-sleep',
@@ -18,7 +18,9 @@ export default {
   ],
   cam: { x: [-20, 60], y: [-40, 30], z: [1, 1.1] },
   build(S) {
-    const W = weddingSet(S, { moonAt: [1260, 190] });
+    const W = weddingSet(S, { moonAt: [1260, 190], stall: S.portrait ? STALL_P : WD.STALL });
+    const P = S.portrait;
+    const SPOTS = spotsFor(S);
     const c = W.c;
     const act = S.layer({ par: 0.45, sh: 5 });
     const fireL = S.layer({ par: 0.45, sh: 0, flat: true });
@@ -39,15 +41,15 @@ export default {
       W.door(0);
       pose(W.bar, { o: 0 });
       pose(W.shutter, { x: WD.WIN[0] - 26, y: WD.WIN[1] - 2 });
-      pose(W.stallGlow, { x: WD.STALL + 70, y: 530, o: 0.25 * (1 - dark) });
-      W.seller.set({ x: WD.STALL - 10, y: 640, s: 0.62, o: 1 - dark, blink: blinkAt(T, 4) });
+      pose(W.stallGlow, { x: W.STALL + 70, y: 530, o: 0.25 * (1 - dark) });
+      W.seller.set({ x: W.STALL - 10, y: 640, s: 0.62, o: 1 - dark, blink: blinkAt(T, 4) });
 
       /* v6 — at midnight torches on the hill road; a runner cries out */
       W.torches.forEach((el, i) => {
         const [x, y] = along(W.ROAD, es(t, 1.05 + i * 0.1, 3.9, (u) => u) * 0.8 + 0.02 - i * 0.02);
         pose(el, { x, y, s: 0.8 + Math.sin(T * 8 + i) * 0.06, o: es(t, 1.05 + i * 0.1, 1.3 + i * 0.1) });
       });
-      const HK = [[1.2, 1560], [1.9, 1150]];
+      const HK = [[1.2, 1560], [1.9, P ? 1075 : 1150]];   // phone: the runner stops inside the screen
       const hx = kf(t, HK, ease.out);
       const call = es(t, 1.9, 2.1) * (1 - es(t, 3.3, 3.5));
       herald.set({ x: hx, y: WD.G + 4, s: 0.84, flip: true, o: es(t, 1.15, 1.25), walk: moving(t, HK) ? hx * 0.08 : undefined, amt: 1.4, armF: 150 + call * 10, armB: 20 + call * 70, head: -4 - call * 6, blink: blinkAt(T, 2) });
@@ -74,7 +76,7 @@ export default {
       });
 
       S.cam.z = 1 + es(t, 0, 0.8) * 0.04 - es(t, 1.1, 1.6) * 0.03 + es(t, 3.0, 3.5) * 0.03;
-      S.cam.x = es(t, 1.1, 1.7) * 50 * (1 - es(t, 2.9, 3.3));
+      S.cam.x = es(t, 1.1, 1.7) * (P ? 30 : 50) * (1 - es(t, 2.9, 3.3));
       S.cam.y = -es(t, 1.1, 1.6) * 30 * (1 - es(t, 2.9, 3.3)) + es(t, 3.0, 3.5) * 10;
     };
   },

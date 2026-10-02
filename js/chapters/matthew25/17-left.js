@@ -46,9 +46,9 @@ export default {
       judgeRest(J, T, { flip: false, armF: 30 + lift * 70, armB: 10, head: -2 + lift * 4, rightNat: false });
       voice(JG.TX + 24, JG.TY - 90, es(t, 0.1, 0.3) * (1 - es(t, 2.8, 3)), T, { dir: 1, s0: 0.7 });
       const back = es(t, 1.1, 1.6);
-      J.NR.back.set({ x: JG.RX + back * 50, y: JG.NY - 30 - back * 12, s: 1 - back * 0.05 });
-      J.NR.front.set({ x: JG.RX + back * 60, y: JG.NY + 10 - back * 10, s: 1 - back * 0.05 });
-      flockAt(J, 1, T, { goatX: 930 + back * 50 });
+      J.NR.back.set({ x: J.RX + back * 50, y: JG.NY - 30 - back * 12, s: 1 - back * 0.05 });
+      J.NR.front.set({ x: J.RX + back * 60, y: JG.NY + 10 - back * 10, s: 1 - back * 0.05 });
+      flockAt(J, 1, T, { goatX: J.GX + back * 50 });
       warmL.fade(0.8);
       coolL.fade(0.3 + back * 0.16);
       /* v41c — the fire prepared for the devil and his angels: a dark picture, restrained */

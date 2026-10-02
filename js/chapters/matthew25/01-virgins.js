@@ -5,7 +5,7 @@
 // no oil; the wise hold up their flasks of oil beside their lamps.
 import { C, blinkAt, pose, lerp, curtains } from '../kit.js';
 import { es, ease, bump, seg } from '../../core/anim.js';
-import { weddingSet, WD, SPOTS, maidens, setMaiden, plateOn, wordOn, oilJar, crossX, tick, oilDrop, sparkle, tr } from './lib.js';
+import { weddingSet, WD, spotsFor, STALL_P, maidens, setMaiden, plateOn, wordOn, oilJar, crossX, tick, oilDrop, sparkle, tr } from './lib.js';
 
 export default {
   id: 'mt25-virgins',
@@ -19,7 +19,10 @@ export default {
   ],
   cam: { x: [-60, 50], y: [-30, 30], z: [1, 1.1] },
   build(S) {
-    const W = weddingSet(S, { moonAt: [1270, 190] });
+    const W = weddingSet(S, { moonAt: [1270, 190], stall: S.portrait ? STALL_P : WD.STALL });
+    const P = S.portrait;
+    const SPOTS = spotsFor(S);
+    const [FX, WX] = P ? [606, 884] : [564, 884];   // over the foolish / the wise (phone: over the closed-up row)
     const c = W.c;
     const act = S.layer({ par: 0.45, sh: 5 });
     const fireL = S.layer({ par: 0.45, sh: 0, flat: true });
@@ -42,8 +45,8 @@ export default {
       W.door(0);
       pose(W.bar, { o: 0 });
       pose(W.shutter, { x: WD.WIN[0] - 26, y: WD.WIN[1] - 2 });
-      pose(W.stallGlow, { x: WD.STALL + 70, y: 530, o: 0.35 });
-      W.seller.set({ x: WD.STALL - 10, y: 640, s: 0.62, blink: blinkAt(T, 4) });
+      pose(W.stallGlow, { x: W.STALL + 70, y: 530, o: 0.35 });
+      W.seller.set({ x: W.STALL - 10, y: 640, s: 0.62, blink: blinkAt(T, 4) });
       W.torches.forEach((el) => pose(el, { o: 0 }));
 
       /* v1 — ten bridesmaids take their lamps and go out along the street */
@@ -67,15 +70,15 @@ export default {
 
       /* v2 — five foolish, five wise: a word over each group */
       const wk = es(t, 2.1, 2.45, ease.out) * (1 - es(t, 2.95, 3.12, ease.in));
-      pose(wFool, { x: 564, y: lerp(-1500, 300, wk), r: Math.sin(T * 0.8) * 1.5, o: wk > 0.01 ? 1 : 0 });
+      pose(wFool, { x: FX, y: lerp(-1500, 300, wk), r: Math.sin(T * 0.8) * 1.5, o: wk > 0.01 ? 1 : 0 });
       const wk2 = es(t, 2.18, 2.53, ease.out) * (1 - es(t, 2.95, 3.12, ease.in));
-      pose(wWise, { x: 884, y: lerp(-1500, 300, wk2), r: Math.sin(T * 0.8 + 1) * 1.5, o: wk2 > 0.01 ? 1 : 0 });
+      pose(wWise, { x: WX, y: lerp(-1500, 300, wk2), r: Math.sin(T * 0.8 + 1) * 1.5, o: wk2 > 0.01 ? 1 : 0 });
       /* v3 — the foolish: lamps, but no oil */
       const fk = es(t, 3.05, 3.4, ease.out) * (1 - es(t, 4.85, 5));
-      pose(pFool, { x: 564, y: lerp(-1500, 300, fk), r: Math.sin(T * 0.9) * 2, o: fk > 0.01 ? 1 : 0 });
+      pose(pFool, { x: FX, y: lerp(-1500, 300, fk), r: Math.sin(T * 0.9) * 2, o: fk > 0.01 ? 1 : 0 });
       /* v4 — the wise: oil in flasks with their lamps */
       const pk = es(t, 4.05, 4.4, ease.out);
-      pose(pWise, { x: 884, y: lerp(-1500, 300, pk), r: Math.sin(T * 0.9 + 2) * 2, o: pk > 0.01 ? 1 : 0 });
+      pose(pWise, { x: WX, y: lerp(-1500, 300, pk), r: Math.sin(T * 0.9 + 2) * 2, o: pk > 0.01 ? 1 : 0 });
       drops.forEach((d, i) => {
         const k = seg(t, 4.25 + i * 0.07, 4.7 + i * 0.07);
         const x = SPOTS[5 + i] + 16 + 44 * 0.8, y = WD.G - 196 - Math.sin(k * Math.PI) * 30;
@@ -84,7 +87,7 @@ export default {
         pose(sparks[i], { x: x + 12, y: y - 26, s: sk, r: T * 40, o: sk });
       });
 
-      S.cam.x = -es(t, 2.9, 3.3) * 50 * (1 - es(t, 3.9, 4.2)) + es(t, 3.95, 4.3) * 40;
+      S.cam.x = (-es(t, 2.9, 3.3) * 50 * (1 - es(t, 3.9, 4.2)) + es(t, 3.95, 4.3) * 40) * (P ? 0.4 : 1);
       S.cam.z = 1 + es(t, 0.9, 1.6) * 0.02 + es(t, 2.9, 3.3) * 0.05;
       S.cam.y = es(t, 2.9, 3.3) * 20;
     };
