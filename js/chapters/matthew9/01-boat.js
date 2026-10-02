@@ -53,9 +53,12 @@ export default {
     const beachL = S.layer({ par: P, sh: 3 });
     const lb = (x) => FEET - 4 + Math.max(0, x - 560) * 1.5 + Math.sin(x * 0.03) * 2;
     const rb = (x) => FEET - 4 + Math.max(0, 1320 - x) * 1.5 + Math.sin(x * 0.03) * 2;
+    // phone: the tall screen would show the lake between the two sloping beaches as a long blue V down to the
+    // caption; there the beaches meet in a near shore below the boat, so the lake reads as a bay
+    const near = (x) => (S.portrait ? FEET + 170 + Math.sin(x * 0.011) * 6 + Math.sin(x * 0.037) * 2 : 1600);
     const beach = sheet();
-    beach.p(c.ridge((x) => Math.min(lb(x), 1600), -1200, 1150, 1600, 12, 1), mix(C.sand, C.stone, 0.3));
-    beach.p(c.ridge((x) => Math.min(rb(x), 1600), 700, 3300, 1600, 12, 1), mix(C.sand, C.stone, 0.3));
+    beach.p(c.ridge((x) => Math.min(lb(x), near(x)), -1200, 1150, 1600, 12, 1), mix(C.sand, C.stone, 0.3));
+    beach.p(c.ridge((x) => Math.min(rb(x), near(x)), 700, 3300, 1600, 12, 1), mix(C.sand, C.stone, 0.3));
     let peb = '';
     for (let i = 0; i < 70; i++) { const x = c.chance(0.5) ? c.rr(-800, 520) : c.rr(1360, 2800); peb += c.cut(c.blob(x, c.rr(FEET + 20, 1100), c.rr(4, 9), c.rr(2.5, 5), 7, 0.2), 0.2, 3); }
     beach.x(peb, C.stone2, 'opacity=".7"');
@@ -135,10 +138,11 @@ export default {
       /* the Gadarenes stand far off; the people of Capernaum run down to meet Him */
       gad.set({ x: 250 - es(t, 1.8, 2.6) * 120, y: FEET, o: 1 - es(t, 2.2, 2.7) });
       const come = es(t, 2.6, 3.3);
-      capA.set({ x: lerp(1900, 1545, come), y: FEET + 6, o: seg(t, 2.55, 2.7) });
-      capB.set({ x: lerp(2080, 1665, es(t, 2.75, 3.45)), y: FEET + 10, o: seg(t, 2.7, 2.85) });
+      const PH = S.portrait;   // phone: the people of Capernaum and the town's name stay inside the screen
+      capA.set({ x: lerp(1900, PH ? 1505 : 1545, come), y: FEET + 6, o: seg(t, 2.55, 2.7) });
+      capB.set({ x: lerp(2080, PH ? 1600 : 1665, es(t, 2.75, 3.45)), y: FEET + 10, o: seg(t, 2.7, 2.85) });
       const nk = es(t, 2.7, 3.1, ease.out);
-      hangAt(capName, 1380, lerp(-500, 250, nk), T, 1.2);
+      hangAt(capName, PH ? 1180 : 1380, lerp(PH ? -700 : -500, PH ? 200 : 250, nk), T, 1.2);
 
       /* camera follows the boat */
       const view = kf(t, [[0.9, 660], [1.6, 740], [2.0, 800], [2.9, 1220], [3.3, 1300], [3.8, 1400]]);

@@ -17,7 +17,7 @@ export default {
     { v: 11, text: 'Widząc to, faryzeusze mówili do Jego uczniów:' },
     { v: 11, cont: true, text: '«Dlaczego wasz Nauczyciel jada wspólnie z celnikami i grzesznikami?»' },
   ],
-  cam: { x: [camFor(680), camFor(910)], y: [60, 130], z: [1.05, 1.2] },
+  cam: { x: [camFor(640), camFor(910)], y: [60, 130], z: [1.05, 1.2] },
   build(S) {
     // the Pharisees stand in the street, behind the low wall
     let PH = null;
@@ -25,7 +25,8 @@ export default {
       skyCols: EVENING,
       outside: (S2) => {
         const L = S2.layer({ par: FP, sh: 4 });
-        PH = [0, 1, 2].map((i) => ({ i, x: [310, 370, 446][i], seed: S2.c.rr(0, 9), p: S2.puppet(L.add(scribe(S2.c, i + 1))) }));
+        PH = [0, 1, 2].map((i) => ({ i, x: (S2.portrait ? [400, 460, 520] : [310, 370, 446])[i],   // phone: in the gateway, inside the screen
+        seed: S2.c.rr(0, 9), p: S2.puppet(L.add(scribe(S2.c, i + 1))) }));
         return L;
       },
     });
@@ -91,13 +92,13 @@ export default {
       });
       frowns.forEach((f, i) => {
         const k = es(t, 2.2 + i * 0.1, 2.4 + i * 0.1, ease.back) * (1 - es(t, 2.9, 3.0));
-        pose(f, { x: 330 + i * 60, y: 482, s: k, o: k > 0.02 ? 1 : 0 });
+        pose(f, { x: (S.portrait ? 420 : 330) + i * 60, y: 482, s: k, o: k > 0.02 ? 1 : 0 });
       });
       const qk = es(t, 3.05, 3.25, ease.back);
-      pose(q, { x: 470, y: 470, s: qk, o: qk > 0.02 ? 1 : 0 });
+      pose(q, { x: S.portrait ? 520 : 470, y: 470, s: qk, o: qk > 0.02 ? 1 : 0 });
 
       /* camera: the table → over to the gate */
-      S.cam.x = kf(t, [[0, camFor(900)], [1.0, camFor(845)], [2.0, camFor(830)], [2.5, camFor(700)], [3.8, camFor(690)]]);
+      S.cam.x = kf(t, [[0, camFor(900)], [1.0, camFor(845)], [2.0, camFor(830)], [2.5, camFor(S.portrait ? 670 : 700)], [3.8, camFor(S.portrait ? 660 : 690)]]);
       S.cam.z = 1.1 + es(t, 0.1, 0.6) * 0.08 - es(t, 1.0, 1.5) * 0.06;
       S.cam.y = 100 + es(t, 0.1, 0.6) * 20 - es(t, 1.0, 1.5) * 20;
     };

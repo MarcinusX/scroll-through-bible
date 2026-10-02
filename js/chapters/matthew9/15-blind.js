@@ -45,7 +45,7 @@ export default {
     // Jesus: along the street → to the door → in
     const JK = [[-0.3, 640], [1.1, 900], [2.05, 900], [2.45, DOORX]];
     // the blind men shuffle behind, more slowly
-    const BK = [[0.05, 380], [1.2, 600], [2.0, 640], [2.85, DOORX - 110]];
+    const BK = S.portrait ? [[0.05, 450], [1.2, 640], [2.0, 680], [2.85, DOORX - 110]] : [[0.05, 380], [1.2, 600], [2.0, 640], [2.85, DOORX - 110]];   // phone: closer behind Him
     return (t, time) => {
       const T = time;
       set.update(t, T);
@@ -76,7 +76,7 @@ export default {
       pose(cry, { x: bx + 30, y: FEET - 220, s: ck, o: ck > 0.02 ? 1 : 0 });
       rings(bx + 26, FEET - 186, call, T, { dir: 1 });
 
-      S.cam.x = kf(t, [[0, 0], [1.0, 60], [2.0, 100], [2.8, 190]]);
+      S.cam.x = S.portrait ? kf(t, [[0, -100], [1.0, -30], [2.0, 70], [2.8, 190]]) : kf(t, [[0, 0], [1.0, 60], [2.0, 100], [2.8, 190]]);   // phone: the blind men in view
       S.cam.z = 1.04 + es(t, 0.9, 1.3) * 0.06 - es(t, 2.0, 2.6) * 0.04;
       S.cam.y = 20;
     };

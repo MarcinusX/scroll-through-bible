@@ -15,7 +15,7 @@ export default {
     { v: 2, cont: true, text: 'Jezus, widząc ich wiarę, rzekł do paralityka:' },
     { v: 2, cont: true, text: '«Ufaj, synu! Odpuszczają ci się twoje grzechy».' },
   ],
-  cam: { x: [-40, 200], y: [0, 60], z: [1, 1.2] },
+  cam: { x: [-40, 260], y: [0, 60], z: [1, 1.2] },
   build(S) {
     const set = courtSet(S, { skyCols: DAY });
     const c = S.c;
@@ -40,7 +40,7 @@ export default {
     // the carry: the bed's centre x while they walk in, then they lower it
     const CK = [[-0.3, 1560], [0.62, BEDX]];
     const offs = [-72, 64, -80, 74];
-    const REST = [-60, 26, 230, 136];     // where each steps to once the bed is down
+    const REST = S.portrait ? [-60, 26, 200, 96] : [-60, 26, 230, 136];     // where each steps to once the bed is down (phone: closer)
     return (t, time) => {
       const T = time;
       set.update(T);
@@ -93,7 +93,8 @@ export default {
       dis.forEach((d) => d.p.set({ x: d.x, y: d.y, s: 0.86, flip: true, armF: 10 + bump(t, 1.1, 2) * (d.i === 0 ? 40 : 0), head: -look * 3, blink: blinkAt(T, d.seed) }));
 
       /* camera: the whole yard → the bed */
-      S.cam.x = es(t, 0.6, 1.2) * 120 + es(t, 2.0, 2.5) * 40;
+      // phone: further right, so the four friends (and their hearts) stay in view next to Jesus and the bed
+      S.cam.x = S.portrait ? 60 + es(t, 0.6, 1.2) * 150 + es(t, 2.0, 2.5) * 30 : es(t, 0.6, 1.2) * 120 + es(t, 2.0, 2.5) * 40;
       S.cam.z = 1.02 + es(t, 0.8, 1.4) * 0.08 + es(t, 2.0, 2.5) * 0.08;
       S.cam.y = 20 + es(t, 0.8, 1.4) * 20 + es(t, 2.0, 2.5) * 20;
     };

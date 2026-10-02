@@ -73,7 +73,7 @@ export default {
         pose(b.el, { x: b.x, y: b.y, s: k, r: k > 0.02 && T ? Math.sin(T * 6 + b.i) * 6 : 0, o: k > 0.02 ? 1 : 0 });
       });
       const shk = es(t, 0.15, 0.3, ease.back) * (1 - es(t, 0.8, 0.9));
-      pose(shout, { x: DOORX - 80, y: FEET - 240, s: shk, o: shk > 0.02 ? 1 : 0 });
+      pose(shout, { x: DOORX - (S.portrait ? 200 : 80), y: FEET - 240, s: shk, o: shk > 0.02 ? 1 : 0 });
 
       /* v32 — the mute man is brought to Him */
       const JK = [[0.4, DOORX], [0.9, 940]];
@@ -105,16 +105,16 @@ export default {
       const awe = es(t, 3.05, 3.15);
       CR.forEach((g) => { g.calm.set({ x: g.x, y: g.y, o: 1 - awe }); g.awe.set({ x: g.x, y: g.y - 3, o: awe }); });
       const mk = es(t, 3.1, 3.3, ease.back) * (1 - es(t, 3.95, 4.05));
-      pose(marvel, { x: 660, y: FEET - 250, s: mk, o: mk > 0.02 ? 1 : 0 });
+      pose(marvel, { x: S.portrait ? 720 : 660, y: FEET - 250, s: mk, o: mk > 0.02 ? 1 : 0 });
 
       /* v34 — the Pharisees mutter */
       PH.forEach((ph) => {
-        const K = [[3.3, 60 - ph.i * 60], [3.9, 470 - ph.i * 64]];
+        const K = [[3.3, 60 - ph.i * 60], [3.9, (S.portrait ? 530 : 470) - ph.i * 64]];
         const x = kf(t, K);
         ph.p.set({ x, y: FEET + 20 + ph.i * 4, s: 1, flip: es(t, 4.1, 4.2) > 0.5 && ph.i === 1, walk: moving(t, K) ? x * 0.05 + ph.i : undefined, armF: 20 + es(t, 4.1, 4.3) * (ph.i ? 30 : 60), armB: 10, head: 6, o: seg(t, 3.3, 3.4), blink: blinkAt(T, ph.seed) });
       });
       const pk = es(t, 4.1, 4.3, ease.back);
-      pose(mutter, { x: 480, y: FEET - 214, s: pk, o: pk > 0.02 ? 1 : 0 });
+      pose(mutter, { x: S.portrait ? 530 : 480, y: FEET - 214, s: pk, o: pk > 0.02 ? 1 : 0 });
 
       S.cam.x = kf(t, [[0, 120], [0.9, 40], [1.8, -20], [3.0, -20], [3.3, -60], [4.3, -110]]);
       S.cam.z = 1.02 + es(t, 1.8, 2.2) * 0.08 - es(t, 2.9, 3.3) * 0.08;

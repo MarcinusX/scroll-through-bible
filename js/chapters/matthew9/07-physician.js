@@ -10,7 +10,7 @@ import { altar, puff } from '../mark12/lib.js';
 import { lamb } from '../mark11/lib.js';
 
 const camFor = (x) => (x - 800) / FP;
-const FX = 760, FY = 130, FW = 540, FH = 290;     // the painted flat: centre x, top y, size
+const FX0 = 760, FY = 130, FW = 540, FH = 290;     // the painted flat: centre x, top y, size
 
 /** a painted flat: a wooden frame round a parchment sky and a strip of ground; origin at its top centre */
 function flat(c, { w = FW, h = FH, sky = mix(C.skyBlue, C.cream, 0.4), ground = mix(C.sand, C.hillNear, 0.35) } = {}) {
@@ -33,12 +33,14 @@ export default {
   ],
   cam: { x: [camFor(640), camFor(860)], y: [-40, 110], z: [1, 1.16] },
   build(S) {
+    const FX = S.portrait ? 736 : FX0;     // phone: the painted flats clear of the progress thread
     let PH = null;
     const set = feastSet(S, {
       skyCols: EVENING, sky2: NIGHT,
       outside: (S2) => {
         const L = S2.layer({ par: FP, sh: 4 });
-        PH = [0, 1, 2].map((i) => ({ i, x: [310, 370, 446][i], seed: S2.c.rr(0, 9), p: S2.puppet(L.add(scribe(S2.c, i + 1))) }));
+        PH = [0, 1, 2].map((i) => ({ i, x: (S2.portrait ? [400, 460, 520] : [310, 370, 446])[i],   // phone: in the gateway, inside the screen
+        seed: S2.c.rr(0, 9), p: S2.puppet(L.add(scribe(S2.c, i + 1))) }));
         return L;
       },
     });

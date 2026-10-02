@@ -29,17 +29,21 @@ export default {
     { v: 25, cont: true, text: 'a dziewczynka wstała.' },
     { v: 26 },
   ],
-  cam: { x: [-80, 160], y: [-60, 40], z: [0.96, 1.2] },
+  cam: { x: [-120, 160], y: [-60, 40], z: [0.96, 1.2] },
   build(S) {
     const set = roomSet(S);
     const c = S.c;
+    // phone: the bed, the girl, her mother and Jesus at the bedside move in from the edge
+    const BD = S.portrait ? -100 : 0;
+    const MD = S.portrait ? -36 : 0;     // phone: the mother kneels a little nearer, clear of the progress thread
     const girlLying = set.bedL.add(`<g>${girlOnBed(c, L5.girl)}</g>`);
     const girlSit = S.puppet(set.bedL.add(person(c, { ...L5.girl, pose: 'sit' })));
     set.bedL.add(`<g>${blanketOnBed(c)}</g>`);
 
     const L = S.layer({ par: 0.5, sh: 5 });
-    const G = [[[0, 1, 2], 720], [[3, 1, 0], 880]].map(([idx, x], i) => ({ i, x, go: L.sprite(mourners(c, idx, 'go'), x, FEET) }));
-    const pipers = [0, 1].map((i) => ({ i, x: [610, 990][i], sp: L.sprite(mourners(c, [i + 2], 'go'), [610, 990][i], FEET - 10) }));
+    const GX = S.portrait ? [720, 830] : [720, 880], PX = S.portrait ? [610, 920] : [610, 990];   // phone: where they stood in mt9-flutes
+    const G = [[[0, 1, 2], GX[0]], [[3, 1, 0], GX[1]]].map(([idx, x], i) => ({ i, x, go: L.sprite(mourners(c, idx, 'go'), x, FEET) }));
+    const pipers = [0, 1].map((i) => ({ i, x: PX[i], sp: L.sprite(mourners(c, [i + 2], 'go'), PX[i], FEET - 10) }));
     const mother = S.puppet(L.add(person(c, { ...L5.mother, pose: 'kneel' })));
     const motherUp = S.puppet(L.add(person(c, L5.mother)));
     const ruler = S.puppet(L.add(person(c, RULER)));
@@ -58,7 +62,7 @@ export default {
     const vils = VIL.map(([x, y], i) => ({ i, x, y, el: fl.add(`<g>${village(c, { n: 3, w: 70, sc: 0.36, lit: true })}</g>`), bang: fl.add(`<g>${glyphTag(c, '!', { size: 16 })}</g>`) }));
     const home = fl.add(`<g>${village(c, { n: 1, w: 10, sc: 0.5 })}<circle cy="-14" r="30" fill="url(#warm-glow)"/></g>`);
     const slips = VIL.map((v, i) => ({ i, v, el: fl.add(`<g>${wordSlip(c, 26)}</g>`) }));
-    const FLX = 880, FLY = 120;
+    const FLX = S.portrait ? 846 : 880, FLY = 120;     // phone: the flat clear of the progress thread
 
     return (t, time) => {
       const T = time;
@@ -75,30 +79,31 @@ export default {
       });
 
       /* Jesus sends them out, then goes to the bed */
-      const JK = [[1.0, 520], [1.4, 930]];
+      if (BD) set.bedL.shift(BD, 0);
+      const JK = [[1.0, 520], [1.4, 930 + BD]];
       const jx = kf(t, JK);
       const kneel = es(t, 1.45, 1.5);
       jesus.set({ x: jx, y: FEET, s: 1.04, walk: moving(t, JK) ? jx * 0.05 : undefined, o: 1 - kneel, armF: 20 + bump(t, 0.1, 0.9) * 60, armB: 10 + bump(t, 0.1, 0.9) * 90, flip: t < 0.9 && t > 0.1, blink: blinkAt(T) });
       /* v25b — He takes her by the hand */
       const take = es(t, 1.5, 1.75);
       const rise = es(t, 2.05, 2.12), stand = es(t, 2.4, 2.47);
-      jSit.set({ x: 940, y: FEET, s: 1.04, o: kneel * (1 - stand), armF: 30 + take * 50 + rise * 20, armB: 20, head: 8 - rise * 14, blink: blinkAt(T) });
-      jUp.set({ x: 900, y: FEET, s: 1.04, o: stand, armF: 50 + bump(t, 2.5, 3.5) * 20, armB: 20, head: -4, blink: blinkAt(T) });
+      jSit.set({ x: 940 + BD, y: FEET, s: 1.04, o: kneel * (1 - stand), armF: 30 + take * 50 + rise * 20, armB: 20, head: 8 - rise * 14, blink: blinkAt(T) });
+      jUp.set({ x: 900 + BD, y: FEET, s: 1.04, o: stand, armF: 50 + bump(t, 2.5, 3.5) * 20, armB: 20, head: -4, blink: blinkAt(T) });
       pose(girlLying, { o: 1 - rise });
-      girlSit.set({ x: 1060, y: RM.FLOOR - 50, s: 0.78, flip: true, o: rise * (1 - stand), armF: 80, armB: 20, head: -6, blink: blinkAt(T, 2) });
+      girlSit.set({ x: 1060 + BD, y: RM.FLOOR - 50, s: 0.78, flip: true, o: rise * (1 - stand), armF: 80, armB: 20, head: -6, blink: blinkAt(T, 2) });
       /* v25c — the girl gets up */
-      girlUp.set({ x: 1040 - stand * 20, y: FEET + 6, s: 0.8, flip: true, o: stand, armF: 60 + bump(t, 2.5, 3.5) * 40, armB: 30 + es(t, 2.55, 2.8) * 100, head: -6, blink: blinkAt(T, 2) });
-      pose(glow, { x: 1030, y: RM.FLOOR - 110, s: 0.6 + es(t, 2.05, 2.6) * 0.6, o: es(t, 2.0, 2.4) * 0.8 });
+      girlUp.set({ x: 1040 + BD - stand * 20, y: FEET + 6, s: 0.8, flip: true, o: stand, armF: 60 + bump(t, 2.5, 3.5) * 40, armB: 30 + es(t, 2.55, 2.8) * 100, head: -6, blink: blinkAt(T, 2) });
+      pose(glow, { x: 1030 + BD, y: RM.FLOOR - 110, s: 0.6 + es(t, 2.05, 2.6) * 0.6, o: es(t, 2.0, 2.4) * 0.8 });
       pose(set.winLight, { o: es(t, 1.9, 2.4) });
       const run = es(t, 2.5, 2.85);
-      mother.set({ x: 1210, y: FEET - 30, s: 0.94, flip: true, o: 1 - es(t, 2.4, 2.45), armF: 60, armB: 30, head: 16, blink: blinkAt(T, 7) });
-      motherUp.set({ x: lerp(1210, 1120, run), y: FEET, s: 0.96, flip: true, o: es(t, 2.4, 2.45), armF: 60 + run * 60, armB: 50 + run * 80, walk: run > 0 && run < 1 ? run * 20 : undefined, blink: blinkAt(T, 7) });
-      const RK = [[0.0, 380], [1.2, 380], [2.5, 380], [2.85, 820]];
+      mother.set({ x: 1210 + BD + MD, y: FEET - 30, s: 0.94, flip: true, o: 1 - es(t, 2.4, 2.45), armF: 60, armB: 30, head: 16, blink: blinkAt(T, 7) });
+      motherUp.set({ x: lerp(1210 + BD + MD, 1120 + BD, run), y: FEET, s: 0.96, flip: true, o: es(t, 2.4, 2.45), armF: 60 + run * 60, armB: 50 + run * 80, walk: run > 0 && run < 1 ? run * 20 : undefined, blink: blinkAt(T, 7) });
+      const RK = [[0.0, 380], [1.2, 380], [2.5, 380], [2.85, 820 + BD]];
       const rx = kf(t, RK);
       ruler.set({ x: rx, y: FEET - 10, s: 1, walk: moving(t, RK) ? rx * 0.05 : undefined, armF: 20 + run * 110, armB: 10 + run * 120, head: 10 - run * 16, blink: blinkAt(T, 3) });
       hearts.forEach((h, i) => {
         const k = es(t, 2.6 + i * 0.12, 2.85 + i * 0.12, ease.back);
-        pose(h, { x: [1080, 840][i], y: RM.FLOOR - 230 - k * 20, s: k, o: k > 0.02 ? 1 : 0 });
+        pose(h, { x: [1080, 840][i] + BD, y: RM.FLOOR - 230 - k * 20, s: k, o: k > 0.02 ? 1 : 0 });
       });
 
       /* v26 — the news goes out into all that land */
@@ -117,7 +122,7 @@ export default {
         pose(s.el, { x, y: y + oy, r: (s.v.x > 0 ? 1 : -1) * 20 * Math.sin(k * PI), s: 0.9, o: bump(t, 3.25 + s.i * 0.08, 3.6 + s.i * 0.08) });
       });
 
-      S.cam.x = kf(t, [[0, 0], [0.9, -20], [1.3, 100], [2.8, 110], [3.2, 80]]);
+      S.cam.x = S.portrait ? kf(t, [[0, -100], [0.9, -110], [1.3, 60], [2.8, 70], [3.2, 60]]) : kf(t, [[0, 0], [0.9, -20], [1.3, 100], [2.8, 110], [3.2, 80]]);   // phone: the door the mourners go out of, then the bed
       S.cam.z = 1.06 + es(t, 1.3, 1.7) * 0.1 - es(t, 2.6, 3.2) * 0.14;
       S.cam.y = 30 - es(t, 2.9, 3.3) * 80;
     };

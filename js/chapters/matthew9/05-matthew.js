@@ -136,11 +136,12 @@ export default {
       const tagK = es(t, 0.45, 0.85, ease.out);
       const flipK = seg(t, 3.25, 3.5);
       const sx1 = Math.max(0, 1 - flipK * 2), sx2 = Math.max(0, flipK * 2 - 1);
-      const ty = lerp(-600, 250, tagK);
-      pose(nameF, { x: 1010, y: ty, r: Math.sin(T * 0.9) * 2, sx: sx1 < 0.02 ? 0.02 : sx1, o: tagK > 0.01 && sx1 > 0.02 ? 1 : 0 });
-      pose(nameB, { x: 1010, y: ty, r: Math.sin(T * 0.9) * 2, sx: sx2 < 0.02 ? 0.02 : sx2, o: sx2 > 0.02 ? 1 : 0 });
+      const ty = lerp(S.portrait ? -700 : -600, 250, tagK);
+      const TX = S.portrait ? 960 : 1010, BKX = S.portrait ? 760 : 820;   // phone: the turned tag clear of the edge
+      pose(nameF, { x: TX, y: ty, r: Math.sin(T * 0.9) * 2, sx: sx1 < 0.02 ? 0.02 : sx1, o: tagK > 0.01 && sx1 > 0.02 ? 1 : 0 });
+      pose(nameB, { x: TX, y: ty, r: Math.sin(T * 0.9) * 2, sx: sx2 < 0.02 ? 0.02 : sx2, o: sx2 > 0.02 ? 1 : 0 });
       const bk = es(t, 3.45, 3.8, ease.back);
-      pose(book, { x: 820, y: lerp(-500, 210, es(t, 3.35, 3.75, ease.out)) + Math.sin(T * 1.1) * 3, r: Math.sin(T * 0.7) * 2, s: 0.6 + bk * 0.4, o: t > 3.35 ? 1 : 0 });
+      pose(book, { x: BKX, y: lerp(S.portrait ? -700 : -500, 210, es(t, 3.35, 3.75, ease.out)) + Math.sin(T * 1.1) * 3, r: Math.sin(T * 0.7) * 2, s: 0.6 + bk * 0.4, o: t > 3.35 ? 1 : 0 });
 
       /* v9b — at the booth: the fisherman pays, Matthew counts */
       const fKeys = [[-0.3, BOOTH - 170], [1.9, BOOTH - 170], [2.4, BOOTH + 500]];

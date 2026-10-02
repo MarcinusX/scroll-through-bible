@@ -16,7 +16,7 @@ export default {
     { v: 14, text: 'Wtedy podeszli do Niego uczniowie Jana i zapytali:' },
     { v: 14, cont: true, text: '«Dlaczego my i faryzeusze dużo pościmy, Twoi zaś uczniowie nie poszczą?»' },
   ],
-  cam: { x: [camFor(620), camFor(760)], y: [40, 120], z: [1.04, 1.18] },
+  cam: { x: [camFor(580), camFor(760)], y: [40, 120], z: [1.02, 1.18] },
   build(S) {
     const set = feastSet(S, { skyCols: NIGHT, night: true, sunAt: [1180, 150] });
     const c = S.c;
@@ -46,7 +46,7 @@ export default {
 
       /* v14a — they come in through the gate */
       JD.forEach((d) => {
-        const K = [[0.05 + d.i * 0.1, 160 - d.i * 70], [0.7 + d.i * 0.08, 470 - d.i * 66]];
+        const K = [[0.05 + d.i * 0.1, 160 - d.i * 70], [0.7 + d.i * 0.08, S.portrait ? 490 - d.i * 56 : 470 - d.i * 66]];   // phone: a closer group
         const x = kf(t, K);
         const point = d.i === 0 ? es(t, 1.2, 1.4) : 0;
         d.p.set({ x, y: FT.FLOOR + 30 + (d.i % 2) * 8, s: 1, walk: moving(t, K) ? x * 0.05 + d.i : undefined, armF: 40 + point * 50, armB: 12 + (d.i === 1 ? es(t, 1.1, 1.3) * 60 : 0), head: -point * 4, blink: blinkAt(T, d.seed) });
@@ -65,8 +65,9 @@ export default {
       const k = es(t, 1.08, 1.28, ease.back);
       pose(ask, { x: 480, y: FT.FLOOR - 236, s: k, o: k > 0.02 ? 1 : 0 });
 
-      S.cam.x = kf(t, [[0, camFor(620)], [1.0, camFor(660)], [1.6, camFor(740)]]);
-      S.cam.z = 1.08 + es(t, 0.8, 1.4) * 0.06;
+      // phone: less zoom and further left, so John's disciples, Jesus and Peter and John at the table all fit
+      S.cam.x = S.portrait ? kf(t, [[0, camFor(600)], [1.0, camFor(630)], [1.6, camFor(670)]]) : kf(t, [[0, camFor(620)], [1.0, camFor(660)], [1.6, camFor(740)]]);
+      S.cam.z = S.portrait ? 1.04 : 1.08 + es(t, 0.8, 1.4) * 0.06;
       S.cam.y = 80 + es(t, 0.8, 1.4) * 20;
     };
   },

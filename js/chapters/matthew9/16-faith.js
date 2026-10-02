@@ -58,8 +58,9 @@ export default {
       jesus.set({ x: JX - touch * 60, y: FEET, s: 1.04, flip: true, armF: 20 + es(t, 0.1, 0.3) * 30 * (1 - touch) + touch * 70 + stern * 20, armB: 10 + stern * 150, head: touch * 8 - stern * 4, blink: blinkAt(T) });
       const ak = es(t, 0.1, 0.3, ease.back) * (1 - es(t, 0.95, 1.05));
       pose(ask, { x: JX - 30, y: FEET - 230, s: ak, o: ak > 0.02 ? 1 : 0 });
-      peter.set({ x: 1000, y: FEET - 16, s: 0.98, flip: true, armF: 14 + bump(t, 3.1, 4.0) * 60, head: -2, blink: blinkAt(T, 2) });
-      john.set({ x: 1080, y: FEET - 4, s: 1, flip: true, armF: 12 + bump(t, 3.1, 4.0) * 80, armB: bump(t, 3.1, 4.0) * 60, blink: blinkAt(T, 6) });
+      // phone: Peter and John stand a little nearer, clear of the right edge and the progress thread
+      peter.set({ x: S.portrait ? 970 : 1000, y: FEET - 16, s: 0.98, flip: true, armF: 14 + bump(t, 3.1, 4.0) * 60, head: -2, blink: blinkAt(T, 2) });
+      john.set({ x: S.portrait ? 1034 : 1080, y: FEET - 4, s: 1, flip: true, armF: 12 + bump(t, 3.1, 4.0) * 80, armB: bump(t, 3.1, 4.0) * 60, blink: blinkAt(T, 6) });
 
       /* v28c — "Yes, Lord!"; v29 — He touches their eyes; v30a — they see */
       const opened = es(t, 3.05, 3.12);

@@ -54,7 +54,8 @@ export default {
     // a basket of cloth by the stool, a tall jar of new wine
     f.p(c.cut([[300, FLOOR], [292, FLOOR - 40], [368, FLOOR - 40], [360, FLOOR]], 0.4, 5), C.basket);
     f.p(c.cut(c.blob(318, FLOOR - 46, 20, 10, 8, 0.2), 0.4, 4), C.terracotta).p(c.cut(c.blob(346, FLOOR - 48, 22, 11, 8, 0.2), 0.4, 4), mix(C.dustyBlue, C.stone, 0.5));
-    f.p(c.cut([[1380, FLOOR], [1350, FLOOR - 60], [1356, FLOOR - 120], [1376, FLOOR - 150], [1374, FLOOR - 170], [1410, FLOOR - 170], [1408, FLOOR - 150], [1428, FLOOR - 120], [1434, FLOOR - 60], [1404, FLOOR]], 0.5, 6), C.pot);
+    // phone: no tall jar on the floor — it would stand sliced under the progress thread
+    if (!S.portrait) f.p(c.cut([[1380, FLOOR], [1350, FLOOR - 60], [1356, FLOOR - 120], [1376, FLOOR - 150], [1374, FLOOR - 170], [1410, FLOOR - 170], [1408, FLOOR - 150], [1428, FLOOR - 120], [1434, FLOOR - 60], [1404, FLOOR]], 0.5, 6), C.pot);
     let boards = '';
     for (let i = 0; i < 40; i++) { const x = c.rr(-900, 2400), y = c.rr(FLOOR + 20, 1100); boards += c.cut(c.blob(x, y, c.rr(20, 40), c.rr(4, 8), 8, 0.2), 0.4, 4); }
     f.x(boards, shade(C.clay, -0.1), 'opacity=".4"');
@@ -121,14 +122,14 @@ export default {
       });
 
       /* v17a — new wine into an old skin */
-      const VK = [[1.9, 1400], [2.25, 1030], [3.9, 1030], [4.15, 1170], [4.6, 1300]];
+      const VK = [[1.9, 1400], [2.25, 1030], [3.9, 1030], [4.15, 1170], [4.6, S.portrait ? 1275 : 1300]];
       const vx = kf(t, VK);
       const pour1 = es(t, 2.3, 2.45) * (1 - es(t, 2.95, 3.05));
       const pour2 = es(t, 4.2, 4.3) * (1 - es(t, 4.55, 4.62));
       vintner.set({ x: vx, y: FLOOR, s: 1.02, flip: true, walk: moving(t, VK) ? vx * 0.05 : undefined, armF: 40 + (pour1 + pour2) * 80 + bump(t, 3.05, 3.4) * 60, armB: 20 + bump(t, 3.05, 3.4) * 120, lean: -bump(t, 3.05, 3.4) * 8, blink: blinkAt(T, 2) });
       const swell = es(t, 2.4, 3.05);
       const burst = es(t, 3.05, 3.12);
-      pose(oldSkin, { x: 960, y: PEG, sx: 1 + swell * 0.28 + (T ? Math.sin(T * 30) * 0.02 * swell : 0), sy: 1 + swell * 0.12, o: 1 - burst });
+      pose(oldSkin, { x: 960, y: PEG, sx: 1 + swell * 0.28 + (T ? Math.sin(T * 30) * 0.02 * swell : 0), sy: 1 + swell * 0.12, o: (1 - burst) * (S.portrait ? es(t, 1.75, 1.95) : 1) });     // phone: not peeping in at the edge while she sews
       halves.forEach((h) => {
         const k = es(t, 3.08, 3.45, ease.out);
         pose(h.el, { x: 960 + h.d * k * 60, y: PEG + k * (FLOOR - PEG - 110), r: h.d * k * 70, o: burst });

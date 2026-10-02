@@ -74,7 +74,7 @@ export default {
     const dancer = (g, i) => pose3(c, [{ x: 0, y: 0, s: 0.92, flip: i % 2 === 1, armF: 120, armB: 140, head: -6, o: { ...g.o, holdF: i === 2 ? `<g transform="translate(0 6)">${tambourine(c)}</g>` : '' } }]);
     const mourner = (g, i) => pose3(c, [{ x: 0, y: 0, s: 0.92, flip: i < 4, armF: 16, armB: 8, head: 14, o: g.o }]);
     const sitter = (g, i) => pose3(c, [{ x: 0, y: 0, s: 0.92, flip: i % 2 === 1, armF: 20, armB: 10, head: 16, o: { ...g.o, pose: 'sit' } }]);
-    const POS = [340, 440, 560, 660, 940, 1040, 1160, 1260];
+    const POS = S.portrait ? [490, 560, 635, 705, 895, 965, 1040, 1110] : [340, 440, 560, 660, 940, 1040, 1160, 1260];   // phone: the ring closes in
     G.forEach((g) => {
       g.x = POS[g.i];
       g.dance = guests.add(`<g>${dancer(g, g.i)}</g>`);

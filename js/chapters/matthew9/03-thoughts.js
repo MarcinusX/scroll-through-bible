@@ -25,10 +25,11 @@ export default {
 
     /* the four friends round the bed (still), the man on it */
     const L = S.layer({ par: WP, sh: 5 });
+    const [F2X, F3X] = S.portrait ? [1120, 1170] : [1150, 1210];   // phone: where the friends stand in mt9-bed
     const F = (i, x, y) => ({ x, y, s: 0.9, flip: true, armF: 20, armB: 12, head: -4, o: FRIENDS[i] });
     L.add(`<g>${pose3(c, [F(0, 868, CT.FEET - 6), F(1, 1090, CT.FEET - 6)])}</g>`);
     L.add(`<g transform="translate(${BEDX} ${CT.FEET - 14})">${matWithMan(c)}</g>`);
-    L.add(`<g>${pose3(c, [F(2, 1150, CT.FEET + 6), F(3, 1210, CT.FEET + 6)])}</g>`);
+    L.add(`<g>${pose3(c, [F(2, F2X, CT.FEET + 6), F(3, F3X, CT.FEET + 6)])}</g>`);
 
     /* the dark thought, the knots at their hearts, the beam of His knowing */
     const fx = S.layer({ par: WP, sh: 4 });
@@ -77,18 +78,21 @@ export default {
       const down = es(t, 3.05, 3.4, ease.out);
       const by = lerp(-560, 250, down);
       const tip = (Math.sin(T * 1.6) * 7 + Math.sin(T * 0.7) * 3) * es(t, 3.35, 3.6) + (T ? 0 : 6 * es(t, 3.35, 3.6));
-      pose(str, { x: 700, y: by, o: down > 0.01 ? 1 : 0 });
-      pose(beamEl, { x: 700, y: by, r: tip, o: down > 0.01 ? 1 : 0 });
+      const BX = S.portrait ? 770 : 700;   // phone: both pans inside the screen
+      pose(str, { x: BX, y: by, o: down > 0.01 ? 1 : 0 });
+      pose(beamEl, { x: BX, y: by, r: tip, o: down > 0.01 ? 1 : 0 });
       pans.forEach((p) => {
         const a = (tip * PI) / 180;
-        pose(p.el, { x: 700 + p.d * 170 * Math.cos(a), y: by + p.d * 170 * Math.sin(a), o: down > 0.01 ? 1 : 0 });
+        pose(p.el, { x: BX + p.d * 170 * Math.cos(a), y: by + p.d * 170 * Math.sin(a), o: down > 0.01 ? 1 : 0 });
       });
 
       dis.forEach((d) => d.p.set({ x: d.x, y: d.y, s: 0.86, flip: true, armF: 10, head: -3 + bump(t, 0.3, 1.2) * 4, blink: blinkAt(T, d.seed) }));
 
       /* camera: over to the bench, then up to the balance */
-      S.cam.x = -60 - es(t, 0.05, 0.5) * 180 + es(t, 3.0, 3.5) * 120;
-      S.cam.z = 1.04 + es(t, 0.05, 0.5) * 0.1 - es(t, 3.0, 3.5) * 0.12;
+      // phone: a shorter pan and a smaller zoom, so the man on his bed at the right is not under the progress thread
+      const PH = S.portrait;
+      S.cam.x = -60 - es(t, 0.05, 0.5) * (PH ? 150 : 180) + es(t, 3.0, 3.5) * (PH ? 90 : 120);
+      S.cam.z = 1.04 + es(t, 0.05, 0.5) * (PH ? 0.03 : 0.1) - es(t, 3.0, 3.5) * (PH ? 0.05 : 0.12);
       S.cam.y = 20 + es(t, 0.05, 0.5) * 20 - es(t, 3.0, 3.5) * 70;
     };
   },

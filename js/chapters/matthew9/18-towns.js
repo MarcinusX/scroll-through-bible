@@ -24,7 +24,7 @@ export default {
   ],
   cam: { x: [camFor(600), camFor(1900)], y: [0, 40], z: [1, 1.1] },
   build(S) {
-    const set = galileeHills(S, { skyCols: MORNING, sunAt: [1100, 140] });
+    const set = galileeHills(S, { skyCols: MORNING, sunAt: [S.portrait ? 1030 : 1100, 140] });     // phone: the sun clear of the progress thread
     const c = S.c;
     // far villages on the green hills
     const farV = S.layer({ par: 0.2, sh: 3 });
@@ -101,6 +101,7 @@ export default {
       S.cam.x = camFor(kf(t, [[0, 700], [0.9, 1000], [1.2, SYN - 20], [2.0, SYN - 20], [2.4, SICK - 40]]));
       S.cam.z = 1.04 + teach * 0.04;
       S.cam.y = 20;
+      if (S.portrait) fg.shift(0, 160);   // phone: the foreground rocks would float as grey scraps above the caption
     };
   },
 };

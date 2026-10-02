@@ -26,7 +26,7 @@ export default {
     { v: 18, cont: true, text: 'lecz przyjdź i włóż na nią rękę, a żyć będzie».' },
     { v: 19 },
   ],
-  cam: { x: [camFor(500), camFor(760)], y: [40, 120], z: [1.0, 1.2] },
+  cam: { x: [camFor(430), camFor(760)], y: [40, 120], z: [1.0, 1.2] },
   build(S) {
     const set = feastSet(S, { skyCols: MORNING, sunAt: [1300, 170] });
     const c = S.c;
@@ -90,7 +90,7 @@ export default {
         d.p.set({ x, y: FT.FLOOR + (d.i === 0 ? 0 : 4), s: 1, flip: true, walk: moving(t, K) ? x * 0.05 + d.i : undefined, o: rise, armF: 20, blink: blinkAt(T, d.seed) });
       });
 
-      S.cam.x = kf(t, [[0, camFor(700)], [0.6, camFor(600)], [3.0, camFor(600)], [3.9, camFor(520)]]);
+      S.cam.x = kf(t, [[0, camFor(700)], [0.6, camFor(600)], [3.0, camFor(600)], [3.9, camFor(S.portrait ? 440 : 520)]]);   // phone: follow them out to the ruler
       S.cam.z = 1.1 + es(t, 0.8, 1.3) * 0.06 - es(t, 3.0, 3.6) * 0.08;
       S.cam.y = 80 + es(t, 0.8, 1.3) * 20;
     };

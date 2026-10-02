@@ -17,7 +17,7 @@ export default {
     { v: 8, text: 'A tłumy ogarnął lęk na ten widok,' },
     { v: 8, cont: true, text: 'i wielbiły Boga, który takiej mocy udzielił ludziom.' },
   ],
-  cam: { x: [-80, 220], y: [-40, 60], z: [0.98, 1.16] },
+  cam: { x: [-80, 260], y: [-40, 60], z: [0.98, 1.16] },
   build(S) {
     const set = courtSet(S, { skyCols: DAY, sky2: GOLDEN });
     const c = S.c;
@@ -30,6 +30,7 @@ export default {
 
     /* the friends, the bed, the man */
     const L = S.layer({ par: WP, sh: 5 });
+    const [F2X, F3X] = S.portrait ? [1120, 1170] : [1150, 1210];   // phone: where the friends stand in mt9-bed
     const F = (i, x, y) => ({ x, y, s: 0.9, flip: true, armF: 20, armB: 12, head: -4, o: FRIENDS[i] });
     const frBack = L.add(`<g>${pose3(c, [F(0, 868, CT.FEET - 6), F(1, 1090, CT.FEET - 6)])}</g>`);
     const frBackUp = L.add(`<g>${pose3(c, [{ ...F(0, 868, CT.FEET - 6), armF: 60, armB: 150, head: -10 }, { ...F(1, 1090, CT.FEET - 6), armF: 150, armB: 120, head: -10 }])}</g>`);
@@ -38,8 +39,8 @@ export default {
     const sitting = S.puppet(L.add(person(c, { ...PARALYTIC, pose: 'sit' })));
     const standing = S.puppet(L.add(person(c, { ...HEALED })));
     const carrying = S.puppet(L.add(person(c, { ...HEALED, holdF: `<g transform="translate(-6 -40) rotate(-70)">${rolledMat(c, 96)}</g>` })));
-    const frFront = L.add(`<g>${pose3(c, [F(2, 1150, CT.FEET + 6), F(3, 1210, CT.FEET + 6)])}</g>`);
-    const frFrontUp = L.add(`<g>${pose3(c, [{ ...F(2, 1150, CT.FEET + 6), armF: 140, armB: 150, head: -10 }, { ...F(3, 1210, CT.FEET + 6), armF: 60, armB: 150, head: -12 }])}</g>`);
+    const frFront = L.add(`<g>${pose3(c, [F(2, F2X, CT.FEET + 6), F(3, F3X, CT.FEET + 6)])}</g>`);
+    const frFrontUp = L.add(`<g>${pose3(c, [{ ...F(2, F2X, CT.FEET + 6), armF: 140, armB: 150, head: -10 }, { ...F(3, F3X, CT.FEET + 6), armF: 60, armB: 150, head: -12 }])}</g>`);
 
     /* words, awe, praise */
     const fx = S.layer({ par: WP, sh: 4 });
@@ -97,7 +98,8 @@ export default {
       });
 
       /* camera: Jesus and the bed → the man walking off → the whole yard */
-      S.cam.x = 90 + es(t, 2.55, 3.3) * 120 - es(t, 3.2, 4.2) * 210;
+      // phone: a little further right, so the friends by the bed stay in view
+      S.cam.x = (S.portrait ? 150 : 90) + es(t, 2.55, 3.3) * (S.portrait ? 80 : 120) - es(t, 3.2, 4.2) * (S.portrait ? 230 : 210);
       S.cam.z = 1.1 - es(t, 3.2, 4.2) * 0.1;
       S.cam.y = 30 - es(t, 0.1, 0.5) * 30 * (1 - toMan) - es(t, 3.9, 4.4) * 30;
     };
