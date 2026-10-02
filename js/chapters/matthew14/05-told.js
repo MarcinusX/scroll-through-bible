@@ -46,13 +46,13 @@ export default {
       /* v12b — they come and tell Jesus */
       JD.forEach((d) => {
         const k = es(t, -0.2 + d.i * 0.08, 0.35 + d.i * 0.06);
-        const x = lerp(1500 + d.i * 90, 960 + d.i * 70, k);
+        const x = lerp(1500 + d.i * 90, (S.portrait ? 935 + d.i * 55 : 960 + d.i * 70), k);   // phone: the three stand clear of the thread
         const bow = es(t, 0.4, 0.55) * (1 - es(t, 1.5, 1.8));
         const tell = d.i === 0 ? bump(t, 0.35, 0.98) : 0;
         d.p.set({ x, y: FEET + (d.i % 2) * 8, s: 0.92, flip: true, walk: k > 0 && k < 1 ? x * 0.06 + d.i : undefined, armF: 20 + tell * 70, armB: tell * 30, head: bow * 16, lean: bow * 6, blink: blinkAt(T, d.seed) });
       });
       const nk = es(t, 0.42, 0.58, ease.back) * (1 - es(t, 0.95, 1.05));
-      const [dx, dy] = headAt(960, FEET, 0.92, true);
+      const [dx, dy] = headAt(S.portrait ? 935 : 960, FEET, 0.92, true);
       pose(news, { x: dx - 16, y: dy - 22, s: nk, o: nk > 0.01 ? 1 : 0 });
 
       /* Jesus hears; bows His head — then goes down to the boat */

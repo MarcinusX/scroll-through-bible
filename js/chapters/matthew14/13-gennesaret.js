@@ -10,7 +10,7 @@ import { kf, moving, headAt, speech, GLYPH, spark, heart, pallet, sickOnMat, awn
 const Y = 700;
 const MAT_Y = 742;
 const SHORE = 470;          // the water's edge
-const MATS = [720, 880, 1120, 1280];
+const MATS0 = [720, 880, 1120, 1280];
 
 export default {
   id: 'mt14-gennesaret',
@@ -20,9 +20,12 @@ export default {
     { v: 36, text: 'i prosili, żeby przynajmniej frędzli Jego płaszcza mogli się dotknąć;' },
     { v: 36, cont: true, text: 'a wszyscy, którzy się Go dotknęli, zostali uzdrowieni.' },
   ],
-  cam: { x: [-520, 140], y: [0, 70], z: [1, 1.16] },
+  cam: { x: [-520, 210], y: [0, 70], z: [1, 1.16] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;
+    // phone: the four mats closer together (all four sick in the picture), Jesus' walk and the camera to match
+    const MATS = P ? [730, 845, 1040, 1140] : MATS0;
     const sk = sky(S, ['#d8c9d6', '#f5d9bd', '#f8e5cc']);
     const hangL = S.layer({ par: 0.05, sh: 5 });
     const sunEl = hanging(hangL, sun(c, 46), { x: 0, y: 0, len: 800 });
@@ -93,7 +96,7 @@ export default {
     const fg = S.layer({ par: 0.9, sh: 6 });
     fg.add(bush(c, 1700, 890, 240, C.moss, C.sage) + rock(c, 1500, 910, 130, 50, C.rock2) + flowers(c, { x0: 1300, x1: 1800, y: 872, n: 14 }));
 
-    const jKeys = [[0.6, SHORE - 60], [0.95, 600], [1.95, 600], [2.3, 790], [2.95, 1010], [3.05, 1010]];
+    const jKeys = P ? [[0.6, SHORE - 60], [0.95, 640], [1.95, 640], [2.3, 780], [2.95, 945], [3.05, 945]] : [[0.6, SHORE - 60], [0.95, 600], [1.95, 600], [2.3, 790], [2.95, 1010], [3.05, 1010]];
     return (t, time) => {
       const T = time;
       sk.blend(['#d8c9d6', '#f5d9bd', '#f8e5cc'], MORNING, es(t, 0, 1.5));
@@ -114,7 +117,7 @@ export default {
       onb.forEach((d) => d.p.set({ x: d.x, y: 4, s: 0.94, o: 1 - es(t, 0.64 + d.i * 0.04, 0.68 + d.i * 0.04), armF: 30 + (d.i === 0 ? bump(t, 0.4, 0.7) * 80 : 0), blink: blinkAt(T, d.i + 2) }));
       ashore.forEach((d) => {
         const k = es(t, 0.64 + d.i * 0.04, 0.95 + d.i * 0.03);
-        const x = lerp(SHORE - 220 + d.x, 520 - d.i * 40 + es(t, 1.95, 2.3) * 110, k);
+        const x = lerp(SHORE - 220 + d.x, 520 - d.i * (P ? 28 : 40) + es(t, 1.95, 2.3) * (P ? 150 : 110), k);   // phone: they follow a little further, clear of the left edge
         d.p.set({ x, y: Y + 4 + (d.i % 2) * 6, s: 0.88, o: es(t, 0.64 + d.i * 0.04, 0.68 + d.i * 0.04), walk: (k > 0 && k < 1) || (t > 1.95 && t < 2.3) ? x * 0.05 + d.i : undefined, blink: blinkAt(T, d.i + 7) });
       });
 
@@ -170,7 +173,7 @@ export default {
       const fg_ = es(t, 2.1, 2.3) * (1 - es(t, 3.4, 3.7));
       pose(fringeGlow, { x: jx - 34, y: Y - 2, s: 0.8 + Math.sin(T * 3) * 0.08, o: fg_ });
 
-      S.cam.x = kf(t, [[0, -440], [0.6, -380], [1.0, -200], [1.4, 0], [2.0, 0], [2.4, 60], [3.0, 100]]);
+      S.cam.x = kf(t, P ? [[0, -440], [0.6, -380], [1.0, -200], [1.4, 150], [2.0, 150], [2.4, 180], [3.0, 200]] : [[0, -440], [0.6, -380], [1.0, -200], [1.4, 0], [2.0, 0], [2.4, 60], [3.0, 100]]);
       S.cam.z = kf(t, [[0, 1.04], [0.9, 1.08], [1.4, 1.0], [2.0, 1.02], [2.4, 1.1], [3.1, 1.02]]);
       S.cam.y = kf(t, [[0, 30], [1.4, 20], [2.4, 60], [3.1, 50]]);
     };

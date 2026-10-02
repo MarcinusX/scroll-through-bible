@@ -73,7 +73,8 @@ export default {
 
     /* ---------- the court ---------- */
     const act = S.layer({ par: 0.55, sh: 5 });
-    const COURT = [[430, 0], [510, 1], [590, 2], [1010, 3], [1090, 4], [1170, 5]].map(([x, i]) => ({ x, i, seed: c.rr(0, 6), p: S.puppet(act.add(person(c, noble(c, i)))) }));
+    const COURT = (S.portrait ? [[490, 0], [555, 1], [620, 2], [960, 3], [1015, 4], [1070, 5]] : [[430, 0], [510, 1], [590, 2], [1010, 3], [1090, 4], [1170, 5]]).map(   // phone: the outer courtiers come in from under the edge and the thread
+      ([x, i]) => ({ x, i, seed: c.rr(0, 6), p: S.puppet(act.add(person(c, noble(c, i)))) }));
     const messenger = S.puppet(act.add(person(c, { robe: C.wheatRobe, belt: C.leather, hair: C.hair2, hairStyle: 'short', beard: 'none', skin: C.skin3 })));
     const hMark = (o) => withFace(withFace(person(c, o), crown(c)), faceBits(c));
     const herodSit = S.puppet(act.add(hMark({ ...L6.herod, pose: 'sit' })));

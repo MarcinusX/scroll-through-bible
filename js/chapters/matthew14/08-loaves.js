@@ -42,7 +42,8 @@ export default {
 
     /* the near people, the disciples, Jesus, the baskets */
     const L = S.layer({ par: 0.5, sh: 5 });
-    const NEAR = [[500, 0, true], [580, 1, false], [1020, 2, true], [1100, 3, false], [1150, 4, null]].map(([x, i, m]) => ({ x, i, seed: c.rr(0, 9), child: m === null, p: S.puppet(L.add(person(c, { ...(m === null ? { ...folk(c, true), beard: 'none', hair: C.hair2 } : folk(c, m)), pose: 'sit' }))), piece: L.add(`<g>${crumb(c, 9)}</g>`) }));
+    const NEAR = (S.portrait ? [[525, 0, true], [600, 1, false], [975, 2, true], [1045, 3, false], [1005, 4, null]] : [[500, 0, true], [580, 1, false], [1020, 2, true], [1100, 3, false], [1150, 4, null]]).map(   // phone: the near sitters off the edge and the thread
+      ([x, i, m]) => ({ x, i, seed: c.rr(0, 9), child: m === null, p: S.puppet(L.add(person(c, { ...(m === null ? { ...folk(c, true), beard: 'none', hair: C.hair2 } : folk(c, m)), pose: 'sit' }))), piece: L.add(`<g>${crumb(c, 9)}</g>`) }));
     const DIS = [
       { o: TW.peter, side: -1, row: 2 }, { o: TW.andrew, side: 1, row: 8 }, { o: TW.john, side: -1, row: 14 }, { o: L6.philip, side: 1, row: 20 },
     ].map((d, i) => {
@@ -55,7 +56,7 @@ export default {
     const glowEl = L.add(`<g><circle r="110" fill="url(#halo-glow)"/></g>`);
     const BASK = Array.from({ length: 12 }, (_, i) => {
       const side = i < 6 ? -1 : 1, k = i % 6;
-      const x = side < 0 ? 430 + k * 46 : 940 + k * 46;
+      const x = S.portrait ? (side < 0 ? 480 + k * 38 : 930 + k * 38) : side < 0 ? 430 + k * 46 : 940 + k * 46;   // phone: both rows of baskets inside the screen
       return { i, x, y: gfn(x) + 34 + (k % 2) * 6, el: L.add(`<g>${basket(c, { w: 42, h: 26, full: true })}</g>`) };
     });
 

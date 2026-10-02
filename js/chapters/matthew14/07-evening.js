@@ -22,6 +22,7 @@ export default {
   cam: { x: [-40, 40], y: [-20, 70], z: [1, 1.16] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;
     const H = hillSet(S, { skyCols: GOLDEN, sunAt: [1200, 170] });
     const { sfn, gfn } = H;
     const warm = S.layer({ par: 0, sh: 1, flat: true });
@@ -37,7 +38,7 @@ export default {
     const L = S.layer({ par: 0.5, sh: 5 });
     const DIS = [
       { o: TW.john, x: 560, from: 200 }, { o: TW.peter, x: 640, from: 260 },
-      { o: TW.andrew, x: 960, from: 1340, andrew: true }, { o: L6.philip, x: 1040, from: 1400 }, { o: TW.james, x: 1120, from: 1460 },
+      { o: TW.andrew, x: 960, from: 1340, andrew: true }, { o: L6.philip, x: P ? 1010 : 1040, from: 1400 }, { o: TW.james, x: P ? 1062 : 1120, from: 1460 },   // phone: James out from under the thread
     ].map((d, i) => {
       const extra = d.andrew ? { holdF: `<g transform="translate(-30 13) rotate(70)">${basket(c, { w: 40, h: 24 })}</g>` } : {};
       const el = L.add(person(c, { ...d.o, ...extra }));
@@ -92,7 +93,7 @@ export default {
       const b = (el, x, y, a, z) => { const k = es(t, a, a + 0.2, ease.back) * (1 - es(t, z, z + 0.1)); pose(el, { x, y, s: k * 1.25, o: k > 0.01 ? 1 : 0 }); };
       const [px, py] = headAt(640, gfn(640) + 24, 0.94, false);
       b(late, px + 24, py - 18, 1.15, 1.92);
-      const [fx_, fy] = headAt(1040, gfn(1040) + 18, 0.94, true);
+      const [fx_, fy] = headAt(DIS[3].x, gfn(DIS[3].x) + 18, 0.94, true);
       b(buy, fx_ - 24, fy - 18, 2.15, 2.92);
       const [jx, jy] = headAt(JX, JY, 1.04, false);
       b(give, jx + 26, jy - 18, 3.12, 3.92);
@@ -113,11 +114,12 @@ export default {
       });
       fishes.forEach((f, i) => {
         const k = es(t, 4.45 + i * 0.08, 4.7 + i * 0.08, ease.back) * (1 - back);
-        pose(f, { x: lerp(bx, 1070 + i * 80, k), y: lerp(by, 440 - i * 14, k), s: 0.4 + k * 0.9, r: -10 + i * 20, o: k > 0.02 ? 1 : 0 });
+        pose(f, { x: lerp(bx, (P ? 985 + i * 60 : 1070 + i * 80), k), y: lerp(by, 440 - i * 14, k), s: 0.4 + k * 0.9, r: -10 + i * 20, o: k > 0.02 ? 1 : 0 });
       });
       const k5 = es(t, 4.4, 4.55, ease.back) * (1 - back), k2 = es(t, 4.7, 4.85, ease.back) * (1 - back);
       pose(n5, { x: 750, y: 420, s: k5, o: k5 > 0.01 ? 1 : 0 });
-      pose(n2, { x: 1180, y: 400, s: k2, o: k2 > 0.01 ? 1 : 0 });
+      pose(n2, { x: P ? 1045 : 1180, y: P ? 370 : 400,   // phone: the 2 over the second fish, not off the edge
+        s: k2, o: k2 > 0.01 ? 1 : 0 });
       const bk = es(t, 5.08, 5.25, ease.back) * (1 - es(t, 5.6, 5.7));
       pose(bring, { x: jx + 26, y: jy - 18, s: bk, o: bk > 0.01 ? 1 : 0 });
 

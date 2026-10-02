@@ -23,7 +23,7 @@ export default {
     { v: 9, text: 'Zasmucił się król.' },
     { v: 9, cont: true, text: 'Lecz przez wzgląd na przysięgę i na współbiesiadników kazał jej dać.' },
   ],
-  cam: { x: [-120, 60], y: [0, 180], z: [1, 1.6] },
+  cam: { x: [-230, 60], y: [0, 180], z: [1, 1.6] },
   build(S) {
     const c = S.c;
     sky(S, [mix(SEPIA.sky[0], C.duskViolet, 0.25), SEPIA.sky[1], SEPIA.sky[2]]);
@@ -152,7 +152,8 @@ export default {
       const gxx = lerp(1500, 1000, gIn);
       guard.set({ x: gxx, y: Y + 46, s: 0.94, flip: true, o: gIn > 0 ? 1 : 0, walk: gIn > 0 && gIn < 1 ? gxx * 0.05 : undefined, head: es(t, 4.75, 4.9) * 12, lean: es(t, 4.75, 4.9) * 8, armF: 20, blink: blinkAt(T, 5) });
 
-      S.cam.x = kf(t, [[0, 0], [1.9, 0], [2.2, -90], [2.45, -90], [2.7, 0]]);
+      // phone: further left, and held through v8, so her mother at the door stays in the picture while she asks
+      S.cam.x = kf(t, S.portrait ? [[0, 0], [1.9, 0], [2.2, -220], [2.85, -220], [3.2, 0]] : [[0, 0], [1.9, 0], [2.2, -90], [2.45, -90], [2.7, 0]]);
       S.cam.z = kf(t, [[0, 1.42], [1.0, 1.44], [1.4, 1.46], [2.2, 1.5], [2.7, 1.48], [3.3, 1.56], [4.0, 1.56], [4.4, 1.44]]);
       S.cam.y = kf(t, [[0, 150], [1.4, 150], [2.2, 160], [3.3, 170], [4.4, 150]]);
     };

@@ -17,7 +17,7 @@ export default {
     { v: 26 },
     { v: 27 },
   ],
-  cam: { x: [-40, 80], y: [-20, 60], z: [1, 1.2] },
+  cam: { x: [-80, 80], y: [-20, 60], z: [1, 1.2] },
   build(S) {
     const c = S.c;
     const N = nightLake(S);
@@ -43,14 +43,15 @@ export default {
     const noFear = fx.add(`<g>${speech(c, `<g transform="scale(.9)">${heart(c, 14)}</g>`, { w: 56, h: 50, flip: true })}</g>`);
     N.front();
 
-    const jKeys = [[1.05, 1420], [2.0, 960], [3.0, 900]];
+    const jKeys = S.portrait ? [[1.05, 1260], [2.0, 930], [3.0, 885]] : [[1.05, 1420], [2.0, 960], [3.0, 900]];   // phone: He stops short of the thread
     return (t, time) => {
       const T = time;
       const { rock, heave } = N.update(t, T, { wind: 1 - es(t, 3.3, 3.9) * 0.4, moonX: 1010 - es(t, 0.9, 1.5) * 120, moonY: 150 + es(t, 0.9, 1.5) * 90 });
       const wk = es(t, 1.05, 1.35, ease.back) * (1 - es(t, 1.9, 2.05));
       pose(watch, { x: 820, y: lerp(-400, 250, wk), r: Math.sin(T * 1.2) * 2.5, o: wk > 0.01 ? 1 : 0 });
       const fk = es(t, 0.1, 0.35, ease.back) * (1 - es(t, 0.9, 1.0));
-      pose(far, { x: 380, y: lerp(-300, 520, fk), r: Math.sin(T) * 2, o: fk > 0.01 ? 1 : 0 });
+      pose(far, { x: 720, y: lerp(S.portrait ? -500 : -300, 400, fk),   // in the sky over the boat (it hung at x 380, off the left edge on every screen)
+        r: Math.sin(T) * 2, o: fk > 0.01 ? 1 : 0 });
 
       /* v24 — tossed by the waves, the wind against them */
       pose(boatG, { x: BX, y: BY + heave, s: 1.0, r: rock });
@@ -101,7 +102,7 @@ export default {
       const [jhx, jhy] = headAt(jx, JY, 1.0, true);
       pose(noFear, { x: jhx - 22, y: jhy - 20, s: nk, o: nk > 0.01 ? 1 : 0 });
 
-      S.cam.x = kf(t, [[0, 20], [1.0, 60], [2.0, 40], [3.0, 40]]);
+      S.cam.x = kf(t, [[0, 20], [1.0, 60], [2.0, 40], [3.0, 40]]) - (S.portrait ? 80 : 0);   // phone: the whole boat in view
       S.cam.z = kf(t, [[0, 1.08], [1.0, 1.02], [2.2, 1.1], [3.0, 1.1], [3.5, 1.06]]);
       S.cam.y = kf(t, [[0, 30], [2.2, 40], [3.5, 30]]);
     };

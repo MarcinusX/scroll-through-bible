@@ -30,7 +30,7 @@ export default {
     { v: 23, text: 'Gdy to uczynił, wyszedł sam jeden na górę, aby się modlić.' },
     { v: 23, cont: true, text: 'Wieczór zapadł, a On sam tam przebywał.' },
   ],
-  cam: { x: [-80, 120], y: [-80, 60], z: [0.96, 1.2] },
+  cam: { x: [-180, 120], y: [-80, 60], z: [0.96, 1.2] },
   build(S) {
     const c = S.c;
     sky(S, EVENING, { name: 'dusk' });
@@ -106,7 +106,7 @@ export default {
       onb.forEach((d) => d.p.set({ x: d.x, y: 4, s: 0.94, o: es(t, 0.28 + d.i * 0.07, 0.32 + d.i * 0.07), flip: true, armF: 30 + bump(t, 0.6, 1.0) * 80, blink: blinkAt(T, d.i + 3) }));
       const sail = es(t, 0.5, 1.25);
       const bob = Math.sin(T * 1.4) * 2.5;
-      pose(boatG, { x: lerp(560, 150, sail), y: lerp(Y + 20, 610, sail) + bob, s: lerp(0.8, 0.4, sail), r: Math.sin(T * 1.1) * 0.8, o: 1 - es(t, 1.2, 1.28) });
+      pose(boatG, { x: lerp(560, S.portrait ? 300 : 150, sail), y: lerp(Y + 20, 610, sail) + bob, s: lerp(0.8, 0.4, sail), r: Math.sin(T * 1.1) * 0.8, o: 1 - es(t, 1.2, 1.28) });
       const sg = es(t, 0.2, 0.45, ease.back) * (1 - es(t, 1.0, 1.15));
       pose(sign, { x: 640, y: lerp(-400, 290, sg), r: Math.sin(T * 1.2) * 3, o: sg > 0.01 ? 1 : 0 });
       const far = es(t, 1.2, 2.3);
@@ -129,7 +129,8 @@ export default {
       jPray.set({ x: PEAK[0] - 4, y: PEAK[1] + 2, s: 0.36, flip: true, o: kneel, armF: 60, armB: 150, head: -16, blink: 0 });
       pose(prayGlow, { x: PEAK[0] - 6, y: PEAK[1] - 50, s: 0.6 + es(t, 2.1, 2.5) * 0.4, o: kneel * 0.8 });
 
-      S.cam.x = kf(t, [[0, -40], [1.0, -40], [1.4, 60], [2.1, 60], [2.6, 20]]);
+      // phone: further left while the boat pulls away, so it stays in the picture
+      S.cam.x = kf(t, S.portrait ? [[0, -170], [1.0, -170], [1.4, 60], [2.1, 60], [2.6, 20]] : [[0, -40], [1.0, -40], [1.4, 60], [2.1, 60], [2.6, 20]]);
       S.cam.y = kf(t, [[0, 30], [1.0, 30], [1.5, -60], [2.1, -60], [2.6, -10]]);
       S.cam.z = kf(t, [[0, 1.06], [1.0, 1.04], [1.5, 1.18], [2.1, 1.18], [2.6, 1.0]]);
     };

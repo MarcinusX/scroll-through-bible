@@ -7,9 +7,9 @@ import { boat, rays } from '../../assets/things.js';
 import { es, ease, bump, seg } from '../../core/anim.js';
 import { kf, moving, headAt, hand, speech, GLYPH, oar, hungGold, cry, bubble, nightLake, waveCollar, waveIcon, TW, tr, PI } from './lib.js';
 
-const BX = 520, BY = 704;
+const BX0 = 520, BY = 704;
 const JY = 716;
-const JX = 1080;
+const JX0 = 1080;
 
 export default {
   id: 'mt14-peter',
@@ -22,15 +22,18 @@ export default {
     { v: 31, text: 'Jezus natychmiast wyciągnął rękę i chwycił go, mówiąc:' },
     { v: 31, cont: true, text: '«Czemu zwątpiłeś, małej wiary?»' },
   ],
-  cam: { x: [-60, 280], y: [-20, 80], z: [1, 1.32] },
+  cam: { x: [-90, 280], y: [-20, 80], z: [1, 1.32] },
   build(S) {
     const c = S.c;
     const N = nightLake(S);
+    const P = S.portrait;
+    const JX = P ? 1030 : JX0;   // phone: Jesus clear of the thread; Peter's path shortened to match
+    const BX = P ? 585 : BX0;     // phone: the boat a little nearer, its crew closer together, so nobody is sliced by the edge
 
     /* the boat with the others; Peter and Jesus on the water */
     const boatL = S.layer({ par: 0.6, sh: 5 });
     const B = boat(c, {});
-    const DIS = [{ o: TW.andrew, x: -120 }, { o: TW.john, x: -60 }, { o: TW.james, x: 0 }, { o: TW.thomas, x: 60 }];
+    const DIS = [{ o: TW.andrew, x: P ? -75 : -120 }, { o: TW.john, x: P ? -38 : -60 }, { o: TW.james, x: 0 }, { o: TW.thomas, x: P ? 38 : 60 }];
     const glow = boatL.add(`<g>${rays(c, { n: 16, r0: 30, r1: 380, spread: 0.035, color: '#fff3cf' })}<circle r="150" fill="url(#halo-glow)"/></g>`);
     const boatG = boatL.add(`<g><g>${B.back}</g><g transform="translate(-40 -60) rotate(40)">${oar(c, 180)}</g>${DIS.map((d, i) => `<g data-k="w${i}">${person(c, d.o)}</g>`).join('')}<g data-k="pin">${person(c, TW.peter)}</g><g>${B.front}</g></g>`);
     const dis = DIS.map((d, i) => ({ ...d, i, p: S.puppet(S.$('w' + i).firstElementChild), seed: c.rr(0, 6) }));
@@ -50,13 +53,14 @@ export default {
     const why = fx.add(`<g>${bubble(c, tr('Czemu zwątpiłeś?', 'Why did you doubt?'), { size: 21, dir: 1 })}</g>`);
     N.front();
 
-    const PK = [[2.05, BX + 150], [2.25, BX + 230], [2.95, 880], [3.05, 890], [5.2, 890], [5.45, 925]];
+    const PK = P ? [[2.05, BX + 150], [2.25, BX + 230], [2.95, 835], [3.05, 845], [5.2, 845], [5.45, 878]] : [[2.05, BX + 150], [2.25, BX + 230], [2.95, 880], [3.05, 890], [5.2, 890], [5.45, 925]];
     return (t, time) => {
       const T = time;
       const gust = es(t, 3.05, 3.4) * (1 - es(t, 6.8, 7.0) * 0);
       const { rock, heave } = N.update(t, T, { wind: 0.45 + gust * 0.55, moonX: 890, moonY: 240 });
 
-      pose(boatG, { x: BX, y: BY + heave * 0.8, s: 1.0, r: rock * 0.8 });
+      const drift = P ? es(t, 3.0, 3.6) * 140 : 0;   // phone: the gust pushes the empty-handed boat back, off the edge
+      pose(boatG, { x: BX - drift, y: BY + heave * 0.8, s: 1.0, r: rock * 0.8 });
       dis.forEach((d) => d.p.set({ x: d.x, y: 4, s: 0.95, flip: false, armF: 40 + bump(t, 2.05, 2.9) * 40 + bump(t, 4.05, 4.9) * 60, armB: 20 + bump(t, 4.05, 4.9) * 100, head: -bump(t, 4.05, 4.9) * 6, blink: blinkAt(T, d.seed) }));
 
       /* v28 — Peter at the bow: "Lord, if it is you, bid me come" */
@@ -105,8 +109,9 @@ export default {
       const wk = es(t, 6.1, 6.3, ease.back);
       pose(why, { x: jhx + 16, y: jhy - 24, s: wk, o: wk > 0.01 ? 1 : 0 });
 
-      S.cam.x = kf(t, [[0, -20], [1.0, 40], [1.9, 60], [3.0, 150], [3.9, 180], [4.5, 200], [6.0, 200]]);
-      S.cam.z = kf(t, [[0, 1.12], [1.0, 1.06], [2.0, 1.04], [3.0, 1.12], [4.3, 1.26], [5.2, 1.3], [6.2, 1.28]]);
+      S.cam.x = P ? kf(t, [[0, -20], [1.9, -20], [2.9, 10], [3.6, 265], [6.0, 265]])   // phone: the whole crew, Peter and Jesus in view; once he is out, only the bow
+        : kf(t, [[0, -20], [1.0, 40], [1.9, 60], [3.0, 150], [3.9, 180], [4.5, 200], [6.0, 200]]);
+      S.cam.z = kf(t, [[0, P ? 1.08 : 1.12], [1.0, 1.06], [2.0, 1.04], [3.0, 1.12], [4.3, 1.26], [5.2, 1.3], [6.2, 1.28]]);
       S.cam.y = kf(t, [[0, 40], [2.0, 30], [3.0, 40], [4.3, 70], [6.2, 60]]);
     };
   },

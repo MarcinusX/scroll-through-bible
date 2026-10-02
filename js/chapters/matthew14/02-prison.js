@@ -34,9 +34,10 @@ export default {
     { v: 4 },
     { v: 5 },
   ],
-  cam: { x: [-40, 280], y: [0, 50], z: [1, 1.12] },
+  cam: { x: [-120, 360], y: [0, 50], z: [1, 1.12] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;
     sky(S, SEPIA.sky);
     const hangL = S.layer({ par: 0.05, sh: 4 });
     const sunEl = hanging(hangL, sun(c, 40, { rays: C.ochre, disc: mix(C.sun, C.parchment, 0.3), inner: mix(C.sun, C.cream, 0.5) }), { x: 1180, y: 180, len: 700 });
@@ -139,7 +140,7 @@ export default {
       herodias.set({ x: lerp(1300, 1010, hdIn) + seePeople * 40, y: Y + 4, s: 0.96, flip: true, o: hdIn > 0 ? 1 : 0, walk: hdIn > 0 && hdIn < 1 ? t * 30 : undefined, armF: bump(t, 1.3, 1.9) * 40 + bump(t, 3.05, 3.5) * 50, armB: es(t, 2.4, 2.7) * 50, head: -bump(t, 2.3, 2.9) * 8, blink: blinkAt(T, 4) });
       attr(hdBrows, 'opacity', es(t, 2.3, 2.6).toFixed(2));
       const phK = es(t, 1.1, 1.3) * (1 - es(t, 1.85, 2.0));
-      const phx = lerp(1100, 1240, es(t, 1.5, 1.95));
+      const phx = lerp(1100, P ? 1170 : 1240, es(t, 1.5, 1.95));   // phone: he walks off less far, still in sight
       philip.set({ x: phx, y: Y + 10, s: 0.9, flip: t < 1.5, o: phK, walk: t > 1.5 && t < 1.95 ? phx * 0.06 : undefined, armF: bump(t, 1.15, 1.5) * 50, head: 10, blink: blinkAt(T, 9) });
       const gar = es(t, 1.15, 1.4) * (1 - es(t, 2.9, 3.1));
       pose(hallGar, { x: 950, y: 380 - (1 - gar) * 420, o: gar > 0.01 ? 1 : 0 });
@@ -149,7 +150,7 @@ export default {
       tg(tagJ, 520, CELL.top - 130, es(t, 0.1, 0.4, ease.back) * (1 - es(t, 0.95, 1.1)));
       tg(tagH, 900, 290, es(t, 0.05, 0.35, ease.back) * (1 - es(t, 1.95, 2.1)));
       tg(tagHd, 1010, 320, es(t, 1.1, 1.4, ease.back) * (1 - es(t, 1.95, 2.1)));
-      tg(tagF, 1180, 400, es(t, 1.15, 1.4, ease.back) * (1 - es(t, 1.85, 2.0)));
+      tg(tagF, P ? 1090 : 1180, 400, es(t, 1.15, 1.4, ease.back) * (1 - es(t, 1.85, 2.0)));
 
       /* v4 — "It is not lawful for you to have her" */
       const lw = es(t, 2.1, 2.3, ease.back) * (1 - es(t, 2.92, 3.05));
@@ -167,10 +168,11 @@ export default {
       const ak = 0;
       pose(afraid, { x: tx + 4, y: ty - 18, s: ak, o: ak > 0.01 ? 1 : 0 });
       const pin = es(t, 3.2, 3.5);
-      people.set({ x: lerp(GATE + 260, GATE - 30, pin), y: Y + 10, o: pin > 0.01 ? 1 : 0 });
-      tg(tagP, GATE - 30, 400, es(t, 3.3, 3.55, ease.back));
+      people.set({ x: lerp(GATE + 260, P ? GATE - 75 : GATE - 30, pin), y: Y + 10, o: pin > 0.01 ? 1 : 0 });
+      tg(tagP, P ? GATE - 75 : GATE - 30, 400, es(t, 3.3, 3.55, ease.back));
 
-      S.cam.x = kf(t, [[0, -30], [0.9, -30], [1.2, 60], [1.9, 60], [2.2, 20], [3.0, 20], [3.35, 260]]);
+      // phone: further left for the cell, right for Philip walking off, and right again for the people at the gate
+      S.cam.x = kf(t, P ? [[0, -110], [0.9, -110], [1.2, 240], [1.9, 240], [2.2, 20], [3.0, 20], [3.35, 350]] : [[0, -30], [0.9, -30], [1.2, 60], [1.9, 60], [2.2, 20], [3.0, 20], [3.35, 260]]);
       S.cam.z = kf(t, [[0, 1.06], [1.2, 1.08], [2.2, 1.06], [3.0, 1.06], [3.35, 1.04]]);
       S.cam.y = kf(t, [[0, 20], [4, 30]]);
     };

@@ -20,7 +20,7 @@ export default {
     { v: 11 },
     { v: 12, text: 'Uczniowie zaś Jana przyszli, zabrali jego ciało i pogrzebali je;' },
   ],
-  cam: { x: [-80, 640], y: [0, 60], z: [1, 1.24] },
+  cam: { x: [-160, 640], y: [0, 60], z: [1, 1.24] },
   build(S) {
     const c = S.c;
     sky(S, [mix(SEPIA.sky[0], C.duskViolet, 0.55), mix(SEPIA.sky[1], C.dusk, 0.3), SEPIA.sky[2]]);
@@ -138,7 +138,8 @@ export default {
       pose(body, { x: cx + 6 + laid * 60, y: Y - 168 + Math.abs(Math.sin(cx * 0.05)) * 2 + laid * 20, o: es(t, 1.95, 2.05) * (1 - laid) });
       pose(stoneEl, { x: TOMB + 110 - roll * 110, y: Y - 68, r: -roll * 200 });
 
-      S.cam.x = kf(t, [[0, -60], [0.3, 60], [1.05, 60], [1.3, -60], [1.95, -60], [2.4, 600]]);
+      // phone: the king at the door and the window both in view; then the platter passing at the door, centred
+      S.cam.x = kf(t, S.portrait ? [[0, -60], [0.3, 10], [1.05, 10], [1.3, -150], [1.95, -150], [2.4, 600]] : [[0, -60], [0.3, 60], [1.05, 60], [1.3, -60], [1.95, -60], [2.4, 600]]);
       S.cam.z = kf(t, [[0, 1.06], [0.4, 1.24], [1.0, 1.24], [1.3, 1.08], [1.9, 1.1], [2.4, 1.1]]);
       S.cam.y = kf(t, [[0, 30], [0.4, 10], [1.0, 10], [1.3, 30], [3, 40]]);
     };

@@ -37,7 +37,8 @@ export default {
     const pp = [], pp2 = [];
     for (let x = -1400; x <= 3400; x += 20) { pp.push([x, PATHY(x) - 5]); pp2.unshift([x, PATHY(x) + 5]); }
     far.add(sheet().p(c.cut([...pp, ...pp2], 0.4, 10), C.sand).out());
-    const streams = Array.from({ length: 12 }, (_, i) => ({ i, d: (i % 4) * 0.09 + c.rr(0, 0.06), start: [-500, -150, 250][i % 3] + c.rr(-40, 40), sp: far.sprite(mob(c, 3, { s: 0.42, spread: 18, rows: 1 }), 0, PATHY(0) + 2) }));
+    const streams = Array.from({ length: 12 }, (_, i) => ({ i, d: (i % 4) * 0.09 + c.rr(0, 0.06), start: [-500, -150, 250][i % 3] + c.rr(-40, 40), sp: far.sprite(mob(c, 3, { s: 0.42, spread: 18, rows: 1 }), S.portrait ? 800 : 0, PATHY(0) + 2) }));
+    // (phone: a sprite is drawn at its home spot and clipped to its layer; at x 0 a phone's narrower layer left it empty)
 
     /* the lake */
     const lake = S.layer({ par: 0.4, sh: 2 });
