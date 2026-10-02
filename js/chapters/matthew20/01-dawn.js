@@ -82,9 +82,9 @@ export default {
 
       /* the denarius let down above the handshake */
       const cd = es(t, 2.08, 2.4, ease.back) * (1 - es(t, 2.85, 3.2, ease.in));
-      hangAt(coinEl, 700, lerp(-300, 300, cd), T, 1.4, 0.7);
+      hangAt(coinEl, S.portrait ? 815 : 700, lerp(-300, 300, cd), T, 1.4, 0.7);
       const dt = es(t, 2.2, 2.35, ease.back) * (1 - es(t, 2.6, 2.7));
-      pose(dayTag, { x: 772, y: 350, s: dt, o: dt > 0.02 ? 1 : 0 });
+      pose(dayTag, { x: S.portrait ? 887 : 772, y: 350, s: dt, o: dt > 0.02 ? 1 : 0 });
       const tv = es(t, 2.5, 2.62, ease.back) * (1 - es(t, 2.93, 3.05));
       pose(toVine, { x: OX + 26, y: VW.G - 214, s: tv, o: tv > 0.02 ? 1 : 0 });
 

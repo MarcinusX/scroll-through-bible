@@ -29,7 +29,8 @@ export default {
     const P = S.layer({ par: 0.5, sh: 5 });
     const DIS = [0, 3, 1, 2, 6, 7].map((k, i) => ({ i, p: S.puppet(P.add(person(c, TWELVE[k].o))), dx: -80 - i * 44, dy: (i % 2) * 16 - 8, seed: c.rr(0, 9) }));
     const jesus = S.puppet(P.add(person(c, { ...CAST.jesus })));
-    const NEAR = [[866, G + 20, false], [1100, G + 14, true], [1150, G + 2, true]].map(([x, y, flip], i) => ({ i, x, y, flip, p: S.puppet(P.add(person(c, manOf(c, i === 1 ? { hairStyle: 'veil', beard: 'none' } : {})))), seed: c.rr(0, 9) }));
+    // phone: the two who rebuke from the right stand in from under the progress thread
+    const NEAR = [[866, G + 20, false], [S.portrait ? 1062 : 1100, G + 14, true], [S.portrait ? 1094 : 1150, G + 2, true]].map(([x, y, flip], i) => ({ i, x, y, flip, p: S.puppet(P.add(person(c, manOf(c, i === 1 ? { hairStyle: 'veil', beard: 'none' } : {})))), seed: c.rr(0, 9) }));
     const blind = BLIND2.map((o, i) => ({ i, p: S.puppet(P.add(person(c, { ...o, pose: 'sit', eyes: 'closed' }))), at: JR.B[i] }));
 
     const fx = S.layer({ par: 0.5, sh: 6 });
@@ -82,10 +83,10 @@ export default {
         const reb = es(t, 3.05 + n.i * 0.06, 3.3 + n.i * 0.06) * (1 - es(t, 4.1, 4.3));
         n.p.set({ x: n.x, y: n.y, s: 0.92, flip: n.flip, o: es(t, 1.0, 1.3), lean: reb * (n.flip ? -8 : 8), armF: reb * 150 + 10, armB: reb * 30, head: reb * 10, blink: blinkAt(T, n.seed) });
         const k = es(t, 3.1 + n.i * 0.08, 3.3 + n.i * 0.08, ease.back) * (1 - es(t, 3.92, 4.02));
-        pose(hush[n.i], { x: n.x + (n.flip ? -16 : 16), y: n.y - 196, s: k * 0.9, o: k > 0.02 ? 1 : 0 });
+        pose(hush[n.i], { x: n.x + (n.flip ? -16 : 16), y: n.y - 196 - (S.portrait && n.i === 2 ? 44 : 0), s: k * 0.9, o: k > 0.02 ? 1 : 0 });
       });
 
-      S.cam.x = lerp(-260, 0, es(t, 0.2, 1.1)) + es(t, 1.1, 1.6) * 90;
+      S.cam.x = lerp(-260, 0, es(t, 0.2, 1.1)) + es(t, 1.1, 1.6) * (S.portrait ? 120 : 90);   // phone: a little further right, so the rebukers clear the progress thread
       S.cam.z = 1 + es(t, 1.1, 1.6) * 0.04;
       S.cam.y = 10;
     };

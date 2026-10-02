@@ -105,7 +105,7 @@ export default {
       const [shx, shy] = handAt(PAY.STEW, PAY.QY - 4, 0.96, false, 0);
       rings(shx + 30, shy - 40, calling, T, { dir: 1, spread: 2 });
 
-      S.cam.x = lerp(40, 20, es(t, 0.3, 1)) + es(t, 1.2, 1.9) * 60 - es(t, 2.0, 2.5) * 110;
+      S.cam.x = lerp(40, 20, es(t, 0.3, 1)) + es(t, 1.2, 1.9) * 60 - es(t, 2.0, 2.5) * (S.portrait ? 220 : 110);   // phone: the paid men of the last hour, far left, come fully in
       S.cam.z = 1.02 + es(t, 0.3, 1) * 0.04 + es(t, 2.0, 2.3) * 0.04;
       S.cam.y = 24;
     };

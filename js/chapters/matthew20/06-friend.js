@@ -107,6 +107,7 @@ export default {
       /* the last: the old man steps up to the householder */
       paid.forEach((m) => {
         let [x, y] = PAID[m.i];
+        if (S.portrait) x = 600 - (600 - x) * 0.7;   // phone: drawn closer together, so the leftmost stays whole at the frame
         const up = m.i === 2 ? es(t, 3.04, 3.3) : 0;
         x = lerp(x, OX - 92, up);
         y = lerp(y, PAY.QY - 4, up);
@@ -129,12 +130,12 @@ export default {
       hangAt(plate, 900, lerp(-300, 290, pd), T, 1.2, 0.7);
       pose(vGlow, { x: 1180, y: 600, o: open * (0.9 - es(t, 5, 5.3) * 0.3) });
       const ed = es(t, 5.12, 5.4, ease.back);
-      hangAt(eyeEl, 1010, lerp(-300, 360, ed), T, 1.2, 0.7);
+      hangAt(eyeEl, S.portrait ? 950 : 1010, lerp(-300, 360, ed), T, 1.2, 0.7);
       pose(lid, { sy: 0.5 + es(t, 5.3, 5.5) * 0.5, oy: -30 });
       pose(brow, { y: es(t, 5.3, 5.5) * 10 });
       pose(heart, { x: ohx + 4, y: ohy + 70, s: es(t, 5.1, 5.3, ease.back), o: es(t, 5.1, 5.2) });
 
-      S.cam.x = 10 - es(t, 2.9, 3.2) * 110 * (1 - es(t, 3.9, 4.2)) + es(t, 3.9, 4.2) * 40;
+      S.cam.x = (S.portrait ? -20 : 10) - es(t, 2.9, 3.2) * 110 * (1 - es(t, 3.9, 4.2)) + es(t, 3.9, 4.2) * 40;
       S.cam.z = 1.1 - es(t, 3.9, 4.2) * 0.06;
       S.cam.y = 24;
     };

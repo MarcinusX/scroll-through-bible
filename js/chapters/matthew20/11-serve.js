@@ -53,8 +53,10 @@ export default {
 
     /* the Twelve sitting down; John serving; Peter; Jesus */
     const P = S.layer({ par: 0.5, sh: 5 });
+    // phone: the circle of the Twelve drawn a little closer round Jesus, so the outermost stay whole
+    const SQ = (x) => (S.portrait ? JX + (x - JX) * 0.85 : x);
     const byK = Object.fromEntries(TWELVE.map((d) => [d.k, d]));
-    const sitters = Object.entries(SEAT).filter(([k]) => k !== 'peter').map(([k, [x, y]], i) => ({ k, i, x, y, p: S.puppet(P.add(person(c, { ...byK[k].o, pose: 'sit', holdF: k === 'james' || k === 'jamesA' ? `<g transform="translate(0 2) scale(1.5)">${cup(c)}</g>` : '' }))), seed: c.rr(0, 9) }));
+    const sitters = Object.entries(SEAT).filter(([k]) => k !== 'peter').map(([k, [x0, y]], i) => ({ k, i, x: SQ(x0), y, p: S.puppet(P.add(person(c, { ...byK[k].o, pose: 'sit', holdF: k === 'james' || k === 'jamesA' ? `<g transform="translate(0 2) scale(1.5)">${cup(c)}</g>` : '' }))), seed: c.rr(0, 9) }));
     const peterSit = S.puppet(P.add(person(c, { ...CAST.peter, pose: 'sit' })));
     const peterKneel = S.puppet(P.add(person(c, { ...CAST.peter, pose: 'kneel' })));
     const john = S.puppet(P.add(person(c, { ...CAST.john, holdF: `<g transform="translate(0 8) rotate(-20) scale(1.25)">${ewer(c)}</g>` })));
@@ -89,7 +91,7 @@ export default {
       });
 
       /* v26b — John goes round pouring */
-      const JK = [[1.05, 880], [1.4, 960], [1.55, 960], [1.75, 1040], [1.9, 1040], [2.2, 900]];
+      const JK = [[1.05, 880], [1.4, 960], [1.55, 960], [1.75, 1040], [1.9, 1040], [2.2, 900]].map(([k, x]) => [k, SQ(x)]);
       let jx = JK[0][1];
       for (let i = 1; i < JK.length; i++) if (t >= JK[i - 1][0]) jx = lerp(JK[i - 1][1], JK[i][1], es(t, JK[i - 1][0], JK[i][0], (u) => u));
       const pour = Math.max(bump(t, 1.4, 1.58), bump(t, 1.75, 1.93));

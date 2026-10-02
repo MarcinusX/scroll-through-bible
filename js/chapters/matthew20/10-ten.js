@@ -37,7 +37,8 @@ export default {
 
     const P = S.layer({ par: 0.5, sh: 5 });
     const ORDER = [...TWELVE.filter((d) => d.k !== 'james' && d.k !== 'john'), TWELVE[1], TWELVE[2]];
-    const DIS = ORDER.map((d, i) => { const el = P.add(withFace(person(c, d.o), faceBits(c))); const [x, y] = POS[d.k]; return { ...d, i, el, p: S.puppet(el), x, y, seed: c.rr(0, 9), flip: x > JX }; });
+    // phone: the two groups stand closer to Jesus, so neither is sliced by the edges
+    const DIS = ORDER.map((d, i) => { const el = P.add(withFace(person(c, d.o), faceBits(c))); const [x0, y] = POS[d.k]; const x = S.portrait ? JX + (x0 - JX) * 0.8 : x0; return { ...d, i, el, p: S.puppet(el), x, y, seed: c.rr(0, 9), flip: x > JX }; });
     const jesus = S.puppet(P.add(person(c, { ...CAST.jesus })));
     const fx = S.layer({ par: 0.5, sh: 6 });
     const puffs = DIS.map(() => fx.add(`<g><g transform="scale(1.4)">${puff(c)}</g></g>`));
@@ -54,7 +55,7 @@ export default {
         const x = lerp(d.x, lerp(d.x, JX, 0.2), gather);
         const walking = gather > 0 && gather < 1;
         // the ten turn on the two brothers (who stand on the right)
-        const flip = jj ? d.flip : angry > 0.3 ? d.x > 960 : d.flip;
+        const flip = jj ? d.flip : angry > 0.3 ? d.x > (S.portrait ? JX + 170 * 0.8 : 960) : d.flip;
         d.p.set({ x, y: d.y, s: 0.9 + (d.y - GY) / 500, flip, walk: walking ? x * 0.06 + d.i : undefined,
           armF: jj ? 14 : 14 + angry * (40 + (d.i % 3) * 20), armB: jj ? 0 : angry * (d.i % 2 ? 110 : 20),
           head: jj ? angry * 12 : -angry * 4 - es(t, 2.1, 2.4) * 8, lean: jj ? angry * 4 : -angry * 2, blink: blinkAt(T, d.seed) });

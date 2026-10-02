@@ -79,7 +79,8 @@ export default {
     const P = S.layer({ par: 0.5, sh: 5 });
     const pilgrims = [0, 1].map((i) => P.sprite(mob(makeCutter('mt20-pilgrims' + i), 5, { s: 0.62 - i * 0.08, spread: 40, rows: 2, arms: 10 }), 700 + i * 160, 660 - i * 18));
     const RING = [[500, GY - 20], [560, GY - 34], [620, GY - 42], [800, GY - 42], [860, GY - 34], [920, GY - 20], [470, GY + 14], [545, GY + 22], [880, GY + 22], [950, GY + 12], [610, GY + 34], [800, GY + 34]];
-    const dis = TWELVE.map((d, i) => ({ i, p: S.puppet(P.add(person(c, d.o))), at: RING[i], seed: c.rr(0, 9) }));
+    // phone: the ring of the Twelve drawn a little closer, so the outermost stay whole at the left edge
+    const dis = TWELVE.map((d, i) => ({ i, p: S.puppet(P.add(person(c, d.o))), at: S.portrait ? [JX + 8 + (RING[i][0] - JX) * 0.86, RING[i][1]] : RING[i], seed: c.rr(0, 9) }));
     const jesus = S.puppet(P.add(person(c, { ...CAST.jesus })));
     const fg = S.layer({ par: 0.9, sh: 6 });
     fg.add(bush(c, 170, 1010, 230, C.olive, C.moss) + rock(c, 1460, 1000, 210, 70, C.rock2));
@@ -105,7 +106,8 @@ export default {
       /* v18a — Jerusalem glows */
       const jer = es(t, 1.05, 1.3);
       pose(cityGlow, { o: 0.3 + jer * 0.7 * (1 - es(t, 4.4, 4.7)) + rise * 0.5 });
-      pose(jerTag, { x: 1090, y: lerp(-200, 300, es(t, 1.1, 1.35, ease.back)) - es(t, 1.9, 2.1) * 500, r: Math.sin(T) * 2, o: t > 1.1 && t < 2.1 ? 1 : 0 });
+      if (S.portrait) pose(cityEl, { x: -70 });   // phone: the city and its slip come in from under the progress thread
+      pose(jerTag, { x: S.portrait ? 1005 : 1090, y: lerp(-200, 300, es(t, 1.1, 1.35, ease.back)) - es(t, 1.9, 2.1) * 500, r: Math.sin(T) * 2, o: t > 1.1 && t < 2.1 ? 1 : 0 });
 
       /* the shadow play */
       const on = es(t, 2.02, 2.2);

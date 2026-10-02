@@ -63,7 +63,8 @@ export default {
 
       /* the last, aside with their coins */
       paid.forEach((m) => {
-        const [x, y] = PAID[m.i];
+        const [x0, y] = PAID[m.i];
+        const x = S.portrait ? 600 - (600 - x0) * 0.7 : x0;   // phone: drawn closer together, so the leftmost stays whole at the frame
         const look = es(t, 2.1, 2.5);
         const armF = 70 - look * 20;
         m.p.set({ x, y, s: 0.95, flip: false, armF, armB: m.i === 1 ? 40 : 10, head: -6 + look * 8, blink: blinkAt(T, m.seed) });
@@ -108,9 +109,9 @@ export default {
       const sh = es(t, 3.04, 3.2, ease.back);
       pose(shout, { x: qSpot(0)[0] - 30, y: PAY.QY - 224, s: sh, o: sh > 0.02 ? 1 : 0 });
       const sd = es(t, 3.2, 3.55, ease.back);
-      hangAt(scales, 900, lerp(-400, 214, sd), T, 1.2, 0.7);
+      hangAt(scales, S.portrait ? 830 : 900, lerp(-400, 214, sd), T, 1.2, 0.7);
 
-      S.cam.x = lerp(40, 30, es(t, 0, 0.6)) - es(t, 2.9, 3.3) * 20;
+      S.cam.x = (S.portrait ? -30 : lerp(40, 30, es(t, 0, 0.6))) - es(t, 2.9, 3.3) * 20;   // phone: the paid men on the left stay whole
       S.cam.z = 1.06 + es(t, 0, 0.6) * 0.05 - es(t, 2.9, 3.3) * 0.07;
       S.cam.y = 24 + es(t, 2.9, 3.3) * 0;
     };

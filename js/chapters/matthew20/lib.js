@@ -81,6 +81,12 @@ export function sunPos(h) {
   const u = clamp(h / 12, -0.05, 1.05);
   return [lerp(430, 1180, u), 452 - Math.sin(PI * clamp(u, 0, 1)) * 285];
 }
+/** sunPos for a phone in portrait: the same arc squeezed into the screen's width (x 540–1050) */
+export function sunPosPortrait(h) {
+  const u = clamp(h / 12, -0.05, 1.05);
+  // after sunset it sinks behind the hills (on a phone the set point is on screen, not past the edge)
+  return [lerp(540, 1050, u), 452 - Math.sin(PI * clamp(u, 0, 1)) * 285 + Math.max(0, u - 1) * 4000];
+}
 const HOUR_NAMES = {
   dawn: () => tr('wczesny ranek', 'early morning'),
   3: () => tr('godzina trzecia', 'the third hour'),
@@ -219,11 +225,12 @@ export function vineWorld(S, o = {}) {
     },
     /** place the sun at hour h; show the slip of hour `tag` (o: 0..1) */
     update(t, time, { h = 3, tag = null, tagO = 1, drift = 1 } = {}) {
-      const [sx, sy] = sunPos(h);
+      // phone: the sun travels a narrower arc and its slip stays clear of the edges and the progress thread
+      const [sx, sy] = S.portrait ? sunPosPortrait(h) : sunPos(h);
       swing(sunEl, sx, sy, time, 0.8, 0.6);
       Object.entries(tags).forEach(([k, el]) => {
         const on = String(k) === String(tag) ? tagO : 0;
-        const tx = clamp(sx, 520, 1070), ty = clamp(sy + 80, 170, 318);
+        const tx = S.portrait ? clamp(sx, 580, 1000) : clamp(sx, 520, 1070), ty = clamp(sy + 80, 170, 318);
         pose(el, { x: tx, y: ty - (1 - on) * 60, r: Math.sin(time * 0.9 + 1) * 1.5, oy: 0, o: on });
       });
       cls.forEach((cl) => swing(cl.el, cl.x + Math.sin(time * 0.1 + cl.i * 2) * 24 * drift + t * 4, cl.y, time, 1.2, 0.7, cl.i));
