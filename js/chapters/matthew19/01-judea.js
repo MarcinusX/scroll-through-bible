@@ -98,7 +98,7 @@ export default {
 
     /* the sick, laid on their mats in front of Him, and the same people standing up */
     const sickL = S.layer({ par: PAR, sh: 4 });
-    const SICK = [[630, 722, 1, -1], [965, 712, 2, 1], [1125, 728, 3, 1]].map(([x, y, k, side], i) => {
+    const SICK = (S.portrait ? [[630, 722, 1, -1], [905, 712, 2, 1], [1000, 728, 3, 1]] : [[630, 722, 1, -1], [965, 712, 2, 1], [1125, 728, 3, 1]]).map(([x, y, k, side], i) => {
       const look = { ...folk(c, i !== 1), mantle: null, skin: [C.skin2, C.skin3, C.skin4, C.skin][k] };
       return { x, y, i, side, look, seed: c.rr(0, 9), mat: sickL.add(`<g>${sickOnMat(c, look, 140)}</g>`), up: S.puppet(sickL.add(person(c, look))) };
     });

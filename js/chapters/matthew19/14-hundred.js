@@ -41,8 +41,8 @@ export default {
     /* the row of picture cards, each with a hundred behind it */
     const hangL = S.layer({ par: 0.3, sh: 5 });
     const ICONS = leftIcons(c);
-    const n = ICONS.length, step = n > 7 ? 92 : 104;
-    const XS = ICONS.map((_, i) => 800 + (i - (n - 1) / 2) * step);
+    const n = ICONS.length, step = S.portrait ? 82 : n > 7 ? 92 : 104;
+    const XS = ICONS.map((_, i) => (S.portrait ? 790 : 800) + (i - (n - 1) / 2) * step);   // phone: the row inside the screen
     const CARDS = ICONS.map(([, icon], i) => {
       const one = card(c, icon);
       let fan = '';
@@ -63,7 +63,7 @@ export default {
     const gateEl = hang_(`<g transform="scale(.8)">${kingdomGate(c, 44, 96)}</g>`);
     const DOLLC = [C.dustyBlue, C.roseRobe, C.sageRobe, C.ochreRobe, C.lavender, C.tealRobe, C.wheatRobe, C.mauve];
     const QUEUE = DOLLC.map((col, i) => ({
-      i, x: (P ? 1040 : 1080) - i * (P ? 64 : 70),
+      i, x: (P ? 990 : 1080) - i * (P ? 60 : 70),
       el: hang_(`<g transform="translate(0 -100)">${slip(c, String(i + 1), { size: 17, w: 28 })}</g>`),
       d: qL.add(`<g>${doll(c, col, { woman: i % 2 === 1, h: 70, skin: [C.skin, C.skin2, C.skin3][i % 3] })}</g>`),
     }));
@@ -108,9 +108,9 @@ export default {
       /* beat 3: the line of dolls before the gate turns round — the last first, the first last */
       const q = es(t, 2.9, 3.25, ease.back);
       const turn = es(t, 3.35, 3.7);
-      if (P) pose(gateEl, { x: 1115, y: QY + (1 - q) * 60, o: q }); else swing(gateEl, 1165, QY - (1 - q) * 1100, T, 0.8, 0.6, 5);
+      if (P) pose(gateEl, { x: 1050, y: QY + (1 - q) * 60, o: q }); else swing(gateEl, 1165, QY - (1 - q) * 1100, T, 0.8, 0.6, 5);
       QUEUE.forEach((m) => {
-        const x = lerp(m.x, (P ? 1672 : 1710) - m.x, turn) + 10;
+        const x = lerp(m.x, (P ? 1540 : 1710) - m.x, turn) + 10;
         const y = QY + (P ? (1 - q) * 60 : -(1 - q) * 1100) - Math.sin(turn * Math.PI) * 26, r = P ? 0 : Math.sin(T * 0.9 + m.i) * 1.6;
         pose(m.el, { x, y, r, oy: 0, o: P ? q : 1 });
         const cs = Math.cos(turn * Math.PI);

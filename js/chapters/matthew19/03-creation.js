@@ -31,7 +31,8 @@ export default {
     const glowL = S.layer({ par: 0.04, sh: 1, flat: true, rise: 0 });
     const burst = glowL.add(`<g opacity="0">${rays(c, { n: 20, r0: 60, r1: 900, spread: 0.05, color: '#fff3cf' })}<circle r="260" fill="url(#halo-glow)"/></g>`);
     const hangL = S.layer({ par: 0.05, sh: 4 });
-    const sunEl = hanging(hangL, sun(c, 52), { x: 1130, y: 330, len: 900 });
+    const SX = S.portrait ? 1000 : 1130;   // phone: the first sunrise inside the screen, not halved by the edge and the thread
+    const sunEl = hanging(hangL, sun(c, 52), { x: SX, y: 330, len: 900 });
     const cl1 = hanging(hangL, cloud(c, 150), { x: 1300, y: 140, len: 600 });
     const birds = flock(S, hangL, 3, (cc) => bird(cc, { color: C.plumRobe }), { y: 250, speed: 40, scale: 0.45 });
     // the scroll of Genesis
@@ -91,16 +92,16 @@ export default {
       const sd = es(t, -0.1, 0.25, ease.back) * (1 - es(t, 0.95, 1.2));
       swing(scrollEl, 650, 125 - (1 - sd) * 1100, T, 0.8, 0.6, 1);
       pose(scrollSheet, { sy: 0.05 + 0.95 * es(t, 0.12, 0.4) });
-      swing(sunEl, 1130, 440 - es(t, 0.1, 0.8) * 290, T, 0.8, 0.5);
+      swing(sunEl, SX, 440 - es(t, 0.1, 0.8) * 290, T, 0.8, 0.5);
       swing(cl1, 1300 - t * 8, 140, T, 1.2, 0.7, 2);
       birds(T, es(t, 0.6, 1));
-      pose(burst, { x: 1130, y: 160, s: 0.6 + es(t, 0.2, 0.7) * 0.5, r: t * 12, o: bump(t, 0.25, 1.35) * 0.7 });
+      pose(burst, { x: SX, y: 160, s: 0.6 + es(t, 0.2, 0.7) * 0.5, r: t * 12, o: bump(t, 0.25, 1.35) * 0.7 });
       const popM = es(t, 0.35, 0.6, ease.back), popW = es(t, 0.48, 0.72, ease.back);
 
       /* beat 1: the parents slide in; he bows to them, walks to his wife, and they take hands; the braid grows */
       const hs = es(t, 1.0, 1.18);
       const leave = es(t, 1.36, 1.6);
-      const hx = lerp(-300, 400, hs);
+      const hx = lerp(-300, S.portrait ? 470 : 400, hs);   // phone: the parents inside the left edge
       pose(home, { x: hx, y: GY - 6 });
       father.set({ x: hx + 60, y: GY, s: 0.94, armF: bump(t, 1.18, 1.6) * 90 + es(t, 1.45, 1.6) * 30, armB: bump(t, 1.2, 1.7) * 120, head: -4, blink: blinkAt(T, 1) });
       mother.set({ x: hx + 118, y: GY + 2, s: 0.9, armF: bump(t, 1.15, 1.55) * 70 + es(t, 1.45, 1.6) * 50, head: -6, blink: blinkAt(T, 2) });

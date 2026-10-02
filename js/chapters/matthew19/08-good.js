@@ -34,8 +34,9 @@ export default {
     // his cart, loaded, waiting at the roadside
     const cartL = S.layer({ par: 0.42, sh: 4 });
     const K = cart(c, 190);
-    cartL.add(`<g transform="translate(1200 ${GY - 70}) scale(.8)">${K.body}<g transform="translate(-40 0)">${K.wheel}</g><g transform="translate(50 0)">${K.wheel}</g></g>`);
-    cartL.add(`<g transform="translate(1100 ${GY - 34}) scale(.9)">${sack(c, 44)}</g>`);
+    const KX = S.portrait ? 130 : 0;   // phone: the cart and sack wait just off the right edge instead of peeping under the thread (seen whole in mt19-perfect)
+    cartL.add(`<g transform="translate(${1200 + KX} ${GY - 70}) scale(.8)">${K.body}<g transform="translate(-40 0)">${K.wheel}</g><g transform="translate(50 0)">${K.wheel}</g></g>`);
+    cartL.add(`<g transform="translate(${1100 + KX} ${GY - 34}) scale(.9)">${sack(c, 44)}</g>`);
 
     const hangL = S.layer({ par: 0.3, sh: 5 });
     const law = hanging(hangL, `<g transform="translate(0 150)">${lawTablets(c, { w: 76, h: 110 })}</g>`, { x: 800, y: 110, len: 900 });
@@ -86,7 +87,7 @@ export default {
       /* the Law comes down; the gate of life shines far along the road */
       const ld = es(t, 4.02, 4.35, ease.back);
       swing(law, 800, 170 - (1 - ld) * 1100, T, 0.8, 0.6);
-      pose(gate, { x: 1080, y: 596, s: 0.3 + es(t, 4.2, 4.6) * 0.5, o: es(t, 4.2, 4.5) });
+      pose(gate, { x: S.portrait ? 1030 : 1080, y: 596, s: 0.3 + es(t, 4.2, 4.6) * 0.5, o: es(t, 4.2, 4.5) });
 
       S.cam.z = 1 + es(t, 0.6, 1.2) * 0.05 - es(t, 3.8, 4.3) * 0.04;
       S.cam.y = -es(t, 2.9, 3.4) * 30 * (1 - es(t, 3.9, 4.3)) - es(t, 3.9, 4.3) * 10;

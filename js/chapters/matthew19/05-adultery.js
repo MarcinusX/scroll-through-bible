@@ -44,7 +44,7 @@ export default {
 
     /* people */
     const pL = S.layer({ par: 0.5, sh: 5 });
-    const PHs = [{ x: 1080, s: 0.94 }, { x: 1170, s: 0.9 }].map((ph, i) => ({ ...ph, i, seed: c.rr(0, 9), p: S.puppet(pL.add(person(c, pharisee(c, i + 2)))) }));
+    const PHs = (S.portrait ? [{ x: 990, s: 0.94 }, { x: 1060, s: 0.9 }] : [{ x: 1080, s: 0.94 }, { x: 1170, s: 0.9 }]).map((ph, i) => ({ ...ph, i, seed: c.rr(0, 9), p: S.puppet(pL.add(person(c, pharisee(c, i + 2)))) }));
     const phHearts = PHs.map(() => pL.add(`<g>${stoneHeart(c, 12)}</g>`));
     const DIS = [TWELVE[0], TWELVE[7], TWELVE[3], TWELVE[2], TWELVE[1]].map((d, i) => {
       const el = pL.add(withFace(person(c, d.o), faceBits(c)));

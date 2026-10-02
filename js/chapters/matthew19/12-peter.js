@@ -19,13 +19,14 @@ export default {
   cam: { x: [-20, 40], y: [-30, 20], z: [1, 1.08] },
   build(S) {
     const c = S.c;
+    const MEMX = S.portrait ? 960 : 1040;   // phone: the card of what they left clear of the thread
     const R = roadSet(S, { jer: 0.3, jerX: 1190, roadX: 820, trees: 16, clouds: [[470, 140, 160], [1080, 110, 110]] });
     const side = S.layer({ par: 0.3, sh: 3 });
     side.add(olive(c, 300, 604, 1) + olive(c, 1420, 606, 0.9));
 
     const hangL = S.layer({ par: 0.3, sh: 5 });
     const b = boat(c, { mast: true });
-    const memory = hanging(hangL, `<g>${memoryCard(c, b.back + b.front)}</g>`, { x: 1040, y: 130, len: 800 });
+    const memory = hanging(hangL, `<g>${memoryCard(c, b.back + b.front)}</g>`, { x: MEMX, y: 130, len: 800 });
     const q = hangL.add(`<g opacity="0"><g transform="scale(1.6)">${qmark(c)}</g></g>`);
 
     /* the Twelve: two still groups behind, Peter in front */
@@ -58,11 +59,11 @@ export default {
       const back = bump(t, 0.3, 0.75);
       const open = es(t, 1.02, 1.25);
       peter.set({ x: px, y: GY, s: 0.98, flip: back < 0.5, walk: step > 0 && step < 1 ? px * 0.08 : undefined, armF: 16 + back * 60 * 0 + es(t, 0.7, 0.9) * (1 - open) * 50 + open * 70, armB: back * 90 + open * 60, head: -3 - open * 4, blink: blinkAt(T, 3) });
-      pose(left, { x: PX - 20, y: GY - 206, s: es(t, 0.05, 0.3, ease.back), o: t > 0.05 && t < 1.05 ? 1 - es(t, 0.92, 1.05) : 0 });
+      pose(left, { x: PX - (S.portrait ? 50 : 20), y: GY - 206, s: es(t, 0.05, 0.3, ease.back), o: t > 0.05 && t < 1.05 ? 1 - es(t, 0.92, 1.05) : 0 });
       pose(what, { x: PX - 20, y: GY - 206, s: es(t, 1.02, 1.25, ease.back), o: t > 1.02 ? 1 : 0 });
       const mem = es(t, 0.15, 0.5, ease.back);
-      swing(memory, 1040, 130 - (1 - mem) * 1100, T, 1, 0.7, 1);
-      pose(q, { x: 1040, y: 330 - es(t, 1.1, 1.4) * 20, s: es(t, 1.1, 1.35, ease.back), r: Math.sin(T) * 6, o: t > 1.1 ? 1 : 0 });
+      swing(memory, MEMX, 130 - (1 - mem) * 1100, T, 1, 0.7, 1);
+      pose(q, { x: MEMX, y: 330 - es(t, 1.1, 1.4) * 20, s: es(t, 1.1, 1.35, ease.back), r: Math.sin(T) * 6, o: t > 1.1 ? 1 : 0 });
       prints.forEach((p, i) => pose(p, { x: JX + 30 + i * 30, y: GY + 20 + (i % 2) * 8, s: 0.6, o: es(t, 0.45 + i * 0.05, 0.6 + i * 0.05) * 0.5 }));
 
       const lean = es(t, 1.1, 1.18);

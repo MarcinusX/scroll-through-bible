@@ -11,7 +11,7 @@ import { roadSet, TWELVE, LOOK, camel, walkCamel, bigNeedle, cart, say, bang, he
 
 const GY = 672;
 const JX = 760;
-const NX = 960, NH = 340, NTIP = GY + 96;
+const NH = 340, NTIP = GY + 96;
 const EYE_Y = NTIP - NH + 63;
 
 /** a camel's load: two bulging sacks and a chest with gold; camel coords (facing right) */
@@ -46,6 +46,9 @@ export default {
   cam: { x: [-40, 80], y: [-50, 30], z: [1, 1.12] },
   build(S) {
     const c = S.c;
+    // phone: the needle, the camel and the far gate stand further in (the camel was under the thread)
+    const P = S.portrait;
+    const NX = P ? 910 : 960;
     const R = roadSet(S, { jer: 0.26, jerX: 1180, roadX: 860, trees: 18, clouds: [[480, 140, 170], [1030, 110, 120]] });
     const lightL = S.layer({ par: 0.04, sh: 1, flat: true });
     const heaven = lightL.add(`<g opacity="0">${rays(c, { n: 18, r0: 40, r1: 900, spread: 0.05, color: '#fff3cf' })}<circle r="260" fill="url(#halo-glow)"/></g>`);
@@ -71,7 +74,7 @@ export default {
     const SPOT = [[440, GY - 40], [510, GY - 30], [580, GY - 42], [465, GY + 10], [540, GY + 20], [615, GY + 8], [655, GY - 36]];
     const DIS = [0, 3, 1, 2, 6, 7, 4].map((k, i) => {
       const el = pL.add(withFace(person(c, TWELVE[k].o), faceBits(c)));
-      return { i, el, p: S.puppet(el), seed: c.rr(0, 9), x: SPOT[i][0], y: SPOT[i][1], s: 0.86 + (SPOT[i][1] - GY) / 400 };
+      return { i, el, p: S.puppet(el), seed: c.rr(0, 9), x: SPOT[i][0] + (P ? 25 : 0), y: SPOT[i][1], s: 0.86 + (SPOT[i][1] - GY) / 400 };
     });
     const jesus = S.puppet(pL.add(person(c, { ...CAST.jesus })));
     const fxL = S.layer({ par: 0.5, sh: 6 });
@@ -87,7 +90,7 @@ export default {
       R.update(t, T, { sunY: es(t, 0, 7) * 30 });
 
       /* beats 0–1: far off, the rich man's cart cannot pass the narrow gate */
-      const gx = 1100, gy = R.gy(1100) + 6;
+      const gx = P ? 1040 : 1100, gy = R.gy(gx) + 6;
       const far = 1 - es(t, 1.9, 2.2);
       pose(gate, { x: gx, y: gy, s: 0.8, o: es(t, 1.0, 1.3) * far });
       const roll = es(t, -0.5, 1.4);
@@ -109,7 +112,7 @@ export default {
         const bOn = bump(t, 3.05, 4.4);
         pose(bangs[d.i], { x: hx + (d.i % 2 ? 8 : -6), y: hy - 42 - bOn * 6, s: Math.min(1, bOn * 2), r: (d.i % 2 ? 10 : -10), o: bOn > 0.02 ? 1 : 0 });
       });
-      pose(who, { x: 610, y: GY - 205, s: es(t, 4.02, 4.25, ease.back), o: t > 4.02 && t < 5.1 ? 1 - es(t, 4.9, 5.1) : 0 });
+      pose(who, { x: P ? 635 : 610, y: GY - 205, s: es(t, 4.02, 4.25, ease.back), o: t > 4.02 && t < 5.1 ? 1 - es(t, 4.9, 5.1) : 0 });
 
       /* Jesus */
       const toThem = es(t, 0.05, 0.3) * (1 - es(t, 0.9, 1.1)) + es(t, 5.02, 5.3);
@@ -126,11 +129,11 @@ export default {
       const bounce = es(t, 2.6, 2.8, ease.back) * (1 - es(t, 6.1, 6.2));
       const lift = es(t, 6.15, 6.45), through = es(t, 6.45, 6.62), land = es(t, 6.62, 6.85);
       const nose = 100;
-      let cx = lerp(1500, NX + nose, walkIn) - push * 14 + bounce * 60, cy = GY;
+      let cx = lerp(1500, NX + nose, walkIn) - push * 14 + bounce * (P ? 30 : 60), cy = GY;
       let cs = 0.86;
       cx = lerp(cx, NX + 30, lift); cy = lerp(cy, EYE_Y + 10, lift); cs = lerp(cs, 0.1, lift);
       cx = lerp(cx, NX - 30, through);
-      cx = lerp(cx, NX - 80, land); cy = lerp(cy, GY + 34, land); cs = lerp(cs, 0.56, land);
+      cx = lerp(cx, NX - (P ? 60 : 80), land); cy = lerp(cy, GY + 34, land); cs = lerp(cs, 0.56, land);
       pose(cam_, { x: cx, y: cy - Math.sin(through * Math.PI) * 6, s: cs });
       pose(cm, { sx: -1 + push * 0.18, sy: 1 + push * 0.06 });
       const walking = (walkIn > 0 && walkIn < 1) || (bounce > 0.02 && bounce < 0.98);

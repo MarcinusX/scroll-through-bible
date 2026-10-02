@@ -23,9 +23,12 @@ export default {
     { v: 22, text: 'Gdy młodzieniec usłyszał te słowa, odszedł zasmucony,' },
     { v: 22, cont: true, text: 'miał bowiem wiele posiadłości.' },
   ],
-  cam: { x: [-40, 260], y: [-40, 30], z: [1, 1.14] },
+  cam: { x: [-40, 380], y: [-40, 30], z: [1, 1.14] },
   build(S) {
     const c = S.c;
+    // phone: the poor sit further in (the first was past the left edge), and the camera follows the young man
+    // further as he goes away, so he and the cloud of his possessions stay on the screen
+    const P = S.portrait;
     const R = roadSet(S, { sky2: GREY, jer: 0.23, jerX: 1170, roadX: 820, trees: 18, clouds: [[480, 150, 170], [1000, 120, 120]] });
     const grey = hanging(R.hangL, cloud(c, 170, mix(C.stone2, C.storm, 0.35), mix(C.storm, C.stone2, 0.3)), { x: 1200, y: 150, len: 600 });
     const side = S.layer({ par: 0.3, sh: 3 });
@@ -41,9 +44,9 @@ export default {
     const cartL = S.layer({ par: 0.5, sh: 4 });
     const pL = S.layer({ par: 0.5, sh: 5 });
     const POOR = [
-      { o: { robe: mix(C.stone2, C.rock2, 0.4), hairStyle: 'wrap', veil: C.stone2, beard: 'full', beardColor: C.greyHair, hair: C.greyHair, skin: C.skin3 }, x: 440 },
-      { o: { robe: mix(C.sand2, C.rock2, 0.4), hairStyle: 'veil', veil: C.stone, beard: 'none', skin: C.skin2, hair: C.hair }, x: 530 },
-      { o: { robe: mix(C.wood3, C.rock2, 0.5), hairStyle: 'short', beard: 'short', hair: C.hair3, skin: C.skin4 }, x: 620 },
+      { o: { robe: mix(C.stone2, C.rock2, 0.4), hairStyle: 'wrap', veil: C.stone2, beard: 'full', beardColor: C.greyHair, hair: C.greyHair, skin: C.skin3 }, x: P ? 525 : 440 },
+      { o: { robe: mix(C.sand2, C.rock2, 0.4), hairStyle: 'veil', veil: C.stone, beard: 'none', skin: C.skin2, hair: C.hair }, x: P ? 595 : 530 },
+      { o: { robe: mix(C.wood3, C.rock2, 0.5), hairStyle: 'short', beard: 'short', hair: C.hair3, skin: C.skin4 }, x: P ? 665 : 620 },
     ].map((m, i) => ({ ...m, i, seed: c.rr(0, 9), y: GY + 40, p: S.puppet(pL.add(person(c, { ...m.o, pose: 'sit' }))), bowl: pL.add(`<g>${beggarBowl(c)}</g>`) }));
     const DIS = [TWELVE[0], TWELVE[3], TWELVE[2], TWELVE[1], TWELVE[6]].map((d, i) => ({ ...d, i, seed: c.rr(0, 9), p: S.puppet(pL.add(person(c, d.o))) }));
     const jesus = S.puppet(pL.add(person(c, { ...CAST.jesus })));
@@ -61,14 +64,14 @@ export default {
     const riches = fxL.add(`<g opacity="0">${thought(c, `<g transform="translate(0 -12)">${goods}</g>`, { w: 150, h: 96 })}</g>`);
 
     const fg = S.layer({ par: 0.9, sh: 6 });
-    fg.add(bush(c, 210, 990, 220, C.sage, C.moss) + rock(c, 1400, 990, 200, 66, C.rock2));
+    fg.add(bush(c, 210, 990, 220, C.sage, C.moss) + rock(c, P ? 1640 : 1400, 990, 200, 66, C.rock2));   // phone: the camera pans right at the end; keep the foreground rock out of the corner
 
     return (t, time) => {
       const T = time;
       R.update(t, T, { sunY: es(t, 0, 5) * 30 });
       const gloom = es(t, 3.0, 3.6);
       R.sk2.layer.fade(gloom * 0.8);
-      swing(grey, 1210 - gloom * 10, 196 - (1 - gloom) * 600, T, 1.2, 0.7, 3);
+      swing(grey, (P ? 1000 : 1210) - gloom * 10, 196 - (1 - gloom) * 600, T, 1.2, 0.7, 3);
 
       /* he looks at him with love */
       const lv = es(t, -0.2, 0.3) * (1 - es(t, 3.0, 3.3));
@@ -109,7 +112,7 @@ export default {
       const toCart = es(t, 3.3, 3.85);
       const shaftX = CARTX + 174 * CS + 6;
       const pull = seg(t, 4.02, 5.6);
-      const cx = CARTX + pull * 200;
+      const cx = CARTX + pull * (P ? 90 : 200);   // phone: he and his cloud of riches stay clear of the thread while the beat rests
       const mx = pull > 0 ? cx + 174 * CS + 6 : lerp(MX, shaftX, toCart);
       const walking = (toCart > 0 && toCart < 1) || (pull > 0 && pull < 1);
       const ready = pull > 0 || toCart > 0.95;
@@ -123,7 +126,7 @@ export default {
 
       S.cam.z = 1 + es(t, -0.4, 0.3) * 0.04 + es(t, 3.9, 4.6) * 0.04;
       S.cam.y = -es(t, 0.9, 1.3) * 30 * (1 - es(t, 1.9, 2.3));
-      S.cam.x = es(t, 3.2, 3.9) * 80 + es(t, 4.0, 4.7) * 180;
+      S.cam.x = (P ? es(t, 3.2, 3.7) * 150 : es(t, 3.2, 3.9) * 80) + es(t, 4.0, 4.7) * (P ? 220 : 180);
     };
   },
 };

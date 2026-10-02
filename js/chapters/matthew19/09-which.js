@@ -10,7 +10,9 @@ import { roadSet, TWELVE, LOOK, say, lawTablets, tablet, tick, cart, sack, qmark
 
 const GY = 672;
 const JX = 760, MX = 930;
-const XS = [545, 657, 769, 881, 993, 1110];
+const XS_WIDE = [545, 657, 769, 881, 993, 1110];
+// phone: two rows of three (the row of six ran past both edges)
+const XS_TALL = [580, 760, 940, 670, 850, 1030];
 
 /** the heart-shaped commandment: love your neighbour as yourself; origin top-centre (on its string) */
 function heartStone(c, lines) {
@@ -30,13 +32,16 @@ export default {
   cam: { x: [-40, 40], y: [-40, 30], z: [1, 1.1] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;
+    const XS = P ? XS_TALL : XS_WIDE;
     const R = roadSet(S, { jer: 0.21, jerX: 1170, roadX: 820, trees: 18, clouds: [[480, 150, 170], [1000, 120, 120]] });
     const side = S.layer({ par: 0.3, sh: 3 });
     side.add(olive(c, 300, 604, 1) + olive(c, 1400, 606, 0.9) + bush(c, 1330, 610, 60, C.sage, C.moss));
     const cartL = S.layer({ par: 0.42, sh: 4 });
     const K = cart(c, 190);
-    cartL.add(`<g transform="translate(1200 ${GY - 70}) scale(.8)">${K.body}<g transform="translate(-40 0)">${K.wheel}</g><g transform="translate(50 0)">${K.wheel}</g></g>`);
-    cartL.add(`<g transform="translate(1100 ${GY - 34}) scale(.9)">${sack(c, 44)}</g>`);
+    const KX = S.portrait ? 130 : 0;   // phone: the cart and sack wait just off the right edge instead of peeping under the thread (seen whole in mt19-perfect)
+    cartL.add(`<g transform="translate(${1200 + KX} ${GY - 70}) scale(.8)">${K.body}<g transform="translate(-40 0)">${K.wheel}</g><g transform="translate(50 0)">${K.wheel}</g></g>`);
+    cartL.add(`<g transform="translate(${1100 + KX} ${GY - 34}) scale(.9)">${sack(c, 44)}</g>`);
 
     /* hanging: the tablets, then the six stones, then the empty frame */
     const hangL = S.layer({ par: 0.3, sh: 5 });
@@ -90,7 +95,8 @@ export default {
       stones.forEach((st) => {
         const t0 = st.i < 4 ? 1.05 + st.i * 0.12 : 2.05 + (st.i - 4) * 0.25;
         const d = es(t, t0, t0 + 0.28, ease.back);
-        const y = (st.i === 5 ? 214 : 244 + (st.i % 2) * 30) - (1 - d) * 1100 - lift * 1100;
+        const y0 = P ? (st.i < 3 ? 110 + (st.i % 2) * 16 : st.i === 5 ? 250 : 270 + (st.i % 2) * 16) : st.i === 5 ? 214 : 244 + (st.i % 2) * 30;
+        const y = y0 - (1 - d) * 1100 - lift * 1100;
         swing(st.el, XS[st.i], y, T, 1.3, 0.8, st.i);
         const tk = es(t, 3.1 + st.i * 0.12, 3.25 + st.i * 0.12, ease.back);
         pose(st.tk, { x: XS[st.i] + 40, y: y + st.h - 10, s: tk, r: -8, o: tk > 0.02 ? 1 : 0 });

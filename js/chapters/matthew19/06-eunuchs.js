@@ -12,7 +12,8 @@ import { roadSet, TWELVE, panel, cradle, palaceDoor, KEEPER, keys, lily, kingdom
 const GY = 672;
 const JX = 800;
 const GOLDEN = ['#d8c8b4', '#f1d4a4', '#f7e2b8'];
-const PX = [592, 810, 1028];
+const PX_WIDE = [592, 810, 1028];
+const PX_TALL = [588, 798, 1008];   // phone: the third flat clear of the thread
 
 export default {
   id: 'mt19-eunuchs',
@@ -26,6 +27,7 @@ export default {
   cam: { x: [-40, 40], y: [-40, 20], z: [1, 1.08] },
   build(S) {
     const c = S.c;
+    const PX = S.portrait ? PX_TALL : PX_WIDE;
     const R = roadSet(S, { skyCols: GOLDEN, jer: 0.13, jerX: 1210, roadX: 800, trees: 16, sunAt: [1260, 250], clouds: [[420, 150, 170], [1120, 120, 120]] });
     const side = S.layer({ par: 0.3, sh: 3 });
     side.add(olive(c, 300, 604, 1.1) + olive(c, 1400, 606, 0.95) + bush(c, 1300, 610, 70, C.sage, C.moss));
@@ -43,7 +45,7 @@ export default {
 
     /* listeners behind, and the disciples sitting round Him */
     const back = S.layer({ par: 0.42, sh: 3 });
-    back.sprite(throng(c, 6, { s: 0.48, spread: 32, rows: 1, face: 0, arms: [0, 20] }), 1200, 614);
+    back.sprite(throng(c, 6, { s: 0.48, spread: 32, rows: 1, face: 0, arms: [0, 20] }), S.portrait ? 1330 : 1200, 614);   // phone: just off the edge, not one sliced listener under the thread
     const pL = S.layer({ par: 0.5, sh: 5 });
     const SEAT = [
       { d: TWELVE[3], x: 540, y: GY - 6, f: false }, { d: TWELVE[2], x: 630, y: GY + 16, f: false }, { d: TWELVE[0], x: 690, y: GY + 44, f: false },

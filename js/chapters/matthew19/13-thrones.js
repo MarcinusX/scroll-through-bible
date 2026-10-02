@@ -13,9 +13,10 @@ const GY = 690;
 const TX = 800, TY = 420;        // the throne of glory (seat)
 const GOLD = ['#e9d3a6', '#f8e2b0', '#fbeccb'];
 // the twelve seats: six on each side, in an arc
-const SEATS = Array.from({ length: 12 }, (_, k) => {
+// (phone: a narrower arc, so the outermost seats are not past the edges)
+const seatsFor = (P) => Array.from({ length: 12 }, (_, k) => {
   const side = k < 6 ? -1 : 1, i = k % 6;
-  return { k, side, i, x: TX + side * (132 + i * 46), y: 596 + i * 11 };
+  return { k, side, i, x: TX + side * (P ? 100 + i * 32 : 132 + i * 46), y: 596 + i * 11 };
 });
 
 export default {
@@ -29,6 +30,8 @@ export default {
   cam: { x: [-20, 20], y: [-60, 20], z: [1, 1.1] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;
+    const SEATS = seatsFor(P);
     sky(S, DAY);
     const gold = sky(S, GOLD, { name: 'gold' });
     const glowL = S.layer({ par: 0.04, sh: 1, flat: true, rise: 0 });
@@ -67,7 +70,7 @@ export default {
 
     /* the banners of the twelve tribes */
     const banL = S.layer({ par: 0.6, sh: 4 });
-    const BAN = Array.from({ length: 12 }, (_, i) => ({ i, x: 452 + i * 63.5, el: banL.add(`<g>${banner(c, i, 140)}</g>`) }));
+    const BAN = Array.from({ length: 12 }, (_, i) => ({ i, x: P ? 580 + i * 40 : 452 + i * 63.5, el: banL.add(`<g>${banner(c, i, 140)}</g>`) }));
 
     return (t, time) => {
       const T = time;

@@ -29,6 +29,7 @@ export default {
   cam: { x: [-60, 300], y: [-30, 40], z: [1, 1.14] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;   // phone: the families stand closer, so the last parent is not past the edge
     const R = roadSet(S, { jer: 0.16, jerX: 1300, roadX: 900, trees: 18, clouds: [[500, 120, 170], [1150, 180, 130]] });
     const vil = S.layer({ par: 0.28, sh: 3 });
     vil.add(house(c, 1180, 594, 80, 60) + house(c, 1270, 600, 60, 44) + house(c, 290, 596, 70, 50));
@@ -41,9 +42,9 @@ export default {
     /* the families */
     const pL = S.layer({ par: 0.5, sh: 5 });
     const PARENTS = [
-      { o: { ...crowdPerson(c), hairStyle: 'veil', beard: 'none', robe: C.lavender, veil: C.cream }, x: 1010, y: GY - 30, s: 0.9 },
-      { o: { ...crowdPerson(c), hairStyle: 'short', beard: 'full', robe: C.ochreRobe, mantle: C.sageRobe }, x: 1110, y: GY - 34, s: 0.9 },
-      { o: { ...crowdPerson(c), hairStyle: 'veil', beard: 'none', robe: C.skyVeil, veil: C.blushVeil }, x: 1200, y: GY - 26, s: 0.88 },
+      { o: { ...crowdPerson(c), hairStyle: 'veil', beard: 'none', robe: C.lavender, veil: C.cream }, x: P ? 970 : 1010, y: GY - 30, s: 0.9 },
+      { o: { ...crowdPerson(c), hairStyle: 'short', beard: 'full', robe: C.ochreRobe, mantle: C.sageRobe }, x: P ? 1040 : 1110, y: GY - 34, s: 0.9 },
+      { o: { ...crowdPerson(c), hairStyle: 'veil', beard: 'none', robe: C.skyVeil, veil: C.blushVeil }, x: P ? 1105 : 1200, y: GY - 26, s: 0.88 },
     ].map((m, i) => ({ ...m, i, seed: c.rr(0, 9), p: S.puppet(pL.add(person(c, m.o))) }));
     const DIS = [TWELVE[0], TWELVE[3], TWELVE[1], TWELVE[2]].map((d, i) => {
       const el = pL.add(withFace(person(c, d.o), faceBits(c)));
@@ -51,7 +52,7 @@ export default {
     });
     const KIDS = Array.from({ length: 5 }, (_, i) => {
       const el = pL.add(withFace(person(c, child(c, i)), faceBits(c)));
-      return { i, el, p: S.puppet(el), seed: c.rr(0, 9), x0: 960 + i * 58, y0: GY + (i % 2) * 10, s: 0.5 + (i % 3) * 0.03 };
+      return { i, el, p: S.puppet(el), seed: c.rr(0, 9), x0: P ? 915 + i * 44 : 960 + i * 58, y0: GY + (i % 2) * 10, s: 0.5 + (i % 3) * 0.03 };
     });
     const jSit = S.puppet(pL.add(person(c, { ...CAST.jesus, pose: 'sit' })));
     const jStandEl = pL.add(person(c, { ...CAST.jesus }));
@@ -64,7 +65,7 @@ export default {
     const sparks = Array.from({ length: 4 }, () => fxL.add(`<g opacity="0">${spark(c, 9)}</g>`));
 
     const fg = S.layer({ par: 0.9, sh: 6 });
-    fg.add(bush(c, 200, 990, 230, C.sage, C.moss) + rock(c, 1420, 990, 210, 70, C.rock2));
+    fg.add(bush(c, 200, 990, 230, C.sage, C.moss) + rock(c, P ? 1600 : 1420, 990, 210, 70, C.rock2));   // phone: the camera pans right at the end; keep the foreground rock out of the corner
 
     // where the children stand round Him
     const AT = [[JX - 110, GY + 14], [JX - 56, GY + 30], [JX + 76, GY + 30], [JX + 130, GY + 14], [JX - 170, GY + 24]];
@@ -95,7 +96,7 @@ export default {
       const come = es(t, -0.2, 0.75);
       PARENTS.forEach((m) => {
         const stepBack = es(t, 2.6, 3.0);
-        const x = lerp(m.x + 480, m.x, come) + stepBack * 90;
+        const x = lerp(m.x + 480, m.x, come) + stepBack * (P ? 30 : 90);
         const release = 1 - es(t, 2.3, 2.6);
         const push = es(t, 0.4, 0.8) * (1 - block) * release;
         const wave = es(t, 5.2, 5.5);
@@ -131,7 +132,7 @@ export default {
         pose(sp, { x: JX - 120 + i * 80, y: GY - 150 - k * 120, s: 0.8, o: es(t, 4.2, 4.5) * (1 - es(t, 5.1, 5.4)) * Math.sin(k * Math.PI) });
       });
 
-      S.cam.x = -20 + es(t, 5.1, 5.8) * 300;
+      S.cam.x = (P ? 60 : -20) + es(t, 5.1, 5.8) * (P ? 240 : 300);
       S.cam.z = 1 + es(t, 1.9, 2.3) * 0.05 + es(t, 3.9, 4.4) * 0.08 - es(t, 5.0, 5.5) * 0.1;
       S.cam.y = -es(t, 1.9, 2.3) * 10 + es(t, 3.9, 4.4) * 30 - es(t, 5.0, 5.5) * 20;
     };

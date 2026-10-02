@@ -10,7 +10,8 @@ import { roadSet, pharisee, TWELVE, LOOK, doll, scissors, snip, stoneHeart, scro
 
 const GY = 668;
 const JX = 760;
-const PH = [{ x: 960, s: 0.98 }, { x: 1050, s: 0.94 }, { x: 1140, s: 0.9 }];
+const PH_WIDE = [{ x: 960, s: 0.98 }, { x: 1050, s: 0.94 }, { x: 1140, s: 0.9 }];
+const PH_TALL = [{ x: 915, s: 0.98 }, { x: 980, s: 0.94 }, { x: 1045, s: 0.9 }];   // phone: the third one clear of the edge
 
 export default {
   id: 'mt19-moses',
@@ -22,6 +23,10 @@ export default {
   cam: { x: [-40, 40], y: [-30, 20], z: [1, 1.08] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;
+    const PH = P ? PH_TALL : PH_WIDE;
+    // phone: the bill of divorce hangs above the card, the stone heart beside it (both were past the right edge)
+    const SCX = P ? 1000 : 1080, SCY = P ? -60 : 130, HVX = P ? 1050 : 1195;
     const R = roadSet(S, { jer: 0.1, jerX: 1180, roadX: 820, trees: 18, clouds: [[430, 140, 180], [1080, 120, 130]] });
     const vil = S.layer({ par: 0.28, sh: 3 });
     vil.add(house(c, 250, 590, 90, 64) + house(c, 350, 596, 70, 50) + house(c, 180, 600, 60, 44) + olive(c, 470, 600, 0.9) + olive(c, 1330, 600, 0.8) + bush(c, 1250, 604, 60, C.sage, C.moss));
@@ -47,7 +52,7 @@ export default {
     const mosesP = S.puppet(moses.querySelector('.fig'));
     // the bill of divorce
     const sc = scrollParts(c, { w: 190, h: 150, title: tr('list rozwodowy', 'bill of divorce'), lines: 5 });
-    const scrollEl = hanging(hangL, `<g><g class="sheet">${sc.sheet.replace('font-size="30"', 'font-size="22"').replace('y="42"', 'y="36"')}</g><g>${sc.rod}</g></g>`, { x: 1080, y: 130, len: 800 });
+    const scrollEl = hanging(hangL, `<g><g class="sheet">${sc.sheet.replace('font-size="30"', 'font-size="22"').replace('y="42"', 'y="36"')}</g><g>${sc.rod}</g></g>`, { x: SCX, y: SCY, len: 800 });
     const scrollSheet = scrollEl.querySelector('.sheet');
     const heavy = hanging(hangL, `<g transform="translate(0 40) scale(1.8)">${stoneHeart(c, 22)}</g>`, { x: 1200, y: 300, len: 800 });
     // from the beginning
@@ -97,12 +102,12 @@ export default {
       swing(moses, 590, 100 - (1 - mo) * 1100, T, 1, 0.7, 1);
       mosesP.set({ x: 0, y: 0, s: 1, armF: 70, armB: 20 + es(t, 1.1, 1.4) * 40, head: -4, blink: blinkAt(T, 5) });
       const sd = es(t, 0.25, 0.55, ease.back) * (1 - es(t, 2.05, 2.35));
-      swing(scrollEl, 1080, 130 - (1 - sd) * 1100, T, 1, 0.6, 2);
+      swing(scrollEl, SCX, SCY - (1 - sd) * 1100, T, 1, 0.6, 2);
       pose(scrollSheet, { sy: 0.05 + 0.95 * es(t, 0.4, 0.75) * (1 - es(t, 2.0, 2.2)) });
 
       /* beat 1: hardness of heart */
       const hv = es(t, 1.2, 1.55, ease.back) * (1 - es(t, 2.4, 2.7) * 0.0);
-      swing(heavy, 1195, 300 - (1 - hv) * 1100, T, 1.2, 0.8, 3);
+      swing(heavy, HVX, 300 - (1 - hv) * 1100, T, 1.2, 0.8, 3);
 
       /* beat 2: from the beginning it was not so */
       const bg = es(t, 2.12, 2.45, ease.back);

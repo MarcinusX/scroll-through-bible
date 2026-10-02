@@ -8,7 +8,8 @@ import { roadSet, pharisee, TWELVE, doll, scissors, snip, thought, say, throng, 
 
 const GY = 668;
 const JX = 760;
-const PH = [{ x: 960, s: 0.98 }, { x: 1050, s: 0.94 }, { x: 1140, s: 0.9 }];
+const PH_WIDE = [{ x: 960, s: 0.98 }, { x: 1050, s: 0.94 }, { x: 1140, s: 0.9 }];
+const PH_TALL = [{ x: 915, s: 0.98 }, { x: 980, s: 0.94 }, { x: 1045, s: 0.9 }];   // phone: the third one clear of the edge
 
 /** a fish-hook: the trap in a testing question */
 function hook(c) {
@@ -24,6 +25,8 @@ export default {
   cam: { x: [-30, 40], y: [-20, 30], z: [1, 1.08] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;
+    const PH = P ? PH_TALL : PH_WIDE;
     const R = roadSet(S, { jer: 0.08, jerX: 1180, roadX: 820, trees: 18, clouds: [[430, 140, 180], [1080, 120, 130]] });
     const vil = S.layer({ par: 0.28, sh: 3 });
     vil.add(house(c, 250, 590, 90, 64) + house(c, 350, 596, 70, 50) + house(c, 180, 600, 60, 44) + olive(c, 470, 600, 0.9) + olive(c, 1330, 600, 0.8) + bush(c, 1250, 604, 60, C.sage, C.moss));
@@ -44,8 +47,8 @@ export default {
     const sciss = dollL.add(`<g>${scissors(c, 90)}</g>`);
     const REASONS = [
       { m: burntLoaf(c), x: 575, y: 190 },
-      { m: crackedJug(c), x: 1075, y: 150 },
-      { m: spilledCup(c), x: 1185, y: 260 },
+      { m: crackedJug(c), x: P ? 1050 : 1075, y: P ? 120 : 150 },
+      { m: spilledCup(c), x: P ? 1060 : 1185, y: P ? 260 : 260 },
     ].map((r, i) => ({ ...r, i, el: hanging(hangL, `<g>${plate(c, r.m, { r: 42 })}</g>`, { x: r.x, y: r.y, len: 800 }) }));
 
     /* people */
