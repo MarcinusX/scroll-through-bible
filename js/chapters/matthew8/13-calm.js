@@ -65,7 +65,7 @@ export default {
       const ab = es(t, 3.1, 3.3, ease.back);
       pose(who, { x: ax, y: ay, s: ab, o: ab > 0.02 ? 1 : 0 });
 
-      S.cam.x = -120 + es(t, 1.0, 1.4) * 40 + es(t, 2.0, 2.6) * 60;
+      S.cam.x = S.portrait ? -50 + es(t, 1.0, 1.4) * 30 + es(t, 2.0, 2.6) * 40 : -120 + es(t, 1.0, 1.4) * 40 + es(t, 2.0, 2.6) * 60;   // phone: the whole boat
       S.cam.z = 1.2 - es(t, 1.0, 1.5) * 0.12 - es(t, 2.0, 2.6) * 0.06;
       S.cam.y = 40 - es(t, 2.0, 2.6) * 20;
     };

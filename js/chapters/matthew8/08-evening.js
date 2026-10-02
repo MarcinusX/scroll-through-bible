@@ -89,10 +89,11 @@ export default {
     const g3 = (well) => (well
       ? pose3(pc, [{ x: -110, y: 0, s: 0.9, head: -6, armF: 60, armB: 100, o: CAR[0] }, { x: 110, y: 4, s: 0.9, flip: true, head: -6, armF: 60, armB: 110, o: CAR[1] }, { x: 0, y: 10, s: 0.94, head: -12, armF: 150, armB: 160, o: { ...PARA, holdB: `<g transform="translate(0 -10) rotate(80)">${rolledMat(c, 110)}</g>` } }])
       : pose3(pc, [{ x: -110, y: 0, s: 0.9, armF: 70, armB: 50, o: CAR[0] }, { x: 110, y: 4, s: 0.9, flip: true, armF: 70, armB: 50, o: CAR[1] }]) + `<g transform="translate(0 -84)">${sickOnMat(c, PARA, 200)}</g>`);
+    const GX = S.portrait ? [540, 1075, 1000] : [470, 1150, 1020];   // phone: the sick stand inside the screen
     const groups = [
-      { x: 470, y: 760, from: -300, a: 0.15, h: 1.3, m: g1 },
-      { x: 1150, y: 764, from: 1900, a: 0.25, h: 1.45, m: g2 },
-      { x: 1020, y: 818, from: 1900, a: 0.4, h: 1.2, m: g3 },
+      { x: GX[0], y: 760, from: -300, a: 0.15, h: 1.3, m: g1 },
+      { x: GX[1], y: 764, from: 1900, a: 0.25, h: 1.45, m: g2 },
+      { x: GX[2], y: 818, from: 1900, a: 0.4, h: 1.2, m: g3 },
     ].map((g) => ({ ...g, sick: GL.sprite(g.m(false), g.x, g.y), well: GL.sprite(g.m(true), g.x, g.y) }));
 
     /* ---------- the possessed, and Jesus ---------- */
@@ -160,7 +161,7 @@ export default {
           pose(sh.el, { x: px + trem + Math.cos(sh.a) * tear * 120 * sh.drift + (pp.flip ? 1 : -1) * tear * 60, y: pp.y - 100 + Math.sin(sh.a) * tear * 80 - tear * 260 - flee * 500, s: 1 - tear * 0.4, r: tear * 120 * (sh.i % 2 ? 1 : -1), o: (k > 0 ? 0.9 : 0) * (1 - flee) });
         });
       });
-      const BURST = [[470, 600, 1.25], [1150, 600, 1.4], [1020, 650, 1.15], [620, 640, 1.2], [840, 650, 1.3]];
+      const BURST = [[GX[0], 600, 1.25], [GX[1], 600, 1.4], [GX[2], 650, 1.15], [620, 640, 1.2], [840, 650, 1.3]];
       bursts.forEach((b, i) => { const k = bump(t, BURST[i][2], BURST[i][2] + 0.5); pose(b, { x: BURST[i][0], y: BURST[i][1], s: 0.4 + k * 0.9, r: T * 20, o: k * 0.9 }); });
 
       /* v17a — Isaiah's word comes down and unrolls */
@@ -168,7 +169,7 @@ export default {
       setScroll(scroll, 800, lerp(-400, 120, sd), es(t, 2.3, 2.7), sd > 0.01 ? 1 : 0, T ? Math.sin(T * 0.6) * 0.4 : 0);
 
       /* v17b — He takes our sicknesses on Himself: grey flakes drift from the people onto His shoulders */
-      const from = [[470, 620], [1150, 620], [1020, 660], [620, 650], [840, 660]];
+      const from = [[GX[0], 620], [GX[1], 620], [GX[2], 660], [620, 650], [840, 660]];
       flakes.forEach((f) => {
         const k = es(t, 3.05 + f.d, 3.55 + f.d);
         const [sx, sy] = from[f.g];

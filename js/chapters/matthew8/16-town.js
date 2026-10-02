@@ -21,7 +21,7 @@ export default {
   cam: { x: [-60, 1020], y: [-90, 60], z: [0.95, 1.12] },
   build(S) {
     const SKY = ['#bfd7da', '#f0e5cb', '#f7e8cc'];
-    const set = shoreSet(S, { skyCols: SKY, sunAt: [1180, 110], sunR: 44 });
+    const set = shoreSet(S, { skyCols: SKY, sunAt: [S.portrait ? 960 : 1180, 110], sunR: 44 });   // phone: the sun clear of the progress thread
     const c = S.c;
 
     /* ---------- the town on the hill ---------- */
@@ -47,7 +47,8 @@ export default {
     /* ---------- the herdsmen and the town ---------- */
     const pL = S.layer({ par: 0.5, sh: 4 });
     const HERD = [L5.herdsman, L5.herdsman2].map((o, i) => ({ i, p: S.puppet(pL.add(person(c, { ...o, holdF: i ? '' : `<g transform="rotate(-10)">${staff(c, 190)}</g>` }))), seed: c.rr(0, 9) }));
-    const GROUPS = [0, 1, 2, 3].map((i) => ({ i, d: i * 0.12, home: [960 + i * 110, FEET - 8 + (i % 2) * 14], sp: pL.sprite(mob(makeCutter('mt8-town-g' + i), 3, { s: 0.94, spread: 40, flip: true, arms: 10 }), 960 + i * 110, FEET), beg: pL.sprite(mob(makeCutter('mt8-town-g' + i), 3, { s: 0.94, spread: 40, flip: true, arms: 0 }).replace(/<g class="armFr"[^>]*>/g, '<g class="armFr" transform="rotate(-80)">').replace(/<g class="armBr"[^>]*>/g, '<g class="armBr" transform="rotate(-40)">'), 960 + i * 110, FEET) }));
+    const GROUPS = [0, 1, 2, 3].map((i) => ({ i, d: i * 0.12, home: [(S.portrait ? 870 + i * 66 : 960 + i * 110), FEET - 8 + (i % 2) * 14]   // phone: the townsfolk inside the screen
+     , sp: pL.sprite(mob(makeCutter('mt8-town-g' + i), 3, { s: 0.94, spread: 40, flip: true, arms: 10 }), 960 + i * 110, FEET), beg: pL.sprite(mob(makeCutter('mt8-town-g' + i), 3, { s: 0.94, spread: 40, flip: true, arms: 0 }).replace(/<g class="armFr"[^>]*>/g, '<g class="armFr" transform="rotate(-80)">').replace(/<g class="armBr"[^>]*>/g, '<g class="armBr" transform="rotate(-40)">'), 960 + i * 110, FEET) }));
 
     /* ---------- words ---------- */
     const wL = S.layer({ par: 0.5, sh: 3 });

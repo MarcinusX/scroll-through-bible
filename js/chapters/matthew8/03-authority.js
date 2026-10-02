@@ -9,7 +9,7 @@ import { centurion, soldier, HOUSEBOY, bubble, headAt, hangAt, dust, tr, PI, DAY
 import { denarius } from '../mark12/lib.js';
 import { broom } from '../mark13/lib.js';
 
-const FEET = 742, CX = 700, GATE = 1110, DOOR = 400;
+const FEET = 742, CX = 700, DOOR = 400;
 
 /** a Roman standard: a pole, discs, a small golden eagle and a red cloth (origin: foot) */
 function standard(c, h = 300) {
@@ -35,6 +35,8 @@ export default {
   cam: { x: [-20, 40], y: [0, 40], z: [1, 1.08] },
   build(S) {
     const c = S.c;
+    const P_ = S.portrait;
+    const GATE = P_ ? 1030 : 1110;   // phone: the gate, the line and the servant inside the screen
     sky(S, DAY);
     S.layer({ par: 0.1, sh: 2 }).add(band(c, { y: 420, amps: [14, 6, 3], lens: [1000, 380, 130], color: C.hillFar }).markup);
 
@@ -74,7 +76,7 @@ export default {
 
     /* ---------- the men ---------- */
     const P = S.layer({ par: 0.4, sh: 5 });
-    const LINE = [880, 960, 1040];
+    const LINE = P_ ? [840, 920, 1000] : [880, 960, 1040];
     const sol = [0, 1, 2].map((i) => ({ i, p: S.puppet(P.add(soldier(c, i, { spear: 30 }))), seed: c.rr(0, 9) }));
     const comer = S.puppet(P.add(soldier(c, 3, { spear: 30 })));
     const boyB = S.puppet(P.add(person(c, { ...HOUSEBOY, holdF: `<g data-k="broom" transform="rotate(-10)">${broom(c)}</g>` })));
@@ -120,7 +122,7 @@ export default {
       const sweep = es(t, 3.3, 3.5);
       const sw = t > 3.3 ? Math.sin((t - 3.3) * 18) * sweep : 0;
       const up = es(t, 3.2, 3.32);
-      const bx = 1200 - es(t, 3.3, 3.95) * 60;
+      const bx = (P_ ? 1090 : 1200) - es(t, 3.3, 3.95) * 60;
       boyB.set({ x: bx, y: FEET + 10, s: 0.84, flip: true, armF: 20 + up * 40 + sw * 16, armB: 10 + up * 30, lean: sweep * 8, head: sweep * 6, blink: blinkAt(T, 6) });
       pose(broomEl, { r: -10 - up * 20 });
       puffs.forEach((p, i) => { const k = seg(t, 3.4 + i * 0.15, 3.85 + i * 0.12); pose(p, { x: bx - 70 - i * 30, y: FEET + 8 - k * 20, s: 0.5 + k, o: bump(t, 3.4 + i * 0.15, 3.85 + i * 0.12) * 0.8 }); });

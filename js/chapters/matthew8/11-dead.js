@@ -28,6 +28,7 @@ export default {
   build(S) {
     const st = capShore(S, { skyCols: MORNING, sunAt: [1260, 150] });
     const c = S.c;
+    const P_ = S.portrait;   // phone: the procession inside the screen, and a shorter walk towards the boat
 
     /* the tombs on the hill above the town, and the procession */
     const pc = makeCutter('mt8-proc');
@@ -62,7 +63,7 @@ export default {
 
       /* the procession goes slowly up the hill; later it greys and fades away */
       const pk = es(t, 0.1, 2.9, (u) => u);
-      const px = lerp(990, 1110, pk);
+      const px = P_ ? lerp(900, 1000, pk) : lerp(990, 1110, pk);
       proc.set({ x: px, y: 596 - pk * 20 - Math.abs(Math.sin(px * 0.06)) * 1.5, s: 1, o: seg(t, 0.1, 0.3) * (1 - es(t, 2.4, 2.95) * 0.85) });
 
       /* v21 — "Lord, let me first go and bury my father" */
@@ -71,7 +72,7 @@ export default {
       const point = es(t, 0.45, 0.65) * (1 - es(t, 1.9, 2.1));
       const turn = es(t, 2.12, 2.2);
       const go = es(t, 2.25, 2.95);
-      const mx = mx0 - go * 300;
+      const mx = mx0 - go * (P_ ? 200 : 300);
       man.set({ x: mx, y: FEET + 2, s: 1, flip: turn < 0.5 ? true : true, walk: (come > 0 && come < 1) || (go > 0 && go < 1) ? mx * 0.05 : undefined, armF: 14 + bump(t, 0.4, 1.0) * 50, armB: 10 + point * 120, head: point * 10 - es(t, 1.2, 1.5) * 8 * (1 - turn), blink: blinkAt(T, 5) });
       const ab = es(t, 0.3, 0.5, ease.back) * (1 - es(t, 0.95, 1.05));
       pose(ask, { x: S.portrait ? mx0 - 170 : mx0 + 12, y: FEET - 196, s: ab, o: ab > 0.02 ? 1 : 0 });
@@ -79,17 +80,17 @@ export default {
       /* v22 — He answers; "Follow me" — and turns to the boat */
       const ans = es(t, 1.05, 1.3);
       const jgo = es(t, 2.2, 2.9);
-      const jx = JX - jgo * 220;
+      const jx = JX - jgo * (P_ ? 120 : 220);
       const beck = es(t, 2.1, 2.3);
       jesus.set({ x: jx, y: FEET, s: 1.04, flip: jgo > 0.02, walk: jgo > 0 && jgo < 1 ? jx * 0.045 : undefined, armF: 14 + ans * 40 * (1 - beck), armB: 10 + ans * 30 + beck * 80, head: -ans * 4, blink: blinkAt(T) });
       const [hx, hy] = headAt(jx, FEET, 1.04, jgo > 0.02);
       talk(hx, hy, bump(t, 1.1, 2.9), T, { spread: 1.8 });
       const fb = es(t, 2.08, 2.25, ease.back);
       pose(follow, { x: hx + 16, y: hy - 64, s: fb, o: fb > 0.02 ? 1 : 0 });
-      DIS.forEach((d) => { const x = 620 - d.i * 70 - jgo * 150; d.p.set({ x, y: FEET + 6 + d.i * 4, s: 0.98, flip: jgo > 0.02, walk: jgo > 0 && jgo < 1 ? x * 0.05 : undefined, armF: 14, head: -2, blink: blinkAt(T, d.i + 2) }); });
+      DIS.forEach((d) => { const x = P_ ? 600 - d.i * 64 - jgo * 80 : 620 - d.i * 70 - jgo * 150; d.p.set({ x, y: FEET + 6 + d.i * 4, s: 0.98, flip: jgo > 0.02, walk: jgo > 0 && jgo < 1 ? x * 0.05 : undefined, armF: 14, head: -2, blink: blinkAt(T, d.i + 2) }); });
 
       S.cam.z = 1.05 + es(t, 0.3, 0.8) * 0.03;
-      S.cam.x = 10 - es(t, 2.1, 2.9) * 50;
+      S.cam.x = 10 - es(t, 2.1, 2.9) * (P_ ? 30 : 50);
       S.cam.y = 30;
     };
   },

@@ -62,12 +62,13 @@ export default {
       });
 
       /* v25b — "Lord, save us, we are perishing!" */
-      const [px, py] = st.at(-20, -250);
+      const [px, py] = st.at(S.portrait ? 70 : -20, -250);     // phone: the shout sits further right, clear of the left edge
       const hk = es(t, 5.08, 5.28, ease.back);
       pose(help, { x: px, y: py, s: hk, r: hk > 0.02 && T ? Math.sin(T * 7) * 2 : 0, o: hk > 0.02 ? 1 : 0 });
 
       /* camera: follow the boat out, pull back for the storm, go close to the sleeper, then back */
-      S.cam.x = lerp(-150, 0, travel) - es(t, 3.0, 3.4) * 200 + es(t, 4.8, 5.2) * 150;
+      // phone: a shorter pan to the sleeper, so the disciples at the bow stay in view
+      S.cam.x = lerp(-150, 0, travel) - es(t, 3.0, 3.4) * (S.portrait ? 0 : 200) + es(t, 4.8, 5.2) * (S.portrait ? 0 : 150);
       S.cam.z = 1.05 - es(t, 1.0, 1.5) * 0.06 + es(t, 3.0, 3.4) * 0.3 - es(t, 4.8, 5.2) * 0.2;
       S.cam.y = 30 + es(t, 3.0, 3.4) * 40 - es(t, 4.8, 5.2) * 40;
     };

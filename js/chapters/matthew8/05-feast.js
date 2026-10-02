@@ -61,7 +61,8 @@ export default {
 
     /* ---------- the sons of the kingdom, then the darkness outside ---------- */
     const sonsL = S.layer({ par: 0.36, sh: 5 });
-    const sons = SONS.map((o, i) => ({ i, p: S.puppet(sonsL.add(person(c, o))), home: 690 + i * 80, out: [500, 1100, 580][i], seed: c.rr(0, 9) }));
+    const sons = SONS.map((o, i) => ({ i, p: S.puppet(sonsL.add(person(c, o))), home: 690 + i * 80, out: (S.portrait ? [570, 1030, 650] : [500, 1100, 580])[i],   // phone: put out, but still inside the screen
+      seed: c.rr(0, 9) }));
     const tears = Array.from({ length: 9 }, (_, i) => ({ i, s: i % 3, el: sonsL.add(`<path d="${c.cut([[0, -6], [3, 1], [0, 4], [-3, 1]], 0.1, 2)}" fill="${C.skyVeil}"/>`) }));
     const dark = S.layer({ par: 0.36, sh: 1, flat: true });
     dark.add(`<path d="${c.cut([[-3000, -3000], [5000, -3000], [5000, 5000], [-3000, 5000]], 0, 400) + c.hole(c.blob(800, 440, 420, 215, 26, 0.04), 1.5, 10)}" fill="#1b1a33"/>`);

@@ -23,7 +23,8 @@ export default {
     const crowdL = S.layer({ par: 0.4, sh: 4 });
     const crowd = [0, 1].map((i) => ({ i, sp: crowdL.sprite(mob(makeCutter('mt8-cen-c' + i), 5, { s: 0.82, spread: 44 }), 250 - i * 230, 716 - i * 10) }));
     const P = S.layer({ par: 0.4, sh: 5 });
-    [[1150, 1], [1235, 2]].forEach(([x, i]) => S.puppet(P.add(soldier(c, i, { spear: 30 }))).set({ x, y: FEET - 8 + i * 4, s: 0.96, flip: true, armF: 30 }));
+    // phone: the guards stand past the right edge, out of the progress thread (as in mt8-centurion)
+    (S.portrait ? [[1250, 1], [1330, 2]] : [[1150, 1], [1235, 2]]).forEach(([x, i]) => S.puppet(P.add(soldier(c, i, { spear: 30 }))).set({ x, y: FEET - 8 + i * 4, s: 0.96, flip: true, armF: 30 }));
     const DIS = [CAST.peter, CAST.andrew, CAST.john, CAST.james].map((o, i) => ({ i, p: S.puppet(P.add(person(c, o))), seed: c.rr(0, 9) }));
     const glowJ = P.add(`<circle r="160" fill="url(#halo-glow)" opacity="0"/>`);
     const jesus = S.puppet(P.add(person(c, { ...CAST.jesus })));

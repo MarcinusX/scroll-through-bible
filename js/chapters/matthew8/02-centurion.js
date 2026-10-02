@@ -19,7 +19,7 @@ export default {
     { v: 8, text: 'Lecz setnik odpowiedział: «Panie, nie jestem godzien, abyś wszedł pod dach mój,' },
     { v: 8, cont: true, text: 'ale powiedz tylko słowo, a mój sługa odzyska zdrowie.' },
   ],
-  cam: { x: [0, 60], y: [0, 40], z: [1, 1.12] },
+  cam: { x: [0, 180], y: [0, 40], z: [1, 1.12] },
   build(S) {
     const st = capStreet(S);
     const c = st.c;
@@ -34,7 +34,8 @@ export default {
     const crowdL = S.layer({ par: 0.4, sh: 4 });
     const crowd = [0, 1].map((i) => ({ i, sp: crowdL.sprite(mob(makeCutter('mt8-cen-c' + i), 5, { s: 0.82, spread: 44 }), 300, 718) }));
     const P = S.layer({ par: 0.4, sh: 5 });
-    const SOLD = [[1150, 1], [1235, 2]].map(([x, i]) => ({ x, i, p: S.puppet(P.add(soldier(c, i, { spear: 30 }))) }));
+    // phone: the two guards stand past the right edge, out of the progress thread
+    const SOLD = (S.portrait ? [[1250, 1], [1330, 2]] : [[1150, 1], [1235, 2]]).map(([x, i]) => ({ x, i, p: S.puppet(P.add(soldier(c, i, { spear: 30 }))) }));
     const DIS = [CAST.peter, CAST.andrew, CAST.john, CAST.james].map((o, i) => ({ i, p: S.puppet(P.add(person(c, o))), seed: c.rr(0, 9) }));
     const jesus = S.puppet(P.add(person(c, { ...CAST.jesus })));
     const cen = S.puppet(P.add(centurion(c)));
@@ -123,7 +124,7 @@ export default {
       pose(tSpark, { x: ccx + 40, y: ccy - 30, s: sp, r: T * 40, o: sp });
 
       S.cam.z = 1.04 + es(t, 0.6, 1.1) * 0.05 + es(t, 3.0, 3.4) * 0.03;
-      S.cam.x = 20 + es(t, 0.6, 1.1) * 30;
+      S.cam.x = (S.portrait ? 120 : 0) + 20 + es(t, 0.6, 1.1) * 30;   // phone: the house and the servant's bed in view
       S.cam.y = 20 + es(t, 0.6, 1.1) * 10;
     };
   },

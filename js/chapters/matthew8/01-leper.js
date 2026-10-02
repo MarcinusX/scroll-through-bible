@@ -22,10 +22,11 @@ export default {
     { v: 4, text: 'A Jezus rzekł do niego: «Uważaj, nie mów nikomu,' },
     { v: 4, cont: true, text: 'ale idź, pokaż się kapłanowi i złóż ofiarę, którą przepisał Mojżesz, na świadectwo dla nich».' },
   ],
-  cam: { x: [0, 70], y: [-20, 60], z: [1, 1.2] },
+  cam: { x: [-300, 70], y: [-20, 60], z: [1, 1.2] },
   build(S) {
     const M = mountSet(S);
     const c = M.c;
+    const P = S.portrait;
     const pc = makeCutter('mt8-leper-crowd');
 
     /* ---------- the crowds (sprites: one facing right, one facing left, swapped at the turns) ---------- */
@@ -36,16 +37,16 @@ export default {
       const n = 2 + (i % 2);
       const mr = mob(makeCutter('mt8-g' + i), n, { s: 1, spread: 40, rows: 1 });
       const ml = mob(makeCutter('mt8-g' + i), n, { s: 1, spread: 40, rows: 1, flip: true });
-      const hx = 330 + ((i * 131) % 440), hy = M.mfn(hx) + 26 + (i % 3) * 8;
+      const hx = P ? 420 + ((i * 131) % 440) * 0.8 : 330 + ((i * 131) % 440), hy = M.mfn(hx) + 26 + (i % 3) * 8;
       GROUPS[i] = { i, n, hx, hy, R: crowdL.sprite(mr, 800, 500), Lf: crowdL.sprite(ml, 800, 500), u: 0.84 - i * 0.1, d: i * 0.04 };
     }
     // where the lower groups settle once Jesus has reached the road
-    const REST = [[600, 704], [480, 700], [360, 702]];
+    const REST = P ? [[604, 704], [530, 700], [460, 702]] : [[600, 704], [480, 700], [360, 702]];
 
     /* ---------- people ---------- */
     const L = S.layer({ par: MP, sh: 5 });
     const HOME = [[492, 412], [630, 424], [446, 426], [672, 436]];
-    const DIS = [CAST.peter, CAST.andrew, CAST.john, CAST.james].map((o, i) => ({ i, p: S.puppet(L.add(person(c, o))), rest: 650 - i * 72, home: HOME[i], seed: c.rr(0, 9) }));
+    const DIS = [CAST.peter, CAST.andrew, CAST.john, CAST.james].map((o, i) => ({ i, p: S.puppet(L.add(person(c, o))), rest: P ? 664 - i * 54 : 650 - i * 72, home: HOME[i], seed: c.rr(0, 9) }));
     const heart = L.add(`<g opacity="0"><circle r="70" fill="url(#warm-glow)"/><path d="M0 8C-14 -2 -16 -12 -8 -16C-4 -18 -1 -15 0 -12C1 -15 4 -18 8 -16C16 -12 14 -2 0 8Z" fill="${C.jesusMantle}"/></g>`);
     const glow = L.add(`<circle r="170" fill="url(#halo-glow)" opacity="0"/>`);
     const jesus = S.puppet(L.add(person(c, { ...CAST.jesus })));
@@ -145,7 +146,7 @@ export default {
       const rise = es(t, 5.46, 5.52);
       leperK.set({ x: KX, y: FEET, s: 1, flip: true, o: kneel * (1 - healed), armF: 30 + beg * 70 - es(t, 4.1, 4.35) * 30, armB: 20 + beg * 100 - es(t, 4.1, 4.35) * 60, head: -beg * 12 + es(t, 4.1, 4.35) * 16, lean: 4, blink: blinkAt(T, 3) });
       const pb = es(t, 3.1, 3.3, ease.back) * (1 - es(t, 3.92, 4.02));
-      pose(plea, { x: KX + 10, y: FEET - 150, s: pb, o: pb > 0.02 ? 1 : 0 });
+      pose(plea, { x: KX + (P ? -40 : 10), y: FEET - 150, s: pb, o: pb > 0.02 ? 1 : 0 });
 
       /* v3a — compassion: He stretches out His hand and touches him */
       const pity = bump(t, 3.7, 4.5);
@@ -166,7 +167,7 @@ export default {
       const joy = es(t, 5.52, 5.8) * (1 - es(t, 6.05, 6.3));
       const nod = bump(t, 6.5, 6.95);
       const go = es(t, 7.35, 7.95);
-      const cx = lerp(KX, 1070, go);
+      const cx = lerp(KX, P ? 1010 : 1070, go);
       clean.set({ x: cx, y: FEET, s: 1, flip: go > 0.02 ? false : true, o: rise, walk: go > 0 && go < 1 ? cx * 0.05 : undefined, armF: 30 + joy * 60 + (1 - go) * es(t, 6.1, 6.3) * 20, armB: 20 + joy * 130, head: -joy * 10 + nod * 14, blink: blinkAt(T, 3) });
       sparks.forEach((sp, i) => { const k = bump(t, 5.1 + i * 0.06, 5.8 + i * 0.06); pose(sp, { x: KX - 40 + i * 22, y: FEET - 60 - (i % 3) * 50, s: k, r: T * 50 + i * 20, o: k }); });
 
@@ -175,12 +176,12 @@ export default {
       pose(hush, { x: hx + 24, y: hy - 70, s: hb, o: hb > 0.02 ? 1 : 0 });
 
       /* v4b — go, show yourself to the priest: the plate of the Temple comes down */
-      hangAt(plate, 1000, lerp(-700, 270, es(t, 7.05, 7.4, ease.out)), T, 1, 0.7);
+      hangAt(plate, P ? 880 : 1000, lerp(-700, 270, es(t, 7.05, 7.4, ease.out)), T, 1, 0.7);
 
       /* camera: the whole mountain, then down to the road */
       const down = es(t, 1.6, 2.4);
       S.cam.z = 1 + down * 0.16 - es(t, 7.0, 7.4) * 0.06;
-      S.cam.x = down * 50;
+      S.cam.x = P ? lerp(-300, 20, down) : down * 50;   // phone: the whole mountain top at the start
       S.cam.y = -10 + down * 60 - es(t, 7.0, 7.4) * 30;
     };
   },
