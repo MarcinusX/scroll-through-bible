@@ -31,6 +31,7 @@ export default {
 
     const seatL = S.layer({ par: 0.52, sh: 5 });
     const at = seatAll(S, seatL);
+    if (S.portrait) at.forEach((m) => { m.x = 800 + (m.x - 800) * 0.76; });   // phone: the thirteen sit closer so the table fits
     const J = at.find((m) => m.k === 'jesus');
     const others = at.filter((m) => m.k !== 'jesus');
     const tabL = S.layer({ par: 0.55, sh: 6 });
@@ -108,8 +109,9 @@ export default {
       const kin = es(t, 5.05, 5.4, ease.out);
       vis(kingdom, { x: 800, y: 290 - (1 - kin) * 800, r: Math.sin(T * 0.8) * 1.5, o: kin > 0.01 ? 1 : 0 });
 
-      S.cam.x = 0;
-      S.cam.z = kf(t, [[-0.5, 1.2], [0.4, 1.5], [1.3, 1.56], [2.0, 1.3], [2.95, 1.2], [3.3, 1.08], [4.05, 1.4], [4.5, 1.46], [5.05, 1.2], [5.4, 1.08]]);
+      S.cam.x = S.portrait ? 16 : 0;   // phone: the row sits clear of the progress thread
+      const zk = kf(t, [[-0.5, 1.2], [0.4, 1.5], [1.3, 1.56], [2.0, 1.3], [2.95, 1.2], [3.3, 1.08], [4.05, 1.4], [4.5, 1.46], [5.05, 1.2], [5.4, 1.08]]);
+      S.cam.z = S.portrait ? Math.max(1, zk - 0.12) : zk;   // phone: a little wider, so the whole table shows
       S.cam.y = kf(t, [[-0.5, 150], [0.4, 220], [1.3, 230], [2.0, 150], [2.95, 120], [3.3, 40], [4.05, 200], [4.5, 210], [5.05, 80], [5.4, 20]]);
     };
   },

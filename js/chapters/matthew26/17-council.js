@@ -26,6 +26,7 @@ export default {
   build(S) {
     const c = S.c;
     const R = palaceDawn(S);
+    const PH = S.portrait;
     const { HALL, YARD, SEATX, FIRE, GATE } = R;
     const JX = 1040;
 
@@ -34,7 +35,7 @@ export default {
     const COUNCIL = [
       { m: () => scribe(c, 0), x: 680 }, { m: () => priest(c, 1), x: 738 }, { m: () => scribe(c, 3), x: 796 },
       { m: () => priest(c, 3), x: 1300, flip: true }, { m: () => scribe(c, 2), x: 1370, flip: true },
-    ].map((d, i) => ({ ...d, i, seed: c.rr(0, 9), p: S.puppet(hallL.add(d.m())), s: 0.7 }));
+    ].map((d, i) => ({ ...d, i, x: S.portrait && i < 3 ? 710 + i * 48 : d.x, seed: c.rr(0, 9), p: S.puppet(hallL.add(d.m())), s: 0.7 }));   // phone: the three on the left a little nearer, none cut by the edge
     const hpSit = S.puppet(hallL.add(addHP(c, 'sit')));
     const WIT = Array.from({ length: 4 }, (_, i) => ({ i, seed: c.rr(0, 9), p: S.puppet(hallL.add(person(c, man(c)))) }));
     const guards = [0, 1].map((i) => S.puppet(hallL.add(person(c, guardOpts(c)))));
@@ -93,16 +94,18 @@ export default {
       const [px, py] = kf(t, pK, ease.sine);
       const sit = es(t, 2.05, 2.12);
       peterW.set({ x: px, y: py, s: 0.84, flip: false, o: seg(t, 0.9, 1.0) * (1 - sit), walk: moving(t, pK, 1) ? px * 0.05 : undefined, armF: 14, head: -6, blink: blinkAt(T, 3) });
-      peterS.set({ x: FIRE - 108, y: YARD + 6, s: 0.84, flip: false, o: sit, armF: 70, armB: 50, head: 8, blink: blinkAt(T, 3) });
+      peterS.set({ x: FIRE - 108, y: YARD + 6, s: 0.84, flip: false, o: sit * (PH ? 1 - es(t, 2.95, 3.15) : 1), armF: 70, armB: 50, head: 8, blink: blinkAt(T, 3) });
       const wk = es(t, 2.2, 2.4, ease.back) * (1 - es(t, 2.9, 3.0));
       const [pwx, pwy] = headAt(FIRE - 108, YARD + 6, 0.84, false, 62);
       vis(watch, { x: pwx + 6, y: pwy - 30, s: wk, o: wk > 0.01 ? 1 : 0 });
-      SERV.forEach((sv) => sv.p.set({ x: sv.x, y: YARD + 8, s: 0.84, flip: sv.flip, armF: 64, armB: 40, head: 6, blink: blinkAt(T, sv.seed) }));
+      // phone: the people round the fire only while the camera is down in the courtyard (from the hall their heads peek out by the caption)
+      const yardOn = PH ? es(t, 0.85, 1.05) * (1 - es(t, 2.95, 3.15)) : 1;
+      SERV.forEach((sv) => sv.p.set({ x: sv.x, y: YARD + 8, s: 0.84, flip: sv.flip, o: yardOn, armF: 64, armB: 40, head: 6, blink: blinkAt(T, sv.seed) }));
 
       /* v55 — they search the scrolls and find nothing */
       scrolls.forEach((el, i) => {
         const k = es(t, 3.1 + i * 0.08, 3.35 + i * 0.08, ease.back) * (1 - es(t, 3.9, 4.05));
-        const x = [700, 790, 1320][i];
+        const x = (PH ? [730, 820, 1180] : [700, 790, 1320])[i];   // phone: all three on screen
         vis(el, { x, y: 200 + Math.sin(T * 2 + i) * 3, s: k * 0.9, r: (i - 1) * 8, o: k > 0.01 ? 1 : 0 });
         const q = es(t, 3.45 + i * 0.08, 3.6 + i * 0.08, ease.back) * (1 - es(t, 3.9, 4.05));
         vis(qs[i], { x: x + 20, y: 160, s: q * 0.7, o: q > 0.01 ? 1 : 0 });
@@ -128,9 +131,14 @@ export default {
       vis(tA, { x: -26, y: 18 + crumble * 16, sy: 1 - crumble * 0.85, r: crumble * 10, o: 1 - crumble * 0.6 });
       vis(tB, { x: 28, y: 18, s: rebuild, o: rebuild });
       /* camera: hall — overview — courtyard — hall */
-      S.cam.x = kf(t, [[-0.5, 380], [0.8, 360], [1.05, 0], [1.4, -420], [2.9, -440], [3.2, 360], [8, 360]]);
+      // phone: in the hall the camera stands a little wider, so the council on the left and Caiaphas on the right both stay on screen
+      S.cam.x = PH
+        ? kf(t, [[-0.5, 340], [0.8, 330], [1.05, 0], [1.4, -420], [2.9, -440], [3.2, 330], [8, 330]])
+        : kf(t, [[-0.5, 380], [0.8, 360], [1.05, 0], [1.4, -420], [2.9, -440], [3.2, 360], [8, 360]]);
       S.cam.y = kf(t, [[-0.5, -380], [0.8, -380], [1.05, 0], [1.4, 300], [2.9, 300], [3.2, -380], [8, -390]]);
-      S.cam.z = kf(t, [[-0.5, 1.5], [0.8, 1.55], [1.05, 1.0], [1.4, 1.5], [2.9, 1.55], [3.2, 1.5], [8, 1.5]]);
+      S.cam.z = PH
+        ? kf(t, [[-0.5, 1.32], [0.8, 1.34], [1.05, 1.0], [1.4, 1.5], [2.9, 1.55], [3.2, 1.32], [8, 1.32]])
+        : kf(t, [[-0.5, 1.5], [0.8, 1.55], [1.05, 1.0], [1.4, 1.5], [2.9, 1.55], [3.2, 1.5], [8, 1.5]]);
     };
   },
 };

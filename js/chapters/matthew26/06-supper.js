@@ -7,6 +7,8 @@ import { seg, es, ease, bump, fade } from '../../core/anim.js';
 import { upperRoom, supperTable, seatAll, SEATS, TW, kf, hand, headAt, question, bowl, say, vignette, tr, vis, PI } from './lib.js';
 
 const DISH = 832;
+// phone: the thirteen sit closer together so the whole table fits the narrow screen
+const tight = (S, x) => (S.portrait ? 800 + (x - 800) * 0.76 : x);
 
 export default {
   id: 'mt26-supper',
@@ -26,12 +28,13 @@ export default {
     const walkL = S.layer({ par: 0.5, sh: 5 });
     const order = ['jesus', ...SEATS.filter(([k]) => k !== 'jesus').map(([k]) => k).reverse()];
     const walkers = order.map((k, n) => {
-      const x = SEATS.find((s) => s[0] === k)[1];
+      const x = tight(S, SEATS.find((s) => s[0] === k)[1]);
       const o = k === 'jesus' ? CAST.jesus : TW[k];
       return { k, n, x, p: S.puppet(walkL.add(person(c, o))), seed: c.rr(0, 9) };
     });
     const seatL = S.layer({ par: 0.52, sh: 5 });
     const at = seatAll(S, seatL);
+    at.forEach((m) => { m.x = tight(S, m.x); });
     const tabL = S.layer({ par: 0.55, sh: 6 });
     tabL.add(`<g transform="translate(800 ${FLOOR - 4})">${supperTable(c, 860)}</g>`);
     tabL.add(`<g transform="translate(${DISH} ${TOP - 2})">${bowl(c, { w: 40, food: 'stew', color: mix(C.pot, C.clay, 0.4) })}</g>`);
@@ -102,13 +105,14 @@ export default {
         const [hx, hy] = headAt(q.m.x, SEAT, q.m.s, q.m.flip, 62);
         vis(q.el, { x: hx + (q.m.flip ? -6 : 6), y: hy - 50 - (q.m.i % 2) * 16, s: k * 0.82, r: q.m.flip ? 6 : -6, o: k > 0.01 && q.m.k !== 'peter' ? 1 : 0 });
       });
-      const [phx, phy] = headAt(676, SEAT, 0.88, false, 62);
+      const [phx, phy] = headAt(tight(S, 676), SEAT, 0.88, false, 62);
       const lk = es(t, 2.1, 2.3, ease.back) * (1 - es(t, 2.9, 3.0));
-      vis(lord, { x: phx - 4, y: phy - 30, s: lk, o: lk > 0.01 ? 1 : 0 });
+      vis(lord, { x: phx - 4 + (S.portrait ? 22 : 0), y: phy - 30, s: lk * (S.portrait ? 0.84 : 1), o: lk > 0.01 ? 1 : 0 });   // phone: its left end stays on screen
       vis(shine, { x: DISH, y: TOP - 18, s: 0.6 + dip * 0.8, o: dip });
 
-      S.cam.x = kf(t, [[-0.5, -30], [0.6, 0], [2.0, 0], [2.9, 0], [3.1, 40]]);
-      S.cam.z = kf(t, [[-0.5, 1.1], [0.6, 1.2], [1.2, 1.3], [1.5, 1.5], [2.0, 1.26], [2.9, 1.26], [3.15, 1.62]]);
+      S.cam.x = kf(t, [[-0.5, -30], [0.6, 0], [2.0, 0], [2.9, 0], [3.1, 40]]) + (S.portrait ? 16 : 0);   // phone: the row sits clear of the progress thread
+      const zk = kf(t, [[-0.5, 1.1], [0.6, 1.2], [1.2, 1.3], [1.5, 1.5], [2.0, 1.26], [2.9, 1.26], [3.15, 1.62]]);
+      S.cam.z = S.portrait ? Math.max(1, zk - 0.12) : zk;   // phone: a little wider, so the whole table shows
       S.cam.y = kf(t, [[-0.5, 60], [0.6, 130], [1.5, 200], [2.0, 150], [2.9, 150], [3.15, 230]]);
     };
   },

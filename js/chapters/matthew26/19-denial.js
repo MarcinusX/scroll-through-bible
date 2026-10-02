@@ -43,7 +43,10 @@ export default {
     const jEl = hallL.add(withFace(person(c, { ...CAST.jesus, holdF: cord(c) }), faceBits(c)));
     const jesus = S.puppet(jEl);
     const jSad = jEl.querySelector('[data-part="sad"]');
-    [0, 1].forEach((i) => S.puppet(hallL.add(person(c, guardOpts(c)))).set({ x: 670 + i * 130, y: HALL, s: 0.72, flip: i === 1, armF: 20 }));
+    // phone: He stands a little further left with one guard, so neither He nor a half guard sits under the thread;
+    // while the camera is at the gateway that guard steps back (he would peep in at the edge)
+    const hallG = [0, 1].map((i) => S.puppet(hallL.add(person(c, guardOpts(c)))));
+    hallG.forEach((g, i) => g.set({ x: 670 + i * 130 - (S.portrait ? 30 : 0), y: HALL, s: 0.72, flip: i === 1, armF: 20, o: S.portrait && i === 1 ? 0 : 1 }));
 
     const Y = R.yard();
     // the rooster on the wall
@@ -54,7 +57,8 @@ export default {
 
     // people round the fire (behind the porch)
     const P = S.layer({ par: R.P, sh: 5 });
-    const BY = [{ x: FIRE + 90 }, { x: FIRE + 160 }, { x: FIRE + 230 }].map((d, i) => {
+    const BY = (S.portrait ? [{ x: FIRE + 84 }, { x: FIRE + 140 }, { x: FIRE + 196 }] : [{ x: FIRE + 90 }, { x: FIRE + 160 }, { x: FIRE + 230 }]).map(   // phone: closer round the fire, clear of the thread
+      (d, i) => {
       const o = guardOpts(c);
       return { ...d, i, seed: c.rr(0, 9), sit: S.puppet(P.add(person(c, { ...o, pose: 'sit' }))), stand: S.puppet(P.add(person(c, o))) };
     });
@@ -98,8 +102,9 @@ export default {
       R.dawnGlow.fade(dawn * 0.7);
       R.stars.fade(1 - dawn * 0.8);
       palaceIdle(R, Y, T, es(t, 10.5, 11.6));
-      jesus.set({ x: 730, y: HALL, s: 0.72, flip: true, armF: 24, armB: 14, head: 12 - es(t, 8.1, 8.4) * 10, blink: blinkAt(T) });
+      jesus.set({ x: S.portrait ? 700 : 730, y: HALL, s: 0.72, flip: true, armF: 24, armB: 14, head: 12 - es(t, 8.1, 8.4) * 10, blink: blinkAt(T) });
       fade(jSad, 0.8);
+      if (S.portrait) hallG[0].set({ x: 640, y: HALL, s: 0.72, flip: false, armF: 20, o: 1 - es(t, 3.1, 3.5) + es(t, 7.9, 8.15) });
 
       /* the first servant girl: comes with her lamp, looks, speaks */
       const mK = [[-0.4, [880, YARD]], [0.8, [FIRE - 20, YARD]], [3.05, [FIRE - 20, YARD]], [3.7, [1000, YARD]]];
@@ -144,8 +149,9 @@ export default {
 
       /* the bystanders: at the fire; they rise and gather at the gateway; they come up to Peter */
       BY.forEach((d) => {
+        const GX = S.portrait ? GATE + 320 + d.i * 45 : GATE + 350 + d.i * 55;   // phone: they gather a little nearer, clear of the thread
         const rise = es(t, 4.1 + d.i * 0.08, 4.18 + d.i * 0.08);
-        const bK = [[4.15 + d.i * 0.08, [d.x, YARD]], [4.8 + d.i * 0.08, [GATE + 350 + d.i * 55, YARD]], [6.05, [GATE + 350 + d.i * 55, YARD]], [6.5, [GATE + 250 + d.i * 50, YARD]], [11.05, [GATE + 250 + d.i * 50, YARD]], [11.5, [GATE + 520 + d.i * 70, YARD]]];
+        const bK = [[4.15 + d.i * 0.08, [d.x, YARD]], [4.8 + d.i * 0.08, [GX, YARD]], [6.05, [GX, YARD]], [6.5, [GATE + 250 + d.i * 50, YARD]], [11.05, [GATE + 250 + d.i * 50, YARD]], [11.5, [GATE + 520 + d.i * 70, YARD]]];
         const [bx, by] = kf(t, bK, ease.sine);
         const talk = d.i === 0 ? es(t, 7.05, 7.3) * (1 - es(t, 7.9, 8.05)) : bump(t, 7.1 + d.i * 0.1, 7.9);
         d.sit.set({ x: d.x, y: YARD + 8, s: 0.84, flip: true, o: 1 - rise, armF: 64, armB: 40, head: 6 - look * 10, blink: blinkAt(T, d.seed) });
@@ -176,17 +182,21 @@ export default {
       const g1 = es(t, 7.2, 7.4, ease.back) * (1 - es(t, 7.9, 8.0));
       vis(galilee, { x: bhx - 10, y: bhy - 20, s: g1, o: g1 > 0.01 ? 1 : 0 });
       const sw = es(t, 8.15, 8.35, ease.back) * (1 - es(t, 8.9, 9.0));
-      vis(swear, { x: phx - 10, y: phy - 20, s: sw, o: sw > 0.01 ? 1 : 0, r: (T ? Math.sin(T * 12) * 1.5 : 0) * sw });
+      vis(swear, { x: phx - 10 + (S.portrait ? 30 : 0), y: phy - 20, s: sw * (S.portrait ? 0.88 : 1), o: sw > 0.01 ? 1 : 0, r: (T ? Math.sin(T * 12) * 1.5 : 0) * sw });
       // the three marks, one per denial
       const mIn = es(t, 2.1, 2.4, ease.out) * (1 - es(t, 2.9, 3.1)) + es(t, 5.1, 5.4, ease.out) * (1 - es(t, 5.9, 6.1)) + es(t, 8.1, 8.4, ease.out) * (1 - es(t, 9.9, 10.1));
       const mX = t < 4 ? FIRE - 30 : GATE + 190;
-      vis(marks, { x: mX, y: (t < 4 ? 420 : 330) - (1 - Math.min(1, mIn)) * 800, r: Math.sin(T) * 2, o: mIn > 0.01 ? 1 : 0 });
+      vis(marks, { x: mX, y: (t < 4 ? 420 : S.portrait ? 280 : 330) -   // phone: above the rooster's comb
+        (1 - Math.min(1, mIn)) * 800, r: Math.sin(T) * 2, o: mIn > 0.01 ? 1 : 0 });
       mks.forEach((m, i) => fade(m, [es(t, 2.3, 2.4), es(t, 5.3, 5.4), es(t, 8.3, 8.4)][i]));
       const memK = es(t, 10.05, 10.4, ease.out) * (1 - es(t, 10.9, 11.15, ease.in));
-      vis(memory, { x: GATE + 200, y: 420 - (1 - memK) * 800, r: Math.sin(T * 0.7) * 1.5, o: memK > 0.01 ? 1 : 0 });
+      vis(memory, { x: GATE + (S.portrait ? 150 : 200), y: 420 - (1 - memK) * 800, r: Math.sin(T * 0.7) * 1.5, o: memK > 0.01 ? 1 : 0 });
 
       /* camera: the fire; the gateway; a look up at Him as Peter swears; the dawn at the end */
-      S.cam.x = kf(t, [[-0.5, -500], [0.9, -680], [3.0, -680], [3.7, -900], [7.9, -900], [8.2, -860], [8.9, -860], [9.3, -960], [10.9, -1000], [11.3, -1400], [11.8, -1640]]);
+      // phone: a little to the right at the fire (He stays in sight up in the hall), at the gateway (the bystanders) and on the look up at Him
+      S.cam.x = S.portrait
+        ? kf(t, [[-0.5, -460], [0.9, -570], [3.0, -570], [3.7, -800], [7.9, -800], [8.2, -690], [8.9, -690], [9.3, -910], [10.9, -915], [11.3, -1400], [11.8, -1640]])
+        : kf(t, [[-0.5, -500], [0.9, -680], [3.0, -680], [3.7, -900], [7.9, -900], [8.2, -860], [8.9, -860], [9.3, -960], [10.9, -1000], [11.3, -1400], [11.8, -1640]]);
       S.cam.y = kf(t, [[-0.5, 200], [0.9, 290], [3.0, 290], [3.7, 280], [7.9, 280], [8.2, 60], [8.9, 60], [9.3, 250], [10.9, 280], [11.3, 150], [11.8, 180]]);
       S.cam.z = kf(t, [[-0.5, 1.4], [0.9, 1.5], [1.2, 1.6], [2.9, 1.56], [3.7, 1.5], [7.9, 1.56], [8.2, 1.14], [8.9, 1.14], [9.3, 1.5], [10.9, 1.56], [11.3, 1.2], [11.8, 1.16]]);
     };

@@ -44,7 +44,7 @@ export default {
     const COUNCIL = [
       { m: () => scribe(c, 0), x: 680 }, { m: () => priest(c, 1), x: 738 }, { m: () => scribe(c, 3), x: 796 },
       { m: () => priest(c, 3), x: 1310, flip: true }, { m: () => scribe(c, 2), x: 1375, flip: true },
-    ].map((d, i) => ({ ...d, i, seed: c.rr(0, 9), p: S.puppet(hallL.add(d.m())), s: 0.7 }));
+    ].map((d, i) => ({ ...d, i, x: S.portrait && i < 3 ? 768 + i * 38 : d.x, seed: c.rr(0, 9), p: S.puppet(hallL.add(d.m())), s: 0.7 }));   // phone: the three on the left a little nearer, none cut by the edge
     const WIT = [0, 1].map((i) => ({ i, seed: c.rr(0, 9), p: S.puppet(hallL.add(person(c, man(c)))) }));
     const hpSit = S.puppet(hallL.add(highPriest(c, { pose: 'sit' })));
     const hpEl = hallL.add(withFace(highPriest(c), faceBits(c)));
@@ -151,7 +151,7 @@ export default {
       });
       WIT.forEach((w) => {
         const go = es(t, 6.2 + w.i * 0.08, 6.9 + w.i * 0.08);
-        const x = lerp(866 + w.i * 40, 480, go);
+        const x = lerp((S.portrait ? 884 + w.i * 38 : 866 + w.i * 40), 480, go);   // phone: beside the council, which stands nearer
         w.p.set({ x, y: HALL, s: 0.7, flip: go > 0.02, o: 1 - es(t, 6.75, 6.95), walk: go > 0 && go < 1 ? x * 0.05 : undefined, armF: 20, blink: blinkAt(T, w.seed) });
       });
 
@@ -172,7 +172,7 @@ export default {
       const th = es(t, 8.15, 8.35, ease.back) * (1 - es(t, 8.9, 9.0));
       vis(think, { x: cbx + 12, y: cby - 20, s: th, o: th > 0.01 ? 1 : 0 });
       // the vision comes down from the flies
-      vis(visionEl, { x: JX, y: 70 - (1 - vision) * 700, r: Math.sin(T * 0.6) * 1, o: vision > 0.01 ? 1 : 0 });
+      vis(visionEl, { x: S.portrait ? JX - 20 : JX, y: (S.portrait ? 30 : 70) - (1 - vision) * 700, s: S.portrait ? 0.8 : 1, r: Math.sin(T * 0.6) * 1, o: vision > 0.01 ? 1 : 0 });   // phone: narrower than the screen
       const roll = es(t, 4.1, 4.9);
       const bobV = vision > 0.01 ? 1 : 0;
       pose(clL, { x: lerp(-PW / 2 - 200, -150, roll), y: PH - 6 + Math.sin(T * 0.8) * 3 * bobV });

@@ -62,6 +62,7 @@ export default {
     ];
     const DIS = RING.map(([k, x, dy], i) => {
       const el = P.add(withFace(person(c, { ...TW[k], pose: 'sit' }), faceBits(c)));
+      if (S.portrait) x = JX + (x - JX) * 0.7;   // phone: they sit closer round Him, so the whole ring is on screen
       return { k, x, y: GY + dy, i, p: S.puppet(el), sad: el.querySelector('[data-part="sad"]'), seed: c.rr(0, 9), flip: x > JX };
     });
     const jSit = S.puppet(P.add(person(c, { ...CAST.jesus, pose: 'sit' })));
@@ -109,7 +110,7 @@ export default {
       vis(plBread, { x: 910, y: 330 - (1 - pin) * 700, r: Math.sin(T * 0.9 + 2) * 2, o: pin > 0.01 ? 1 : 0 });
       vis(plDays, { x: 800, y: 214 - (1 - tin) * 700, r: Math.sin(T * 1.1 + 1) * 3, o: tin > 0.01 ? 1 : 0 });
 
-      S.cam.x = kf(t, [[-0.5, 0], [1.0, 0], [2.0, 0], [3.0, 40], [3.9, 60]]);
+      S.cam.x = kf(t, [[-0.5, 0], [1.0, 0], [2.0, 0], [3.0, 40], [3.9, 60]]) * (S.portrait ? 0.4 : 1) + (S.portrait ? 24 : 0);   // phone: the ring stays centred in the space left of the thread
       S.cam.y = kf(t, [[-0.5, 30], [1.0, 40], [2.0, -10], [3.0, -20], [3.9, 0]]);
       S.cam.z = kf(t, [[-0.5, 1.0], [1.0, 1.06], [2.0, 1.04], [3.0, 1.1], [3.9, 1.12]]);
     };

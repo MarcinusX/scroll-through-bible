@@ -22,7 +22,7 @@ export default {
     { v: 18, cont: true, text: '"Nauczyciel mówi: Czas mój jest bliski; u ciebie chcę urządzić Paschę z moimi uczniami"».' },
     { v: 19 },
   ],
-  cam: { x: [-300, 460], y: [-60, 120], z: [1, 1.3] },
+  cam: { x: [-300, 480], y: [-60, 120], z: [1, 1.3] },
   build(S) {
     const c = S.c;
     const R = streetSet(S);
@@ -38,7 +38,8 @@ export default {
     roomL.add(`<g transform="translate(${HX} ${H1})">${lowTable(c, 240, 34)}</g>`);
     const dishes = [[HX - 90, loaf(c, 14)], [HX - 50, cup(c)], [HX - 10, matzah(c, 18)], [HX + 36, bowl(c, { food: 'stew' })], [HX + 84, cup(c, C.clay)]]
       .map(([x, m], i) => ({ i, x, el: roomL.add(`<g>${m}</g>`) }));
-    const lamps = [HX - 150, HX + 150].map((x) => { const el = roomL.add(`<g>${oilLamp(c, { r: 110 })}</g>`); return { el, x, fl: el.querySelector('.flame'), gl: el.querySelector('.glow') }; });
+    const lamps = (S.portrait ? [HX - 140, HX + 115] : [HX - 150, HX + 150]).map(   // phone: the right lamp clear of the thread
+      (x) => { const el = roomL.add(`<g>${oilLamp(c, { r: 110 })}</g>`); return { el, x, fl: el.querySelector('.flame'), gl: el.querySelector('.glow') }; });
     const lambDish = roomL.add(`<g>${sheet().p(c.cut(c.ell(0, -4, 34, 5, 16), 0.3, 4), C.stone2).out()}<g transform="translate(0 -6) scale(.42)">${lamb(c)}</g></g>`);
     const F = R.facade();
 
@@ -97,7 +98,7 @@ export default {
       fade(R.roomGlow, open * 0.5 + es(t, 3.55, 3.7) * 0.5);
       const prep = seg(t, 3.35, 3.95);
       pIn.set({ x: HX - 60 + Math.sin(prep * PI * 2) * 40, y: H1 - 6, s: 0.72, flip: prep > 0.5, o: inRoom, armF: 50, armB: 20, head: 10, blink: blinkAt(T, 3) });
-      jIn.set({ x: HX + 80 - Math.sin(prep * PI * 2) * 30, y: H1 - 4, s: 0.7, flip: true, o: inRoom, armF: 50, armB: 20, head: 8, blink: blinkAt(T, 5) });
+      jIn.set({ x: HX + (S.portrait ? 50 : 80) - Math.sin(prep * PI * 2) * 30, y: H1 - 4, s: 0.7, flip: true, o: inRoom, armF: 50, armB: 20, head: 8, blink: blinkAt(T, 5) });
       dishes.forEach((d) => {
         const k = es(t, 3.38 + d.i * 0.04, 3.48 + d.i * 0.04, ease.back);
         vis(d.el, { x: d.x, y: H1 - 34 - (1 - k) * 20, s: k, o: k > 0.01 ? 1 : 0 });
@@ -111,7 +112,7 @@ export default {
         fade(l.gl, lit * 0.8);
       });
 
-      S.cam.x = kf(t, [[-0.5, -280], [0.9, -280], [1.3, -200], [2.0, 250], [2.9, 290], [3.2, 400], [3.5, 440]]);
+      S.cam.x = kf(t, [[-0.5, -280], [0.9, -280], [1.3, -200], [2.0, 250], [2.9, 290], [3.2, 400], [3.5, S.portrait ? 480 : 440]]);   // phone: a little further, so John upstairs is clear of the thread
       S.cam.z = kf(t, [[-0.5, 1.04], [0.9, 1.1], [1.3, 1.06], [2.0, 1.12], [2.9, 1.14], [3.2, 1.08], [3.5, 1.2]]);
       S.cam.y = kf(t, [[-0.5, 30], [0.9, 40], [2.0, 30], [2.9, 20], [3.2, -30], [3.5, -50]]);
     };

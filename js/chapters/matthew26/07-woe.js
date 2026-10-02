@@ -29,6 +29,7 @@ export default {
 
     const seatL = S.layer({ par: 0.52, sh: 5 });
     const at = seatAll(S, seatL);
+    if (S.portrait) at.forEach((m) => { m.x = 800 + (m.x - 800) * 0.76; });   // phone: the thirteen sit closer so the table fits
     const J = at.find((m) => m.k === 'jesus'), JU = at.find((m) => m.k === 'judas');
     const tabL = S.layer({ par: 0.55, sh: 6 });
     tabL.add(`<g transform="translate(800 ${FLOOR - 4})">${supperTable(c, 860)}</g>`);
@@ -64,7 +65,7 @@ export default {
       /* v24b — woe: the shadow grows; v24c — the candle goes out */
       const woe = es(t, 1.05, 1.35);
       shL.fade(woe);
-      jShadow.set({ x: 862 + 20, y: SEAT - 10, s: 0.88 * (1.3 + woe * 0.8), flip: true, head: woe * 18 });
+      jShadow.set({ x: JU.x + 20, y: SEAT - 10, s: 0.88 * (1.3 + woe * 0.8), flip: true, head: woe * 18 });
       const out = es(t, 2.1, 2.35);
       pose(cFlame, { x: 0, y: -60, sy: (1 - out) * (1 + Math.sin(T * 8) * 0.08), sx: 1 - out * 0.6 });
       fade(cGlow, (1 - out) * 0.6);
@@ -101,8 +102,9 @@ export default {
       const yk = es(t, 4.15, 4.35, ease.back);
       vis(you, { x: hx - 4, y: hy - 46, s: yk, o: yk > 0.01 ? 1 : 0 });
 
-      S.cam.x = kf(t, [[-0.5, 0], [0.9, 0], [1.2, 60], [2.0, 60], [2.2, 80], [3.0, 40], [4.0, 30]]);
-      S.cam.z = kf(t, [[-0.5, 1.2], [0.9, 1.16], [1.2, 1.5], [2.0, 1.5], [2.2, 1.6], [3.0, 1.55], [4.0, 1.65]]);
+      S.cam.x = kf(t, [[-0.5, 0], [0.9, 0], [1.2, 60], [2.0, 60], [2.2, 80], [3.0, 40], [4.0, 30]]) + (S.portrait ? 16 : 0);   // phone: the row sits clear of the progress thread
+      const zk = kf(t, [[-0.5, 1.2], [0.9, 1.16], [1.2, 1.5], [2.0, 1.5], [2.2, 1.6], [3.0, 1.55], [4.0, 1.65]]);
+      S.cam.z = S.portrait ? Math.max(1, zk - 0.12) : zk;   // phone: a little wider, so the whole table shows
       S.cam.y = kf(t, [[-0.5, 100], [0.9, 60], [1.2, 200], [2.0, 200], [2.2, 230], [3.0, 200], [4.0, 210]]);
     };
   },

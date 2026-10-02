@@ -87,7 +87,8 @@ export default {
       fade(kSad, Math.max(prone, lift * 0.8));
       fade(kTear, es(t, 0.5, 0.8) * (1 - es(t, 2.6, 2.9)));
       const hIn = es(t, 0.3, 0.7, ease.out) * (1 - es(t, 1.2, 1.5, ease.in));
-      vis(hour, { x: 1080, y: 300 - (1 - hIn) * 600, r: Math.sin(T * 0.8) * 2, o: hIn > 0.01 ? 1 : 0 });
+      vis(hour, { x: S.portrait ? 990 : 1080, y: 300 - (1 - hIn) * 600,   // phone: clear of the edge and the thread
+        r: Math.sin(T * 0.8) * 2, o: hIn > 0.01 ? 1 : 0 });
       const sand = seg(t, 0.4, 1.3);
       pose(hTop, { x: 0, y: -4, sy: 1 - sand * 0.6, oy: -4 });
       pose(hBot, { x: 0, y: hg.h / 2 - 12, sy: 0.3 + sand * 0.5 });

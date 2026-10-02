@@ -32,10 +32,11 @@ export default {
     { v: 46, text: 'Wstańcie, chodźmy!' },
     { v: 46, cont: true, text: 'Oto blisko jest mój zdrajca».' },
   ],
-  cam: { x: [-120, 260], y: [-40, 200], z: [1, 1.5] },
+  cam: { x: [-120, 340], y: [-40, 200], z: [1, 1.5] },
   build(S) {
     const c = S.c;
-    const G = garden(S, { moonAt: [1000, 160], rockX: ROCK + 40, city: true });
+    const RX = S.portrait ? ROCK - 50 : ROCK;   // phone: the praying rock a little nearer, so He kneels clear of the thread with the three asleep still in view
+    const G = garden(S, { moonAt: [1000, 160], rockX: RX + 40, city: true });
     const cl = hanging(G.hang, cloud(c, 230, mix(C.storm2, C.indigo, 0.3), mix(C.storm2, C.night, 0.4)), { x: 1400, y: 180, len: 700 });
     const farT = S.layer({ par: 0.2, sh: 0, flat: true });
     const glints = Array.from({ length: 7 }, (_, i) => ({ i, el: farT.add(`<g><circle r="18" fill="url(#warm-glow)"/><circle r="3.4" fill="${C.lampFlame}"/></g>`), x: 150 + i * 36 + c.rr(-10, 10), y: 520 + c.rr(-8, 8) }));
@@ -88,7 +89,7 @@ export default {
       darkL.fade(0.6 + hourK * 0.4);
 
       /* Jesus: between the rock and the sleepers */
-      const jK = [[-0.5, [ROCK - 20, GY]], [0.1, [ROCK - 20, GY]], [0.8, [JS, GY]], [4.05, [JS, GY]], [4.4, [ROCK - 20, GY]], [4.95, [ROCK - 20, GY]], [5.3, [JS, GY]], [6.0, [JS, GY]], [6.3, [ROCK - 20, GY]], [6.9, [ROCK - 20, GY]], [7.2, [JS, GY]], [9.1, [JS, GY]], [9.9, [JS - 60, GY]]];
+      const jK = [[-0.5, [RX - 20, GY]], [0.1, [RX - 20, GY]], [0.8, [JS, GY]], [4.05, [JS, GY]], [4.4, [RX - 20, GY]], [4.95, [RX - 20, GY]], [5.3, [JS, GY]], [6.0, [JS, GY]], [6.3, [RX - 20, GY]], [6.9, [RX - 20, GY]], [7.2, [JS, GY]], [9.1, [JS, GY]], [9.9, [JS - 60, GY]]];
       const [jx, jy] = kf(t, jK, ease.sine);
       const kneelK = t < 0.12 ? 1 - es(t, 0.02, 0.1) : es(t, 4.4, 4.46) * (1 - es(t, 4.92, 4.98)) + es(t, 6.3, 6.36) * (1 - es(t, 6.87, 6.93));
       const walking = moving(t, jK, 1);
@@ -103,14 +104,14 @@ export default {
       });
       fade(jSad, es(t, 5.3, 5.6) * 0.8 * (1 - es(t, 7.2, 7.4)) + es(t, 8.05, 8.3) * 0.5);
       const acc = es(t, 4.6, 4.85) * (1 - es(t, 4.9, 5.0));
-      jKneel.set({ x: ROCK - 30, y: GY, s: 1.04, flip: false, o: kneelK, armF: 70 + acc * 30, armB: 120 + acc * 20, head: -14 - acc * 6, blink: blinkAt(T) });
+      jKneel.set({ x: RX - 30, y: GY, s: 1.04, flip: false, o: kneelK, armF: 70 + acc * 30, armB: 120 + acc * 20, head: -14 - acc * 6, blink: blinkAt(T) });
       const cup = (1 - es(t, 0.05, 0.3)) + bump(t, 4.4, 5.0) + bump(t, 6.3, 6.9);
-      vis(cupEl, { x: ROCK + 20, y: 290 - (1 - Math.min(1, cup)) * 700 + acc * 30, r: Math.sin(T * 0.7) * 2, o: cup > 0.01 ? 1 : 0 });
-      vis(accept, { x: ROCK - 20, y: GY - 150, s: 0.8 + acc * 0.5, o: acc * 0.9 });
+      vis(cupEl, { x: RX + (S.portrait ? -30 : 20), y: 290 - (1 - Math.min(1, cup)) * 700 + acc * 30, r: Math.sin(T * 0.7) * 2, o: cup > 0.01 ? 1 : 0 });
+      vis(accept, { x: RX - 20, y: GY - 150, s: 0.8 + acc * 0.5, o: acc * 0.9 });
       words.forEach((w) => {
         const k = ((T * 0.35 + w.i / 5) % 1);
         const on = es(t, 4.45, 4.6) * (1 - es(t, 4.9, 5.0)) + es(t, 6.35, 6.5) * (1 - es(t, 6.85, 6.95));
-        vis(w.el, { x: ROCK - 10 + k * 40, y: 540 - k * 140, r: Math.sin(T * 2 + w.i) * 8, s: 0.8, o: on * (1 - k) });
+        vis(w.el, { x: RX - 10 + k * 40, y: 540 - k * 140, r: Math.sin(T * 2 + w.i) * 8, s: 0.8, o: on * (1 - k) });
       });
       const mk = es(t, 6.35, 6.6, ease.out) * (1 - es(t, 6.9, 7.1));
       vis(marks, { x: 980, y: 290 - (1 - mk) * 700, r: Math.sin(T * 1.1) * 2, o: mk > 0.01 ? 1 : 0 });
@@ -171,8 +172,12 @@ export default {
       const [jdx] = kf(t, jdK, ease.out);
       judas.set({ x: jdx, y: GY + 6, s: 0.98, flip: false, o: es(t, 10.0, 10.05), walk: moving(t, jdK, 1) ? jdx * 0.05 : undefined, armF: 20, armB: 6, head: 4, blink: blinkAt(T, 2) });
 
-      S.cam.x = kf(t, [[-0.5, 220], [0.1, 220], [0.8, 20], [4.05, 20], [4.4, 220], [4.95, 220], [5.3, 20], [6.0, 20], [6.3, 220], [6.9, 220], [7.2, 20], [9.9, 20], [10.4, -60]]);
-      S.cam.z = kf(t, [[-0.5, 1.1], [0.8, 1.2], [1.1, 1.36], [2.0, 1.3], [3.0, 1.4], [4.05, 1.3], [4.4, 1.34], [5.3, 1.3], [6.0, 1.3], [6.3, 1.3], [7.2, 1.3], [8.0, 1.16], [9.0, 1.1], [10.0, 1.1]]);
+      // phone: at the rock the camera stands wide, so He and the cup stay clear of the edge and the three asleep show whole
+      const RK = S.portrait ? 160 : 220;
+      S.cam.x = kf(t, [[-0.5, RK], [0.1, RK], [0.8, 20], [4.05, 20], [4.4, RK], [4.95, RK], [5.3, 20], [6.0, 20], [6.3, RK], [6.9, RK], [7.2, 20], [9.9, 20], [10.4, -60]]);
+      S.cam.z = S.portrait
+        ? kf(t, [[-0.5, 1.1], [0.8, 1.2], [1.1, 1.36], [2.0, 1.3], [3.0, 1.4], [4.05, 1.3], [4.4, 1.0], [4.95, 1.0], [5.3, 1.3], [6.0, 1.3], [6.3, 1.0], [6.9, 1.0], [7.2, 1.3], [8.0, 1.16], [9.0, 1.1], [10.0, 1.1]])
+        : kf(t, [[-0.5, 1.1], [0.8, 1.2], [1.1, 1.36], [2.0, 1.3], [3.0, 1.4], [4.05, 1.3], [4.4, 1.34], [5.3, 1.3], [6.0, 1.3], [6.3, 1.3], [7.2, 1.3], [8.0, 1.16], [9.0, 1.1], [10.0, 1.1]]);
       S.cam.y = kf(t, [[-0.5, 60], [0.8, 110], [1.1, 170], [2.0, 150], [3.0, 180], [4.05, 150], [4.4, 130], [5.3, 150], [6.9, 140], [8.0, 110], [9.0, 60], [10.0, 80]]);
     };
   },

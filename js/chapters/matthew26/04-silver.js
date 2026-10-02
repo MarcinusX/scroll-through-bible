@@ -34,7 +34,8 @@ export default {
     const cast = [
       { k: 'pr1', o: priestOpts(1), m: () => priest(c, 1), x: 650, y: FLOOR - 26, s: 0.94, flip: false },
       { k: 'hp', o: HP, m: () => highPriest(c), x: 900, y: FLOOR - 26, s: 0.98, flip: true },
-      { k: 'sc0', o: scribeOpts(0), m: () => scribe(c, 0), x: 520, y: FLOOR + 8, s: 1.0, flip: false, front: true },
+      { k: 'sc0', o: scribeOpts(0), m: () => scribe(c, 0), x: S.portrait ? 590 : 520,   // phone: nearer, not cut by the left edge
+        y: FLOOR + 8, s: 1.0, flip: false, front: true },
     ];
     cast.forEach((m) => {
       m.seed = c.rr(0, 9);

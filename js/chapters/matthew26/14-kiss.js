@@ -63,7 +63,7 @@ export default {
       });
       vis(pool, { x: lerp(-200, 460, arrive) + surge * 120, y: GY, o: 1 });
       const aIn = es(t, 0.3, 0.6, ease.out) * (1 - es(t, 0.9, 1.1, ease.in));
-      vis(authority, { x: 380, y: 300 - (1 - aIn) * 700, r: Math.sin(T) * 3, o: aIn > 0.01 ? 1 : 0 });
+      vis(authority, { x: S.portrait ? 540 : 380, y: 300 - (1 - aIn) * 700, r: Math.sin(T) * 3, o: aIn > 0.01 ? 1 : 0 });
 
       // Judas: at their head; turns to give them the sign; walks up to Him, kisses Him; steps back
       const jdK = [[-0.2, [-120, GY + 8]], [0.8, [600, GY + 8]], [2.05, [600, GY + 8]], [2.5, [736, GY + 8]], [3.9, [736, GY + 8]], [4.4, [560, GY + 8]]];
