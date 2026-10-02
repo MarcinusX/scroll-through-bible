@@ -6,7 +6,7 @@ import { seg, es, ease, bump } from '../../core/anim.js';
 import { templeCourt, courtFront, changerTable, coinStack, coin, balance, cage, smallDove, flapDove, bench, lamb, townsfolk, basketProp, jarProp, dust, DAY, PI } from './lib.js';
 
 const FLOOR = 676;
-const TABLES = [{ x: 930, w: 150 }, { x: 1120, w: 150 }];
+const TABLES = [{ x: 930, x0: 930, w: 150 }, { x: 1120, x0: 1120, xp: 1010, w: 150 }];   // xp: on a phone the far table stands in from the edge
 const BENCH = { x: 560, w: 170 };
 
 /** a striped market awning on two poles (origin: floor centre) */
@@ -47,6 +47,7 @@ export default {
     const lambs = [[1180, FLOOR + 30, 1], [1250, FLOOR + 36, -1]].map(([x, y, d], i) => ({ x, y, d, i, el: crowdL.add(`<g>${lamb(c)}</g>`) }));
 
     /* ---------- the money changers' tables and the dove benches ---------- */
+    TABLES.forEach((tb) => { tb.x = S.portrait && tb.xp ? tb.xp : tb.x0; });
     const mkL = S.layer({ par: 0.5, sh: 5 });
     const changers = TABLES.map((tb, i) => ({ ...tb, i, seed: c.rr(0, 9), p: S.puppet(mkL.add(person(c, townsfolk(c, { man: true, robe: i ? C.plumRobe : C.ochreRobe, mantle: i ? C.ochre : C.plumRobe, belt: C.sun })))) }));
     const dover = { seed: c.rr(0, 9), p: S.puppet(mkL.add(person(c, townsfolk(c, { man: true, robe: C.tealRobe, mantle: null, belt: C.leather })))) };
@@ -135,8 +136,9 @@ export default {
         if (flying) flapDove(dv.el, T + dv.ph + t * 3, 34, 12, -10); else flapDove(dv.el, 0, 0, 0, 0);
       });
 
-      S.cam.x = -40 + inK * 40 + es(t, 1.0, 1.25) * 90 - es(t, 1.3, 1.5) * 150;
+      S.cam.x = -40 + inK * 40 + es(t, 1.0, 1.25) * 90 - es(t, 1.3, 1.5) * 150 + (S.portrait ? es(t, 1.3, 1.5) * 45 : 0);   // phone: the overturned far table stays clear of the thread
       S.cam.z = 1.02 + es(t, 1.0, 1.2) * 0.06 - es(t, 1.4, 1.6) * 0.05;
+      if (S.portrait) S.cam.z -= es(t, 1.4, 1.6) * 0.07;   // phone: a little wider, so the wrecked bench and the far table both stay in
       S.cam.y = es(t, 1.5, 1.7) * -30;
     };
   },

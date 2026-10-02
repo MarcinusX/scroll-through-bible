@@ -30,7 +30,7 @@ export default {
     { v: 13, cont: true, text: 'a wy czynicie z niego jaskinię zbójców».' },
     { v: 14 },
   ],
-  cam: { x: [-80, 230], y: [-60, 40], z: [0.95, 1.12] },
+  cam: { x: [-80, 270], y: [-60, 40], z: [0.95, 1.12] },
   build(S) {
     const c = S.c;
     const { sunEl, cl1 } = templeCourt(S, { skyCols: DAY, floorY: FLOOR + 40, sanctX: 800, sunAt: [1230, 150] });
@@ -90,7 +90,7 @@ export default {
         n.p.set({ x, y: FLOOR - 16 - (n.i % 2) * 8, s: 0.86, flip: n.x > 800, o: seg(t, 0.25 + n.i * 0.06, 0.32 + n.i * 0.06) * (1 - es(t, 0.95, 1.15)), armB: 140 * es(t, 0.55, 0.8), armF: 90 * es(t, 0.55, 0.8), head: -14 * es(t, 0.55, 0.8), blink: blinkAt(T, n.seed) });
       });
       /* v13b — the den of robbers comes down over the wrecked market */
-      swing(caveEl, 1150, FLOOR + 4 - (1 - es(t, 1.05, 1.35, ease.out)) * 900 - es(t, 1.9, 2.1, ease.in) * 900, T, 0.5, 0.7);
+      swing(caveEl, S.portrait ? 1100 : 1150, FLOOR + 4 - (1 - es(t, 1.05, 1.35, ease.out)) * 900 - es(t, 1.9, 2.1, ease.in) * 900, T, 0.5, 0.7);
       eyeEls.forEach((e) => fade(e, den * (0.6 + 0.4 * Math.abs(Math.sin(T * 1.3)))));
 
       /* v14 — the blind and the lame come to Him, and He heals them */
@@ -126,10 +126,11 @@ export default {
       const reach = touch * (1 - es(t, 2.55, 2.7));
       const teach = es(t, 0.05, 0.3) * (1 - es(t, 1.9, 2.05));
       jesus.set({ x: JX, y: FLOOR, s: 1.04, armF: teach * 50 + bump(t, 1.1, 1.9) * 80 + reach * 80 + joy * 20, armB: teach * 30 + reach * 130 + joy * 20, head: -prayK * 6 + reach * 4, blink: blinkAt(T) });
-      DIS.forEach((d) => { const x = 460 - d.i * 56 + (d.i % 2) * 10; d.p.set({ x: x - es(t, 1.9, 2.2) * 200, y: FLOOR - 26 + (d.i % 2) * 8, s: 0.84, head: -prayK * 4 - joy * 8, armF: joy * (d.i % 2 ? 60 : 0), blink: blinkAt(T, d.seed) }); });
+      DIS.forEach((d) => { const x = 460 - d.i * 56 + (d.i % 2) * 10 - (S.portrait ? 80 : 0);   // phone: the disciples wait just off the left edge, not half in it
+        d.p.set({ x: x - es(t, 1.9, 2.2) * 200, y: FLOOR - 26 + (d.i % 2) * 8, s: 0.84, head: -prayK * 4 - joy * 8, armF: joy * (d.i % 2 ? 60 : 0), blink: blinkAt(T, d.seed) }); });
 
       S.cam.x = es(t, 1.0, 1.3) * 90 * (1 - es(t, 1.9, 2.2)) - es(t, 2.0, 2.3) * 10;
-      if (S.portrait) S.cam.x = es(t, 1.0, 1.3) * 220 * (1 - es(t, 1.9, 2.2));
+      if (S.portrait) S.cam.x = es(t, 1.0, 1.3) * 260 * (1 - es(t, 1.9, 2.2));   // phone: the den of robbers (hung 50 further in) comes fully into frame
       S.cam.z = 1.02 - sd * 0.04 + es(t, 2.1, 2.4) * 0.06;
       S.cam.y = -sd * 40 + es(t, 2.1, 2.4) * 20;
     };

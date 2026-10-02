@@ -7,7 +7,7 @@ import { seg, es, ease, bump, fade } from '../../core/anim.js';
 import { templeCourt, courtFront, priest, elder, heavenIcon, peopleIcon, TWELVE_O, headAt, bubble, card, nameTag, withFace, faceBits, question, pose3, folk4, JOHN_B, tr, DAY, FONT } from './lib.js';
 
 const FLOOR = 676;
-const JX = 700;
+const JX0 = 700;
 
 /** John the Baptist pouring water in the Jordan — a little medallion */
 export function johnMedallion(c) {
@@ -30,6 +30,8 @@ export default {
   cam: { x: [-80, 120], y: [-70, 40], z: [0.95, 1.14] },
   build(S) {
     const c = S.c;
+    // phone: Jesus a little left and the leaders, their tags and the seal moved in from the right edge
+    const JX = S.portrait ? 630 : JX0, LX = S.portrait ? -120 : 0;
     const { sunEl, cl1 } = templeCourt(S, { skyCols: DAY, floorY: FLOOR + 40, sanctX: 800, sunAt: [1230, 140] });
 
     /* ---------- the listeners sitting round Him (drawn once) ---------- */
@@ -45,11 +47,11 @@ export default {
       { m: priest(c, 0), x: 900, y: FLOOR - 6 }, { m: priest(c, 1), x: 980, y: FLOOR - 22 },
       { m: priest(c, 2), x: 1050, y: FLOOR - 4 }, { m: elder(c, 0), x: 1120, y: FLOOR - 20 },
       { m: elder(c, 1), x: 1190, y: FLOOR - 2 }, { m: elder(c, 2), x: 1260, y: FLOOR - 18 },
-    ].map((d, i) => ({ ...d, i, seed: c.rr(0, 9), p: S.puppet(LD.add(withFace(d.m, faceBits(c)))) }));
+    ].map((d, i) => ({ ...d, x: S.portrait ? 900 + (d.x - 900) * 0.86 : d.x, i, seed: c.rr(0, 9), p: S.puppet(LD.add(withFace(d.m, faceBits(c)))) }));   // phone: closer together, the last elder clear of the thread
     LEADERS.forEach((d) => { d.angry = d.p.el.querySelector('[data-part="angry"]'); });
     const tags = [
-      { text: tr('arcykapłani', 'chief priests'), x: 975, y: 300 },
-      { text: tr('starsi ludu', 'elders of the people'), x: 1190, y: 320 },
+      { text: tr('arcykapłani', 'chief priests'), x: 975 + LX, y: 300 },
+      { text: tr('starsi ludu', 'elders of the people'), x: 1190 + LX, y: 320 },
     ].map((g, i) => ({ ...g, i, el: hanging(LD, nameTag(c, g.text, { size: 16 }), { x: g.x, y: g.y, len: 800 }) }));
 
     /* ---------- Jesus and the disciples ---------- */
@@ -84,7 +86,7 @@ export default {
       jesus.set({ x: JX, y: FLOOR, s: 1.04, armB: choice * 60 + teach * 30, armF: teach * (50 + bump(t, 0, 0.5) * 20) + one * 100 * (1 - choice) + choice * 70 + bump(t, 4.1, 4.9) * 30, head: -one * 6 + teach * 4, blink: blinkAt(T) });
       DIS.forEach((d) => { d.p.set({ x: 300 - d.i * 56, y: FLOOR - 12 + (d.i % 2) * 10, s: 0.88, head: -choice * 8, blink: blinkAt(T, d.seed) }); });
       LEADERS.forEach((d) => {
-        const x = d.x + (1 - approach) * 520 - es(t, 1.0, 1.4) * (d.i === 0 ? 30 : 0);
+        const x = d.x + LX + (1 - approach) * 520 - es(t, 1.0, 1.4) * (d.i === 0 ? 30 : 0);
         const lean = es(t, 4.05, 4.4) * (1 - es(t, 5.0, 5.3)) * 6;
         d.p.set({ x, y: d.y, s: 0.9, flip: true, walk: approach > 0 && approach < 1 ? x * 0.05 + d.i : undefined, armF: d.i === 0 ? bump(t, 1.05, 1.95) * 80 : d.i === 3 ? bump(t, 2.05, 2.95) * 80 : 0, armB: d.i === 1 ? bump(t, 2.05, 2.95) * 110 : 0, lean: -lean, head: -choice * 10 * (d.i % 2 ? 1 : 0.5), blink: blinkAt(T, d.seed), o: seg(t, 0.08, 0.14) });
         fade(d.angry, es(t, 1.0, 1.3) * (1 - es(t, 5.0, 5.3)));
@@ -95,14 +97,14 @@ export default {
       });
 
       /* v23b/c — "By what authority? Who gave you this authority?" */
-      const [p0x, p0y] = headAt(LEADERS[0].x - 30, LEADERS[0].y, 0.9, true);
+      const [p0x, p0y] = headAt(LEADERS[0].x + LX - 30, LEADERS[0].y, 0.9, true);
       const a1 = es(t, 1.05, 1.25, ease.back) * (1 - es(t, 1.95, 2.1));
       pose(ask1, { x: p0x - 30, y: p0y - 34, s: a1, o: a1 > 0.02 ? 1 : 0 });
-      const [p2x, p2y] = headAt(LEADERS[3].x, LEADERS[3].y, 0.9, true);
+      const [p2x, p2y] = headAt(LEADERS[3].x + LX, LEADERS[3].y, 0.9, true);
       const a2 = es(t, 2.05, 2.25, ease.back) * (1 - es(t, 2.95, 3.1));
       pose(ask2, { x: p2x - 40, y: p2y - 34, s: a2, o: a2 > 0.02 ? 1 : 0 });
       const sd = es(t, 2.1, 2.45, ease.back) * (1 - es(t, 2.95, 3.2));
-      swing(seal, 1070, 230 - (1 - sd) * 700, T, 1.6, 0.9, 2);
+      swing(seal, 1070 + LX, 230 - (1 - sd) * 700, T, 1.6, 0.9, 2);
 
       /* v24 — "I also will ask you one question; answer it, and I will tell you" */
       const oc = es(t, 3.1, 3.45, ease.back) * (1 - es(t, 5.0, 5.2));

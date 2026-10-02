@@ -78,7 +78,7 @@ export default {
     /* ---------- place names hang from the flies ---------- */
     const tagL = S.layer({ par: 0.2, sh: 4 });
     const tags = [
-      { el: tagL.add(`<g>${tagOnString(tr('Betfage', 'Bethphage'), { size: 19, len: 500, dx: 0, dy: 70 })}</g>`), x: VIL[0], y: 400, t0: 1.1 },
+      { el: tagL.add(`<g>${tagOnString(tr('Betfage', 'Bethphage'), { size: 19, len: 500, dx: 0, dy: 70 })}</g>`), x: S.portrait ? 1040 : VIL[0], y: 400, t0: 1.1 },   // phone: clear of the thread
       { el: tagL.add(`<g>${tagOnString(tr('Jerozolima', 'Jerusalem'), { size: 22, len: 500, dx: 0, dy: 0 })}</g>`), x: 640, y: 200, t0: 1.3 },
     ];
 
@@ -111,7 +111,8 @@ export default {
 
     /* ---------- foreground ---------- */
     const fg = S.layer({ par: 0.95, sh: 6 });
-    fg.add(olive(c, 120, 900, 1.5) + olive(c, 1520, 910, 1.4) + bush(c, 1300, 880, 200, C.sage, C.moss) + bush(c, 330, 890, 180, C.moss, C.sage));
+    const FR = S.portrait ? 150 : 0;   // phone: the right-hand foreground plants stay out of the corner instead of peeping in
+    fg.add(olive(c, 120, 900, 1.5) + olive(c, 1520 + FR, 910, 1.4) + bush(c, 1300 + FR, 880, 200, C.sage, C.moss) + bush(c, 330, 890, 180, C.moss, C.sage));
 
     const cur = curtains(S);
 
@@ -130,7 +131,7 @@ export default {
       pose(glint, { x: 1080, y: 205, s: bump(t, 1.25, 1.9) * 1.2 + 0.001, r: t * 90, o: bump(t, 1.25, 1.9) });
       tags.forEach((g, i) => {
         const d = es(t, g.t0, g.t0 + 0.35, ease.back) * (1 - es(t, 2.1, 2.5));
-        swing(g.el, g.x, g.y - (1 - d) * 520, T, 1.2, 0.8, i);
+        swing(g.el, g.x, g.y - (1 - d) * (S.portrait ? 1000 : 520), T, 1.2, 0.8, i);   // phone: parked out of sight
       });
 
       /* v1 — they come near along the road; two are called forward */

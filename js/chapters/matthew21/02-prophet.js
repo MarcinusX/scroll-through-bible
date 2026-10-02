@@ -111,10 +111,10 @@ export default {
       pose(scrollGlow, { x: 800, y: 300, s: 0.6 + lit * 0.5, o: lit });
 
       /* v5 — "Tell the daughter of Zion": she steps out of the gate */
-      const zin = es(t, 0.6, 1.1);
+      const zin = S.portrait ? es(t, 0.8, 1.2) : es(t, 0.6, 1.1);   // phone: she comes out later, not half-seen under the thread while the prophet speaks
       const welcome = es(t, 1.45, 1.7);
       const zX = lerp(GATE, GATE - 150, zin);
-      zion.set({ x: zX, y: G - 2, s: 0.96, flip: true, walk: zin > 0 && zin < 1 ? zX * 0.05 : undefined, o: seg(t, 0.55, 0.65), armF: welcome * 70, armB: welcome * 130, head: -welcome * 6, blink: blinkAt(T, 5) });
+      zion.set({ x: zX, y: G - 2, s: 0.96, flip: true, walk: zin > 0 && zin < 1 ? zX * 0.05 : undefined, o: S.portrait ? seg(t, 0.78, 0.86) : seg(t, 0.55, 0.65), armF: welcome * 70, armB: welcome * 130, head: -welcome * 6, blink: blinkAt(T, 5) });
       const z2 = es(t, 0.9, 1.2, ease.out) * (1 - es(t, 1.4, 1.6));
       swing(zTag2, GATE - 150, lerp(-600, 330, z2), T, 1.2, 0.8, 3);
 

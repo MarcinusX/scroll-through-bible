@@ -118,7 +118,8 @@ export default {
 
     /* ---------- the questioners and the one who answers ---------- */
     const P = S.layer({ par: 0.5, sh: 5 });
-    const askers = [[1010, 4], [1110, -6], [1200, 6]].map(([x, dy], i) => ({ x, y: ST + dy, i, seed: c.rr(0, 9), p: S.puppet(P.add(person(c, folk4(c, i % 2 === 0)))) }));
+    // phone: the three who ask (and their question marks) stand in from under the progress thread
+    const askers = [[1010, 4], [1110, -6], [1200, 6]].map(([x, dy], i) => ({ x: S.portrait ? 980 + (x - 1010) * 0.65 : x, y: ST + dy, i, seed: c.rr(0, 9), p: S.puppet(P.add(person(c, folk4(c, i % 2 === 0)))) }));
     const answer = { seed: c.rr(0, 9), p: S.puppet(P.add(person(c, { ...townsfolk(c, { man: true }), holdB: `<g transform="rotate(-8)">${frond(c, 96)}</g>` }))) };
     const dis = [TWELVE_O[0], TWELVE_O[2]].map((o, i) => ({ o, i, seed: c.rr(0, 9), p: S.puppet(P.add(person(c, o))) }));
 

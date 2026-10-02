@@ -61,7 +61,8 @@ export default {
     hs.p(c.cut([[380, 540], [380, 500], ...c.arc(408, 500, 28, 24, PI, 2 * PI, 8), [436, 540]], 0.4, 5), C.soilDark);
     hs.p(c.ribbon([[374, 542], [442, 542]], 6), C.wood2);
     houseL.add(hs.out());
-    houseL.add(olive(c, 520, G - 4, 1.05) + `<g transform="translate(470 ${G})">${bench(c, 130, 40)}</g>`);
+    const BX = S.portrait ? 525 : 470;   // phone: the bench (and the son idling on it) stays whole at the left edge in the later beats
+    houseL.add(olive(c, 520, G - 4, 1.05) + `<g transform="translate(${BX} ${G})">${bench(c, 130, 40)}</g>`);
 
     const groundL = S.layer({ par: 0.44, sh: 3 });
     const gs = sheet();
@@ -158,10 +159,10 @@ export default {
           armF = reply * 60; head = reply * 12; lean = reply * (s.i === 0 ? 6 : -6);
           const idle = es(t, tAct, tAct + 0.35);
           if (t > tAct) {
-            x = lerp(SX[s.i], 470, idle); flip = true; walk = idle > 0 && idle < 1;
+            x = lerp(SX[s.i], BX, idle); flip = true; walk = idle > 0 && idle < 1;
             sit = seg(t, tAct + 0.36, tAct + 0.42);
           }
-          s.si.set({ x: 470, y: G - 38, s: 0.98, flip: false, armF: 20, armB: 10, head: 14, o: o * sit, blink: T ? blinkAt(T, s.seed) : 0 });
+          s.si.set({ x: BX, y: G - 38, s: 0.98, flip: false, armF: 20, armB: 10, head: 14, o: o * sit, blink: T ? blinkAt(T, s.seed) : 0 });
         }
         s.st.set({ x, y: G + 4 - s.i * 4, s: 0.98, flip, walk: walk ? x * 0.05 + s.i : undefined, armF, armB, head, lean, o: o * (1 - sit), blink: blinkAt(T, s.seed) });
         const [rx, ry] = headAt(x, G + 4, 0.98, flip);

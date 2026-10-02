@@ -70,17 +70,17 @@ export default {
       const turnBack = es(t, 2.0, 2.15);
       const shrug = es(t, 2.1, 2.35) * (1 - es(t, 2.9, 3.2));
       LEADERS.forEach((d) => {
-        const cx = 1040;
-        const x = lerp(d.x, cx + (d.x - cx) * 0.55, huddle) + fear * 30;
+        const cx = 1040, lx = S.portrait ? -110 : 0;   // phone: the huddle stands clear of the right edge
+        const x = lerp(d.x, cx + (d.x - cx) * 0.55, huddle) + fear * 30 + lx;
         const faceIn = d.x < cx;
         d.p.set({ x, y: d.y, s: 0.9, flip: turnBack > 0.5 ? true : faceIn ? false : true, lean: huddle * (faceIn ? 8 : -8) - fear * 4, head: huddle * 10 - fear * 6, armF: huddle * (d.i % 3 === 0 ? 40 : 10) + shrug * 70 + fear * 20, armB: shrug * 60, blink: blinkAt(T, d.seed) });
         fade(d.angry, huddle * (1 - fear));
         fade(d.sad, fear + shrug * 0.6);
       });
       const t1 = es(t, 0.12, 0.35, ease.back) * (1 - es(t, 0.95, 1.08));
-      pose(think1, { x: S.portrait ? 930 : 1000, y: 470, s: t1, o: t1 > 0.02 ? 1 : 0 });
+      pose(think1, { x: S.portrait ? 900 : 1000, y: 470, s: t1, o: t1 > 0.02 ? 1 : 0 });
       const t2 = es(t, 1.05, 1.25, ease.back) * (1 - es(t, 1.6, 1.75));
-      pose(think2, { x: 1030, y: 470, s: t2, o: t2 > 0.02 ? 1 : 0 });
+      pose(think2, { x: S.portrait ? 960 : 1030, y: 470, s: t2, o: t2 > 0.02 ? 1 : 0 });
       swing(skyCard, 610, 190 - bump(t, 0.1, 1.0) * 30 - es(t, 2.2, 2.6) * 700, T, 1.2 + bump(t, 0.1, 1.0) * 2, 1.1, 1);
       swing(menCard, 990, 190 - bump(t, 1.05, 1.95) * 30 - es(t, 2.2, 2.6) * 700, T, 1.2 + bump(t, 1.05, 1.6) * 2, 1.1, 2);
 
@@ -96,7 +96,7 @@ export default {
       pose(prophet, { x: 830, y: 330 + (1 - pk) * 500 + es(t, 2.9, 3.25, ease.in) * 520, r: Math.sin(t * 3) * 3, o: seg(t, 1.25, 1.3) * (1 - es(t, 3.0, 3.2)) });
 
       /* v27a — "We don't know"; v27b — "Neither will I tell you": the answer stays sealed */
-      const [lx, ly] = headAt(LEADERS[0].x, LEADERS[0].y, 0.9, true);
+      const [lx, ly] = headAt(LEADERS[0].x + (S.portrait ? -110 : 0), LEADERS[0].y, 0.9, true);
       const dk = es(t, 2.12, 2.32, ease.back) * (1 - es(t, 2.95, 3.1));
       pose(dunno, { x: lx + 20, y: ly - 34, s: dk, o: dk > 0.02 ? 1 : 0 });
       const speak = es(t, 3.05, 3.3);

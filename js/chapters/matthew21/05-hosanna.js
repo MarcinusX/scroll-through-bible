@@ -42,7 +42,8 @@ export default {
     const heav = S.layer({ par: 0.02, sh: 1, flat: true, rise: 0 });
     const burst = heav.add(`<g>${rays(c, { n: 26, r0: 40, r1: 1400, spread: 0.05, color: '#fff3cf' })}<circle r="260" fill="url(#halo-glow)"/></g>`);
     const hangL = S.layer({ par: 0.04, sh: 5 });
-    const sunEl = hanging(hangL, sun(c, 46), { x: 420, y: 140, len: 700 });
+    const SUNX = S.portrait ? 560 : 420;   // phone: the hanging sun whole, not sliced by the left edge
+    const sunEl = hanging(hangL, sun(c, 46), { x: SUNX, y: 140, len: 700 });
     const cl1 = hanging(hangL, cloud(c, 200), { x: 700, y: 110, len: 700 });
     const cl2 = hanging(hangL, cloud(c, 150), { x: 1180, y: 170, len: 700 });
 
@@ -133,7 +134,7 @@ export default {
       const T = time;
       const high = es(t, 3.05, 3.5);
       highL.fade(high);
-      swing(sunEl, 420, 140, T, 1, 0.7);
+      swing(sunEl, SUNX, S.portrait ? 30 : 140, T, 1, 0.7);   // phone: above the Hosanna bunting
       swing(cl1, 700 + Math.sin(T * 0.1) * 26, 110 - high * 40, T, 1.3, 0.6, 1);
       swing(cl2, 1180 + Math.sin(T * 0.12 + 1) * 26, 170 - high * 40, T, 1.3, 0.7, 2);
       pose(burst, { x: 800, y: -60, s: 0.4 + high * 0.8, r: t * 6, o: high * 0.55 });
@@ -175,10 +176,10 @@ export default {
       const pd = es(t, 1.0, 1.35, ease.back);
       pose(penEl, { x: 800, y: 136 - (1 - pd) * 600 - high * 50, r: Math.sin(t * 2.6) * (1.2 + high * 1.5), oy: 0 });
       const dv = es(t, 1.1, 1.5, ease.back) * (1 - es(t, 1.9, 2.25));
-      swing(david, 800, 318 - (1 - dv) * 700, T, 1.6, 0.8, 2);
+      swing(david, 800, 318 - (1 - dv) * (S.portrait ? 1000 : 700), T, 1.6, 0.8, 2);   // phone: parked out of sight
       /* v9c — Blessed is he who comes: the banner unrolls between the gate towers */
       const unroll = es(t, 2.05, 2.5);
-      pose(bannerEl, { x: GATE, y: WT - 60, sy: Math.max(0.01, unroll), o: unroll > 0.01 ? 1 : 0 });
+      pose(bannerEl, { x: S.portrait ? GATE - 150 : GATE, y: WT - 60, sy: Math.max(0.01, unroll), o: unroll > 0.01 ? 1 : 0 });
       pose(glint, { x: JX - 12, y: ROAD - 250, s: bump(t, 2.1, 2.8) * 1.4 + 0.001, r: t * 60, o: bump(t, 2.1, 2.8) });
       /* v9d — in the highest: leaves and petals thrown up high */
       conf.forEach((f) => {

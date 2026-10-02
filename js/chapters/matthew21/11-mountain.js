@@ -31,6 +31,8 @@ export default {
   cam: { x: [-60, 210], y: [-80, 40], z: [0.94, 1.14] },
   build(S) {
     const c = S.c;
+    const DX = S.portrait ? -100 : 0;          // phone: the shore and the sea come inward
+    const MXp = MX + DX, SEAX = SEA[0] + DX;
     sky(S, DAY);
     const highL = sky(S, HIGH, { name: 'high', rise: 0 }).layer;
     const heav = S.layer({ par: 0.02, sh: 1, flat: true, rise: 0 });
@@ -43,15 +45,15 @@ export default {
     /* ---------- far hills and the sea ---------- */
     S.layer({ par: 0.07, sh: 2 }).add(band(c, { y: 470, amps: [16, 8, 3], lens: [1100, 400, 140], color: mix(C.hillFar, C.duskViolet, 0.25), x0: -1400, x1: 3200 }).markup);
     const seaL = S.layer({ par: 0.12, sh: 2 });
-    seaL.add(sheet().p(c.cut([[960, 552], [1060, 542], [3200, 536], [3200, 900], [960, 900]], 1, 16), C.lake).out());
+    seaL.add(sheet().p(c.cut([[960 + DX, 552], [1060 + DX, 542], [3200, 536], [3200, 900], [960 + DX, 900]], 1, 16), C.lake).out());
     /* ---------- the mountain on strings (its roots hidden in the hill until it rises) ---------- */
     const mtL = S.layer({ par: 0.14, sh: 5 });
     const strings = mtL.add(`<g opacity="0"><path d="M-120 -2400V-240M120 -2400V-236" stroke="rgba(74,54,34,.6)" stroke-width="1.6" fill="none"/></g>`);
     const mt = mtL.add(`<g>${mountain(c, 420, 300)}</g>`);
     const hillL = S.layer({ par: 0.14, sh: 3 });
-    hillL.add(sheet().p(c.cut([[-1400, 548], [-600, 540], [200, 546], [800, 540], [1000, 548], [1080, 566], [1000, 900], [-1400, 900]], 1.2, 12), C.hillMid).out());
+    hillL.add(sheet().p(c.cut([[-1400, 548], [-600, 540], [200, 546], [800, 540], [1000 + DX, 548], [1080 + DX, 566], [1000 + DX, 900], [-1400, 900]], 1.2, 12), C.hillMid).out());
     const seaFront = S.layer({ par: 0.2, sh: 3, pad: 160 });
-    seaFront.add(`<g>${waveStrip(c, { y: 576, len: 110, amp: 7, color: C.lake2, x0: 1010, x1: 3200, bottom: 900 })}</g>`);
+    seaFront.add(`<g>${waveStrip(c, { y: 576, len: 110, amp: 7, color: C.lake2, x0: 1010 + DX, x1: 3200, bottom: 900 })}</g>`);
     const splashL = S.layer({ par: 0.2, sh: 3 });
     const drops = Array.from({ length: 16 }, (_, i) => ({ i, el: splashL.add(`<path d="${c.cut([[0, -9], [5, 2], [0, 7], [-5, 2]], 0.2, 3)}" fill="${i % 3 ? C.foam : C.lake}"/>`), a: PI + (i + 0.5) / 16 * PI, v: c.rr(90, 200) }));
     const rings = [0, 1, 2].map(() => splashL.add(`<path d="${c.ribbon(c.arc(0, 0, 60, 12, 0, PI * 2, 24), 3)}" fill="${C.foam}"/>`));
@@ -111,15 +113,15 @@ export default {
       const over = es(t, 1.46, 1.6);
       const drop = es(t, 1.58, 1.7, ease.in);
       const sink = es(t, 1.68, 1.92);
-      const mx = lerp(MX, SEA[0], over), my = MY - rise * 150 * (1 - drop) + drop * 60 + sink * 330 - bump(t, 1.46, 1.6) * 40;
+      const mx = lerp(MXp, SEAX, over), my = MY - rise * 150 * (1 - drop) + drop * 60 + sink * 330 - bump(t, 1.46, 1.6) * 40;
       pose(mt, { x: mx, y: my, r: quiver + over * 8 * (1 - drop) - drop * 4, o: 1 - seg(t, 1.97, 2.0) });
       pose(strings, { x: mx, y: my, o: stringsOn });
       drops.forEach((d) => {
         const k = seg(t, 1.68, 1.98);
-        const x = SEA[0] + Math.cos(d.a) * d.v * k * 1.4, y = SEA[1] + 10 + Math.sin(d.a) * d.v * 1.6 * Math.sin(k * PI * 0.9);
+        const x = SEAX + Math.cos(d.a) * d.v * k * 1.4, y = SEA[1] + 10 + Math.sin(d.a) * d.v * 1.6 * Math.sin(k * PI * 0.9);
         pose(d.el, { x, y, s: 1.4, r: d.a * 57, o: k > 0 && k < 1 ? 1 - k * 0.3 : 0 });
       });
-      rings.forEach((r, i) => { const k = seg(t, 1.7 + i * 0.08, 2.1 + i * 0.08); pose(r, { x: SEA[0], y: SEA[1] + 14, s: 0.5 + k * 2.2, o: k > 0 && k < 1 ? (1 - k) * 0.9 : 0 }); });
+      rings.forEach((r, i) => { const k = seg(t, 1.7 + i * 0.08, 2.1 + i * 0.08); pose(r, { x: SEAX, y: SEA[1] + 14, s: 0.5 + k * 2.2, o: k > 0 && k < 1 ? (1 - k) * 0.9 : 0 }); });
       seaFront.shift(((T * 14) % 110) - 55, 0);
 
       /* v22 — whatever you ask in prayer, believing: they kneel, lights come down into their hands */
@@ -135,7 +137,7 @@ export default {
       const J = PRAY[1];
       const [ohx, ohy] = headAt(J.x, J.y, 0.92, false);
       const sh = es(t, 1.05, 1.2, ease.back) * (1 - es(t, 1.6, 1.72));
-      pose(shout, { x: ohx + 40, y: ohy - 30, s: sh, o: sh > 0.02 ? 1 : 0 });
+      pose(shout, { x: ohx + (S.portrait ? 110 : 40), y: ohy - 30, s: sh, o: sh > 0.02 ? 1 : 0 });
       voice(ohx + 22, ohy + 4, speak, T, { dir: 1 });
       voiceJ(jhx + 22, jhy + 4, teach, T, { dir: 1 });
       gifts.forEach((g) => {
@@ -146,7 +148,7 @@ export default {
       });
 
       S.cam.x = -20 + es(t, 1.0, 1.4) * 170 - es(t, 1.9, 2.2) * 150;
-      if (S.portrait) S.cam.x = -60 + es(t, 1.3, 1.5) * 260 * (1 - es(t, 1.9, 2.2));
+      if (S.portrait) S.cam.x = -60 + es(t, 1.3, 1.5) * 180 * (1 - es(t, 1.9, 2.2));
       S.cam.y = -es(t, 1.0, 1.4) * 40 + es(t, 1.9, 2.2) * 40 - heaven * 40;
       S.cam.z = 1.0 - es(t, 1.0, 1.4) * 0.04 + es(t, 1.9, 2.2) * 0.08 - heaven * 0.06;
     };

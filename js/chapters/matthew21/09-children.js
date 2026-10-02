@@ -68,7 +68,8 @@ export default {
     const L = S.layer({ par: 0.48, sh: 5 });
     const healed = [{ o: BLIND[0] || BLIND, x: 960 }, { o: LAME, x: 1060 }].map((d, i) => ({ ...d, i, seed: c.rr(0, 9), p: S.puppet(L.add(person(c, d.o))) }));
     const mother = { seed: c.rr(0, 9), p: S.puppet(L.add(person(c, woman(c, { robe: C.roseRobe, veil: C.skyVeil, holdF: `<g transform="translate(-6 -24) rotate(76)">${baby(c)}</g>` })))) };
-    const KIDS = [[930, 0], [1010, 1], [1090, 2], [1170, 3], [1250, 4], [1320, 5]].map(([x, i]) => ({ x, i, seed: c.rr(0, 9), ph: c.rr(0, 6), p: S.puppet(L.add(kid(c, i, { holdB: `<g transform="rotate(-8)">${frond(c, 80)}</g>` }))) }));
+    // phone: the children (and their Hosanna bunting) drawn in from under the progress thread
+    const KIDS = [[930, 0], [1010, 1], [1090, 2], [1170, 3], [1250, 4], [1320, 5]].map(([x, i]) => ({ x: S.portrait ? 920 + (x - 930) * 0.36 : x, i, seed: c.rr(0, 9), ph: c.rr(0, 6), p: S.puppet(L.add(kid(c, i, { holdB: `<g transform="rotate(-8)">${frond(c, 80)}</g>` }))) }));
     const jL = S.layer({ par: 0.5, sh: 5 });
     const jesus = S.puppet(jL.add(person(c, { ...CAST.jesus })));
 
@@ -98,7 +99,7 @@ export default {
       starL.fade(es(t, 5.3, 5.6) * 0.9);
       swing(sunEl, 1230, 150 + dusk * 520, T, 1, 0.6);
       swing(cl1, 470 + Math.sin(T * 0.1) * 26, 140, T, 1.3, 0.6, 1);
-      swing(moonEl, 1010, 140 - (1 - es(t, 5.3, 5.7)) * 700, T, 0.8, 0.5, 1);
+      swing(moonEl, 1010, (S.portrait ? 210 : 140) - (1 - es(t, 5.3, 5.7)) * 700, T, 0.8, 0.5, 1);
 
       /* v15a — they see the wonders: the healed men leap in the light */
       const leave = es(t, 1.0, 1.5, ease.in);
@@ -136,7 +137,7 @@ export default {
       });
       voice.forEach((v, i) => { const k = KIDS[i]; const [hx, hy] = kidHead(k.x + (1 - run) * 560, FLOOR + 14 - (k.i % 2) * 10, 0.5, true); v(hx - 18, hy + 4, cry * (1 - es(t, 2.0, 2.3)), T, { dir: -1 }); });
       const hk = es(t, 1.2, 1.5, ease.back) * (1 - es(t, 2.0, 2.3));
-      pose(hos, { x: 1130, y: 390 - (1 - hk) * 40, s: hk, r: Math.sin(T * 2) * 2, o: hk > 0.02 ? 1 : 0 });
+      pose(hos, { x: S.portrait ? 950 : 1130, y: 390 - (1 - hk) * 40, s: hk, r: Math.sin(T * 2) * 2, o: hk > 0.02 ? 1 : 0 });
 
       /* v16b — "Yes"; v16c — the psalm; praise rising from the children and the baby */
       const [jhx, jhy] = headAt(JX, FLOOR, 1.04, false);
@@ -147,11 +148,11 @@ export default {
       const praise = es(t, 4.2, 4.5) * (1 - es(t, 5.0, 5.2));
       pose(sGlow, { x: 800, y: 400, s: 0.8 + praise * 0.3, o: praise * 0.9 });
       const mIn = es(t, 3.95, 4.3, ease.out);
-      const mx = lerp(1500, 1130, mIn);
+      const mx = lerp(1500, S.portrait ? 1065 : 1130, mIn);   // phone: the mother with her baby clear of the thread
       mother.p.set({ x: mx, y: FLOOR - 8, s: 0.94, flip: true, walk: mIn > 0 && mIn < 1 ? mx * 0.05 : undefined, armF: 70, armB: 60, head: 8, blink: blinkAt(T, mother.seed), o: seg(t, 3.93, 3.97) });
       notes.forEach((n) => {
         const src = n.i < 6 ? KIDS[n.i] : null;
-        const [sx, sy] = src ? kidHead(src.x, FLOOR + 14, 0.5, true) : headAt(1130, FLOOR - 8, 0.94, true, 60);
+        const [sx, sy] = src ? kidHead(src.x, FLOOR + 14, 0.5, true) : headAt(S.portrait ? 1065 : 1130, FLOOR - 8, 0.94, true, 60);
         const k = ((T * 0.25 + n.i / 9) % 1);
         const kk = T ? k : (n.i / 9);
         pose(n.el, { x: lerp(sx - 10, 800 + (n.i - 4) * 30, kk), y: lerp(sy - 20, 360, kk) - Math.sin(kk * PI) * 40, s: 0.8 + kk * 0.3, r: Math.sin(T * 2 + n.i) * 12, o: praise * Math.min(1, (1 - kk) * 3) });
@@ -162,7 +163,8 @@ export default {
       jesus.set({ x: jx, y: FLOOR, s: 1.04, flip: out > 0.02, walk: out > 0 && out < 1 ? jx * 0.05 : undefined, armF: bump(t, 0.1, 1.0) * 40 + yk * 60 + praise * 50, armB: praise * 110, head: -praise * 10 + yk * 4, blink: blinkAt(T) });
       DIS.forEach((d) => { const x = 240 - d.i * 50 - out * 600 + (1 - es(t, 4.9, 5.1)) * -400; d.p.set({ x, y: FLOOR - 20 + (d.i % 2) * 8, s: 0.86, flip: true, walk: out > 0 && out < 1 ? x * 0.05 + d.i : undefined, blink: blinkAt(T, d.seed), o: seg(t, 4.95, 5.0) }); });
       lamps.forEach((l) => { fade(l.glow, es(t, 5.15 + l.i * 0.05, 5.3 + l.i * 0.05)); swing(l.el, l.x, FLOOR - 290, T, 1.4, 0.9, l.i); });
-      pose(sign, { x: 470, y: FLOOR + 30, o: es(t, 5.2, 5.4), s: 1 });
+      pose(sign, { x: S.portrait ? 560 : 470, y: FLOOR + 30,   // phone: the signpost inside the frame
+      o: es(t, 5.2, 5.4), s: 1 });
       const bk = es(t, 5.4, 5.75, ease.out);
       pose(beth, { x: 800, y: lerp(-800, 250, bk), r: T ? Math.sin(T * 0.9) * 1.5 : 0 });
 

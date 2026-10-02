@@ -22,7 +22,8 @@ export default {
     const c = S.c;
     sky(S, DAY);
     const hangL = S.layer({ par: 0.04, sh: 5 });
-    const sunEl = hanging(hangL, sun(c, 46), { x: 480, y: 130, len: 700 });
+    const SUNX = S.portrait ? 560 : 480;   // phone: the hanging sun whole, not sliced by the left edge
+    const sunEl = hanging(hangL, sun(c, 46), { x: SUNX, y: 130, len: 700 });
     const cl1 = hanging(hangL, cloud(c, 200), { x: 1000, y: 110, len: 700 });
     const birds = flock(S, hangL, 3, (cc) => bird(cc, { color: C.bird }), { y: 190, speed: 36, scale: 0.42 });
 
@@ -107,7 +108,7 @@ export default {
 
     return (t, time) => {
       const T = time;
-      swing(sunEl, 480, 130, T, 1, 0.7);
+      swing(sunEl, SUNX, 130, T, 1, 0.7);
       swing(cl1, 1000 + Math.sin(T * 0.1) * 26, 110, T, 1.3, 0.6, 1);
       birds(T, 1);
 

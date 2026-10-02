@@ -18,9 +18,10 @@ export default {
     { v: 6 },
     { v: 7, text: 'Przyprowadzili oślicę i źrebię' },
   ],
-  cam: { x: [-240, 160], y: [-20, 60], z: [1, 1.14] },
+  cam: { x: [-240, 420], y: [-20, 60], z: [1, 1.14] },
   build(S) {
     const c = S.c;
+    const OWN = S.portrait ? 1250 : 1300;   // phone: the owner's bench comes in from the edge
     sky(S, DAY);
     const hangL = S.layer({ par: 0.04, sh: 5 });
     const sunEl = hanging(hangL, sun(c, 44), { x: 1240, y: 130, len: 700 });
@@ -74,7 +75,7 @@ export default {
     line.x(c.ribbon(lp, 1.4), C.ink, 'opacity=".5"');
     [[1066, C.dustyBlue], [1096, C.roseRobe], [1126, C.wheatRobe]].forEach(([x, col]) => { const y = lp[Math.round((x - 1040) / 12)][1]; line.p(c.cut([[x - 12, y], [x + 12, y], [x + 14, y + 30], [x - 14, y + 32]], 0.5, 5), col); });
     houseL.add(line.out());
-    houseL.add(`<g transform="translate(1300 ${ST - 2})">${bench(c, 120, 38)}</g>`);
+    houseL.add(`<g transform="translate(${OWN} ${ST - 2})">${bench(c, 120, 38)}</g>`);
     const pots = sheet();
     [[790, 18], [820, 13], [1030, 15]].forEach(([x, r]) => { pots.p(c.cut([[x - r, ST - 2], [x - r * 1.1, ST - r * 1.8], [x + r * 1.1, ST - r * 1.8], [x + r, ST - 2]], 0.3, 4), C.pot); pots.p(c.cut(c.blob(x, ST - r * 2.4, r * 1.2, r * 0.8, 9, 0.25), 0.5, 4), C.leaf); });
     houseL.add(pots.out());
@@ -116,7 +117,8 @@ export default {
     const ok = fx.add(`<g>${bubble(c, [tr('Idźcie!', 'Go on!')], { size: 20, tail: -1 })}</g>`);
 
     const fg = S.layer({ par: 0.95, sh: 6 });
-    fg.add(bush(c, 60, 880, 220, C.sage, C.moss) + rock(c, 1640, 900, 190, 70, C.rock2) + bush(c, 1540, 880, 180, C.moss, C.sage) + flowers(c, { x0: -80, x1: 260, y: 850, n: 10 }));
+    const FR = S.portrait ? 160 : 0;   // phone: with the longer pan right, the right-hand foreground stays out of the corner
+    fg.add(bush(c, 60, 880, 220, C.sage, C.moss) + rock(c, 1640 + FR, 900, 190, 70, C.rock2) + bush(c, 1540 + FR, 880, 180, C.moss, C.sage) + flowers(c, { x0: -80, x1: 260, y: 850, n: 10 }));
 
     return (t, time) => {
       const T = time;
@@ -139,7 +141,7 @@ export default {
       const hx = jX - 118 * 1.02, hy = ST + 4 - 118 * 1.02;
       // Andrew unties the knot and leads the she-donkey; Philip leads the colt
       const A = two[0], P = two[1];
-      const ax = lerp(1600, RING[0] - 70, inK) - away * 330, px = lerp(1700, JX + 150, es(t, 0.02, 0.34, ease.out)) - away * 330;
+      const ax = lerp(1600, RING[0] - 70, inK) - away * 330, px = lerp(1700, JX + (S.portrait ? 110 : 150), es(t, 0.02, 0.34, ease.out)) - away * 330;
       A.p.set({
         x: ax - (away > 0 ? 20 * away : 0), y: ST + 10, s: 0.94, flip: true, walk: (inK > 0 && inK < 1) || aw ? ax * 0.05 : undefined,
         armF: t < 1 ? es(t, 0.28, 0.36) * 75 * (1 - es(t, 0.55, 0.6)) + es(t, 0.55, 0.6) * 30 : 55, armB: bump(t, 0.62, 0.8) * 60,
@@ -161,14 +163,14 @@ export default {
       /* the owner on his bench, his wife at the door */
       const askK = es(t, 0.5, 0.58, ease.back) * (1 - es(t, 0.66, 0.7));
       const lets = es(t, 0.78, 0.84);
-      owner.p.set({ x: 1300, y: ST - 30, s: 0.95, flip: true, armF: askK * 70 + lets * 60 * (1 - away * 0.6), armB: askK * 30, head: -es(t, 0.45, 0.55) * 4 + lets * 6, blink: blinkAt(T, owner.seed) });
+      owner.p.set({ x: OWN, y: ST - 30, s: 0.95, flip: true, armF: askK * 70 + lets * 60 * (1 - away * 0.6), armB: askK * 30, head: -es(t, 0.45, 0.55) * 4 + lets * 6, blink: blinkAt(T, owner.seed) });
       const wIn = es(t, 0.4, 0.6);
-      wife.p.set({ x: lerp(1460, 1400, wIn), y: ST - 2, s: 0.9, flip: true, o: seg(t, 0.38, 0.42), walk: wIn > 0 && wIn < 1 ? t * 30 : undefined, armB: 150, armF: bump(t, 0.55, 0.8) * 50 + lets * 30, blink: blinkAt(T, wife.seed) });
-      const [ohx, ohy] = headAt(1300, ST - 30, 0.95, true, 62);
+      wife.p.set({ x: lerp(OWN + 160, OWN + 100, wIn), y: ST - 2, s: 0.9, flip: true, o: seg(t, 0.38, 0.42), walk: wIn > 0 && wIn < 1 ? t * 30 : undefined, armB: 150, armF: bump(t, 0.55, 0.8) * 50 + lets * 30, blink: blinkAt(T, wife.seed) });
+      const [ohx, ohy] = headAt(OWN, ST - 30, 0.95, true, 62);
       pose(ask, { x: ohx - 30, y: ohy - 30, s: askK, o: askK > 0.02 ? 1 : 0 });
       const repK = es(t, 0.66, 0.72, ease.back) * (1 - es(t, 0.95, 1.02));
       const [phx, phy] = headAt(px, ST + 18, 0.96, true);
-      pose(reply, { x: phx + 20, y: phy - 30, s: repK, o: repK > 0.02 ? 1 : 0 });
+      pose(reply, { x: phx + (S.portrait ? -50 : 20), y: phy - 30, s: repK, o: repK > 0.02 ? 1 : 0 });
       const okK = es(t, 0.8, 0.86, ease.back) * (1 - es(t, 1.1, 1.2));
       pose(ok, { x: ohx - 30, y: ohy - 30, s: okK, o: okK > 0.02 ? 1 : 0 });
 
@@ -180,7 +182,7 @@ export default {
       others.forEach((d) => { const x = jx - 110 - d.i * 70; d.p.set({ x, y: ST - 4 + (d.i % 2) * 10, s: 0.92, walk: meet > 0 && meet < 1 ? x * 0.05 + d.i : undefined, head: -greet * 4, armF: greet * (d.i === 0 ? 40 : 0), blink: blinkAt(T, d.seed), o: seg(t, 1.02, 1.06) }); });
 
       S.cam.x = 40 + es(t, 0.2, 0.5) * 20 - es(t, 1.0, 1.6) * 240;
-      if (S.portrait) S.cam.x = es(t, 0.2, 0.5) * 150 - es(t, 1.0, 1.6) * 390;
+      if (S.portrait) S.cam.x = es(t, 0.2, 0.5) * 410 - es(t, 1.0, 1.6) * 650;
       S.cam.z = 1.04 + es(t, 0.2, 0.5) * 0.06 - es(t, 1.0, 1.6) * 0.08;
       S.cam.y = es(t, 0.2, 0.5) * 30 - es(t, 1.0, 1.6) * 20;
     };

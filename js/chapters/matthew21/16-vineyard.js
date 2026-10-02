@@ -8,8 +8,8 @@ import { es, ease, bump, seg } from '../../core/anim.js';
 import { vineyardSet, VY, L12 as LOOK, tenant, servant, hoe, bigKey, basketCut, burst, bubble, kf, moving, stoneBlock, moodPuppet, drapeCloth, tr } from './lib.js';
 
 const G = VY.G;
-const STOP = 952;                     // where the servants stop, facing the tenants
-const TX = [724, 792, 860];           // the tenants' places
+const STOP0 = 952;                    // where the servants stop, facing the tenants
+const TX0 = [724, 792, 860];          // the tenants' places
 
 export default {
   id: 'mt21-vineyard',
@@ -28,6 +28,10 @@ export default {
   cam: { x: [-20, 20], y: [0, 40], z: [1, 1.18] },
   build(S) {
     const c = S.c;
+    // phone: the servants' fates, the far land and the tower kept inside the frame
+    const P = S.portrait;
+    const STOP = P ? 902 : STOP0, TX = P ? TX0.map((x) => x - 30) : TX0;
+    const ABROAD = P ? [975, 250] : VY.ABROAD, TOWER = P ? 545 : VY.TOWER;
     const set = vineyardSet(S);
 
     /* people */
@@ -54,7 +58,8 @@ export default {
 
     return (t, time) => {
       const T = time;
-      set.update(t, T, { sunX: 470 + es(t, 0, 8) * 260, sunY: 170 - es(t, 0, 4) * 20 + es(t, 4, 8) * 10 });
+      set.update(t, T, { sunX: P ? 560 + es(t, 0, 8) * 200 : 470 + es(t, 0, 8) * 260,   // phone: the sun starts inside the left edge
+        sunY: 170 - es(t, 0, 4) * 20 + es(t, 4, 8) * 10 });
 
       /* v33a — "Hear another parable" */
       const hk = es(t, 0.1, 0.3, ease.back) * (1 - es(t, 0.8, 0.95));
@@ -88,7 +93,7 @@ export default {
       pose(fr.lintel, { x: VY.GATE0 - 12, y: VY.WALL_F - 170 - (1 - lk) * 40, o: lk });
       const pk = es(t, 2.35, 2.55, ease.back);
       pose(fr.press, { x: VY.PRESS, y: 720 + (1 - pk) * 30, s: 1.25, sx: 1.25 * (0.4 + 0.6 * pk), o: pk > 0.01 ? 1 : 0 });
-      set.tower.forEach((el, i) => { const k = es(t, 2.55 + i * 0.09, 2.66 + i * 0.09, ease.out); pose(el, { x: VY.TOWER, y: 606 - (1 - k) * 70, o: k }); });
+      set.tower.forEach((el, i) => { const k = es(t, 2.55 + i * 0.09, 2.66 + i * 0.09, ease.out); pose(el, { x: TOWER, y: 606 - (1 - k) * 70, o: k }); });
 
       /* v33d — the farmers come in and take the key; the owner sails away to a far land */
       ten.forEach((m) => {
@@ -111,7 +116,7 @@ export default {
       const sail = seg(t, 3.8, 4.6);
       pose(set.shipEl, { x: lerp(820, 1260, sail), y: 436, s: lerp(0.9, 0.35, sail), o: t > 3.8 ? 1 - seg(t, 4.45, 4.6) : 0 });
       const plateDrop = es(t, 3.75, 4.15, ease.out);
-      pose(set.plateEl, { x: VY.ABROAD[0], y: lerp(-800, VY.ABROAD[1], plateDrop), r: Math.sin(T * 0.8) * 1.2 });
+      pose(set.plateEl, { x: ABROAD[0], y: lerp(-800, ABROAD[1], plateDrop), r: Math.sin(T * 0.8) * 1.2 });
       const send = Math.max(bump(t, 4.2, 4.7), bump(t, 6.95, 7.4));
       set.pOwner.set({ x: 0, y: 0, s: 1, flip: true, armF: 30 + send * 70, head: send * 6, blink: blinkAt(T, 4) });
       set.pSon.set({ x: 0, y: 0, s: 1, o: 0 });

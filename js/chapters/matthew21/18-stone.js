@@ -26,9 +26,10 @@ export default {
     { v: 45 },
     { v: 46 },
   ],
-  cam: { x: [-40, 180], y: [-50, 40], z: [0.94, 1.12] },
+  cam: { x: [-40, 290], y: [-50, 40], z: [0.94, 1.12] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;   // phone: the leaders closer together and in from the right edge; the camera follows them further
     const { sunEl, cl1 } = templeCourt(S, { skyCols: DAY, floorY: FLOOR + 40, sanctX: 800, sunAt: [1230, 140] });
 
     /* ---------- the painted panel with the half-built arch ---------- */
@@ -51,7 +52,7 @@ export default {
 
     /* ---------- the crowd round Jesus (drawn once), the people who bear fruit ---------- */
     const crowdL = S.layer({ par: 0.46, sh: 4 });
-    const groups = [[430, false], [560, false], [1010, true]].map(([x, flip], i) => {
+    const groups = [[430, false], [560, false], [P ? 980 : 1010, true]].map(([x, flip], i) => {
       const mem = Array.from({ length: 3 }, (_, k) => ({ x: (k - 1) * 40 + c.rr(-6, 6), y: (k % 2) * 12, s: 1, flip, head: -6, armF: c.rr(10, 40), armB: k === 1 ? 120 : 0, o: folk4(c) }));
       return { i, x, flip, sp: crowdL.sprite(`<g transform="scale(.84)">${pose3(c, mem)}</g>`, x, FLOOR - 10) };
     });
@@ -61,7 +62,7 @@ export default {
     /* ---------- the leaders: chief priests and Pharisees ---------- */
     const LD = S.layer({ par: 0.48, sh: 4 });
     const LEADERS = [{ m: priest(c, 0), x: 1110 }, { m: person(c, pharisee(c, 0)), x: 1180 }, { m: priest(c, 1), x: 1250 }, { m: person(c, pharisee(c, 1)), x: 1320 }]
-      .map((d, i) => ({ ...d, i, seed: c.rr(0, 9), y: FLOOR - (i % 2 ? 14 : 0), p: S.puppet(LD.add(withFace(d.m, faceBits(c)))) }));
+      .map((d, i) => ({ ...d, x: P ? 1040 + i * 50 : d.x, i, seed: c.rr(0, 9), y: FLOOR - (i % 2 ? 14 : 0), p: S.puppet(LD.add(withFace(d.m, faceBits(c)))) }));
     LEADERS.forEach((d) => { d.angry = d.p.el.querySelector('[data-part="angry"]'); d.sad = d.p.el.querySelector('[data-part="sad"]'); });
 
     /* ---------- Jesus and the disciples ---------- */
@@ -154,7 +155,7 @@ export default {
         fade(d.sad, recoil * 0.7);
       });
       const th = es(t, 5.1, 5.3, ease.back) * (1 - es(t, 5.85, 6.0));
-      pose(thinks, { x: 1170, y: FLOOR - 230, s: th, o: th > 0.02 ? 1 : 0 });
+      pose(thinks, { x: P ? 1100 : 1170, y: FLOOR - 230, s: th, o: th > 0.02 ? 1 : 0 });
 
       /* v46 — they would seize Him, but the crowds close round Him, holding Him for a prophet */
       const guard = es(t, 6.1, 6.4);
@@ -167,7 +168,7 @@ export default {
 
       S.cam.z = 1 + es(t, 0.8, 1.6) * 0.04 * (1 - es(t, 2.9, 3.4)) - es(t, 6.0, 6.4) * 0.05;
       S.cam.y = -es(t, 6.0, 6.4) * 40;
-      S.cam.x = es(t, 5.0, 5.4) * (S.portrait ? 170 : 20) * (1 - es(t, 6.0, 6.4) * (S.portrait ? 0.6 : 1));
+      S.cam.x = es(t, 5.0, 5.4) * (P ? 280 : 20) * (1 - es(t, 6.0, 6.4) * (P ? 0.25 : 1));
     };
   },
 };

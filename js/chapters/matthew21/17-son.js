@@ -12,7 +12,7 @@ import { glowHeart, wisp } from '../mark12/lib.js';
 const G = VY.G;
 const TX = [724, 792, 860];
 const SX = 968;                 // where the son stops
-const OUT = 1140;               // where he falls, outside the gate
+const OUT0 = 1140;              // where he falls, outside the gate
 const SHADOW = '#3a2630';
 
 export default {
@@ -27,9 +27,13 @@ export default {
     { v: 41, text: 'Rzekli Mu: «Nędzników marnie wytraci,' },
     { v: 41, cont: true, text: 'a winnicę odda w dzierżawę innym rolnikom, takim, którzy mu będą oddawali plon we właściwej porze».' },
   ],
-  cam: { x: [-20, 170], y: [0, 40], z: [1, 1.18] },
+  cam: { x: [-20, 260], y: [0, 40], z: [1, 1.18] },
   build(S) {
     const c = S.c;
+    // phone: the far land and the tower kept inside the frame
+    const ABROAD = S.portrait ? [975, 250] : VY.ABROAD, TOWER = S.portrait ? 545 : VY.TOWER;
+    // phone: he falls just at the gate and both farmers stand left of him, all inside the frame
+    const OUT = S.portrait ? 1080 : OUT0, DRAG_TO = S.portrait ? [-170, -90] : [-70, 60];
     const set = vineyardSet(S);
     // dusk and night: two more skies, faded over the day sky (straight after it in the stack)
     const duskL = sky(S, VINE_DUSK, { name: 'dusk', rise: 0 }).layer;
@@ -38,7 +42,7 @@ export default {
     duskL.el.after(nightL.el);
     // the vineyard is complete: pose everything once (still pieces stay cached)
     set.wallB.forEach((w) => pose(w.el, { x: w.x, y: w.y }));
-    set.tower.forEach((el) => pose(el, { x: VY.TOWER, y: 606 }));
+    set.tower.forEach((el) => pose(el, { x: TOWER, y: 606 }));
     pose(set.gateBack, { x: VY.GATE0, y: VY.WALL_F - 4 });
     set.grapesB.forEach((g) => pose(g.el, { x: g.x, y: g.y }));
     set.backRow.forEach((v) => pose(v.el, { x: v.x, y: v.y }));
@@ -95,7 +99,7 @@ export default {
 
       /* v37 — the plate comes close: father and son, a heart between them; he sends him */
       const big = es(t, 0.05, 0.35) * (1 - es(t, 0.8, 1.0));
-      pose(set.plateEl, { x: lerp(VY.ABROAD[0], 800, big), y: lerp(VY.ABROAD[1], 300, big), s: 1 + big * 1.1, r: Math.sin(T * 0.8) * 1.2 * (1 - big) });
+      pose(set.plateEl, { x: lerp(ABROAD[0], 800, big), y: lerp(ABROAD[1], 300, big), s: 1 + big * 1.1, r: Math.sin(T * 0.8) * 1.2 * (1 - big) });
       const sonGone = seg(t, 0.5, 0.55);
       const sendOut = bump(t, 0.4, 0.7);
       set.pOwner.set({ x: 0, y: 0, s: 1, flip: false, armF: 40 + big * 50 + sendOut * 40, armB: 20, head: big * 8, blink: blinkAt(T, 4) });
@@ -103,7 +107,7 @@ export default {
       const hk = es(t, 0.2, 0.38, ease.back) * (1 - es(t, 0.8, 0.95));
       pose(heartEl, { x: 790, y: 150 + Math.sin(T * 2) * 3, s: hk * (1 + Math.sin(T * 3) * 0.05), o: hk > 0.02 ? 1 : 0 });
       const sk = es(t, 0.3, 0.45, ease.back) * (1 - es(t, 0.95, 1.05));
-      pose(says, { x: lerp(620, VY.ABROAD[0] - 150, es(t, 0.8, 1.0)), y: lerp(210, VY.ABROAD[1] + 30, es(t, 0.8, 1.0)), s: sk, o: sk > 0.02 ? 1 : 0 });
+      pose(says, { x: lerp(620, ABROAD[0] - 150, es(t, 0.8, 1.0)), y: lerp(210, ABROAD[1] + 30, es(t, 0.8, 1.0)), s: sk, o: sk > 0.02 ? 1 : 0 });
 
       /* the son walks in at the gate */
       const inK = es(t, 0.5, 0.95);
@@ -118,7 +122,7 @@ export default {
       const sx = lerp(SX, OUT, drag);
       sonSh.set({ x: sx + fall * 20, y: G + 2, s: 0.98, flip: drag > 0 ? false : true, walk: drag > 0 && drag < 1 ? sx * 0.05 : undefined, r: fall * 82, armF: 30 + seize * 40 + fall * 40, armB: seize * 60, lean: -seize * 8, o: shadow * (1 - es(t, 3.88, 3.95)) });
       const ck = es(t, 3.78, 3.96, ease.out);
-      pose(cloth, { x: OUT + 30, y: lerp(G - 420, G + 6, ck), o: ck > 0.001 ? 1 - es(t, 4.9, 5.1) : 0 });
+      pose(cloth, { x: OUT + 30, y: lerp(G - 420, G + 6, ck), o: ck > 0.001 ? 1 - (S.portrait ? es(t, 4.05, 4.3) : es(t, 4.9, 5.1)) : 0 });   // phone: gone as the camera leaves it, not left half at the edge
 
       /* the farmers: whisper, plot, seize — then are lifted away */
       const huddle = es(t, 1.05, 1.3) * (1 - es(t, 2.9, 3.05));
@@ -126,9 +130,9 @@ export default {
       ten.forEach((m) => {
         let x = TX[m.i] + huddle * [30, 0, -30][m.i] + seize * [180, 140, 90][m.i];
         const y = G + (m.i === 1 ? 6 : 0);
-        if (drag > 0 && m.i < 2) x = lerp(TX[m.i] + [180, 140][m.i], OUT + [-70, 60][m.i], drag);
+        if (drag > 0 && m.i < 2) x = lerp(TX[m.i] + [180, 140][m.i], OUT + DRAG_TO[m.i], drag);
         const back = es(t, 3.9, 4.2);
-        if (t > 3.9) x = lerp(m.i < 2 ? OUT + [-70, 60][m.i] : TX[m.i] + 90, TX[m.i], back);
+        if (t > 3.9) x = lerp(m.i < 2 ? OUT + DRAG_TO[m.i] : TX[m.i] + 90, TX[m.i], back);
         const flip = m.i === 2 && huddle > 0.5 ? true : (t > 3.9 && t < 4.2);
         const walking = (drag > 0 && drag < 1 && m.i < 2) || (back > 0 && back < 1) || (seize > 0 && seize < 1);
         const common = {
@@ -171,7 +175,7 @@ export default {
       S.cam.z = 1.12 + big * 0.02 + es(t, 2.9, 3.2) * 0.04 * (1 - es(t, 4, 4.4));
       S.cam.y = 40;
       S.cam.x = -10 + es(t, 2.9, 3.2) * 20 * (1 - es(t, 4, 4.4));
-      if (S.portrait) S.cam.x = -10 + es(t, 3.2, 3.5) * 170 * (1 - es(t, 3.95, 4.3));
+      if (S.portrait) S.cam.x = -10 + es(t, 3.2, 3.5) * 260 * (1 - es(t, 3.95, 4.3));   // phone: follow the shadow play out through the gate
     };
   },
 };

@@ -10,7 +10,7 @@ import { templeCourt, courtFront, priest, elder, withFace, faceBits, TWELVE_O, h
 import { stoneHeart } from '../mark3/lib.js';
 
 const FLOOR = 676;
-const GX = 900;                            // the gate of the Kingdom
+const GX0 = 900;                           // the gate of the Kingdom
 const A_OBEYS = tr(false, true);           // as in the parable: PL "the second", EN "the first"
 const OB = A_OBEYS ? 0 : 1;
 
@@ -28,6 +28,9 @@ export default {
   build(S) {
     const c = S.c;
     const JX = S.portrait ? 580 : 470;   // keep Jesus on the narrow stage
+    // phone: the gate a little left, the leaders closer together and in from the right edge
+    const GX = S.portrait ? 860 : GX0;
+    const LXS = S.portrait ? [945, 997, 1049, 1101] : null, TURN = S.portrait ? 10 : 40;
     const { sunEl, cl1 } = templeCourt(S, { skyCols: DAY, floorY: FLOOR + 40, sanctX: 800, sunAt: [1230, 140] });
 
     /* ---------- the road of righteousness (laid on the paving) and the gate of the Kingdom ---------- */
@@ -41,7 +44,7 @@ export default {
     /* ---------- the leaders ---------- */
     const LD = S.layer({ par: 0.48, sh: 4 });
     const LEADERS = [{ m: priest(c, 0), x: 1070 }, { m: elder(c, 0), x: 1140 }, { m: priest(c, 1), x: 1210 }, { m: elder(c, 1), x: 1280 }]
-      .map((d, i) => ({ ...d, i, seed: c.rr(0, 9), y: FLOOR - (i % 2 ? 16 : 2), p: S.puppet(LD.add(withFace(d.m, faceBits(c)))) }));
+      .map((d, i) => ({ ...d, x: LXS ? LXS[i] : d.x, i, seed: c.rr(0, 9), y: FLOOR - (i % 2 ? 16 : 2), p: S.puppet(LD.add(withFace(d.m, faceBits(c)))) }));
     LEADERS.forEach((d) => { d.angry = d.p.el.querySelector('[data-part="angry"]'); d.sad = d.p.el.querySelector('[data-part="sad"]'); });
 
     /* ---------- tax collectors and women, John ---------- */
@@ -72,7 +75,7 @@ export default {
       sonPlates.forEach((p, i) => pose(p, { x: 700 + i * 200, y: lerp(-800, 230, pk) + (i ? 12 : 0), r: T ? Math.sin(T * 1.1 + i) * 2 : 0 }));
       const [jhx, jhy] = headAt(JX, FLOOR, 1.04, false);
       const wk = es(t, 0.3, 0.5, ease.back) * (1 - es(t, 0.9, 1.0));
-      pose(which, { x: jhx - 30, y: jhy - 40, s: wk, o: wk > 0.02 ? 1 : 0 });
+      pose(which, { x: jhx + (S.portrait ? 40 : -30), y: jhy - 40, s: wk, o: wk > 0.02 ? 1 : 0 });
       /* v31b — they answer; the one who went glows */
       const [lhx, lhy] = headAt(LEADERS[0].x, LEADERS[0].y, 0.9, true);
       const rk = es(t, 1.05, 1.25, ease.back) * (1 - es(t, 1.85, 2.0));
@@ -113,16 +116,16 @@ export default {
       const glance = es(t, 5.05, 5.3);
       LEADERS.forEach((d) => {
         const back = turn > 0.5 && glance < 0.5;
-        d.p.set({ x: d.x + turn * 40, y: d.y, s: 0.9, flip: !back, armF: (d.i === 0 ? bump(t, 1.05, 1.9) * 70 : 0) + turn * 30, armB: turn * 30, head: back ? 10 : -glance * 8 + turn * 6, lean: back ? -4 : 0, blink: blinkAt(T, d.seed) });
+        d.p.set({ x: d.x + turn * TURN, y: d.y, s: 0.9, flip: !back, armF: (d.i === 0 ? bump(t, 1.05, 1.9) * 70 : 0) + turn * 30, armB: turn * 30, head: back ? 10 : -glance * 8 + turn * 6, lean: back ? -4 : 0, blink: blinkAt(T, d.seed) });
         fade(d.angry, es(t, 2.3, 2.5) * (1 - glance) + glance * 0.8);
         const sk = es(t, 5.25 + d.i * 0.05, 5.45 + d.i * 0.05, ease.back);
-        pose(stones[d.i], { x: d.x + turn * 40, y: d.y - 205, s: sk, o: sk > 0.02 ? 1 : 0 });
+        pose(stones[d.i], { x: d.x + turn * TURN, y: d.y - 205, s: sk, o: sk > 0.02 ? 1 : 0 });
       });
 
       jesus.set({ x: JX, y: FLOOR, s: 1.04, armF: 30 + wk * 50 + bump(t, 2.05, 2.9) * 60 + bump(t, 3.05, 3.9) * 50, armB: bump(t, 2.1, 2.9) * 40, head: 2, blink: blinkAt(T) });
       DIS.forEach((d) => d.p.set({ x: JX - 120 - d.i * 60, y: FLOOR - 12 + d.i * 8, s: 0.88, head: -bump(t, 2.1, 2.9) * 6, blink: blinkAt(T, d.seed) }));
 
-      S.cam.x = 20 + es(t, 2.0, 2.4) * 20 + es(t, 3.9, 4.3) * 20;
+      S.cam.x = 20 + es(t, 2.0, 2.4) * 20 + es(t, 3.9, 4.3) * 20 + (S.portrait ? 25 : 0);   // phone: a touch right, so the last leader clears the thread
       S.cam.y = -30 * pk - 20 * gk + 10;
       S.cam.z = 1.04 - es(t, 2.0, 2.4) * 0.04;
     };
