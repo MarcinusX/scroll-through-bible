@@ -27,7 +27,10 @@ export default {
 
     /* ---------- the tally stone, the stones, the empty bowl ---------- */
     const G = D.G;
-    const tally = G.add(`<g transform="translate(560 722)">${tallyStone(c, 190, 70)}</g>`);
+    const PH = S.portrait;
+    const TAX = PH ? 610 : 560;      // phone: the tally stone and its "40" come in from the left edge
+    const WX = PH ? 1010 : 1130;     // phone: the watcher on the dune stands clear of the progress thread
+    const tally = G.add(`<g transform="translate(${TAX} 722)">${tallyStone(c, 190, 70)}</g>`);
     const marks = Array.from(tally.querySelectorAll('.tally'));
     const forty = G.add(`<g opacity="0">${paperLabel('40', { size: 30 })}</g>`);
     const stonesL = S.layer({ par: 0.5, sh: 3 });
@@ -77,7 +80,7 @@ export default {
       const shown = Math.floor(seg(t, 2.05, 2.93) * 40 + 0.001);
       marks.forEach((m, i) => fade(m, i < shown ? 1 : 0));
       const f40 = es(t, 2.88, 3.0, ease.back);
-      pose(forty, { x: 560, y: 628 + Math.sin(time * 1.5) * 3, s: f40, r: Math.sin(time) * 3, o: f40 > 0 ? 1 - es(t, 3.3, 3.6) * 0.4 : 0 });
+      pose(forty, { x: TAX, y: 628 + Math.sin(time * 1.5) * 3, s: f40, r: Math.sin(time) * 3, o: f40 > 0 ? 1 - es(t, 3.3, 3.6) * 0.4 : 0 });
 
       /* ---------- v1: the Spirit leads Him out into the desert ---------- */
       const w = es(t, 1.02, 1.85);
@@ -96,8 +99,8 @@ export default {
       pose(glowEl, { x: dx, y: dy - 10, s: 1, o: t < 2.1 ? 0.8 : 0 });
       // the watcher on the dune
       const wk = es(t, 1.45, 1.7) * (1 - es(t, 1.95, 2.15));
-      watcher.set({ x: 1130, y: 582, s: 0.5, flip: true, o: wk, armF: 10, head: 4, blink: blinkAt(time, 5) });
-      pose(watcherAura, { x: 1130, y: 592, s: 0.5 * (1 + Math.sin(time * 2) * 0.03), o: wk * 0.9 });
+      watcher.set({ x: WX, y: 582, s: 0.5, flip: true, o: wk, armF: 10, head: 4, blink: blinkAt(time, 5) });
+      pose(watcherAura, { x: WX, y: 592, s: 0.5 * (1 + Math.sin(time * 2) * 0.03), o: wk * 0.9 });
 
       /* ---------- v2b: hunger ---------- */
       const bk = es(t, 3.15, 3.35);

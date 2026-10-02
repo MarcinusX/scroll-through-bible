@@ -22,7 +22,8 @@ export default {
     const c = S.c;
     sky(S, DAY);
     const hangL = S.layer({ par: 0.04, sh: 5 });
-    const sunEl = hanging(hangL, sun(c, 46), { x: 1230, y: 160, len: 800 });
+    const [SUNX, SUNY] = S.portrait ? [1000, 250] : [1230, 160];   // phone: the sun hangs inside the screen (not half behind the progress thread), below the cloud
+    const sunEl = hanging(hangL, sun(c, 46), { x: SUNX, y: SUNY, len: 800 });
     const cls = [[470, 160, 190], [1020, 120, 150]].map(([x, y, w], i) => ({ i, x, y, el: hanging(hangL, cloud(c, w), { x, y, len: 800 }) }));
 
     /* ---------- far: the Jordan valley (south) turning into the hills of Galilee (north) ---------- */
@@ -72,7 +73,7 @@ export default {
     const plateTag = fly.add(`<g opacity="0"><text x="0" y="0" text-anchor="middle" font-family="EB Garamond, Georgia, serif" font-size="24" font-style="italic" fill="${C.inkSoft}">${tr('Jan w więzieniu', 'John in prison')}</text></g>`);
 
     return (t, time) => {
-      swing(sunEl, 1230, 160, time, 1, 0.6);
+      swing(sunEl, SUNX, SUNY, time, 1, 0.6);
       cls.forEach((cl) => swing(cl.el, cl.x + Math.sin(time * 0.1 + cl.i) * 20, cl.y, time, 1.2, 0.6, cl.i));
 
       /* v12a: the runner with the news */

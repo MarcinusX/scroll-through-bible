@@ -27,6 +27,8 @@ export default {
   cam: { x: [-20, 20], y: [-20, 70], z: [1, 1.1] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;
+    const TXp = PH ? 955 : TX;          // phone: the tempter stands clear of the progress thread
     sky(S, GOLDEN);
     const hangL = S.layer({ par: 0.04, sh: 5 });
     const sunEl = hanging(hangL, sun(c, 46, { rays: C.sunDeep, disc: '#f0a868', inner: '#f5c08a' }), { x: 360, y: 200, len: 900 });
@@ -58,7 +60,7 @@ export default {
     const birdsL = S.layer({ par: 0.22, sh: 2 });
     const birds = [0, 1, 2].map((i) => ({ i, el: birdsL.add(bird(c, { color: C.birdLight, belly: C.cream })) }));
     const ghostsL = S.layer({ par: 0.3, sh: 3 });
-    const ghosts = [[470, 860, false, 0], [640, 900, true, 1], [330, 930, false, 2]].map(([x, y, flip, i]) => ({ x, y, flip, i, p: S.puppet(ghostsL.add(angel(c, { ...GHOST, pose: 'stand' }))) }));
+    const ghosts = (PH ? [[510, 860, false, 0], [680, 890, true, 1], [600, 960, false, 2]] : [[470, 860, false, 0], [640, 900, true, 1], [330, 930, false, 2]]).map(([x, y, flip, i]) => ({ x, y, flip, i, p: S.puppet(ghostsL.add(angel(c, { ...GHOST, pose: 'stand' }))) }));
     const bWall = S.layer({ par: 0.5, sh: 4 });
     bWall.add(royalPortico(c));
     bWall.add(pinnacleWall(c, { edge: 752, top: JY, wallTop: TY }));
@@ -96,7 +98,7 @@ export default {
       const recoil = es(t, 5.4, 5.85);
       const point = es(t, 2.05, 2.3) * (1 - es(t, 4.8, 5.1));
       const sweep = bump(t, 3.1, 3.9) + bump(t, 4.1, 4.9);
-      const tx = TX + recoil * 90;
+      const tx = TXp + recoil * (PH ? 60 : 90);
       tempter.set({ x: tx, y: TY, s: 1.02, flip: !(recoil > 0 && recoil < 1), o: arrive, walk: recoil > 0 && recoil < 1 ? tx * 0.05 : undefined, armF: 14 + point * 50 + sweep * 30, armB: 10 + sweep * 60, head: point * 12 - sweep * 6 + recoil * 10, lean: point * 8, blink: blinkAt(time, 5) });
       pose(aura, { x: tx - 6, y: TY + 10, s: 1.02 * (1 - recoil * 0.3) * (1 + Math.sin(time * 2) * 0.03), r: Math.sin(time * 0.7) * 4, o: arrive * 0.9 * (1 - recoil * 0.5) });
       const answer = es(t, 5.05, 5.3);

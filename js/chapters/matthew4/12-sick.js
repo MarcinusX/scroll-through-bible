@@ -26,6 +26,11 @@ export default {
   ],
   cam: { x: [-30, 30], y: [0, 60], z: [1, 1.1] },
   build(S) {
+    // phone: everybody closes in towards Jesus so that the sick on both sides stay inside the screen
+    const PH = S.portrait;
+    const X = PH
+      ? { g1: [525, 760], g2: [1088, 758], g3: [650, 812], backs: [390, 925], poss: 1045, boy: 925, boyUp: 890, dadK: 980, dadS: 965 }
+      : { g1: [400, 770], g2: [1215, 770], g3: [590, 808], backs: [330, 1020], poss: 1060, boy: 950, boyUp: 905, dadK: 1010, dadS: 985 };
     const L = lakeShore(S, { beachY: 690 });
     const c = L.c;
     const pc = makeCutter('mt4-sick-people');
@@ -33,7 +38,7 @@ export default {
     /* ---------- the ones who come along the shore (small, behind) ---------- */
     const backL = S.layer({ par: 0.45, sh: 4 });
     const line = (n, flip) => pose3(pc, Array.from({ length: n }, (_, i) => ({ x: i * 58 + pc.rr(-8, 8), y: pc.rr(-4, 4), s: 0.72, flip, head: pc.rr(-4, 6), o: folk4(pc, null) })));
-    const backs = [{ x0: -500, x1: 330, flip: false, m: line(5, false) }, { x0: 1900, x1: 1020, flip: true, m: line(5, true) }].map((b) => ({ ...b, sp: backL.sprite(b.m, b.x1, 700) }));
+    const backs = [{ x0: -500, x1: X.backs[0], flip: false, m: line(5, false) }, { x0: 1900, x1: X.backs[1], flip: true, m: line(5, true) }].map((b) => ({ ...b, sp: backL.sprite(b.m, b.x1, 700) }));
 
     /* ---------- the sick, as still groups (sick → healed) ---------- */
     const GL = S.layer({ par: 0.5, sh: 4 });
@@ -55,9 +60,9 @@ export default {
       ? pose3(pc, [{ x: -110, y: 0, s: 0.9, flip: false, head: -6, armF: 60, armB: 100, o: CAR[0] }, { x: 110, y: 4, s: 0.9, flip: true, head: -6, armF: 60, armB: 110, o: CAR[1] }, { x: 0, y: 10, s: 0.94, flip: false, head: -12, armF: 150, armB: 160, o: { ...PARA, holdB: `<g transform="translate(0 -10) rotate(80)">${rolledMat(c, 110)}</g>` } }])
       : pose3(pc, [{ x: -110, y: 0, s: 0.9, flip: false, armF: 70, armB: 50, o: CAR[0] }, { x: 110, y: 4, s: 0.9, flip: true, armF: 70, armB: 50, o: CAR[1] }]) + `<g transform="translate(0 -84)">${sickOnMat(c, PARA, 200)}</g>`);
     const groups = [
-      { k: 'g1', x: 400, y: 770, from: -300, a: 1.05, sick: GL.sprite(g1(false), 400, 770), well: GL.sprite(g1(true), 400, 770), h: 3.2 },
-      { k: 'g2', x: 1215, y: 770, from: 1900, a: 1.15, sick: GL.sprite(g2(false), 1215, 770), well: GL.sprite(g2(true), 1215, 770), h: 3.4 },
-      { k: 'g3', x: 590, y: 808, from: -300, a: 2.05, sick: GL.sprite(g3(false), 590, 808), well: GL.sprite(g3(true), 590, 808), h: 3.1 },
+      { k: 'g1', x: X.g1[0], y: X.g1[1], from: -300, a: 1.05, sick: GL.sprite(g1(false), ...X.g1), well: GL.sprite(g1(true), ...X.g1), h: 3.2 },
+      { k: 'g2', x: X.g2[0], y: X.g2[1], from: 1900, a: 1.15, sick: GL.sprite(g2(false), ...X.g2), well: GL.sprite(g2(true), ...X.g2), h: 3.4 },
+      { k: 'g3', x: X.g3[0], y: X.g3[1], from: -300, a: 2.05, sick: GL.sprite(g3(false), ...X.g3), well: GL.sprite(g3(true), ...X.g3), h: 3.1 },
     ];
 
     /* ---------- the possessed man, the boy who falls ---------- */
@@ -124,7 +129,7 @@ export default {
 
       /* v24c: the possessed, the epileptic */
       const pk = es(t, 2.1, 2.7, ease.out);
-      const px = lerp(1900, 1060, pk);
+      const px = lerp(1900, X.poss, pk);
       const free = es(t, 3.3, 3.37);
       const trem = (1 - free) * (time ? Math.sin(time * 14) * 2 : 0);
       poss.set({ x: px + trem, y: 780, s: 0.95, flip: true, o: pk > 0 ? 1 : 0, walk: pk > 0 && pk < 1 ? px * 0.05 : undefined, armF: 30 + free * 50, armB: 20 + free * 130, head: 12 - free * 22, blink: blinkAt(time, 8) });
@@ -136,14 +141,14 @@ export default {
       const bIn = es(t, 2.2, 2.35);
       const rise = es(t, 3.45, 3.52);
       const shake = (1 - rise) * (time ? Math.sin(time * 22) * 3 : 0);
-      boyDown.set({ x: 950 + shake, y: 768, s: 0.66, r: -84 + shake, o: bIn * (1 - rise), armF: 40 + shake * 6, armB: 30 - shake * 6, head: shake * 3 });
+      boyDown.set({ x: X.boy + shake, y: 768, s: 0.66, r: -84 + shake, o: bIn * (1 - rise), armF: 40 + shake * 6, armB: 30 - shake * 6, head: shake * 3 });
       const hop = bump(t, 3.55, 3.8);
-      boyUp.set({ x: 905, y: 774 - hop * 20, s: 0.66, o: rise, armF: 60 + hop * 60, armB: 80 + hop * 70, head: -8, blink: blinkAt(time, 6) });
-      dadK.set({ x: 1010, y: 772, s: 0.92, flip: true, o: bIn * (1 - rise), armF: 50, armB: 40, head: 14 });
-      dadS.set({ x: 985, y: 776, s: 0.94, flip: true, o: rise, armF: 70, armB: 120, head: -6, blink: blinkAt(time, 7) });
+      boyUp.set({ x: X.boyUp, y: 774 - hop * 20, s: 0.66, o: rise, armF: 60 + hop * 60, armB: 80 + hop * 70, head: -8, blink: blinkAt(time, 6) });
+      dadK.set({ x: X.dadK, y: 772, s: 0.92, flip: true, o: bIn * (1 - rise), armF: 50, armB: 40, head: 14 });
+      dadS.set({ x: X.dadS, y: 776, s: 0.94, flip: true, o: rise, armF: 70, armB: 120, head: -6, blink: blinkAt(time, 7) });
 
       /* v24d: bursts of healing */
-      [[590, 620, 3.1], [400, 580, 3.2], [1060, 600, 3.3], [1215, 580, 3.4], [930, 660, 3.45]].forEach(([x, y, a], i) => { const k = bump(t, a - 0.02, a + 0.45); pose(bursts[i], { x, y, s: 0.5 + k * 0.8, r: time * 20, o: k * 0.9 }); });
+      [[X.g3[0], 620, 3.1], [X.g1[0], 580, 3.2], [X.poss, 600, 3.3], [X.g2[0], 580, 3.4], [X.boy - 20, 660, 3.45]].forEach(([x, y, a], i) => { const k = bump(t, a - 0.02, a + 0.45); pose(bursts[i], { x, y, s: 0.5 + k * 0.8, r: time * 20, o: k * 0.9 }); });
 
       S.cam.z = 1.02 + es(t, 1.0, 1.4) * 0.03 + es(t, 2.0, 2.4) * 0.03;
       S.cam.y = 40 + es(t, 2.0, 2.4) * 20;

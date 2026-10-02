@@ -29,6 +29,9 @@ export default {
   cam: { x: [-300, 300], y: [0, 40], z: [1, 1.08] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;
+    // phone: the map, the Capernaum tag and Isaiah's medallion come inside the screen (the camera ends 290 right)
+    const MXp = PH ? 845 : MX, KAFX = PH ? 1190 : 1290, ISAX = PH ? 585 : 470, SCRX = PH ? 890 : 900;
     sky(S, DAY);
     const hangL = S.layer({ par: 0.04, sh: 5 });
     const sunEl = hanging(hangL, sun(c, 46), { x: 1250, y: 150, len: 800 });
@@ -57,7 +60,7 @@ export default {
     hs.x(c.poly(c.rect(DOOR + 58, 600, 34, 28)), C.soilDark);
     G.add(hs.out());
     const doorLeaf = G.add(`<g>${sheet().p(c.cut([[0, 0], [0, -80], ...c.arc(40, -80, 40, 34, PI, 1.5 * PI, 6), [40, -114], [40, 0]], 0.3, 5) + c.cut([[40, 0], [40, -114], ...c.arc(40, -80, 40, 34, 1.5 * PI, 2 * PI, 6), [80, -80], [80, 0]], 0.3, 5), C.wood).x(c.ribbon([[40, -110], [40, 0]], 2), shade(C.wood, -0.25)).out()}</g>`);
-    const tagKaf = hanging(G, nameTag(c, tr('Kafarnaum', 'Capernaum'), { size: 20 }), { x: 1290, y: 250, len: 700 });
+    const tagKaf = hanging(G, nameTag(c, tr('Kafarnaum', 'Capernaum'), { size: 20 }), { x: KAFX, y: 250, len: 700 });
     const jesus = S.puppet(S.layer({ par: P, sh: 5 }).add(person(c, { ...CAST.jesus })));
 
     /* ---------- the map ---------- */
@@ -82,7 +85,7 @@ export default {
     const isaPlate = hanging(IL, `${sheet().p(c.cut(c.circ(0, 0, 86, 40), 0.5, 5), C.haloRim).p(c.cut(c.circ(0, 0, 77, 40), 0.4, 5), '#e9dcc0').out()}<g clip-path="url(#${cid})"><g transform="translate(-4 ${-8 + 167 * 1.5}) scale(1.5)">${person(c, { ...ISAIAH })}</g></g><text x="0" y="112" text-anchor="middle" font-family="EB Garamond, Georgia, serif" font-size="24" font-style="italic" fill="${C.terracotta}">${tr('prorok Izajasz', 'Isaiah the prophet')}</text>`, { x: 0, y: 0, len: 900 });
     const scroll = addScroll(IL, c, [tr('Izajasz 8,23 – 9,1', 'Isaiah 9:1–2'), tr('«Ziemia Zabulona i ziemia Neftalego…»', '“The land of Zebulun and Naphtali…”')], { w: 440, h: 120, size: 24 });
 
-    const at = (el, [x, y], o, extra = {}) => pose(el, { x: MX + x * MS + mapDX, y: MY + y * MS + mapDY, s: MS * (extra.s || 1), o, ...(extra.sx ? { sx: extra.sx * MS } : {}) });
+    const at = (el, [x, y], o, extra = {}) => pose(el, { x: MXp + x * MS + mapDX, y: MY + y * MS + mapDY, s: MS * (extra.s || 1), o, ...(extra.sx ? { sx: extra.sx * MS } : {}) });
     let mapDX = 0, mapDY = 0;
 
     return (t, time) => {
@@ -97,13 +100,13 @@ export default {
       const open = es(t, 0.7, 0.85);
       pose(doorLeaf, { x: DOOR - 40, y: 712, sx: 1 - open * 0.8 });
       swing(tagNaz, 480, 290, time, 1, 0.7, 1);
-      swing(tagKaf, 1290, 250, time, 1, 0.7, 2);
+      swing(tagKaf, KAFX, 250, time, 1, 0.7, 2);
       S.cam.x = lerp(-260, 290, es(t, 0.0, 0.85, ease.sine));
 
       /* the map comes down */
       const down = es(t, 1.0, 1.3, ease.out);
       mapDX = 0; mapDY = lerp(-900, 0, down);
-      pose(mapEl, { x: MX, y: MY + mapDY, r: Math.sin(time * 0.6) * 0.4 * down });
+      pose(mapEl, { x: MXp, y: MY + mapDY, r: Math.sin(time * 0.6) * 0.4 * down });
       const on = down > 0.01 ? 1 : 0;
       at(walkP, [0, 0], on * es(t, 1.3, 1.5));
       const tk = es(t, 1.3, 1.7);
@@ -124,9 +127,9 @@ export default {
 
       /* v14: Isaiah */
       const ik = es(t, 2.02, 2.35, ease.out) * (1 - es(t, 3.0, 3.25, ease.in));
-      pose(isaPlate, { x: 470, y: lerp(-420, 250, ik), r: Math.sin(time * 0.8) * 1.5, o: ik > 0.01 ? 1 : 0 });
+      pose(isaPlate, { x: ISAX, y: lerp(-420, 250, ik), r: Math.sin(time * 0.8) * 1.5, o: ik > 0.01 ? 1 : 0 });
       const sk = es(t, 2.1, 2.4, ease.out) * (1 - es(t, 2.95, 3.2, ease.in));
-      setScroll(scroll, 900, lerp(-400, 130, sk) + Math.sin(time * 0.7) * 2, es(t, 2.3, 2.6), sk);
+      setScroll(scroll, SCRX, lerp(-400, 130, sk) + Math.sin(time * 0.7) * 2, es(t, 2.3, 2.6), sk);
 
       S.cam.y = 20;
       S.cam.z = 1.02 + es(t, 0.6, 0.95) * 0.03;

@@ -27,6 +27,8 @@ export default {
   cam: { x: [-30, 30], y: [0, 40], z: [1, 1.1] },
   build(S) {
     const c = S.c;
+    // phone: the three who are healed sit at the inner ends of the front benches, inside the screen
+    const [LX, BLX, MUX, KX] = S.portrait ? [478, 565, 1095, 1025] : [400, 540, 1080, 1170];
     const I = synagogueInterior(S);
     const L = S.layer({ par: I.P, sh: 4 });
     const [BACK, FRONT] = I.benchY;
@@ -110,27 +112,27 @@ export default {
       const H = [2.12, 2.3, 2.48];
       // the lame man
       const up = es(t, H[0], H[0] + 0.07);
-      lameSit.set({ x: 400, y: FRONT, s: 0.9, o: 1 - up, armF: 40, armB: 10, head: 6, blink: blinkAt(time, 2) });
+      lameSit.set({ x: LX, y: FRONT, s: 0.9, o: 1 - up, armF: 40, armB: 10, head: 6, blink: blinkAt(time, 2) });
       const lift = es(t, H[0] + 0.1, H[0] + 0.35);
-      lameUp.set({ x: 400, y: FRONT + 40, s: 0.92, o: up, armF: 30 + lift * 50, armB: 20 + lift * 140, head: -lift * 10, blink: blinkAt(time, 2) });
+      lameUp.set({ x: LX, y: FRONT + 40, s: 0.92, o: up, armF: 30 + lift * 50, armB: 20 + lift * 140, head: -lift * 10, blink: blinkAt(time, 2) });
       // the blind woman
       const see = es(t, H[1], H[1] + 0.07);
-      blindSit.set({ x: 540, y: FRONT, s: 0.88, o: 1 - see, armF: 30, head: 4 });
-      seeSit.set({ x: 540, y: FRONT, s: 0.88, o: see, armF: 30 + es(t, H[1] + 0.1, H[1] + 0.3) * 60, armB: es(t, H[1] + 0.1, H[1] + 0.3) * 100, head: -10 * see, blink: blinkAt(time, 3) });
-      const [bx, by] = headAt(540, FRONT, 0.88, false, 62);
+      blindSit.set({ x: BLX, y: FRONT, s: 0.88, o: 1 - see, armF: 30, head: 4 });
+      seeSit.set({ x: BLX, y: FRONT, s: 0.88, o: see, armF: 30 + es(t, H[1] + 0.1, H[1] + 0.3) * 60, armB: es(t, H[1] + 0.1, H[1] + 0.3) * 100, head: -10 * see, blink: blinkAt(time, 3) });
+      const [bx, by] = headAt(BLX, FRONT, 0.88, false, 62);
       const bf = seg(t, H[1], H[1] + 0.5);
       pose(band, { x: bx - 4 - bf * 20, y: by + bf * 90, r: bf * 120, s: 0.88, o: bf > 0 && bf < 1 ? 1 : 0 });
       const es_ = bump(t, H[1] + 0.05, H[1] + 0.6);
       pose(eyeSpark, { x: bx + 10, y: by - 16, s: es_ * 1.3, r: time * 60, o: es_ });
       // the mother and her feverish child
-      mum.set({ x: 1080, y: FRONT, s: 0.9, flip: true, armF: 40 + es(t, H[2], H[2] + 0.3) * 60, armB: 20 + es(t, H[2] + 0.1, H[2] + 0.35) * 110, head: 8 - es(t, H[2], H[2] + 0.3) * 16, blink: blinkAt(time, 4) });
+      mum.set({ x: MUX, y: FRONT, s: 0.9, flip: true, armF: 40 + es(t, H[2], H[2] + 0.3) * 60, armB: 20 + es(t, H[2] + 0.1, H[2] + 0.35) * 110, head: 8 - es(t, H[2], H[2] + 0.3) * 16, blink: blinkAt(time, 4) });
       const well = es(t, H[2], H[2] + 0.07);
-      kidSick.set({ x: 1170, y: FRONT + 4, s: 0.62, flip: true, o: 1 - well, head: 16, lean: 8 });
+      kidSick.set({ x: KX, y: FRONT + 4, s: 0.62, flip: true, o: 1 - well, head: 16, lean: 8 });
       const hop = bump(t, H[2] + 0.1, H[2] + 0.35) + bump(t, H[2] + 0.35, H[2] + 0.6);
-      kidUp.set({ x: 1170, y: FRONT + 50 - hop * 18, s: 0.64, flip: true, o: well, armF: 60 + hop * 60, armB: 60 + hop * 80, head: -8, blink: blinkAt(time, 5) });
-      const [kx, ky] = headAt(1170, FRONT + 4, 0.62, true, 62);
+      kidUp.set({ x: KX, y: FRONT + 50 - hop * 18, s: 0.64, flip: true, o: well, armF: 60 + hop * 60, armB: 60 + hop * 80, head: -8, blink: blinkAt(time, 5) });
+      const [kx, ky] = headAt(KX, FRONT + 4, 0.62, true, 62);
       fever.forEach((f, i) => { const k = time ? (time * 0.5 + i / 3) % 1 : (i + 1) / 3.5; pose(f, { x: kx - 12 + i * 12, y: ky - 16 - k * 30, s: 0.6 + k * 0.4, o: (1 - well) * (1 - k) * 0.8 }); });
-      [[400, FRONT - 130], [540, FRONT - 120], [1150, FRONT - 100]].forEach(([x, y], i) => { const k = bump(t, H[i] - 0.02, H[i] + 0.45); pose(bursts[i], { x, y, s: 0.5 + k * 0.8, r: time * 20, o: k * 0.9 }); });
+      [[LX, FRONT - 130], [BLX, FRONT - 120], [KX - 20, FRONT - 100]].forEach(([x, y], i) => { const k = bump(t, H[i] - 0.02, H[i] + 0.45); pose(bursts[i], { x, y, s: 0.5 + k * 0.8, r: time * 20, o: k * 0.9 }); });
 
       S.cam.z = 1.02 + es(t, 1.9, 2.3) * 0.04;
       S.cam.y = 20 + es(t, 1.9, 2.3) * 20;

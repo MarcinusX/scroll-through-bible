@@ -101,8 +101,9 @@ export default {
       const [hx, hy] = headAt(jx, SHORE, 1.05, true);
       voice(hx - 14, hy, call, time, { dir: -1, spread: 2.4 });
       const tk = es(t, 0.35, 0.65, ease.out) * (1 - es(t, 1.2, 1.45, ease.in));
-      pose(tagP, { x: 470, y: lerp(-400, 300, tk), r: Math.sin(time * 0.8 + 1) * 1.2, o: tk > 0.01 ? 1 : 0 });
-      pose(tagA, { x: 660, y: lerp(-400, 318, es(t, 0.42, 0.72, ease.out) * (1 - es(t, 1.2, 1.45, ease.in))), r: Math.sin(time * 0.8 + 2) * 1.2, o: tk > 0.01 ? 1 : 0 });
+      pose(tagP, { x: S.portrait ? 545 : 470,   // phone: inside the left edge
+        y: lerp(-400, 300, tk), r: Math.sin(time * 0.8 + 1) * 1.2, o: tk > 0.01 ? 1 : 0 });
+      pose(tagA, { x: S.portrait ? 690 : 660, y: lerp(-400, 318, es(t, 0.42, 0.72, ease.out) * (1 - es(t, 1.2, 1.45, ease.in))), r: Math.sin(time * 0.8 + 2) * 1.2, o: tk > 0.01 ? 1 : 0 });
 
       /* v18b: the cast */
       const out = es(t, 3.05, 3.12);

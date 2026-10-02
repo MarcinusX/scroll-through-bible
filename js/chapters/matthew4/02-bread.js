@@ -20,6 +20,7 @@ export default {
   ],
   cam: { x: [-30, 30], y: [0, 60], z: [1, 1.12] },
   build(S) {
+    const TXp = S.portrait ? 600 : TX;     // phone: the tempter and his shadow stand inside the screen
     const D = desertSet(S, { skyCols: DUSK, night: false, dusk: false, sunAt: [1250, 520] });
     const c = D.c;
 
@@ -58,7 +59,7 @@ export default {
       /* v3a: the tempter comes; Jesus rises to meet him */
       const tin = es(t, 0.05, 0.8);
       const back = es(t, 3.2, 3.8);
-      const tx = lerp(300, TX, tin) - back * 70;
+      const tx = lerp(300, TXp, tin) - back * (S.portrait ? 40 : 70);
       const point = es(t, 1.05, 1.3) * (1 - es(t, 2.3, 2.6));
       const cower = es(t, 3.3, 3.7);
       const ts = 1.06 - back * 0.1;

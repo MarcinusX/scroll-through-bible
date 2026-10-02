@@ -14,6 +14,8 @@ const TOP = 700;
 const JX = 870;
 const TX = 640;
 const PLATES = [[260, 340], [470, 262], [690, 206], [910, 206], [1130, 262], [1340, 340]];
+// phone: the six kingdoms hang in two rows of three in the tall sky, inside the screen
+const PLATES_P = [[605, 220], [605, 20], [800, -10], [995, 20], [995, 220], [800, 190]];
 
 export default {
   id: 'mt4-mountain',
@@ -49,7 +51,7 @@ export default {
 
     /* ---------- the kingdoms, on strings ---------- */
     const fly = S.layer({ par: 0.1, sh: 6 });
-    const plates = PLATES.map(([x, y], i) => ({ x, y, i, el: fly.add(`<g class="hang"><path d="M0 -1800V-78" stroke="rgba(74,54,34,.5)" stroke-width="1.2" fill="none"/><g class="obj">${kingdomPlate(c, KINGDOMS[i])}</g></g>`) }));
+    const plates = (S.portrait ? PLATES_P : PLATES).map(([x, y], i) => ({ x, y, i, el: fly.add(`<g class="hang"><path d="M0 -1800V-78" stroke="rgba(74,54,34,.5)" stroke-width="1.2" fill="none"/><g class="obj">${S.portrait ? `<g transform="scale(.88)">${kingdomPlate(c, KINGDOMS[i])}</g>` : kingdomPlate(c, KINGDOMS[i])}</g></g>`) }));
     const scroll = addScroll(fly, c, [tr('Napisane jest:', 'It is written:'), tr('«Panu, Bogu swemu, będziesz oddawał pokłon', '“You shall worship the Lord your God,'), tr('i Jemu samemu służyć będziesz»', 'and you shall serve him only.”')], { w: 520, h: 150, size: 24 });
 
     return (t, time) => {
@@ -80,7 +82,7 @@ export default {
       const demand = es(t, 3.05, 3.3) * (1 - es(t, 4.0, 4.15));
       const thrown = es(t, 4.05, 4.4, ease.out);
       const cower = es(t, 5.0, 5.4);
-      const tx = TX - thrown * 170;
+      const tx = TX - thrown * (S.portrait ? 110 : 170);
       const ts = 1.06 * (1 - thrown * 0.2);
       tempter.set({ x: tx, y: TOP + thrown * 6, s: ts, flip: false, o: arrive, armF: 14 + offer * 70 + demand * 34 - thrown * 10, armB: 10 + sweep * 140 + demand * 20, head: demand * 12 + thrown * 14 + cower * 10, lean: -thrown * 14 + demand * 8 + cower * 8, blink: blinkAt(time, 5) });
       pose(aura, { x: tx - 6, y: TOP + 10, s: ts * (1 + demand * 0.45 - thrown * 0.35) * (1 + Math.sin(time * 2) * 0.03), r: Math.sin(time * 0.7) * 4 + thrown * 20, o: arrive * 0.9 * (1 - thrown * 0.35) });

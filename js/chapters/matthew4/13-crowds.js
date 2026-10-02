@@ -58,14 +58,17 @@ export default {
     const mob = (n, s, flip, spread = 44) => pose3(pc, Array.from({ length: n }, (_, i) => ({ x: (i % Math.ceil(n / 2)) * spread + (i >= Math.ceil(n / 2) ? spread / 2 : 0) + pc.rr(-8, 8), y: (i >= Math.ceil(n / 2) ? 22 : 0) + pc.rr(-4, 4), s: s * pc.rr(0.92, 1.05), flip, head: pc.rr(-6, 4), armF: pc.rr(0, 30), o: folk4(pc, null) })));
     const farL = S.layer({ par: 0.16, sh: 3 });
     const nearL = S.layer({ par: P, sh: 4 });
+    // phone: the signs hang inside the screen in two tiers below the closing card, and the Decapolis crowd stops nearer Jesus
+    const PH = S.portrait;
+    const SG = PH ? [[525, 455], [1040, 455], [600, 360], [800, 350], [995, 365]] : [[450, 340], [1150, 340], [580, 225], [760, 170], [1040, 230]];
     const CROWDS = [
       // [layer, markup, from [x,y], to [x,y], beat window, sign text, sign x]
       { L: nearL, m: mob(10, 0.74, false, 52), from: [-700, 738], to: [250, 738], w: [0.05, 0.85], sign: tr('z Galilei', 'from Galilee'), sx: 450, sy: 340 },
-      { L: nearL, m: mob(10, 0.74, true, 52), from: [1800, 742], to: [1060, 742], w: [0.2, 0.95], sign: tr('z Dekapolu', 'from the Decapolis'), sx: 1150, sy: 340 },
+      { L: nearL, m: mob(10, 0.74, true, 52), from: [1800, 742], to: [PH ? 900 : 1060, 742], w: [0.2, 0.95], sign: tr('z Dekapolu', 'from the Decapolis'), sx: 1150, sy: 340 },
       { L: farL, m: mob(8, 0.5, false, 30), from: [260, 520], to: [520, 600], w: [1.05, 1.7], sign: tr('z Jerozolimy', 'from Jerusalem'), sx: 580, sy: 225 },
       { L: farL, m: mob(8, 0.52, true, 30), from: [880, 470], to: [760, 610], w: [1.15, 1.8], sign: tr('z Judei', 'from Judea'), sx: 760, sy: 170 },
       { L: farL, m: mob(8, 0.52, true, 30), from: [1300, 520], to: [1000, 612], w: [1.25, 1.9], sign: tr('z Zajordania', 'from beyond the Jordan'), sx: 1040, sy: 230 },
-    ].map((cr, i) => ({ ...cr, i, sp: cr.L.sprite(cr.m, cr.to[0], cr.to[1]), el: null }));
+    ].map((cr, i) => ({ ...cr, i, sx: SG[i][0], sy: SG[i][1], sp: cr.L.sprite(cr.m, cr.to[0], cr.to[1]), el: null }));
     const signL = S.layer({ par: 0.1, sh: 6 });
     CROWDS.forEach((cr) => { cr.el = signL.add(hungWord(c, cr.sign, { size: 22 })); });
 
