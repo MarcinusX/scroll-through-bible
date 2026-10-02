@@ -13,7 +13,7 @@ import { SKY, LOOK, oldTablet, goldAnswer, throne, globe, jerusalem, lightCrown,
 const G = 690;
 const THRONE = [800, 350];
 const EARTH = [800, 444];
-const CITY = [1050, 616];
+const CITY0 = [1050, 616];
 
 export default {
   id: 'mt5-oaths',
@@ -27,6 +27,9 @@ export default {
   cam: { x: [-20, 40], y: [-40, 30], z: [1, 1.08] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;
+    // phone: Jerusalem a little smaller and further in, the man off the left edge, the tag parked out of sight
+    const CITY = PH ? [940, 616] : CITY0;
     const sk = sky(S, ['#b9cbd4', '#e6e2cf', '#f3e4c6']);
     /* heaven: rays and the throne of light (behind the clouds) */
     const heavenL = S.layer({ par: 0.06, sh: 4 });
@@ -41,7 +44,7 @@ export default {
     const cityL = S.layer({ par: 0.2, sh: 3 });
     cityL.add(hillsWith(c, { y: 580, amps: [12, 5, 2], lens: [900, 300, 110], color: C.hillMid, trees: 12, treeColor: C.sage, treeH: 18, x0: -1400, x1: 3000 }).markup);
     const cityGlow = cityL.add(`<g><circle r="220" fill="url(#warm-glow)"/></g>`);
-    cityL.add(`<g transform="translate(${CITY[0]} ${CITY[1]})">${jerusalem(c, 0.34, { tglow: false })}</g>`);
+    cityL.add(`<g transform="translate(${CITY[0]} ${CITY[1]})">${jerusalem(c, PH ? 0.27 : 0.34, { tglow: false })}</g>`);
     const crown = cityL.add(`<g>${lightCrown(c, 30)}</g>`);
     const cTag = cityL.add(`<g>${tagWord(c, tr('Jerozolima', 'Jerusalem'), { size: 17 })}</g>`);
     const ground = S.layer({ par: 0.3, sh: 3 });
@@ -90,12 +93,13 @@ export default {
       const ck = es(t, 3.1, 3.4, ease.out);
       pose(crown, { x: CITY[0] + 40, y: lerp(-200, CITY[1] - 150, ck), s: 0.9 + Math.sin(T * 1.4) * 0.03, o: ck > 0.01 ? 1 : 0 });
       pose(cityGlow, { x: CITY[0] + 40, y: CITY[1] - 60, o: ck * 0.8 });
-      pose(cTag, { x: CITY[0] + 40, y: lerp(-300, CITY[1] + 40, es(t, 3.2, 3.45, ease.back)), r: Math.sin(T * 1.1) * 2 });
+      pose(cTag, { x: CITY[0] + 40, y: lerp(PH ? -600 : -300, CITY[1] - 214,   // above the crown, not behind the ground
+         es(t, 3.2, 3.45, ease.back)), r: Math.sin(T * 1.1) * 2 });
 
       /* the man: swears (v33); begins to swear by heaven / earth / Jerusalem and each time lowers his hand */
       const oath = es(t, 0.2, 0.4) * (1 - es(t, 0.9, 1.1));
       const byHeaven = bump(t, 1.12, 1.66), byEarth = bump(t, 2.1, 2.62), byCity = bump(t, 3.12, 3.62);
-      M.set({ x: 540, y: G + 6, s: 1.02, armB: oath * 150 + byHeaven * 140 + byCity * 30, armF: 20 + byEarth * 30 + byCity * 80, head: -oath * 6 - byHeaven * 18 + byEarth * 12 - byCity * 4 + es(t, 1.6, 1.8) * 6 * (1 - es(t, 2.0, 2.1)), blink: blinkAt(T, 1) });
+      M.set({ x: PH ? 576 : 540, y: G + 6, s: 1.02, armB: oath * 150 + byHeaven * 140 + byCity * 30, armF: 20 + byEarth * 30 + byCity * 80, head: -oath * 6 - byHeaven * 18 + byEarth * 12 - byCity * 4 + es(t, 1.6, 1.8) * 6 * (1 - es(t, 2.0, 2.1)), blink: blinkAt(T, 1) });
 
       S.cam.y = -30 * es(t, 1.2, 1.6) + es(t, 2.9, 3.4) * 20;
       S.cam.x = es(t, 2.9, 3.4) * 30;

@@ -12,6 +12,8 @@ import { SKY, LOOK, hand, heldLamp, smallFlame, bushelBasket, loaf, beam, folk, 
 const FLOOR = 640, X0 = 300, X1 = 900, ROOF = 300;
 const STAND = [650, FLOOR];
 
+const MOONX_P = 990;   // phone: the moon hangs inside the screen, not half behind the progress thread
+
 export default {
   id: 'mt5-lamp',
   enter: 'fly',
@@ -19,7 +21,7 @@ export default {
     { v: 15 },
     { v: 16 },
   ],
-  cam: { x: [-60, 80], y: [-30, 30], z: [1, 1.1] },
+  cam: { x: [-60, 170], y: [-30, 30], z: [1, 1.1] },
   build(S) {
     const c = S.c;
     const N = (m, k = 0.35) => tint(m, C.indigo, k);
@@ -27,7 +29,7 @@ export default {
     const starL = S.layer({ par: 0.02, sh: 1, flat: true });
     starL.add(stars(c, { x0: -900, x1: 2500, y0: -600, y1: 460, n: 150 }));
     const hangL = S.layer({ par: 0.05, sh: 4 });
-    const moonEl = hanging(hangL, `<circle r="90" fill="url(#halo-glow)" opacity=".4"/>${moon(c, 30)}`, { x: 1120, y: 150, len: 800 });
+    const moonEl = hanging(hangL, `<circle r="90" fill="url(#halo-glow)" opacity=".4"/>${moon(c, 30)}`, { x: S.portrait ? MOONX_P : 1120, y: 150, len: 800 });
 
     /* the village behind */
     const back = S.layer({ par: 0.12, sh: 2 });
@@ -91,13 +93,14 @@ export default {
 
     /* the street people */
     const SP = S.layer({ par: 0.34, sh: 5 });
+    const PH = S.portrait;
     const beggar = S.puppet(SP.add(person(c, { ...LOOK.poor, pose: 'sit' })));
-    const NB = [[1105, 0], [1165, 1]].map(([x, i]) => ({ x, i, seed: c.rr(0, 9), p: S.puppet(SP.add(person(c, folk(c, i === 0)))) }));
+    const NB = (PH ? [[1088, 0], [1136, 1]] : [[1105, 0], [1165, 1]]).map(([x, i]) => ({ x, i, seed: c.rr(0, 9), p: S.puppet(SP.add(person(c, folk(c, i === 0)))) }));
     const skyBeam = SP.add(`<g>${beam(c, 80, 300, 700)}</g>`);
 
     return (t, time) => {
       const T = time;
-      pose(moonEl, { x: 1120, y: 150, r: Math.sin(T * 0.6) });
+      pose(moonEl, { x: S.portrait ? MOONX_P : 1120, y: 150, r: Math.sin(T * 0.6) });
 
       /* v15 — lit; the basket comes; taken away; the lamp on the stand; the whole house lit */
       const lit = es(t, 0.06, 0.16);
@@ -118,7 +121,7 @@ export default {
       father.set({ x: fx, y: FLOOR + 8, s: 1, flip: true, walk: (t > 0.14 && t < 0.3) || (t > 0.42 && t < 0.56) ? fx * 0.05 : undefined, armF: 30 + cover * 40 + bump(t, 0.38, 0.52) * 40, armB: 10 + cover * 30, head: 8 * cover, blink: blinkAt(T, 2) });
       const reach = bump(t, 0.02, 0.2) + bump(t, 0.46, 0.66);
       mother.set({ x: 540, y: FLOOR + 8, s: 1, armF: 30 + reach * 50 + up * 40 * (1 - es(t, 0.64, 0.72)), armB: 10 + es(t, 0.66, 0.74) * 20, head: 10 - onStand * 18, blink: blinkAt(T, 3) });
-      child.set({ x: 440, y: FLOOR + 14, s: 0.62, armF: 20 + onStand * 40, head: 6 - onStand * 14, blink: blinkAt(T, 4) });
+      child.set({ x: PH ? 476 : 440, y: FLOOR + 14, s: 0.62, armF: 20 + onStand * 40, head: 6 - onStand * 14, blink: blinkAt(T, 4) });
 
       /* v16 — the door opens; the boy takes bread to the beggar; the neighbours praise the Father */
       const dk = es(t, 1.04, 1.2);
@@ -139,7 +142,7 @@ export default {
       pose(skyBeam, { x: 1080, y: -60, r: 6, sx: 0.6, o: es(t, 1.55, 1.75) * 0.45 });
       starL.fade(0.7 + es(t, 1.55, 1.75) * 0.3);
 
-      S.cam.x = lerp(-40, 60, es(t, 1.0, 1.5));
+      S.cam.x = PH ? lerp(0, 160, es(t, 1.0, 1.5)) : lerp(-40, 60, es(t, 1.0, 1.5));   // phone: the street and the neighbours come fully on screen
       S.cam.z = 1.04 + es(t, 0.4, 0.7) * 0.02;
     };
   },

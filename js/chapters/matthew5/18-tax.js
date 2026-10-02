@@ -9,7 +9,7 @@ import { seg, es, ease, bump } from '../../core/anim.js';
 import { SKY, LOOK, taxBooth, heart, question, tagWord, man, woman, folk, tr, PI, STRING } from './lib.js';
 
 const G = 690;
-const BOOTH = [520, G], SHRINE = [1090, G];
+const BOOTH0 = [520, G], SHRINE0 = [1090, G];
 
 function shrine(c) {
   const s = sheet();
@@ -39,9 +39,13 @@ export default {
     { v: 47, text: 'I jeśli pozdrawiacie tylko swych braci, cóż szczególnego czynicie?' },
     { v: 47, cont: true, text: 'Czyż i poganie tego nie czynią?' },
   ],
-  cam: { x: [-20, 20], y: [-30, 30], z: [1, 1.08] },
+  cam: { x: [-20, 110], y: [-30, 30], z: [1, 1.08] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;
+    // phone: the booth and the shrine closer in, the camera turns further to the Gentiles, tags parked higher
+    const BOOTH = PH ? [560, G] : BOOTH0, SHRINE = PH ? [1050, G] : SHRINE0;
+    const PARK = PH ? -600 : -300;
     sky(S, SKY.morning);
     const hangL = S.layer({ par: 0.04, sh: 4 });
     const sunEl = hanging(hangL, sun(c, 40), { x: 1250, y: 140, len: 800 });
@@ -100,7 +104,7 @@ export default {
       tax.set({ x: BOOTH[0] - 40, y: G - 6, s: 0.96, armF: 20 + th * 70 + wave * 20, armB: th * 30 + wave * 100, head: -wave * 4, blink: blinkAt(T, 3) });
       tax2.set({ x: lerp(BOOTH[0] + 150, BOOTH[0] + 40, es(t, 0.9, 1.1)), y: G - 2, s: 0.96, flip: true, o: seg(t, 0.86, 0.92), walk: t > 0.9 && t < 1.1 ? t * 30 : undefined, armF: 20 + th * 70, armB: th * 20 + wave * 90, blink: blinkAt(T, 4) });
       heartArc(hearts[2], BOOTH[0] - 20, BOOTH[0] + 30, es(t, 1.2, 1.44, (x) => x), 40);
-      pose(tagT, { x: BOOTH[0], y: lerp(-300, 290, es(t, 1.3, 1.5, ease.back)), r: Math.sin(T * 1.1) * 2 });
+      pose(tagT, { x: BOOTH[0], y: lerp(PARK, 290, es(t, 1.3, 1.5, ease.back)), r: Math.sin(T * 1.1) * 2 });
 
       /* v47a — greeting only his brothers, turning his back on the stranger */
       const bk = es(t, 2.04, 2.3, (x) => x);
@@ -120,10 +124,10 @@ export default {
       const pg = es(t, 3.06, 3.3);
       pag.forEach((p, i) => p.set({ x: SHRINE[0] - 50 + i * 96 - (i ? pg * 26 : -pg * 18), y: G + 10, s: 0.98, flip: i === 1, armB: pg * 120, armF: 20 + pg * 50, head: -pg * 4, blink: blinkAt(T, 8 + i) }));
       heartArc(hearts[3], SHRINE[0] - 30, SHRINE[0] + 30, es(t, 3.2, 3.44, (x) => x), 40);
-      pose(tagP, { x: SHRINE[0], y: lerp(-300, 290, es(t, 3.2, 3.42, ease.back)), r: Math.sin(T * 1.2) * 2 });
+      pose(tagP, { x: SHRINE[0], y: lerp(PARK, 290, es(t, 3.2, 3.42, ease.back)), r: Math.sin(T * 1.2) * 2 });
       B.set({ x: bx, y: G + 12, s: 1.0, flip: true, armF: 20 + hug * 70, armB: hug * 40, o: 1 - aside, blink: blinkAt(T, 2) });
 
-      S.cam.x = -es(t, 0.9, 1.2) * 20 * (1 - es(t, 1.9, 2.1)) + es(t, 2.9, 3.2) * 20;
+      S.cam.x = -es(t, 0.9, 1.2) * 20 * (1 - es(t, 1.9, 2.1)) + es(t, 2.9, 3.2) * (PH ? 110 : 20);
       S.cam.z = 1.02;
       S.cam.y = -12;
     };

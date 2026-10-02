@@ -66,11 +66,15 @@ export default {
 
     /* the crowds: standing groups on the shore, then seated on the slopes */
     const crowdL = S.layer({ par: P, sh: 4 });
+    const PH = S.portrait;
+    // phone: the groups gather and sit closer in, so the crowds He sees stay on the narrow screen
+    const inX = (x, k) => (PH ? 800 + (x - 800) * k : x);
     const G = [
       { a: [250, 716], b: [470, 612], s0: 0.62 }, { a: [370, 752], b: [560, 664], s0: 0.64 }, { a: [120, 740], b: [360, 690], s0: 0.64 },
       { a: [1190, 712], b: [1020, 606], s0: 0.62 }, { a: [1310, 748], b: [1110, 660], s0: 0.64 }, { a: [1450, 716], b: [1220, 700], s0: 0.62 },
       { a: [-40, 720], b: [640, 700], s0: 0.62 }, { a: [1080, 756], b: [930, 690], s0: 0.64 },
-    ].map((g, i) => {
+    ].map((g0, i) => {
+      const g = { ...g0, a: [inX(g0.a[0], 0.6), g0.a[1]], b: [inX(g0.b[0], 0.6), g0.b[1]] };
       const flip = g.b[0] > 800;
       const mem = Array.from({ length: 3 + (i % 2) }, (_, k) => ({ x: (k - 1.2) * 34 + c.rr(-6, 6), y: c.rr(-5, 5), s: c.rr(0.92, 1.05), flip, o: folk(c, (k + i) % 3 !== 0) }));
       const st = crowdL.add(`<g>${group(c, mem)}</g>`);
@@ -113,7 +117,7 @@ export default {
       jS.set({ x: TOP[0], y: TOP[1] + 2, s: 0.46, o: sitK, armF: 20 + teachK * 60, armB: 10 + teachK * 30, head: -2, blink: blinkAt(T, 1) });
       dis.forEach((d) => {
         // they come along the shore after Him (v1a) and wait at the foot; then climb after Him (v1b)
-        const wx = 330 + d.i * 34, wy = 760 - d.i * 6;
+        const wx = (PH ? 480 : 330) + d.i * 34, wy = 760 - d.i * 6;   // phone: they wait at the foot of the path, on screen
         const arrive = es(t, 0.75 + d.i * 0.05, 1.3 + d.i * 0.04, (x) => x);
         const u = es(t, 1.9 + d.i * 0.06, 2.52 + d.i * 0.03, (x) => x);
         const DP = [[wx, wy], ...PATH.slice(1)];

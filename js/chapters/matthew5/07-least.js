@@ -56,9 +56,10 @@ export default {
 
     /* the two teachers and their children */
     const P = S.layer({ par: 0.34, sh: 5 });
+    const PH = S.portrait;
     const KIDS = [
       { x: 620, flip: true, o: { ...LOOK.child }, g: 0 }, { x: 680, flip: true, o: { ...LOOK.child, robe: C.roseRobe, hairStyle: 'veil', veil: C.blushVeil }, g: 0 },
-      { x: 960, flip: false, o: { ...LOOK.child, robe: C.wheatRobe, hair: C.hair2 }, g: 1 }, { x: 900, flip: false, o: { ...LOOK.child, robe: C.sageRobe, hairStyle: 'veil', veil: C.skyVeil }, g: 1 },
+      { x: PH ? 945 : 960, flip: false, o: { ...LOOK.child, robe: C.wheatRobe, hair: C.hair2 }, g: 1 }, { x: PH ? 892 : 900, flip: false, o: { ...LOOK.child, robe: C.sageRobe, hairStyle: 'veil', veil: C.skyVeil }, g: 1 },
     ].map((k, i) => ({ ...k, i, seed: c.rr(0, 9), p: S.puppet(P.add(person(c, { ...k.o, pose: 'sit' }))) }));
     const A = S.puppet(P.add(person(c, { robe: C.stone2, mantle: C.plumRobe, hair: C.hair3, hairStyle: 'wrap', veil: C.linen2, beard: 'full', skin: C.skin3, belt: C.leather })));
     const B = S.puppet(P.add(person(c, { robe: C.linen2, mantle: C.tealRobe, hair: C.greyHair, hairStyle: 'wrap', veil: C.linen, beard: 'full', beardColor: C.greyHair, skin: C.skin2, belt: C.leather })));
@@ -103,7 +104,7 @@ export default {
       /* v19b — the right teacher does it and teaches it, and grows great */
       const does = es(t, 1.06, 1.3), grow = es(t, 1.44, 1.68);
       const sB = lerp(1.0, 1.3, grow);
-      const bx = 1060 + away * 300;
+      const bx = (PH ? 1012 : 1060) + away * 300;   // phone: the great teacher grows clear of the progress thread
       const aB = 40 + does * 40;
       B.set({ x: bx, y: G + 8, s: sB, flip: true, armF: aB, armB: 20 + grow * 110, head: 4 - grow * 8, blink: blinkAt(T, 2) });
       const [bhx, bhy] = hand(bx, G + 8, sB, true, 40);

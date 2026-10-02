@@ -39,6 +39,9 @@ export default {
   cam: { x: [-30, 60], y: [-40, 30], z: [1, 1.1] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;
+    // phone: Gehenna and the Council's plate come in from the right edge, out of the progress thread
+    const FX = PH ? 1050 : 1130, CX = PH ? 830 : 1000;
     const sk = sky(S, SKY.gold);
     /* the valley of Gehenna far off to the right, beyond a hill */
     const farL = S.layer({ par: 0.08, sh: 2 });
@@ -130,16 +133,16 @@ export default {
       pose(raka, { x: AX + 40, y: G - 176, s: es(t, 2.08, 2.26, ease.back), o: es(t, 2.08, 2.12) * (1 - es(t, 2.95, 3.05)) });
       const ck = es(t, 2.2, 2.46, ease.out) * (1 - es(t, 3.0, 3.25));
       const cy = lerp(-400, 250, ck) - es(t, 3.0, 3.25) * 300;
-      pose(council, { x: 1000, y: cy, r: Math.sin(T * 0.7) * 1, o: ck > 0.01 ? 1 : 0 });
-      pose(cTag, { x: 1000, y: cy + 122, o: ck > 0.01 ? 1 : 0 });
+      pose(council, { x: CX, y: cy, r: Math.sin(T * 0.7) * 1, o: ck > 0.01 ? 1 : 0 });
+      pose(cTag, { x: CX, y: cy + 122, o: ck > 0.01 ? 1 : 0 });
 
       /* v22c — "You fool!" — the fire of Gehenna */
       pose(fool, { x: AX + 40, y: G - 176, s: es(t, 3.08, 3.26, ease.back), o: es(t, 3.08, 3.12) });
       const fk = es(t, 3.2, 3.5);
-      flames.forEach((f) => pose(f.el, { x: 1130 + f.x, y: 500 + f.y, sy: 0.25 + fk * 0.9 + Math.sin(T * 6 + f.i * 1.7) * 0.12 * fk, sx: 1 + Math.sin(T * 5 + f.i) * 0.08, o: 0.4 + fk * 0.6 }));
-      pose(smoke, { x: 1130, y: 420 - fk * 30, s: 0.5 + fk * 0.6, o: fk * 0.8 });
-      pose(pit, { x: 1130, y: 500, o: 0.3 + fk * 0.7 });
-      pose(gTag, { x: 1130, y: lerp(-500, 380, es(t, 3.3, 3.55, ease.back)), r: Math.sin(T * 1.1) * 2 });
+      flames.forEach((f) => pose(f.el, { x: FX + f.x, y: 500 + f.y, sy: 0.25 + fk * 0.9 + Math.sin(T * 6 + f.i * 1.7) * 0.12 * fk, sx: 1 + Math.sin(T * 5 + f.i) * 0.08, o: 0.4 + fk * 0.6 }));
+      pose(smoke, { x: FX, y: 420 - fk * 30, s: 0.5 + fk * 0.6, o: fk * 0.8 });
+      pose(pit, { x: FX, y: 500, o: 0.3 + fk * 0.7 });
+      pose(gTag, { x: FX, y: lerp(PH ? -700 : -500, 380, es(t, 3.3, 3.55, ease.back)), r: Math.sin(T * 1.1) * 2 });
 
       S.cam.x = es(t, 3.0, 3.5) * 40;
       S.cam.z = 1.02 + es(t, 1.2, 1.6) * 0.03;

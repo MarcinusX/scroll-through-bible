@@ -19,7 +19,7 @@ export default {
     { v: 24, text: 'zostaw tam dar swój przez ołtarzem, a najpierw idź i pojednaj się z bratem swoim!' },
     { v: 24, cont: true, text: 'Potem przyjdź i dar swój ofiaruj!' },
   ],
-  cam: { x: [-160, 120], y: [-30, 30], z: [1, 1.08] },
+  cam: { x: [-160, 270], y: [-30, 30], z: [1, 1.08] },
   build(S) {
     const c = S.c;
     const sk = sky(S, SKY.gold);
@@ -104,7 +104,7 @@ export default {
       pose(lambEl, { x: lx, y: G + 10, s: 0.9, r: walking && t < 0.5 ? Math.sin(T * 8) * 2 : 0 });
       const th = es(t, 0.46, 0.62, ease.back) * (1 - es(t, 1.08, 1.2));
       pose(tb, { x: mx - 10, y: G - 190, s: th, o: th > 0.01 ? 1 : 0 });
-      priest.set({ x: 1150, y: G + 6, s: 1.0, flip: true, armF: 20 + offer * 50, armB: offer * 130, head: -offer * 10 + stopK * 4, blink: blinkAt(T, 2) });
+      priest.set({ x: S.portrait ? 1142 : 1150, y: G + 6, s: 1.0, flip: true, armF: 20 + offer * 50, armB: offer * 130, head: -offer * 10 + stopK * 4, blink: blinkAt(T, 2) });
 
       /* v24a — goes back and makes peace with his brother (they embrace); v24b — they come back together */
       const turn = es(t, 1.4, 1.5);
@@ -113,7 +113,8 @@ export default {
       const hk = es(t, 1.56, 1.7, ease.back) * (1 - es(t, 2.0, 2.15));
       pose(ht, { x: 536, y: G - 230, s: hk, o: hk > 0.01 ? 1 : 0 });
 
-      S.cam.x = lerp(20, -130, es(t, 1.1, 1.5)) + es(t, 2.0, 2.45) * 150;
+      // phone: the camera stands further right at the altar, so the altar and the priest are on screen
+      S.cam.x = S.portrait ? lerp(260, -130, es(t, 1.1, 1.5)) + es(t, 2.0, 2.45) * 390 : lerp(20, -130, es(t, 1.1, 1.5)) + es(t, 2.0, 2.45) * 150;
       S.cam.z = 1.02 + es(t, 0.3, 0.6) * 0.03 - es(t, 1.1, 1.4) * 0.03;
     };
   },

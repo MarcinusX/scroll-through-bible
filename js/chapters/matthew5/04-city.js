@@ -7,7 +7,7 @@ import { house, stars } from '../../assets/nature.js';
 import { seg, es, ease, bump } from '../../core/anim.js';
 import { mountSet, SKY, JX, JY, JS, teach, hand, smallFlame, tint, DY, PI } from './lib.js';
 
-const CITY = [1030, 360];
+const CITY0 = [1030, 360];
 
 export default {
   id: 'mt5-city',
@@ -18,6 +18,7 @@ export default {
   cam: { x: [-10, 60], y: [-40, 30], z: [1, 1.12] },
   build(S) {
     const c = S.c;
+    const CITY = S.portrait ? [880, 360] : CITY0;   // phone: the city on its hill stands inside the screen, clear of the progress thread
     const set = mountSet(S, { skyCols: SKY.dusk, sky2Cols: SKY.night, tintCol: C.indigo, tintK: 0.1, sunXY: [1300, 470], starsN: 110 });
     const starL = set.starL;
 

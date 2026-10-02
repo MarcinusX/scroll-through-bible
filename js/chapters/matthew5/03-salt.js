@@ -103,7 +103,7 @@ export default {
       const pk = es(t, 2.12, 2.4, ease.out);
       const px = PLATE[0], py = lerp(-500, PLATE[1], pk);
       const on = pk > 0.01 ? 1 : 0;
-      const PS = 1.16;
+      const PS = S.portrait ? 1.0 : 1.16;   // phone: the street plate a little smaller, its frame clear of the progress thread
       pose(plateEl, { x: px, y: py, s: PS, o: on });
       const L = (lx, ly) => [px + lx * PS, py + ly * PS];
       // the woman at her door tips out the salt

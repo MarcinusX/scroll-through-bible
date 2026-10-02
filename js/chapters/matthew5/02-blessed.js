@@ -17,7 +17,8 @@ import {
 } from './lib.js';
 
 const R = 120, SS = 0.4, BIG = [800, 360];
-const SLOT = Array.from({ length: 8 }, (_, i) => { const a = ((196 + (i * 148) / 7) * PI) / 180; return [800 + Math.cos(a) * 312, 615 + Math.sin(a) * 420]; });
+// phone: a narrower arch (rx 260), a touch left, so the outer medallions stay clear of the frame and the progress thread
+const slots = (cx, rx) => Array.from({ length: 8 }, (_, i) => { const a = ((196 + (i * 148) / 7) * PI) / 180; return [cx + Math.cos(a) * rx, 615 + Math.sin(a) * 420]; });
 
 /* place a part / a puppet inside medallion m (local coords around its centre) */
 const put = (m, el, lx, ly, o = {}) => pose(el, { ...o, x: m.x + lx * m.s, y: m.y + ly * m.s, s: (o.s ?? 1) * m.s, o: (o.o ?? 1) * m.on });
@@ -226,11 +227,12 @@ export default {
   cam: { x: [-20, 20], y: [-40, 30], z: [1, 1.08] },
   build(S) {
     const c = S.c;
+    const SLOT = S.portrait ? slots(790, 260) : slots(800, 312);
     const set = mountSet(S, { skyCols: SKY.day, sunXY: [1330, 110] });
 
     /* the shadows who revile (v11), behind the four */
     const shL = S.layer({ par: 0.48, sh: 4 });
-    const SH = [[446, -1], [530, -1], [1070, 1], [1154, 1]].map(([x, d], i) => ({ x, d, i, p: S.puppet(shL.add(shadowPerson(c, { hairStyle: i % 2 ? 'wrap' : 'short', veil: '#000', beard: 'short', mantle: i % 2 ? '#000' : null }, mix(C.storm2, C.ink, 0.35)))) }));
+    const SH = (S.portrait ? [[482, -1], [556, -1], [1044, 1], [1108, 1]] : [[446, -1], [530, -1], [1070, 1], [1154, 1]]).map(([x, d], i) => ({ x, d, i, p: S.puppet(shL.add(shadowPerson(c, { hairStyle: i % 2 ? 'wrap' : 'short', veil: '#000', beard: 'short', mantle: i % 2 ? '#000' : null }, mix(C.storm2, C.ink, 0.35)))) }));
 
     /* the medallions */
     const ML = S.layer({ par: 0.3, sh: 6 });

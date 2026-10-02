@@ -12,7 +12,7 @@ import { SKY, LOOK, oldTablet, goldAnswer, heart, paperEye, paperHand, stumbleCa
 
 const GATE = [800, 440];
 const PATHG = [[620, 700], [700, 650], [640, 600], [720, 540], [770, 484], [800, 446]];
-const WELL = [1010, 670];
+const WELL0 = [1010, 670];
 const CARD = [990, 170];
 
 function along(pts, u) {
@@ -40,6 +40,10 @@ export default {
   cam: { x: [-30, 40], y: [-30, 30], z: [1, 1.08] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;
+    // phone: the well (and the woman beside it) and the valley of fire move in from the right edge
+    const WELL = PH ? [925, 670] : WELL0;
+    const FX = PH ? 1045 : 1150, FY = PH ? 506 : 540, FS = PH ? 0.75 : 1;
     sky(S, ['#c7d9d8', '#ebe3cd', '#f4e1c4']);
     const hangL = S.layer({ par: 0.04, sh: 4 });
     const cl = hanging(hangL, cloud(c, 170), { x: 1180, y: 150, len: 800 });
@@ -48,7 +52,7 @@ export default {
     /* the valley of fire far off on the right */
     const fireL = S.layer({ par: 0.14, sh: 3 });
     const F = firePit(c, 200);
-    fireL.add(`<g transform="translate(1150 540)">${F.pit}</g>`);
+    fireL.add(PH ? `<g transform="translate(${FX} ${FY}) scale(${FS})">${F.pit}</g>` : `<g transform="translate(1150 540)">${F.pit}</g>`);
     const flames = F.flames.map((f, i) => ({ ...f, i, el: fireL.add(`<g>${f.m}</g>`) }));
     const fTag = fireL.add(`<g>${tagWord(c, tr('Gehenna', 'Gehenna'), { size: 16 })}</g>`);
 
@@ -146,10 +150,10 @@ export default {
       T2.set({ x: x2, y: y2, s: s2, flip: d2 < 0, walk: (come > 0 && come < 1) || (w2 > 0 && w2 < 1) ? x2 * 0.06 + w2 * 30 : undefined, head: bump(t, 4.3, 4.9) * 10, armF: 10, o: es(t, 3.9, 4.0) * (1 - es(t, 5.72, 5.88)), blink: blinkAt(T, 2) });
       const gateOn = Math.max(bump(t, 3.6, 4.1), bump(t, 5.6, 6.1));
       pose(gateGlow, { x: GATE[0], y: GATE[1], s: 1 + gateOn * 0.2, o: 0.6 + gateOn * 0.4 });
-      pose(lTag, { x: GATE[0], y: lerp(-400, 300, es(t, 3.1, 3.35, ease.back)), r: Math.sin(T * 1.1) * 2 });
+      pose(lTag, { x: GATE[0], y: lerp(PH ? -600 : -400, 300, es(t, 3.1, 3.35, ease.back)), r: Math.sin(T * 1.1) * 2 });
       const flare = Math.max(bump(t, 3.3, 3.9), bump(t, 5.3, 5.9)) * 0.6 + es(t, 2.9, 3.2) * 0.5;
-      flames.forEach((f) => pose(f.el, { x: 1150 + f.x, y: 540 + f.y, sy: 0.4 + flare * 0.7 + Math.sin(T * 6 + f.i * 1.7) * 0.1, sx: 1 + Math.sin(T * 5 + f.i) * 0.08, o: 0.3 + es(t, 2.9, 3.2) * 0.6 }));
-      pose(fTag, { x: 1150, y: lerp(-400, 440, es(t, 3.3, 3.55, ease.back)), r: Math.sin(T * 1.2) * 2 });
+      flames.forEach((f) => pose(f.el, { x: FX + f.x * FS, y: FY + f.y * FS, sy: (0.4 + flare * 0.7 + Math.sin(T * 6 + f.i * 1.7) * 0.1) * FS, sx: (1 + Math.sin(T * 5 + f.i) * 0.08) * FS, o: 0.3 + es(t, 2.9, 3.2) * 0.6 }));
+      pose(fTag, { x: FX, y: lerp(PH ? -600 : -400, 440, es(t, 3.3, 3.55, ease.back)), r: Math.sin(T * 1.2) * 2 });
 
       S.cam.x = es(t, 1.1, 1.4) * 20 * (1 - es(t, 2, 2.3)) + es(t, 3, 3.6) * 10;
       S.cam.z = 1.02 + es(t, 1.1, 1.4) * 0.03 * (1 - es(t, 2, 2.3));
