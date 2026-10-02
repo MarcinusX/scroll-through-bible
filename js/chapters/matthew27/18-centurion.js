@@ -27,7 +27,7 @@ export default {
     far.add(`<g transform="translate(1250 526)">${farCity(c, 0.7)}</g>`);
     const hillL = S.layer({ par: 0.18, sh: 3, pad: 10 });
     hillL.add(`<g transform="translate(${CX} ${CT})">${skullHill(c, { w: 1100, h: 300, col: mix(C.rock2, C.duskViolet, 0.3) })}</g>`);
-    hillL.add(`<g transform="translate(${CX - 250} ${CT + 36}) rotate(0)">${crossSil(c, { h: 270 })}</g><g transform="translate(${CX + 250} ${CT + 36})">${crossSil(c, { h: 270 })}</g>`);
+    hillL.add(`<g transform="translate(${CX - (S.portrait ? 180 : 250)} ${CT + 36}) rotate(0)">${crossSil(c, { h: 270 })}</g><g transform="translate(${CX + 250} ${CT + 36})">${crossSil(c, { h: 270 })}</g>`);
     const cross = hillL.add(`<g transform="translate(${CX} ${CT})">${crossSil(c, { h: CH, halo: true })}</g>`);
     const hd = cross.querySelector('.hd'), hl = cross.querySelector('.hl');
     const u = CH / 240;
@@ -37,7 +37,7 @@ export default {
     ground.add(sheet().p(c.ridge(gfn, -900, 2500, 1700, 12, 1), mix(C.sand2, C.rock2, 0.45)).out());
     ground.add(rock(c, 420, 660, 90, 30, C.rock2) + bush(c, 1300, 650, 90, mix(C.olive, C.rock3, 0.3)) + grass(c, { x0: -600, x1: 2300, y: 650, fn: gfn, n: 24, h: 12, color: mix(C.olive, C.rock3, 0.3) }));
     const P = S.layer({ par: 0.55, sh: 5, pad: 10 });
-    const men = [[470, 712, 1, false], [600, 700, 2, false], [1240, 716, 3, true]].map(([x, y, i, f], j) => ({ x, y, j, f, st: S.puppet(P.add(soldier(c, i, { spear: 30 }))), kn: S.puppet(P.add(soldier(c, i, { pose: 'kneel', spear: false }))) }));
+    const men = [[470, 712, 1, false], [S.portrait ? 650 : 600, 700, 2, false], [1240, 716, 3, true]].map(([x, y, i, f], j) => ({ x, y, j, f, st: S.puppet(P.add(soldier(c, i, { spear: 30 }))), kn: S.puppet(P.add(soldier(c, i, { pose: 'kneel', spear: false }))) }));
     const faceLight = P.add(`<g><circle r="120" fill="url(#warm-glow)"/></g>`);
     const cHelm = S.puppet(P.add(centurion(c, { holdF: `<path d="${c.ribbon([[0, -20], [0, 150]], 3.4)}" fill="${C.wood2}"/>` })));
     const cBare = S.puppet(P.add(centurion(c, { helmet: false, holdF: `<g transform="translate(4 6) rotate(90) scale(.9)">${romanHelmet(c, { transverse: true })}</g>` })));

@@ -9,7 +9,7 @@ import { seg, es, ease, bump } from '../../core/anim.js';
 import { kf, moving, hand, headAt, bubble, cry, hanging, swing, squareSet, squareCast, PLAT, basin, ewer, drop, SKIES, tr, PI } from './lib.js';
 
 const JX = 780;
-const PX = 950;
+const PILX = 950;
 
 export default {
   id: 'mt27-wash',
@@ -27,6 +27,9 @@ export default {
     const H = squareSet(S, { pal: SKIES.grey });
     const K = squareCast(S, H);
     const { CELL } = H;
+    const PH = S.portrait;
+    const PX = PH ? 925 : PILX;   // phone: Pilate, the basin and the servant a step in from the thread
+    const inX = (x, dir) => (PH ? 800 + (x - 800) * 0.4 + dir * 80 : x);   // phone: the crowd's cries drawn together inside the frame (origin = tail tip, the bubble runs away from dir)
     const P = H.charL;
     const bas = P.add(`<g>${basin(c, 70, 64)}</g>`);
     const servant = S.puppet(P.add(person(c, { robe: C.linen2, mantle: null, hair: C.hair3, hairStyle: 'short', beard: 'none', skin: C.skin4, belt: C.terracotta, holdF: `<g transform="translate(0 4) rotate(-100)">${ewer(c, 46)}</g>` })));
@@ -82,13 +85,13 @@ export default {
         const k = seg(t, 0.08 + cr.i * 0.1, 0.9 + cr.i * 0.08);
         const m = K.people[cr.m % K.people.length];
         const [hx, hy] = headAt(m.x, m.y, m.s, m.flip);
-        pose(cr.el, { x: hx + Math.sin(k * 3 + cr.seed) * 20, y: hy - 20 - k * 150, s: 0.6 + 0.4 * ease.out(Math.min(1, k * 3)), o: k > 0 && k < 1 ? Math.min(1, k * 6) * (1 - Math.max(0, k - 0.6) / 0.4) : 0 });
+        pose(cr.el, { x: inX(hx, cr.i % 2 ? 1 : -1) + Math.sin(k * 3 + cr.seed) * 20, y: hy - 20 - k * 150, s: 0.6 + 0.4 * ease.out(Math.min(1, k * 3)), o: k > 0 && k < 1 ? Math.min(1, k * 6) * (1 - Math.max(0, k - 0.6) / 0.4) : 0 });
       });
       oath.forEach((cr) => {
         const m = K.people[cr.m % K.people.length];
         const k = es(t, 3.08 + cr.i * 0.08, 3.3 + cr.i * 0.08, ease.back) * (1 - es(t, 3.95, 4.05));
         const [hx, hy] = headAt(m.x, m.y, m.s, m.flip);
-        pose(cr.el, { x: hx + (cr.i % 2 ? -8 : 8), y: hy - 20 - (cr.i % 2) * 30, s: k * 0.95, r: cr.i % 2 ? 4 : -4, o: k > 0.02 ? 1 : 0 });
+        pose(cr.el, { x: inX(hx, cr.i % 2 ? 1 : -1) + (cr.i % 2 ? -8 : 8), y: hy - 20 - (cr.i % 2) * 30, s: k * 0.95, r: cr.i % 2 ? 4 : -4, o: k > 0.02 ? 1 : 0 });
       });
 
       /* Pilate: the brow; the washing; palms to the crowd */
@@ -98,11 +101,12 @@ export default {
       const away = es(t, 5.3, 5.5);
       const faceR = wash > 0.5;
       K.pil.set({ x: PX + away * 40, y: PLAT + 2, s: 0.88, flip: !faceR, armF: 20 + brow * 20 + wash * 50 + palms * 80, armB: 10 + brow * 150 + wash * 45 + palms * 80, head: brow * 10 + wash * 14 - palms * 4 + away * 10, lean: brow * 3, blink: blinkAt(T, 2) });
-      const sK = [[0.9, [1250, PLAT]], [1.15, [1085, PLAT]], [2.0, [1085, PLAT]], [2.4, [1260, PLAT]]];
+      const SX = PH ? 1055 : 1085;
+      const sK = [[0.9, [1250, PLAT]], [1.15, [SX, PLAT]], [2.0, [SX, PLAT]], [2.4, [1260, PLAT]]];
       const [sx, sy] = kf(t, sK);
       const tilt = es(t, 1.15, 1.3) * (1 - es(t, 1.9, 2.0));
       servant.set({ x: sx, y: sy, s: 0.82, flip: t < 2.05, walk: moving(t, sK) ? sx * 0.07 : undefined, armF: 30 + tilt * 50, armB: 10, head: tilt * 10, o: es(t, 0.9, 1.0) * (1 - es(t, 2.3, 2.4)), blink: blinkAt(T, 6) });
-      pose(bas, { x: 1016, y: PLAT, o: es(t, 1.0, 1.1) * (1 - es(t, 2.3, 2.4)) });
+      pose(bas, { x: PH ? 990 : 1016, y: PLAT, o: es(t, 1.0, 1.1) * (1 - es(t, 2.3, 2.4)) });
       const [ex, ey] = hand(sx, sy, 0.82, true, 30 + tilt * 50);
       drops.forEach((d) => {
         const k = ((T * 1.6 + d.i / drops.length) % 1);
@@ -122,13 +126,13 @@ export default {
       /* the soldiers and Jesus */
       const take = es(t, 5.05, 5.35);
       K.sols[0].set({ x: 620 + take * 100, y: PLAT, s: 0.84, flip: false, walk: take > 0 && take < 1 ? take * 12 : undefined, armF: 34 + take * 20, armB: 8 + take * 50, blink: blinkAt(T, 4) });
-      K.sols[1].set({ x: 1150 - take * 260, y: PLAT, s: 0.84, flip: true, walk: take > 0 && take < 1 ? take * 12 : undefined, armF: 34, armB: 8 + take * 60, blink: blinkAt(T, 5) });
+      K.sols[1].set({ x: PH ? 1230 - take * 340 : 1150 - take * 260, y: PLAT, s: 0.84, flip: true, walk: take > 0 && take < 1 ? take * 12 : undefined, armF: 34, armB: 8 + take * 60, blink: blinkAt(T, 5) });
       K.jes.set({ x: JX, y: PLAT, s: 0.88, flip: false, armF: 30, armB: 28, head: 4 + es(t, 3.0, 3.3) * 4 + take * 4, blink: blinkAt(T) });
 
       /* v26a — Barabbas goes free */
       const opened = es(t, 4.1, 4.35);
       pose(H.door, { x: CELL.x - CELL.w / 2, y: 0, sx: 1 - opened * 0.8, ox: CELL.x - CELL.w / 2 });
-      const bK = [[4.3, [CELL.x + 2, CELL.y - 2]], [4.85, [CELL.x + 40, CELL.y + 90]]];
+      const bK = [[4.3, [CELL.x + 2, CELL.y - 2]], [4.85, [CELL.x + (PH ? -40 : 40), CELL.y + 90]]];
       const [bx, by] = kf(t, bK);
       const free = es(t, 4.75, 4.95);
       K.bar.set({ x: bx, y: by, s: 0.66 + es(t, 4.3, 4.85) * 0.2, flip: false, walk: moving(t, bK) ? bx * 0.08 : undefined, armF: 24 + free * 90, armB: 14 + free * 120, head: -free * 10, blink: blinkAt(T, 8) });

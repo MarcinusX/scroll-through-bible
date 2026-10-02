@@ -7,7 +7,7 @@ import { band, rock, bush, grass, stars } from '../../assets/nature.js';
 import { seg, es } from '../../core/anim.js';
 import { bareTree, shadowPerson, farCity, JUDAS, MT } from './lib.js';
 
-const TX = 1060;
+const TREE = 1060;
 const SIL = '#2c2533';
 
 export default {
@@ -18,12 +18,13 @@ export default {
   cam: { x: [0, 60], y: [-30, 20], z: [1, 1.08] },
   build(S) {
     const c = S.c;
+    const TX = S.portrait ? 900 : TREE;   // phone: the tree on the crest nearer the middle, clear of the thread
     const sk = sky(S, MT.dusk);
     const starL = S.layer({ par: 0.02, sh: 1, flat: true });
     starL.add(stars(c, { x0: -400, x1: 2000, y0: -300, y1: 300, n: 30 }));
     const far = S.layer({ par: 0.08, sh: 2 });
     far.add(band(c, { y: 540, amps: [12, 6, 2], lens: [900, 300, 110], color: mix(C.duskViolet, C.storm, 0.35) }).markup);
-    far.add(`<g transform="translate(360 546)">${farCity(c, 0.55, { col: mix(C.stone, C.duskViolet, 0.5) })}</g>`);
+    far.add(`<g transform="translate(${S.portrait ? 520 : 360} 546)">${farCity(c, 0.55, { col: mix(C.stone, C.duskViolet, 0.5) })}</g>`);
     // the ridge (its skyline is the path)
     const ridge = (x) => (x < TX ? lerp(600, 470, Math.pow(Math.max(0, (x - 520) / (TX - 520)), 0.8)) : lerp(470, 600, Math.min(1, (x - TX) / 460)));
     const walkL = S.layer({ par: 0.16, sh: 2 });
@@ -49,7 +50,7 @@ export default {
       starL.fade(dk * 0.5);
       /* the small figure climbs the skyline, passes the tree and goes down behind the hill */
       const u = seg(t, 0.02, 0.72);
-      const x = lerp(640, 1240, u);
+      const x = S.portrait ? lerp(560, 1080, u) : lerp(640, 1240, u);
       const y = x <= TX ? ridge(x) + 3 : ridge(x) + 3 + (x - TX) * 0.75;
       judas.set({ x, y, s: 0.36, flip: false, walk: u > 0 && u < 1 ? x * 0.12 : undefined, amt: 0.6, head: 8, lean: x < TX ? -4 : 4, o: u < 1 ? 1 : 0 });
       /* a bird flies off the tree */

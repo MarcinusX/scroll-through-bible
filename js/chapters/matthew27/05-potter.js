@@ -82,7 +82,7 @@ export default {
       smoke.forEach((sm, i) => { const k = ((T * 0.22 + i / 3) % 1); pose(sm, { x: 1410 + Math.sin(k * 6 + i) * 8, y: GY - 140 - k * 110, s: 0.6 + k * 0.7, o: Math.sin(k * PI) * 0.55 }); });
 
       /* v7 — they buy the field from the potter; graves for strangers */
-      const lK = [[-0.3, [-60, GY]], [0.35, [700, GY]]];
+      const lK = [[-0.3, [-60, GY]], [0.35, [S.portrait ? 750 : 700, GY]]];   // phone: a step further in, clear of the signboard
       const [lx, ly] = kf(t, lK);
       const give = es(t, 0.3, 0.45) * (1 - es(t, 0.6, 0.7));
       lords.forEach((m, j) => {
@@ -102,7 +102,7 @@ export default {
       pose(bag, { x: lerp(ax, bx, pass), y: lerp(ay, by, pass), o: t > 0.44 && t < 0.95 ? 1 : 0 });
       graves.forEach((g) => { const k = es(t, 0.55 + g.i * 0.05, 0.75 + g.i * 0.05, ease.back); pose(g.el, { x: g.x, y: g.y, sx: 1, sy: k, o: k > 0.02 ? 1 : 0 }); });
       const sk2 = es(t, 0.6, 0.85) * (1 - es(t, 1.0, 1.2));
-      swing(strangers, 620, 560 - (1 - sk2) * 800, T, 1.2, 0.8, 2);
+      swing(strangers, 620, 560 - (1 - sk2) * (S.portrait ? 1300 : 800), T, 1.2, 0.8, 2);   // phone: parked out of sight
 
       /* v8 — the Field of Blood, to this day */
       const up = es(t, 1.05, 1.35, ease.back);

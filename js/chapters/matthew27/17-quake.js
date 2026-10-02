@@ -19,23 +19,24 @@ export default {
     { v: 52 },
     { v: 53 },
   ],
-  cam: { x: [-20, 310], y: [-40, 60], z: [1, 1.14] },
+  cam: { x: [-20, 350], y: [-40, 60], z: [1, 1.14] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;   // phone: the rock face ends sooner and the city gate stands right after it, so the walk into the city is seen
     const sk = sky(S, SKIES.grey);
     const far = S.layer({ par: 0.08, sh: 2, pad: 12 });
     far.add(band(c, { y: 470, amps: [14, 7, 3], lens: [900, 320, 120], color: mix(C.hillFar, C.stone2, 0.4) }).markup);
     const cityL = S.layer({ par: 0.2, sh: 4, pad: 12 });
-    cityL.add(cityWall(c, 1180, 2400, 470, 640, { towers: [{ x: 1230, w: 60, h: 40 }, { x: 1560 }], gate: { x: 1360, w: 76, h: 120 } }));
+    cityL.add(PH ? cityWall(c, 1060, 2400, 470, 640, { towers: [{ x: 1095, w: 60, h: 40 }, { x: 1400 }], gate: { x: 1160, w: 76, h: 120 } }) : cityWall(c, 1180, 2400, 470, 640, { towers: [{ x: 1230, w: 60, h: 40 }, { x: 1560 }], gate: { x: 1360, w: 76, h: 120 } }));
     /* the rock face with its tombs */
     const rockL = S.layer({ par: 0.26, sh: 4, pad: 14 });
     const R = sheet();
-    R.p(c.cut([[-900, 700], [-900, 520], [200, 470], [380, 440], [560, 420], [760, 400], [960, 420], [1120, 470], [1200, 540], [1230, 700]], 2.4, 12), mix(C.rock, C.rock2, 0.4));
+    R.p(c.cut([[-900, 700], [-900, 520], [200, 470], [380, 440], [560, 420], [760, 400], [960, 420], ...(PH ? [[1050, 470], [1090, 540], [1110, 700]] : [[1120, 470], [1200, 540], [1230, 700]])], 2.4, 12), mix(C.rock, C.rock2, 0.4));
     R.x(c.cut(c.blob(640, 480, 90, 26, 9, 0.3), 1, 6) + c.cut(c.blob(900, 470, 70, 20, 9, 0.3), 1, 6) + c.cut(c.blob(300, 520, 80, 22, 9, 0.3), 1, 6), shade(C.rock, 0.18), 'opacity=".55"');
     rockL.add(R.out());
     const tombs = TOMBS.map(([x, y]) => ({ x, y, el: rockL.add(`<g transform="translate(${x} ${y})">${rockTomb(c, { stone: false })}</g>`) }));
     tombs.forEach((tb) => { tb.glow = tb.el.querySelector('.glow'); });
-    const cracks = [[430, 440, 110], [690, 410, 150], [900, 425, 120], [1090, 470, 90]].map(([x, y, h]) => {
+    const cracks = [[430, 440, 110], [690, 410, 150], [900, 425, 120], [PH ? 1030 : 1090, PH ? 455 : 470, 90]].map(([x, y, h]) => {
       const pts = [[0, 0]];
       for (let i = 1; i <= 6; i++) pts.push([c.rr(-12, 12), (h * i) / 6]);
       return { x, y, el: rockL.add(`<g>${sheet().p(c.ribbon(pts, (u) => 5 - u * 4), mix(C.soilRich, C.storm2, 0.3)).out()}</g>`) };
@@ -85,20 +86,20 @@ export default {
       figs.forEach((f) => {
         const k = es(t, 1.4 + f.i * 0.08, 1.7 + f.i * 0.08);
         const u = Math.max(0, Math.min(1, (out - f.i * 0.12) / 0.8));
-        const x = lerp(f.x, 1250 + f.i * 50, ease.io(u)), y = lerp(f.y, GY - 4, Math.min(1, u * 2.5));
+        const x = lerp(f.x, PH ? 1140 + f.i * 22 : 1250 + f.i * 50, ease.io(u)), y = lerp(f.y, GY - 4, Math.min(1, u * 2.5));
         pose(f.el, { x, y: y - Math.abs(Math.sin(u * 14)) * 3, s: lerp(0.34, 0.6, Math.min(1, u * 2.5)), o: k });
       });
       extra.forEach((f) => {
         const k = seg(t, 2.45 + f.i * 0.12, 2.95 + f.i * 0.1);
-        pose(f.el, { x: lerp(700 - f.i * 90, 1180 - f.i * 60, k), y: GY - 2, s: 0.6, o: es(t, 2.3, 2.45) * (k < 1 ? 1 : 1) });
+        pose(f.el, { x: lerp(700 - f.i * 90, (PH ? 1110 : 1180) - f.i * 60, k), y: GY - 2, s: 0.6, o: es(t, 2.3, 2.45) * (k < 1 ? 1 : 1) });
       });
       /* v53 — after His resurrection: into the holy city */
       const ak = es(t, 2.05, 2.35) * (1 - es(t, 3.3, 3.6));
       swing(after, 900, 170 - (1 - ak) * 800, T, 1, 0.8, 1);
       const see = es(t, 2.6, 2.85);
-      townP.forEach((m) => m.p.set({ x: 1330 + m.i * 70, y: GY - 16, s: 0.66, flip: true, armF: 20 + see * 70, armB: 10 + see * (m.i ? 120 : 40), head: -see * 6, o: dawn, blink: blinkAt(T, m.i + 3) }));
+      townP.forEach((m) => m.p.set({ x: (PH ? 1120 : 1330) + m.i * (PH ? 55 : 70), y: GY - 16, s: 0.66, flip: true, armF: 20 + see * 70, armB: 10 + see * (m.i ? 120 : 40), head: -see * 6, o: dawn, blink: blinkAt(T, m.i + 3) }));
 
-      S.cam.x = es(t, 2.15, 2.8) * (S.portrait ? 300 : 160);
+      S.cam.x = es(t, 2.15, 2.8) * (PH ? 340 : 160);
       S.cam.y = 10 + es(t, 0.9, 1.3) * 20 * (1 - es(t, 2.1, 2.5));
       S.cam.z = 1.02 + es(t, 0.9, 1.3) * 0.08 * (1 - es(t, 2.1, 2.5));
     };

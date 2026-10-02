@@ -27,10 +27,11 @@ export default {
     const c = S.c;
     const G = golgothaSet(S, { dial: true });
     const P = G.P;
+    const PH = S.portrait;   // phone: the three passers-by stop inside the frame
     const walkers = [
-      { o: man(c, { robe: C.dustyBlue, belt: C.leather }), K: [[-0.4, [150, RY]], [0.5, [490, RY]]], seed: 1 },
-      { o: woman(c, { robe: C.roseRobe }), K: [[-0.2, [1300, RY + 6]], [0.7, [650, RY + 6]]], seed: 2 },
-      { o: man(c, { robe: C.ochreRobe, hairStyle: 'bald', beard: 'full' }), K: [[0, [20, RY + 10]], [0.8, [370, RY + 10]]], seed: 3 },
+      { o: man(c, { robe: C.dustyBlue, belt: C.leather }), K: [[-0.4, [150, RY]], [0.5, [PH ? 575 : 490, RY]]], seed: 1 },
+      { o: woman(c, { robe: C.roseRobe }), K: [[-0.2, [1300, RY + 6]], [0.7, [PH ? 665 : 650, RY + 6]]], seed: 2 },
+      { o: man(c, { robe: C.ochreRobe, hairStyle: 'bald', beard: 'full' }), K: [[0, [20, RY + 10]], [0.8, [PH ? 495 : 370, RY + 10]]], seed: 3 },
     ].map((w, i) => ({ ...w, i, p: S.puppet(P.add(person(c, w.o))) }));
     const lords = [
       { el: priest(c, 0), x: 940, f: false },
@@ -38,7 +39,7 @@ export default {
       { el: priest(c, 2), x: 1084, f: true },
       { el: elder(c, 3), x: 1156, f: true },
       { el: scribe(c, 2), x: 1226, f: true },
-    ].map((l, i) => ({ ...l, x: l.x - (S.portrait ? 150 : 0), i, p: S.puppet(P.add(l.el)), seed: c.rr(0, 9) }));
+    ].map((l, i) => ({ ...l, x: l.x - (S.portrait ? 190 : 0), i, p: S.puppet(P.add(l.el)), seed: c.rr(0, 9) }));
     const fx = G.fx;
     const T_ = (pl, en, side = 1) => fx.add(`<g>${taunt(c, tr(pl, en), { size: 20, side })}</g>`);
     const taunts = [

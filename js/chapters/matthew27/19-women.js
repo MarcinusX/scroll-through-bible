@@ -29,7 +29,7 @@ export default {
 
     /* many other women, further off */
     const P = G.P;
-    const others = [[520, 650, false], [585, 640, false], [455, 646, false], [1010, 648, true], [1075, 640, true], [950, 652, true], [650, 655, false]].map(([x, y, f], i) => ({ x, y, f, i, p: S.puppet(P.add(person(c, woman(c)))), seed: c.rr(0, 9) }));
+    const others = (S.portrait ? [[555, 650, false], [615, 640, false], [500, 646, false], [990, 648, true], [1045, 640, true], [935, 652, true], [680, 655, false]] : [[520, 650, false], [585, 640, false], [455, 646, false], [1010, 648, true], [1075, 640, true], [950, 652, true], [650, 655, false]]).map(([x, y, f], i) => ({ x, y, f, i, p: S.puppet(P.add(person(c, woman(c)))), seed: c.rr(0, 9) }));
     /* the three named women */
     const W3 = [
       { o: LOOK.maryJ, x: S.portrait ? 530 : 390, f: false, name: tr(['Maria, matka', 'Jakuba i Józefa'], ['Mary, mother of', 'James and Joses']) },

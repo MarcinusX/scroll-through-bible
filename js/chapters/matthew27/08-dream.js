@@ -60,7 +60,7 @@ export default {
       K.people.forEach((m) => m.p.set({ x: m.x, y: m.y, s: m.s, flip: m.flip, armF: 20, armB: 10, head: -6, blink: blinkAt(T, m.seed) }));
       K.pr.forEach((m, i) => m.p.set({ x: m.x, y: m.y, s: 0.96, flip: false, armF: 30, armB: 12, head: -4, blink: blinkAt(T, 7 + i) }));
       K.sols[0].set({ x: 600, y: PLAT, s: 0.84, flip: false, armF: 34, armB: 8, blink: blinkAt(T, 4) });
-      K.sols[1].set({ x: 1190, y: PLAT, s: 0.84, flip: true, armF: 34, armB: 8, blink: blinkAt(T, 5) });
+      K.sols[1].set({ x: S.portrait ? 1055 : 1190, y: PLAT, s: 0.84, flip: true, armF: 34, armB: 8, blink: blinkAt(T, 5) });
 
       /* v19a — on the judgment seat; the maid brings the tablet */
       const mK = [[0.0, [1330, PLAT]], [0.45, [1085, PLAT]], [0.8, [1085, PLAT]], [1.2, [1150, PLAT]]];

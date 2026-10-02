@@ -37,7 +37,7 @@ export default {
     const pil = S.puppet(P.add(pilate(c, { pose: 'sit' })));
     const lords = [
       { el: priest(c, 0), x: 820 }, { el: person(c, pharisee(c, 0)), x: 740 }, { el: priest(c, 1), x: 660 }, { el: person(c, pharisee(c, 1)), x: 580 },
-    ].map((l, i) => ({ ...l, i, p: S.puppet(P.add(l.el)), seed: c.rr(0, 9) }));
+    ].map((l, i) => ({ ...l, x: l.x + (S.portrait ? 40 : 0), i, p: S.puppet(P.add(l.el)), seed: c.rr(0, 9) }));   // phone: the last of them not sliced at the left
     const sols = [0, 1].map((i) => ({ i, p: S.puppet(P.add(soldier(c, i + 2))) }));
     const fx = H.fxL;
     // the Sabbath plate: two lit candles
@@ -72,8 +72,8 @@ export default {
         const speak = l.i === 0 ? bump(t, 1.05, 1.9) + bump(t, 2.05, 2.9) + bump(t, 3.05, 3.9) : l.i === 1 ? bump(t, 1.1, 1.9) + bump(t, 2.1, 2.9) : 0;
         l.p.set({ x, y, s: 0.98, flip: false, walk: moving(t, K) ? x * 0.05 : undefined, armF: 20 + speak * 60 + bump(t, 0.6, 1.0) * 20, armB: 10 + speak * 30, head: -4 - bump(t, 0.6, 1.0) * -10, lean: bump(t, 0.6, 1.0) * 10, blink: blinkAt(T, l.seed) });
       });
-      const [h0x, h0y] = headAt(820, GY, 0.98, false);
-      const [h1x, h1y] = headAt(740, GY + 6, 0.98, false);
+      const [h0x, h0y] = headAt(lords[0].x, GY, 0.98, false);
+      const [h1x, h1y] = headAt(lords[1].x, GY + 6, 0.98, false);
       /* v63 — "after three days I will rise" */
       const k3 = es(t, 1.1, 1.35, ease.back) * (1 - es(t, 1.9, 2.05));
       pose(three, { x: h0x + 20, y: h0y - 30, s: k3, o: k3 > 0.02 ? 1 : 0 });

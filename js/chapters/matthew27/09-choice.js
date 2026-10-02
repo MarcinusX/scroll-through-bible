@@ -26,6 +26,7 @@ export default {
     const H = squareSet(S);
     const K = squareCast(S, H);
     const fx = H.fxL;
+    const inX = (x, dir) => (S.portrait ? 800 + (x - 800) * 0.4 + dir * 80 : x);   // phone: the crowd's cries drawn together inside the frame (origin = tail tip, the bubble runs away from dir)
     const whispers = Array.from({ length: 7 }, (_, i) => ({ i, el: fx.add(`<g>${strip(c, tr('Barabasz', 'Barabbas'), { size: 13, fill: C.stone })}</g>`), to: [240, 360, 520, 680, 900, 1120, 1320][i], ty: c.rr(480, 560) }));
     const jesusM = `<circle r="34" fill="url(#halo-glow)"/>${medallion(c, CAST.jesus, { r: 22, rim: C.haloRim })}`;
     const which = fx.add(`<g>${speech(c, `<g transform="translate(-44 0)">${medallion(c, LOOK.barabbas, { r: 22, rim: C.rock3 })}</g><g transform="scale(.9)">${GLYPH.q(c)}</g><g transform="translate(44 0)">${jesusM}</g>`, { w: 150, h: 70, flip: true })}</g>`);
@@ -45,7 +46,7 @@ export default {
       K.rebels.forEach((r) => r.set({ o: 0 }));
       K.bar.set({ x: H.CELL.x + 2, y: H.CELL.y - 2, s: 0.66, flip: true, armF: 24 + bump(t, 2.05, 2.9) * 50, armB: 14 + bump(t, 2.05, 2.9) * 60, head: -bump(t, 2.05, 2.9) * 8, blink: blinkAt(T, 8) });
       K.sols[0].set({ x: 640, y: PLAT, s: 0.84, flip: false, armF: 34, armB: 8, blink: blinkAt(T, 4) });
-      K.sols[1].set({ x: 1110, y: PLAT, s: 0.84, flip: true, armF: 34, armB: 8, blink: blinkAt(T, 5) });
+      K.sols[1].set({ x: S.portrait ? 1060 : 1110, y: PLAT, s: 0.84, flip: true, armF: 34, armB: 8, blink: blinkAt(T, 5) });
       K.jes.set({ x: JX, y: PLAT, s: 0.88, flip: false, armF: 30, armB: 28, head: 4 + es(t, 4.0, 4.3) * 4, blink: blinkAt(T) });
       const a1 = es(t, 1.05, 1.3) * (1 - es(t, 1.9, 2.1));
       const a2 = es(t, 3.05, 3.3) * (1 - es(t, 3.9, 4.1));
@@ -79,14 +80,14 @@ export default {
         const m = K.people[cr.m % K.people.length];
         const k = es(t, 2.08 + cr.i * 0.06, 2.3 + cr.i * 0.06, ease.back) * (1 - es(t, 2.95, 3.05));
         const [hx, hy] = headAt(m.x, m.y, m.s, m.flip);
-        pose(cr.el, { x: hx + (cr.i % 2 ? -8 : 8), y: hy - 20, s: k * 0.95, r: cr.i % 2 ? 4 : -4, o: k > 0.02 ? 1 : 0 });
+        pose(cr.el, { x: inX(hx, cr.i % 2 ? 1 : -1) + (cr.i % 2 ? -8 : 8), y: hy - 20, s: k * 0.95, r: cr.i % 2 ? 4 : -4, o: k > 0.02 ? 1 : 0 });
       });
       cries.forEach((cr) => {
         const second = cr.i >= 5;
         const k = second ? seg(t, 6.1 + (cr.i - 5) * 0.08, 6.9 + (cr.i - 5) * 0.08) : seg(t, 4.1 + cr.i * 0.1, 5.0 + cr.i * 0.1);
         const m = K.people[cr.m % K.people.length];
         const [hx, hy] = headAt(m.x, m.y, m.s, m.flip);
-        pose(cr.el, { x: hx + Math.sin(k * 3 + cr.seed) * 20, y: hy - 20 - k * (second ? 200 : 150), s: (0.6 + 0.5 * ease.out(Math.min(1, k * 3))) * (second ? 1.1 : 0.9), r: Math.sin(cr.seed) * 6, o: k > 0 && k < 1 ? Math.min(1, k * 6) * (1 - Math.max(0, k - 0.6) / 0.4) : 0 });
+        pose(cr.el, { x: inX(hx, cr.i % 2 ? 1 : -1) + Math.sin(k * 3 + cr.seed) * 20, y: hy - 20 - k * (second ? 200 : 150), s: (0.6 + 0.5 * ease.out(Math.min(1, k * 3))) * (second ? 1.1 : 0.9), r: Math.sin(cr.seed) * 6, o: k > 0 && k < 1 ? Math.min(1, k * 6) * (1 - Math.max(0, k - 0.6) / 0.4) : 0 });
       });
 
       /* Pilate's questions */

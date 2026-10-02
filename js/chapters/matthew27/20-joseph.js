@@ -39,7 +39,7 @@ export default {
       H.lamps.forEach((l, i) => lampSet(l, es(t, 0.2 + i * 0.15, 0.4 + i * 0.15), T));
 
       /* v38a — Joseph comes in, looking back over his shoulder */
-      const jK = [[-0.3, [120, GY]], [0.7, [560, GY]], [1.05, [560, GY]], [1.5, [930, GY]]];
+      const jK = [[-0.3, [120, GY]], [0.7, [S.portrait ? 620 : 560, GY]], [1.05, [S.portrait ? 620 : 560, GY]], [1.5, [930, GY]]];
       const [jx, jy] = kf(t, jK);
       const glance = 0;
       const brave = 1;

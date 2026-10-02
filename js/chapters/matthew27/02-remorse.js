@@ -37,7 +37,7 @@ export default {
 
     /* the chief priests and the elders at the foot of the stairs */
     const P = S.layer({ par: 0.5, sh: 5 });
-    const lords = [0, 1, 2, 3, 4].map((i) => ({ i, p: S.puppet(P.add(i === 0 ? priest(c, 0) : leader(c, i + 1))), x: [960, 1040, 1116, 1190, 1262][i], y: GY - [0, 8, 2, 10, 4][i], seed: c.rr(0, 9) }));
+    const lords = [0, 1, 2, 3, 4].map((i) => ({ i, p: S.puppet(P.add(i === 0 ? priest(c, 0) : leader(c, i + 1))), x: (S.portrait ? [870, 928, 983, 1037, 1090] : [960, 1040, 1116, 1190, 1262])[i], y: GY - [0, 8, 2, 10, 4][i], seed: c.rr(0, 9) }));
     const jEl = P.add(withFace(person(c, { ...JUDAS, holdF: `<g transform="translate(0 -4)">${purse(c)}</g>` }), faceBits(c)));
     const judas = S.puppet(jEl);
     const jEl2 = P.add(withFace(person(c, JUDAS), faceBits(c)));
@@ -59,7 +59,8 @@ export default {
       /* v3 — he sees Him condemned; remorse; he goes to the priests with the silver */
       const pk = es(t, 0.02, 0.3) * (1 - es(t, 0.85, 1.0));
       swing(plate, 640, 180 - (1 - pk) * 760, T, 1, 0.7, 1);
-      const jK = [[-0.2, [300, GY + 6]], [0.3, [380, GY + 6]], [0.45, [380, GY + 6]], [0.98, [820, GY + 4]], [4.2, [820, GY + 4]], [5.0, [240, GY + 8]]];
+      const JS = S.portrait ? 765 : 820;   // phone: Judas a step back, so the five lords fit beside him
+      const jK = [[-0.2, [300, GY + 6]], [0.3, [380, GY + 6]], [0.45, [380, GY + 6]], [0.98, [JS, GY + 4]], [4.2, [JS, GY + 4]], [5.0, [S.portrait ? 560 : 240, GY + 8]]];
       const [jx, jy] = kf(t, jK);
       const offer = es(t, 0.85, 1.05) * (1 - es(t, 4.05, 4.12));
       const bow = es(t, 1.05, 1.3) * (1 - es(t, 2.0, 2.3)) + es(t, 3.3, 3.6) * 0.6 * (1 - es(t, 4.0, 4.1));
@@ -101,7 +102,7 @@ export default {
       pose(yours, { x: h0x - 12, y: h0y - 16, s: yk, o: yk > 0.02 ? 1 : 0 });
 
       /* v5a — the silver flung towards the sanctuary, ringing on the paving */
-      const [hx0, hy0] = hand(820, GY + 4, 1.02, false, 16 + 64 + 90);
+      const [hx0, hy0] = hand(JS, GY + 4, 1.02, false, 16 + 64 + 90);
       coins.forEach((k) => {
         const u = seg(t, 4.08 + k.d, 4.5 + k.d);
         const x = lerp(hx0, k.tx, ease.out(u)), y = lerp(hy0, k.ty, u) - Math.sin(u * PI) * k.h;

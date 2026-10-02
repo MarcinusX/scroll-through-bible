@@ -37,7 +37,7 @@ export default {
     const H = hallSet(S);
     const P = H.charL;
     const shine = P.add(`<g><circle r="150" fill="url(#halo-glow)"/></g>`);
-    const pr = [0, 1, 2].map((i) => ({ i, p: S.puppet(P.add(i === 1 ? priest(c, 1) : leader(c, i + 1))), x: [470, 560, 650][i], seed: c.rr(0, 9) }));
+    const pr = [0, 1, 2].map((i) => ({ i, p: S.puppet(P.add(i === 1 ? priest(c, 1) : leader(c, i + 1))), x: (S.portrait ? [505, 590, 675] : [470, 560, 650])[i], seed: c.rr(0, 9) }));
     const el2 = S.puppet(P.add(leader(c, 5)));
     const gd = S.puppet(P.add(guard(c, 0)));
     const sol = S.puppet(P.add(soldier(c, 0)));
@@ -103,7 +103,7 @@ export default {
       pr.forEach((m) => {
         m.p.set({ x: m.x + acc * 50, y: 684 - m.i * 4, s: 0.96, flip: false, armF: 30 + bump(t, 0, 0.8) * 50 + acc * (60 + Math.sin(T * 7 + m.i * 2) * 20), armB: 10 + acc * (40 + m.i * 30), head: -3 + acc * -4, lean: acc * 4, blink: blinkAt(T, m.seed) });
       });
-      el2.set({ x: 380, y: 690, s: 0.94, flip: false, armF: 30 + acc * 50, armB: 10 + acc * 30, head: -4, blink: blinkAt(T, 9) });
+      el2.set({ x: S.portrait ? 465 : 380, y: 690, s: 0.94, flip: false, armF: 30 + acc * 50, armB: 10 + acc * 30, head: -4, blink: blinkAt(T, 9) });
       /* the scraps fly and pile at His feet; v13 they rise in a fan around Him; v14 they fall away */
       const fanK = es(t, 4.15, 4.5) * (1 - es(t, 5.0, 5.4));
       const fall = es(t, 5.0, 5.6);

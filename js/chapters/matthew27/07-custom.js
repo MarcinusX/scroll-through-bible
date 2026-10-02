@@ -68,7 +68,7 @@ export default {
 
       /* the platform */
       K.sols[0].set({ x: 640, y: PLAT, s: 0.84, flip: false, armF: 34, armB: 8, blink: blinkAt(T, 4) });
-      K.sols[1].set({ x: 1110, y: PLAT, s: 0.84, flip: true, armF: 34, armB: 8, blink: blinkAt(T, 5) });
+      K.sols[1].set({ x: S.portrait ? 1055 : 1110, y: PLAT, s: 0.84, flip: true, armF: 34, armB: 8, blink: blinkAt(T, 5) });
       const offerK = es(t, 2.2, 2.45) * (1 - es(t, 2.95, 3.2));
       K.jes.set({ x: JX, y: PLAT, s: 0.88, flip: false, armF: 30, armB: 28, head: 4 - offerK * 4, blink: blinkAt(T) });
       const think = es(t, 3.05, 3.3);

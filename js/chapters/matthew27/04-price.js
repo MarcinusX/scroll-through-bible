@@ -16,7 +16,7 @@ export default {
     { v: 6, text: 'Arcykapłani zaś wzięli srebrniki i orzekli:' },
     { v: 6, cont: true, text: '«Nie wolno kłaść ich do skarbca świątyni, bo są zapłatą za krew».' },
   ],
-  cam: { x: [0, 120], y: [0, 60], z: [1, 1.14] },
+  cam: { x: [0, 190], y: [0, 60], z: [1, 1.14] },
   build(S) {
     const c = S.c;
     const set = templeCourt(S, { skyCols: MT.temple });
@@ -25,7 +25,7 @@ export default {
     const mouth = [CH[0], CY - 130];
 
     const P = S.layer({ par: 0.5, sh: 5 });
-    const lords = [1, 2, 3, 4].map((i) => ({ i, p: S.puppet(P.add(leader(c, i + 1))), x: [560, 660, 1250, 1330][i - 1], y: GY - [6, 0, 8, 2][i - 1], seed: c.rr(0, 9) }));
+    const lords = [1, 2, 3, 4].map((i) => ({ i, p: S.puppet(P.add(leader(c, i + 1))), x: (S.portrait ? [560, 660, 1035, 1090] : [560, 660, 1250, 1330])[i - 1], y: GY - [6, 0, 8, 2][i - 1], seed: c.rr(0, 9) }));
     const stack = `<g transform="translate(0 -2) scale(.8)">${silverStack(c, 6, 10)}</g>`;
     const hp = S.puppet(P.add(priest(c, 0)));
     const hpS = S.puppet(P.add(priest(c, 0, { holdF: stack })));
@@ -66,6 +66,7 @@ export default {
       S.cam.x = 40 + es(t, 0.8, 1.4) * 70;
       S.cam.y = 20 + es(t, 0.8, 1.4) * 20;
       S.cam.z = 1.04 + es(t, 0.8, 1.4) * 0.06;
+      if (S.portrait) S.cam.x += 70;   // phone: the chests and the two who shake their heads in view
     };
   },
 };

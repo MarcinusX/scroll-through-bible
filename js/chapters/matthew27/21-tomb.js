@@ -10,7 +10,7 @@ import { tombStone } from '../mark6/lib.js';
 import { kf, moving, headAt, nameTag, withFace, faceBits, face, shadowPerson, crossSil, crossHead, skullHill, shroud, litter, hanging, swing, LOOK, SKIES, INK, tr, PI } from './lib.js';
 
 const GY = 694;
-const HX = 430, HT = 430, HH = 190;              // the hill with its crosses, off to the left
+const HILLX = 430, HT = 430, HH = 190;              // the hill with its crosses, off to the left
 const DX = 930, DB = 650, DW = 100, DH = 146;     // the tomb door
 const SR = 76;                                    // the stone
 
@@ -22,9 +22,10 @@ export default {
     { v: 60, cont: true, text: 'Przed wejściem do grobu zatoczył duży kamień i odszedł.' },
     { v: 61 },
   ],
-  cam: { x: [-240, 120], y: [-60, 60], z: [1, 1.22] },
+  cam: { x: [-240, 220], y: [-60, 60], z: [1, 1.22] },
   build(S) {
     const c = S.c;
+    const HX = S.portrait ? 610 : HILLX;   // phone: the hill with the crosses in view, not sliced by the left edge
     const sk = sky(S, SKIES.dusk);
     const starL = S.layer({ par: 0.02, sh: 1, flat: true });
     starL.add(stars(c, { x0: -600, x1: 2200, y0: -400, y1: 380, n: 60 }));
@@ -93,11 +94,11 @@ export default {
       const [cx] = kf(t, cK);
       const carrying = t > 0.95 && t < 1.62;
       const walkC = moving(t, cK) ? cx * 0.05 : undefined;
-      const JK = [[1.62, [cx + 90, GY]], [2.0, [DX + 2 * SR + 110, GY]], [2.05, [DX + 2 * SR + 110, GY]], [2.5, [DX + SR + 50, GY]], [2.6, [DX + SR + 50, GY]], [2.95, [DX + SR + 420, GY]]];
+      const JK = [[1.62, [cx + 90, GY]], [2.0, [DX + 2 * SR + 110, GY]], [2.05, [DX + 2 * SR + 110, GY]], [2.5, [DX + SR + 50, GY]], [2.6, [DX + SR + 50, GY]], [S.portrait ? 2.82 : 2.95, [DX + SR + 420, GY]]];   // phone: he is gone before the beat settles, not sliced by the thread
       const jx = t < 1.62 ? cx + 90 : kf(t, JK)[0];
       const pushing = t > 2.0 && t < 2.55;
       const leaving = t > 2.6;
-      jos.set({ x: jx, y: GY, s: 1.04, flip: pushing, walk: carrying || (t > 1.62 && moving(t, JK)) ? jx * 0.05 : undefined, amt: 0.7, armF: carrying ? 60 : pushing ? 85 : 20, armB: carrying ? 50 : pushing ? 75 : 10, lean: pushing ? 10 : 0, head: leaving ? 8 : 0, o: (t > 0.95 ? 1 : 0) * (1 - es(t, 2.85, 2.95)), blink: blinkAt(T, 2) });
+      jos.set({ x: jx, y: GY, s: 1.04, flip: pushing, walk: carrying || (t > 1.62 && moving(t, JK)) ? jx * 0.05 : undefined, amt: 0.7, armF: carrying ? 60 : pushing ? 85 : 20, armB: carrying ? 50 : pushing ? 75 : 10, lean: pushing ? 10 : 0, head: leaving ? 8 : 0, o: (t > 0.95 ? 1 : 0) * (1 - (S.portrait ? es(t, 2.66, 2.74) : es(t, 2.85, 2.95))), blink: blinkAt(T, 2) });
       helper.set({ x: cx - 90, y: GY + 2, s: 1, flip: false, walk: walkC, amt: 0.7, armF: 60, armB: 50, o: t > 0.95 && t < 1.9 ? es(t, 0.95, 1.0) * (1 - es(t, 1.7, 1.9)) : 0, blink: blinkAt(T, 6) });
       const lay = es(t, 1.5, 1.75);
       pose(lit, { x: cx, y: GY - 88, o: carrying ? 1 : 0 });
@@ -111,10 +112,10 @@ export default {
       /* v61 — Mary Magdalene and the other Mary sit opposite the tomb */
       MS.forEach((m) => {
         const MX = S.portrait ? 640 : 440;
-        const K = [[2.3, [-160 - m.i * 80, GY + 6]], [2.95, [MX - m.i * 110, GY + 6]]];
+        const K = S.portrait ? [[2.2, [-160 - m.i * 80, GY + 6]], [2.72, [MX - m.i * 110, GY + 6]]] : [[2.3, [-160 - m.i * 80, GY + 6]], [2.95, [MX - m.i * 110, GY + 6]]];   // phone: the women are in place, whole, when v60 settles
         const [x, y] = kf(t, K);
         const sat = es(t, 3.0, 3.1);
-        m.p.set({ x, y, s: 1.06, flip: false, walk: moving(t, K) ? x * 0.05 : undefined, armF: 14, armB: 8, head: -4, o: es(t, 2.3, 2.4) * (1 - sat), blink: blinkAt(T, 3 + m.i) });
+        m.p.set({ x, y, s: 1.06, flip: false, walk: moving(t, K) ? x * 0.05 : undefined, armF: 14, armB: 8, head: -4, o: es(t, S.portrait ? 2.2 : 2.3, S.portrait ? 2.3 : 2.4) * (1 - sat), blink: blinkAt(T, 3 + m.i) });
         m.ps.set({ x: MX - m.i * 110 + 10, y: GY + 4, s: 1.06, flip: false, armF: 40 + m.i * 20, armB: 20, head: 4, o: sat, blink: blinkAt(T, 3 + m.i) });
         face(m.st, 'sad', 1); face(m.sit, 'sad', 1);
         const tk = es(t, 3.1 + m.i * 0.1, 3.4 + m.i * 0.1);
@@ -124,9 +125,11 @@ export default {
       const st = es(t, 3.3, 3.8);
       pose(theStar, { x: DX + 20, y: 200, s: 0.4 + st * 0.6 + Math.sin(T * 2) * 0.04 * st, o: st });
 
-      S.cam.x = -220 * (1 - es(t, 0.85, 1.35)) + es(t, 1.1, 1.9) * 110 - es(t, 2.7, 3.3) * 170;
-      S.cam.y = -60 * (1 - es(t, 0.85, 1.35)) + es(t, 2.7, 3.3) * 20;
-      S.cam.z = 1.08 + 0.14 * (1 - es(t, 0.85, 1.35)) - es(t, 2.7, 3.3) * 0.06;
+      const pan = S.portrait ? es(t, 2.4, 2.9) : es(t, 2.7, 3.3);   // phone: turn to the women as they arrive, so both are whole when v60 settles
+      S.cam.x = -220 * (1 - es(t, 0.85, 1.35)) + es(t, 1.1, 1.9) * 110 - pan * 170;
+      if (S.portrait) S.cam.x += es(t, 1.8, 2.05) * (1 - pan) * 100;   // phone: Joseph rolling the stone stays clear of the thread
+      S.cam.y = -60 * (1 - es(t, 0.85, 1.35)) + pan * 20;
+      S.cam.z = 1.08 + 0.14 * (1 - es(t, 0.85, 1.35)) - pan * 0.06;
     };
   },
 };

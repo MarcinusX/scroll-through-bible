@@ -17,7 +17,7 @@ export default {
   beats: [
     { v: 66 },
   ],
-  cam: { x: [0, 170], y: [-20, 20], z: [1, 1.06] },
+  cam: { x: [0, 240], y: [-20, 20], z: [1, 1.06] },
   build(S) {
     const c = S.c;
     const sk = sky(S, MT.tombDay);
@@ -49,13 +49,13 @@ export default {
     ground.add(rock(c, 420, 700, 120, 34, C.rock2));
     const P = S.layer({ par: 0.55, sh: 5 });
     const pr = [0, 1].map((i) => ({ i, p: S.puppet(P.add(priest(c, i))) }));
-    const sols = [[DX - 150, GY - 4, false], [DX - 250, GY + 6, false], [DX + 150, GY, true]].map(([x, y, f], i) => ({ i, x, y, f, p: S.puppet(P.add(soldier(c, i, { spear: 34 }))) }));
+    const sols = [[DX - 150, GY - 4, false], [DX - 250, GY + 6, false], [DX + (S.portrait ? 95 : 150), GY, true]].map(([x, y, f], i) => ({ i, x, y, f, p: S.puppet(P.add(soldier(c, i, { spear: 34 }))) }));
 
     return (t, time) => {
       const T = time;
       sk.set(...MT.tombDay);
       /* the chief priests stretch the cord and press the seal */
-      const pK = [[-0.3, [560, GY]], [0.2, [900, GY]], [0.5, [900, GY]], [0.85, [620, GY]]];
+      const pK = [[-0.3, [560, GY]], [0.2, [900, GY]], [0.5, [900, GY]], [0.85, [S.portrait ? 735 : 620, GY]]];
       const [px, py] = kf(t, pK);
       const press = bump(t, 0.2, 0.45);
       pr.forEach((m) => m.p.set({ x: px - m.i * 90, y: py + m.i * 6, s: 0.98, flip: t > 0.5, walk: moving(t, pK) ? px * 0.05 : undefined, armF: 20 + (m.i === 0 ? press * 80 : 20), armB: 10, head: m.i === 0 ? -press * 6 : -4, blink: blinkAt(T, 3 + m.i) }));
@@ -70,7 +70,7 @@ export default {
         s.p.set({ x, y, s: 1, flip: s.f, walk: moving(t, K) ? x * 0.06 : undefined, armF: 34, armB: 8, blink: blinkAt(T, 5 + s.i) });
       });
       pose(glow, { x: DX, y: DB - 70, o: 0.25 + Math.sin(T * 0.8) * 0.05 });
-      S.cam.x = S.portrait ? 160 : 40;
+      S.cam.x = S.portrait ? 230 : 40;
       S.cam.y = 0;
       S.cam.z = 1.02 + es(t, 0, 0.8) * 0.03;
     };
