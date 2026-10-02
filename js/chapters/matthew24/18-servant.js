@@ -11,7 +11,8 @@ import { seg, es, ease, bump } from '../../core/anim.js';
 import { houseSet, HOUSE, MASTER, SERVANTS, keyProp, bowl, loaf, along, hand, coinChest, beast, roundel, STEWARD, AFTERNOON, PI } from './lib.js';
 
 const F = HOUSE.FLOOR;
-const QUEUE = [470, 548, 626, 704];
+const QUEUE_W = [470, 548, 626, 704];
+const QUEUE_P = [505, 578, 651, 724];   // phone: the first in the queue is not sliced by the frame
 const BASKET = [880, F];
 
 export default {
@@ -26,6 +27,7 @@ export default {
   cam: { x: [-30, 60], y: [-50, 40], z: [1, 1.1] },
   build(S) {
     const c = S.c;
+    const QUEUE = S.portrait ? QUEUE_P : QUEUE_W;
     sky(S, AFTERNOON);
     const hangL = S.layer({ par: 0.04, sh: 4 });
     const sunEl = hanging(hangL, sun(c, 40), { x: 1260, y: -1500, len: 700 });

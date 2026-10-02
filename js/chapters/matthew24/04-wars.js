@@ -126,7 +126,7 @@ export default {
       /* famine and plague (beat 3): the bowls come down, a grey pall creeps over the towns */
       bowls.forEach((b) => {
         const k = es(t, 3.05 + b.i * 0.1, 3.35 + b.i * 0.1, ease.back);
-        pose(b.el, { x: 470 + b.i * 60 + (b.i === 2 ? 0 : 0), y: lerp(-200, 452 + (b.i % 2) * 22, k) + Math.sin(T * 1.1 + b.i) * 2, r: Math.sin(T * 0.9 + b.i * 2) * 4 * k + (b.i - 1) * 6, o: k > 0.01 ? 1 : 0 });
+        pose(b.el, { x: (S.portrait ? 510 : 470) + b.i * 60, y: lerp(-200, 452 + (b.i % 2) * 22, k) + Math.sin(T * 1.1 + b.i) * 2, r: Math.sin(T * 0.9 + b.i * 2) * 4 * k + (b.i - 1) * 6, o: k > 0.01 ? 1 : 0 });
       });
       pall.forEach((p) => {
         const k = es(t, 3.15 + p.i * 0.06, 3.5 + p.i * 0.06);

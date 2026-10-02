@@ -52,10 +52,11 @@ export default {
     const pil = [{ x: 1250, s: 0.84 }, { x: 1318, s: 0.9 }, { x: 1384, s: 0.82 }].map((m, i) => ({ ...m, i, seed: c.rr(0, 9), p: S.puppet(people.add(person(c, crowdPerson(c)))) }));
 
     /* Jesus walks out first; the disciples follow and come round Him */
+    const PO = S.portrait;   // phone: the three on the right stay clear of the thread
     const DIS = [
-      { o: CAST.peter, from: GX - 40, to: 948, s: 0.95, show: 1 },
-      { o: CAST.john, from: GX - 90, to: 1030, s: 0.93, show: 1 },
-      { o: CAST.andrew, from: GX - 140, to: 1108, s: 0.93, show: 0.6 },
+      { o: CAST.peter, from: GX - 40, to: PO ? 934 : 948, s: 0.95, show: 1 },
+      { o: CAST.john, from: GX - 90, to: PO ? 992 : 1030, s: 0.93, show: 1 },
+      { o: CAST.andrew, from: GX - 140, to: PO ? 1048 : 1108, s: 0.93, show: 0.6 },
       { o: CAST.james, from: GX - 190, to: 668, s: 0.94, show: 0.8 },
       { o: CAST.thomas, from: GX - 240, to: 594, s: 0.92, show: 0 },
       { o: CAST.matthew, from: GX - 290, to: 522, s: 0.9, show: 0.5 },

@@ -101,7 +101,7 @@ export default {
       });
       stumble.set({ x: TX[1] - 10, y: GL, s: 0.62, flip: true, o: es(t, 2.1, 2.16), lean: 10, head: 16, armF: 70, armB: 40 });
       const g3 = es(t, 2.1, 2.5);
-      const g3x = lerp(X1 + 60, 980, ease.out(es(t, 2.05, 2.3))) + es(t, 2.3, 2.8) * 140;
+      const g3x = lerp(X1 + 60, 980, ease.out(es(t, 2.05, 2.3))) + es(t, 2.3, 2.8) * (S.portrait ? 50 : 140);   // phone: he stays in sight
       guard3.set({ x: g3x, y: GL, s: 0.64, flip: es(t, 2.3, 2.35) < 0.5, o: edge(g3x) * (g3 > 0 ? 1 : 0), walk: g3 > 0 && g3 < 1 ? g3x * 0.08 : undefined, armF: 70, armB: 20 });
       const mobIn = es(t, 1.15, 1.55, ease.out) * (1 - es(t, 2.0, 2.3));
       mobL.set({ x: lerp(X0 - 60, X0 + 104, mobIn), y: GL - 8, s: 1, o: mobIn });

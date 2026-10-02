@@ -24,7 +24,7 @@ export default {
     { v: 19 },
     { v: 20 },
   ],
-  cam: { x: [-120, 120], y: [-40, 40], z: [1, 1.12] },
+  cam: { x: [-120, 150], y: [-40, 40], z: [1, 1.12] },
   build(S) {
     const c = S.c;
     const SKY = ['#b7b3a8', '#dccdb0', '#eadcc0'];
@@ -103,7 +103,7 @@ export default {
       const dk = es(t, 0.05, 0.5, ease.out);
       pose(dark, { x: TX, y: TY + 34, sy: Math.max(0.001, dk), s: 0.62 + (T ? Math.sin(T * 0.9) * 0.01 * dk : 0), o: dk > 0.01 ? 1 : 0 });
       const rd = es(t, 0.4, 0.7, ease.back) * (1 - es(t, 1.05, 1.3));
-      pose(scroll, { x: 1030, y: lerp(-300, 220, rd), r: Math.sin(T * 1.2) * 4, o: rd > 0.01 ? 1 : 0 });
+      pose(scroll, { x: S.portrait ? 990 : 1030, y: lerp(-300, 220, rd), r: Math.sin(T * 1.2) * 4, o: rd > 0.01 ? 1 : 0 });
 
       /* v16 — out of the city and up into the mountains (they keep going) */
       runners.forEach((r) => {
@@ -120,10 +120,11 @@ export default {
 
       /* v18 — in the field: the hoe drops, he runs for the mountains; the cloak stays on its post */
       const drop = es(t, 3.05, 3.2), run = seg(t, 3.22, 4.05);
-      const fx = lerp(1120, 1210, seg(t, 3.22, 3.75)) + seg(t, 3.75, 4.05) * 340;
-      hoeHeld.set({ x: 1120, y: 700, s: 0.9, flip: true, o: 1 - drop, armF: 40 + (T ? Math.sin(T * 2) * 6 : 0) * (1 - drop), blink: blinkAt(T, farmer.seed) });
+      const fx = lerp(S.portrait ? 1085 : 1120, S.portrait ? 1115 : 1210, seg(t, 3.22, 3.75)) + seg(t, 3.75, 4.05) * 340;   // phone: he is still in sight at the end of his beat
+      // phone: he only steps into his field as the camera turns to it (before that he stood half under the thread)
+      hoeHeld.set({ x: S.portrait ? 1085 : 1120, y: 700, s: 0.9, flip: true, o: (1 - drop) * (S.portrait ? es(t, 2.85, 3.0) : 1), armF: 40 + (T ? Math.sin(T * 2) * 6 : 0) * (1 - drop), blink: blinkAt(T, farmer.seed) });
       farmer.p.set({ x: fx, y: 700 - run * 40, s: 0.9, flip: false, o: drop > 0 && run < 0.97 ? 1 : 0, walk: run > 0 ? fx * 0.06 : undefined, amt: 1.4, lean: -6, armF: 30, armB: 20, blink: blinkAt(T, farmer.seed) });
-      pose(hoeDown, { x: 1100, y: lerp(640, 700, drop), r: lerp(-10, -80, drop), o: drop > 0 ? 1 : 0 });
+      pose(hoeDown, { x: S.portrait ? 1065 : 1100, y: lerp(640, 700, drop), r: lerp(-10, -80, drop), o: drop > 0 ? 1 : 0 });
       const wind = 1 + cold * 1.5;
       pose(cloakEl, { x: 1016, y: 600, r: (T ? Math.sin(T * 1.8) * 5 : 0) * wind + 4 + bump(t, 3.1, 3.6) * 8 });
 
@@ -151,7 +152,7 @@ export default {
       snow.shift(T ? Math.sin(T * 0.4) * 30 : 0, T ? ((T * 60) % 600) - 300 : 0);
 
       /* the camera: the city, the roof, the field, the path */
-      S.cam.x = -es(t, 1.9, 2.2) * 110 * (1 - es(t, 2.9, 3.1)) + es(t, 2.95, 3.2) * 110 * (1 - es(t, 3.9, 4.15));
+      S.cam.x = -es(t, 1.9, 2.2) * 110 * (1 - es(t, 2.9, 3.1)) + es(t, 2.95, 3.2) * (S.portrait ? 145 : 110) * (1 - es(t, 3.9, 4.15));
       S.cam.z = 1 + es(t, -0.2, 0.4) * 0.08 * (1 - es(t, 0.9, 1.3)) + es(t, 1.9, 2.2) * 0.05 * (1 - es(t, 3.9, 4.15));
       S.cam.y = -es(t, -0.2, 0.4) * 30 * (1 - es(t, 0.9, 1.3)) + es(t, 1.9, 2.2) * 20 * (1 - es(t, 3.9, 4.15));
     };

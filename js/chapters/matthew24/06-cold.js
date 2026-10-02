@@ -10,8 +10,11 @@ import { seg, es, ease, bump } from '../../core/anim.js';
 import { mask, addToHead, lantern, sparkle, heart, handLamp, flake, hand, along, folk, WINTERN, PI } from './lib.js';
 import { darkKnot } from '../matthew9/lib.js';
 
-const ROAD = [[60, 800], [300, 730], [520, 690], [760, 650], [920, 612], [1040, 568], [1110, 530]];
-const GATE = [1126, 520];
+const ROAD_W = [[60, 800], [300, 730], [520, 690], [760, 650], [920, 612], [1040, 568], [1110, 530]];
+const GATE_W = [1126, 520];
+// phone: the far end of the road and the gate of light come in from under the thread
+const ROAD_P = [[60, 800], [300, 730], [520, 690], [740, 650], [880, 612], [975, 568], [1034, 530]];
+const GATE_P = [1050, 520];
 const OFF = [[640, 670], [540, 630], [440, 608], [330, 598], [220, 594]];   // the turning into the dark wood
 
 export default {
@@ -25,6 +28,7 @@ export default {
   cam: { x: [-40, 60], y: [-40, 40], z: [1, 1.1] },
   build(S) {
     const c = S.c;
+    const ROAD = S.portrait ? ROAD_P : ROAD_W, GATE = S.portrait ? GATE_P : GATE_W;
     sky(S, WINTERN);
     const sk2 = sky(S, ['#1a1e34', '#2e3349', '#444a5e'], { name: 'sky2' });
     sk2.layer.fade(0);
@@ -77,7 +81,7 @@ export default {
     const loneFlame = lone.el.querySelector('.flame');
 
     /* false prophets with glittering lanterns */
-    const PROPH = [[C.plumRobe, C.sun, 600, 640], [C.indigo, C.halo, 486, 620]].map(([robe, gold, x, y], i) => ({
+    const PROPH = [[C.plumRobe, C.sun, S.portrait ? 680 : 600, 640], [C.indigo, C.halo, S.portrait ? 580 : 486, 620]].map(([robe, gold, x, y], i) => ({
       i, x, y, p: S.puppet(P.add(addToHead(person(c, { robe, mantle: gold, hairStyle: 'wrap', veil: robe, veil2: gold, beard: 'none', skin: C.skin2, belt: gold, holdF: `<g transform="translate(0 2)">${lantern(c, { col: gold })}</g>` }), `<g transform="translate(6 0)">${mask(c, { col: gold, r: 22, stick: false })}</g>`))),
       bursts: [0, 1, 2].map((k) => P.add(`<g transform="translate(0 -1500)">${sparkle(c, 13, k % 2 ? C.halo : C.star)}</g>`)),
     }));
@@ -92,7 +96,7 @@ export default {
 
     return (t, time) => {
       const T = time;
-      pose(moonEl, { x: 440, y: 150, r: Math.sin(T * 0.6) });
+      pose(moonEl, { x: S.portrait ? 560 : 440, y: 150, r: Math.sin(T * 0.6) });   // phone: the moon hangs inside the screen, not half off its left edge
 
       /* v11 — prophets rise, beckon; many turn off after them */
       const rise = (i) => es(t, 0.1 + i * 0.12, 0.45 + i * 0.12, ease.out);

@@ -9,7 +9,9 @@ import { bird } from '../../assets/things.js';
 import { es, ease, bump } from '../../core/anim.js';
 import { olivesSet, SKIES, FOUR, figTree, roundel, voiceRings, PI } from './lib.js';
 
-const GY = 690, TREE = [470, 684], DOOR = [1112, GY];
+const GY = 690, TREE_W = [470, 684], DOOR_W = [1112, GY];
+// phone: the tree and the door come in from the edges (and the camera leans further towards each)
+const TREE_P = [515, 684], DOOR_P = [1085, GY];
 const LENS = { x: 640, y: 250, r: 104 };
 
 /** a fig leaf (three lobes), origin at its stalk, pointing up */
@@ -30,9 +32,10 @@ export default {
     { v: 32, cont: true, text: 'Gdy jego gałązka staje się soczysta i liście wypuszcza, poznajecie, że zbliża się lato.' },
     { v: 33 },
   ],
-  cam: { x: [-30, 30], y: [-40, 40], z: [1, 1.08] },
+  cam: { x: [-45, 55], y: [-40, 40], z: [1, 1.08] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait, TREE = PH ? TREE_P : TREE_W, DOOR = PH ? DOOR_P : DOOR_W;
     const set = olivesSet(S, { skyCols: SKIES.morning, tintCol: C.cream, tintK: 0.05, sunXY: [1240, 330], templeGlow: 0.4 });
     const birds = flock(S, set.hangL, 3, (cc) => bird(cc, { color: C.bird }), { y: 200, speed: 60, scale: 0.4 });
 
@@ -126,7 +129,7 @@ export default {
         m.p.set({ x: m.x, y: GY + (m.i % 2) * 4, s: 0.92, flip, head: -lookTree * 10 - bump(t, 1.2, 1.9) * 6, armF: (m.k === 'peter' ? bump(t, 1.3, 1.9) * 80 : 0) + (m.k === 'john' ? lookDoor * 60 : 0), blink: blinkAt(T, m.seed) });
       });
 
-      S.cam.x = -es(t, 0.1, 0.6) * 20 * (1 - es(t, 1.9, 2.3)) + es(t, 1.95, 2.4) * 25;
+      S.cam.x = -es(t, 0.1, 0.6) * (PH ? 40 : 20) * (1 - es(t, 1.9, 2.3)) + es(t, 1.95, 2.4) * (PH ? 50 : 25);
       S.cam.y = -es(t, 0.1, 0.6) * 20 * (1 - es(t, 1.9, 2.3));
     };
   },

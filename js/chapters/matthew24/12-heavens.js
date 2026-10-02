@@ -9,8 +9,11 @@ import { band, hillsWith, town, sun, moon, cloud, stars, olive, grass } from '..
 import { seg, es, ease, bump, fade } from '../../core/anim.js';
 import { jerusalem, glory, angel, soulLight, crossSign, trumpet, blast, pose3, folk, PI } from './lib.js';
 
-const SUN = [690, 190], MOON = [1110, 150];
-const CORNERS = [[330, 380], [1280, 200], [450, 630], [1160, 630]];
+const SUN = [690, 190], MOON_W = [1110, 150];
+const CORNERS_W = [[330, 380], [1280, 200], [450, 630], [1160, 630]];
+// phone: the moon comes out from under the thread, and the angels fly to corners of the phone's screen
+const MOON_P = [1040, 160];
+const CORNERS_P = [[545, 360], [1055, 210], [560, 630], [1045, 630]];
 
 export default {
   id: 'mt24-heavens',
@@ -26,6 +29,7 @@ export default {
   cam: { x: [-30, 30], y: [-60, 40], z: [0.96, 1.1] },
   build(S) {
     const c = S.c;
+    const MOON = S.portrait ? MOON_P : MOON_W, CORNERS = S.portrait ? CORNERS_P : CORNERS_W;
     const TWI = ['#3d4775', '#6d6f96', '#b49aa4'];
     const DARK = ['#15182e', '#1f2340', '#2c2c46'];
     const GLORY = ['#6b5a86', '#e3b98a', '#f8e4b8'];

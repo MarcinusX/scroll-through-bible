@@ -25,7 +25,7 @@ export default {
     { v: 51, text: 'Każe go ćwiartować i z obłudnikami wyznaczy mu miejsce.' },
     { v: 51, cont: true, text: 'Tam będzie płacz i zgrzytanie zębów.' },
   ],
-  cam: { x: [-40, 60], y: [-50, 40], z: [1, 1.1] },
+  cam: { x: [-40, 120], y: [-50, 40], z: [1, 1.1] },
   build(S) {
     const c = S.c;
     sky(S, ['#1d2349', '#2b3262', '#4a4876']);
@@ -61,7 +61,8 @@ export default {
     const edge = `<path d="M-4 -196L6 -150L-4 -100L8 -50L-2 0L6 20" stroke="${C.cream}" stroke-width="4" fill="none"/>`;
     const halfL = outer.add(`<g transform="translate(0 -1500)"><g clip-path="url(#mt24-tearL)">${evilFlat}${edge}</g></g>`);
     const halfR = outer.add(`<g transform="translate(0 -1500)"><g clip-path="url(#mt24-tearR)">${evilFlat}${edge}</g></g>`);
-    const HYP = [[470, false], [560, false], [1060, true], [1150, true]].map(([x, flip], i) => ({
+    // phone: the four hypocrites stand inside the screen, the last one not sliced by the thread
+    const HYP = (S.portrait ? [[495, false], [580, false], [1005, true], [1085, true]] : [[470, false], [560, false], [1060, true], [1150, true]]).map(([x, flip], i) => ({
       i, x, flip,
       p: S.puppet(outer.add(addToHead(person(c, { robe: mix(C.plumRobe, C.night2, 0.5), mantle: mix(C.indigo, C.night2, 0.4), hairStyle: 'wrap', veil: mix(C.plumRobe, C.night2, 0.5), beard: 'none', skin: C.skin3 }), `<g transform="translate(6 0)">${mask(c, { col: mix(C.sun, C.stone2, 0.4), r: 22, stick: false })}</g>`))),
       tears: [0, 1, 2].map(() => outer.add(`<g transform="translate(0 -1500)">${tearDrop(c, 6, '#dbe8ee')}</g>`)),
@@ -123,7 +124,9 @@ export default {
         });
       });
 
-      S.cam.x = -es(t, 0.95, 1.25) * 30 * (1 - es(t, 1.9, 2.1)) + es(t, 0.0, 0.2) * 30 * (1 - es(t, 0.9, 1.1));
+      // phone: lean further right while the steward muses in the gate (0) and the master stands in it (2)
+      S.cam.x = -es(t, 0.95, 1.25) * 30 * (1 - es(t, 1.9, 2.1)) + es(t, 0.0, 0.2) * (S.portrait ? 110 : 30) * (1 - es(t, 0.9, 1.1))
+        + (S.portrait ? es(t, 1.95, 2.25) * 100 * (1 - es(t, 2.85, 3.1)) : 0);
       S.cam.z = 1 + es(t, 2.9, 3.3) * 0.04;
       S.cam.y = es(t, 3.9, 4.3) * 20;
     };

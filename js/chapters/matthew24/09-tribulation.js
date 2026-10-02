@@ -80,7 +80,8 @@ export default {
       const dwx = cutX - 26;
       pose(dawnCard, { x: dwx, y: lineY(dwx) - 4 - (1 - dw) * 60, s: dw, r: T ? Math.sin(T * 1.2) * 2 : 0, o: dw > 0.01 ? 1 : 0 });
       /* the hand of light with the scissors (beat 2) */
-      const hk = es(t, 2.02, 2.25, ease.out) * (1 - es(t, 2.55, 2.85));
+      // phone: the hand is gone by the pause, not caught mid-way under the tag
+      const hk = es(t, 2.02, 2.25, ease.out) * (1 - (S.portrait ? es(t, 2.45, 2.66) : es(t, 2.55, 2.85)));
       pose(hand, { x: cutX + 40, y: lineY(cutX) - 80 - (1 - hk) * 420, o: hk > 0.01 ? 1 : 0 });
       pose(sc, { x: cutX, y: lineY(cutX) - (1 - hk) * 420, r: 90, o: hk > 0.01 ? 1 : 0 });
       const snip = 1 - bump(t, 2.2, 2.38);

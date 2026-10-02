@@ -116,8 +116,9 @@ export default {
       const flood = es(t, 2.1, 2.7);
       const floatY = -es(t, 2.35, 2.8) * 30 + (T ? Math.sin(T * 1.3) * 3 : 0) * es(t, 2.4, 2.8);
       const rock = (T ? Math.sin(T * 1.1) : 0) * 2.5 * es(t, 2.4, 2.8);
-      pose(arkEl, { x: ARK[0], y: ARK[1] + floatY, r: rock });
-      pose(doorEl, { x: DOOR[0], y: DOOR[1] + floatY, r: rock, sx: Math.max(0.12, shut), o: 1 });
+      const drift = S.portrait ? es(t, 2.35, 2.8) * 70 : 0;   // phone: once afloat the ark drifts in from the left edge
+      pose(arkEl, { x: ARK[0] + drift, y: ARK[1] + floatY, r: rock });
+      pose(doorEl, { x: DOOR[0] + drift, y: DOOR[1] + floatY, r: rock, sx: Math.max(0.12, shut), o: 1 });
       pose(rampEl, { x: RAMP0[0], y: RAMP0[1], o: 1 - es(t, 1.95, 2.1) });
 
       /* the feast and the wedding go on */
@@ -132,11 +133,11 @@ export default {
       pose(tableEl, { x: 590, y: GY + 12, o: 1 - under });
       pose(posts, { x: 0, y: 0, o: 1 - under });
       const give = es(t, 1.05, 1.5);
-      father.set({ x: lerp(1180, 1070, give), y: GY + 2, s: 0.9, flip: true, o: 1 - under, walk: give > 0 && give < 1 ? give * 30 : undefined, armF: 60 + lookUp * 40, head: -lookUp * 10, blink: blinkAt(T, 7) });
-      bride.set({ x: lerp(1110, 1010, give), y: GY + 4, s: 0.88, flip: true, o: 1 - under, walk: give > 0 && give < 1 ? give * 30 + 1 : undefined, armF: 30 + give * 40, armB: lookUp * 120, head: 4 - lookUp * 14, blink: blinkAt(T, 8) });
+      father.set({ x: lerp(S.portrait ? 1075 : 1180, S.portrait ? 1030 : 1070, give), y: GY + 2, s: 0.9, flip: true, o: 1 - under, walk: give > 0 && give < 1 ? give * 30 : undefined, armF: 60 + lookUp * 40, head: -lookUp * 10, blink: blinkAt(T, 7) });
+      bride.set({ x: lerp(S.portrait ? 1080 : 1110, S.portrait ? 990 : 1010, give), y: GY + 4, s: 0.88, flip: true, o: 1 - under, walk: give > 0 && give < 1 ? give * 30 + 1 : undefined, armF: 30 + give * 40, armB: lookUp * 120, head: 4 - lookUp * 14, blink: blinkAt(T, 8) });
       groom.set({ x: 950, y: GY + 4, s: 0.92, o: 1 - under, armF: 30 + give * 45, armB: lookUp * 100, head: -lookUp * 12, blink: blinkAt(T, 9) });
       const shake = Math.sin(t * 22) * (feast < 1 ? 1 : 0);
-      girl.set({ x: 1150, y: GY + 10, s: 0.74, flip: true, o: 1 - under, armB: 130 + shake * 20 - lookUp * 30, armF: 60 + lookUp * 50, bob: Math.abs(shake) * -4, head: -lookUp * 12, blink: blinkAt(T, 10) });
+      girl.set({ x: S.portrait ? 1062 : 1150, y: GY + 10, s: 0.74, flip: true, o: 1 - under, armB: 130 + shake * 20 - lookUp * 30, armF: 60 + lookUp * 50, bob: Math.abs(shake) * -4, head: -lookUp * 12, blink: blinkAt(T, 10) });
 
       /* v39a — the storm, the rain, the flood */
       stormL.fade(es(t, 2.0, 2.3));
@@ -155,7 +156,7 @@ export default {
       voice(JX - 4, JY - 158, speak, T, { s0: 0.7 });
       circ.four.forEach((m) => m.p.set({ x: m.x, y: m.y, s: m.s, flip: m.flip, lean: m.dir * 3, head: -8 - speak * 6, blink: blinkAt(T, m.seed) }));
       const sa = es(t, 3.4, 3.7, ease.back);
-      pose(smallArk, { x: 1040, y: lerp(-300, 236, sa) + Math.sin(T * 0.9) * 3, r: Math.sin(T * 0.8) * 3, o: sa > 0.01 ? 1 : 0 });
+      pose(smallArk, { x: S.portrait ? 960 : 1040, y: lerp(-300, 236, sa) + Math.sin(T * 0.9) * 3, r: Math.sin(T * 0.8) * 3, o: sa > 0.01 ? 1 : 0 });
 
       S.cam.y = -es(t, 1.0, 1.4) * 20 * (1 - es(t, 2.0, 2.4)) + es(t, 3.3, 3.7) * 10;
       S.cam.x = es(t, 1.0, 1.4) * 25 * (1 - es(t, 2.0, 2.4));

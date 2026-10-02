@@ -9,7 +9,9 @@ import { seg, es, ease, bump } from '../../core/anim.js';
 import { fieldPatch, quern, beamDown, sparkle, folk, SPRING } from './lib.js';
 
 const GY = 700;
-const MEN = [520, 660], WOMEN = [950, 1090], MILL = 1020;
+const MEN_W = [520, 660], WOMEN_W = [950, 1090], MILL_W = 1020;
+// phone: the man left in the field and the woman taken from the mill come in from the edges
+const MEN_P = [565, 690], WOMEN_P = [925, 1035], MILL_P = 985;
 
 export default {
   id: 'mt24-taken',
@@ -21,6 +23,7 @@ export default {
   cam: { x: [-60, 60], y: [-40, 40], z: [1, 1.1] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait, MEN = PH ? MEN_P : MEN_W, WOMEN = PH ? WOMEN_P : WOMEN_W, MILL = PH ? MILL_P : MILL_W;
     sky(S, SPRING);
     const hangL = S.layer({ par: 0.04, sh: 4 });
     const sunEl = hanging(hangL, sun(c, 40), { x: 1240, y: -1500, len: 700 });
@@ -96,7 +99,7 @@ export default {
         pose(sp, { x: x + (k - 1) * 40, y: GY - 200 - k * 60 - kk * 80, s: kk, r: T * 40, o: kk > 0.01 ? 1 : 0 });
       }));
 
-      S.cam.x = lerp(-50, 50, es(t, 0.85, 1.25));
+      S.cam.x = lerp(S.portrait ? -25 : -50, 50, es(t, 0.85, 1.25));   // phone: on v40 the women at the mill stay clear of the thread
       S.cam.z = 1.06;
       S.cam.y = 10;
     };

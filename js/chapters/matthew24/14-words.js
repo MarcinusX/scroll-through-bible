@@ -101,6 +101,8 @@ export default {
       { o: man(c), x: 1130, s: 0.92 },
       { o: crowdPerson(c, { hairStyle: 'curly', beard: 'none' }), x: 1180, s: 0.6 },
     ].map((g, i) => ({ ...g, i, seed: c.rr(0, 9), p: S.puppet(P.add(person(c, g.o))) }));
+    // phone: the right-hand generation stands closer in, out from under the thread
+    if (S.portrait) GEN.forEach((g) => { if (g.x > 800) g.x = 800 + (g.x - 800) * 0.8; });
     const pos = [600, 670, 930, 1000];
     const four = FOUR.map((f, i) => ({ ...f, i, x: pos[i], flip: pos[i] > 800, seed: c.rr(0, 9), p: S.puppet(P.add(person(c, f.o))) }));
     const J = S.puppet(P.add(person(c, { ...CAST.jesus })));
@@ -114,7 +116,8 @@ export default {
     const scrollEl = fx.add(`<g transform="translate(0 -1500)">${wordsScroll(c, SW, SH)}</g>`);
     const rodL = fx.add(`<g transform="translate(0 -1500)">${rod(c, SH)}</g>`), rodR = fx.add(`<g transform="translate(0 -1500)">${rod(c, SH)}</g>`);
     const day = fx.add(`<g transform="translate(0 -1500)"><path d="M0 -1500V-52" stroke="rgba(240,220,190,.5)" stroke-width="1.2"/><circle r="120" fill="url(#halo-glow)"/>${sealedDay(c)}</g>`);
-    const angels = [[540, 360, false], [1060, 350, true]].map(([x, y, flip], i) => ({ x, y, flip, i, p: S.puppet(fx.add(angel(c))), q: fx.add(`<g transform="translate(0 -1500)">${question(c)}</g>`) }));
+    // phone: the right angel comes out from under the thread
+    const angels = (S.portrait ? [[560, 360, false], [1035, 350, true]] : [[540, 360, false], [1060, 350, true]]).map(([x, y, flip], i) => ({ x, y, flip, i, p: S.puppet(fx.add(angel(c))), q: fx.add(`<g transform="translate(0 -1500)">${question(c)}</g>`) }));
 
     return (t, time) => {
       const T = time;

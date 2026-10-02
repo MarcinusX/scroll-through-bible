@@ -46,11 +46,12 @@ export default {
 
     /* "here!" — "there!" with men beckoning; false messiahs and prophets with wonders */
     const fx = S.layer({ par: 0.4, sh: 5 });
+    const PO = S.portrait;   // phone: signposts, wonder-workers and the two plates come in from the edges
     const posts = [
-      { x: 470, dir: -1, text: tr('Oto tu!', 'Look, here!') },
-      { x: 1130, dir: 1, text: tr('Tam!', 'There!') },
+      { x: PO ? 570 : 470, dir: -1, text: tr('Oto tu!', 'Look, here!') },
+      { x: PO ? 1040 : 1130, dir: 1, text: tr('Tam!', 'There!') },
     ].map((p, i) => ({ ...p, i, el: fx.add(`<g transform="translate(0 -1500)">${pointer(c, p.text, { dir: p.dir, size: 20, col: C.ochre })}</g>`), who: S.puppet(fx.add(person(c, man(c, { robe: [C.ochreRobe, C.tealRobe][i] })))), seed: c.rr(0, 9) }));
-    const PROPH = [[C.plumRobe, C.sun, 520, true], [C.indigo, C.halo, 1080, true], [C.terracotta, C.sun, 620, false], [C.teal2, C.halo, 980, false]].map(([robe, gold, x, king], i) => ({
+    const PROPH = [[C.plumRobe, C.sun, PO ? 550 : 520, true], [C.indigo, C.halo, PO ? 1050 : 1080, true], [C.terracotta, C.sun, PO ? 640 : 620, false], [C.teal2, C.halo, PO ? 960 : 980, false]].map(([robe, gold, x, king], i) => ({
       i, x, p: S.puppet(fx.add(addToHead(person(c, { robe, mantle: gold, hairStyle: 'wrap', veil: robe, veil2: gold, beard: 'none', skin: C.skin2, belt: gold }), `<g transform="translate(6 0)">${mask(c, { col: gold, r: 22, stick: false })}</g>${king ? `<g transform="translate(2 -18)">${crownIcon(c, 32, gold)}</g>` : ''}`))),
       bursts: [0, 1, 2].map((k) => fx.add(`<g transform="translate(0 -1500)">${sparkle(c, 16, k % 2 ? C.halo : C.star)}</g>`)),
       fire: fx.add(`<g transform="translate(0 -1500)"><circle r="40" fill="url(#warm-glow)"/><path d="M0 0C-12 -10 -10 -30 0 -52C10 -30 12 -10 0 0Z" fill="${C.sunRay}"/><path d="M0 -4C-6 -10 -6 -22 0 -34C6 -22 6 -10 0 -4Z" fill="${C.lampFlame}"/></g>`),
@@ -130,8 +131,9 @@ export default {
       pose(rodR, { x: SX + (SW / 2) * un + 6, y: sy, o: sIn > 0.01 ? 1 : 0 });
 
       /* v26a — the wilderness plate (left) */
-      const dk = es(t, 3.02, 3.35, ease.back) * (1 - es(t, 4.7, 5.2) * 0);
-      const dx = 610, dy = lerp(-420, 176, dk), don = dk > 0.001 ? 1 : 0;
+      // phone: the two plates don't fit side by side, so each hangs alone in the middle (the desert one rises as the room comes down)
+      const dk = es(t, 3.02, 3.35, ease.back) * (1 - es(t, 4.7, 5.2) * 0) * (PO ? 1 - es(t, 3.82, 4.04) : 1);
+      const dx = PO ? 800 : 610, dy = lerp(-420, 176, dk), don = dk > 0.001 ? 1 : 0;
       pose(desert, { x: dx, y: dy, r: (T ? Math.sin(T * 0.8) : 0) * 0.8 * dk, o: don });
       const pt = es(t, 3.3, 3.5);
       dMan.set({ x: dx - 100, y: dy + PH - 26, s: 0.42, flip: false, armF: 20 + pt * 80, armB: 10 + pt * 30, o: don, head: -4, blink: blinkAt(T, 3) });
@@ -140,7 +142,7 @@ export default {
 
       /* v26b — the inner-rooms plate (right) */
       const rk = es(t, 4.02, 4.35, ease.back);
-      const rx = 1010, ry = lerp(-420, 176, rk), ron = rk > 0.001 ? 1 : 0;
+      const rx = PO ? 800 : 1010, ry = lerp(-420, 176, rk), ron = rk > 0.001 ? 1 : 0;
       pose(room, { x: rx, y: ry, r: (T ? Math.sin(T * 0.8 + 1) : 0) * 0.8 * rk, o: ron });
       const cu = es(t, 4.35, 4.6);
       pose(curtain, { x: rx + 10 + 230 * 0.02 - 115 + 115, y: ry + PH - 40 - 140 * 0.8, sx: 1 - cu * 0.45, o: ron });

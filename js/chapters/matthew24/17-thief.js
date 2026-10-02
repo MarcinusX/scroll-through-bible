@@ -110,8 +110,8 @@ export default {
       /* the thief creeps up, sees the light, slinks away */
       const creep = seg(t, 1.5, 2.3);
       const flee = seg(t, 2.36, 2.8);
-      const tx = flee > 0 ? lerp(1030, 1330, ease.out(flee)) : lerp(1360, 1030, ease.out(creep));
-      thief.set({ x: tx, y: FL + 2, s: 0.9, flip: flee <= 0, o: 1, walk: (creep > 0 && creep < 1) || (flee > 0 && flee < 1) ? tx * 0.05 : undefined, amt: flee > 0 ? 1.4 : 0.7, lean: flee > 0 ? -8 : 14, armF: flee > 0 ? 20 : 60 + es(t, 2.2, 2.35) * 40, armB: flee > 0 ? 60 : 20, head: flee > 0 ? 0 : 10 - es(t, 2.3, 2.4) * 20, blink: blinkAt(T, 9) });
+      const tx = flee > 0 ? lerp(1030, 1330, ease.out(flee)) : lerp(S.portrait ? 1120 : 1360, 1030, ease.out(creep));   // phone: he creeps in from the edge of the screen
+      thief.set({ x: tx, y: FL + 2, s: 0.9, flip: flee <= 0, o: S.portrait ? es(t, 1.45, 1.6) * (1 - es(t, 2.75, 2.85)) : 1, walk: (creep > 0 && creep < 1) || (flee > 0 && flee < 1) ? tx * 0.05 : undefined, amt: flee > 0 ? 1.4 : 0.7, lean: flee > 0 ? -8 : 14, armF: flee > 0 ? 20 : 60 + es(t, 2.2, 2.35) * 40, armB: flee > 0 ? 60 : 20, head: flee > 0 ? 0 : 10 - es(t, 2.3, 2.4) * 20, blink: blinkAt(T, 9) });
 
       /* v44 — be ready: lamps in every hand, and a light far off at an unexpected hour */
       const ready = es(t, 3.3, 3.55);
