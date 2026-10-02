@@ -90,7 +90,7 @@ export default {
       pose(bfly, { x: bx + 20, y: by - 44 + Math.sin(T * 5) * 8, sy: 0.6 + Math.abs(Math.sin(T * 14)) * 0.5, o: bump(t, 1.3, 1.95) });
 
       /* the shepherd: waits, counts, turns to look; v12c — leaves the 99 and climbs off to search */
-      const go = es(t, 2.08, 2.95, (x) => x);
+      const go = es(t, 2.08, S.portrait ? 3.4 : 2.95, (x) => x);   // phone: he is still on screen at the beat's pause
       const [sx, sy, sd] = along(CLIMB, go);
       const look = es(t, 1.66, 1.8);
       const shade_ = go > 0.05 ? 1 : 0;

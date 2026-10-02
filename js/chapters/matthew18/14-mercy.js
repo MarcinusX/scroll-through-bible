@@ -6,7 +6,7 @@
 import { C, person, blinkAt, pose, lerp, swing, sheet, shade, mix } from '../kit.js';
 import { es, ease, bump, fade } from '../../core/anim.js';
 import { kingHall, KH, kingPuppets, moody, DEBTOR, WIFE, STEWARD, kid, talentHeap, debtBill, saleTag, goods, bonds, bubble, tornPair, heartGlow, sparkle, kf, hand, headAt, hanging, tr, PI } from './lib.js';
-import { HEAP, BILL, DX } from './13-king.js';
+import { DX, hallSpots } from './13-king.js';
 
 const P = 0.45, FY = KH.FLOOR;
 
@@ -21,6 +21,7 @@ export default {
   build(S) {
     const H = kingHall(S, { P });
     const c = S.c;
+    const { heap: HEAP, bill: BILL, sale: SL } = hallSpots(S);
     const heapL = S.layer({ par: P, sh: 4 });
     const heap = heapL.add(`<g>${talentHeap(c, { w: 340, h: 250 })}</g>`);
     const flies = S.layer({ par: 0.3, sh: 6 });
@@ -35,7 +36,7 @@ export default {
     const K = kingPuppets(S, L);
     const steward = S.puppet(L.add(person(c, STEWARD)));
     L.add(`<g transform="translate(1010 ${FY + 6})">${sheet().p(c.cut(c.rect(-34, -40, 68, 40), 0.4, 6), C.wood).p(c.cut(c.rect(-38, -48, 76, 12), 0.3, 6), C.wood2).x(c.ribbon([[-34, -24], [34, -24]], 3), C.ochre).out()}</g>`);
-    L.add(`<g transform="translate(330 ${FY + 8})">${goods(c)}</g>`);
+    L.add(`<g transform="translate(${SL[0]} ${FY + 8})">${goods(c)}</g>`);
     const wifeK = moody(S, L, { ...WIFE, pose: 'kneel' });
     const wifeU = moody(S, L, WIFE);
     const kids = [2, 4].map((i) => S.puppet(L.add(kid(c, i))));
@@ -103,7 +104,7 @@ export default {
       pose(billR, { x: BILL[0] + tear * 14 + fall * 90, y: BILL[1] + fall * 520, r: tear * 16 + fall * 70, o: tear * (1 - es(t, 1.8, 1.9)) });
       const sink = es(t, 1.5, 1.9, ease.in);
       pose(heap, { x: HEAP[0], y: HEAP[1], sy: Math.max(0.001, 1 - sink), o: sink < 0.99 ? 1 : 0 });
-      swing(sale, 330, lerp(560, -900, es(t, 1.55, 1.8, ease.in)), T, 1.2, 0.8, 3);
+      swing(sale, SL[0], lerp(SL[1], -900, es(t, 1.55, S.portrait ? 1.7 : 1.8, ease.in)), T, 1.2, 0.8, 3);
       sparks.forEach((sp, i) => {
         const k = bump(t, 1.6 + i * 0.05, 2.0);
         pose(sp, { x: DX - 60 + i * 34, y: FY - 230 - (i % 2) * 30, s: k, r: T * 40, o: k });

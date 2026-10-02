@@ -22,7 +22,7 @@ export default {
     { v: 17, text: 'Jeśli i tych nie usłucha, donieś Kościołowi!' },
     { v: 17, cont: true, text: 'A jeśli nawet Kościoła nie usłucha, niech ci będzie jak poganin i celnik!' },
   ],
-  cam: { x: [0, 150], y: [0, 40], z: [1, 1.06] },
+  cam: { x: [0, 240], y: [0, 40], z: [1, 1.06] },
   build(S) {
     const c = S.c;
     sky(S, DAY);
@@ -55,11 +55,13 @@ export default {
     wallL.add(w.out());
     wallL.add(olive(c, 1400, 624, 0.8));
     const lamp = wallL.add(`<g>${smallLamp(c)}</g>`);
+    // phone: the brother, the Greek and the tax collector's booth stand closer, out from under the thread
+    const TX = S.portrait ? 1138 : 1188, AX = S.portrait ? 1096 : 1116, GX = S.portrait ? 1030 : 1046;
     const booth = taxBooth(c, 200, 200);
     const outL = S.layer({ par: 0.42, sh: 4 });
-    outL.add(`<g transform="translate(1188 ${GY - 30}) scale(.6)">${booth.back}</g>`);
+    outL.add(`<g transform="translate(${TX} ${GY - 30}) scale(.6)">${booth.back}</g>`);
     const taxman = S.puppet(outL.add(person(c, TAXMEN[0])));
-    outL.add(`<g transform="translate(1188 ${GY - 30}) scale(.6)">${booth.front}</g>`);
+    outL.add(`<g transform="translate(${TX} ${GY - 30}) scale(.6)">${booth.front}</g>`);
 
     /* the assembly: a still back row, and a front row of puppets */
     const L = S.layer({ par: P, sh: 5 });
@@ -105,17 +107,17 @@ export default {
 
       /* v17b — he will not listen: out through the gate, among the Gentile and the tax collector */
       const out = es(t, 1.4, 1.78, (x) => x);
-      const ax = lerp(950, 1116, out);
+      const ax = lerp(950, AX, out);
       const shake = bump(t, 0.7, 0.95) + bump(t, 1.2, 1.4);
       A.set({ x: ax, y: GY - 2 - out * 8, s: 0.92 - out * 0.04, flip: false, walk: out > 0 && out < 1 ? ax * 0.06 : undefined, head: Math.sin(t * 40) * 6 * shake - es(t, 0.3, 0.6) * 6, armF: 10, armB: 10 + shake * 40, blink: blinkAt(T, 2) });
       fade(aAngry, es(t, 0.3, 0.5));
       const nk = Math.max(bump(t, 0.7, 0.98), bump(t, 1.18, 1.45));
       const [ahx, ahy] = headAt(950, GY - 2, 0.92, false);
       pose(no, { x: ahx + 20, y: ahy - 16, s: nk > 0.05 ? 1 : 0, o: nk > 0.05 ? 1 : 0 });
-      gentile.set({ x: 1046, y: GY - 16, s: 0.88, flip: false, head: -4 + es(t, 1.7, 1.9) * 6, armF: 10 + es(t, 1.7, 1.9) * 20, blink: blinkAt(T, 7) });
-      taxman.set({ x: 1188, y: GY - 36, s: 0.84, flip: true, armF: 40 + es(t, 1.7, 1.9) * 20, blink: blinkAt(T, 8) });
+      gentile.set({ x: GX, y: GY - 16, s: 0.88, flip: false, head: -4 + es(t, 1.7, 1.9) * 6, armF: 10 + es(t, 1.7, 1.9) * 20, blink: blinkAt(T, 7) });
+      taxman.set({ x: TX, y: GY - 36, s: 0.84, flip: true, armF: 40 + es(t, 1.7, 1.9) * 20, blink: blinkAt(T, 8) });
 
-      S.cam.x = kf(t, [[0, 20], [1.0, 20], [1.5, 100], [1.9, 150]]);
+      S.cam.x = S.portrait ? kf(t, [[0, 20], [1.0, 20], [1.4, 150], [1.7, 240]]) : kf(t, [[0, 20], [1.0, 20], [1.5, 100], [1.9, 150]]);
       S.cam.y = 20;
       S.cam.z = kf(t, [[0, 1.02], [1.0, 1.04], [1.9, 1.04]]);
     };

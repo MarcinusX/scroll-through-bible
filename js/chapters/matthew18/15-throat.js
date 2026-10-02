@@ -19,7 +19,7 @@ export default {
     { v: 29 },
     { v: 30 },
   ],
-  cam: { x: [-40, 90], y: [0, 40], z: [1, 1.08] },
+  cam: { x: [-40, 175], y: [0, 40], z: [1, 1.08] },
   build(S) {
     const V = palaceStreet(S, { P });
     const c = S.c;
@@ -90,7 +90,7 @@ export default {
       pose(bars, { x: V.win[0], y: V.win[1] });
       fade(bars, peer);
 
-      S.cam.x = kf(t, [[0, -20], [0.5, 20], [2.0, 20], [3.1, 30], [3.6, 70]]);
+      S.cam.x = kf(t, [[0, -20], [0.5, 20], [2.0, 20], [3.1, 30], [3.6, S.portrait ? 175 : 70]]);   // phone: on to the prison window
       S.cam.y = 20;
       S.cam.z = kf(t, [[0, 1.02], [1.0, 1.04], [1.2, 1.07], [2.0, 1.07], [3.0, 1.04]]);
     };

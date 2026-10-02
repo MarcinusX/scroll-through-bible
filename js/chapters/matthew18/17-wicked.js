@@ -7,10 +7,10 @@
 import { C, person, blinkAt, pose, lerp, swing, sheet, shade, mix } from '../kit.js';
 import { es, ease, bump, fade } from '../../core/anim.js';
 import { kingHall, KH, kingPuppets, moody, DEBTOR, FELLOW, KING, JAILER, helmet, withFace, talentHeap, debtBill, bonds, shout, GLYPH, crossX, plate, qMark, throne, tornPair, kf, hand, headAt, hanging, tr, PI } from './lib.js';
-import { HEAP, BILL, DX } from './13-king.js';
+import { DX, hallSpots } from './13-king.js';
 
 const P = 0.45, FY = KH.FLOOR;
-const PL1 = [584, 330], PL2 = [1026, 330];
+const PL1_ = [584, 330], PL2_ = [1026, 330];
 
 /** a sepia picture plate of one kneeling before one seated (who, whom); mirrored or not */
 function memory(c, id, seated, kneeling, { refuse = false, torn = false } = {}) {
@@ -37,6 +37,10 @@ export default {
   build(S) {
     const H = kingHall(S, { P });
     const c = S.c;
+    const { heap: HEAP, bill: BILL } = hallSpots(S);
+    // phone: the second picture comes in from under the thread; the servant is led away slowly enough to be seen
+    const PL1 = S.portrait ? [600, 330] : PL1_, PL2 = S.portrait ? [1000, 330] : PL2_;
+    const AWAY = S.portrait ? [4.25, 420] : [3.95, 180];
     const heapL = S.layer({ par: P, sh: 4 });
     const heap = heapL.add(`<g>${talentHeap(c, { w: 340, h: 250 })}</g>`);
     const flies = S.layer({ par: 0.3, sh: 6 });
@@ -59,9 +63,9 @@ export default {
 
       /* v32a — called in: "You wicked servant!" */
       const inK = es(t, 0.0, 0.35, (x) => x);
-      const away = es(t, 3.3, 3.95, (x) => x);
+      const away = es(t, 3.3, AWAY[0], (x) => x);
       const bnd = es(t, 3.1, 3.16);
-      const dx = t < 3.3 ? lerp(300, DX, inK) : lerp(DX, 180, away);
+      const dx = t < 3.3 ? lerp(300, DX, inK) : lerp(DX, AWAY[1], away);
       const cower = es(t, 0.4, 0.6);
       debtor.set({ x: dx, y: FY + 4, s: 0.94, flip: false, o: 1 - bnd, walk: inK > 0 && inK < 1 ? dx * 0.06 : undefined, lean: -cower * 8, armF: 20 + cower * 40, armB: cower * 50, head: 10 + cower * 6, blink: blinkAt(T, 2) });
       debtor.mood({ sad: cower });

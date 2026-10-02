@@ -12,6 +12,10 @@ const P = 0.45, FY = KH.FLOOR;
 export const HEAP = [430, FY - 2];
 export const BILL = [440, 236];
 export const DX = 690;                 // where the debtor stands before the throne
+/** where the debt and the sale stand in the hall; on a phone they come in from the left edge (used by mercy, wicked too) */
+export function hallSpots(S) {
+  return S.portrait ? { heap: [500, FY - 2], bill: [545, 236], sale: [500, 452] } : { heap: HEAP, bill: BILL, sale: [330, 560] };
+}
 
 export default {
   id: 'mt18-king',
@@ -22,10 +26,11 @@ export default {
     { v: 24 },
     { v: 25 },
   ],
-  cam: { x: [-90, 30], y: [0, 40], z: [1, 1.06] },
+  cam: { x: [-90, 60], y: [0, 40], z: [1, 1.06] },
   build(S) {
     const H = kingHall(S, { P });
     const c = S.c;
+    const { heap: HP, bill: BL, sale: SL } = hallSpots(S);
 
     /* the debt: a mountain of gold, and its bill */
     const heapL = S.layer({ par: P, sh: 4 });
@@ -63,8 +68,9 @@ export default {
       queue.forEach((q) => {
         const a = 0.35 + q.i * 0.18;
         const step = bump(t, a, a + 0.34);
-        const x = 1090 + q.i * 58 - step * 50 - es(t, 0.9, 1.1) * 0;
-        q.p.set({ x, y: FY - 6 + q.i * 3, s: 0.88, flip: true, walk: step > 0.02 && step < 0.98 ? x * 0.06 : undefined, armF: 20 + bump(t, a + 0.1, a + 0.3) * 60, head: bump(t, a + 0.1, a + 0.3) * 10, o: 1 - es(t, 1.9, 2.1) * 0, blink: blinkAt(T, q.seed) });
+        const off = S.portrait ? es(t, 1.0 + q.i * 0.06, 1.5 + q.i * 0.06) : 0;   // phone: once they have paid they go out right, not left half-cut at the thread
+        const x = S.portrait ? 1040 + q.i * 34 - step * 20 + off * 420 : 1090 + q.i * 58 - step * 50 - es(t, 0.9, 1.1) * 0;   // phone: the queue stands closer, clear of the thread
+        q.p.set({ x, y: FY - 6 + q.i * 3, s: 0.88, flip: off < 0.01, walk: (step > 0.02 && step < 0.98) || (off > 0 && off < 1) ? x * 0.06 : undefined, armF: 20 + bump(t, a + 0.1, a + 0.3) * 60, head: bump(t, a + 0.1, a + 0.3) * 10, o: 1 - es(t, 1.9, 2.1) * 0, blink: blinkAt(T, q.seed) });
         const drop = es(t, a + 0.14, a + 0.3, ease.in);
         pose(coins[q.i], { x: x - 34, y: lerp(FY - 120, FY - 44, drop), o: drop > 0 && drop < 1 ? 1 : 0 });
       });
@@ -86,9 +92,9 @@ export default {
         g.set({ x: gx, y: FY - 4 - i * 6, s: 0.9, flip: leave > 0, o: es(t, 0.95, 1.0) * (1 - es(t, 1.85, 1.95)), walk: (inK > 0 && inK < 1) || (leave > 0 && leave < 1) ? gx * 0.06 : undefined, armF: 30, blink: blinkAt(T, 4 + i) });
       });
       const rise = es(t, 1.35, 1.8, ease.out);
-      pose(heap, { x: HEAP[0], y: HEAP[1], sy: Math.max(0.001, rise), o: rise > 0.01 ? 1 : 0 });
+      pose(heap, { x: HP[0], y: HP[1], sy: Math.max(0.001, rise), o: rise > 0.01 ? 1 : 0 });
       const bk = es(t, 1.55, 1.8, ease.back);
-      swing(bill, BILL[0], lerp(-900, BILL[1], bk), T, 1.2, 0.8, 2);
+      swing(bill, BL[0], lerp(-900, BL[1], bk), T, 1.2, 0.8, 2);
 
       /* v25 — sold, with his wife, his children and all he has */
       const fam = es(t, 2.2, 2.55, (x) => x);
@@ -99,9 +105,9 @@ export default {
         const kx = fx0 - 60 - i * 50 + (i ? 20 : 0);
         k.set({ x: kx + (fam >= 1 ? (i ? 150 : 100) : 0) * 0, y: FY + 6 + i * 4, s: 0.52, flip: false, walk: fam > 0 && fam < 1 ? kx * 0.1 : undefined, armF: 40, head: 8, o: es(t, 2.15, 2.22), blink: blinkAt(T, 7 + i) });
       });
-      pose(goodsEl, { x: 330, y: lerp(FY - 200, FY + 8, es(t, 2.3, 2.5, ease.in)), o: es(t, 2.28, 2.32) });
+      pose(goodsEl, { x: SL[0], y: lerp(FY - 200, FY + 8, es(t, 2.3, 2.5, ease.in)), o: es(t, 2.28, 2.32) });
       const sk = es(t, 2.45, 2.7, ease.back);
-      swing(sale, 330, lerp(-900, 560, sk), T, 1.2, 0.8, 3);
+      swing(sale, SL[0], lerp(-900, SL[1], sk), T, 1.2, 0.8, 3);
 
       /* the king: calls for the accounts, looks at the bill, points: sell him */
       const point = es(t, 2.1, 2.3);
@@ -109,7 +115,7 @@ export default {
       K.sit.mood({ angry: point * 0.8 });
       K.stand.set({ o: 0 });
 
-      S.cam.x = kf(t, [[0, 20], [1.0, 20], [1.6, -60], [2.3, -70]]);
+      S.cam.x = kf(t, [[0, S.portrait ? 55 : 20], [1.0, S.portrait ? 55 : 20], [1.6, -60], [2.3, -70]]);   // phone: further right while the servants pay in
       S.cam.y = 20;
       S.cam.z = kf(t, [[0, 1.02], [1.0, 1.02], [1.8, 1.03], [2.6, 1.05]]);
     };

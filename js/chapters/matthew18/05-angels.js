@@ -10,8 +10,8 @@ import { cloud } from '../../assets/nature.js';
 import { townSet, kid, kidHead, angel, fatherLight, withFace, faceBits, bowl, noble, speech, GLYPH, kf, hand, PI } from './lib.js';
 
 const P = 0.45, GY = 690;
-const KIDS = [[520, 0, false], [640, 2, false], [900, 4, true], [1010, 5, true]];   // x, look, flip
-const BEG = [1090, 694];
+const KIDS0 = [[520, 0, false], [640, 2, false], [900, 4, true], [1010, 5, true]];   // x, look, flip
+const BEG0 = [1090, 694];
 const FLOOR_Y = 330;                  // heaven's cloud floor (at rest)
 const FL = [800, 150];                // the Father's light
 
@@ -25,6 +25,13 @@ export default {
   cam: { x: [-20, 90], y: [-60, 30], z: [1, 1.06] },
   build(S) {
     const V = townSet(S, { gy: GY - 30, par: P });
+    // phone: the street's people (and so the angels over them) close in, so the beggar, the grand man and Jesus
+    // kneeling by the beggar stay inside the screen and clear of the thread
+    const PH = S.portrait;
+    const KIDS = PH ? [[545, 0, false], [650, 2, false], [875, 4, true], [960, 5, true]] : KIDS0;
+    const BEG = PH ? [1035, 694] : BEG0;
+    const JK = PH ? 985 : 1040;          // where Jesus kneels by the beggar
+    const RX = PH ? -100 : 0;            // the grand man's path
     const c = S.c;
 
     /* heaven: the light, and the cloud floor with the angels (one piece, lowered from the flies) */
@@ -70,7 +77,7 @@ export default {
       kids.forEach((k) => k.p.set({ x: k.x, y: GY + (k.i % 2) * 6, s: 0.5, flip: k.flip, armF: 40 + (k.i % 2 ? 30 : 0) + look * 40, armB: k.i % 2 ? 60 : 20, head: -look * 18 + (k.i === 1 ? 4 : 0), blink: blinkAt(T, k.seed) }));
 
       /* v10a — the grand man waves the beggar away; Jesus: take care! */
-      const rw = kf(t, [[0, 1360], [0.35, 1200], [0.7, 1185], [1.0, 1170], [1.6, 1380]], (u) => u);
+      const rw = kf(t, [[0, 1360], [0.35, 1200 + RX], [0.7, 1185 + RX], [1.0, 1170 + RX], [1.6, 1380]], (u) => u);
       const wave = bump(t, 0.3, 0.85);
       const stop = es(t, 0.55, 0.75);
       rich.set({ x: rw, y: GY + 16, s: 0.94, flip: t < 1.0, walk: (t < 0.35 || t > 1.0) && t < 1.6 ? rw * 0.06 : undefined, armF: 20 + wave * 70, armB: 10, head: 6 - stop * 10, lean: -stop * 6, o: 1 - es(t, 1.45, 1.6), blink: blinkAt(T, 5) });
@@ -91,18 +98,18 @@ export default {
       const go = es(t, 2.05, 2.35);
       const kn = es(t, 2.35, 2.42);
       const lift = es(t, 2.5, 2.8);
-      const jx = lerp(790, 1040, go);
+      const jx = lerp(790, JK, go);
       jesus.set({ x: jx, y: GY - 6, s: 1.0, flip: false, o: 1 - kn, walk: go > 0 && go < 1 ? jx * 0.05 : undefined, armF: 20 + bump(t, 0.4, 0.95) * 70 + es(t, 1.2, 1.4) * 30 * (1 - go), armB: 10 + bump(t, 0.45, 0.95) * 100 + es(t, 1.2, 1.4) * 120 * (1 - go), head: -es(t, 1.2, 1.4) * 14 * (1 - go), blink: blinkAt(T, 1) });
-      jKneel.set({ x: 1040, y: GY - 2, s: 1.0, flip: false, o: kn, armF: 50 + lift * 20, armB: 20, head: 8 - lift * 6, blink: blinkAt(T, 1) });
-      const [hx, hy] = hand(1040, GY - 2, 1.0, false, 50 + lift * 20, 0, 46);
+      jKneel.set({ x: JK, y: GY - 2, s: 1.0, flip: false, o: kn, armF: 50 + lift * 20, armB: 20, head: 8 - lift * 6, blink: blinkAt(T, 1) });
+      const [hx, hy] = hand(JK, GY - 2, 1.0, false, 50 + lift * 20, 0, 46);
       begUp.set({ x: lerp(BEG[0], hx + 34, lift), y: BEG[1], s: 0.5, flip: true, o: up, armF: 60 + lift * 20, head: -10, blink: blinkAt(T, 8) });
-      pose(warm, { x: 1070, y: GY, s: 0.7 + lift * 0.3, o: es(t, 2.4, 2.7) * 0.9 });
+      pose(warm, { x: JK + 30, y: GY, s: 0.7 + lift * 0.3, o: es(t, 2.4, 2.7) * 0.9 });
 
       /* Peter and John listen on the left */
       peter.set({ x: 410, y: GY + 4, s: 0.9, armF: 20, head: -es(t, 1.3, 1.6) * 14 + 4, blink: blinkAt(T, 2) });
       john.set({ x: 350, y: GY - 6, s: 0.86, armF: 10 + es(t, 1.3, 1.6) * 30, head: -es(t, 1.3, 1.6) * 16, blink: blinkAt(T, 3) });
 
-      S.cam.x = kf(t, [[0, 40], [0.9, 60], [1.1, 20], [2.0, 20], [2.4, 70]]);
+      S.cam.x = kf(t, [[0, PH ? 65 : 40], [0.9, PH ? 85 : 60], [1.1, 20], [2.0, 20], [2.4, 70]]);   // phone: a little further right while the grand man shoos the beggar
       S.cam.y = kf(t, [[0, 20], [1.0, 20], [1.4, -50], [2.0, -50], [2.4, 10]]);
       S.cam.z = kf(t, [[0, 1.04], [1.0, 1.04], [1.4, 1.0], [2.0, 1.0], [2.4, 1.05]]);
     };

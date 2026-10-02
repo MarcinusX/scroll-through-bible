@@ -13,9 +13,9 @@ import { DAY, along, scissors, paperHand, paperFoot, paperEye, stumbleCard, life
 const P = 0.42;
 const GATE = [600, 446];
 const LIFE = [[790, 668], [740, 636], [690, 598], [650, 548], [624, 490], [606, 452]];
-const FIRE = [[820, 668], [880, 640], [950, 606], [1010, 578], [1060, 560]];
+const FIRE0 = [[820, 668], [880, 640], [950, 606], [1010, 578], [1060, 560]];
 const CARD = [800, 214];
-const PIT = [1090, 552];
+const PIT0 = [1090, 552];
 
 export default {
   id: 'mt18-cut',
@@ -28,6 +28,10 @@ export default {
   cam: { x: [-40, 40], y: [0, 40], z: [1, 1.08] },
   build(S) {
     const c = S.c;
+    // phone: the valley of fire comes inward, so the pit is not cut by the edge and the thread
+    const FX = S.portrait ? -140 : 0;
+    const PIT = [PIT0[0] + FX, PIT0[1]];
+    const FIRE = FIRE0.map(([x, y], i) => [x + (FX * i) / (FIRE0.length - 1), y]);
     sky(S, ['#c7d9d8', '#ebe3cd', '#f4e1c4']);
     const hangL = S.layer({ par: 0.04, sh: 4 });
     const cl1 = hanging(hangL, cloud(c, 160), { x: 1180, y: 150, len: 700 });
@@ -37,7 +41,7 @@ export default {
     const landL = S.layer({ par: P, sh: 3 });
     const g = sheet();
     g.p(c.cut([[-900, 640], [-200, 600], [300, 520], [470, 468], [560, 444], [650, 440], [740, 470], [860, 540], [980, 580], [1200, 590], [2500, 600], [2500, 1700], [-900, 1700]], 1.2, 10), mix(C.hillNear, C.sage2, 0.4));
-    g.p(c.cut([[960, 570], [1010, 548], [1170, 544], [1240, 572], [1180, 604], [1020, 604]], 0.8, 8), mix(C.soilDark, C.hillNear, 0.25));
+    g.p(c.cut([[960, 570], [1010, 548], [1170, 544], [1240, 572], [1180, 604], [1020, 604]].map(([x, y]) => [x + FX, y]), 0.8, 8), mix(C.soilDark, C.hillNear, 0.25));
     g.p(c.ribbon(LIFE.map(([x, y]) => [x, y + 4]), (u) => 24 - u * 14, 2), mix(C.sand, C.hillNear, 0.25));
     g.p(c.ribbon(FIRE.map(([x, y]) => [x, y + 4]), (u) => 14 - u * 8, 2), mix(C.sand2, C.hillNear, 0.35));
     g.p(c.cut([[-900, 668], [2500, 668], [2500, 1700], [-900, 1700]], 1, 20), mix(C.sand, C.sage2, 0.45));

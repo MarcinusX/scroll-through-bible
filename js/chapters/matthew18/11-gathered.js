@@ -7,7 +7,7 @@ import { stars, moon, band } from '../../assets/nature.js';
 import { es, ease, bump, fade } from '../../core/anim.js';
 import { NIGHT, lowTable, smallLamp, woman, kf, PI } from './lib.js';
 
-const FLOOR = 716, CEIL = 180;
+const FLOOR = 716, CEIL0 = 180;
 
 export default {
   id: 'mt18-gathered',
@@ -17,23 +17,25 @@ export default {
   cam: { x: [-10, 10], y: [0, 40], z: [1, 1.1] },
   build(S) {
     const c = S.c;
+    // phone: the ceiling sits higher (a beam, not a third of the screen in wood) and the window comes in from the thread
+    const CEIL = S.portrait ? -170 : CEIL0, WX = S.portrait ? -100 : 0;
     sky(S, NIGHT);
     const starL = S.layer({ par: 0.03, sh: 1, flat: true });
     starL.add(stars(c, { x0: -600, x1: 2200, y0: -600, y1: 470, n: 70 }));
     const outL = S.layer({ par: 0.1, sh: 2 });
-    outL.add(`<g transform="translate(1110 330)"><circle r="80" fill="url(#halo-glow)" opacity=".4"/>${moon(c, 22)}</g>`);
+    outL.add(`<g transform="translate(${1110 + WX} 330)"><circle r="80" fill="url(#halo-glow)" opacity=".4"/>${moon(c, 22)}</g>`);
     outL.add(band(c, { y: 470, amps: [10, 5, 2], lens: [900, 300, 110], color: mix(C.hillFar, C.night, 0.6) }).markup + band(c, { y: 500, amps: [2, 1], lens: [300, 90], color: mix(C.lake, C.night, 0.55) }).markup);
 
     /* the room */
     const wallL = S.layer({ par: 0.3, sh: 3 });
     const wcol = mix(C.plaster, C.indigo, 0.35);
-    const win = [[1040, 520], [1040, 380], ...c.arc(1110, 380, 70, 60, PI, 2 * PI, 12), [1180, 520]];
+    const win = [[1040 + WX, 520], [1040 + WX, 380], ...c.arc(1110 + WX, 380, 70, 60, PI, 2 * PI, 12), [1180 + WX, 520]];
     const w = sheet();
     w.p(c.cut([[-900, -1200], [2500, -1200], [2500, FLOOR + 6], [-900, FLOOR + 6]], 1, 30) + c.hole(win, 0.5, 6), wcol);
     let blot = '';
     for (let i = 0; i < 12; i++) blot += c.cut(c.blob(c.rr(-200, 1800), c.rr(CEIL + 60, FLOOR - 60), c.rr(24, 60), c.rr(10, 22), 10, 0.2), 0.8, 6);
     w.x(blot, shade(wcol, -0.06), 'opacity=".5"');
-    w.p(c.ribbon(win.slice(0, -1), 10) + c.cut(c.rect(1030, 516, 160, 10), 0.3, 6), mix(C.wood2, C.indigo, 0.3));
+    w.p(c.ribbon(win.slice(0, -1), 10) + c.cut(c.rect(1030 + WX, 516, 160, 10), 0.3, 6), mix(C.wood2, C.indigo, 0.3));
     w.p(c.cut([[-900, -1200], [2500, -1200], [2500, CEIL], [-900, CEIL]], 0.8, 30), mix(C.wood2, C.night, 0.4));
     let beams = '';
     for (let x = -300; x < 1900; x += 100) beams += c.cut(c.rect(x, CEIL - 6, 22, 28), 0.3, 5);

@@ -48,13 +48,15 @@ export default {
     [[330, 336, 260], [560, 350, 240], [800, 344, 300], [1040, 350, 240], [1270, 336, 260], [120, 322, 220], [1480, 322, 220]].forEach(([x, y, w]) => { bank += `<g transform="translate(${x} ${y})">${cloud(c, w)}</g>`; });
     hv.add(`<g>${bank}</g>`);
     const gold = mix(C.sun, C.haloRim, 0.3);
-    const hL = [PX, AX].map((x) => ({ x, l: hv.add(`<g>${cordHalf(c, -1, gold)}</g>`), r: hv.add(`<g>${cordHalf(c, 1, gold)}</g>`), knot: hv.add(`<g opacity="0"><g transform="scale(.7)">${lightKnot(c, 22)}</g></g>`) }));
+    const HX = [PX, S.portrait ? 975 : AX];   // phone: heaven's loosened cord stays clear of the edge and the thread
+    const hL = HX.map((x) => ({ x, l: hv.add(`<g>${cordHalf(c, -1, gold)}</g>`), r: hv.add(`<g>${cordHalf(c, 1, gold)}</g>`), knot: hv.add(`<g opacity="0"><g transform="scale(.7)">${lightKnot(c, 22)}</g></g>`) }));
     const thread = S.layer({ par: 0.3, sh: 1, flat: true });
-    const lines = [PX, AX].map((x) => thread.add(`<g opacity="0"><path d="${c.ribbon([[x, HY + 26], [x, 540]], 2)}" fill="${C.haloRim}" opacity=".6"/></g>`));
+    const lines = HX.map((x) => thread.add(`<g opacity="0"><path d="${c.ribbon([[x, HY + 26], [x, 540]], 2)}" fill="${C.haloRim}" opacity=".6"/></g>`));
 
     /* the disciples and Jesus */
     const L = S.layer({ par: P, sh: 5 });
-    const others = [[470, CAST.thomas, false], [1130, CAST.matthew, true]].map(([x, o, flip], i) => ({ x, flip, seed: c.rr(0, 9), p: S.puppet(L.add(person(c, o))) }));
+    // phone: the two listeners stand inside the screen
+    const others = [[S.portrait ? 528 : 470, CAST.thomas, false], [S.portrait ? 1064 : 1130, CAST.matthew, true]].map(([x, o, flip], i) => ({ x, flip, seed: c.rr(0, 9), p: S.puppet(L.add(person(c, o))) }));
     const jesus = S.puppet(L.add(person(c, CAST.jesus)));
     const peter = S.puppet(L.add(person(c, CAST.peter)));
     const andrew = S.puppet(L.add(person(c, CAST.andrew)));
@@ -85,8 +87,9 @@ export default {
         pose(e.knot, { x, y, s: kk, o: kk > 0.02 ? 1 : 0 });
         const h = hL[i], hh = hk[i];
         const float = i === 1 ? es(t, 1.5, 1.9) : 0;
-        pose(h.l, { x: h.x - (1 - hh) * 36 - float * 30, y: HY - float * 20, r: (1 - hh) * 26 + float * 20 });
-        pose(h.r, { x: h.x + (1 - hh) * 36 + float * 30, y: HY - float * 14, r: -(1 - hh) * 26 - float * 20 });
+        const fw = S.portrait ? 12 : 30;
+        pose(h.l, { x: h.x - (1 - hh) * 36 - float * fw, y: HY - float * 20, r: (1 - hh) * 26 + float * 20 });
+        pose(h.r, { x: h.x + (1 - hh) * 36 + float * fw, y: HY - float * 14, r: -(1 - hh) * 26 - float * 20 });
         pose(h.knot, { x: h.x, y: HY, s: hh, o: hh > 0.02 ? 1 : 0 });
         fade(lines[i], i === 0 ? bump(t, 0.3, 0.95) : bump(t, 1.3, 1.95));
       });
@@ -109,7 +112,7 @@ export default {
       jesus.set({ x: 800, y: GY - 16, s: 1.0, armF: 30 + bump(t, 0.05, 0.9) * 40 + bump(t, 1.05, 1.9) * 40, armB: 10 + es(t, 2.05, 2.3) * 120, head: -es(t, 2.1, 2.4) * 10, o: 1, blink: blinkAt(T, 1) });
 
       S.cam.y = kf(t, [[0, 10], [0.5, 0], [1.0, 0], [1.5, 0], [2.0, 10], [2.6, 0]]);
-      S.cam.x = kf(t, [[0, -50], [1.0, -50], [1.4, 50], [2.0, 0]]);
+      S.cam.x = S.portrait ? kf(t, [[0, -20], [1.0, -20], [1.4, 20], [2.0, 0]]) : kf(t, [[0, -50], [1.0, -50], [1.4, 50], [2.0, 0]]);   // phone: a shorter pan keeps both ends in view
       S.cam.z = kf(t, [[0, 1.06], [1.9, 1.06], [2.2, 1.02]]);
     };
   },

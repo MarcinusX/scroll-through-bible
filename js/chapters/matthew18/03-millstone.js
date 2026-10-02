@@ -45,6 +45,7 @@ export default {
   cam: { x: [-20, 60], y: [-40, 40], z: [1, 1.08] },
   build(S) {
     const c = S.c;
+    const JX = S.portrait ? 580 : 520, RUN = S.portrait ? 690 : 636;   // phone: Jesus sits inside the left edge
     sky(S, DAY);
     const gloom = sky(S, ['#9aa0b4', '#d6ccc0', '#ecdcc4'], { name: 'gloom' }).layer;
     const hangL = S.layer({ par: 0.04, sh: 4 });
@@ -101,7 +102,7 @@ export default {
       const trip = es(t, 0.36, 0.42);
       const up = es(t, 1.35, 1.42);
       const run = es(t, 1.4, 1.8);
-      const kx = t < 1.4 ? lerp(1160, STONE_X + 26, walk) : lerp(STONE_X - 10, 636, run);
+      const kx = t < 1.4 ? lerp(1160, STONE_X + 26, walk) : lerp(STONE_X - 10, RUN, run);
       kidSt.set({ x: kx, y: GY - 4, s: 0.56, flip: true, o: (1 - trip) + up, walk: (walk > 0 && walk < 1) || (run > 0 && run < 1) ? kx * 0.1 : undefined, armF: 60, armB: run * 40, head: -4, blink: blinkAt(T, 6) });
       kidFall.set({ x: STONE_X - 44, y: GY, s: 0.56, flip: true, o: trip * (1 - up), lean: -trip * 20, armF: 70, armB: 50, head: 10, blink: blinkAt(T, 6) });
       const dim = trip * (1 - up * 0.8);
@@ -135,7 +136,7 @@ export default {
       const lament = es(t, 1.05, 1.3) * (1 - es(t, 1.95, 2.1));
       const point = es(t, 2.1, 2.3);
       const welcome = bump(t, 1.5, 2.0);
-      jesus.set({ x: 520, y: GY, s: 1.02, armF: 24 + bump(t, 0.05, 0.9) * 40 + welcome * 40 + point * 64, armB: 10 + lament * 120, head: -2 + lament * 10 - point * 4, blink: blinkAt(T, 1) });
+      jesus.set({ x: JX, y: GY, s: 1.02, armF: 24 + bump(t, 0.05, 0.9) * 40 + welcome * 40 + point * 64, armB: 10 + lament * 120, head: -2 + lament * 10 - point * 4, blink: blinkAt(T, 1) });
 
       S.cam.x = kf(t, [[0, 30], [0.5, 40], [1.2, 40], [2.0, 50]]);
       S.cam.y = kf(t, [[0, 20], [0.5, 6], [1.0, 6], [1.4, 0], [2.1, 16]]);

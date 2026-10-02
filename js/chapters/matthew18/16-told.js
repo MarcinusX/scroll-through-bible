@@ -15,7 +15,7 @@ export default {
     { v: 31, text: 'Współsłudzy jego widząc, co się działo, bardzo się zasmucili.' },
     { v: 31, cont: true, text: 'Poszli i opowiedzieli swemu panu wszystko, co zaszło.' },
   ],
-  cam: { x: [-60, 70], y: [-20, 40], z: [1, 1.08] },
+  cam: { x: [-90, 70], y: [-20, 40], z: [1, 1.08] },
   build(S) {
     const V = palaceStreet(S, { P });
     const c = S.c;
@@ -60,7 +60,7 @@ export default {
       K.stand.mood({ angry: es(t, 1.75, 1.95) });
       K.sit.set({ o: 0 });
 
-      S.cam.x = kf(t, [[0, 40], [1.0, 40], [1.5, -40]]);
+      S.cam.x = kf(t, [[0, 40], [1.0, 40], [1.5, S.portrait ? -85 : -40]]);   // phone: the king's balcony comes clear of the edge
       S.cam.y = kf(t, [[0, 20], [1.0, 20], [1.5, 0]]);
       S.cam.z = kf(t, [[0, 1.05], [1.0, 1.05], [1.5, 1.04]]);
     };
