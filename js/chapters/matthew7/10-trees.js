@@ -11,7 +11,7 @@ import { HARVEST_SKY, PROPHET, TRUE_P, handAt, orchardTree, fruit, rottenFruit, 
 
 const GL = 596;               // the ground line (the trees stand on it)
 const TG = 570, TB = 900;    // the good tree, the bad tree
-const FX = 1080;              // the fire
+const FX0 = 1080;             // the fire
 const PY = 744;               // where the preachers walk (v20)
 
 export default {
@@ -26,6 +26,7 @@ export default {
   cam: { x: [-30, 40], y: [-40, 60], z: [1, 1.14] },
   build(S) {
     const c = S.c;
+    const FX = S.portrait ? 1010 : FX0;     // phone: the fire clear of the progress thread
     sky(S, HARVEST_SKY);
     const hangL = S.layer({ par: 0.04, sh: 5 });
     const sunEl = hanging(hangL, sun(c, 44), { x: 1240, y: 150, len: 700 });

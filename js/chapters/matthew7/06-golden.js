@@ -62,8 +62,13 @@ export default {
     const think = fly.add(`<g>${thought(c, self, { w: 92, h: 72 })}</g>`);
 
     /* the Law and the Prophets, and their golden threads */
-    const scrolls = [[440, tr('Prawo', 'The Law')], [1160, tr('Prorocy', 'The Prophets')]].map(([x, t], i) => ({ x, i, el: fly.add(`<g>${hangScroll(c, t, 5, { w: 150, h: 190, size: 24 })}</g>`) }));
-    const threads = [
+    // phone: the Law and the Prophets hang just above the loop instead of at the far edges
+    const SCX = S.portrait ? [598, 990] : [440, 1160];
+    const scrolls = [[SCX[0], tr('Prawo', 'The Law')], [SCX[1], tr('Prorocy', 'The Prophets')]].map(([x, t], i) => ({ x, i, el: fly.add(`<g>${hangScroll(c, t, 5, { w: 150, h: 190, size: 24 })}</g>`) }));
+    const threads = S.portrait ? [
+      fly.add(`<g>${goldThread(c, [[598, 446], [588, 476], [576, 506], [564, 534]], 5)}</g>`),
+      fly.add(`<g>${goldThread(c, [[990, 446], [1006, 476], [1022, 506], [1036, 534]], 5)}</g>`),
+    ] : [
       fly.add(`<g>${goldThread(c, [[440, 470], [470, 510], [510, 548], [552, 578]], 5)}</g>`),
       fly.add(`<g>${goldThread(c, [[1160, 470], [1130, 510], [1090, 548], [1048, 578]], 5)}</g>`),
     ];

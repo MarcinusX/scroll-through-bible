@@ -257,7 +257,7 @@ export function doorLeafW(c, w = 96, h = 190, col = C.wood) {
   return s.out();
 }
 /** a row of house fronts with arched doorway holes at xs (origin world); returns markup */
-export function streetFronts(c, xs, { gy = 700, top = 390, dw = 96, dh = 190, cols = [C.plaster, mix(C.plaster, C.peach, 0.3), mix(C.plaster, C.skyVeil, 0.35)] } = {}) {
+export function streetFronts(c, xs, { gy = 700, top = 390, dw = 96, dh = 190, cols = [C.plaster, mix(C.plaster, C.peach, 0.3), mix(C.plaster, C.skyVeil, 0.35)], winSide = null } = {}) {
   let out = '';
   const edges = [-900, ...xs.slice(1).map((x, i) => (xs[i] + x) / 2), 2500];
   xs.forEach((x, i) => {
@@ -270,7 +270,7 @@ export function streetFronts(c, xs, { gy = 700, top = 390, dw = 96, dh = 190, co
     s.p(c.ribbon(hole.map(([px, py]) => [x + (px - x) * 1.08, py - 4]), 9), shade(cols[i % cols.length], -0.14));
     s.p(c.cut([[x - dw / 2 - 16, gy], [x + dw / 2 + 16, gy], [x + dw / 2 + 12, gy + 10], [x - dw / 2 - 12, gy + 10]], 0.4, 6), C.stone2);
     // a window and a potted plant
-    const wx = x + (i % 2 ? -1 : 1) * (dw / 2 + 60);
+    const wx = x + (winSide ? winSide[i] : i % 2 ? -1 : 1) * (dw / 2 + 60);     // winSide: optional per-house side (±1) of the window
     s.p(c.cut(c.rect(wx - 22, ty + 50, 44, 40), 0.4, 5), C.soilDark);
     s.p(c.ribbon([[wx - 26, ty + 92], [wx + 26, ty + 92]], 6), shade(cols[i % cols.length], -0.2));
     out += s.out();

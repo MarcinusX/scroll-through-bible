@@ -66,7 +66,8 @@ export default {
 
     const cur = curtains(S);
 
-    const AX = 536, NX = 664, WX = 990, PX = 1112;
+    // phone: the front row closes in, so the man with the scoop and the one who receives the basket stay on screen
+    const [AX, NX, WX, PX] = S.portrait ? [560, 680, 940, 1046] : [536, 664, 990, 1112];
     return (t, time) => {
       const T = time;
       cur.set(es(t, 0.05, 0.85), T);

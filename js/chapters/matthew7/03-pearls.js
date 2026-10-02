@@ -17,9 +17,11 @@ export default {
     { v: 6, text: 'Nie dawajcie psom tego, co święte,' },
     { v: 6, cont: true, text: 'i nie rzucajcie swych pereł przed świnie, by ich nie podeptały nogami, i obróciwszy się, was nie poszarpały.' },
   ],
-  cam: { x: [-40, 60], y: [0, 50], z: [1, 1.1] },
+  cam: { x: [-40, 90], y: [0, 50], z: [1, 1.1] },
   build(S) {
     const c = S.c;
+    // phone: the pigsty moves left and the camera pans further right, so all three pigs stay clear of the thread
+    const SX = S.portrait ? -60 : 0;
     sky(S, VILLAGE);
     const hangL = S.layer({ par: 0.04, sh: 5 });
     const sunEl = hanging(hangL, sun(c, 42), { x: 1230, y: 150, len: 700 });
@@ -47,17 +49,17 @@ export default {
     /* the lane and the pigsty on the right */
     const ground = S.layer({ par: 0.4, sh: 3 });
     ground.add(sheet().p(c.ridge(c.wave(GY - 20, [3, 1], [500, 150]), -900, 2500, 1700, 12, 1), mix(C.sand, C.sand2, 0.35)).out());
-    ground.add(`<g transform="translate(1090 ${GY + 8})">${mud(c, 360, 50)}</g>` + grass(c, { x0: -300, x1: 1900, y: GY - 16, n: 30, h: 12, color: C.olive }));
+    ground.add(`<g transform="translate(${1090 + SX} ${GY + 8})">${mud(c, 360, 50)}</g>` + grass(c, { x0: -300, x1: 1900, y: GY - 16, n: 30, h: 12, color: C.olive }));
     const fenceBack = sheet();
     let posts = '';
-    for (let x = 900; x <= 1300; x += 50) posts += c.cut([[x - 5, GY - 20], [x - 4, GY - 96], [x + 4, GY - 98], [x + 5, GY - 20]], 0.4, 6);
-    fenceBack.p(posts, C.wood2).p(c.ribbon([[896, GY - 80], [1304, GY - 84]], 7) + c.ribbon([[896, GY - 50], [1304, GY - 52]], 7), C.wood);
+    for (let x = 900 + SX; x <= 1300 + SX; x += 50) posts += c.cut([[x - 5, GY - 20], [x - 4, GY - 96], [x + 4, GY - 98], [x + 5, GY - 20]], 0.4, 6);
+    fenceBack.p(posts, C.wood2).p(c.ribbon([[896 + SX, GY - 80], [1304 + SX, GY - 84]], 7) + c.ribbon([[896 + SX, GY - 50], [1304 + SX, GY - 52]], 7), C.wood);
     ground.add(fenceBack.out());
 
     /* pearls, pigs, dogs, the man */
     const act = S.layer({ par: 0.5, sh: 5 });
-    const pearls = Array.from({ length: 9 }, (_, i) => ({ i, x: 990 + i * 26 + c.rr(-8, 8), y: GY + 8 + c.rr(-6, 10), el: act.add(`<g>${pearl(8)}</g>`) }));
-    const PIGS = [[1030, 0.95], [1150, 1.05], [1250, 0.9]].map(([x, s], i) => ({ i, x, s, el: act.add(`<g>${pig(c, { col: [mix(C.roseRobe, C.blushVeil, 0.3), mix(C.roseRobe, C.clay, 0.2), C.blushVeil][i], down: i !== 1 })}</g>`) }));
+    const pearls = Array.from({ length: 9 }, (_, i) => ({ i, x: (S.portrait ? 950 : 990) + SX + i * 26 + c.rr(-8, 8), y: GY + 8 + c.rr(-6, 10), el: act.add(`<g>${pearl(8)}</g>`) }));
+    const PIGS = (S.portrait ? [[950, 0.95], [1035, 1.05], [1110, 0.9]] : [[1030, 0.95], [1150, 1.05], [1250, 0.9]]).map(([x, s], i) => ({ i, x: x + SX, s, el: act.add(`<g>${pig(c, { col: [mix(C.roseRobe, C.blushVeil, 0.3), mix(C.roseRobe, C.clay, 0.2), C.blushVeil][i], down: i !== 1 })}</g>`) }));
     const DOGS = [[520, 0], [610, 1]].map(([x, i]) => { const el = act.add(streetDog(c, { col: [mix(C.wood3, C.dune, 0.4), mix(C.rock3, C.wood2, 0.5)][i] })); return { x, i, el, hd: el.querySelector('.hd'), jaw: el.querySelector('.jaw') }; });
     const MO = manOf(c, { robe: C.dustyBlue, mantle: C.clayMantle, hairStyle: 'wrap', veil: C.ochreRobe, beard: 'short', skin: C.skin2, belt: C.leather });
     const man = S.puppet(act.add(person(c, MO)));
@@ -84,7 +86,7 @@ export default {
       const walk2 = es(t, 1.02, 1.22);
       const toss = es(t, 1.2, 1.36);
       const flee = es(t, 1.62, 1.95, (u) => u);
-      const mx = lerp(760, 690, come) + place * -40 + walk2 * 230 - flee * 420;
+      const mx = lerp(760, 690, come) + place * -40 + walk2 * (230 + SX) - flee * 420;
       const left = t < 1.0 || t > 1.62;
       const walking = (come > 0 && come < 1) || (walk2 > 0 && walk2 < 1) || flee > 0;
       const armF = 40 + lower * 30 + lift * 100 * (1 - place * 0.2) - place * 50 * seg(t, 0.86, 1) + toss * 80 * (1 - es(t, 1.45, 1.6)) + flee * 40;
@@ -124,8 +126,8 @@ export default {
       const sk = seg(t, 1.72, 2.0);
       pose(scrap, { x: mx + 40 + sk * 120, y: GY - 110 - Math.sin(sk * PI) * 60 + sk * 30, r: sk * 300, o: sk > 0 && sk < 1 ? 1 : 0 });
 
-      S.cam.x = lerp(-30, 40, es(t, 0.95, 1.25));
-      S.cam.z = 1.03 + bump(t, 0.3, 0.95) * 0.04;
+      S.cam.x = lerp(S.portrait ? -10 : -30, S.portrait ? 80 : 40, es(t, 0.95, 1.25));
+      S.cam.z = 1.03 + bump(t, 0.3, 0.95) * (S.portrait ? 0 : 0.04);
       S.cam.y = 24;
     };
   },

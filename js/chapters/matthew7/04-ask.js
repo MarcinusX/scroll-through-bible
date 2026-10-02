@@ -9,7 +9,7 @@ import { oilLamp } from '../../assets/things.js';
 import { seg, es, ease, bump } from '../../core/anim.js';
 import { VILLAGE, manOf, womanOf, childOf, traveller, handAt, streetFronts, doorLeafW, doorLight, doorSpill, loaf, coin, hungWord, sparkle, voiceRings, kf, tr, PI } from './lib.js';
 
-const D = [490, 800, 1110];
+const D0 = [490, 800, 1110];
 const GY = 700;          // the wall's foot, the thresholds
 const SY = 738;          // the street
 const DW = 96, DH = 190;
@@ -27,6 +27,8 @@ export default {
   cam: { x: [-110, 110], y: [0, 50], z: [1, 1.14] },
   build(S) {
     const c = S.c;
+    // phone: the outer doors move in, and the camera pans less, so the first and last doors stay on screen
+    const D = S.portrait ? [540, 800, 1062] : D0;
     sky(S, VILLAGE);
     const hangL = S.layer({ par: 0.04, sh: 5 });
     const sunEl = hanging(hangL, sun(c, 42), { x: 1240, y: 140, len: 700 });
@@ -44,7 +46,7 @@ export default {
 
     /* the house fronts and the doors */
     const wall = S.layer({ par: P, sh: 4 });
-    wall.add(streetFronts(c, D, { gy: GY, top: 432, dw: DW, dh: DH }));
+    wall.add(streetFronts(c, D, { gy: GY, top: 432, dw: DW, dh: DH, ...(S.portrait ? { winSide: [-1, -1, 1] } : {}) }));   // phone: the first house's window would overlap the next house
     const leaves = D.map((x, i) => {
       const hinge = i === 2 ? x + DW / 2 : x - DW / 2;
       return { i, hinge, dir: i === 2 ? -1 : 1, el: wall.add(`<g>${doorLeafW(c, DW, DH, [C.wood, mix(C.wood, C.teal2, 0.35), mix(C.wood2, C.terracotta, 0.2)][i])}</g>`) };
@@ -94,7 +96,7 @@ export default {
       /* v7a — ask: hands held out, a loaf given */
       const give = es(t, 0.48, 0.68);
       const lift = es(t, 0.7, 0.86);
-      const ax = 594;
+      const ax = D[0] + 104;
       asker.set({ x: ax, y: SY, s: 1.02, flip: true, armF: 60 + lift * 50, armB: 50 + lift * 60, head: 6 - lift * 14 - es(t, 3.1, 3.4) * 4, blink: blinkAt(T, 2) });
       giver.set({ x: D[0], y: GY, s: 0.92, armF: 20 + give * 70 * (1 - es(t, 0.75, 0.9)), armB: 10 + es(t, 0.8, 0.95) * 40, head: 4, o: open[0] > 0.02 ? 1 : 0, blink: blinkAt(T, 4) });
       const [gx, gy] = handAt(D[0], GY, 0.92, false, 90);
@@ -120,7 +122,7 @@ export default {
       pose(glint, { x: up > 0 ? bx2 + 6 : CX + 6, y: (up > 0 ? hy : CY) - 8, s: gk * (0.9 + Math.sin(T * 3) * 0.1), r: T * 50, o: Math.min(1, gk) });
 
       /* v7c — knock: three knocks, the door opens, the old man welcomes him */
-      const kx = 1016;
+      const kx = D[2] - 94;
       const kk = bump(t, 2.08, 2.18) + bump(t, 2.18, 2.28) + bump(t, 2.28, 2.38);
       const welcome = es(t, 2.6, 2.8);
       knock.set({ x: kx + welcome * 20, y: SY, s: 1.02, armF: 70 + kk * 30 - welcome * 40, armB: 10 + welcome * 60, head: -welcome * 6, walk: welcome > 0 && welcome < 1 ? kx * 0.05 : undefined, blink: blinkAt(T, 8) });
@@ -130,7 +132,7 @@ export default {
       /* v8 — every door stands open; a child comes to the seeker's door */
       kid.set({ x: D[1], y: GY, s: 0.56, flip: true, armF: 20 + es(t, 3.25, 3.45) * 120, armB: 10 + es(t, 3.25, 3.45) * 130, o: open[1] > 0.02 ? 1 : 0, blink: blinkAt(T, 9) });
 
-      S.cam.x = kf(t, [[0, -80], [0.9, -80], [1.2, 20], [1.9, 20], [2.2, 90], [2.9, 90], [3.3, 0]]);
+      S.cam.x = S.portrait ? kf(t, [[0, -40], [0.9, -40], [1.2, 20], [1.9, 20], [2.2, 50], [2.9, 50], [3.3, 0]]) : kf(t, [[0, -80], [0.9, -80], [1.2, 20], [1.9, 20], [2.2, 90], [2.9, 90], [3.3, 0]]);
       S.cam.z = kf(t, [[0, 1.1], [2.9, 1.1], [3.3, 1.0]]);
       S.cam.y = kf(t, [[0, 40], [2.9, 40], [3.3, 10]]);
     };

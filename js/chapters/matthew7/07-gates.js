@@ -26,7 +26,7 @@ export default {
     { v: 13, cont: true, text: 'Bo szeroka jest brama i przestronna ta droga, która prowadzi do zguby, a wielu jest takich, którzy przez nią wchodzą.' },
     { v: 14 },
   ],
-  cam: { x: [-110, 200], y: [-150, 60], z: [1, 1.3] },
+  cam: { x: [-110, 290], y: [-150, 60], z: [1, 1.3] },
   build(S) {
     const c = S.c;
     const sk = sky(S, VILLAGE);
@@ -114,7 +114,8 @@ export default {
       const [ox, oy] = along(NARROW, 0.12 + ok * 0.3);
       other.set({ x: ox, y: oy, s: nS(oy) * 0.96, walk: ok > 0 && ok < 1 ? ox * 0.08 : undefined, o: seg(t, 2.05, 2.15), armF: 20, blink: blinkAt(T, 7) });
 
-      S.cam.x = kf(t, [[0, 0], [0.9, 0], [1.2, -100], [1.9, -100], [2.3, 170], [3, 190]]);
+      // phone: further right, so the narrow gate (the subject of v13a and v14) is clear of the progress thread
+      S.cam.x = S.portrait ? kf(t, [[0, 140], [0.9, 140], [1.2, -100], [1.9, -100], [2.3, 270], [3, 290]]) : kf(t, [[0, 0], [0.9, 0], [1.2, -100], [1.9, -100], [2.3, 170], [3, 190]]);
       S.cam.y = kf(t, [[0, 40], [0.9, 30], [1.2, 20], [1.9, 20], [2.3, -110], [3, -140]]);
       S.cam.z = kf(t, [[0, 1.1], [0.9, 1.06], [1.2, 1.12], [1.9, 1.12], [2.3, 1.26], [3, 1.28]]);
     };

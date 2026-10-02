@@ -20,7 +20,7 @@ export default {
     { v: 27, text: 'Spadł deszcz, wezbrały potoki, zerwały się wichry i rzuciły się na ten dom.' },
     { v: 27, cont: true, text: 'I runął, a upadek jego był wielki».' },
   ],
-  cam: { x: [-40, 40], y: [-30, 60], z: [1, 1.14] },
+  cam: { x: [-40, 130], y: [-30, 60], z: [1, 1.14] },
   build(S) {
     const c = S.c;
     sky(S, VILLAGE);
@@ -113,7 +113,7 @@ export default {
       const run = es(t, 1.35, 1.8, (u) => u);
       const aghast = es(t, 2.15, 2.35);
       lounger.set({ x: HX + 150, y: HY + 4, s: 1.0, flip: true, armF: 150, armB: 150, head: -6 + bump(t, 1.1, 1.3) * -10, o: seg(t, 0.52, 0.56) * (1 - up), blink: blinkAt(T, 2) });
-      const rx2 = lerp(HX + 150, 1086, run), ry2 = lerp(HY + 4, 610, run);
+      const rx2 = lerp(HX + 150, S.portrait ? 1066 : 1086, run), ry2 = lerp(HY + 4, S.portrait ? 611 : 610, run);
       runner.set({ x: rx2, y: ry2, s: lerp(1.0, 0.86, run), flip: aghast > 0.5, walk: run > 0 && run < 1 ? rx2 * 0.09 : undefined, amt: 1.5, armF: 40 + run * 30 * (1 - aghast) + aghast * 150, armB: 30 + aghast * 160, head: aghast * 6, lean: run > 0 && run < 1 ? 8 : 0, o: up, blink: blinkAt(T, 2) });
       // before he lounges: he builds (a quick bustle in front of the house)
       if (t < 0.52) runner.set({ x: HX + 150 - Math.sin(t * 30) * 20, y: HY + 4, s: 1.0, flip: true, walk: t * 30, armF: 60 + Math.abs(Math.sin(t * 50)) * 60, armB: 20, o: 1, blink: blinkAt(T, 2) });
@@ -132,7 +132,7 @@ export default {
 
       S.cam.z = 1.06 + es(t, 2.0, 2.3) * 0.04;
       S.cam.y = 30;
-      S.cam.x = Math.sin(T * 7) * storm * 2 + es(t, 1.3, 1.8) * 16;
+      S.cam.x = Math.sin(T * 7) * storm * 2 + es(t, 1.3, 1.8) * (S.portrait ? 120 : 16);     // phone: follow him to the bank, clear of the thread
     };
   },
 };

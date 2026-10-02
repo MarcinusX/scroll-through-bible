@@ -98,7 +98,7 @@ export default {
       const raise = es(t, 2.05, 2.28) * (1 - es(t, 3.3, 3.5));
       const call = es(t, 0.25, 0.4) * (1 - es(t, 1.0, 1.12)) + es(t, 2.05, 2.2) * (1 - es(t, 3.0, 3.1));
       BO.forEach((b) => {
-        const home = 450 + b.i * 92;
+        const home = S.portrait ? 494 + b.i * 86 : 450 + b.i * 92;     // phone: the first one is not sliced by the edge
         const x = lerp(home - 360, home, arrive) - away * (150 + b.i * 20);
         const y = GY + 6 + (b.i % 2) * 10 - away * 80;
         const s = 1.06 - away * 0.36;
@@ -118,7 +118,7 @@ export default {
         });
       });
       const nk = es(t, 2.2, 2.36, ease.back) * (1 - es(t, 2.95, 3.05));
-      const [nx, ny] = headAt(542, GY + 16, 1.06, false);
+      const [nx, ny] = headAt(S.portrait ? 580 : 542, GY + 16, 1.06, false);
       pose(inName, { x: nx + 26, y: ny - 34, s: nk, o: nk > 0.01 ? 1 : 0 });
 
       /* Jesus: welcomes the doers, turns to the boasters and lifts his hand */

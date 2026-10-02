@@ -16,7 +16,7 @@ export default {
     { v: 28 },
     { v: 29 },
   ],
-  cam: { x: [-20, 30], y: [-20, 80], z: [1, 1.12] },
+  cam: { x: [-20, 80], y: [-20, 80], z: [1, 1.12] },
   build(S) {
     const c = S.c;
     /* the crowd on its feet: sprites between the seated rows and Jesus' layer, crossfaded with the rows */
@@ -47,12 +47,12 @@ export default {
     /* the front row, and the scribes on the right */
     const front = S.layer({ par: 0.6, sh: 5 });
     front.add(`<g>${sheet().p(c.ridge(c.wave(FY - 14, [4, 2], [500, 160]), -900, 2500, 1700, 12, 1), mix(C.sage2, C.hillNear, 0.3)).out()}</g>`);
-    const FR = [[330, womanOf(c, { robe: C.mauve }), false], [460, manOf(c, { robe: C.ochreRobe }), false], [600, womanOf(c, { robe: C.tealRobe, veil: C.blushVeil }), false], [990, manOf(c, { robe: C.sageRobe }), true]].map(([x, o, flip], i) => ({ x, flip, i, seed: c.rr(0, 9), sit: S.puppet(front.add(person(c, { ...o, pose: 'sit' }))), st: S.puppet(front.add(person(c, o))) }));
+    const FR = [[330, womanOf(c, { robe: C.mauve }), false], [460, manOf(c, { robe: C.ochreRobe }), false], [600, womanOf(c, { robe: C.tealRobe, veil: C.blushVeil }), false], [S.portrait ? 930 : 990, manOf(c, { robe: C.sageRobe }), true]].map(([x, o, flip], i) => ({ x, flip, i, seed: c.rr(0, 9), sit: S.puppet(front.add(person(c, { ...o, pose: 'sit' }))), st: S.puppet(front.add(person(c, o))) }));
     const SCR = [0, 1].map((i) => ({ i, seed: c.rr(0, 9), p: S.puppet(front.add(person(c, { ...scribe(c, i), holdF: '' }))) }));
     const scrolls = SCR.map(() => front.add(`<g>${smallScroll(c, 64, 42)}</g>`));
     const quotes = [
       front.add(`<g>${say(c, tr(['Starsi', 'uczą…'], ['The elders', 'teach…']), { size: 15, side: -1 })}</g>`),
-      front.add(`<g>${say(c, tr(['A rabbi', 'mówił…'], ['But the rabbi', 'said…']), { size: 15, side: 1 })}</g>`),
+      front.add(`<g>${say(c, tr(['A rabbi', 'mówił…'], ['But the rabbi', 'said…']), { size: 15, side: S.portrait ? -1 : 1 })}</g>`),     // phone: the second bubble opens to the left, onto the screen
     ];
 
 
@@ -80,17 +80,17 @@ export default {
       const come = es(t, 1.02, 1.25);
       const read = es(t, 1.2, 1.35);
       SCR.forEach((sc) => {
-        const x = lerp(1500 + sc.i * 110, 1120 + sc.i * 116, come);
+        const x = lerp(1500 + sc.i * 110, S.portrait ? 1006 + sc.i * 88 : 1120 + sc.i * 116, come);     // phone: both scribes on screen
         sc.p.set({ x, y: FY + 2, s: 0.98, flip: true, walk: come > 0 && come < 1 ? x * 0.06 : undefined, armF: 40 + read * 40, armB: 10 + read * (sc.i ? 70 : 20), head: 8 - read * 4, blink: blinkAt(T, sc.seed) });
         const [hx, hy] = headAt(x, FY + 2, 0.98, true);
         pose(scrolls[sc.i], { x: x - 64, y: FY - 120, r: -8, o: seg(t, 1.0, 1.05) });
         const qk = es(t, 1.3 + sc.i * 0.12, 1.45 + sc.i * 0.12, ease.back);
-        pose(quotes[sc.i], { x: hx + (sc.i ? 6 : -14), y: hy - 14 - sc.i * 34, s: qk * 0.95, o: qk > 0.01 ? 0.92 : 0 });
+        pose(quotes[sc.i], { x: hx + (sc.i && !S.portrait ? 6 : -14), y: hy - 14 - sc.i * 34, s: qk * 0.95, o: qk > 0.01 ? 0.92 : 0 });
       });
 
       S.cam.z = kf(t, [[0, 1.06], [0.8, 1.08], [1.1, 1.04]]);
       S.cam.y = kf(t, [[0, 60], [0.8, 50], [1.1, 40]]);
-      S.cam.x = kf(t, [[0, 0], [1.0, 0], [1.3, 20]]);
+      S.cam.x = kf(t, [[0, 0], [1.0, 0], [1.3, S.portrait ? 70 : 20]]);
     };
   },
 };
