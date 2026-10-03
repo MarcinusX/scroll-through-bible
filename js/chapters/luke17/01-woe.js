@@ -11,7 +11,7 @@ import { roadSet, ROAD9, roadFour, child, clayLamp, stumbleStone, shadowPerson, 
 
 const JX = 700, JY = 718;
 const KID = { x0: 1200, x1: 980, y: 684 };      // the boy walks down the road
-const MAN = { x: 1090, y: 694 };                 // the man in shadow at the roadside
+const MAN = { x: 1090, y: 694 };                 // the man in shadow at the roadside (phone: MANX)
 const NEAR = [[880, 692, 0.9], [960, 670, 0.86], [1010, 656, 0.8], [800, 716, 1]];   // stones on the near road
 const FAR = [[1110, 610, 0.5], [1160, 572, 0.42], [1090, 526, 0.34], [1020, 486, 0.3]];  // and on up the hill
 
@@ -22,8 +22,9 @@ export default {
     { v: 1, text: 'Rzekł znowu do swoich uczniów: «Niepodobna, żeby nie przyszły zgorszenia;' },
     { v: 1, cont: true, text: 'lecz biada temu, przez którego przychodzą.' },
   ],
-  cam: { x: [-20, 80], y: [0, 60], z: [1, 1.12] },
+  cam: { x: [-20, 120], y: [0, 60], z: [1, 1.12] },
   build(S) {
+    const MANX = S.portrait ? 1066 : MAN.x;        // phone: a step nearer, clear of the progress thread
     const R = roadSet(S, { village: false });
     const c = S.c;
     /* stones far up the road (on the far road's sheet) */
@@ -81,7 +82,7 @@ export default {
       /* the boy with his lamp comes down the road */
       const walk = es(t, 0.3, 1.9, (u) => u);
       const stop = es(t, 2.45, 2.55);
-      const kx = lerp(KID.x0, KID.x1, walk) + stop * 10;
+      const kx = lerp(S.portrait ? 1120 : KID.x0, KID.x1, walk) + stop * 10;
       const ky = KID.y + (1 - walk) * -14;
       const walking = walk > 0 && walk < 1;
       kid.set({ x: kx, y: ky, s: 0.62, flip: true, walk: walking ? kx * 0.09 : undefined, armF: 70 + stop * 30, armB: stop * 60, lean: -stop * 8, head: 4 + stop * 10, blink: blinkAt(T, 6) });
@@ -94,17 +95,18 @@ export default {
       const mIn = es(t, 1.9, 2.15);
       const push = es(t, 2.2, 2.45);
       const recoil = es(t, 2.6, 2.85);
-      man.set({ x: MAN.x + (1 - mIn) * 120 + recoil * 20, y: MAN.y, s: 0.94, flip: true, o: seg(t, 1.9, 1.95), walk: mIn > 0 && mIn < 1 ? t * 30 : undefined, armF: 20 + push * 50 * (1 - recoil), armB: recoil * 60, lean: push * 16 * (1 - recoil) - recoil * 6, head: 6 - recoil * 14, blink: 0 });
-      const [mhx, mhy] = hand(MAN.x, MAN.y, 0.94, true, 70);
+      man.set({ x: MANX + (1 - mIn) * 120 + recoil * 20, y: MAN.y, s: 0.94, flip: true, o: seg(t, 1.9, 1.95), walk: mIn > 0 && mIn < 1 ? t * 30 : undefined, armF: 20 + push * 50 * (1 - recoil), armB: recoil * 60, lean: push * 16 * (1 - recoil) - recoil * 6, head: 6 - recoil * 14, blink: 0 });
+      const [mhx, mhy] = hand(MANX, MAN.y, 0.94, true, 70);
       const sx = lerp(mhx, KID.x1 - 50, push), sy = lerp(MAN.y - 4, KID.y + 6, push);
       pose(pushed, { x: sx, y: sy, s: 0.95, r: -push * 200, o: seg(t, 2.1, 2.15) });
 
       /* the cloud gathers over him; "woe!" */
       const ck = es(t, 2.5, 2.8, ease.out);
-      pose(cloudEl, { x: MAN.x - 10 + (T ? Math.sin(T * 0.8) * 4 : 0), y: lerp(420, 484, ck), s: 0.72, o: ck });
-      flyIn(woe, es(t, 2.45, 2.75, ease.back), MAN.x - 10, 318, T, 1, 1.4);
+      pose(cloudEl, { x: MANX - 10 + (T ? Math.sin(T * 0.8) * 4 : 0), y: lerp(420, 484, ck), s: 0.72, o: ck });
+      flyIn(woe, es(t, 2.45, 2.75, ease.back), MANX - 10, 318, T, 1, 1.4);
 
-      S.cam.x = kf(t, [[0, 20], [0.9, 20], [1.4, 50], [2.1, 60], [2.6, 70]]);
+      // phone: the camera goes on to the right so the man, his cloud and "woe!" clear the progress thread
+      S.cam.x = kf(t, S.portrait ? [[0, 20], [0.9, 20], [1.4, 60], [2.1, 90], [2.6, 110]] : [[0, 20], [0.9, 20], [1.4, 50], [2.1, 60], [2.6, 70]]);
       S.cam.y = kf(t, [[0, 40], [1.4, 30], [2.6, 20]]);
       S.cam.z = kf(t, [[0, 1.04], [1.4, 1.06], [2.6, 1.1]]);
     };

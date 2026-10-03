@@ -6,10 +6,9 @@
 // through. "For behold, God's Kingdom is within you": Jesus opens His hands, and a warm ring of light spreads over the
 // ground under them all, the four and the Pharisees too, and little lights rise from it.
 import { C, person, blinkAt, pose, lerp, sheet, mix } from '../kit.js';
-import { roadSet, ROAD9, roadFour, LEP, pharisee, bubble, hourglass, strung, flyIn, crossX, question, lightMote, voiceRings, headAt, hand, halo, behindOf, kf, es, ease, bump, seg, tr, PI } from './lib.js';
+import { roadSet, ROAD9, roadFour, LEP, lepPhone, pharisee, bubble, hourglass, strung, flyIn, crossX, question, lightMote, voiceRings, headAt, hand, halo, behindOf, kf, es, ease, bump, seg, tr, PI } from './lib.js';
 
 const { JX, JY } = LEP;
-const DIS = [['john', 600, 730], ['peter', 530, 740], ['andrew', 462, 746], ['james', 394, 752]];
 const PH = [[900, 722, 0], [980, 712, 2], [1060, 718, 4]];
 
 export default {
@@ -22,6 +21,7 @@ export default {
   ],
   cam: { x: [0, 120], y: [-60, 60], z: [0.98, 1.12] },
   build(S) {
+    const { DIS } = lepPhone(S);   // phone: the four closer behind Him
     const R = roadSet(S, { village: true });
     const c = S.c;
     /* the spyglass view sweeping the sky */
@@ -40,7 +40,7 @@ export default {
     const F = roadFour(S, act, c);
     const TUBE = `<g transform="rotate(170) translate(0 4)">${sheet().p(c.ribbon([[0, -10], [0, 70]], 7), C.ochre).p(c.ribbon([[0, 62], [0, 78]], 10), shade2(C.ochre)).out()}</g>`;
     const ph = PH.map(([x, y, i], k) => ({ x, y, k, seed: c.rr(0, 9), p: S.puppet(act.add(person(c, { ...pharisee(i), holdF: k === 1 ? TUBE : '' }))) }));
-    const posts = [[610, 420, -1, tr('Oto tu!', 'Look, here!')], [1080, 416, 1, tr('Tam!', 'There!')]].map(([x, y, d, txt], i) => ({ x, y, d, i, el: act.add(`<g transform="translate(0 -1500)">${strung(arrowBoard(c, txt, d), 0, 2400, [-24, 24])}</g>`), X: act.add(`<g opacity="0">${crossX(c, 30)}</g>`) }));
+    const posts = [[610, 420, -1, tr('Oto tu!', 'Look, here!')], [S.portrait ? 1000 : 1080, 416, 1, tr('Tam!', 'There!')]].map(([x, y, d, txt], i) => ({ x, y, d, i, el: act.add(`<g transform="translate(0 -1500)">${strung(arrowBoard(c, txt, d), 0, 2400, [-24, 24])}</g>`), X: act.add(`<g opacity="0">${crossX(c, 30)}</g>`) }));
     const voice = voiceRings(act, c, { n: 3, color: C.sun, r: 38, w: 5 });
     const fx = S.layer({ par: 0.45, sh: 5 });
     const ask = fx.add(`<g opacity="0">${bubble(c, [tr('Kiedy przyjdzie', 'When will'), tr('królestwo Boże?', "God's Kingdom come?")], { size: 18, tail: 1 })}</g>`);

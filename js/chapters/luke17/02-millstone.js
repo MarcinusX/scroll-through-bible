@@ -9,8 +9,8 @@ import { C, person, blinkAt, pose, lerp, sheet, mix } from '../kit.js';
 import { fish } from '../../assets/things.js';
 import { seaSet, SEA17, roadFour, child, clayLamp, millstone, strung, voiceRings, headAt, hand, halo, warm, behindOf, kf, es, ease, bump, seg, PI } from './lib.js';
 
-const JX = 600, JY = SEA17.TOP + 2;
-const KX = 700;
+const JX0 = 600, JY = SEA17.TOP + 2;
+const KX0 = 700;
 const MX = 1060, HANG = 320;
 
 export default {
@@ -20,8 +20,11 @@ export default {
     { v: 2, text: 'Byłoby lepiej dla niego, gdyby kamień młyński zawieszono mu u szyi i wrzucono go w morze,' },
     { v: 2, cont: true, text: 'niż żeby miał być powodem grzechu jednego z tych małych. Uważajcie na siebie!' },
   ],
-  cam: { x: [-20, 80], y: [-20, 60], z: [1, 1.1] },
+  cam: { x: [-50, 80], y: [-20, 60], z: [1, 1.1] },
   build(S) {
+    // phone: Jesus, the boy and the two step nearer the sea, and the camera stays further left, so Peter and John
+    // are on the screen
+    const JX = S.portrait ? 640 : JX0, KX = S.portrait ? 740 : KX0;
     const P = seaSet(S);
     const c = S.c;
     const floorY = P.ffn(MX) - 22;
@@ -97,11 +100,11 @@ export default {
       pose(lampGlow, { x: lx + (hold > 0.5 ? -12 : 12), y: ly - 20, s: 0.8 + bright * 0.8, o: 0.7 + bright * 0.3 });
       // Peter and John, then they take the warning to heart
       F.ds.forEach((d) => {
-        const x = [380, 470][d.i];
+        const x = (S.portrait ? [500, 566] : [380, 470])[d.i];
         d.p.set({ x, y: JY + 4 + d.i * 4, s: 0.96, armF: 14 + (d.i ? bump(t, 0.3, 0.9) * 40 : 0), armB: 6, head: -2 + warn * 10, blink: blinkAt(T, d.seed) });
       });
 
-      S.cam.x = kf(t, [[0, 40], [0.5, 70], [1.0, 60], [1.4, 10], [2, 0]]);
+      S.cam.x = kf(t, S.portrait ? [[0, -10], [0.5, 20], [1.0, 10], [1.4, -30], [2, -40]] : [[0, 40], [0.5, 70], [1.0, 60], [1.4, 10], [2, 0]]);
       S.cam.y = kf(t, [[0, 0], [0.5, 40], [1.0, 40], [1.4, -10], [2, -10]]);
       S.cam.z = kf(t, [[0, 1.02], [0.6, 1.04], [1.4, 1.08], [2, 1.08]]);
     };

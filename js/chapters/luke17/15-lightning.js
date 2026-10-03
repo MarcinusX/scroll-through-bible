@@ -11,8 +11,8 @@ import { makeCutter } from '../../core/paper.js';
 import { sky } from '../kit.js';
 
 const JX = 740, JY = 716;
-const SPOT = { peter: [590, 726, false], andrew: [516, 738, false], john: [880, 726, true], james: [440, 746, false] };
-const GX = 1110, GYY = 700;     // the people who turn away
+const SPOT0 = { peter: [590, 726, false], andrew: [516, 738, false], john: [880, 726, true], james: [440, 746, false] };
+const GX0 = 1110, GYY = 700;    // the people who turn away
 
 function bolt(c, len = 2200) {
   const pts = [[0, 0]];
@@ -34,6 +34,10 @@ export default {
   ],
   cam: { x: [-40, 80], y: [-60, 40], z: [0.98, 1.1] },
   build(S) {
+    // phone: the people who turn away stand clear of the thread and walk off a shorter way (still on the screen at
+    // 1.75); James a step in from the edge
+    const GX = S.portrait ? 990 : GX0, WALK = S.portrait ? 30 : 160;
+    const SPOT = S.portrait ? { ...SPOT0, peter: [616, 726, false], andrew: [562, 738, false], james: [510, 746, false] } : SPOT0;
     const R = roadSet(S, { village: true });
     const c = S.c;
     const dawn = sky(S, ['#3b3150', '#8f5a5e', '#c98a74'], { name: 'dawn', rise: 0 });
@@ -80,7 +84,7 @@ export default {
       const turn = es(t, 1.35, 1.45);
       const walk = es(t, 1.45, 1.95);
       faceIn.set({ x: GX, y: GYY, s: 1, o: 1 - turn });
-      away.set({ x: GX + walk * 160, y: GYY - walk * 30 - (walk > 0 && walk < 1 ? Math.abs(Math.sin(walk * 20)) * 3 : 0), s: 1 - walk * 0.18, o: turn * (1 - es(t, 1.8, 1.98)) });
+      away.set({ x: GX + walk * WALK, y: GYY - walk * 30 - (walk > 0 && walk < 1 ? Math.abs(Math.sin(walk * 20)) * 3 : 0), s: 1 - walk * 0.18, o: turn * (1 - es(t, 1.8, 1.98)) });
 
       const lookUp = bump(t, 0.35, 0.95);
       const bowed = es(t, 1.4, 1.7);

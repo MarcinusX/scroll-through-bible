@@ -5,10 +5,9 @@
 // down and hangs over the kneeling man. "Get up, and go your way. Your faith has healed you": Jesus takes his hand and
 // raises him; the light sinks into his heart, and he goes off home up the road to his village, waving.
 import { C, person, blinkAt, pose, lerp, sheet, mix } from '../kit.js';
-import { roadSet, ROAD9, ROAD_FAR, roadFour, LEP, lepS, SAMARITAN, lightMote, question, heart, strung, flyIn, voiceRings, headAt, hand, halo, warm, behindOf, kf, es, ease, bump, seg, tr, PI } from './lib.js';
+import { roadSet, ROAD9, ROAD_FAR, roadFour, LEP, lepPhone, lepS, SAMARITAN, lightMote, question, heart, strung, flyIn, voiceRings, headAt, hand, halo, warm, behindOf, kf, es, ease, bump, seg, tr, PI } from './lib.js';
 
 const { JX, JY } = LEP;
-const DIS = [['john', 600, 730], ['peter', 530, 740], ['andrew', 462, 746], ['james', 394, 752]];
 const KNEEL = [800, 722];
 const GY = 330;       // the garland
 
@@ -22,6 +21,7 @@ export default {
   ],
   cam: { x: [0, 100], y: [-20, 60], z: [1, 1.16] },
   build(S) {
+    const { DIS } = lepPhone(S);   // phone: the four closer behind Him
     const R = roadSet(S, { village: true });
     const c = S.c;
     /* the garland of ten lights */
@@ -74,7 +74,7 @@ export default {
         pose(L.el, { x: lerp(lx, cx, go), y: lerp(ly, cy, go) - Math.sin(go * PI) * 60, s: Math.max(0.001, on * (1 - go * 0.7)), o: on > 0.01 ? 1 - es(t, 1.5 + L.i * 0.04, 1.65 + L.i * 0.04) : 0 });
       });
       const qk = es(t, 1.55, 1.72, ease.back) * (1 - es(t, 2.05, 2.15));
-      pose(q, { x: 1100, y: 520, s: qk * 1.5, o: qk > 0.01 ? 1 : 0 });
+      pose(q, { x: S.portrait ? 1030 : 1100, y: 520, s: qk * 1.5, o: qk > 0.01 ? 1 : 0 });
 
       /* v18 — the one light left comes down over the stranger */
       const dk = es(t, 2.1, 2.45);

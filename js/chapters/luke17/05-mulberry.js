@@ -10,9 +10,9 @@ import { fish } from '../../assets/things.js';
 import { lakeSet, LAKE, mulberry, roadFour, mustardGlass, seedDot, tinyFlame, bubble, strung, flyIn, dustPuff, voiceRings, headAt, hand, palmAt, halo, warm, behindOf, kf, es, ease, bump, seg, tr, PI } from './lib.js';
 
 const JX = 820, JY = 730;
-const TX = 500, TY = 668;              // the tree on the bank
-const SX = 1060, SY = 566, SS = 0.46;  // where it stands in the lake
-const SPOT = { peter: [650, 736, false], andrew: [572, 748, false], john: [980, 736, true], james: [1060, 748, true] };
+const TX0 = 500, TY = 668;              // the tree on the bank
+const SX0 = 1060, SY = 566, SS = 0.46;  // where it stands in the lake
+const SPOT0 = { peter: [650, 736, false], andrew: [572, 748, false], john: [980, 736, true], james: [1060, 748, true] };
 
 export default {
   id: 'lk17-mulberry',
@@ -24,6 +24,10 @@ export default {
   ],
   cam: { x: [-60, 120], y: [-40, 40], z: [1, 1.14] },
   build(S) {
+    // phone: the tree stands a little further in on the bank, and lands nearer in the lake, clear of the thread
+    const TX = S.portrait ? 580 : TX0, SX = S.portrait ? 990 : SX0;
+    // phone: Andrew and James a step in (James clear of the thread), so the tree on the bank is whole at the left
+    const SPOT = S.portrait ? { ...SPOT0, andrew: [600, 748, false], james: [1030, 748, true] } : SPOT0;
     const L = lakeSet(S);
     const c = S.c;
     const M = mulberry(c, 250);
@@ -90,7 +94,7 @@ export default {
 
       /* v6b — "Be uprooted!": the tree shivers, comes up roots and all, flies to the lake */
       const ok = es(t, 2.1, 2.25, ease.back) * (1 - es(t, 2.85, 2.95));
-      pose(order, { x: phx - 70, y: phy - 60, s: ok, o: ok > 0.01 ? 1 : 0 });
+      pose(order, { x: phx - (S.portrait ? 20 : 70), y: phy - 60, s: ok, o: ok > 0.01 ? 1 : 0 });
       const shiver = bump(t, 2.15, 2.45) * (T ? Math.sin(T * 40) : 0.5);
       const up = t >= 2.42;
       const fl = es(t, 2.42, 2.82, (u) => u);

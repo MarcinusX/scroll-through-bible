@@ -25,7 +25,7 @@ export default {
     const glowL = behindOf(S.layer({ par: 0.3, sh: 0, flat: true }), Y.floor);
     const flameL = behindOf(S.layer({ par: 0.3, sh: 3 }), Y.floor);
     const TK = Array.from({ length: 7 }, (_, i) => {
-      const x = TX + i * 22 + (i > 4 ? 8 : 0);
+      const x = (S.portrait ? TX - 70 : TX) + i * 22 + (i > 4 ? 8 : 0);   // phone: the tally clear of the thread
       return {
         i, x,
         mark: Y.wallL.add(`<g opacity="0">${sheet().x(c.ribbon([[c.rr(-2, 2), 0], [c.rr(-2, 2), 44]], 4), C.inkSoft).out()}</g>`),
@@ -44,7 +44,7 @@ export default {
     return (t, time) => {
       const T = time;
       const sunK = es(t, 0.02, 2.6, (u) => u);
-      Y.update(T, { sunK: 0.05 + sunK * 0.9, eveK: es(t, 2.0, 2.7) });
+      Y.update(T, { sunK: 0.05 + sunK * (S.portrait ? 0.7 : 0.9), eveK: es(t, 2.0, 2.7), sunW: S.portrait ? 330 : 560 });   // phone: a narrower day, clear of the thread
 
       /* v4a — seven times in the day he sins against him: seven dark scraps, seven strokes */
       const n7 = (i) => 0.08 + i * 0.12;

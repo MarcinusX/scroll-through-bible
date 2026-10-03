@@ -279,10 +279,11 @@ export function yardSet(S, { skyCols = MORNING } = {}) {
   const fx = S.layer({ par: 0.45, sh: 5 });
   return {
     c, eve, wallL, floor, act, fx, sunEl,
-    update(time, { sunK = 0.2, eveK = 0 } = {}) {
+    // sunW: half the width of the sun's arc (a phone passes a narrower one, so the sun stays clear of the edges)
+    update(time, { sunK = 0.2, eveK = 0, sunW = 560 } = {}) {
       eve.layer.fade(eveK);
       const a = PI * (1 - sunK);
-      swing(sunEl, 800 + Math.cos(a) * 560, 330 - Math.sin(a) * 210, time, 1, 0.6);
+      swing(sunEl, 800 + Math.cos(a) * sunW, 330 - Math.sin(a) * 210, time, 1, 0.6);
     },
   };
 }
@@ -555,6 +556,15 @@ export const LEP = {
   GATE: [1044, 646],
   JX: 700, JY: 718,
 };
+/**
+ * Phone layout of the road by the village (Lk 17,11–21): the four stand closer behind Him, and the ten stand a step
+ * further from the thread (LX is added to every LEP.SPOT x). On a wide screen it returns today's places.
+ */
+export function lepPhone(S) {
+  return S.portrait
+    ? { DIS: [['john', 646, 730], ['peter', 606, 740], ['andrew', 566, 746], ['james', 526, 752]], LX: -100 }
+    : { DIS: [['john', 600, 730], ['peter', 530, 740], ['andrew', 462, 746], ['james', 394, 752]], LX: 0 };
+}
 /** the scale of a figure standing at y near the village (gate 0.58 … front 0.86) */
 export const lepS = (y) => lerp(0.58, 0.86, clamp((y - 646) / (696 - 646)));
 /**

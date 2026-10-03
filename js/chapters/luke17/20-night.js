@@ -28,7 +28,7 @@ export default {
     { v: 35, text: 'Dwie będą mleć razem:' },
     { v: 35, cont: true, text: 'jedna będzie wzięta, a druga zostawiona».' },
   ],
-  cam: { x: [-120, 60], y: [-20, 60], z: [1, 1.24] },
+  cam: { x: [-280, 60], y: [-20, 60], z: [1, 1.24] },
   build(S) {
     const c = S.c;
     sky(S, NIGHT);
@@ -99,7 +99,8 @@ export default {
       });
       pose(takeGlows[1], { x: women[1].x, y: F - 80 - liftW * 200, s: 0.6 + es(t, 3.05, 3.3) * 0.5, o: es(t, 3.05, 3.3) * (1 - es(t, 3.7, 3.9)) });
 
-      S.cam.x = kf(t, [[0, -60], [1.9, -60], [2.2, 20], [4, 30]]);
+      // phone: further left, so the whole mat with both sleepers (and later the one left sitting up) is on the screen
+      S.cam.x = kf(t, S.portrait ? [[0, -260], [1.9, -260], [2.2, -60], [4, -50]] : [[0, -60], [1.9, -60], [2.2, 20], [4, 30]]);
       S.cam.y = kf(t, [[0, 20], [0.4, 50], [4, 50]]);
       S.cam.z = kf(t, [[0, 1.04], [0.5, 1.18], [1.9, 1.2], [2.2, 1.2], [4, 1.2]]);
     };

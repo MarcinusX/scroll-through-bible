@@ -6,11 +6,10 @@
 // stop far off, across a row of white stones in the grass, and keep their distance. "They lifted up their voices:
 // 'Jesus, Master, have mercy on us!'": all ten lift their arms and call out to Him.
 import { C, person, blinkAt, pose, lerp, sheet, mix } from '../kit.js';
-import { roadSet, ROAD9, roadFour, tenLepers, LEP, lepS, signpost, bubble, strung, flyIn, voiceRings, headAt, halo, behindOf, kf, es, ease, bump, seg, tr, PI } from './lib.js';
+import { roadSet, ROAD9, roadFour, tenLepers, LEP, lepPhone, lepS, signpost, bubble, strung, flyIn, voiceRings, headAt, halo, behindOf, kf, es, ease, bump, seg, tr, PI } from './lib.js';
 
 const { JX, JY } = LEP;
 const TRAIL = [[20, 780], [240, 752], [420, 734], [560, 724], [JX, JY]];
-const DIS = [['john', 600, 730], ['peter', 530, 740], ['andrew', 462, 746], ['james', 394, 752]];
 
 function along(pts, u) {
   const n = pts.length - 1, f = Math.min(n - 1e-6, Math.max(0, u) * n), i = Math.floor(f), k = f - i;
@@ -27,6 +26,8 @@ export default {
   ],
   cam: { x: [-80, 120], y: [-40, 60], z: [0.96, 1.14] },
   build(S) {
+    const { DIS, LX } = lepPhone(S);   // phone: the four closer, the ten a step in from the thread
+    const PH = S.portrait;
     const R = roadSet(S, { village: true });
     const c = S.c;
     /* the border: two name boards over the hills, a line of boundary stones down the far hills */
@@ -38,7 +39,7 @@ export default {
     const sam = hangL.add(`<g transform="translate(0 -1500)">${strung(boardText(c, tr('Samaria', 'Samaria')), 0, 2400, [-40, 40])}</g>`);
     /* the row of white stones that keeps the distance */
     const gapL = S.layer({ par: 0.45, sh: 2 });
-    const gap = Array.from({ length: 7 }, (_, i) => ({ i, el: gapL.add(`<g opacity="0"><path d="${c.cut(c.blob(0, -3, 7, 4, 8, 0.2), 0.3, 3)}" fill="${mix(C.cream, C.stone, 0.3)}"/></g>`), x: 880 + i * 6 + Math.sin(i * 2.1) * 6, y: 676 + i * 14 }));
+    const gap = Array.from({ length: 7 }, (_, i) => ({ i, el: gapL.add(`<g opacity="0"><path d="${c.cut(c.blob(0, -3, 7, 4, 8, 0.2), 0.3, 3)}" fill="${mix(C.cream, C.stone, 0.3)}"/></g>`), x: (PH ? 830 : 880) + i * 6 + Math.sin(i * 2.1) * 6, y: 676 + i * 14 }));
     /* people */
     const glowL = S.layer({ par: 0.45, sh: 0, flat: true });
     const act = S.layer({ par: 0.45, sh: 5 });
@@ -55,8 +56,8 @@ export default {
       pose(R.cityGlow, { x: ROAD9.CITY[0], y: ROAD9.CITY[1] - 20, o: 0.5 + bump(t, 0.1, 1.0) * 0.4 });
 
       /* v11 — along the border of Samaria and Galilee */
-      flyIn(gal, es(t, 0.15, 0.4, ease.back) * (1 - es(t, 1.05, 1.3)), 480, 300, T, 1, 1);
-      flyIn(sam, es(t, 0.28, 0.52, ease.back) * (1 - es(t, 1.05, 1.3)), 1160, 300, T, 2, 1);
+      flyIn(gal, es(t, 0.15, 0.4, ease.back) * (1 - es(t, 1.05, 1.3)), PH ? 560 : 480, 300, T, 1, 1);
+      flyIn(sam, es(t, 0.28, 0.52, ease.back) * (1 - es(t, 1.05, 1.3)), PH ? 990 : 1160, 300, T, 2, 1);
       stones.forEach((s) => { const k = es(t, 0.4 + s.i * 0.05, 0.5 + s.i * 0.05, ease.back) * (1 - es(t, 1.1, 1.3)); pose(s.el, { x: s.x, y: s.y, s: Math.max(0.001, k), o: k > 0.01 ? 1 : 0 }); });
       const u = es(t, 0.0, 0.95, (x) => x);
       const walking = u > 0 && u < 1;
@@ -75,7 +76,7 @@ export default {
       /* v12a — from beyond the village they come, one by one; v12b — they stop, far off */
       const calling = es(t, 3.08, 3.18);
       TEN.forEach((m) => {
-        const [sx, sy] = LEP.SPOT[m.i];
+        const [sx0, sy] = LEP.SPOT[m.i], sx = sx0 + LX;
         const order = m.i === 9 ? 9 : m.i;
         const k = es(t, 1.08 + order * 0.07, 1.5 + order * 0.07, (x) => x);
         const x = lerp(1330 + (m.i % 5) * 26, sx, k), y = sy;
@@ -92,8 +93,8 @@ export default {
 
       /* v13 — "Jesus, Master, have mercy on us!" */
       const ck = es(t, 3.2, 3.38, ease.back);
-      pose(cry, { x: 1060, y: 480, s: ck, o: ck > 0.01 ? 1 : 0 });
-      voice(1000, 540, es(t, 3.1, 3.25), T, { dir: -1, spread: 2.2 });
+      pose(cry, { x: PH ? 970 : 1060, y: 480, s: ck, o: ck > 0.01 ? 1 : 0 });
+      voice(PH ? 920 : 1000, 540, es(t, 3.1, 3.25), T, { dir: -1, spread: 2.2 });
 
       S.cam.x = kf(t, [[0, -60], [0.9, 0], [1.2, 60], [2.2, 60], [3, 70], [4, 70]]);
       S.cam.y = kf(t, [[0, 40], [1, 30], [2.2, 20], [3, 0], [4, 0]]);

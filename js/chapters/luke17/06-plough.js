@@ -8,7 +8,7 @@ import { C, person, blinkAt, pose, lerp, sheet, mix } from '../kit.js';
 import { farmSet, FARM, SERVANT, MASTER, plough, crook, ox, sheep, bubble, question, headAt, hand, kf, es, ease, bump, seg, tr, PI } from './lib.js';
 
 const PY = 690;
-const P0 = 650, P2 = 400;     // he ploughs from the house end of the field out to the left
+const P0 = 650, P2L = 400;    // he ploughs from the house end of the field out to the left
 const MX = 800;
 
 export default {
@@ -19,8 +19,10 @@ export default {
     { v: 7, text: 'Kto z was, mając sługę, który orze lub pasie,' },
     { v: 7, cont: true, text: 'powie mu, gdy on wróci z pola: "Pójdź i siądź do stołu?"' },
   ],
-  cam: { x: [-120, 40], y: [0, 50], z: [1, 1.12] },
+  cam: { x: [-360, 40], y: [0, 50], z: [1, 1.12] },
   build(S) {
+    // phone: a shorter furrow and the camera further left, so the ox, the plough and the servant are all on the screen
+    const P2 = S.portrait ? 560 : P2L;
     const F = farmSet(S);
     const c = S.c;
     /* the flock on the slope, the crook against the fold */
@@ -74,7 +76,7 @@ export default {
       const qk = es(t, 1.62, 1.78, ease.back);
       pose(q, { x: mhx + 40, y: mhy - 120, s: qk * 1.6, r: (1 - qk) * 30, o: qk > 0.01 ? 1 : 0 });
 
-      S.cam.x = kf(t, [[0, -40], [0.8, -60], [1.3, -20], [2, 0]]);
+      S.cam.x = kf(t, S.portrait ? [[0, -330], [0.8, -350], [1.3, -80], [2, 0]] : [[0, -40], [0.8, -60], [1.3, -20], [2, 0]]);
       S.cam.y = kf(t, [[0, 30], [2, 30]]);
       S.cam.z = kf(t, [[0, 1.04], [1, 1.06], [2, 1.1]]);
     };

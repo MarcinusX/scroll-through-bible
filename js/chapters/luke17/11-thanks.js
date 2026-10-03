@@ -4,11 +4,10 @@
 // feet, giving Him thanks": he throws himself down before Jesus, face to the ground, and a warm heart glows over him.
 // "And he was a Samaritan": a name tag comes down over him — "a Samaritan" — and the four look at one another.
 import { C, person, blinkAt, pose, lerp, sheet, mix } from '../kit.js';
-import { roadSet, ROAD9, roadFour, LEP, lepS, SAMARITAN, sparkle, heart, nameTag, strung, flyIn, voiceRings, headAt, halo, kf, es, ease, bump, seg, tr, PI } from './lib.js';
+import { roadSet, ROAD9, roadFour, LEP, lepPhone, lepS, SAMARITAN, sparkle, heart, nameTag, strung, flyIn, voiceRings, headAt, halo, kf, es, ease, bump, seg, tr, PI } from './lib.js';
 
 const { JX, JY } = LEP;
-const DIS = [['john', 600, 730], ['peter', 530, 740], ['andrew', 462, 746], ['james', 394, 752]];
-const START = [1016, 660], KNEEL = [800, 722];
+const START0 = [1016, 660], KNEEL = [800, 722];
 
 export default {
   id: 'lk17-thanks',
@@ -19,6 +18,8 @@ export default {
   ],
   cam: { x: [0, 100], y: [-20, 60], z: [1, 1.16] },
   build(S) {
+    const { DIS, LX } = lepPhone(S);   // phone: the four closer, the Samaritan starts a step in from the thread
+    const START = [START0[0] + LX, START0[1]];
     const R = roadSet(S, { village: true });
     const c = S.c;
     const glowL = S.layer({ par: 0.45, sh: 0, flat: true });

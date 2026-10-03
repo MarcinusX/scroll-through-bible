@@ -9,7 +9,7 @@ import { hand } from '../mark2/lib.js';
 import { sodomSet, SODOM, LOT, LOTWIFE, DAUGHTERS, SALT, SALT2, clayLamp, tinyFlame, smokeWisp, figure, dust, warm, halo, behindOf, kf, es, ease, bump, seg, PI } from './lib.js';
 import { makeCutter } from '../../core/paper.js';
 
-const W = [600, 722];          // where the wife stops
+const W0 = [600, 722];         // where the wife stops (phone: further right, clear of Lot and the girls)
 const LAMP = `<g transform="rotate(60) translate(-2 4)">`;
 
 function alongRoad(u) {
@@ -36,6 +36,7 @@ export default {
   ],
   cam: { x: [-260, 60], y: [-60, 40], z: [1, 1.14] },
   build(S) {
+    const W = S.portrait ? [690, W0[1]] : W0;
     const Z = sodomSet(S, { fire: false, ash: true, burnt: 1 });
     const c = S.c;
     /* the morning over the hills of Zoar (behind the hills) */
@@ -68,7 +69,8 @@ export default {
       /* Lot and his daughters go on up the road */
       const go = es(t, 0.0, 2.9, (x) => x);
       fam.forEach((f) => {
-        const u = 0.4 + go * 0.24 - f.i * 0.03;
+        // phone: they go only a little way, so Lot is still on the screen as he walks into the morning (v33b)
+        const u = (S.portrait ? 0.34 + go * 0.04 : 0.4 + go * 0.24) - f.i * 0.03;
         const [x, y] = alongRoad(u);
         f.p.set({ x, y: y + f.i * 3, s: f.s * lerp(1, 0.78, go), flip: true, walk: go > 0 && go < 1 ? t * 26 + f.i : undefined, armF: 14 + (f.i === 0 ? es(t, 2.2, 2.6) * 60 : 0), armB: 6 + (f.i === 0 ? es(t, 2.2, 2.6) * 60 : 0), head: -4 - es(t, 2.2, 2.6) * 8, blink: blinkAt(T, f.i + 5) });
       });

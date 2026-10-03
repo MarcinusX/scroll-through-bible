@@ -36,6 +36,9 @@ export default {
   ],
   cam: { x: [-80, 100], y: [-40, 40], z: [0.98, 1.1] },
   build(S) {
+    // phone: the market and the mason stand clear of the thread, the planter and the table a step in from the left,
+    // and the family goes a shorter way down the road (still on the screen at 2.75)
+    const PH = S.portrait;
     const Z = sodomSet(S);
     const c = S.c;
     const pc = makeCutter('lk17-sodom-folk');
@@ -43,14 +46,14 @@ export default {
     const table = sheet().p(pc.cut(pc.rect(-60, -40, 120, 9), 0.3, 5), C.wood).p(pc.cut(pc.rect(-52, -31, 7, 31), 0.2, 4) + pc.cut(pc.rect(45, -31, 7, 31), 0.2, 4), C.wood2).out();
     const eatO = [manO(pc, { pose: 'sit' }), manO(pc, { pose: 'sit' })];
     const eaters = (up) => figure(pc, { ...eatO[0], holdF: `<g transform="rotate(${up ? 120 : 60}) translate(0 16)">${cup(pc)}</g>` }, { x: -50, y: 18, s: 0.84, armF: up ? 120 : 60 }) + figure(pc, { ...eatO[1], holdF: `<g transform="rotate(${up ? 110 : 50}) translate(0 16)">${cup(pc)}</g>` }, { x: 50, y: 18, s: 0.84, flip: true, armF: up ? 110 : 50 }) + table;
-    const EAT = [660, GY + 8];
+    const EAT = [PH ? 676 : 660, GY + 8];
     const eatA = Z.act.add(`<g>${eaters(false)}</g>`), eatB = Z.act.add(`<g opacity="0">${eaters(true)}</g>`);
-    const STALL = [1110, GY + 6];
+    const STALL = [PH ? 986 : 1110, GY + 6];
     const stall = Z.act.add(`<g><g transform="translate(${STALL[0]} ${STALL[1]})">${awning(pc, 150, 150, C.plumRobe)}${sheet().p(pc.cut(pc.rect(-66, -54, 132, 10), 0.3, 5), C.wood).p(pc.cut([[-40, -54], [-46, -80], [-14, -80], [-20, -54]], 0.4, 4) + pc.cut([[10, -54], [6, -76], [36, -76], [32, -54]], 0.4, 4), C.basket).out()}</g></g>`);
     const seller = S.puppet(Z.act.add(person(pc, manO(pc, { robe: C.ochreRobe }))));
     const buyer = S.puppet(Z.act.add(person(pc, womanO(pc, { robe: C.roseRobe }))));
     const coins = [0, 1].map(() => Z.fx.add(`<g opacity="0">${coin(pc, 5)}</g>`));
-    const PLANT = [520, GY + 10];
+    const PLANT = [PH ? 566 : 520, GY + 10];
     const planter = S.puppet(Z.act.add(person(pc, manO(pc, { robe: C.sageRobe, belt: C.rope }))));
     const sapling = Z.act.add(`<g>${sheet().p(pc.ribbon([[0, 0], [0, -60]], 4), C.wood2).p(pc.cut(pc.blob(0, -70, 26, 18, 10, 0.2), 0.6, 4), C.leaf).out()}</g>`);
     const mason = S.puppet(Z.act.add(person(pc, manO(pc, { robe: C.stone, belt: C.leather }))));
@@ -78,7 +81,7 @@ export default {
       const out = es(t, 2.02, 2.95, (x) => x);
       fam.forEach((f) => {
         const u = Math.max(0, out - f.i * 0.05);
-        const [x, y] = u > 0 ? alongRoad(0.08 + u * 0.47) : [GX - 84 + f.i * 22, GY - 2];
+        const [x, y] = u > 0 ? alongRoad(0.08 + u * (PH ? 0.3 : 0.47)) : [GX - 84 + f.i * 22, GY - 2];
         const walking = u > 0 && u < 1;
         f.p.set({ x, y: y + f.i * 3, s: f.s * (u > 0 ? lerp(1, 0.9, u) : 1), flip: u > 0, walk: walking ? t * 30 + f.i : undefined, armF: 14 + (f.i === 0 ? bump(t, 0.3, 0.9) * 40 : 0), armB: 6, head: f.i === 1 ? -4 : 2, o: 1, blink: blinkAt(T, f.i + 5) });
       });
@@ -96,7 +99,7 @@ export default {
       const dig = bump(t, 1.3, 1.5), grow = es(t, 1.45, 1.75, ease.back);
       planter.set({ x: PLANT[0] - 50, y: PLANT[1], s: 0.9, armF: 30 + dig * 70, armB: 10 + dig * 50, lean: dig * 20, head: 10, o: 1 - gone, blink: blinkAt(T, 6) });
       const lift = es(t, 1.5, 1.8);
-      const MS = [1176, GY + 2];
+      const MS = [PH ? 1094 : 1176, GY + 2];
       mason.set({ x: MS[0], y: MS[1], s: 0.9, flip: true, armF: 30 + lift * 120, armB: 20 + lift * 130, head: -lift * 16, o: 1 - gone, blink: blinkAt(T, 8) });
 
       /* v29 — fire and sulfur from the sky; the city dark, its people gone */
@@ -104,7 +107,7 @@ export default {
       fireL.shift(0, T ? (T * 260) % 600 : 0);
       [eatA, eatB].forEach((el) => pose(el, { x: EAT[0], y: EAT[1], o: (el === eatA ? 1 - dK : dK) * (1 - gone) }));
       pose(sapling, { x: PLANT[0], y: PLANT[1], sy: Math.max(0.05, 0.3 + grow * 0.7) * (1 - gone * 0.6), sx: Math.max(0.05, 0.5 + grow * 0.5), o: 1 - gone });
-      pose(block, { x: lerp(MS[0] - 30, 1176, lift), y: lerp(MS[1] - 60, 578, lift), o: 1 - gone });
+      pose(block, { x: lerp(MS[0] - 30, MS[0], lift), y: lerp(MS[1] - 60, 578, lift), o: 1 - gone });
       pose(stall, { o: 1 - gone });
       smoke.forEach((el, i) => {
         const k = T ? ((T * 0.15 + i / 5) % 1) : (i + 1) / 6;

@@ -15,8 +15,8 @@ import { makeCutter } from '../../core/paper.js';
 
 const R = HS.ROOF, F = HS.FLOOR;
 const RM = { x0: 560, stair: 872 };      // the man on the roof
-const FM = { x: 1100, y: 716 };          // the man in the field
-const POST = [1200, 700];
+const FM0 = { x: 1100, y: 716 };         // the man in the field
+const POST0 = [1200, 700];
 
 function rays(c, n = 11, r0 = 60, r1 = 260) {
   let d = '';
@@ -34,8 +34,11 @@ export default {
     { v: 31, text: 'W owym dniu kto będzie na dachu, a jego rzeczy w mieszkaniu, niech nie schodzi, by je zabrać;' },
     { v: 31, cont: true, text: 'a kto na polu, niech również nie wraca do siebie.' },
   ],
-  cam: { x: [0, 120], y: [-80, 40], z: [0.96, 1.1] },
+  cam: { x: [0, 200], y: [-80, 40], z: [0.96, 1.1] },
   build(S) {
+    // phone: the man in the field and the post with his cloak a step in, and the camera further right at v31b,
+    // so the cloak and its cross stand clear of the thread
+    const FM = S.portrait ? { x: 1060, y: FM0.y } : FM0, POST = S.portrait ? [1140, POST0[1]] : POST0;
     const c = S.c;
     sky(S, ['#aeb3bf', '#d4d0c8', '#e4dccb']);
     const gold = sky(S, REVEAL, { name: 'gold', rise: 0 });
@@ -105,7 +108,7 @@ export default {
       const ck = es(t, 2.3, 2.45, ease.back) * (1 - es(t, 2.85, 2.95));
       pose(noCloak, { x: POST[0], y: POST[1] - 150, s: Math.max(0.001, ck), o: ck > 0.01 ? 1 : 0 });
 
-      S.cam.x = kf(t, [[0, 40], [0.9, 40], [1.1, 20], [1.9, 20], [2.1, 100], [3, 100]]);
+      S.cam.x = kf(t, [[0, 40], [0.9, 40], [1.1, 20], [1.9, 20], [2.1, S.portrait ? 180 : 100], [3, S.portrait ? 180 : 100]]);
       S.cam.y = kf(t, [[0, 10], [0.4, -60], [0.9, -40], [1.1, -10], [1.9, -10], [2.1, 20], [3, 20]]);
       S.cam.z = kf(t, [[0, 1.0], [0.6, 0.96], [1.1, 1.06], [1.9, 1.06], [2.1, 1.06], [3, 1.06]]);
     };

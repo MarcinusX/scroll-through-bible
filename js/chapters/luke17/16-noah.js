@@ -15,8 +15,8 @@ import { makeCutter } from '../../core/paper.js';
 const GY = 704;
 const ARK = [1010, 606];
 const RAMP0 = [870, 706];
-const CAN = 470;                  // the wedding canopy
-const TAB = [600, 760];           // the long table
+const CAN0 = 470;                 // the wedding canopy
+const TAB0 = [600, 760];          // the long table
 
 function boardText(c, text) {
   const w = 30 + text.length * 14;
@@ -34,6 +34,9 @@ export default {
   ],
   cam: { x: [-60, 100], y: [-60, 40], z: [0.98, 1.1] },
   build(S) {
+    // phone: the canopy with the couple and the long table stand closer to the ark (the guests a little closer
+    // together), so the bride and groom are on the screen beside the feast
+    const CAN = S.portrait ? 570 : CAN0, TAB = S.portrait ? [690, 810] : TAB0, GAP = S.portrait ? 44 : 60;
     const c = S.c;
     sky(S, ['#cadfd9', '#f0e6c8', '#f7e6c4']);
     const storm = sky(S, STORM, { name: 'storm', rise: 0 });
@@ -59,7 +62,7 @@ export default {
     for (let x = CAN - 86; x < CAN + 86; x += 22) sc += pc.cut(pc.arc(x + 11, GY - 196, 11, 9, 0, PI, 6), 0.2, 3);
     can.p(sc, C.sun);
     act.add(can.out());
-    const guestsAt = [[TAB[0] + 10, 0], [TAB[0] + 70, 1], [TAB[0] + 130, 2], [TAB[0] + 190, 3], [TAB[0] + 250, 4]];
+    const guestsAt = [0, 1, 2, 3, 4].map((i) => [TAB[0] + 10 + i * GAP, i]);
     const G1 = guestsAt.map(([x, i]) => ({ x, i, o: { ...(i % 2 ? womanO(pc) : manO(pc)), pose: 'sit' } }));
     const tableM = sheet().p(pc.cut(pc.rect(TAB[0] - 20, GY - 44, TAB[1] - TAB[0] + 60, 10), 0.3, 6), C.wood).p(pc.cut(pc.rect(TAB[0] - 10, GY - 34, 8, 34), 0.2, 4) + pc.cut(pc.rect(TAB[1] + 22, GY - 34, 8, 34), 0.2, 4), C.wood2).out();
     const guests = (raise) => G1.map((g) => figure(pc, { ...g.o, holdF: `<g transform="rotate(${raise ? 110 : 60}) translate(0 16)">${cup(pc)}</g>` }, { x: g.x, y: GY + 18, s: 0.84, flip: g.i === 4, armF: raise ? 110 : 60, armB: 10, head: raise ? -8 : 0 })).join('') + tableM;

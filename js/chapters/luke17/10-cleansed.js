@@ -5,11 +5,10 @@
 // each one walks, the grey peels off him in flakes that blow away, a spark flashes, and he walks on in clean, bright
 // clothes and through the gate. The last of them, nearest to Jesus, is still on the road.
 import { C, person, blinkAt, pose, lerp, sheet, mix } from '../kit.js';
-import { roadSet, ROAD9, roadFour, tenLepers, LEP, lepS, flake, sparkle, priestPlate, strung, flyIn, voiceRings, headAt, halo, kf, es, ease, bump, seg, tr, PI } from './lib.js';
+import { roadSet, ROAD9, roadFour, tenLepers, LEP, lepPhone, lepS, flake, sparkle, priestPlate, strung, flyIn, voiceRings, headAt, halo, kf, es, ease, bump, seg, tr, PI } from './lib.js';
 
 const { JX, JY } = LEP;
-const DIS = [['john', 600, 730], ['peter', 530, 740], ['andrew', 462, 746], ['james', 394, 752]];
-const LAST = [1016, 660];     // where the Samaritan is when the others have gone in
+const LAST0 = [1016, 660];    // where the Samaritan is when the others have gone in
 
 export default {
   id: 'lk17-cleansed',
@@ -19,6 +18,8 @@ export default {
   ],
   cam: { x: [0, 100], y: [-40, 40], z: [0.98, 1.1] },
   build(S) {
+    const { DIS, LX } = lepPhone(S);   // phone: the four closer, the ten a step in from the thread
+    const LAST = [LAST0[0] + LX, LAST0[1]];
     const R = roadSet(S, { village: true });
     const c = S.c;
     const hangL = S.layer({ par: 0.1, sh: 5 });
@@ -48,12 +49,12 @@ export default {
         const wonder = es(t, 1.3, 1.6);
         d.p.set({ x, y, s: 0.96, armF: 20 + wonder * (d.k === 'john' ? 50 : 20), armB: 6 + wonder * (d.k === 'peter' ? 90 : 0), head: -4 - wonder * 4, blink: blinkAt(T, d.seed) });
       });
-      flyIn(plate, es(t, 0.3, 0.6, ease.back), ROAD9.CITY[0] + 60, 240, T, 1, 1);
+      flyIn(plate, es(t, 0.3, 0.6, ease.back), ROAD9.CITY[0] + (S.portrait ? -20 : 60), 240, T, 1, 1);
 
       /* v14b — they turn and go; as they go they are made clean */
       const down = es(t, 0.02, 0.12);
       TEN.forEach((m) => {
-        const [sx, sy] = LEP.SPOT[m.i];
+        const [sx0, sy] = LEP.SPOT[m.i], sx = sx0 + LX;
         const order = m.i === 9 ? 9 : (m.i + 3) % 9;
         const a = m.i === 9 ? 1.5 : 1.02 + order * 0.065;
         const k = es(t, a, a + 0.45, (x) => x);

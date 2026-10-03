@@ -32,7 +32,7 @@ export default {
     const F = roadFour(S, act, c);
     const pc = makeCutter('lk17-callers');
     const LANTERN = `<g transform="rotate(150) translate(0 10)"><path d="M0 -4V14" stroke="${C.inkSoft}" stroke-width="1.5"/>${sheet().p(pc.cut(pc.rect(-9, 14, 18, 24), 0.3, 4), C.wood2).p(pc.cut(pc.rect(-6, 17, 12, 18), 0.2, 3), C.lampFlame).out()}</g>`;
-    const callers = [[476, 744, false], [1124, 744, true]].map(([x, y, fl], i) => ({ i, x, y, fl, p: S.puppet(act.add(person(pc, { ...folk(pc, true, { robe: [C.plumRobe, C.tealRobe][i], mantle: mix(C.night2, C.plumRobe, 0.4) }), holdB: LANTERN }))), g: glowL.add(`<g opacity="0">${warm(60)}</g>`) }));
+    const callers = (S.portrait ? [[506, 744, false], [1078, 744, true]] : [[476, 744, false], [1124, 744, true]]).map(([x, y, fl], i) => ({ i, x, y, fl, p: S.puppet(act.add(person(pc, { ...folk(pc, true, { robe: [C.plumRobe, C.tealRobe][i], mantle: mix(C.night2, C.plumRobe, 0.4) }), holdB: LANTERN }))), g: glowL.add(`<g opacity="0">${warm(60)}</g>`) }));
     const voice = voiceRings(act, c, { n: 3, color: C.sun, r: 38, w: 5 });
     const fx = S.layer({ par: 0.45, sh: 5 });
     const calls = [tr('Oto tu!', 'Look, here!'), tr('Oto tam!', 'Look, there!')].map((txt, i) => fx.add(`<g opacity="0">${bubble(c, txt, { size: 19, tail: i ? -1 : 1 })}</g>`));

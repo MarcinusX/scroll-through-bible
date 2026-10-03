@@ -8,7 +8,7 @@ import { roadSet, ROAD9, roadFour, vulture, bubble, voiceRings, headAt, halo, kf
 
 const JX = 760, JY = 716;
 const SPOT = { peter: [636, 722, false], andrew: [566, 732, false], john: [884, 722, true], james: [956, 732, true] };
-const RING = { x: 1010, y: 210, rx: 190, ry: 46 };
+const RING0 = { x: 1010, y: 210, rx: 190, ry: 46 };
 
 export default {
   id: 'lk17-where',
@@ -18,6 +18,7 @@ export default {
   ],
   cam: { x: [-20, 60], y: [-60, 40], z: [1, 1.1] },
   build(S) {
+    const RING = S.portrait ? { ...RING0, x: 870 } : RING0;   // phone: the vultures wheel clear of the thread
     const R = roadSet(S, { village: false });
     const c = S.c;
     const birdL = S.layer({ par: 0.06, sh: 3 });
