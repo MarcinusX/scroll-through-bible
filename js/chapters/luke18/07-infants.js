@@ -46,8 +46,10 @@ export default {
     const small = fx.add(`<g opacity="0">${kingdomDisc(c, 14)}</g>`);
 
     // where they end up around Him
+    const P = S.portrait;   // phone: the families arrive and gather closer in, inside the screen
     const KID_AT = [[JX - 100, GY + 6], [JX + 96, GY + 8], [JX + 164, GY + 14]];
-    const MOM_AT = [[JX + 270, GY - 8], [JX + 350, GY - 2], [JX + 130, GY - 16]];
+    const MOM_AT = P ? [[JX + 236, GY - 8], [JX + 290, GY - 2], [JX + 130, GY - 16]] : [[JX + 270, GY - 8], [JX + 350, GY - 2], [JX + 130, GY - 16]];
+    const PUSH = P ? 20 : 40, BLOCK = P ? 850 : 930;
 
     return (t, time) => {
       const T = time;
@@ -57,7 +59,7 @@ export default {
       const inK = es(t, -0.1, 0.8);
       /* v15b — the disciples step across; v16a — they draw back */
       const block = es(t, 1.05, 1.35) * (1 - es(t, 2.2, 2.6));
-      const dx = lerp(520, 930, block);
+      const dx = lerp(520, BLOCK, block);
       const angry = es(t, 1.2, 1.3) * (1 - es(t, 2.1, 2.2));
       calm.set({ x: dx, y: GY + 2 - block * 10, o: 1 - angry });
       stop.set({ x: dx, y: GY + 2 - block * 10, o: angry });
@@ -66,8 +68,8 @@ export default {
       /* the families */
       const run = (i) => es(t, 3.05 + i * 0.08, 3.5 + i * 0.08);
       moms.forEach((m) => {
-        const x0 = 1080 + m.i * 90;
-        let x = lerp(x0 + 520, x0, inK) + block * 40;
+        const x0 = P ? 950 + m.i * 50 : 1080 + m.i * 90;
+        let x = lerp(x0 + 520, x0, inK) + block * PUSH;
         const step = es(t, 3.1, 3.6);
         const [ax, ay] = MOM_AT[m.i];
         x = lerp(x, m.i === 2 ? ax : ax, step);
@@ -77,11 +79,11 @@ export default {
         m.p.set({ ...hold, o: 1 - gave });
         m.give.set({ ...hold, armF: 30, armB: 20, head: 0, o: gave });
       });
-      const dadX = lerp(1720, 1240, inK) + block * 40;
-      dad.set({ x: lerp(dadX, JX + 420, es(t, 3.1, 3.6)), y: GY - 14, s: 0.9, flip: true, walk: inK > 0 && inK < 1 ? dadX * 0.05 : undefined, armF: 40, armB: 20 + bump(t, 3.0, 3.4) * 60, head: 4, blink: blinkAt(T, 4) });
+      const dadX = lerp(1720, P ? 1060 : 1240, inK) + block * PUSH;
+      dad.set({ x: lerp(dadX, JX + (P ? 305 : 420), es(t, 3.1, 3.6)), y: GY - 14, s: 0.9, flip: true, walk: inK > 0 && inK < 1 ? dadX * 0.05 : undefined, armF: 40, armB: 20 + bump(t, 3.0, 3.4) * 60, head: 4, blink: blinkAt(T, 4) });
       kids.forEach((k) => {
         const r = run(k.i);
-        const x0 = lerp(1640 - k.i * 60, 1180 - k.i * 56, inK) + block * 40;
+        const x0 = lerp(1640 - k.i * 60, P ? 1035 - k.i * 45 : 1180 - k.i * 56, inK) + block * PUSH;
         const [ex, ey] = KID_AT[k.i];
         const x = lerp(x0, ex, r), y = lerp(GY + 4 + k.i * 6, ey, r);
         const reach = k.i === 0 ? es(t, 5.05, 5.25) : 0;

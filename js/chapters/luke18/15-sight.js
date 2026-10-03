@@ -22,7 +22,7 @@ export default {
   ],
   cam: { x: [-20, 80], y: [0, 40], z: [1, 1.12] },
   build(S) {
-    const R = jerichoSet(S);
+    const R = jerichoSet(S, { sunX: S.portrait ? 1000 : 1080 });   // phone: the sun clear of the thread
     const c = S.c;
     const glowL = S.layer({ par: 0.5, sh: 0, flat: true });
     R.P.el.parentNode.insertBefore(glowL.el, R.P.el);
@@ -66,11 +66,14 @@ export default {
 
       /* the crowd, the disciples */
       const up = es(t, 4.05, 4.15);
-      JP.ahead.set({ x: 1180, y: roadY(1180), o: 1 - up });
-      JP.aheadUp.set({ x: 1180, y: roadY(1180), o: up });
-      JP.dis.set({ x: JSTOP - 200 + on * 40, y: roadY(JSTOP - 150) + 8 });
-      JP.behind.set({ x: JSTOP - 330 + on * 80, y: roadY(JSTOP - 330), o: 1 - up });
-      JP.behindUp.set({ x: JSTOP - 330 + on * 80, y: roadY(JSTOP - 330), o: up });
+      const AX = S.portrait ? 1100 : 1180;   // phone: the crowd ahead stands where its praise can be seen
+      JP.ahead.set({ x: AX, y: roadY(AX), o: 1 - up });
+      JP.aheadUp.set({ x: AX, y: roadY(AX), o: up });
+      // the disciples and the crowd behind them stand apart, so the crowd's praising hands are not hidden
+      const DXO = S.portrait ? -140 : -170, BXO = S.portrait ? -350 : -410;
+      JP.dis.set({ x: JSTOP + DXO + on * 40, y: roadY(JSTOP - 150) + 8 });
+      JP.behind.set({ x: JSTOP + BXO + on * 80, y: roadY(JSTOP - 330), o: 1 - up });
+      JP.behindUp.set({ x: JSTOP + BXO + on * 80, y: roadY(JSTOP - 330), o: up });
       praise.forEach((p) => {
         const k = T ? (T * 0.35 + p.i / 9) % 1 : (p.i + 0.5) / 9;
         const x = 460 + p.i * 100 + Math.sin(k * 6 + p.i) * 10;

@@ -13,9 +13,9 @@ import {
 
 const { GY } = WY;
 const JX = 760, RX = 970, CY = 350;
-const CX = (i) => CARD_X(i) - 50;
+const CXW = (i) => CARD_X(i) - 50;
 const POOR = [[560, GY + 34], [640, GY + 40]];
-const CART = [1230, GY - 20];
+const CARTW = [1230, GY - 20];
 
 export default {
   id: 'lk18-lack',
@@ -29,6 +29,10 @@ export default {
   build(S) {
     const W = waySet(S, { jesus: false, dis: { keys: ['peter', 'andrew', 'james', 'john', 'philip', 'bartholomew'], x: 480, y: GY + 4, s: 0.86 } });
     const c = S.c;
+    // phone: the row of six cards a little tighter and smaller, and the cart drawn up close behind him, inside the screen
+    const P = S.portrait;
+    const CX = P ? (i) => 520 + i * 102 : CXW, CS = P ? 0.92 : 1;
+    const CART = P ? [1025, GY - 20] : CARTW, CARTS = P ? 0.74 : 0.9;
     const A = W.act;
     const K = cart(c, 200);
     const cartEl = A.add(`<g>${K.body}<g transform="translate(-50 0)">${K.wheel}</g><g transform="translate(56 0)">${K.wheel}</g></g>`);
@@ -51,10 +55,10 @@ export default {
       if (W.disSp) W.disSp.set({ x: 480, y: GY + 4 });
 
       /* the cards, and the sixth */
-      cards.forEach((cd) => pose(cd.el, { x: CX(cd.i), r: T ? Math.sin(T * 0.7 + cd.i * 2) * 1.2 : 0, y: CY + (cd.i % 2) * 14 + (T ? Math.sin(T * 0.8 + cd.i) * 2 : 0) - es(t, 3.0 + cd.i * 0.03, 3.3 + cd.i * 0.03, ease.in) * 1600 }));
+      cards.forEach((cd) => pose(cd.el, { x: CX(cd.i), s: CS, r: T ? Math.sin(T * 0.7 + cd.i * 2) * 1.2 : 0, y: CY + (cd.i % 2) * 14 + (T ? Math.sin(T * 0.8 + cd.i) * 2 : 0) - es(t, 3.0 + cd.i * 0.03, 3.3 + cd.i * 0.03, ease.in) * 1600 }));
       const sk = es(t, 0.05, 0.3, ease.out);
       const sy = lerp(-1500, CY + 14, sk) + (T ? Math.sin(T * 0.8 + 5) * 2 : 0) - es(t, 3.18, 3.48, ease.in) * 1600;
-      pose(sixth, { x: CX(5), y: sy, r: T ? Math.sin(T * 0.7 + 10) * 1.2 : 0 });
+      pose(sixth, { x: CX(5), y: sy, s: CS, r: T ? Math.sin(T * 0.7 + 10) * 1.2 : 0 });
       pose(q, { x: CX(5), y: sy - 16, s: es(t, 0.3, 0.45, ease.back) * (1 - es(t, 2.1, 2.2)), o: t > 0.3 && t < 2.2 ? 1 : 0 });
       pose(feet, { x: CX(5), y: sy - 14, s: es(t, 2.2, 2.4, ease.back), o: t > 2.2 ? 1 : 0 });
 
@@ -68,7 +72,7 @@ export default {
 
       /* the cart rolls up; the poor with their bowls */
       const ck = es(t, 1.0, 1.35);
-      pose(cartEl, { x: lerp(1600, CART[0], ck), y: CART[1], s: 0.9, o: ck > 0 ? 1 : 0 });
+      pose(cartEl, { x: lerp(1600, CART[0], ck), y: CART[1], s: CARTS, o: ck > 0 ? 1 : 0 });
       poor.forEach((p) => {
         const [x, y] = POOR[p.i];
         const hope = es(t, 1.3, 1.5) * (1 - es(t, 3.2, 3.5));

@@ -13,9 +13,7 @@ import {
 } from './lib.js';
 
 const { GY } = WY;
-const JX = 600, RX = 760;
-const NX = 960, NH = 380, NTIP = GY + 160, EYE_Y = NTIP - NH + 63;
-const GATE = [990, GY - 30];
+const NH = 380, NTIP = GY + 160, EYE_Y = NTIP - NH + 63;
 const DK = ['peter', 'andrew', 'james', 'john', 'philip', 'bartholomew'];
 
 export default {
@@ -30,9 +28,14 @@ export default {
   build(S) {
     const W = waySet(S, { jesus: false });
     const c = S.c;
+    // phone: the whole row drawn in — the disciples, Jesus, the young man, the gate and the needle — so the askers at the
+    // left and the camel at the right are both on the screen
+    const P = S.portrait;
+    const JX = P ? 635 : 600, RX = P ? 750 : 760, NX = P ? 890 : 960, DX = P ? 505 : 390;
+    const GATE = [P ? 880 : 990, GY - 30], JAM = P ? 120 : 150, BOUNCE = P ? 12 : 60, LANDX = P ? -48 : -90, LANDS = P ? 0.45 : 0.55;
     const L = W.crowdL;
-    const calm = L.sprite(disciples(c, DK, { s: 0.86, spread: 46, rows: 2 }), 390, GY + 4);
-    const amazed = L.sprite(disciples(c, DK, { s: 0.86, spread: 46, rows: 2, arms: [130, 110, 150], heads: [-10, -6, -12] }), 390, GY + 4);
+    const calm = L.sprite(disciples(c, DK, { s: 0.86, spread: 46, rows: 2 }), DX, GY + 4);
+    const amazed = L.sprite(disciples(c, DK, { s: 0.86, spread: 46, rows: 2, arms: [130, 110, 150], heads: [-10, -6, -12] }), DX, GY + 4);
     const B = W.behind;
     const gateEl = B.add(`<g opacity="0">${kingdomGate(c, 44, 108)}</g>`);
     const A = W.act;
@@ -62,7 +65,7 @@ export default {
       pose(gateEl, { x: GATE[0], y: GATE[1], s: gk * 1.1, o: gk > 0.02 ? 1 : 0 });
       const roll = es(t, 0.35, 0.6);
       const jam = bump(t, 0.6, 0.8) * Math.sin(t * 60) * 5;
-      const cx = lerp(1400, GATE[0] + 150, roll) + jam + es(t, 0.95, 1.3) * 500;
+      const cx = lerp(1400, GATE[0] + JAM, roll) + jam + es(t, 0.95, 1.3) * 500;
       pose(cartEl, { x: cx, y: GY - 20, s: 0.9, r: bump(t, 0.6, 0.75) * -2 });
 
       /* the young man, sad, a little aside */
@@ -79,9 +82,9 @@ export default {
 
       /* v26 — the disciples */
       const amaze = es(t, 2.05, 2.15) * (1 - es(t, 3.3, 3.4));
-      calm.set({ x: 390, y: GY + 4, o: 1 - amaze });
-      amazed.set({ x: 390, y: GY + 4, o: amaze });
-      pose(who, { x: 450, y: GY - 230, s: es(t, 2.1, 2.28, ease.back), o: t > 2.1 && t < 3.1 ? 1 - es(t, 3.0, 3.1) : 0 });
+      calm.set({ x: DX, y: GY + 4, o: 1 - amaze });
+      amazed.set({ x: DX, y: GY + 4, o: amaze });
+      pose(who, { x: P ? 540 : 450, y: GY - (P ? 275 : 230), s: es(t, 2.1, 2.28, ease.back), o: t > 2.1 && t < 3.1 ? 1 - es(t, 3.0, 3.1) : 0 });
 
       /* v25 — the needle comes down; the camel tries */
       const nd = es(t, 0.95, 1.2, ease.out);
@@ -91,10 +94,10 @@ export default {
       const bounce = es(t, 1.95, 2.12, ease.back);
       const lift = es(t, 3.15, 3.45), through = es(t, 3.45, 3.6), land = es(t, 3.6, 3.85);
       const nose = 128;
-      let x = lerp(1600, NX + nose, walkIn) - push * (16 + (T ? Math.sin(T * 9) * 4 : 0)) + bounce * 60, y = GY + 10, s = 0.84;
+      let x = lerp(1600, NX + nose, walkIn) - push * (16 + (T ? Math.sin(T * 9) * 4 : 0)) + bounce * BOUNCE, y = GY + 10, s = 0.84;
       x = lerp(x, NX + 30, lift); y = lerp(y, EYE_Y + 12, lift); s = lerp(s, 0.1, lift);
       x = lerp(x, NX - 30, through);
-      x = lerp(x, NX - 90, land); y = lerp(y, GY + 50, land); s = lerp(s, 0.55, land);
+      x = lerp(x, NX + LANDX, land); y = lerp(y, GY + 50, land); s = lerp(s, LANDS, land);
       pose(cam_, { x, y: y - Math.sin(through * PI) * 6, s });
       pose(cm, { sx: -1 + push * 0.16, sy: 1 + push * 0.06 });
       const walking = (walkIn > 0 && walkIn < 1) || (bounce > 0.02 && bounce < 0.98);

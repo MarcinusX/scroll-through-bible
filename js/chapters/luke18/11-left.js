@@ -25,9 +25,10 @@ export default {
   ],
   cam: { x: [-20, 20], y: [-40, 30], z: [1, 1.08] },
   build(S) {
-    const W = waySet(S, { jesus: false, groups: [{ k: 'r', x: 1080, y: GY + 6, n: 6, flip: true, s: 0.86, seed: 'lk18-pray-r' }] });
+    const P = S.portrait;   // phone: both knots of listeners come in from the edges
+    const W = waySet(S, { jesus: false, groups: [{ k: 'r', x: P ? 995 : 1080, y: GY + 6, n: 6, flip: true, s: 0.86, seed: 'lk18-pray-r' }] });
     const c = S.c;
-    W.crowdL.sprite(disciples(c, DK, { s: 0.86, spread: 46, rows: 2 }), 470, GY + 4);
+    W.crowdL.sprite(disciples(c, DK, { s: 0.86, spread: 46, rows: 2 }), P ? 500 : 470, GY + 4);
     const A = W.act;
     const peter = S.puppet(A.add(person(c, DIS.peter)));
     const J = S.puppet(A.add(person(c, CAST.jesus)));
@@ -50,7 +51,7 @@ export default {
 
       /* v28 — Peter steps out */
       const out = es(t, 0.05, 0.35);
-      const px = lerp(560, 650, out);
+      const px = lerp(P ? 580 : 560, P ? 660 : 650, out);
       peter.set({ x: px, y: GY + 10, s: 0.92, flip: false, walk: out > 0 && out < 1 ? px * 0.05 : undefined, armF: 20 + es(t, 0.3, 0.45) * 70 * (1 - es(t, 1.0, 1.2)), armB: 10 + bump(t, 0.4, 0.95) * 60, head: -4, blink: blinkAt(T, 2) });
       const [phx, phy] = headAt(px, GY + 10, 0.92, false);
       pose(said, { x: phx + 10, y: phy - 36, s: es(t, 0.3, 0.48, ease.back), o: t > 0.3 && t < 1.05 ? 1 - es(t, 0.97, 1.05) : 0 });

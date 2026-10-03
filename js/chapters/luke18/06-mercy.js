@@ -10,7 +10,7 @@
 import { C, person, blinkAt, pose, lerp, sheet, shade, mix } from '../kit.js';
 import { templeParable, TP, PHARISEE, TAXMAN, words, wordSlip, sparkle, fig13, warm, onString, headAt, kf, es, ease, bump, seg, tr, PI } from './lib.js';
 
-const F = TP.FLOOR, PX = TP.PHX, TX = TP.TXX;
+const F = TP.FLOOR, PX = TP.PHX, TXW = TP.TXX;
 const SX = 800, SY = 300, ARM = 170;   // the see-saw: pivot, half-length
 
 export default {
@@ -25,6 +25,7 @@ export default {
   cam: { x: [-60, 120], y: [0, 40], z: [1, 1.14] },
   build(S) {
     const TPR = templeParable(S);
+    const TX = S.portrait ? 1000 : TXW;   // phone: the tax collector inside the screen, clear of the thread
     const { c, fx, glowL } = TPR;
     const slips = [0, 1, 2].map((i) => ({ i, el: fx.add(`<g>${wordSlip(c, 38)}</g>`) }));
     const plea = fx.add(`<g opacity="0">${words(c, tr(['Boże, miej litość', 'dla mnie, grzesznika!'], ['God, be merciful', 'to me, a sinner!']), { size: 18, side: -1 })}</g>`);
@@ -50,7 +51,7 @@ export default {
 
       /* the Pharisee, still praying at the front, then going out at the left */
       const outP = es(t, 2.1, 2.9);
-      const ppx = lerp(PX, 470, outP);
+      const ppx = lerp(PX, S.portrait ? 530 : 470, outP);
       TPR.phar.set({ x: ppx, y: F, s: 1.0, o: 1 - es(t, 2.95, 3.1), flip: outP > 0.01, walk: outP > 0 && outP < 1 ? ppx * 0.05 : undefined, armF: 14 + 90 * (1 - es(t, 2.0, 2.15)), armB: 10 + 150 * (1 - es(t, 2.0, 2.15)), head: -18 + es(t, 2.0, 2.15) * 12, blink: blinkAt(T, 2) });
       const [phx, phy] = headAt(PX, F, 1.0, false);
       const fall = es(t, 2.1, 2.4, ease.in);
@@ -66,7 +67,7 @@ export default {
       const fist = beat * (60 + Math.max(0, Math.sin(t * 38)) * 22);
       const freed = es(t, 2.12, 2.2);
       const home = es(t, 2.35, 2.95);
-      const tx = lerp(TX, 1170, home);
+      const tx = lerp(TX, S.portrait ? 1055 : 1170, home);
       const bow = 22 * (1 - freed);
       TPR.tax.set({ x: TX, y: F - 8, s: 0.94, flip: true, armF: 12 + fist, armB: 8, head: bow + beat * 4, lean: 12 * (1 - freed), o: 1 - freed, blink: 0 });
       TPR.taxOpen.set({ x: tx, y: F - 8, s: 0.94, flip: false, o: freed * (1 - es(t, 2.95, 3.1)), walk: home > 0 && home < 1 ? tx * 0.05 : undefined, armF: 20 + bump(t, 2.15, 2.5) * 70, armB: 10 + bump(t, 2.15, 2.5) * 120, head: -6, blink: blinkAt(T, 5) });

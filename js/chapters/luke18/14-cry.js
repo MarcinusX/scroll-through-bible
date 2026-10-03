@@ -20,14 +20,14 @@ export default {
   ],
   cam: { x: [-20, 80], y: [0, 40], z: [1, 1.1] },
   build(S) {
-    const R = jerichoSet(S);
+    const R = jerichoSet(S, { sunX: S.portrait ? 1000 : 1080 });   // phone: the sun clear of the thread
     const c = S.c;
     const JP = jerichoPeople(S, R);
     const hushers = [0, 1].map((i) => ({ i, p: S.puppet(R.P.add(person(c, manO(c, { robe: [C.ochreRobe, C.mauve][i], mantle: [C.stone, null][i] })))), seed: c.rr(0, 9) }));
     const teller = S.puppet(R.P.add(person(c, manO(c, { robe: C.tealRobe, mantle: C.wheatRobe }))));
     const J = S.puppet(R.P.add(person(c, CAST.jesus)));
     const rings = voiceRings(R.fx, c, { n: 3, color: C.terracotta, r: 30, w: 4 });
-    const hush = hushers.map(() => R.fx.add(`<g opacity="0">${words(c, tr('Cicho!', 'Quiet!'), { size: 19, side: 1 })}</g>`));
+    const hush = hushers.map(() => R.fx.add(`<g opacity="0">${words(c, tr('Cicho!', 'Quiet!'), { size: 19, side: S.portrait ? -1 : 1 })}</g>`));   // phone: they open to the left
     const cry2 = R.fx.add(`<g opacity="0">${say(c, tr(['JEZUSIE, SYNU DAWIDA,', 'ULITUJ SIĘ NADE MNĄ!'], ['JESUS, SON OF DAVID,', 'HAVE MERCY ON ME!']), { size: 20, side: -1, jag: true, bold: true })}</g>`);
     const bring = R.fx.add(`<g opacity="0">${words(c, tr('Przyprowadźcie go!', 'Bring him to me!'), { size: 18, side: 1 })}</g>`);
 
@@ -52,11 +52,11 @@ export default {
       /* the two who rebuke him */
       hushers.forEach((h) => {
         const k = es(t, 0.05 + h.i * 0.08, 0.3 + h.i * 0.08) * (1 - es(t, 2.1, 2.4));
-        const x = lerp(1250 + h.i * 70, BX + 90 + h.i * 70, k);
+        const x = lerp(1250 + h.i * 70, BX + (S.portrait ? 30 + h.i * 40 : 90 + h.i * 70), k);   // phone: the two stand inside the screen
         const r = es(t, 0.2, 0.35) * (1 - es(t, 1.9, 2.1));
         h.p.set({ x, y: BY - 22 - h.i * 10, s: 0.94, flip: true, walk: k > 0 && k < 1 ? x * 0.05 : undefined, armF: 20 + r * 130, armB: 10 + r * 30, lean: -r * 8, head: r * 10, o: t > 0.02 ? 1 : 0, blink: blinkAt(T, h.seed) });
         const [hx, hy] = headAt(x, BY - 22 - h.i * 10, 0.94, true);
-        pose(hush[h.i], { x: hx + 10, y: hy - 30, s: es(t, 0.25 + h.i * 0.08, 0.42 + h.i * 0.08, ease.back), o: t > 0.25 && t < 1.05 ? 1 - es(t, 0.97, 1.05) : 0 });
+        pose(hush[h.i], { x: hx + (S.portrait ? -6 : 10), y: hy - 30 - (S.portrait ? h.i * 46 : 0), s: es(t, 0.25 + h.i * 0.08, 0.42 + h.i * 0.08, ease.back), o: t > 0.25 && t < 1.05 ? 1 - es(t, 0.97, 1.05) : 0 });
       });
 
       /* the blind man: shushed (v39a), louder (v39b), helped up and led to Jesus (v40a), before Him (v40b) */

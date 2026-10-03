@@ -14,7 +14,7 @@ import {
 
 const { GY, JX, FX } = WY;
 const FW = 380, FH = 240, K = 1.12, FYY = 270;
-const PX = 800, PY = 260, PX2 = 1110, PY2 = 300;   // the judge's little plate (then set aside)
+const PX = 800, PY = 260, PX2W = 1110, PY2 = 300;   // the judge's little plate (then set aside)
 
 export default {
   id: 'lk18-elect',
@@ -26,11 +26,13 @@ export default {
   ],
   cam: { x: [-20, 20], y: [-30, 30], z: [1, 1.08] },
   build(S) {
+    const RG = S.portrait ? -70 : 0;   // phone: the listeners at the right clear of the edge and the thread
+    const PX2 = S.portrait ? 1020 : PX2W;   // phone: the judge's plate set aside inside the screen
     const W = waySet(S, {
       dis: { keys: ['peter', 'andrew', 'james', 'john', 'philip', 'bartholomew'], x: 560, y: GY + 6, s: 0.86, flip: false },
       groups: [
-        { k: 'r', x: 1060, y: GY + 6, n: 6, flip: true, s: 0.86, seed: 'lk18-pray-r' },
-        { k: 'sit', x: 1090, y: GY + 52, n: 3, flip: true, pose: 'sit', s: 0.9, seed: 'lk18-pray-s' },
+        { k: 'r', x: 1060 + RG, y: GY + 6, n: 6, flip: true, s: 0.86, seed: 'lk18-pray-r' },
+        { k: 'sit', x: 1090 + RG, y: GY + 52, n: 3, flip: true, pose: 'sit', s: 0.9, seed: 'lk18-pray-s' },
       ],
     });
     const c = S.c;
@@ -104,7 +106,7 @@ export default {
       /* the flat of the chosen ones */
       const kA = es(t, 1.02, 1.28, ease.out) * (1 - es(t, 3.0, 3.3, ease.in));
       const fy = lerp(-1500, FYY, kA), on = kA > 0.002 ? 1 : 0;
-      const fx = 760;
+      const fx = S.portrait ? 735 : 760;   // phone: room for the judge's plate beside it
       pose(flatEl, { x: fx, y: fy, s: K, o: on });
       const at = (dx, dy) => [fx + dx * K, fy + dy * K];
       const nightK = es(t, 1.35, 1.6) * (1 - es(t, 2.05, 2.25));

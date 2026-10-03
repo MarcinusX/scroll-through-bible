@@ -107,7 +107,7 @@ export default {
       pose(tagG, { x: 860, y: lerp(-1500, 262, tk) + (T ? Math.sin(T * 0.8) * 2 : 0), r: T ? Math.sin(T * 0.7) * 1.4 : 0 });
       pose(tagM, { x: 1060, y: lerp(-1500, 280, es(t, 0.42, 0.67, ease.out) * (1 - es(t, 1.08, 1.33, ease.in))) + (T ? Math.sin(T * 0.8 + 1) * 2 : 0), r: T ? Math.sin(T * 0.7 + 2) * 1.4 : 0 });
       const t1 = es(t, 3.12, 3.3, ease.back) * (1 - es(t, 3.9, 4.02));
-      pose(think1, { x: jhx + 30, y: jhy - 120, s: t1, o: t1 > 0.02 ? 1 : 0 });
+      pose(think1, { x: jhx + (S.portrait ? -30 : 30), y: jhy - 120, s: t1, o: t1 > 0.02 ? 1 : 0 });   // phone: clear of the thread
 
       /* the widow: in through the gate, pleading every day, the verdict, home */
       const inK = es(t, 1.0, 1.42);
@@ -159,7 +159,7 @@ export default {
 
       /* v5b — the endless line of widows, in his thoughts */
       const t2 = es(t, 5.05, 5.25, ease.back);
-      pose(think2, { x: jhx + 10, y: jhy - 150, s: t2 * 1.3, o: t2 > 0.02 ? 1 : 0 });
+      pose(think2, { x: jhx + (S.portrait ? -40 : 10), y: jhy - 150, s: t2 * (S.portrait ? 1.05 : 1.3), o: t2 > 0.02 ? 1 : 0 });   // phone: inside the screen
 
       S.cam.x = kf(t, [[0, 40], [0.9, 40], [1.4, 0], [4.0, 0], [4.4, 20], [5.2, 20], [6, 0]]);
       S.cam.y = 20;

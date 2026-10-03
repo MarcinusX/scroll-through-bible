@@ -6,8 +6,8 @@ import { C, person, blinkAt, pose, lerp, sheet, shade, mix } from '../kit.js';
 import { waySet, WY, PROUD, LOWLY, headAt, es, ease, bump, seg, PI } from './lib.js';
 import { rock } from '../../assets/nature.js';
 
-const { GY, JX } = WY;
-const RX = 1100, RY = GY - 4;       // the boulder they climb (top at RY - 34)
+const { GY } = WY;
+const RY = GY - 4;                  // the boulder they climb (top at RY - 34)
 
 export default {
   id: 'lk18-trusted',
@@ -20,6 +20,8 @@ export default {
       dis: { keys: ['peter', 'andrew', 'james', 'john', 'philip', 'bartholomew'], x: 560, y: GY + 6, s: 0.86, flip: false },
     });
     const c = S.c;
+    // phone: the gentlemen on their boulder and the two in the dust come in from the edge, Jesus a little left
+    const RX = S.portrait ? 990 : 1100, LX = S.portrait ? 860 : 950, JX = S.portrait ? 745 : WY.JX;
     const A = W.act;
     const rockEl = A.add(`<g>${rock(c, 0, 0, 280, 64, mix(C.rock, C.sand2, 0.3))}</g>`);
     const proud = PROUD.map((o, i) => ({ i, p: S.puppet(A.add(person(c, o))), seed: c.rr(0, 9) }));
@@ -41,7 +43,7 @@ export default {
       });
       low.forEach((m) => {
         const bow = es(t, 0.5, 0.65);
-        m.p.set({ x: 950 + m.i * 70, y: GY + 34 + m.i * 4, s: 0.88, flip: false, head: 10 + bow * 14, armF: 30 + bow * 20, blink: 0 });
+        m.p.set({ x: LX + m.i * 70, y: GY + 34 + m.i * 4, s: 0.88, flip: false, head: 10 + bow * 14, armF: 30 + bow * 20, blink: 0 });
       });
 
       /* Jesus turns to them */

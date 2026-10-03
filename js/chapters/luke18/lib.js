@@ -277,13 +277,13 @@ export const JR = { GY: 704, CITY: 1260, BX: 1000, BY: 720 };
  * mountains beyond; the road comes in from the left and runs to its gate; palms and a milestone by the road where
  * the blind man sits. Returns { sk2, cityL, roadL, matL, crowdL, P, fx, fg, update }.
  */
-export function jerichoSet(S, { skyCols = JERICHO_SKY, sky2 = null } = {}) {
+export function jerichoSet(S, { skyCols = JERICHO_SKY, sky2 = null, sunX = 1080 } = {}) {
   const c = makeCutter('lk18-jericho');
   sky(S, skyCols);
   const sk2 = sky2 ? sky(S, sky2, { name: 'sky2', rise: 0 }).layer : null;
   if (sk2) sk2.fade(0);
   const hangL = S.layer({ par: 0.04, sh: 4 });
-  const sunEl = hanging(hangL, sun(c, 42), { x: 1080, y: 150, len: 900 });
+  const sunEl = hanging(hangL, sun(c, 42), { x: sunX, y: 150, len: 900 });
   const cls = [[700, 130, 150], [1300, 190, 120]].map(([x, y, w], i) => ({ i, x, y, el: hanging(hangL, cloud(c, w), { x, y, len: 800 }) }));
   const far = S.layer({ par: 0.07, sh: 2 });
   const mfn = (x) => 410 + Math.sin(x * 0.004 + 0.3) * 7 + Math.sin(x * 0.012) * 3;
@@ -319,7 +319,7 @@ export function jerichoSet(S, { skyCols = JERICHO_SKY, sky2 = null } = {}) {
   return {
     c, sk2, hangL, sunEl, cityL, roadL, matL, crowdL, P, fx, fg, gfn,
     update(T, { sunY = 0 } = {}) {
-      swing(sunEl, 1080, 150 + sunY, T, 1, 0.6);
+      swing(sunEl, sunX, 150 + sunY, T, 1, 0.6);
       cls.forEach((cl) => swing(cl.el, cl.x + Math.sin(T * 0.1 + cl.i) * 20, cl.y, T, 1.2, 0.6, cl.i));
     },
   };

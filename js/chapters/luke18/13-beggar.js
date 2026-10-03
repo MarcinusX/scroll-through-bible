@@ -21,7 +21,7 @@ export default {
   ],
   cam: { x: [-80, 60], y: [0, 40], z: [1, 1.1] },
   build(S) {
-    const R = jerichoSet(S);
+    const R = jerichoSet(S, { sunX: S.portrait ? 1000 : 1080 });   // phone: the sun clear of the thread
     const c = S.c;
     const JP = jerichoPeople(S, R);
     const teller = S.puppet(R.P.add(person(c, manO(c, { robe: C.tealRobe, mantle: C.wheatRobe }))));
@@ -29,7 +29,7 @@ export default {
     const rings = voiceRings(R.fx, c, { n: 3, color: C.terracotta, r: 30, w: 4 });
     const feet = voiceRings(R.fx, c, { n: 3, color: shade(C.sand2, -0.2), r: 40, w: 5 });
     const what = R.fx.add(`<g opacity="0">${words(c, tr('Co się dzieje?', 'What is happening?'), { size: 18, side: -1 })}</g>`);
-    const told = R.fx.add(`<g opacity="0">${words(c, tr(['Jezus z Nazaretu', 'przechodzi!'], ['Jesus of Nazareth', 'is passing by!']), { size: 18, side: 1 })}</g>`);
+    const told = R.fx.add(`<g opacity="0">${words(c, tr(['Jezus z Nazaretu', 'przechodzi!'], ['Jesus of Nazareth', 'is passing by!']), { size: 18, side: S.portrait ? -1 : 1 })}</g>`);   // phone: opens to the left, inside the screen
     const cry = R.fx.add(`<g opacity="0">${say(c, tr(['Jezusie, Synu Dawida,', 'ulituj się nade mną!'], ['Jesus, son of David,', 'have mercy on me!']), { size: 19, side: -1, jag: true })}</g>`);
 
     return (t, time) => {
@@ -65,7 +65,7 @@ export default {
       const tx = lerp(1300, BX + 110, es(t, 1.7, 2.05)) + es(t, 2.95, 3.3) * 60;
       teller.set({ x: tx, y: BY - 18, s: 0.94, flip: true, walk: (t > 1.7 && t < 2.05) || (t > 2.95 && t < 3.3) ? tx * 0.05 : undefined, armF: 20 + bend * 60, armB: 10, lean: -bend * 14, head: bend * 14, o: es(t, 1.65, 1.75), blink: blinkAt(T, 3) });
       const [thx, thy] = headAt(tx, BY - 18, 0.94, true);
-      pose(told, { x: thx + 10, y: thy - 30, s: es(t, 2.1, 2.28, ease.back), o: t > 2.1 && t < 3.05 ? 1 - es(t, 2.95, 3.05) : 0 });
+      pose(told, { x: thx + (S.portrait ? -6 : 10), y: thy - 30, s: es(t, 2.1, 2.28, ease.back), o: t > 2.1 && t < 3.05 ? 1 - es(t, 2.95, 3.05) : 0 });
 
       S.cam.x = kf(t, [[0, -30], [1.0, 20], [2.0, 50], [3.0, 40], [4.0, 20]]);
       S.cam.y = 20;

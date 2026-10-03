@@ -19,11 +19,12 @@ export default {
   ],
   cam: { x: [-20, 20], y: [-30, 30], z: [1, 1.08] },
   build(S) {
+    const RG = S.portrait ? -70 : 0;   // phone: the listeners at the right clear of the edge and the thread
     const W = waySet(S, {
       dis: { keys: ['peter', 'andrew', 'james', 'john', 'philip', 'bartholomew'], x: 560, y: GY + 6, s: 0.86, flip: false },
       groups: [
-        { k: 'r', members: null, x: 1060, y: GY + 6, n: 6, flip: true, s: 0.86, markup: null, seed: 'lk18-pray-r' },
-        { k: 'sit', x: 1090, y: GY + 52, n: 3, flip: true, pose: 'sit', s: 0.9, seed: 'lk18-pray-s' },
+        { k: 'r', members: null, x: 1060 + RG, y: GY + 6, n: 6, flip: true, s: 0.86, markup: null, seed: 'lk18-pray-r' },
+        { k: 'sit', x: 1090 + RG, y: GY + 52, n: 3, flip: true, pose: 'sit', s: 0.9, seed: 'lk18-pray-s' },
       ],
     });
     const c = S.c;

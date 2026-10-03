@@ -17,7 +17,7 @@ import {
 
 const JX = 780, JY = 716;
 const [CX, CY] = ROAD9.CITY;
-const PL = [[640, 236], [800, 206], [960, 206], [1120, 236]];
+const PLW = [[640, 236], [800, 206], [960, 206], [1120, 236]];
 
 export default {
   id: 'lk18-upto',
@@ -34,6 +34,9 @@ export default {
   build(S) {
     const R = roadSet9(S, { village: false });
     const c = S.c;
+    // phone: the four plates of the passion closer together, and the cross on the hill at the near side of the city
+    const PL = S.portrait ? [[590, 236], [725, 206], [860, 206], [995, 236]] : PLW;
+    const CROSSX = S.portrait ? 850 : 1150;
     // the cross on the hill by the city (behind the middle hills)
     const crossL = S.layer({ par: 0.07, sh: 2 });
     R.mid.el.parentNode.insertBefore(crossL.el, R.mid.el);
@@ -112,7 +115,7 @@ export default {
         const [x, y] = PL[p.i];
         pose(p.el, { x, y: lerp(-1500, y, k) + (T ? Math.sin(T * 0.8 + p.i) * 2 : 0), r: T ? Math.sin(T * 0.6 + p.i) * 1.2 : 0 });
       });
-      pose(cross, { x: 1150, y: 446, o: es(t, 3.3, 3.5) });
+      pose(cross, { x: CROSSX, y: 446, o: es(t, 3.3, 3.5) });
       days.forEach((d) => {
         const k = es(t, 4.05 + d.i * 0.12, 4.2 + d.i * 0.12, ease.out) * (1 - es(t, 4.95, 5.2, ease.in));
         pose(d.el, { x: 720 + d.i * 80, y: lerp(-1500, 330 + (d.i === 2 ? -10 : 0), k), s: d.i === 2 ? 1 + dawn * 0.3 : 1 });

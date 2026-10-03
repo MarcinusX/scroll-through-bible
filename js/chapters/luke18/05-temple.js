@@ -13,7 +13,7 @@ import {
   headAt, handAt, kf, moving, es, ease, bump, seg, tr, PI,
 } from './lib.js';
 
-const F = TP.FLOOR, PX = TP.PHX, TX = TP.TXX;
+const F = TP.FLOOR, PX = TP.PHX, TXW = TP.TXX;
 
 export default {
   id: 'lk18-temple',
@@ -29,6 +29,7 @@ export default {
   cam: { x: [-40, 80], y: [0, 40], z: [1, 1.12] },
   build(S) {
     const TPR = templeParable(S);
+    const TX = S.portrait ? 1000 : TXW;   // phone: the tax collector inside the screen, clear of the thread
     const { c, fx } = TPR;
 
     /* name tags as they come in */
