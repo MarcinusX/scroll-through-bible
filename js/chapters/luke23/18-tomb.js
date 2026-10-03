@@ -12,7 +12,8 @@ import { tombStone } from '../mark6/lib.js';
 import { kf, moving, headAt, withFace, faceBits, face, shadowPerson, crossSil, crossHead, skullHill, linenRoll, shroud, litter, candle, strip, hanging, swing, homeLight, MAGD, MARYJ, SALOME, LOOK, SKIES, INK, tr, PI } from './lib.js';
 
 const GY = 694;
-const HX = 430, HT = 430, HH = 190;
+let HX = 430;                       // the far hill (set in build: a phone has it nearer the middle)
+const HT = 430, HH = 190;
 const DX = 960, DB = 650, DW = 100, DH = 146;
 const SR = 76;
 
@@ -29,6 +30,7 @@ export default {
   cam: { x: [-280, 120], y: [-60, 60], z: [1, 1.2] },
   build(S) {
     const c = S.c;
+    HX = S.portrait ? 620 : 430;   // phone: the taking-down on the far hill inside the frame
     const sk = sky(S, SKIES.dusk);
     const starL = S.layer({ par: 0.02, sh: 1, flat: true });
     starL.add(stars(c, { x0: -600, x1: 2200, y0: -400, y1: 380, n: 60 }));
@@ -103,7 +105,7 @@ export default {
       pose(lit, { x: cx, y: GY - 60, o: t > 0.95 && onLitter ? 1 : 0 });
       pose(body, { x: cx, y: GY - 68, sx: 0.3 + wrap * 0.7, o: t > 1.05 && onLitter ? Math.min(1, wrap * 3) : 0 });
       pose(roll, { x: cx + 40 - wrap * 80, y: GY - 84, s: 1 - wrap * 0.6, r: wrap * 300, o: t > 1.0 && wrap < 1 ? 1 : 0 });
-      const JK = [[0.9, [300, GY]], [1.05, [470, GY]], [2.0, [470, GY]], [2.45, [710, GY]], [2.8, [780, GY]], [3.5, [1180, GY + 6]]];
+      const JK = [[0.9, [300, GY]], [1.05, [470, GY]], [2.0, [470, GY]], [2.45, [710, GY]], [2.8, [780, GY]], S.portrait ? [3.45, [1420, GY + 6]] : [3.5, [1180, GY + 6]]];   // phone: Joseph is gone, not left under the thread
       const [jx] = kf(t, JK);
       const lay = es(t, 2.45, 2.7);
       const jArm = t < 1.0 ? 20 : t < 2.0 ? 40 + wrap * 30 * (1 - wrap) : carrying ? 60 : 20;
@@ -125,7 +127,8 @@ export default {
 
       /* v55 — the women from Galilee follow and see how He was laid */
       women.forEach((w) => {
-        const K = [[3.95 + w.i * 0.08, [-100 - w.i * 90, GY + 6]], [4.6 + w.i * 0.08, [620 - w.i * 90, GY + 6]], [5.0, [620 - w.i * 90, GY + 6]], [5.45 + w.i * 0.05, [830 - w.i * 80, GY + 6]]];
+        const wx = S.portrait ? 690 - w.i * 80 : 620 - w.i * 90;   // phone: the three stand whole inside the frame
+        const K = [[3.95 + w.i * 0.08, [-100 - w.i * 90, GY + 6]], [4.6 + w.i * 0.08, [wx, GY + 6]], [5.0, [wx, GY + 6]], [5.45 + w.i * 0.05, [830 - w.i * 80, GY + 6]]];
         const [x, y] = kf(t, K);
         const look = es(t, 5.3, 5.6);
         w.p.set({ x, y, s: 1.04, flip: false, walk: moving(t, K) ? x * 0.05 : undefined, armF: 14 + (w.i === 0 ? look * 60 : 0), armB: 8, head: -4 + look * 4, o: es(t, 3.95, 4.05), blink: blinkAt(T, 3 + w.i) });
@@ -134,7 +137,7 @@ export default {
 
       S.cam.x = lerp(-180, 0, es(t, 0.7, 1.2)) + es(t, 2.1, 2.8) * 90 - es(t, 3.9, 4.5) * 120 + es(t, 5.0, 5.5) * 80;
       S.cam.y = -es(t, 0, 0.5) * 40 * (1 - es(t, 0.7, 1.2)) + es(t, 2.9, 3.4) * -30 * (1 - es(t, 3.9, 4.3));
-      if (S.portrait) S.cam.x -= 80 * (1 - es(t, 0.7, 1.2));
+      if (S.portrait) S.cam.x -= 80 * (1 - es(t, 0.7, 1.2)) + 90 * es(t, 0.7, 1.2) * (1 - es(t, 2.1, 2.6));   // phone: Joseph wrapping the body whole, by the left edge
       S.cam.z = 1.1 * (1 - es(t, 0.7, 1.2)) + 1.02 * es(t, 0.7, 1.2) + es(t, 5.0, 5.5) * 0.06;
     };
   },

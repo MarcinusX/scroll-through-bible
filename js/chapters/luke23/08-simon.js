@@ -51,8 +51,9 @@ export default {
 
       const jK = [[-0.3, [260, GY]], [0.8, [720, GY]], [1.1, [740, GY]], [1.45, [760, GY]], [2.9, [900, GY]]];
       const sK = [[-0.3, [1460, GY + 4]], [0.6, [1030, GY + 4]], [1.05, [1030, GY + 4]], [1.4, [690, GY - 4]], [1.55, [640, GY - 4]], [2.9, [760, GY - 4]]];
-      const aK = [[-0.3, [420, GY + 8]], [0.55, [910, GY + 8]], [1.5, [910, GY + 8]], [2.9, [1090, GY + 8]]];
-      const bK = [[-0.3, [100, GY + 6]], [0.9, [560, GY + 6]], [1.3, [560, GY + 6]], [1.5, [480, GY + 6]], [2.9, [590, GY + 6]]];
+      const aK = [[-0.3, [420, GY + 8]], [0.55, [910, GY + 8]], [1.5, [910, GY + 8]], [2.9, [S.portrait ? 1030 : 1090, GY + 8]]];   // phone: the soldier ahead stays inside the frame
+      const bK = S.portrait ? [[-0.3, [100, GY + 6]], [0.9, [420, GY + 6]], [1.3, [420, GY + 6]], [1.5, [360, GY + 6]], [2.9, [520, GY + 6]]]   // phone: the soldier behind keeps clear of the left edge
+        : [[-0.3, [100, GY + 6]], [0.9, [560, GY + 6]], [1.3, [560, GY + 6]], [1.5, [480, GY + 6]], [2.9, [590, GY + 6]]];
       const [jx, jy] = kf(t, jK), [sx, sy] = kf(t, sK), [ax, ay] = kf(t, aK), [bx, by] = kf(t, bK);
       const taken = es(t, 1.2, 1.5);
       const halt = es(t, 0.45, 0.6) * (1 - es(t, 1.35, 1.5));
@@ -65,7 +66,7 @@ export default {
       simon.set({ x: sx, y: sy, s: 1.04, flip: flipS, o: hasHoe, walk: sw, armF: 24, armB: 10 + bump(t, 0.6, 1.0) * 30, head: bump(t, 0.6, 1.0) * -8, blink: blinkAt(T, 2) });
       simon2.set({ x: sx, y: sy, s: 1.04, flip: flipS, o: 1 - hasHoe, walk: sw, amt: 0.7, armF: lerp(20, 70, taken), armB: lerp(10, 40, taken), lean: taken * 8, head: taken * 8, blink: blinkAt(T, 2) });
       const hd = es(t, 1.05, 1.3, ease.in);
-      pose(hoeDown, { x: 1060 + hd * 30, y: GY - 58 + hd * 44, r: hd * 80, o: hasHoe < 1 ? 1 - es(t, 1.8, 2) : 0 });
+      pose(hoeDown, { x: 1060 + hd * 30, y: GY - 58 + hd * 44, r: hd * 80, o: hasHoe < 1 ? 1 - (S.portrait ? es(t, 1.45, 1.65) : es(t, 1.8, 2)) : 0 });   // phone: the laid-down hoe is gone before it lies under the thread
       const jsx = jx - 12, jsy = jy - 138 * 1.02 + 22;
       const ssx = sx + (flipS ? 12 : -12), ssy = sy - 140 * 1.04 + 22;
       const lift = bump(t, 1.2, 1.5) * 30;
@@ -81,6 +82,7 @@ export default {
       S.cam.x = 60 + es(t, 0.2, 0.9) * 40 - es(t, 1.9, 2.6) * 60;
       S.cam.y = 10 + es(t, 0.3, 1.0) * 20;
       S.cam.z = 1.02 + es(t, 0.3, 1.0) * 0.04 - es(t, 1.9, 2.6) * 0.03;
+      if (S.portrait) S.cam.x -= 50 * es(t, 1.1, 1.6);   // phone: Simon with the cross behind Jesus, not sliced by the left edge
     };
   },
 };

@@ -5,7 +5,7 @@
 // bars: Barabbas and the rebels; a small dark picture hangs over them — a riot in the city, flames, a knife.
 import { C, blinkAt, pose, lerp, sheet, shade, mix } from '../kit.js';
 import { seg, es, ease, bump } from '../../core/anim.js';
-import { headAt, strip, cry, hanging, swing, shadowPerson, squareStage, crowdSet, INK, tr, PI } from './lib.js';
+import { headAt, strip, cry, hanging, swing, shadowPerson, squareStage, crowdSet, fitX, frameX, cryW, INK, tr, PI } from './lib.js';
 
 const JX = 800;
 
@@ -16,7 +16,7 @@ export default {
     { v: 18 },
     { v: 19 },
   ],
-  cam: { x: [-40, 200], y: [-40, 120], z: [1, 1.3] },
+  cam: { x: [-40, 560], y: [-40, 120], z: [1, 1.3] },
   build(S) {
     const c = S.c;
     const Q = squareStage(S);
@@ -49,11 +49,18 @@ export default {
 
     const fx = H.fxL;
     const barTag = fx.add(`<g>${strip(c, tr('Barabasz', 'Barabbas'), { size: 22 })}</g>`);
-    const cries = Array.from({ length: 10 }, (_, i) => ({ i, el: fx.add(`<g>${cry(c, i % 2 ? tr('Uwolnij Barabasza!', 'Release Barabbas!') : tr('Strać Tego!', 'Away with this man!'), { size: i < 4 ? 19 : 16, dir: i % 3 ? 1 : -1 })}</g>`), g: [1, 4, 7, 10, 2, 5, 8, 12, 3, 9][i], seed: c.rr(0, 6) }));
+    const cries = Array.from({ length: 10 }, (_, i) => {
+      const txt = i % 2 ? tr('Uwolnij Barabasza!', 'Release Barabbas!') : tr('Strać Tego!', 'Away with this man!'), size = i < 4 ? 19 : 16, dir = i % 3 ? 1 : -1;
+      return { i, el: fx.add(`<g>${cry(c, txt, { size, dir })}</g>`), g: [1, 4, 7, 10, 2, 5, 8, 12, 3, 9][i], seed: c.rr(0, 6), dir, w: cryW(txt, size) };
+    });
 
     return (t, time) => {
       const T = time;
       const lookBar = es(t, 1.9, 2.3);
+      S.cam.x = lookBar * (S.portrait ? 520 : 170);   // phone: far enough to bring the cell, its name and the riot inside the frame
+      S.cam.y = lookBar * 100 - es(t, 1.0, 1.4) * 10 * (1 - lookBar);
+      S.cam.z = 1.02 + lookBar * 0.22;
+      const [flo, fhi] = frameX(S, 0.6);
       swing(H.sunEl, 1230, 150, T, 1, 0.6);
       swing(H.cl1, 420 + Math.sin(T * 0.1) * 30, 150, T, 1.2, 0.6, 1);
       swing(H.cl2, 1050 + Math.sin(T * 0.12 + 2) * 30, 110, T, 1.2, 0.8, 2);
@@ -69,7 +76,7 @@ export default {
 
       /* the platform */
       Q.sols[0].set({ x: 640, y: PLAT, s: 0.84, flip: false, armF: 34, armB: 8, blink: blinkAt(T, 4) });
-      Q.sols[1].set({ x: 1110, y: PLAT, s: 0.84, flip: true, armF: 34, armB: 8, blink: blinkAt(T, 5) });
+      Q.sols[1].set({ x: S.portrait ? 1065 : 1110, y: PLAT, s: 0.84, flip: true, armF: 34, armB: 8, blink: blinkAt(T, 5) });
       Q.jes.set({ x: JX, y: PLAT, s: 0.88, flip: false, armF: 30, armB: 28, head: 4 + es(t, 1.1, 1.4) * 3, blink: blinkAt(T) });
       const offer = es(t, 0.05, 0.3) * (1 - es(t, 0.9, 1.1));
       Q.pil.set({ x: 965, y: PLAT + 2, s: 0.88, flip: true, armF: 20 + offer * 70, armB: 10 + offer * 30 + bump(t, 1.2, 1.9) * 50, head: -offer * 6 + bump(t, 1.2, 1.9) * 8, blink: blinkAt(T, 2) });
@@ -86,7 +93,8 @@ export default {
         const m = g.members[0];
         const k = seg(t, 1.1 + cr.i * 0.06, 1.9 + cr.i * 0.06);
         const [hx, hy] = headAt(m.x, m.y, m.s, m.flip);
-        pose(cr.el, { x: hx + Math.sin(k * 3 + cr.seed) * 16, y: hy - 20 - k * 90, s: (0.6 + 0.5 * ease.out(Math.min(1, k * 3))), r: Math.sin(cr.seed) * 6, o: k > 0 && k < 1 ? Math.min(1, k * 6) * (1 - Math.max(0, k - 0.7) / 0.3) : 0 });
+        const cs = 0.6 + 0.5 * ease.out(Math.min(1, k * 3));
+        pose(cr.el, { x: fitX(S, hx + Math.sin(k * 3 + cr.seed) * 16, cr.w * cs, -cr.dir, flo, fhi), y: hy - 20 - k * 90, s: cs, r: Math.sin(cr.seed) * 6, o: k > 0 && k < 1 ? Math.min(1, k * 6) * (1 - Math.max(0, k - 0.7) / 0.3) : 0 });
       });
 
       /* v19 — Barabbas behind bars; the riot above him */
@@ -96,13 +104,10 @@ export default {
       Q.bar.set({ x: CELL.x + 2, y: CELL.y - 2, s: 0.66, flip: true, armF: 24 + glare * 40, armB: 14 + glare * 40, head: -glare * 8, blink: blinkAt(T, 8) });
       Q.barFree.set({ x: 0, y: 0, o: 0 });
       const bt = es(t, 1.35, 1.6, ease.back);
-      pose(barTag, { x: CELL.x, y: CELL.y - 176, s: bt, r: -3, o: bt > 0.02 ? 1 : 0 });
+      pose(barTag, { x: S.portrait ? CELL.x - 20 : CELL.x, y: CELL.y - 176, s: bt, r: -3, o: bt > 0.02 ? 1 : 0 });
       const rd = es(t, 2.05, 2.45);
       swing(riotEl, S.portrait ? 1120 : 1265, 470 - (1 - rd) * 900, T, 1.2, 0.8, 1);
 
-      S.cam.x = lookBar * 170;
-      S.cam.y = lookBar * 100 - es(t, 1.0, 1.4) * 10 * (1 - lookBar);
-      S.cam.z = 1.02 + lookBar * 0.22;
     };
   },
 };

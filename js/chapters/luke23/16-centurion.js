@@ -62,7 +62,7 @@ export default {
       const bare = es(t, 0.1, 0.18);
       const praise = es(t, 0.2, 0.5) * (1 - es(t, 1.0, 1.3));
       const heart = es(t, 1.05, 1.35);
-      const cx = 1090, cy = 708, cs = 1.1;
+      const cx = S.portrait ? 1005 : 1090, cy = 708, cs = 1.1;   // phone: the centurion whole, clear of the thread
       cHelm.set({ x: cx, y: cy, s: cs, flip: true, o: 1 - bare, armF: 24, armB: 10, head: -14, blink: blinkAt(T) });
       cBare.set({ x: cx, y: cy, s: cs, flip: true, o: bare, armF: 16 + heart * 20, armB: 10 + praise * 150 + heart * 62 * (1 - praise), head: -18 - praise * 6, lean: -heart * 3, blink: blinkAt(T) });
       const [hx, hy] = headAt(cx, cy, cs, true);

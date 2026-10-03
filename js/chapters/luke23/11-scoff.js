@@ -6,7 +6,7 @@
 // and a great one hangs in the sky with the words, THIS IS THE KING OF THE JEWS, written in Greek, Latin and Hebrew.
 import { C, person, blinkAt, pose, lerp, sheet, shade, mix } from '../kit.js';
 import { seg, es, ease, bump, fade } from '../../core/anim.js';
-import { kf, moving, hand, headAt, priest, elder, scribe, soldier, taunt, spongeReed, wineJar, titleBoard, miniTitle, board, strip, wordCard, crossNearSet, pose3, folkO, hanging, swing, NEAR, tr, PI } from './lib.js';
+import { kf, moving, hand, headAt, priest, elder, scribe, soldier, taunt, spongeReed, wineJar, titleBoard, miniTitle, board, strip, wordCard, crossNearSet, pose3, folkO, hanging, swing, nearSides, fitX, frameX, NEAR, tr, PI } from './lib.js';
 
 const GY = 706;
 const PAL = ['#a7a9ba', '#ddd0bd', '#ecd9bb'];
@@ -24,23 +24,27 @@ export default {
   build(S) {
     const c = S.c;
     const N = crossNearSet(S, { pal: PAL });
+    nearSides(S, N, { dx: 120 });   // phone: the side crosses nearer the middle, the right one clear of the thread
+    const PH = S.portrait;
     const [HX, HY] = N.head;
     const glow = N.glowL.add(`<g><circle r="110" fill="url(#halo-glow)"/></g>`);
     /* the people watching, as still sprites on the slope (faces lifted to the cross) */
     const watch = (n, flip, sc) => pose3(c, Array.from({ length: n }, (_, i) => ({ x: i * 44 * (flip ? -1 : 1) + c.rr(-5, 5), y: (i % 2) * 12, s: sc * c.rr(0.94, 1.05), flip, o: folkO(c), armF: c.rr(6, 26) + (i % 4 === 1 ? 60 : 0), armB: 8, head: -14 + c.rr(-3, 3) })));
     const P = N.P;
-    const people = [[250, GY - 18, 5, false, 0.86], [180, GY + 18, 4, false, 0.98], [520, GY + 14, 3, false, 1.0], [1380, GY - 16, 3, true, 0.86]].map(([x, y, n, f, s], i) => ({ i, sp: P.sprite(watch(n, f, s), x, y), x, y }));
+    // phone: the people who watch inside the frame
+    const people = [[PH ? 470 : 250, GY - 18, 5, false, 0.86], [PH ? 420 : 180, GY + 18, 4, false, 0.98], [PH ? 640 : 520, GY + 14, 3, false, 1.0], [1380, GY - 16, 3, true, 0.86]].map(([x, y, n, f, s], i) => ({ i, sp: P.sprite(watch(n, f, s), x, y), x, y }));
     /* the rulers, on the right */
+    // the rulers, on the right (phone: closer together, inside the frame)
     const lords = [
       { el: priest(c, 0), x: 1010, f: true }, { el: elder(c, 2), x: 1090, f: true }, { el: priest(c, 1), x: 1170, f: true }, { el: scribe(c, 2), x: 1250, f: true },
-    ].map((l, i) => ({ ...l, i, p: S.puppet(P.add(l.el)), seed: c.rr(0, 9) }));
+    ].map((l, i) => ({ ...l, x: PH ? 895 + i * 52 : l.x, i, p: S.puppet(P.add(l.el)), seed: c.rr(0, 9) }));
     /* the soldiers */
     const solA = S.puppet(P.add(soldier(c, 2, { spear: false })));
     const solB = S.puppet(P.add(soldier(c, 0)));
     const jar = P.add(`<g>${wineJar(c, 60)}</g>`);
     const fx = N.fx;
     const reed = fx.add(`<g>${spongeReed(c, 300)}</g>`);
-    const T_ = (pl, en, side = 1, size = 19) => fx.add(`<g>${taunt(c, tr(pl, en), { size, side })}</g>`);
+    const T_ = (pl, en, side = 1, size = 19) => { const txt = tr(pl, en), el = fx.add(`<g>${taunt(c, txt, { size, side })}</g>`); el.__w = (txt.length * size * 0.5 + size * 1.6) * 1.12; return el; };
     const taunts = [
       { el: T_('Innych wybawiał…', 'He saved others…'), from: 0, k0: 1.1 },
       { el: T_('…niech siebie wybawi!', '…let him save himself!'), from: 2, k0: 1.3 },
@@ -58,6 +62,9 @@ export default {
 
     return (t, time) => {
       const T = time;
+      S.cam.x = es(t, 0.9, 1.3) * 40 * (1 - es(t, 1.9, 2.3)) + es(t, 3.9, 4.3) * 30;
+      S.cam.y = 20 - es(t, 3.9, 4.3) * 50;
+      S.cam.z = 1.04 - es(t, 3.9, 4.3) * 0.03;
       N.sk.set(...PAL);
       pose(glow, { x: HX, y: HY + 10, s: 1, o: 0.55 });
       people.forEach((pp) => pp.sp.set({ x: pp.x, y: pp.y, o: 1 }));
@@ -77,15 +84,15 @@ export default {
       });
 
       /* v36 — the soldiers come up and offer Him sour wine */
-      const aK = [[1.9, [1340, GY + 14]], [2.4, [920, GY + 14]]];
-      const bK = [[2.0, [1420, GY + 20]], [2.5, [1030, GY + 20]]];
+      const aK = [[1.9, [1340, GY + 14]], [2.4, [PH ? 880 : 920, GY + 14]]];
+      const bK = [[2.0, [1420, GY + 20]], [2.5, [PH ? 990 : 1030, GY + 20]]];
       const [ax, ay] = kf(t, aK), [bx, by] = kf(t, bK);
       const reach = es(t, 2.4, 2.7) * (1 - es(t, 3.9, 4.2));
       const armA = 20 + reach * 125;
       solA.set({ x: ax, y: ay, s: 1, flip: true, walk: moving(t, aK) ? ax * 0.06 : undefined, armF: armA, armB: 10 + reach * 30, head: -reach * 14, o: es(t, 1.9, 2.0), blink: blinkAt(T, 3) });
       const jeer = es(t, 3.05, 3.3) * (1 - es(t, 3.9, 4.1));
       solB.set({ x: bx, y: by, s: 1, flip: true, walk: moving(t, bK) ? bx * 0.06 : undefined, armF: 34 + jeer * 30, armB: 10 + jeer * 90, head: -6 - jeer * 6, lean: -jeer * 4, o: es(t, 2.0, 2.1), blink: blinkAt(T, 5) });
-      pose(jar, { x: 980, y: GY + 18, o: es(t, 2.35, 2.5) });
+      pose(jar, { x: PH ? 940 : 980, y: GY + 18, o: es(t, 2.35, 2.5) });
       const [hx, hy] = hand(ax, ay, 1, true, armA);
       const aim = (Math.atan2(HY + 40 - hy, HX + 30 - hx) * 180) / PI + 90;
       const len = Math.hypot(HX + 30 - hx, HY + 40 - hy) / 300;
@@ -96,9 +103,10 @@ export default {
         const src = tt.from === 'A' ? [ax, ay] : tt.from === 'B' ? [bx, by] : [lords[tt.from].x, GY + 2];
         const k = seg(t, tt.k0 - 0.02, tt.k0 + 0.95);
         const [sx, sy] = headAt(src[0], src[1], 1, true);
-        const tx = HX + [120, 150, 110, 170, 120, 170][i], ty = HY + [60, 150, 10, 110, 30, 130][i];
+        const tx = HX + [120, 150, 110, 170, 120, 170][i], ty = HY + [60, 150, 10, 110, PH ? -120 : 30, 130][i];   // phone: the long v37 taunt, pushed in from the edge, flies above His head, not across it
         const fly = Math.min(1, k / 0.55), fall = Math.max(0, (k - 0.55) / 0.45);
-        pose(tt.el, { x: lerp(sx, tx, ease.out(fly)), y: lerp(sy - 30, ty, ease.out(fly)) - Math.sin(fly * PI) * 30 + fall * fall * 260, s: 1 - fly * 0.1, r: fall * 40, o: k > 0 && k < 1 ? Math.min(1, k * 8) * (1 - fall) : 0 });
+        const [flo, fhi] = frameX(S, 0.56);
+        pose(tt.el, { x: fitX(S, lerp(sx, tx, ease.out(fly)), tt.el.__w * (1 - fly * 0.1), 1, flo, fhi), y: lerp(sy - 30, ty, ease.out(fly)) - Math.sin(fly * PI) * 30 + fall * fall * 260, s: 1 - fly * 0.1, r: fall * 40, o: k > 0 && k < 1 ? Math.min(1, k * 8) * (1 - fall) : 0 });
       });
 
       /* v38 — the inscription over Him */
@@ -111,9 +119,6 @@ export default {
         pose(l, { x: (S.portrait ? 800 : 1110) + (i - 1) * 118, y: 262 + (i % 2) * 4, s: k, r: (i - 1) * 3, o: k > 0.02 ? 1 : 0 });
       });
 
-      S.cam.x = es(t, 0.9, 1.3) * 40 * (1 - es(t, 1.9, 2.3)) + es(t, 3.9, 4.3) * 30;
-      S.cam.y = 20 - es(t, 3.9, 4.3) * 50;
-      S.cam.z = 1.04 - es(t, 3.9, 4.3) * 0.03;
     };
   },
 };

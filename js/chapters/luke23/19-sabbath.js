@@ -36,7 +36,7 @@ export default {
     const shelf = shelfL.add(sheet().p(c.cut([[690, SY], [910, SY], [910, SY + 12], [690, SY + 12]], 0.3, 6), C.wood).out());
     const cands = [760, 840].map((x, i) => { const el = shelfL.add(`<g transform="translate(${x} ${SY})">${candle(c, 44)}</g>`); return { i, flame: el.querySelector('.flame'), glow: el.querySelector('.glow') }; });
     const P = S.layer({ par: 0.5, sh: 5 });
-    const W = [[MARYJ, 560, false], [MAGD, 1040, true], [SALOME, 660, false]].map(([o, x, f], i) => ({ i, x, f, p: S.puppet(P.add(withFace(person(c, { ...o, pose: 'sit' }), faceBits(c)))) }));
+    const W = [[MARYJ, 560, false], [MAGD, S.portrait ? 1005 : 1040, true], [SALOME, 660, false]].map(([o, x, f], i) => ({ i, x, f, p: S.puppet(P.add(withFace(person(c, { ...o, pose: 'sit' }), faceBits(c)))) }));
     const tableL = S.layer({ par: 0.52, sh: 5 });
     tableL.add(`<g transform="translate(850 ${FY + 6})">${lowTable(c, 300, 40)}</g>`);
     const fx = S.layer({ par: 0.55, sh: 5 });

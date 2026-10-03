@@ -19,10 +19,11 @@ export default {
     { v: 51, cont: true, text: 'Był z miasta żydowskiego Arymatei, i oczekiwał królestwa Bożego.' },
     { v: 52 },
   ],
-  cam: { x: [-60, 200], y: [-20, 60], z: [1, 1.14] },
+  cam: { x: [-60, 260], y: [-20, 60], z: [1, 1.14] },
   build(S) {
     const c = S.c;
     const H = hallSet(S, { evening: true });
+    if (S.portrait) { const std = H.props.el.querySelector('g[transform="translate(1236 612)"]'); if (std) std.style.display = 'none'; }   // phone: the eagle standard right of the seat would only peep out under the thread
     const P = H.charL;
     const pil = S.puppet(P.add(pilate(c, { pose: 'sit' })));
     const jos = S.puppet(P.add(person(c, LOOK.joseph)));
@@ -50,14 +51,15 @@ export default {
       H.lamps.forEach((l, i) => lampSet(l, es(t, 0.1 + i * 0.2, 0.4 + i * 0.2), T));
 
       /* Joseph comes in; waits; goes up to Pilate */
-      const jK = [[-0.2, [120, GY]], [0.6, [560, GY]], [2.95, [560, GY]], [3.4, [880, GY]]];
+      const JW = S.portrait ? 610 : 560;   // phone: where Joseph waits, a step in from the left edge
+      const jK = [[-0.2, [120, GY]], [0.6, [JW, GY]], [2.95, [JW, GY]], [3.4, [880, GY]]];
       const [jx, jy] = kf(t, jK);
       const up = es(t, 2.1, 2.35) * (1 - es(t, 2.9, 3.05));
       const bowK = es(t, 3.35, 3.55);
       jos.set({ x: jx, y: jy, s: 1.04, flip: false, walk: moving(t, jK) ? jx * 0.05 : undefined, armF: 14 + bowK * 50, armB: 8 + up * 20 + bowK * 20, head: -up * 16 + bowK * 12, lean: bowK * 8, blink: blinkAt(T, 2) });
       const [jhx, jhy] = headAt(jx, jy, 1.04, false);
       const tk = es(t, 0.3, 0.6) * (1 - es(t, 1.9, 2.1));
-      swing(jTag, 560, 230 - (1 - tk) * 900, T, 1.2, 0.9, 1);
+      swing(jTag, JW, 230 - (1 - tk) * 900, T, 1.2, 0.9, 1);
       /* v51a — the council plate */
       const ck = es(t, 1.05, 1.4, ease.out) * (1 - es(t, 1.9, 2.15));
       swing(council, 820, 130 - (1 - ck) * 900, T, 0.8, 0.7, 2);
@@ -75,7 +77,7 @@ export default {
       S.cam.x = -20 + es(t, 2.9, 3.5) * 110;
       S.cam.y = 10 + es(t, 2.9, 3.5) * 20;
       S.cam.z = 1.02 + es(t, 2.9, 3.5) * 0.06;
-      if (S.portrait) S.cam.x += 60;
+      if (S.portrait) S.cam.x += 160;   // phone: Pilate on his seat clear of the thread
     };
   },
 };

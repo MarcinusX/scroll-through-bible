@@ -73,14 +73,15 @@ export default {
       const turn = t > 0.45;
       const speak = es(t, 1.05, 1.3) * (1 - es(t, 1.9, 2.1)) + [2, 3, 4].reduce((a, b) => a + es(t, b + 0.05, b + 0.3) * (1 - es(t, b + 0.85, b + 1.0)) * 0.5, 0);
       jes.set({ x: jx, y: GY, s: 1.04, flip: turn, walk: moving(t, jK) ? jx * 0.05 : undefined, amt: 0.6, armF: 14 + speak * 50, armB: 8 + es(t, 1.05, 1.3) * 30 * (1 - es(t, 1.9, 2.1)), head: 4 - speak * 3, blink: blinkAt(T) });
-      sol.set({ x: 1110, y: GY + 8, s: 1, flip: es(t, 0.3, 0.5) > 0.5, armF: 34, armB: 10, blink: blinkAt(T, 3) });
+      sol.set({ x: S.portrait ? 1015 : 1110, y: GY + 8, s: 1, flip: es(t, 0.3, 0.5) > 0.5, armF: 34, armB: 10, blink: blinkAt(T, 3) });
       const sx = kf(t, [[-0.3, 650], [0.4, 700]]);
       simon.set({ x: sx, y: GY - 16, s: 0.96, flip: false, walk: t < 0.4 ? sx * 0.05 : undefined, amt: 0.7, armF: 70, armB: 40, lean: 8, head: 8, blink: blinkAt(T, 2) });
       pose(crossEl, { x: sx - 12, y: GY - 16 - 134 + 22, r: 60, s: 0.96 });
 
       /* the women weep; children come to their sides at "your children" */
       W.forEach((w) => {
-        const K = [[-0.3, [w.x - 120, GY + 12]], [0.45, [w.x, GY + 12]]];
+        const wx = w.x + (S.portrait ? 40 : 0);   // phone: the women a step in from the left edge
+        const K = [[-0.3, [wx - 120, GY + 12]], [0.45, [wx, GY + 12]]];
         const [x, y] = kf(t, K);
         const weep = 1 - es(t, 1.05, 1.4) * 0.5;
         const look = es(t, 0.4, 0.7);
@@ -89,7 +90,8 @@ export default {
         face(w.p.el, 'tear', w.i < 2 ? 1 : 0);
       });
       kids.forEach((k) => {
-        const K = [[1.1 + k.k * 0.08, [k.x - 140, GY + 26]], [1.5 + k.k * 0.08, [k.x, GY + 26]]];
+        const kx = k.x + (S.portrait ? 40 : 0);
+        const K = [[1.1 + k.k * 0.08, [kx - 140, GY + 26]], [1.5 + k.k * 0.08, [kx, GY + 26]]];
         const [x, y] = kf(t, K);
         k.p.set({ x, y, s: 0.56, flip: false, walk: moving(t, K) ? x * 0.1 : undefined, armF: 20 + es(t, 1.5, 1.8) * 50, armB: 10, head: -6, o: es(t, 1.08 + k.k * 0.08, 1.15 + k.k * 0.08), blink: blinkAt(T, k.seed) });
       });

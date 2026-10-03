@@ -11,7 +11,8 @@ import { withFace, faceBits } from '../mark6/lib.js';
 import { kf, moving, hand, headAt, hguard, herodHall, candleSet, herodCrown, taunt, gleamRobe, bustPortrait, wordCard, pilate, bonds, HEROD, JESUS_GLEAM, HALL, LOOK, tr, PI } from './lib.js';
 
 const JX = 780, JY = 704;
-const HS = [1142, 652], HU = [1080, 664];
+let HS = [1142, 652], HU = [1080, 664];   // Herod sitting / standing (set in build: a phone has the throne nearer the middle)
+const TDX = -80;                             // phone: how far the throne moves in
 
 export default {
   id: 'lk23-scorn',
@@ -25,7 +26,9 @@ export default {
   cam: { x: [-60, 140], y: [-60, 60], z: [1, 1.1] },
   build(S) {
     const c = S.c;
-    const H = herodHall(S);
+    HS = [1142 + (S.portrait ? TDX : 0), 652]; HU = [1080 + (S.portrait ? TDX : 0), 664];
+    const H = herodHall(S, S.portrait ? { throneAt: [HALL.throne[0] + TDX, HALL.throne[1]] } : {});
+    if (S.portrait) H.candles[1].el.style.display = "none";   // phone: the right-hand candle would stand at the frame edge under the thread
     const P = H.charL;
     const hMark = (o) => withFace(withFace(person(c, o), herodCrown(c)), faceBits(c));
     const hSit = S.puppet(P.add(hMark({ ...HEROD, pose: 'sit' })));
@@ -55,6 +58,9 @@ export default {
     const beforeM = `<path d="M-60 0V-1500M60 0V-1500" stroke="rgba(74,54,34,.55)" stroke-width="1.3" fill="none"/>${bs.out()}<clipPath id="${cid}"><rect x="-110" y="10" width="220" height="130"/></clipPath><g clip-path="url(#${cid})" opacity=".55">${mini(hB, -52, true)}${mini(pB, 58, false)}</g>${crack}<g transform="translate(0 164)">${wordCard(c, tr('przedtem', 'before'), { size: 16, fill: C.stone })}</g>`;
     const before = flies.add(`<g>${beforeM}</g>`);
 
+    // the three guards' places (phone: moved in with the throne)
+    const GB = [[600, JY + 4, false], [960 + (S.portrait ? TDX : 0), JY + 2, true], [1020 + (S.portrait ? TDX : 0), JY + 12, true]];
+
     return (t, time) => {
       const T = time;
       H.candles.forEach((cd) => candleSet(cd, 1, T));
@@ -70,16 +76,16 @@ export default {
       const mock = es(t, 0.05, 0.3) * (1 - es(t, 0.95, 1.15));
       const lead = es(t, 2.05, 3.1, ease.in);
       G.forEach((g) => {
-        const base = [[600, JY + 4, false], [960, JY + 2, true], [1020, JY + 12, true]][g.i];
+        const base = GB[g.i];
         const bow = mock * bump(t, 0.1 + g.i * 0.12, 0.9 + g.i * 0.06);
         // two of them lead Him out to the left
         const out = g.i < 2 ? lead : 0;
-        const x = g.i === 0 ? kf(t, [[2.05, base[0]], [2.8, 350], [3.1, -300]]) : g.i === 1 ? kf(t, [[1.9, base[0]], [2.05, JX + 110], [2.8, 570], [3.1, -60]]) : base[0];
+        const x = g.i === 0 ? kf(t, S.portrait ? [[2.05, base[0]], [2.65, 360], [3.1, -300]] : [[2.05, base[0]], [2.8, 350], [3.1, -300]]) : g.i === 1 ? kf(t, [[1.9, base[0]], [2.05, JX + 110], [2.8, S.portrait ? 730 : 570], [3.1, -60]]) : base[0];   // phone: He is led out slower, whole in the frame at v11c
         const walking = (g.i < 2 && t > 1.9 && t < 3.1);
         g.p.set({ x, y: base[1], s: 1, flip: g.i === 0 ? t > 2.05 : g.i === 1 ? true : base[2], walk: walking ? x * 0.06 : undefined, armF: 16 + bow * 70 + (walking && g.i === 1 ? 30 : 0), armB: 8 + bow * 40, lean: bow * 22, head: bow * 10 - mock * (1 - bow) * 6, o: 1, blink: blinkAt(T, g.seed) });
       });
       has.forEach((h, i) => {
-        const src = [[600, JY + 4, false], [960, JY + 2, true], [1020, JY + 12, true], [HU[0], HU[1], true]][i];
+        const src = [...GB, [HU[0], HU[1], true]][i];
         const k = seg(t, 0.12 + i * 0.1, 0.85 + i * 0.1);
         const [hx, hy] = headAt(src[0], src[1], i === 3 ? 1.06 : 1, src[2]);
         const tx = JX + (src[0] < JX ? -60 : 70), ty = JY - 250;
@@ -90,7 +96,7 @@ export default {
       /* v11b — the gleaming robe comes down onto Him */
       const rk = es(t, 1.05, 1.5, ease.out);
       const on = es(t, 1.5, 1.57);
-      const jx = kf(t, [[2.05, JX], [2.8, 470], [3.1, -180]]);
+      const jx = kf(t, [[2.05, JX], [2.8, S.portrait ? 620 : 470], [3.1, -180]]);
       const jW = t > 2.05 && t < 3.1;
       jB.set({ x: jx, y: JY, s: 1.02, flip: jW, o: 1 - on, armF: 30, armB: 28, head: 4, blink: blinkAt(T) });
       jG.set({ x: jx, y: JY, s: 1.02, flip: jW, o: on, walk: jW ? jx * 0.05 : undefined, amt: 0.6, armF: 30, armB: 28, head: 3, blink: blinkAt(T) });
@@ -118,7 +124,7 @@ export default {
       S.cam.x = 10 + es(t, 1.9, 2.6) * -60 * (1 - es(t, 2.8, 3.2)) + es(t, 3.9, 4.3) * 40;
       S.cam.y = 10 - es(t, 2.9, 3.3) * 60;
       S.cam.z = 1.02 + es(t, 0.9, 1.3) * 0.04 * (1 - es(t, 1.9, 2.3));
-      if (S.portrait) S.cam.x += 60 * (1 - es(t, 1.9, 2.4)) + 60 * es(t, 2.9, 3.3);
+      if (S.portrait) S.cam.x += 20 + 40 * es(t, 1.9, 2.4) + 30 * es(t, 2.9, 3.3);   // phone: Herod on the moved-in throne stays clear of the thread
     };
   },
 };

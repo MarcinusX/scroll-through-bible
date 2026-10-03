@@ -62,8 +62,9 @@ export const HALL = { floor: 690, throne: [1130, 660], windows: [[470, 214, 520]
  * Herod's hall in Jerusalem (Mark 6 / Luke 9's plum frieze with its gold squares, the throne on its dais, candles).
  * Through the three tall windows the city: Jerusalem's roofs and the white sanctuary on its hill.
  * returns { sk, view, wall, floorL, props, candles:[{flame, glow}], charL, backL, fxL, fgL }
+ * throneAt: [x, y] of the throne (default HALL.throne)
  */
-export function herodHall(S, { pal = ['#aec6cf', '#e2d9c4', '#eed6b2'] } = {}) {
+export function herodHall(S, { pal = ['#aec6cf', '#e2d9c4', '#eed6b2'], throneAt = HALL.throne } = {}) {
   const c = S.c;
   const sk = sky(S, pal);
   const view = S.layer({ par: 0.1, sh: 1 });
@@ -99,7 +100,7 @@ export function herodHall(S, { pal = ['#aec6cf', '#e2d9c4', '#eed6b2'] } = {}) {
   F.x(chk, mix(C.plumRobe, C.stone, 0.6), 'opacity=".33"');
   floorL.add(F.out());
   const props = S.layer({ par: 0.44, sh: 4 });
-  const [TX, TY] = HALL.throne;
+  const [TX, TY] = throneAt;   // a phone may pass the throne nearer the middle
   const D = sheet();
   D.p(c.cut([[TX - 130, TY], [TX + 150, TY], [TX + 164, TY + 22], [TX - 144, TY + 22]], 0.5, 8), shade(C.stone2, -0.05));
   D.p(c.cut([[TX - 150, TY + 22], [TX + 170, TY + 22], [TX + 178, TY + 40], [TX - 158, TY + 40]], 0.5, 8), C.stone2);
@@ -304,4 +305,34 @@ export function crossNearDark(S, { pal, tint = 0.6, toward = '#221f34', figure =
   const HDY = -NEAR.H + 52 * u - 2 * u;           // the head pivot, relative to the cross foot
   const head = [NEAR.x, NEAR.top + HDY - 11 * u];   // the head centre in world units
   return { sk, hangL, far, hillL, glowL, crossC, crossL, crossR, slope, P, fx, fg, hd, hl, HDY, head, u };
+}
+
+/* ================================================================== phone helpers */
+
+/** on a phone, the side crosses of a near set (crossNearSet / crossNearDark) a step nearer the middle, clear of the
+ *  frame and the thread; returns the side crosses' feet [[xL, yL, h], [xR, yR, h]] (NEAR's on a wide screen) */
+export function nearSides(S, N, { dx = 75 } = {}) {
+  if (!S.portrait) return [NEAR.L, NEAR.R];
+  const L = [NEAR.L[0] + dx, NEAR.L[1], NEAR.L[2]], R = [NEAR.R[0] - dx, NEAR.R[1], NEAR.R[2]];
+  pose(N.crossL, { x: L[0], y: L[1] });
+  pose(N.crossR, { x: R[0], y: R[1] });
+  return [L, R];
+}
+/** on a phone, keep a bubble whose origin is its tail tip inside the frame: the body runs w units to the
+ *  side `side` (+1 right, -1 left) of x and overhangs the tail by about 0.12 w + 25 on the other side;
+ *  lo/hi are the frame's edges in the bubble layer's units */
+export function fitX(S, x, w, side, lo = 470, hi = 1120) {
+  if (!S.portrait) return x;
+  const over = 0.12 * w + 25;
+  return side > 0 ? Math.max(lo + over, Math.min(hi - w, x)) : Math.max(lo + w, Math.min(hi - over, x));
+}
+/** on a phone, the frame's edges [lo, hi] in a layer of parallax par under the current camera (set S.cam first) */
+export function frameX(S, par, { l = 325, r = 285 } = {}) {
+  const zl = 1 + (S.cam.z - 1) * par, cx = 800 + S.cam.x * par;
+  return [cx - l / zl, cx + r / zl];
+}
+/** the width of a cry() bubble (mark5's jagged bubble) from its text and size, at scale 1 */
+export function cryW(lines, size) {
+  lines = Array.isArray(lines) ? lines : [lines];
+  return (Math.max(...lines.map((l) => l.length)) * size * 0.46 + size * 1.7) * 1.15;
 }

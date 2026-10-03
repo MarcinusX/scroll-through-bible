@@ -8,7 +8,7 @@
 import { C, person, blinkAt, pose, lerp, sheet, shade, mix } from '../kit.js';
 import { seg, es, ease, bump, fade, attr } from '../../core/anim.js';
 import { olive, palm, cypress, flowers, grass } from '../../assets/nature.js';
-import { taunt, bubble, guiltStone, wordPlate, wordCard, crossNearSet, crossHead, glory, strip, hanging, swing, NEAR, J19, tr, PI } from './lib.js';
+import { taunt, bubble, guiltStone, wordPlate, wordCard, crossNearSet, crossHead, glory, strip, hanging, swing, nearSides, fitX, frameX, NEAR, J19, tr, PI } from './lib.js';
 
 const PAL = ['#a7a9ba', '#ddd0bd', '#ecd9bb'];
 const GOLD = ['#c9b89a', '#f2d9a6', '#f8e6bd'];
@@ -42,6 +42,7 @@ export default {
   build(S) {
     const c = S.c;
     const N = crossNearSet(S, { pal: PAL });
+    const [SL, SR] = nearSides(S, N, { dx: 120 });   // phone: the two thieves' crosses nearer the middle
     const goldSky = (() => { const L = S.layer({ par: 0, sky: true, rise: 0 }); const id = S.id('gold'); S.defs(`<linearGradient id="${id}" gradientUnits="userSpaceOnUse" x1="0" y1="${Math.min(0, S.view().y0).toFixed(0)}" x2="0" y2="760"><stop offset="0" stop-color="${GOLD[0]}"/><stop offset=".55" stop-color="${GOLD[1]}"/><stop offset="1" stop-color="${GOLD[2]}"/></linearGradient>`); L.add(`<rect x="-3000" y="-3000" width="8000" height="8000" fill="url(#${id})"/>`); return L; })();
     N.sk.layer.el.parentNode.insertBefore(goldSky.el, N.sk.layer.el.nextSibling);
 
@@ -67,15 +68,20 @@ export default {
     const hdL = N.crossL.querySelector('.hd'), hdR = N.crossR.querySelector('.hd');
     const uS = NEAR.L[2] / 240;
     const HDYS = -NEAR.L[2] + 52 * uS - 2 * uS;
-    const [lhx, lhy] = [NEAR.L[0], NEAR.L[1] + crossHead(NEAR.L[2])[1]];
-    const [rhx, rhy] = [NEAR.R[0], NEAR.R[1] + crossHead(NEAR.R[2])[1]];
+    const [lhx, lhy] = [SL[0], SL[1] + crossHead(SL[2])[1]];
+    const [rhx, rhy] = [SR[0], SR[1] + crossHead(SR[2])[1]];
     /* a faint light behind the good thief, growing as he turns to Jesus */
     const behind = S.layer({ par: 0.2, sh: 1, flat: true });
     N.hillL.el.parentNode.insertBefore(behind.el, N.hillL.el);
     const lglow = behind.add(`<g><circle r="90" fill="url(#halo-glow)"/></g>`);
 
     const fx = N.fx;
-    const scraps = [0, 1, 2].map((i) => fx.add(`<g>${taunt(c, i === 0 ? tr('Czy Ty nie jesteś Mesjaszem?', 'Aren’t you the Christ?') : i === 1 ? tr('Wybaw siebie i nas!', 'Save yourself and us!') : '…!', { size: i === 2 ? 14 : 18, side: 1, w: i === 2 ? 40 : undefined })}</g>`));
+    const scraps = [0, 1, 2].map((i) => {
+      const txt = i === 0 ? tr('Czy Ty nie jesteś Mesjaszem?', 'Aren’t you the Christ?') : i === 1 ? tr('Wybaw siebie i nas!', 'Save yourself and us!') : '…!', size = i === 2 ? 14 : 18;
+      const el = fx.add(`<g>${taunt(c, txt, { size, side: 1, w: i === 2 ? 40 : undefined })}</g>`);
+      el.__w = ((i === 2 ? 40 : txt.length * size * 0.5 + size * 1.6) + 12) * 1.12;
+      return el;
+    });
     const rebuke = fx.add(`<g>${bubble(c, tr(['Ty nawet Boga', 'się nie boisz?'], ['Don’t you even', 'fear God?']), { size: 18, dir: -1 })}</g>`);
     const balL = S.layer({ par: 0.26, sh: 5 });
     const bal = balL.add(`<g>${balanceM(c)}</g>`);
@@ -88,6 +94,10 @@ export default {
 
     return (t, time) => {
       const T = time;
+      S.cam.x = -es(t, 0.9, 1.3) * 40 * (1 - es(t, 4.0, 4.4)) + es(t, 0, 0.5) * 20 * (1 - es(t, 0.9, 1.3));
+      S.cam.y = 10 - es(t, 3.9, 4.4) * 40;
+      S.cam.z = 1.04 - es(t, 3.9, 4.4) * 0.04;
+      if (S.portrait) S.cam.x += 40 * (1 - es(t, 0.9, 1.3)) - 60 * es(t, 0.9, 1.3) * (1 - es(t, 3.95, 4.4));
       N.sk.set(...PAL);
       const open = es(t, 4.1, 4.6);
       goldSky.fade(open);
@@ -101,8 +111,9 @@ export default {
       scraps.forEach((sc, i) => {
         const k = seg(t, 0.08 + i * 0.22, 0.95 + i * 0.22);
         const fly = Math.min(1, k / 0.55), fall = Math.max(0, (k - 0.55) / 0.45);
-        const tx = HX + [110, 150, 120][i], ty = HY + [60, 110, 30][i];
-        pose(sc, { x: lerp(rhx - 30, tx, ease.out(fly)), y: lerp(rhy - 20, ty, ease.out(fly)) - Math.sin(fly * PI) * 40 + fall * fall * 240, s: 1 - fly * 0.1, r: fall * 40, o: k > 0 && k < 1 ? Math.min(1, k * 8) * (1 - fall) : 0 });
+        const tx = HX + [110, 150, 120][i], ty = HY + (S.portrait ? [-175, -115, 30] : [60, 110, 30])[i];   // phone: pushed in from the edge, the long taunts fly above His head, not across Him
+        const [flo, fhi] = frameX(S, 0.56);
+        pose(sc, { x: fitX(S, lerp(rhx - 30, tx, ease.out(fly)), sc.__w * (1 - fly * 0.1), 1, flo, fhi), y: lerp(rhy - 20, ty, ease.out(fly)) - Math.sin(fly * PI) * 40 + fall * fall * 240, s: 1 - fly * 0.1, r: fall * 40, o: k > 0 && k < 1 ? Math.min(1, k * 8) * (1 - fall) : 0 });
       });
 
       /* v40 — the other rebukes him */
@@ -115,7 +126,7 @@ export default {
       /* v41 — the balance: we justly, He nothing wrong */
       const bk = es(t, 2.05, 2.4, ease.out) * (1 - es(t, 2.95, 3.2, ease.in));
       const tilt = es(t, 2.3, 2.6) * 14;
-      pose(bal, { x: 610, y: lerp(-400, 236, bk), s: 0.8, o: bk > 0.01 ? 1 : 0 });
+      pose(bal, { x: S.portrait ? 670 : 610, y: lerp(-400, S.portrait ? 140 : 236, bk), s: 0.8,   /* phone: higher, its pans above the heads, not on them */ o: bk > 0.01 ? 1 : 0 });
       pose(beam, { r: -tilt });
       const a = (-tilt * PI) / 180;
       pose(panL, { x: -112 * Math.cos(a), y: -112 * Math.sin(a) });
@@ -133,10 +144,6 @@ export default {
       const pk = es(t, 4.05, 4.4, ease.out);
       swing(promise, 800, 130 - (1 - pk) * 900, T, 0.7, 0.6, 1);
 
-      S.cam.x = -es(t, 0.9, 1.3) * 40 * (1 - es(t, 4.0, 4.4)) + es(t, 0, 0.5) * 20 * (1 - es(t, 0.9, 1.3));
-      S.cam.y = 10 - es(t, 3.9, 4.4) * 40;
-      S.cam.z = 1.04 - es(t, 3.9, 4.4) * 0.04;
-      if (S.portrait) S.cam.x += 80 * (1 - es(t, 0.9, 1.3)) - 110 * es(t, 0.9, 1.3) * (1 - es(t, 3.95, 4.4));
     };
   },
 };

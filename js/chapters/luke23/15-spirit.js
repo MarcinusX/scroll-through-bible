@@ -6,7 +6,7 @@
 // goes out, and everything is still.
 import { C, pose, lerp, sheet } from '../kit.js';
 import { seg, es, ease, bump, fade } from '../../core/anim.js';
-import { crossNearDark, wordPlate, voiceRings, soulLight, oilLamp, wisp, hanging, swing, NEAR, tr, PI } from './lib.js';
+import { crossNearDark, wordPlate, voiceRings, soulLight, oilLamp, wisp, hanging, swing, nearSides, NEAR, tr, PI } from './lib.js';
 
 const PAL = ['#16172c', '#25243c', '#3b3249'];
 const GY = 704;
@@ -21,6 +21,7 @@ export default {
   build(S) {
     const c = S.c;
     const N = crossNearDark(S, { pal: PAL, tint: 0.68 });
+    nearSides(S, N, { dx: 120 });   // phone: the side crosses nearer the middle, the right one clear of the thread
     const [HX, HY] = N.head;
     const glow = N.glowL.add(`<g><circle r="140" fill="url(#halo-glow)"/></g>`);
     // the light far above (behind everything but the sky)

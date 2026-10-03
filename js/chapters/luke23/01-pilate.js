@@ -10,7 +10,8 @@ import { crossX } from '../mark6/lib.js';
 import { kf, moving, hand, headAt, speech, GLYPH, crown, priest, elder, scribe, guard, soldier, pilate, bonds, ropeLine, hallSet, lampSet, noGuilt, caesarCoin, landMap, mapRoad, MAP, herodCrown, bubble, strip, chargeCard, stirIcon, tr, PI } from './lib.js';
 
 const JX = 800, JY = 690;
-const MX = 700, MY = 330, MS = 0.66;            // the map: centre and scale
+let MX = 700;                                   // the map's centre (set in build: a phone has it a step to the right)
+const MY = 330, MS = 0.66;                      // the map: centre and scale
 const mapPt = ([x, y]) => [MX + x * MS, MY + y * MS];
 /** a point along the map's road (the same curve mapRoad draws), u 0 = Jerusalem → 1 = Galilee */
 function roadAt(u) {
@@ -34,10 +35,12 @@ export default {
     { v: 6 },
     { v: 7, text: 'A gdy się upewnił, że jest spod władzy Heroda,' },
   ],
-  cam: { x: [-60, 150], y: [-30, 60], z: [1, 1.14] },
+  cam: { x: [-60, 240], y: [-30, 60], z: [1, 1.14] },
   build(S) {
     const c = S.c;
+    MX = S.portrait ? 750 : 700;   // phone: the whole map inside the frame
     const H = hallSet(S);
+    if (S.portrait) { const std = H.props.el.querySelector('g[transform="translate(1236 612)"]'); if (std) std.style.display = 'none'; }   // phone: the eagle standard right of the seat would only peep out under the thread
     const P = H.charL;
     const shine = P.add(`<g><circle r="120" fill="url(#halo-glow)"/></g>`);
     /* the council: three chief priests, two elders, a scribe */
@@ -45,6 +48,7 @@ export default {
       { el: priest(c, 0), x: 600 }, { el: priest(c, 1), x: 520 }, { el: elder(c, 1), x: 445 },
       { el: priest(c, 2), x: 370 }, { el: scribe(c, 1), x: 300 }, { el: elder(c, 2), x: 228 },
     ].map((m, i) => ({ ...m, i, p: S.puppet(P.add(m.el)), seed: c.rr(0, 9), y: 690 + (i % 2) * 8 }));
+    if (S.portrait) council.forEach((m, i) => { m.x = [680, 615, 440, 370, 300, 228][i]; });   // phone: two stand whole in the frame, the rest wait clear of its edge
     const gd = S.puppet(P.add(guard(c, 0)));
     const sol = S.puppet(P.add(soldier(c, 0)));
     const sol2 = S.puppet(P.add(soldier(c, 1)));
@@ -62,12 +66,13 @@ export default {
       [people, tr('podburza naród', 'perverting the nation')],
       [tax, tr('nie płacić Cezarowi', 'no taxes to Caesar')],
       [king, tr('Mesjasz – Król', 'Christ, a king')],
-    ].map(([inner, label], i) => ({ i, el: fx.add(chargeCard(c, inner, label)), from: council[i].x, to: [[560, 300], [680, 250], [800, 300]][i] }));
+    ].map(([inner, label], i) => ({ i, el: fx.add(chargeCard(c, inner, label)), from: council[i].x, to: (S.portrait ? [[640, 310], [775, 245], [910, 310]] : [[560, 300], [680, 250], [800, 300]])[i] }));   // phone: all three cards inside the frame
 
     /* bubbles */
     const askB = fx.add(`<g>${speech(c, `<g transform="translate(-12 22) scale(.9)">${crown(c)}</g><g transform="translate(20 2) scale(1.1)">${GLYPH.q(c)}</g>`, { w: 96, h: 64, flip: true })}</g>`);
     const yesB = fx.add(`<g>${speech(c, `<circle r="34" fill="url(#halo-glow)"/><g transform="translate(0 22)">${crown(c)}</g>`, { w: 80, h: 62 })}</g>`);
-    const galB = fx.add(`<g>${bubble(c, tr('Galilejczyk?', 'A Galilean?'), { size: 21, dir: 1 })}</g>`);
+    const galM = `<g>${bubble(c, tr('Galilejczyk?', 'A Galilean?'), { size: 21, dir: 1 })}</g>`;
+    let galB = S.portrait ? null : fx.add(galM);
 
     /* v4 — no guilt: an empty, level balance */
     const flies = S.layer({ par: 0.3, sh: 5 });
@@ -83,6 +88,7 @@ export default {
     const hCrown = mapL.add(`<g><circle r="44" fill="url(#warm-glow)"/><g transform="translate(0 34) scale(2.6)">${herodCrown(c)}</g></g>`);
     const hTag = mapL.add(`<g>${strip(c, tr('Herod', 'Herod'), { size: 17 })}</g>`);
 
+    if (S.portrait) galB = S.layer({ par: 0.58, sh: 4 }).add(galM);   // phone: the map reaches Pilate's words, so they are laid over it
     const cur = curtains(S);
 
     return (t, time) => {
@@ -184,7 +190,7 @@ export default {
       S.cam.x = 20 + es(t, 2.0, 2.4) * -40 * (1 - es(t, 2.9, 3.2)) + es(t, 3.0, 3.4) * 40 * (1 - es(t, 4.0, 4.4)) - es(t, 5.9, 6.3) * 30;
       S.cam.z = 1.02 + es(t, 1.8, 2.3) * 0.03 + es(t, 2.9, 3.3) * 0.04 * (1 - es(t, 5.9, 6.3));
       S.cam.y = 10 + es(t, 2.9, 3.3) * 20 - es(t, 5.9, 6.3) * 30;
-      if (S.portrait) S.cam.x += 70;
+      if (S.portrait) S.cam.x += 150;   // phone: Pilate on his seat clear of the thread
     };
   },
 };

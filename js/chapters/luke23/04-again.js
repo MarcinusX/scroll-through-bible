@@ -26,16 +26,21 @@ export default {
     { v: 15, cont: true, text: 'a oto nie popełnił On nic godnego śmierci.' },
     { v: 16 },
   ],
-  cam: { x: [-40, 160], y: [-40, 60], z: [1, 1.12] },
+  cam: { x: [-40, 240], y: [-40, 60], z: [1, 1.12] },
   build(S) {
     const c = S.c;
     const H = hallSet(S);
+    if (S.portrait) { const std = H.props.el.querySelector('g[transform="translate(1236 612)"]'); if (std) std.style.display = 'none'; }   // phone: the eagle standard right of the seat would only peep out under the thread
     const P = H.charL;
     const shine = P.add(`<g><circle r="110" fill="url(#halo-glow)"/></g>`);
     const folk = [[300, 668], [380, 662], [220, 664], [460, 670]].map(([x, y], i) => ({ i, x, y, p: S.puppet(P.add(person(c, crowdPerson(c)))), seed: c.rr(0, 9) }));
     const council = [
       { el: priest(c, 0), x: 620 }, { el: elder(c, 1), x: 545 }, { el: priest(c, 1), x: 470 }, { el: elder(c, 2), x: 395 }, { el: priest(c, 2), x: 320 },
     ].map((m, i) => ({ ...m, i, p: S.puppet(P.add(m.el)), seed: c.rr(0, 9), y: 694 + (i % 2) * 8 }));
+    if (S.portrait) {   // phone: two of the council whole in the frame, the rest and the people clear of its edge
+      council.forEach((m, i) => { m.x = [665, 600, 440, 370, 300][i]; });
+      folk.forEach((m) => { m.x -= 120; });
+    }
     const sol = S.puppet(P.add(soldier(c, 0)));
     const sol2 = S.puppet(P.add(soldier(c, 1)));
     const pSit = S.puppet(P.add(pilate(c, { pose: 'sit' })));
@@ -119,7 +124,7 @@ export default {
       S.cam.x = 20 + es(t, 0.9, 1.3) * 30 - es(t, 2.9, 3.3) * 40 * (1 - es(t, 3.9, 4.3)) + es(t, 3.9, 4.3) * 20;
       S.cam.y = 10 + es(t, 0, 0.8) * 10;
       S.cam.z = 1.02 + es(t, 3.9, 4.4) * 0.05;
-      if (S.portrait) S.cam.x += 70;
+      if (S.portrait) S.cam.x += 150;   // phone: Pilate on his seat clear of the thread
     };
   },
 };

@@ -12,7 +12,8 @@ import { loaf } from '../mark2/lib.js';
 import { kf, moving, hand, headAt, speech, thought, GLYPH, spark, priest, scribe, soldier, hguard, bonds, ropeLine, herodHall, candleSet, herodCrown, strip, HEROD, HALL, tr, PI } from './lib.js';
 
 const JX = 780, JY = 704;
-const HS = [1142, 652], HU = [1080, 664];   // Herod sitting on the throne / standing on the dais
+let HS = [1142, 652], HU = [1080, 664];   // Herod sitting / standing (set in build: a phone has the throne nearer the middle)
+const TDX = -80;                             // phone: how far the throne moves in
 
 /** a dark scrap of accusation (as in Mark 15) */
 function accusation(c, i) {
@@ -43,7 +44,9 @@ export default {
   cam: { x: [-80, 190], y: [-20, 60], z: [1, 1.14] },
   build(S) {
     const c = S.c;
-    const H = herodHall(S);
+    HS = [1142 + (S.portrait ? TDX : 0), 652]; HU = [1080 + (S.portrait ? TDX : 0), 664];
+    const H = herodHall(S, S.portrait ? { throneAt: [HALL.throne[0] + TDX, HALL.throne[1]] } : {});
+    if (S.portrait) H.candles[1].el.style.display = "none";   // phone: the right-hand candle would stand at the frame edge under the thread
     const P = H.charL;
     // the courtiers and Herod's guard behind, by the throne
     const court = [[1350, 0], [1420, 3]].map(([x, i], k) => ({ x, k, p: S.puppet(H.backL.add(person(c, noble(c, i)))), seed: c.rr(0, 9) }));
@@ -136,7 +139,7 @@ export default {
       /* v10 — the chief priests and scribes, accusing vehemently */
       const acc = es(t, 6.05, 6.3);
       pr.forEach((m) => {
-        const x = m.x + acc * 80;
+        const x = m.x + acc * 80 - (S.portrait ? 90 * (1 - acc) : 0);   // phone: until they step up (v10) they wait clear of the left edge
         const shake = T ? Math.sin(T * 7 + m.j * 2) * 14 * acc : 0;
         m.p.set({ x, y: JY - 4 + (m.j % 2) * 8, s: 0.96, flip: false, walk: t > 6.05 && t < 6.3 ? x * 0.05 : undefined, armF: 20 + acc * (70 + (m.j % 2) * 20) + shake, armB: 10 + acc * (40 + (m.j % 3) * 40), head: -3 - acc * 5, lean: acc * 5, blink: blinkAt(T, m.seed) });
       });
@@ -155,7 +158,7 @@ export default {
       S.cam.x = 20 + es(t, 0.9, 1.3) * 60 * (1 - es(t, 3.9, 4.3)) - es(t, 5.9, 6.3) * 70;
       S.cam.y = 20 + es(t, 0.9, 1.3) * 10;
       S.cam.z = 1.02 + es(t, 0.9, 1.3) * 0.04 * (1 - es(t, 3.9, 4.3)) + es(t, 4.9, 5.4) * 0.05 * (1 - es(t, 5.9, 6.3));
-      if (S.portrait) S.cam.x += 90;
+      if (S.portrait) S.cam.x += 40 + 40 * (1 - es(t, 0.9, 1.3));   // phone: with the throne moved in, a smaller turn to the right (but Herod clear of the thread from the start)
     };
   },
 };

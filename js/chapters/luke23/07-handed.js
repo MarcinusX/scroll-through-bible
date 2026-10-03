@@ -6,7 +6,7 @@
 // the platform — only the shadow of a column shows on it.
 import { C, blinkAt, pose, lerp, sheet, shade, mix } from '../kit.js';
 import { seg, es, ease, bump } from '../../core/anim.js';
-import { kf, moving, hand, headAt, cry, strip, swing, hanging, sealedScroll, waxSeal, squareStage, crowdSet, SKIES, tr, PI } from './lib.js';
+import { kf, moving, hand, headAt, cry, strip, swing, hanging, sealedScroll, waxSeal, squareStage, crowdSet, fitX, frameX, cryW, SKIES, tr, PI } from './lib.js';
 
 const JX = 800;
 
@@ -19,7 +19,7 @@ export default {
     { v: 25, text: 'Uwolnił im tego, którego się domagali, a który za rozruch i zabójstwo był wtrącony do więzienia;' },
     { v: 25, cont: true, text: 'Jezusa zaś zdał na ich wolę.' },
   ],
-  cam: { x: [-40, 180], y: [-60, 110], z: [1, 1.2] },
+  cam: { x: [-40, 420], y: [-60, 110], z: [1, 1.2] },
   build(S) {
     const c = S.c;
     const Q = squareStage(S, { pal: SKIES.grey });
@@ -40,7 +40,7 @@ export default {
     const colSh = `<path d="${c.poly([[-22, 30], [22, 30], [26, 44], [18, 44], [18, CH - 30], [26, CH - 24], [-26, CH - 24], [-18, CH - 30], [-18, 44], [-26, 44]])}" fill="#2a2030" opacity=".45"/>`;
     const curtainEl = hanging(curL, `${cs.out()}<g transform="translate(40 0)">${colSh}</g>`, { x: JX, y: -1500, len: 900 });
 
-    const cries = Array.from({ length: 16 }, (_, i) => ({ i, el: fx.add(`<g>${cry(c, i % 3 === 1 ? tr('Ukrzyżuj Go!', 'Crucify him!') : i % 3 === 2 ? tr('Na krzyż!', 'Crucify!') : tr('Ukrzyżuj, ukrzyżuj!', 'Crucify! Crucify!'), { size: i < 8 ? 16 : 22, dir: i % 2 ? 1 : -1 })}</g>`), g: [1, 4, 7, 10, 2, 5, 8, 12, 3, 9, 6, 11, 0, 13, 14, 15][i], seed: c.rr(0, 6), hx: [0, 0, 0, 0, 0, 0, 0, 0, 480, 1380, 600, 1040, 500, 1250, 700, 910][i], hy: [0, 0, 0, 0, 0, 0, 0, 0, 300, 300, 150, 120, 220, 200, 100, 90][i] }));
+    const cries = Array.from({ length: 16 }, (_, i) => ({ i, txt: i % 3 === 1 ? tr('Ukrzyżuj Go!', 'Crucify him!') : i % 3 === 2 ? tr('Na krzyż!', 'Crucify!') : tr('Ukrzyżuj, ukrzyżuj!', 'Crucify! Crucify!'), size: i < 8 ? 16 : 22, dir: i % 2 ? 1 : -1 })).map(({ i, txt, size, dir }) => ({ i, el: fx.add(`<g>${cry(c, txt, { size, dir })}</g>`), dir, w: cryW(txt, size), g: [1, 4, 7, 10, 2, 5, 8, 12, 3, 9, 6, 11, 0, 13, 14, 15][i], seed: c.rr(0, 6), hx: [0, 0, 0, 0, 0, 0, 0, 0, 480, 1380, 600, 1040, 500, 1250, 700, 910][i], hy: [0, 0, 0, 0, 0, 0, 0, 0, 300, 300, 150, 120, 220, 200, 100, 90][i] }));
     const decree = fx.add(`<g><circle r="70" fill="url(#halo-glow)" opacity=".4"/>${sealedScroll(c, 84)}<g class="seal" transform="translate(28 8)">${waxSeal(c, 16, 'eagle')}</g></g>`);
     const sealEl = decree.querySelector('.seal');
     const chains = [0, 1].map(() => fx.add(`<g><path d="${c.ribbon(c.qbez([0, 0], [8, 10], [18, 4], 8), 3)}" fill="${C.rock3}"/></g>`));
@@ -48,6 +48,10 @@ export default {
 
     return (t, time) => {
       const T = time;
+      S.cam.x = es(t, 2.9, 3.3) * (S.portrait ? 400 : 160) * (1 - es(t, 3.95, 4.3));
+      S.cam.y = -30 + es(t, 0.9, 1.3) * -30 * (1 - es(t, 1.95, 2.3)) + es(t, 2.9, 3.3) * 110 * (1 - es(t, 3.95, 4.3));
+      S.cam.z = 1.0 + es(t, 2.9, 3.3) * 0.16 * (1 - es(t, 3.95, 4.3)) + es(t, 4.1, 4.6) * 0.06;
+      const [flo, fhi] = frameX(S, 0.6);
       const gloom = 0.3 + es(t, 0, 2) * 0.5;
       H.sk.blend(SKIES.morning, SKIES.grey, gloom);
       swing(H.sunEl, 1230, 220 + gloom * 60, T * 0.5, 1, 0.6);
@@ -69,13 +73,14 @@ export default {
         const x = big ? lerp(mx, cr.hx, ease.out(k)) : mx + Math.sin(k * 3 + cr.seed) * 16;
         const y = big ? lerp(my - 30, cr.hy, ease.out(k)) : my - 20 - k * 90;
         const o = k > 0 && k < 1 ? Math.min(1, k * 6) * (big ? 1 - Math.max(0, k - 0.85) / 0.15 : 1 - Math.max(0, k - 0.7) / 0.3) : 0;
-        pose(cr.el, { x, y, s: big ? 0.7 + k * 0.5 : 0.6 + 0.5 * ease.out(Math.min(1, k * 3)), r: Math.sin(cr.seed) * 6, o: t < 2.1 ? o : 0 });
+        const cs = big ? 0.7 + k * 0.5 : 0.6 + 0.5 * ease.out(Math.min(1, k * 3));
+        pose(cr.el, { x: fitX(S, x, cr.w * cs, -cr.dir, flo, fhi), y, s: cs, r: Math.sin(cr.seed) * 6, o: t < 2.1 ? o : 0 });
       });
 
       /* the platform */
       const take = es(t, 4.05, 4.35);
       Q.sols[0].set({ x: 640 + take * 110, y: PLAT, s: 0.84, flip: false, walk: take > 0 && take < 1 ? take * 12 : undefined, armF: 34 + take * 20, armB: 8 + take * 50, blink: blinkAt(T, 4) });
-      Q.sols[1].set({ x: 1110 - take * 200, y: PLAT, s: 0.84, flip: true, walk: take > 0 && take < 1 ? take * 12 : undefined, armF: 34, armB: 8 + take * 60, blink: blinkAt(T, 5) });
+      Q.sols[1].set({ x: (S.portrait ? 1065 : 1110) - take * (S.portrait ? 155 : 200), y: PLAT, s: 0.84, flip: true, walk: take > 0 && take < 1 ? take * 12 : undefined, armF: 34, armB: 8 + take * 60, blink: blinkAt(T, 5) });
       Q.jes.set({ x: JX, y: PLAT, s: 0.88, flip: false, armF: 30, armB: 28, head: 6 + take * 3, blink: blinkAt(T) });
       const brow = es(t, 1.1, 1.4) * (1 - es(t, 1.95, 2.15));
       const give = es(t, 2.05, 2.3) * (1 - es(t, 2.9, 3.1));
@@ -110,9 +115,6 @@ export default {
       const down = es(t, 4.2, 4.65, ease.out);
       swing(curtainEl, JX, 160 - (1 - down) * 900, T * down, 0.4, 0.5);
 
-      S.cam.x = es(t, 2.9, 3.3) * 160 * (1 - es(t, 3.95, 4.3));
-      S.cam.y = -30 + es(t, 0.9, 1.3) * -30 * (1 - es(t, 1.95, 2.3)) + es(t, 2.9, 3.3) * 110 * (1 - es(t, 3.95, 4.3));
-      S.cam.z = 1.0 + es(t, 2.9, 3.3) * 0.16 * (1 - es(t, 3.95, 4.3)) + es(t, 4.1, 4.6) * 0.06;
     };
   },
 };
