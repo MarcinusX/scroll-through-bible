@@ -21,6 +21,7 @@ export default {
   cam: { x: [-30, 30], y: [-40, 40], z: [1, 1.12] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;   // phone: the praying people stand closer, inside the screen
     const DAY = ['#d6e2d8', '#f2e4c4', '#f8e8cc'], GOLD = ['#dcc3a3', '#f2d3a2', '#f7e2bd'];
     const { sk, sunEl, cl1 } = templeCourt(S, { skyCols: DAY, floorY: FLOOR, sanctX: 800, sunAt: [1230, 150] });
     const DOOR = [800, FLOOR - 150];
@@ -47,7 +48,7 @@ export default {
     const crowdL = S.layer({ par: 0.55, sh: 5 });
     const mk = (n, x0, dir, seed) => {
       const mem = [];
-      for (let i = 0; i < n; i++) mem.push({ x: i * 62 + c.rr(-10, 10), y: (i % 2) * 22 + c.rr(-4, 4), s: 0.92 * c.rr(0.94, 1.04), flip: dir < 0, o: folk(c, null, { armB: 0 }) });
+      for (let i = 0; i < n; i++) mem.push({ x: i * (PH ? 48 : 62) + c.rr(-10, 10), y: (i % 2) * 22 + c.rr(-4, 4), s: 0.92 * c.rr(0.94, 1.04), flip: dir < 0, o: folk(c, null, { armB: 0 }) });
       return mem;
     };
     // their hands are lifted: an arm raised inside each still figure (the raise is baked into the cut-out)
@@ -91,8 +92,8 @@ export default {
 
       /* v10: all the people pray outside; the smoke of the incense rises */
       const up = es(t, 2.0, 2.4, ease.out);
-      left.set({ x: 340 + up * 40, y: 790 + (1 - up) * 260, o: up > 0.01 ? 1 : 0 });
-      right.set({ x: 1020 - up * 40, y: 790 + (1 - up) * 260, o: up > 0.01 ? 1 : 0 });
+      left.set({ x: (PH ? 495 : 340) + up * 40, y: 790 + (1 - up) * 260, o: up > 0.01 ? 1 : 0 });
+      right.set({ x: (PH ? 920 : 1020) - up * 40, y: 790 + (1 - up) * 260, o: up > 0.01 ? 1 : 0 });
       const sm = es(t, 1.95, 2.3);
       puffs.forEach((p) => {
         const k = T ? (T * 0.07 + p.i / puffs.length) % 1 : (p.i + 0.5) / puffs.length;

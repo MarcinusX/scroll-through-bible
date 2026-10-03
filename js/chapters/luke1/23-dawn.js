@@ -113,7 +113,7 @@ export default {
       pose(litRoad, { x: 0, y: 0, o: es(t, 3.0, 3.3) });
       const wk = es(t, 3.2, 3.95);
       walkers.set({ x: 530 + wk * 230, y: GY - 6 - wk * 80, s: 1 - wk * 0.25, o: risen * (1 - out) });
-      doves.forEach((d) => { const k = seg(t, 3.15 + d.i * 0.08, 4.0 + d.i * 0.08); pose(d.el, { x: 800 + k * 500 + d.i * 40, y: 520 - k * 160 - d.i * 30, s: 0.8, o: k > 0 && k < 1 ? 1 : 0 }); if (k > 0 && k < 1) flapWings(d.el, T || t * 3, 34, 8, -4); });
+      doves.forEach((d) => { const k = seg(t, 3.15 + d.i * 0.08, 4.0 + d.i * 0.08); pose(d.el, { x: S.portrait ? 800 + k * 270 + d.i * 30 : 800 + k * 500 + d.i * 40, y: S.portrait ? 520 - k * 300 - d.i * 30 : 520 - k * 160 - d.i * 30, s: 0.8, o: k > 0 && k < 1 ? 1 : 0 }); if (k > 0 && k < 1) flapWings(d.el, T || t * 3, 34, 8, -4); });
 
       /* v80: the child grew, strong in spirit, in the wilderness */
       wild.fade(es(t, 4.0, 4.3));

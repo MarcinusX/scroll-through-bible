@@ -22,7 +22,7 @@ export default {
   cam: { x: [-30, 30], y: [-40, 40], z: [1, 1.12] },
   build(S) {
     const c = S.c;
-    const R = maryRoom(S);
+    const R = maryRoom(S, undefined, { tableX: S.portrait ? 490 : 330 });   // phone: the table and the rod inside the screen
     const beam = R.G.add(`<path d="${c.poly([[WIN[0] - 70, WIN[1] - 60], [WIN[0] + 70, WIN[1] + 60], [MX + 110, RY], [MX - 90, RY]])}" fill="#fff3cf" opacity=".4"/>`);
     const mGlow = R.G.add(`<g>${glowDisc(150, 'halo-glow', 1)}</g>`);
     const aGlow = R.G.add(`<g>${glowDisc(190, 'halo-glow', 1)}</g>`);

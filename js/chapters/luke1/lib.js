@@ -396,8 +396,9 @@ export const DOORW = [1090, 700]; // the doorway (bottom centre)
  * Mary's room: a plastered back wall with a window on the left (hills and sky beyond) and a doorway on the right,
  * a lamp in a niche, a low table with a jar and a dry branch, a mat on the floor.
  * Returns { sk, out, wall, doorLight, G, P, front, branch }.
+ * `tableX` (optional) moves the table, the jar and the almond rod (default: under the window); `rodX` is returned.
  */
-export function maryRoom(S, skyCols = ROOM) {
+export function maryRoom(S, skyCols = ROOM, { tableX = 330 } = {}) {
   const c = S.c;
   const sk = sky(S, skyCols);
   const out = S.layer({ par: 0.05, sh: 2 });
@@ -427,14 +428,15 @@ export function maryRoom(S, skyCols = ROOM) {
   floor.add(sheet().p(c.ridge(c.wave(RY, [2, 1], [500, 140]), -1200, 2800, 1900, 12, 0.6), mix(C.wood3, C.sand2, 0.5)).out());
   floor.add(sheet().p(c.cut([[560, RY + 6], [572, RY - 6], [860, RY - 8], [872, RY + 6]], 0.5, 6), mix(C.skyVeil, C.linen2, 0.3)).x(c.ribbon([[580, RY], [852, RY - 2]], 2), C.dustyBlue, 'opacity=".6"').out());
   const props = S.layer({ par: 0.3, sh: 5 });
-  props.add(`<g transform="translate(330 ${RY + 4})">${lowTable(c)}</g>` + `<g transform="translate(300 ${RY - 40})">${waterJar(c)}</g>`);
+  props.add(`<g transform="translate(${tableX} ${RY + 4})">${lowTable(c)}</g>` + `<g transform="translate(${tableX - 30} ${RY - 40})">${waterJar(c)}</g>`);
   const branchL = S.layer({ par: 0.3, sh: 4 });
   const B = almondRod(c);
-  branchL.add(`<g transform="translate(362 ${RY - 40})">${B.dry}</g>`);
-  const blossom = branchL.add(`<g transform="translate(362 ${RY - 40})" opacity="0">${B.bloom}</g>`);
+  const rodX = tableX + 32;
+  branchL.add(`<g transform="translate(${rodX} ${RY - 40})">${B.dry}</g>`);
+  const blossom = branchL.add(`<g transform="translate(${rodX} ${RY - 40})" opacity="0">${B.bloom}</g>`);
   const G = S.layer({ par: 0.32, sh: 1, flat: true });
   const P = S.layer({ par: 0.34, sh: 5 });
-  return { sk, out, doorLight, wall, lampGlow, G, P, blossom, props };
+  return { sk, out, doorLight, wall, lampGlow, G, P, blossom, props, rodX };
 }
 /** a low wooden table (origin: floor centre) */
 export function lowTable(c, w = 150) {

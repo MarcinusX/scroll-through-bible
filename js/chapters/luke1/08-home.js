@@ -42,7 +42,7 @@ export default {
       if (morn > 0) W.sk.blend(HILLNIGHT, MORN, morn); else W.sk.blend(HILLEVE, HILLNIGHT, night);
       W.starL.fade(night * (1 - morn));
       W.dim.fade(night * (1 - morn));
-      swing(sunEl, 1150, lerp(-1500, lerp(330, 170, morn), morn > 0 ? 1 : es(t, 0, 0.2) * (1 - night)), T, 1, 0.7);
+      swing(sunEl, S.portrait ? 1020 : 1150, lerp(-1500, lerp(330, 170, morn), morn > 0 ? 1 : es(t, 0, 0.2) * (1 - night)), T, 1, 0.7);
       moons.forEach((m) => {
         const k = es(t, 1.08 + m.i * 0.1, 1.26 + m.i * 0.1, ease.out) * (1 - es(t, 2.0, 2.25, ease.in));
         swing(m.el, 600 + m.i * 100, lerp(-1500, 190 + (m.i % 2) * 22, k), T, 1.2, 0.7, m.i);

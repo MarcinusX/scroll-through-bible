@@ -41,7 +41,7 @@ export default {
     return (t, time) => {
       const T = time;
       /* v26: the sixth month; sent from God to Nazareth */
-      moons.forEach((m) => { const k = es(t, 0.02 + m.i * 0.06, 0.2 + m.i * 0.06, ease.out) * (1 - es(t, 1.0, 1.2, ease.in)); swing(m.el, 700 + m.i * 90, lerp(-1500, 175 + (m.i % 2) * 20, k), T, 1.2, 0.7, m.i); });
+      moons.forEach((m) => { const k = es(t, 0.02 + m.i * 0.06, 0.2 + m.i * 0.06, ease.out) * (1 - es(t, 1.0, 1.2, ease.in)); swing(m.el, S.portrait ? 615 + m.i * 84 : 700 + m.i * 90, lerp(-1500, 175 + (m.i % 2) * 20, k), T, 1.2, 0.7, m.i); });
       const hk = es(t, 0.1, 0.35);
       pose(high, { x: 470, y: 110, s: 0.5 + hk * 0.6, r: t * 3, o: hk * (1 - es(t, 1.4, 1.8) * 0.7) });
       const fl = es(t, 0.3, 0.8);

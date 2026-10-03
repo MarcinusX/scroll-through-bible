@@ -11,8 +11,8 @@ import {
 } from './lib.js';
 import { elder } from '../mark11/lib.js';
 
-const ZX = 560, EX = 700, OX = 860;   // Zechariah (seated), Elizabeth, the elder with the child
-const TX = 720, TY = 400;            // the tablet
+const ZX0 = 560, EX0 = 700, OX0 = 860;   // Zechariah (seated), Elizabeth, the elder with the child
+const TX0 = 720, TY = 400;               // the tablet
 
 export default {
   id: 'lk1-name',
@@ -27,6 +27,9 @@ export default {
   cam: { x: [-30, 30], y: [-40, 40], z: [1, 1.12] },
   build(S) {
     const c = S.c;
+    // phone: the family moves a little left and the relatives stand closer, so all four stay clear of the thread
+    const PH = S.portrait;
+    const ZX = PH ? 530 : ZX0, EX = PH ? 665 : EX0, OX = PH ? 815 : OX0, TX = PH ? 690 : TX0, RX = PH ? 890 : 1000;
     const W = hillHome(S, HILLDAY);
     const sunEl = hanging(W.hangL, sun(c, 42), { x: 1220, y: -1500, len: 800 });
     const P = W.P;
@@ -36,10 +39,10 @@ export default {
     const old = S.puppet(P.add(elder(c, 0, { holdF: johnInArms(c) })));
     // the relatives: a still group, and the same group marvelling (hands lifted) to cross-fade to
     const crowdL = S.layer({ par: 0.4, sh: 5 });
-    const mem = []; for (let i = 0; i < 4; i++) mem.push({ x: i * 60 + c.rr(-8, 8), y: (i % 2) * 20, s: 0.9 * c.rr(0.95, 1.04), o: folk(c) });
+    const mem = []; for (let i = 0; i < 4; i++) mem.push({ x: i * (PH ? 46 : 60) + c.rr(-8, 8), y: (i % 2) * 20, s: 0.9 * c.rr(0.95, 1.04), o: folk(c) });
     const draw = (raise) => mem.slice().sort((a, b) => a.y - b.y).map((mm) => { let mk = person(c, { ...mm.o, holdF: '', holdB: '' }); if (raise) mk = mk.replace(/class="armBr"/, 'class="armBr" transform="rotate(-150)"').replace(/class="armFr"/, 'class="armFr" transform="rotate(-60)"'); return `<g transform="translate(${mm.x.toFixed(1)} ${mm.y.toFixed(1)}) scale(${-mm.s} ${mm.s})">${mk}</g>`; }).join('');
-    const rel = crowdL.sprite(draw(false), 1000, 740);
-    const relW = crowdL.sprite(draw(true), 1000, 740);
+    const rel = crowdL.sprite(draw(false), RX, 740);
+    const relW = crowdL.sprite(draw(true), RX, 740);
 
     const up = S.layer({ par: 0.3, sh: 6 });
     const day = up.add(hungWord(c, tr('ósmy dzień', 'the eighth day'), { size: 24 }));
@@ -69,8 +72,8 @@ export default {
       /* v59: the eighth day; they would call him Zechariah */
       const inK = es(t, 0.05, 0.35, ease.out);
       const wonder = es(t, 5.05, 5.15);
-      rel.set({ x: lerp(1500, 1000, inK), y: 740, o: (inK > 0.01 ? 1 : 0) * (1 - wonder) });
-      relW.set({ x: 1000, y: 740, o: wonder });
+      rel.set({ x: lerp(1500, RX, inK), y: 740, o: (inK > 0.01 ? 1 : 0) * (1 - wonder) });
+      relW.set({ x: RX, y: 740, o: wonder });
       const dk = es(t, 0.1, 0.35, ease.out) * (1 - es(t, 0.95, 1.15, ease.in));
       pose(day, { x: 800, y: lerp(-1100, 250, dk), r: Math.sin(Tm * 0.8) * 1.2, o: dk > 0.002 ? 1 : 0 });
       const zk = es(t, 0.45, 0.7, ease.out) * (1 - es(t, 1.3, 1.55, ease.in));
@@ -85,7 +88,7 @@ export default {
 
       /* v61: no one of your kin has that name — the family scroll */
       const fk = es(t, 2.05, 2.3, ease.out) * (1 - es(t, 2.9, 3.1, ease.in));
-      pose(famEl, { x: 900, y: lerp(-1500, 330, fk), r: Math.sin(Tm * 0.7) * 1 * fk, o: fk > 0.002 ? 1 : 0 });
+      pose(famEl, { x: PH ? 860 : 900, y: lerp(-1500, 330, fk), r: Math.sin(Tm * 0.7) * 1 * fk, o: fk > 0.002 ? 1 : 0 });
 
       /* v62: they make signs to his father */
       const qk = es(t, 3.2, 3.4, ease.back) * (1 - es(t, 3.95, 4.05));

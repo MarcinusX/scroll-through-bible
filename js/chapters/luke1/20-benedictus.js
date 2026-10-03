@@ -97,7 +97,7 @@ export default {
       const sh = es(t, 4.15, 4.4, ease.back);
       pose(shield, { x: X(-40), y: YY(3, 40), s: Math.max(0.001, sh) * K, o: on(3, sh > 0.01 ? 1 : 0) });
       const ret = es(t, 4.35, 4.8);
-      pose(enemy, { x: X(20 + ret * 50), y: YY(3, 110), s: K, o: on(3, 1 - ret * 0.75) });
+      pose(enemy, { x: X(20 + ret * (S.portrait ? 22 : 50)), y: YY(3, 110), s: K, o: on(3, 1 - ret * 0.75) });   // phone: they fall back but stay inside the picture
 
       S.cam.z = 1.04;
       S.cam.y = 10;

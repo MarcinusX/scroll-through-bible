@@ -51,13 +51,13 @@ export default {
       /* the day goes down in v7 */
       const eve = es(t, 3.05, 3.7);
       W.sk.blend(HILLDAY, HILLEVE, eve);
-      swing(sunEl, 1180, lerp(170, 330, eve), T, 1, 0.7);
+      swing(sunEl, S.portrait ? 1010 : 1180, lerp(170, 330, eve), T, 1, 0.7);   // phone: the setting sun inside the screen, clear of the thread
       swing(cl, 480 + Math.sin(T * 0.1) * 20, 150, T, 1.2, 0.6, 1);
       homeLight(W.H, { open: es(t, 0.3, 0.45) * (1 - es(t, 1.9, 2.1)) + es(t, 3.2, 3.4) * 0.4, lit: eve * 0.8 });
 
       /* v5a: in the days of Herod … a priest named Zechariah */
       const hk = es(t, 0.05, 0.35, ease.out) * (1 - es(t, 1.1, 1.35, ease.in));
-      swing(herod, 960, lerp(-1500, 230, hk), T, 1.2, 0.7, 2);
+      swing(herod, S.portrait ? 860 : 960, lerp(-1500, 230, hk), T, 1.2, 0.7, 2);
       const zOut = es(t, 0.4, 0.85);
       const zx = lerp(W.H.doorX, ZX, zOut);
       const old = es(t, 3.45, 3.52);

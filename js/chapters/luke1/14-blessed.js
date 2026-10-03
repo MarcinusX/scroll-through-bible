@@ -88,7 +88,7 @@ export default {
       pose(mWomb, { x: MX - 14, y: HGY - 74, s: 0.5 + wk * 0.7 + bump(t, 1.1, 1.6) * 0.3, o: wk });
       pose(mWombG, { x: MX - 14, y: HGY - 74, s: 0.5 + wk * 0.7 + bump(t, 1.1, 1.6) * 0.3, o: wk });
       const fk = es(t, 1.2, 1.45, ease.out) * (1 - es(t, 1.95, 2.2, ease.in));
-      swing(fruit, 1070, lerp(-1500, 300, fk), T, 1.2, 0.7, 2);
+      swing(fruit, S.portrait ? 900 : 1070, lerp(-1500, S.portrait ? 190 : 300, fk), T, 1.2, 0.7, 2);   // phone: above Mary, clear of the thread
 
       /* v43: why this — the mother of my Lord comes to me? She kneels */
       eK.set({ x: EX + 20, y: HGY, s: 0.96, flip: false, o: kneel, armF: 60 + es(t, 3.2, 3.5) * 10, armB: 40 + es(t, 4.1, 4.4) * 30, head: 12 - es(t, 3.1, 3.4) * 20, blink: blinkAt(T, 1) });

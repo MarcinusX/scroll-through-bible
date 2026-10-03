@@ -42,6 +42,7 @@ export default {
   cam: { x: [-30, 30], y: [-40, 40], z: [1, 1.12] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;   // phone: the pictures, the witnesses and Theophilus come in from the edges
     const sk = sky(S, ['#6e5a6e', '#b98f86', '#e7c7a3']);
 
     /* ---------- the room: back wall with a window and shelves of scrolls ---------- */
@@ -65,19 +66,20 @@ export default {
     /* ---------- the pictures of what was fulfilled among us ---------- */
     const hangL = S.layer({ par: 0.12, sh: 5 });
     const order = ['star', 'boat', 'bread', 'cross', 'tomb'];
-    const scattered = { tomb: [540, 250], star: [985, 165], bread: [680, 150], cross: [1100, 255], boat: [830, 225] };
-    const plates = order.map((k, i) => ({ k, i, el: hangL.add(plate(c, ICONS[k](c))), from: scattered[k], to: [560 + i * 120, 200], at: [1.08, 1.28, 1.18, 1.38, 1.48][i] }));
+    const scattered = PH ? { tomb: [530, 260], star: [950, 165], bread: [670, 150], cross: [1040, 265], boat: [810, 225] }
+      : { tomb: [540, 250], star: [985, 165], bread: [680, 150], cross: [1100, 255], boat: [830, 225] };
+    const plates = order.map((k, i) => ({ k, i, el: hangL.add(plate(c, ICONS[k](c))), from: scattered[k], to: PH ? [550 + i * 112, 200] : [560 + i * 120, 200], at: [1.08, 1.28, 1.18, 1.38, 1.48][i] }));
     const orderGlow = S.layer({ par: 0.12, sh: 1, flat: true });
-    const thread = orderGlow.add(`<g><path d="${c.ribbon([[540, 200], [1060, 200]], 3)}" fill="${C.haloRim}"/></g>`);
+    const thread = orderGlow.add(`<g><path d="${c.ribbon(PH ? [[530, 200], [1018, 200]] : [[540, 200], [1060, 200]], 3)}" fill="${C.haloRim}"/></g>`);
 
     /* ---------- the witnesses behind the desk ---------- */
     const back = S.layer({ par: 0.26, sh: 5 });
     const small = (x) => `<g transform="translate(18 20) rotate(-80)"><path d="${c.cut(c.rect(-5, -14, 10, 28), 0.2, 3)}" fill="${C.parchment}"/><path d="${c.cut(c.ell(0, -15, 6, 3, 8), 0.2, 2) + c.cut(c.ell(0, 15, 6, 3, 8), 0.2, 2)}" fill="${C.wood2}"/></g>`;
     const W = [
-      { o: CAST.peter, x: 490, flip: false, from: -120 },
-      { o: MARY, x: 560, flip: false, from: -200 },
-      { o: CAST.john, x: 1060, flip: true, from: 1720 },
-      { o: MAGD, x: 1130, flip: true, from: 1800 },
+      { o: CAST.peter, x: PH ? 525 : 490, flip: false, from: -120 },
+      { o: MARY, x: PH ? 590 : 560, flip: false, from: -200 },
+      { o: CAST.john, x: PH ? 1000 : 1060, flip: true, from: 1720 },
+      { o: MAGD, x: PH ? 1062 : 1130, flip: true, from: 1800 },
     ].map((w, i) => ({ ...w, i, p: S.puppet(back.add(person(c, { ...w.o, holdF: small() }))), e: S.puppet(back.add(person(c, { ...w.o }))) }));
     const given = W.map((w, i) => back.add(`<g>${small()}</g>`));
 
@@ -174,7 +176,7 @@ export default {
       /* v4: Theophilus receives it; what he was taught settles on it; the seal of certainty shines */
       const come = es(t, 4.0, 4.3);
       const rec = es(t, 4.3, 4.34);
-      const TX = lerp(1500, 1070, come);
+      const TX = lerp(1500, PH ? 1010 : 1070, come);
       theo.set({ x: TX, y: FY - 6, s: 1, flip: true, walk: come > 0 && come < 1 ? t * 26 : undefined, o: 1 - rec, armF: 10, armB: 6, blink: blinkAt(time, 3) });
       theoR.set({ x: TX, y: FY - 6, s: 1, flip: true, o: rec, armF: 70, armB: 20, head: 8, blink: blinkAt(time, 3) });
       const [rx, ry] = hand(TX, FY - 6, 1, true, 70);

@@ -24,6 +24,9 @@ export default {
   cam: { x: [-30, 30], y: [-80, 40], z: [0.94, 1.1] },
   build(S) {
     const c = S.c;
+    // phone: the neighbours stand closer and draw back less, so they stay on the screen when fear falls on them
+    const PH = S.portrait;
+    const LX = PH ? 520 : 400, RX = PH ? 915 : 960, BK = PH ? 15 : 110;
     const W = hillHome(S, HILLDAY);
     const sunEl = hanging(W.hangL, sun(c, 42), { x: 1220, y: -1500, len: 800 });
     // far villages that light up as the news reaches them
@@ -39,12 +42,12 @@ export default {
     const falling = P.add(`<g>${knot(c)}</g>`);
     const voice = voiceRings(P, c, { n: 3, color: C.sun, r: 40, w: 6, both: true });
     const crowdL = S.layer({ par: 0.45, sh: 5 });
-    const grp = (n, dir) => { const mem = []; for (let i = 0; i < n; i++) mem.push({ x: i * 58 + c.rr(-8, 8), y: (i % 2) * 20, s: 0.86 * c.rr(0.94, 1.04), flip: dir < 0, o: folk(c) }); return mem.sort((a, b) => a.y - b.y).map((mm) => `<g transform="translate(${mm.x.toFixed(1)} ${mm.y.toFixed(1)}) scale(${mm.flip ? -mm.s : mm.s} ${mm.s})">${person(c, { ...mm.o, holdF: '', holdB: '' })}</g>`).join(''); };
-    const left = crowdL.sprite(grp(3, 1), 400, 770);
-    const right = crowdL.sprite(grp(3, -1), 960, 770);
+    const grp = (n, dir) => { const mem = []; for (let i = 0; i < n; i++) mem.push({ x: i * (PH ? 40 : 58) + c.rr(-8, 8), y: (i % 2) * 20, s: 0.86 * c.rr(0.94, 1.04), flip: dir < 0, o: folk(c) }); return mem.sort((a, b) => a.y - b.y).map((mm) => `<g transform="translate(${mm.x.toFixed(1)} ${mm.y.toFixed(1)}) scale(${mm.flip ? -mm.s : mm.s} ${mm.s})">${person(c, { ...mm.o, holdF: '', holdB: '' })}</g>`).join(''); };
+    const left = crowdL.sprite(grp(3, 1), LX, 770);
+    const right = crowdL.sprite(grp(3, -1), RX, 770);
     const up = S.layer({ par: 0.3, sh: 6 });
     const slips = [0, 1, 2, 3, 4, 5].map((i) => up.add(`<g transform="scale(1.6)">${wordSlip(c, 30)}</g>`));
-    const bangs = [[430, 560], [520, 575], [1000, 560], [1110, 570]].map(([x, y], i) => ({ x, y, i, el: up.add(`<g>${thought(c, GLYPH.bang(c), { w: 50, h: 42 })}</g>`) }));
+    const bangs = (PH ? [[530, 560], [600, 575], [935, 560], [1010, 570]] : [[430, 560], [520, 575], [1000, 560], [1110, 570]]).map(([x, y], i) => ({ x, y, i, el: up.add(`<g>${thought(c, GLYPH.bang(c), { w: 50, h: 42 })}</g>`) }));
     const hearts = [0, 1, 2, 3, 4, 5, 6].map((i) => up.add(`<g>${plainHeart(c, 9, [C.jesusMantle, C.roseRobe][i % 2])}</g>`));
     const q = up.add(`<g>${thought(c, GLYPH.q(c), { w: 96, h: 76 })}</g>`);
     hillFront(S);
@@ -69,9 +72,9 @@ export default {
       /* v65a: fear on all the neighbours — they draw back */
       const inK = es(t, 0.0, 0.2, ease.out);
       const back = es(t, 1.05, 1.4);
-      bangs.forEach((b) => { const k = es(t, 1.1 + b.i * 0.06, 1.3 + b.i * 0.06, ease.back) * (1 - es(t, 1.95, 2.05)); pose(b.el, { x: b.x + (b.x < 800 ? -1 : 1) * back * 110, y: b.y, s: Math.max(0.001, k), o: k > 0.01 ? 1 : 0 }); });
-      left.set({ x: lerp(-200, 400, inK) - back * 110, y: 770, o: inK > 0.01 ? 1 : 0 });
-      right.set({ x: lerp(1700, 960, inK) + back * 110, y: 770, o: inK > 0.01 ? 1 : 0 });
+      bangs.forEach((b) => { const k = es(t, 1.1 + b.i * 0.06, 1.3 + b.i * 0.06, ease.back) * (1 - es(t, 1.95, 2.05)); pose(b.el, { x: b.x + (b.x < 800 ? -1 : 1) * back * BK, y: b.y, s: Math.max(0.001, k), o: k > 0.01 ? 1 : 0 }); });
+      left.set({ x: lerp(-200, LX, inK) - back * BK, y: 770, o: inK > 0.01 ? 1 : 0 });
+      right.set({ x: lerp(1700, RX, inK) + back * BK, y: 770, o: inK > 0.01 ? 1 : 0 });
 
       /* v65b: talked about through all the hill country */
       slips.forEach((s, i) => {
@@ -82,7 +85,7 @@ export default {
 
       /* v66a: they lay it up in their hearts: what will this child be? */
       e.set({ x: EX, y: HGY, s: 0.96, flip: false, armF: 70, armB: 30, head: 10, blink: blinkAt(T, 1) });
-      hearts.forEach((h, i) => { const k = es(t, 3.1 + i * 0.05, 3.3 + i * 0.05, ease.back) * (1 - es(t, 3.95, 4.1)); const x = i < 3 ? 330 + i * 60 : 900 + (i - 3) * 60; pose(h, { x, y: 600 - (i % 2) * 20, s: Math.max(0.001, k), o: k > 0.01 ? 1 : 0 }); });
+      hearts.forEach((h, i) => { const k = es(t, 3.1 + i * 0.05, 3.3 + i * 0.05, ease.back) * (1 - es(t, 3.95, 4.1)); const x = PH ? (i < 3 ? 480 + i * 50 : 925 + (i - 3) * 50) : i < 3 ? 330 + i * 60 : 900 + (i - 3) * 60; pose(h, { x, y: 600 - (i % 2) * 20, s: Math.max(0.001, k), o: k > 0.01 ? 1 : 0 }); });
       const qk = es(t, 3.3, 3.55, ease.back);
       pose(q, { x: EX + 20, y: HGY - 180, s: Math.max(0.001, qk), o: qk > 0.01 ? 1 : 0 });
 

@@ -25,7 +25,7 @@ export default {
   cam: { x: [-30, 30], y: [-40, 40], z: [1, 1.1] },
   build(S) {
     const c = S.c;
-    const R = maryRoom(S);
+    const R = maryRoom(S, undefined, { tableX: S.portrait ? 490 : 330 });   // phone: the table and the rod inside the screen
     const mGlow = R.G.add(`<g>${glowDisc(130, 'halo-glow', 1)}</g>`);
     const aGlow = R.G.add(`<g>${glowDisc(180, 'halo-glow', 1)}</g>`);
     const P = R.P;

@@ -27,7 +27,7 @@ export default {
   cam: { x: [-40, 40], y: [-40, 50], z: [1, 1.16] },
   build(S) {
     const c = S.c;
-    const R = maryRoom(S);
+    const R = maryRoom(S, undefined, { tableX: S.portrait ? 490 : 330 });   // phone: the table and the rod inside the screen
     const still = R.G.add(`<g>${glowDisc(260, 'halo-glow', 0.85)}${rayBurst(c, { n: 24, r0: 120, r1: 360, spread: 0.02, o: 0.16 })}</g>`);
     const cloudGlow = R.G.add(`<g>${glowDisc(200, 'halo-glow', 1)}<path d="${c.poly([[-60, 0], [60, 0], [120, 330], [-120, 330]])}" fill="#fff3cf" opacity=".2"/></g>`);
     const mGlow = R.G.add(`<g>${glowDisc(130, 'halo-glow', 0.85)}</g>`);
@@ -84,8 +84,8 @@ export default {
       pose(elzPlate, { x: 960, y: ey, r: Math.sin(T * 0.7) * 1.4 * ek, o: ek > 0.002 ? 1 : 0 });
       moons.forEach((mo, i) => { const k = es(t, 3.3 + i * 0.06, 3.45 + i * 0.06, ease.back); const a = PI * (1.05 + i * 0.18); pose(mo, { x: 960 + Math.cos(a) * 104, y: ey + Math.sin(a) * 104, s: Math.max(0.001, k), o: ek > 0.002 && k > 0.01 ? 1 : 0 }); });
       const bl = es(t, 4.15, 4.45, ease.back);
-      pose(R.blossom, { x: 362, y: RY - 160, s: Math.max(0.001, bl), o: bl > 0.01 ? 1 : 0, ox: 0, oy: -120 });
-      sparks.forEach((sp, i) => { const kk = seg(t, 4.3 + i * 0.04, 4.75 + i * 0.04); const a = (i / 6) * PI * 2; pose(sp, { x: 362 + Math.cos(a) * (50 + kk * 40), y: RY - 150 + Math.sin(a) * (50 + kk * 30), s: 1 - kk * 0.5, r: t * 90, o: bump(t, 4.3 + i * 0.04, 4.75 + i * 0.04) }); });
+      pose(R.blossom, { x: R.rodX, y: RY - 160, s: Math.max(0.001, bl), o: bl > 0.01 ? 1 : 0, ox: 0, oy: -120 });
+      sparks.forEach((sp, i) => { const kk = seg(t, 4.3 + i * 0.04, 4.75 + i * 0.04); const a = (i / 6) * PI * 2; pose(sp, { x: R.rodX + Math.cos(a) * (50 + kk * 40), y: RY - 150 + Math.sin(a) * (50 + kk * 30), s: 1 - kk * 0.5, r: t * 90, o: bump(t, 4.3 + i * 0.04, 4.75 + i * 0.04) }); });
 
       /* v38a: behold the handmaid of the Lord — a quiet light fills the room */
       const st = es(t, 5.1, 5.6);
