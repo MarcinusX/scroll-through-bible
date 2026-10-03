@@ -21,9 +21,11 @@ export default {
     { v: 13, text: 'Biada tobie, Korozain!' },
     { v: 13, cont: true, text: 'Biada tobie, Betsaido!' },
   ],
-  cam: { x: [-80, 80], y: [-40, 30], z: [1, 1.12] },
+  cam: { x: [-240, 240], y: [-40, 30], z: [1, 1.12] },
   build(S) {
-    const V = lakeView(S, { skyCols: DAY, sky2: ['#5a566f', '#8a7f8a', '#b09b90'], GY });
+    // phone: Chorazin and Bethsaida come in from the edges, so the towns the sentences name are on screen
+    const PT = S.portrait;
+    const V = lakeView(S, { skyCols: DAY, sky2: ['#5a566f', '#8a7f8a', '#b09b90'], GY, townsAt: PT ? { chorazin: { x: 560, y: 470 }, bethsaida: { x: 1030, y: 546 } } : null });
     const c = S.c;
 
     /* the medallions over each town (gold and grey), its storm cloud, its dark name */
@@ -46,8 +48,8 @@ export default {
 
     /* Jesus on the hillside, a few of the seventy-two sitting */
     const act = S.layer({ par: 0.5, sh: 5 });
-    act.sprite(throng(makeCutter('lk10-woe-d'), 4, { s: 0.84, rows: 1, spread: 56, P: 'sit', men: true }), 1220, GY - 30);
-    act.sprite(throng(makeCutter('lk10-woe-e'), 3, { s: 0.84, rows: 1, spread: 56, P: 'sit', men: true, flip: true }), 390, GY - 26);
+    act.sprite(throng(makeCutter('lk10-woe-d'), 4, { s: 0.84, rows: 1, spread: PT ? 48 : 56, P: 'sit', men: true }), PT ? 1104 : 1220, GY - 30);
+    act.sprite(throng(makeCutter('lk10-woe-e'), 3, { s: 0.84, rows: 1, spread: 56, P: 'sit', men: true, flip: true }), PT ? 470 : 390, GY - 26);
     const aura = act.add(`<g>${glow(150, 0.45)}</g>`);
     const jesus = S.puppet(act.add(person(c, { ...CAST.jesus })));
     const voice = voiceRings(act, c, { n: 3, color: C.clay, r: 38, w: 5 });
@@ -72,7 +74,7 @@ export default {
         pose(w.cloud, { x: lerp(w.tw.x + (w.j ? 700 : -700), w.tw.x, cl), y: w.tw.y - w.tw.w * 0.72, s: 0.9, o: cl > 0.01 ? 1 : 0 });
         pose(w.shade, { x: w.tw.x, y: w.tw.y, o: es(t, w.at + 0.6, w.at + 0.8) });
         const tk = es(t, w.at + 0.2, w.at + 0.45, ease.out);
-        pose(w.tag, { x: w.tw.x + (w.j ? 90 : -90), y: lerp(-500, w.tw.y - w.tw.w * 0.4, tk), r: T ? Math.sin(T * 0.9 + w.j) * 1.5 : 0, o: tk > 0.01 ? 1 : 0 });
+        pose(w.tag, { x: w.tw.x + (w.j ? (PT ? 60 : 90) : (PT ? -45 : -90)), y: lerp(-500, w.tw.y - w.tw.w * 0.4, tk), r: T ? Math.sin(T * 0.9 + w.j) * 1.5 : 0, o: tk > 0.01 ? 1 : 0 });
       });
 
       /* He turns to each town in turn, His arm stretched out */
@@ -83,7 +85,7 @@ export default {
       const [hx, hy] = headAt(JX, GY, 1.04, left);
       voice(hx, hy, reach * 0.8, T, { dir: left ? -1 : 1, spread: 2.2 });
 
-      S.cam.x = kf(t, [[0, -60], [0.9, -60], [1.1, 60], [2, 60]], ease.sine);
+      S.cam.x = PT ? kf(t, [[0, -220], [0.9, -220], [1.1, 220], [2, 220]], ease.sine) : kf(t, [[0, -60], [0.9, -60], [1.1, 60], [2, 60]], ease.sine);
       S.cam.y = kf(t, [[0, -10], [2, -10]]);
       S.cam.z = kf(t, [[0, 1.06], [1, 1.08], [2, 1.08]]);
     };

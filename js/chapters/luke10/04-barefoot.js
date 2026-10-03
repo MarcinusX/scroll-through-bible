@@ -22,7 +22,7 @@ export default {
     { v: 4, text: 'Nie noście z sobą trzosa ani torby, ani sandałów;' },
     { v: 4, cont: true, text: 'i nikogo w drodze nie pozdrawiajcie!' },
   ],
-  cam: { x: [0, 660], y: [-10, 40], z: [1, 1.1] },
+  cam: { x: [0, 990], y: [-10, 40], z: [1, 1.1] },
   build(S) {
     const c = S.c;
     sky(S, DAY);
@@ -123,7 +123,8 @@ export default {
         pose(sl.el, { x, y, r: Math.sin(sl.seed + k * 5) * 12, s: 0.7 + k * 0.4, o: t > 1.3 ? on * Math.min(1, k * 4) * (1 - k) : 0 });
       });
 
-      S.cam.x = kf(t, [[0, 60], [1.0, 60], [1.9, 640], [2, 640]], ease.sine);
+      // phone: the camera goes on with the two, so the greeter and the ones who pass him are both on screen
+      S.cam.x = kf(t, [[0, 60], [1.0, 60], [1.9, S.portrait ? 970 : 640], [2, S.portrait ? 970 : 640]], ease.sine);
       S.cam.y = kf(t, [[0, 30], [1, 30], [2, 10]]);
       S.cam.z = kf(t, [[0, 1.06], [0.9, 1.06], [1.5, 1.02], [2, 1.02]]);
     };

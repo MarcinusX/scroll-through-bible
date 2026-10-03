@@ -8,7 +8,7 @@ import { makeCutter } from '../../core/paper.js';
 import { countrySet, KN, glow, folk, stillGroup, barefoot, figure, wisp, thought, heavenScroll, goldName, sparkle, kf, EVENING, NIGHT, SENT_A, SENT_B, es, ease, bump, seg, PI } from './lib.js';
 
 const JX = KN.X, JY = 688;
-const SX = 440, SY = 262, SW = 720;       // the scroll: left roller at (SX, SY), sheet SW wide
+let SX = 440, SY = 262, SW = 720;         // the scroll: left roller at (SX, SY), sheet SW wide
 
 export default {
   id: 'lk10-names',
@@ -18,6 +18,9 @@ export default {
   ],
   cam: { x: [-30, 30], y: [-120, 40], z: [1, 1.1] },
   build(S) {
+    // phone: a narrower scroll, inside the screen and clear of the thread
+    const PT = S.portrait;
+    [SX, SW] = PT ? [480, 620] : [440, 720];
     const K = countrySet(S, { skyCols: EVENING, sky2: NIGHT, sunAt: [1260, 900] });
     const c = S.c;
     const pc = makeCutter('lk10-names-people');
@@ -38,7 +41,8 @@ export default {
     const jGlow = P.add(`<g>${glow(170, 0.7)}</g>`);
     const jesus = S.puppet(P.add(person(c, { ...CAST.jesus })));
     const crowdL = S.layer({ par: 0.45, sh: 4 });
-    const GR = [[420, 730, 0.8], [520, 736, 0.82], [1080, 736, 0.82], [1180, 730, 0.8], [380, 790, 0.88], [1220, 790, 0.88]].map(([x, y, s], i) => {
+    const GR = [[420, 730, 0.8], [520, 736, 0.82], [1080, 736, 0.82], [1180, 730, 0.8], [380, 790, 0.88], [1220, 790, 0.88]].map(([x0, y, s], i) => {
+      const x = PT ? 800 + (x0 - 800) * 0.8 : x0;
       const left = x > 800;
       const m = [{ x: -30, y: -4, s, flip: left, o: folk(pc, true) }, { x: 30, y: 2, s: s * 0.97, flip: left, o: folk(pc, true) }];
       return {
@@ -54,7 +58,7 @@ export default {
       const q = makeCutter(seed);
       return `<g transform="translate(-18 40)">${figure(q, folk(q, true), { x: 0, y: 0, s: 0.4, armF: 60, armB: 150, head: -14 })}</g><g transform="translate(44 -26) rotate(60) scale(.8)">${wisp(q, 1.5, '#3e3448')}</g>`;
     };
-    const BUB = [[530, 470], [800, 400], [1070, 470]].map(([x, y], i) => ({ i, x, y, el: fx.add(`<g>${thought(c, pic('lk10-pic' + i), { w: 140, h: 116 })}</g>`) }));
+    const BUB = (PT ? [[585, 470], [800, 400], [1012, 470]] : [[530, 470], [800, 400], [1070, 470]]).map(([x, y], i) => ({ i, x, y, el: fx.add(`<g>${thought(c, pic('lk10-pic' + i), { w: 140, h: 116 })}</g>`) }));
     const tw = Array.from({ length: 6 }, (_, i) => ({ i, el: fx.add(`<g>${sparkle(c, 12)}</g>`) }));
 
     return (t, time) => {
@@ -83,9 +87,9 @@ export default {
       pose(rollR, { x: SX + SW * un, y: SY, o: es(t, 0.95, 1.05) });
       NAMES.forEach((n) => {
         const k = es(t, 1.4 + n.i * 0.035, 1.46 + n.i * 0.035);
-        pose(n.el, { x: SX + 40 + n.col * 225, y: SY - 50 + n.row * 34, sx: Math.max(0.01, k), o: k > 0.01 ? 1 : 0 });
+        pose(n.el, { x: SX + 40 + n.col * (PT ? 192 : 225), y: SY - 50 + n.row * 34, sx: Math.max(0.01, k), o: k > 0.01 ? 1 : 0 });
       });
-      tw.forEach((s_, i) => { const k = bump(t, 1.45 + i * 0.07, 1.8 + i * 0.07); pose(s_.el, { x: SX + 60 + i * 120, y: SY - 110 + (i % 2) * 220, s: k, r: T * 40, o: k }); });
+      tw.forEach((s_, i) => { const k = bump(t, 1.45 + i * 0.07, 1.8 + i * 0.07); pose(s_.el, { x: SX + 60 + i * (PT ? 100 : 120), y: SY - 110 + (i % 2) * 220, s: k, r: T * 40, o: k }); });
       GR.forEach((g) => {
         const up = es(t, 1.35 + g.i * 0.03, 1.4 + g.i * 0.03);
         g.calm.set({ x: g.x, y: g.y, s: 1, o: 1 - up });

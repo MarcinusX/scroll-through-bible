@@ -38,7 +38,8 @@ export default {
 
     /* the listeners, Jesus, the lawyer, and the poor man down the road */
     const crowdL = S.layer({ par: 0.4, sh: 4 });
-    [[400, 752, false], [540, 758, false], [1290, 756, true]].forEach(([x, y, flip]) => {
+    const PT = S.portrait;
+    (PT ? [[470, 752, false], [590, 758, false], [1290, 756, true]] : [[400, 752, false], [540, 758, false], [1290, 756, true]]).forEach(([x, y, flip]) => {
       crowdL.sprite(stillGroup(pc, [0, 1].map((k) => ({ x: (k - 0.5) * 60, y: k * 6, s: 0.9, flip, o: { ...folk(pc), pose: 'sit' }, armF: 30, armB: 10, head: -4 }))), x, y);
     });
     const road = S.layer({ par: 0.2, sh: 4 });
@@ -73,11 +74,11 @@ export default {
       const point = es(t, 1.1, 1.3) * (1 - es(t, 1.9, 2.05));
       /* v37b — "Go and do likewise": he goes down the road to the poor man */
       const go = es(t, 2.25, 2.3);
-      const gK = [[2.3, 1250], [2.7, 1110]];
+      const gK = PT ? [[2.3, 1180], [2.7, 1035]] : [[2.3, 1250], [2.7, 1110]];   // phone: the poor man and the lawyer inside the screen
       const gx = kf(t, gK);
       lw.set({ x: LX, y: LY, s: 1.0, flip: true, armF: 40 + point * 110, armB: 20, head: -point * 20 + bump(t, 2.05, 2.25) * 10, o: 1 - go, blink: blinkAt(T, 5) });
       lwFar.set({ x: gx, y: 530, s: 0.46, flip: true, walk: moving(t, gK) ? gx * 0.1 : undefined, armF: 20 + es(t, 2.72, 2.85) * 70, armB: 10, lean: es(t, 2.72, 2.85) * 16, head: es(t, 2.72, 2.85) * 12, o: go, blink: blinkAt(T, 5) });
-      poor.set({ x: 1050, y: 546, s: 0.46, flip: false, armF: 50 + es(t, 2.75, 2.9) * 30, armB: 10, head: -4 - es(t, 2.75, 2.9) * 10, blink: blinkAt(T, 8) });
+      poor.set({ x: PT ? 980 : 1050, y: 546, s: 0.46, flip: false, armF: 50 + es(t, 2.75, 2.9) * 30, armB: 10, head: -4 - es(t, 2.75, 2.9) * 10, blink: blinkAt(T, 8) });
       const send = es(t, 2.05, 2.25);
       jesus.set({ x: JX, y: JY, s: 1.04, flip: false, armF: 30 + es(t, 0.1, 0.3) * 30 * (1 - send) + send * 70, armB: 10 + send * 30, head: -2 - send * 4, blink: blinkAt(T) });
       pose(aura, { x: JX, y: JY - 110, o: 0.5 + send * 0.2 });

@@ -51,8 +51,9 @@ export default {
     const goldBack = S.layer({ par: 0.32, sh: 3 });
     goldBack.add(wheatBand(c, { fn: f1, h: 64, n: 380 }));
     const RL = S.layer({ par: 0.33, sh: 4 });
-    const reapers = REAPERS.map(([x, i]) => ({ x, i, p: S.puppet(RL.add(person(c, { ...REAPER, ...(i ? { robe: C.wheatRobe, veil: C.linen2, skin: C.skin2 } : {}), holdF: sickleHeld(c) }))) }));
-    const fresh = NEW.map(([x, i, s]) => ({ x, i, s, p: S.puppet(RL.add(person(c, { ...folk(pc, true), holdF: sickleHeld(c) }))) }));
+    const PT = S.portrait;
+    const reapers = REAPERS.map(([x0, i]) => ({ x: PT ? [960, 1085][i] : x0, i })).map(({ x, i }) => ({ x, i, p: S.puppet(RL.add(person(c, { ...REAPER, ...(i ? { robe: C.wheatRobe, veil: C.linen2, skin: C.skin2 } : {}), holdF: sickleHeld(c) }))) }));
+    const fresh = NEW.map(([x0, i, s]) => [PT ? 800 + (x0 - 800) * 0.72 : x0, i, s]).map(([x, i, s]) => ({ x, i, s, p: S.puppet(RL.add(person(c, { ...folk(pc, true), holdF: sickleHeld(c) }))) }));
     const f2 = (x) => 684 + 4 * Math.sin(x / 90 + 1);
     const greenFront = S.layer({ par: 0.36, sh: 3 });
     greenFront.add(wheatBand(c, { fn: f2, h: 62, n: 460, color: C.wheatGreen, ear: mix(C.wheatGreen, C.leaf, 0.3) }));
@@ -70,7 +71,8 @@ export default {
     const aura = P.add(`<g>${glow(160, 0.5)}</g>`);
     const dis = DIS.map((d, i) => {
       const o = d.o || folk(pc, true);
-      return { ...d, i, st: S.puppet(P.add(person(c, o))), kn: S.puppet(P.add(person(c, { ...o, pose: 'kneel' }))), seed: c.rr(0, 9) };
+      // phone: the four nearest close up beside Him; the fifth (off the edge) is left out
+      return { ...d, ...(PT ? { x: [684, 622, 560, 498, 436][i], hide: i === 4 } : {}), i, st: S.puppet(P.add(person(c, o))), kn: S.puppet(P.add(person(c, { ...o, pose: 'kneel' }))), seed: c.rr(0, 9) };
     });
     const jesus = S.puppet(P.add(person(c, { ...CAST.jesus })));
 
@@ -100,8 +102,8 @@ export default {
         const k = es(t, 1.05 + d.i * 0.04, 1.12 + d.i * 0.04);
         const look = es(t, 0.2, 0.5) * (1 - k);
         const base = { x: d.x, y: GY + (d.i % 2 ? 6 : 0), s: d.s, flip: false, blink: blinkAt(T, d.seed) };
-        d.st.set({ ...base, o: 1 - k, armF: 14 + look * 16, armB: 8, head: -look * 4 });
-        d.kn.set({ ...base, o: k, armF: 96, armB: 160, head: -18 });
+        d.st.set({ ...base, o: d.hide ? 0 : 1 - k, armF: 14 + look * 16, armB: 8, head: -look * 4 });
+        d.kn.set({ ...base, o: d.hide ? 0 : k, armF: 96, armB: 160, head: -18 });
       });
       pose(light, { x: 800, y: -160, o: es(t, 1.15, 1.5) });
       LAB.forEach((w) => {
@@ -116,7 +118,7 @@ export default {
         n.p.set({ x: n.x + 40 * (1 - k), y: 676 - (1 - k) * 24, s: n.s - (1 - k) * 0.08, flip: n.i % 2 === 1, o: k, armF: 70 + sw * 30 * k, armB: 20, lean: 18 * k + sw * 4 * k, head: 10 * k, blink: blinkAt(T, n.i) });
       });
 
-      S.cam.x = kf(t, [[0, 20], [0.3, 50], [0.9, 50], [1.2, 30], [2, 30]]);
+      S.cam.x = PT ? 0 : kf(t, [[0, 20], [0.3, 50], [0.9, 50], [1.2, 30], [2, 30]]);
       S.cam.y = kf(t, [[0, 10], [0.4, -20], [1.0, -20], [1.3, -40], [2, -40]]);
       S.cam.z = kf(t, [[0, 1.05], [0.5, 1.02], [1.2, 1.0], [2, 1.0]]);
     };

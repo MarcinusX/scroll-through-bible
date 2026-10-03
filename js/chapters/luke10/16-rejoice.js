@@ -32,6 +32,9 @@ export default {
   ],
   cam: { x: [-30, 30], y: [-140, 40], z: [1, 1.1] },
   build(S) {
+    // phone: the wise (and their veil) and the children come in from the edges; the young one a step aside for them
+    const PT = S.portrait;
+    const WX = PT ? [495, 605] : [420, 540], LAMPX = PT ? 550 : 480, VEILX = PT ? 555 : 470, YX = PT ? 890 : 930;
     let rays;
     const K = countrySet(S, {
       skyCols: EVENING, sky2: NIGHT, sunAt: [1260, 900],
@@ -53,7 +56,7 @@ export default {
     const aura = P.add(`<g>${glow(180, 0.7)}</g>`);
     const jesus = S.puppet(P.add(person(c, { ...CAST.jesus })));
     const young = S.puppet(P.add(barefoot(person(c, SENT_B), SENT_B.skin)));
-    const kids = KIDS.map(([x, s], i) => ({ i, x, s, p: S.puppet(P.add(kid(c, CHILDREN[i], 1.3))) }));
+    const kids = KIDS.map(([x0, s], i) => [PT ? [938, 982, 1026, 1068][i] : x0, s]).map(([x, s], i) => ({ i, x, s, p: S.puppet(P.add(kid(c, CHILDREN[i], 1.3))) }));
     const veilL = S.layer({ par: 0.46, sh: 3 });
     const veil = veilL.add(`<g><path d="M-120 -2000V0M120 -2000V0" stroke="${STRING}" stroke-width="1.2"/><path d="${c.cut([[-140, 0], [140, -4], [134, 230], [70, 244], [0, 232], [-70, 246], [-134, 234]], 1, 8)}" fill="${mix(C.stone, C.storm, 0.35)}" opacity=".78"/><path d="${c.ribbon([[-100, 6], [-96, 250]], 2) + c.ribbon([[0, 4], [4, 246]], 2) + c.ribbon([[100, 2], [96, 252]], 2)}" fill="${C.stone2}" opacity=".6"/></g>`);
 
@@ -93,12 +96,12 @@ export default {
       rays.fade(open * 0.6);
       pose(beam, { x: JX, y: -40, sy: 1.26, o: open * 0.9 });
       const hide = es(t, 1.35, 1.65, ease.out);
-      pose(veil, { x: 470, y: lerp(-500, 470, hide), r: T ? Math.sin(T * 0.8) * hide : 0, o: hide > 0.005 ? 1 : 0 });
-      pose(lampEl, { x: 480, y: 730, o: 1 });
-      wise[0].set({ x: 420, y: 736, s: 0.92, flip: false, armF: 60, armB: 30, head: 14, blink: blinkAt(T, 7) });
-      wise[1].set({ x: 540, y: 738, s: 0.94, flip: true, armF: 70 + hide * 10, armB: 20, head: 12 + hide * 6, blink: blinkAt(T, 8) });
+      pose(veil, { x: VEILX, y: lerp(-500, 470, hide), sx: PT ? 0.86 : 1, r: T ? Math.sin(T * 0.8) * hide : 0, o: hide > 0.005 ? 1 : 0 });
+      pose(lampEl, { x: LAMPX, y: 730, o: 1 });
+      wise[0].set({ x: WX[0], y: 736, s: 0.92, flip: false, armF: 60, armB: 30, head: 14, blink: blinkAt(T, 7) });
+      wise[1].set({ x: WX[1], y: 738, s: 0.94, flip: true, armF: 70 + hide * 10, armB: 20, head: 12 + hide * 6, blink: blinkAt(T, 8) });
       const shine = es(t, 1.5, 1.8);
-      pose(kidLight, { x: 1105, y: 120, o: shine });
+      pose(kidLight, { x: PT ? 1003 : 1105, y: 120, o: shine });
       kids.forEach((k) => {
         const got = es(t, 1.6 + k.i * 0.06, 1.7 + k.i * 0.06);
         const skip = bump(t, 2.3 + k.i * 0.05, 2.6 + k.i * 0.05);
@@ -109,7 +112,7 @@ export default {
         const jk = bump(t, 2.3 + k.i * 0.05, 2.7 + k.i * 0.05);
         pose(joy[k.i], { x: k.x, y: 748 - 160 * k.s * 1.2, s: jk, r: T * 40, o: jk });
       });
-      young.set({ x: 930, y: 744, s: 0.95, flip: !turn, armF: 20 + give * 50, armB: 10 + give * 30, head: -8 - give * 10, blink: blinkAt(T, 3) });
+      young.set({ x: YX, y: 744, s: 0.95, flip: !turn, armF: 20 + give * 50, armB: 10 + give * 30, head: -8 - give * 10, blink: blinkAt(T, 3) });
 
       /* v22a — the whole world handed down into His hands */
       const down = es(t, 3.0, 3.45, ease.out);
@@ -125,7 +128,7 @@ export default {
         pose(d.el ?? d, { x: JX + (i ? 12 : -12), y, s: 0.9, o: t > 4.02 && t < 4.45 ? Math.sin(k * PI) : 0 });
       });
       const [ghx, ghy] = handAt(JX, JY, 1.04, false, 20 + give * 70);
-      const [yhx, yhy] = headAt(930, 744, 0.95, false);
+      const [yhx, yhy] = headAt(YX, 744, 0.95, false);
       const g = es(t, 4.5, 4.72);
       pose(gift, { x: lerp(ghx, yhx + 4, g), y: lerp(ghy, yhy + 40, g) - Math.sin(g * PI) * 30, s: 1, o: seg(t, 4.46, 4.5) });
 

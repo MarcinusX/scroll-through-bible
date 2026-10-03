@@ -24,7 +24,7 @@ export default {
   ],
   cam: { x: [-40, 40], y: [-120, 40], z: [1, 1.12] },
   build(S) {
-    const V = squareSet(S, { skyCols: GREY, sky2: WRATH, GY, tint: 0.3, seed: 'lk10-square2', sunAt: [1180, 170] });
+    const V = squareSet(S, { skyCols: GREY, sky2: WRATH, GY, tint: 0.3, seed: 'lk10-square2', sunAt: S.portrait ? [820, 140] : [1180, 170] });   // phone: the sun clear of the thread and of the clouds
     const c = S.c;
     const pc = makeCutter('lk10-dust-people');
 

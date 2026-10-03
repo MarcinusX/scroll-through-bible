@@ -18,14 +18,16 @@ export default {
   beats: [
     { v: 3 },
   ],
-  cam: { x: [0, 60], y: [-20, 30], z: [1, 1.08] },
+  cam: { x: [0, 140], y: [-20, 30], z: [1, 1.08] },
   build(S) {
     const c = S.c;
+    // phone: Jesus a little inward, the moon off the thread, the right-hand wolves brought in where they can be seen
+    const PT = S.portrait, JX = PT ? 600 : 560, MOONX = PT ? 990 : 1150, WR = PT ? 1110 : 1250;
     sky(S, EVENING);
     const starL = S.layer({ par: 0.02, sh: 1, flat: true });
     starL.add(stars(c, { x0: -800, x1: 2400, y0: -500, y1: 300, n: 40 }));
     const hangL = S.layer({ par: 0.04, sh: 4 });
-    const moonEl = hanging(hangL, `${glow(90, 0.5)}${moon(c, 28)}`, { x: 1150, y: 190, len: 900 });
+    const moonEl = hanging(hangL, `${glow(90, 0.5)}${moon(c, 28)}`, { x: MOONX, y: 190, len: 900 });
     S.layer({ par: 0.08, sh: 2 }).add(band(c, { y: 440, amps: [26, 10, 3], lens: [900, 330, 120], color: TINT(C.hillFar, 0.45) }).markup);
 
     /* the stony slope with the winding road */
@@ -43,9 +45,9 @@ export default {
     /* wolves behind the road (on the upper side) */
     const WB = S.layer({ par: 0.2, sh: 4 });
     const mkWolf = (L, w, i) => { const el = L.add(wolf(c, { col: mix(C.storm, C.rock3, 0.5) })); return { ...w, i, el, hd: el.querySelector('.hd'), eye: L.add(`<g>${glow(12, 1, 'warm-glow')}</g>`) }; };
-    const back = [{ x: 820, y: 612, s: 0.62, flip: false }, { x: 1250, y: 606, s: 0.66, flip: true }, { x: 1010, y: 568, s: 0.48, flip: true }].map((w, i) => mkWolf(WB, w, i));
+    const back = [{ x: 820, y: 612, s: 0.62, flip: false }, { x: PT ? 700 : 1250, y: 606, s: 0.66, flip: !PT }, { x: 1010, y: 568, s: 0.48, flip: true }].map((w, i) => mkWolf(WB, w, i));
     // the rocks they crouch behind (in front of their legs)
-    WB.add(rock(c, 830, 648, 170, 44, TINT(C.rock2, 0.3)) + rock(c, 1244, 644, 190, 46, TINT(C.rock, 0.3)) + rock(c, 1004, 596, 120, 30, TINT(C.rock2, 0.35)));
+    WB.add(rock(c, 830, 648, 170, 44, TINT(C.rock2, 0.3)) + rock(c, PT ? 694 : 1244, 644, 190, 46, TINT(C.rock, 0.3)) + rock(c, 1004, 596, 120, 30, TINT(C.rock2, 0.35)));
 
     /* the pair (people), the lambs and the light that goes with them */
     const PL = S.layer({ par: 0.3, sh: 4 });
@@ -57,8 +59,8 @@ export default {
     const RK = S.layer({ par: 0.32, sh: 5 });
     RK.add(rock(c, 930, 800, 250, 190, TINT(C.rock, 0.18)) + bush(c, 1030, 800, 100, TINT(C.moss, 0.3), TINT(C.sage, 0.3)));
     const WF = S.layer({ par: 0.34, sh: 4 });
-    const front = [{ x: 1236, y: 756, s: 0.86, flip: true }].map((w, i) => mkWolf(WF, w, i + 3));
-    WF.add(rock(c, 1250, 800, 230, 64, TINT(C.rock2, 0.2)));
+    const front = [{ x: WR - 14, y: 756, s: 0.86, flip: true }].map((w, i) => mkWolf(WF, w, i + 3));
+    WF.add(rock(c, WR, 800, 230, 64, TINT(C.rock2, 0.2)));
     const WOLVES = [...back, ...front];
 
     /* the near ground and Jesus */
@@ -71,7 +73,7 @@ export default {
 
     return (t, time) => {
       const T = time;
-      pose(moonEl, { x: 1150, y: 190, r: T ? Math.sin(T * 0.5) * 0.8 : 0 });
+      pose(moonEl, { x: MOONX, y: 190, r: T ? Math.sin(T * 0.5) * 0.8 : 0 });
 
       /* "Go!" */
       const send = es(t, 0.02, 0.18);
@@ -105,7 +107,7 @@ export default {
         pose(w.eye, { x: w.x + (w.flip ? -1 : 1) * 52 * w.s, y: w.y - 56 * w.s + (1 - up) * 30 * w.s, s: w.s * (0.9 + (T ? 0.15 * Math.sin(T * 3 + w.i) : 0)), o: up * 0.95 });
       });
 
-      S.cam.x = kf(t, [[0, 0], [0.4, 30], [1, 50]]);
+      S.cam.x = PT ? kf(t, [[0, 40], [0.4, 100], [1, 130]]) : kf(t, [[0, 0], [0.4, 30], [1, 50]]);
       S.cam.y = kf(t, [[0, 20], [0.6, 0], [1, 0]]);
       S.cam.z = kf(t, [[0, 1.02], [0.6, 1.06], [1, 1.06]]);
     };

@@ -33,7 +33,8 @@ export default {
 
     /* the listeners (still), Jesus, the lawyer */
     const crowdL = S.layer({ par: 0.4, sh: 4 });
-    [[430, 748, false], [560, 756, false], [1180, 756, true], [1300, 748, true]].forEach(([x, y, flip]) => {
+    // phone: the listeners on the grass drawn in from the edges
+    (S.portrait ? [[505, 748, false], [615, 756, false], [1045, 756, true], [1420, 748, true]] : [[430, 748, false], [560, 756, false], [1180, 756, true], [1300, 748, true]]).forEach(([x, y, flip]) => {
       crowdL.sprite(stillGroup(pc, [0, 1].map((k) => ({ x: (k - 0.5) * 60, y: k * 6, s: 0.9, flip, o: { ...folk(pc), pose: 'sit' }, armF: 30, armB: 10, head: -4 }))), x, y);
     });
     const P = S.layer({ par: 0.42, sh: 5 });

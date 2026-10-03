@@ -14,9 +14,9 @@ export default {
     { v: 31 },
     { v: 32 },
   ],
-  cam: { x: [-40, 40], y: [-20, 40], z: [1, 1.1] },
+  cam: { x: [-40, 90], y: [-20, 40], z: [1, 1.1] },
   build(S) {
-    const V = jerichoSet(S, { skyCols: HOT });
+    const V = jerichoSet(S, { skyCols: HOT, sunAt: S.portrait ? [1000, 150] : undefined });   // phone: the sun clear of the thread
     const c = S.c;
     const P = S.layer({ par: 0.44, sh: 5 });
     const man = P.add(`<g>${lying(person(c, { ...STRIPPED, eyes: 'closed' }), 0.95)}</g>`);
@@ -47,7 +47,8 @@ export default {
       pose(man, { x: ROAD.LIE[0] + 80, y: ROAD.LIE[1] });
       priestW(t, T, 3);
       leviteW(t, T, 4);
-      S.cam.x = kf(t, [[0, -20], [0.5, -20], [0.9, 30], [1.0, -20], [1.5, -20], [1.9, 30], [2, 30]]);
+      const GO = S.portrait ? 90 : 30;   // phone: the camera follows each further as he hurries past, clear of the thread
+      S.cam.x = kf(t, [[0, -20], [0.5, -20], [0.9, GO], [1.0, -20], [1.5, -20], [1.9, GO], [2, GO]]);
       S.cam.y = 20;
       S.cam.z = kf(t, [[0, 1.04], [0.4, 1.08], [1, 1.04], [1.4, 1.08], [2, 1.04]]);
     };

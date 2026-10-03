@@ -15,6 +15,7 @@ import { scrollRolled } from '../mark2/lib.js';
 const { JX, JY } = SHADE;
 const LX = 1000, LY = 716;
 const ARCH = [[520, 250], [610, 196], [720, 172], [830, 186]];
+const ARCH_P = [[552, 262], [626, 210], [712, 182], [800, 190]];   // phone: the arch clear of the card and of the left frame
 
 export default {
   id: 'lk10-law',
@@ -27,6 +28,8 @@ export default {
   ],
   cam: { x: [-30, 80], y: [-100, 40], z: [1, 1.1] },
   build(S) {
+    // phone: the card of the neighbour, the tick, the tree and the strangers come in from the edges
+    const PT = S.portrait;
     const V = shadeSet(S, { skyCols: MORNING });
     const c = S.c;
     const pc = makeCutter('lk10-shade-people');
@@ -53,7 +56,7 @@ export default {
     const BEGGAR = { robe: mix(C.stone2, C.sand2, 0.4), hair: C.greyHair, hairStyle: 'wrap', veil: C.stone, beard: 'full', beardColor: C.greyHair, skin: C.skin3, belt: C.rope };
     const LEPER = { robe: mix(C.stone, C.linen2, 0.5), hairStyle: 'wrap', veil: C.stone2, hair: C.hair, beard: 'short', skin: mix(C.skin2, C.stone2, 0.3) };
     const grey = (o) => ({ ...o, robe: mix(o.robe, C.stone2, 0.55), mantle: o.mantle ? mix(o.mantle, C.stone2, 0.55) : null, veil: o.veil ? mix(o.veil, C.stone2, 0.4) : o.veil });
-    const strangers = [[480, BEGGAR, 0.9, false], [575, LEPER, 0.92, false], [1170, SAMARITAN, 0.96, true]].map(([x, o, s, flip], i) => ({ i, x, s, flip, p: S.puppet(SL.add(person(c, grey(o)))) }));
+    const strangers = (PT ? [[545, BEGGAR, 0.9, false], [630, LEPER, 0.92, false], [1095, SAMARITAN, 0.96, true]] : [[480, BEGGAR, 0.9, false], [575, LEPER, 0.92, false], [1170, SAMARITAN, 0.96, true]]).map(([x, o, s, flip], i) => ({ i, x, s, flip, p: S.puppet(SL.add(person(c, grey(o)))) }));
     const P = S.layer({ par: 0.42, sh: 5 });
     const aura = P.add(`<g>${glow(160, 0.5)}</g>`);
     const jesus = S.puppet(P.add(person(c, { ...CAST.jesus, pose: 'sit' })));
@@ -81,22 +84,22 @@ export default {
       pose(top, { x: 680, y: 110, s: 1 + es(t, 0.2, 0.8) * 0.4, o: es(t, 0.1, 0.4) });
       PLATES.forEach((p) => {
         const k = es(t, 0.15 + p.i * 0.12, 0.4 + p.i * 0.12, ease.out);
-        const [ax, ay] = ARCH[p.i];
+        const [ax, ay] = (PT ? ARCH_P : ARCH)[p.i];
         pose(p.el, { x: lerp(930, ax, k), y: lerp(330, ay, k), s: 0.4 + k * 0.6, o: k > 0.01 ? 1 : 0 });
       });
 
       /* v27b — the neighbour as yourself */
       const ck = es(t, 1.05, 1.35, ease.out) * (1 - es(t, 3.9, 4.1));
-      pose(cardEl, { x: 1040, y: lerp(-400, 180, ck), r: T ? Math.sin(T * 0.8) * ck : 0, o: ck > 0.01 ? 1 : 0 });
+      pose(cardEl, { x: PT ? 968 : 1040, y: lerp(-400, 180, ck), r: T ? Math.sin(T * 0.8) * ck : 0, o: ck > 0.01 ? 1 : 0 });
 
       /* v28a — "You have answered right" */
       const tt = es(t, 2.1, 2.25, ease.back) * (1 - es(t, 3.9, 4.1));
-      pose(tk, { x: 1150, y: 214, s: tt, r: -8, o: tt > 0.01 ? 1 : 0 });
+      pose(tk, { x: PT ? 1050 : 1150, y: 214, s: tt, r: -8, o: tt > 0.01 ? 1 : 0 });
       const nod = bump(t, 2.05, 2.4);
 
       /* v28b — "Do this and you will live" */
       const grow = es(t, 3.05, 3.6, ease.out) * (1 - es(t, 3.95, 4.05));
-      pose(tree, { x: LX + 90, y: LY + 2, s: Math.max(0.01, grow), o: grow > 0.01 ? 1 : 0 });
+      pose(tree, { x: LX + (PT ? -78 : 90), y: LY + 2, s: Math.max(0.01, grow), o: grow > 0.01 ? 1 : 0 });
       const open = es(t, 3.2, 3.5) * (1 - es(t, 3.95, 4.05));
 
       /* v29 — "And who is my neighbour?": the circle in the dust; the strangers outside it */

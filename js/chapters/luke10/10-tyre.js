@@ -19,7 +19,7 @@ const RICH = [
   { robe: mix(PURPLE, C.roseRobe, 0.3), mantle: C.ochre, hair: C.hair, hairStyle: 'wrap', veil: C.sun, veil2: PURPLE, beard: 'short', skin: C.skin3, belt: C.sun },
   { robe: PURPLE, hairStyle: 'veil', veil: C.linen, veil2: C.sun, hair: C.hair3, skin: C.skin2, beard: 'none', belt: C.sun },
 ];
-const SPOTS = [470, 610, 990, 1130];
+const SPOTS0 = [470, 610, 990, 1130];
 
 export default {
   id: 'lk10-tyre',
@@ -51,6 +51,8 @@ export default {
     T_.add(sheet().p(c.ridge(tfn, -900, 2500, 1800, 12, 0.6), mix(C.stone, C.sand, 0.35)).x(c.ribbon([[-900, GY - 30], [2500, GY - 30]], 3), C.stone2, 'opacity=".7"').out());
     T_.add(rock(c, 180, GY - 20, 150, 50, C.rock2) + rock(c, 1440, GY - 20, 160, 50, C.rock));
     const P = S.layer({ par: 0.4, sh: 5 });
+    // phone: the four penitents closer together, all inside the screen
+    const SPOTS = S.portrait ? [525, 645, 945, 1060] : SPOTS0;
     const piles = SPOTS.map((x) => P.add(`<g>${ashPile(c, 130)}</g>`));
     const ppl = SPOTS.map((x, i) => ({
       i, x, flip: x > 800,
@@ -59,7 +61,7 @@ export default {
       sit: S.puppet(P.add(person(c, { ...penitent(c, i), pose: 'sit' }))),
     }));
     const fx = S.layer({ par: 0.42, sh: 4 });
-    const meds = ['eye', 'crutch', 'loaves', 'hand', 'eye'].map((k, i) => ({ i, el: fx.add(`<g>${medallion(c, workIcon(c, k), { r: 22 })}</g>`), x: 480 + i * 160 }));
+    const meds = ['eye', 'crutch', 'loaves', 'hand', 'eye'].map((k, i) => ({ i, el: fx.add(`<g>${medallion(c, workIcon(c, k), { r: 22 })}</g>`), x: S.portrait ? 520 + i * 130 : 480 + i * 160 }));
     const flakes = Array.from({ length: 22 }, (_, i) => ({ i, el: fx.add(ashFlake(c, 5)), x: SPOTS[i % 4] + c.rr(-50, 50), ph: c.rr(0, 1) }));
 
     /* the balance of judgment */

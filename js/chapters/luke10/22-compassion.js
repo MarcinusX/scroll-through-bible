@@ -18,7 +18,7 @@ export default {
     { v: 33, cont: true, text: 'Gdy go zobaczył, wzruszył się głęboko:' },
     { v: 34, text: 'podszedł do niego i opatrzył mu rany, zalewając je oliwą i winem;' },
   ],
-  cam: { x: [-60, 40], y: [-20, 60], z: [1, 1.14] },
+  cam: { x: [-130, 40], y: [-20, 60], z: [1, 1.14] },
   build(S) {
     const V = jerichoSet(S, { skyCols: HOT, sunAt: [1260, 220] });
     const c = S.c;
@@ -82,7 +82,8 @@ export default {
         pose(d.el, { x: khx + 26, y: lerp(khy + 10, lieY - 40, k), o: k > 0 && k < 1 ? 1 : 0 });
       });
 
-      S.cam.x = kf(t, [[0, -40], [0.6, -40], [1.2, -40], [2.0, -20], [3, -20]]);
+      // phone: the camera leans left so the Samaritan on his donkey is on screen
+      S.cam.x = S.portrait ? kf(t, [[0, -120], [0.6, -120], [1.2, -110], [2.0, -60], [3, -60]]) : kf(t, [[0, -40], [0.6, -40], [1.2, -40], [2.0, -20], [3, -20]]);
       S.cam.y = kf(t, [[0, 10], [1, 10], [2.0, 50], [3, 50]]);
       S.cam.z = kf(t, [[0, 1.02], [0.6, 1.06], [1.2, 1.06], [2.0, 1.12], [3, 1.12]]);
     };

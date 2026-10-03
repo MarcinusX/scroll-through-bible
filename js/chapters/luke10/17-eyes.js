@@ -37,7 +37,9 @@ export default {
 
     /* the portraits of the prophets and kings, and the veil before them */
     const PL = S.layer({ par: 0.12, sh: 5, rise: 0 });
-    const ports = PORTRAITS.map((p, i) => ({ i, x: 480 + i * 160, y: 250 + (i % 2) * 40, el: PL.add(`<g><path d="M0 -2000V-50" stroke="${STRING}" stroke-width="1.4"/>${cameo(makeCutter('lk10-cam' + i), S.id('cam' + i), p.o, tr(p.name[0], p.name[1]))}</g>`) }));
+    const PT = S.portrait;
+    // phone: the portraits closer together and the four by the fire drawn in, all inside the screen
+    const ports = PORTRAITS.map((p, i) => ({ i, x: PT ? 530 + i * 132 : 480 + i * 160, y: 250 + (i % 2) * 40, el: PL.add(`<g><path d="M0 -2000V-50" stroke="${STRING}" stroke-width="1.4"/>${cameo(makeCutter('lk10-cam' + i), S.id('cam' + i), p.o, tr(p.name[0], p.name[1]))}</g>`) }));
     const veilL = S.layer({ par: 0.14, sh: 2, rise: 0 });
     const veil = veilL.add(`<g><path d="${c.cut([[-460, 0], [460, -6], [450, 70], [300, 84], [150, 70], [0, 86], [-150, 72], [-300, 86], [-450, 72]], 1.2, 10)}" fill="${mix(C.lavender, C.stone2, 0.4)}" opacity=".55"/><path d="${[-380, -260, -140, -20, 100, 220, 340].map((x) => c.ribbon([[x, 4], [x + 6, 76]], 2)).join('')}" fill="${C.stone}" opacity=".45"/><path d="M-430 -2000V0M430 -2000V0" stroke="${STRING}" stroke-width="1.2"/></g>`);
 
@@ -46,7 +48,7 @@ export default {
     const fireGlow = P.add(`<g>${glow(300, 0.8, 'warm-glow')}</g>`);
     const heads = SEATS.map(() => P.add(`<g>${glow(46, 0.9, 'warm-glow')}</g>`));
     const jesus = S.puppet(P.add(person(c, { ...CAST.jesus, pose: 'sit' })));
-    const dis = SEATS.map((d, i) => ({ ...d, i, p: S.puppet(P.add(d.bare ? barefoot(person(c, { ...d.o, pose: 'sit' }), d.o.skin) : person(c, { ...d.o, pose: 'sit' }))), seed: c.rr(0, 9) }));
+    const dis = SEATS.map((d, i) => ({ ...d, ...(PT ? { x: [525, 605, 975, 1060][i] } : {}), i, p: S.puppet(P.add(d.bare ? barefoot(person(c, { ...d.o, pose: 'sit' }), d.o.skin) : person(c, { ...d.o, pose: 'sit' }))), seed: c.rr(0, 9) }));
     const FL = S.layer({ par: 0.5, sh: 4 });
     FL.add(`<g transform="translate(${FX} ${FY + 8})">${fireStones(c, 100)}</g>`);
     const fire = FL.add(`<g>${fireFlames(c, 54).replace(/^<circle[^>]*\/>/, '')}</g>`);
@@ -81,7 +83,7 @@ export default {
         pose(p.el, { x: p.x, y: lerp(-500, p.y, k), r: lean + (T ? Math.sin(T * 0.8 + p.i) * 1.2 : 0), o: k > 0.005 ? 1 : 0 });
       });
       const vk = es(t, 1.2, 1.5, ease.out);
-      pose(veil, { x: 800, y: lerp(-400, 380, vk), o: vk > 0.005 ? 1 : 0 });
+      pose(veil, { x: 800, y: lerp(-400, 380, vk), sx: PT ? 0.8 : 1, o: vk > 0.005 ? 1 : 0 });
 
       /* v24b — His words go out to them, and die against the veil */
       const [jhx, jhy] = headAt(JX, JY, 1.04, false, 'sit');

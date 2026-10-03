@@ -44,7 +44,8 @@ export default {
     const ring = P.add(`<g><ellipse rx="330" ry="120" fill="url(#halo-glow)"/><path d="${c.ribbon(c.arc(0, 0, 300, 90, 0, PI * 2, 60), 5)}" fill="${C.halo}" opacity=".8"/></g>`);
     const jesus = S.puppet(P.add(person(c, { ...CAST.jesus })));
     const crowdL = S.layer({ par: 0.45, sh: 4 });
-    [[330, 702, 0.74], [430, 708, 0.76], [1170, 708, 0.76], [1270, 702, 0.74]].forEach(([x, y, s], i) => {
+    const PT = S.portrait;
+    (PT ? [[410, 702, 0.74], [500, 708, 0.76], [1095, 708, 0.76], [1190, 702, 0.74]] : [[330, 702, 0.74], [430, 708, 0.76], [1170, 708, 0.76], [1270, 702, 0.74]]).forEach(([x, y, s], i) => {
       const left = x > 800;
       crowdL.sprite(stillGroup(pc, [{ x: -30, y: -4, s, flip: left, o: folk(pc, true), armF: 30, armB: 60, head: -16 }, { x: 30, y: 2, s: s * 0.97, flip: left, o: folk(pc, true), armF: 60, armB: 20, head: -14 }]), x, y);
     });
@@ -84,10 +85,10 @@ export default {
 
       /* v19a — tread on them; the shadow tears */
       const walk = [[1.05, 0], [1.75, 150]];
-      const w = kf(t, walk, (x) => x);
+      const w = kf(t, walk, (x) => x) * (PT ? 0.67 : 1);   // phone: they start nearer and walk less
       const walking = moving(t, walk);
-      A.set({ x: 470 + w, y: PATHY, s: 0.98, flip: false, walk: walking ? w * 0.06 : undefined, armF: 14 + es(t, 2.05, 2.2) * 20, armB: 10, head: 4, blink: blinkAt(T, 2) });
-      B.set({ x: 1130 - w, y: PATHY + 4, s: 0.95, flip: true, walk: walking ? w * 0.06 + 1 : undefined, armF: 14 + es(t, 2.05, 2.2) * 20, armB: 10, head: 4, blink: blinkAt(T, 3) });
+      A.set({ x: (PT ? 520 : 470) + w, y: PATHY, s: 0.98, flip: false, walk: walking ? w * 0.06 : undefined, armF: 14 + es(t, 2.05, 2.2) * 20, armB: 10, head: 4, blink: blinkAt(T, 2) });
+      B.set({ x: (PT ? 1080 : 1130) - w, y: PATHY + 4, s: 0.95, flip: true, walk: walking ? w * 0.06 + 1 : undefined, armF: 14 + es(t, 2.05, 2.2) * 20, armB: 10, head: 4, blink: blinkAt(T, 3) });
       CR.forEach((q) => {
         const come = es(t, 1.0 + q.i * 0.05, 1.3 + q.i * 0.05);
         const stepped = es(t, 1.42 + q.i * 0.06, 1.5 + q.i * 0.06);

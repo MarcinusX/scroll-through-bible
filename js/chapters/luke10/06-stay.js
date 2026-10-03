@@ -25,8 +25,10 @@ export default {
     { v: 7, cont: true, text: 'bo zasługuje robotnik na swoją zapłatę.' },
     { v: 7, cont: true, text: 'Nie przechodźcie z domu do domu.' },
   ],
-  cam: { x: [-40, 360], y: [-60, 40], z: [1, 1.1] },
+  cam: { x: [-40, 360], y: [-60, 40], z: [0.9, 1.1] },
   build(S) {
+    // phone: the rich neighbour's house comes a little closer, and the camera goes further, so he is on screen
+    const PT = S.portrait, RX = PT ? -80 : 0;
     const V = laneSet(S, { skyCols: DAY, sky2: NIGHT, GY: 716, sunAt: [1240, 170] });
     const c = S.c;
     const moonEl = V.hangL.add(`<g>${glow(80, 0.5)}<circle r="26" fill="${C.moon}"/></g>`);
@@ -34,10 +36,10 @@ export default {
     /* the rich neighbour's fine house, outside on the right */
     const RH = S.layer({ par: 0.45, sh: 4 });
     const RLF = S.layer({ par: 0.45, sh: 4 });
-    const H2 = doorHouse(S, RH, RLF, c, { x0: 1120, base: FLOOR + 10, w: 280, h: 260, wall: mix(C.plaster, C.cream, 0.5) });
+    const H2 = doorHouse(S, RH, RLF, c, { x0: 1120 + RX, base: FLOOR + 10, w: 280, h: 260, wall: mix(C.plaster, C.cream, 0.5) });
     let garl = '';
-    for (let i = 0; i < 9; i++) garl += c.cut(c.ell(1130 + i * 30, FLOOR - 236 + Math.sin(i * 0.9) * 8, 10, 6, 8, i), 0.2, 3);
-    RH.add(sheet().p(garl, C.leaf).p(c.cut(c.circ(1160, FLOOR - 220, 5, 8), 0.2, 2) + c.cut(c.circ(1260, FLOOR - 224, 5, 8), 0.2, 2) + c.cut(c.circ(1360, FLOOR - 220, 5, 8), 0.2, 2), C.jesusMantle).out());
+    for (let i = 0; i < 9; i++) garl += c.cut(c.ell(1130 + RX + i * 30, FLOOR - 236 + Math.sin(i * 0.9) * 8, 10, 6, 8, i), 0.2, 3);
+    RH.add(sheet().p(garl, C.leaf).p(c.cut(c.circ(1160 + RX, FLOOR - 220, 5, 8), 0.2, 2) + c.cut(c.circ(1260 + RX, FLOOR - 224, 5, 8), 0.2, 2) + c.cut(c.circ(1360 + RX, FLOOR - 220, 5, 8), 0.2, 2), C.jesusMantle).out());
     const rich = S.puppet(RLF.add(person(c, { ...RICH, holdF: `<g transform="rotate(80) translate(0 -4)">${sheet().p(c.cut([[-30, 0], [30, 0], [24, 6], [-24, 6]], 0.3, 4), C.sun).out()}<g transform="translate(-12 -2)">${loaf(c, 11)}</g><g transform="translate(12 -4)"><path d="${c.cut(c.circ(0, -6, 7, 10), 0.2, 3)}" fill="${C.plumRobe}"/></g></g>` })));
 
     /* the house of the son of peace, cut open */
@@ -139,15 +141,15 @@ export default {
       const wave = time ? Math.sin(T * 5) * 16 * beckon : 0;
       H2.open(es(t, 2.0, 2.12));
       H2.lit(es(t, 2.0, 2.15));
-      rich.set({ x: 1230, y: FLOOR + 14, s: 1.0, flip: true, o: es(t, 2.04, 2.1), armF: 30 + beckon * 50, armB: 20 + beckon * 90 + wave, head: -4, blink: blinkAt(T, 7) });
-      steps.forEach((el, i) => { const k = es(t, 2.22 + i * 0.04, 2.3 + i * 0.04); pose(el, { x: lerp(1040, 1170, i / 5), y: FLOOR + 10 - (i % 2) * 8, o: k }); });
+      rich.set({ x: 1230 + RX, y: FLOOR + 14, s: 1.0, flip: true, o: es(t, 2.04, 2.1), armF: 30 + beckon * 50, armB: 20 + beckon * 90 + wave, head: -4, blink: blinkAt(T, 7) });
+      steps.forEach((el, i) => { const k = es(t, 2.22 + i * 0.04, 2.3 + i * 0.04); pose(el, { x: lerp(1040 + RX * 0.4, 1170 + RX, i / 5), y: FLOOR + 10 - (i % 2) * 8, o: k }); });
       const cr = es(t, 2.48, 2.58, ease.back);
-      pose(cross, { x: 1106, y: FLOOR + 2, s: cr, o: cr > 0.01 ? 1 : 0 });
+      pose(cross, { x: 1106 + RX * 0.7, y: FLOOR + 2, s: cr, o: cr > 0.01 ? 1 : 0 });
       sp.forEach((s_, i) => { const k = bump(t, 2.75 + i * 0.08, 3.0 + i * 0.08); pose(s_, { x: [470, 740][i], y: FLOOR - 150, s: k, r: T * 40, o: k }); });
 
-      S.cam.x = kf(t, [[0, -20], [1.0, -20], [1.9, -20], [2.15, 200], [2.9, 200]], ease.sine);
+      S.cam.x = kf(t, [[0, -20], [1.0, -20], [1.9, -20], [2.15, PT ? 220 : 200], [2.9, PT ? 220 : 200]], ease.sine);
       S.cam.y = kf(t, [[0, 20], [0.9, 20], [1.2, -40], [1.9, -40], [2.15, 20], [3, 20]]);
-      S.cam.z = kf(t, [[0, 1.08], [0.9, 1.08], [1.2, 1.0], [1.9, 1.0], [2.15, 1.04], [3, 1.04]]);
+      S.cam.z = kf(t, [[0, 1.08], [0.9, 1.08], [1.2, 1.0], [1.9, 1.0], [2.15, PT ? 0.9 : 1.04], [3, PT ? 0.9 : 1.04]]);
     };
   },
 };

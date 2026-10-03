@@ -27,11 +27,11 @@ export default {
   ],
   cam: { x: [-20, 60], y: [-20, 40], z: [1, 1.12] },
   build(S) {
-    const V = jerichoSet(S, { skyCols: HOT });
+    const V = jerichoSet(S, { skyCols: HOT, sunAt: S.portrait ? [1000, 150] : undefined });   // phone: the sun clear of the thread
     const c = S.c;
 
     /* the robbers, hidden behind the rocks (on the road sheet, behind the rock sheet) */
-    const robbers = ROBBERS.map((o, i) => ({ i, p: S.puppet(V.road.add(shadowPerson(c, o, SH))), x0: 1120 + i * 90, x1: 900 + i * 60 }));
+    const robbers = ROBBERS.map((o, i) => ({ i, p: S.puppet(V.road.add(shadowPerson(c, o, SH))), x0: 1120 + i * 90, x1: S.portrait ? 866 + i * 54 : 900 + i * 60 }));   // phone: the third clear of the thread
     const bundleSil = V.road.add(`<g transform="scale(.7)">${sheet().p(c.cut(c.blob(0, -10, 22, 16, 10, 0.2), 0.5, 4), SH).p(c.ribbon([[-30, 20], [26, -24]], 4), SH).out()}</g>`);
     const cloakSil = V.road.add(`<g transform="scale(.5)">${cloak(c, { col: SH })}</g>`);
 

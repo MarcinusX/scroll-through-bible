@@ -19,7 +19,7 @@ export default {
     { v: 6, text: 'Jeśli tam mieszka człowiek godny pokoju, wasz pokój spocznie na nim;' },
     { v: 6, cont: true, text: 'jeśli nie, powróci do was.' },
   ],
-  cam: { x: [-40, 900], y: [-20, 40], z: [1, 1.12] },
+  cam: { x: [-180, 900], y: [-20, 40], z: [1, 1.12] },
   build(S) {
     const V = laneSet(S, { skyCols: DAY, GY });
     const c = S.c;
@@ -109,7 +109,8 @@ export default {
       const bk = bump(t, 2.52, 2.66);
       pose(bang, { x: H2.door[0] + H2.door[1] + 20, y: BASE - 110, s: 0.6 + bk * 0.6, o: bk });
 
-      S.cam.x = kf(t, [[0, 0], [1.0, -20], [1.9, -20], [2.2, 880], [3, 880]], ease.sine);
+      // phone: the first door, the pair and the host's wife all on screen (the scene leans left)
+      S.cam.x = S.portrait ? kf(t, [[0, -150], [1.0, -170], [1.9, -170], [2.2, 880], [3, 880]], ease.sine) : kf(t, [[0, 0], [1.0, -20], [1.9, -20], [2.2, 880], [3, 880]], ease.sine);
       S.cam.y = kf(t, [[0, 30], [1, 20], [2, 20], [3, 20]]);
       S.cam.z = kf(t, [[0, 1.04], [1.0, 1.1], [1.9, 1.1], [2.2, 1.06], [3, 1.08]]);
     };

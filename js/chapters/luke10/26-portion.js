@@ -15,6 +15,7 @@ import { marthaRoom, MR, martha, mary, nameTag, glow, wordSlip, loaf, cup, bowl,
 const JX = 800, JY = MR.SEAT;
 const MX = 650;                         // Mary at His feet
 const KITCHEN = [[0, 1080], [0.25, 1210], [0.45, 990], [0.65, 1180], [0.85, 1040]];
+const KITCHEN_P = [[0, 990], [0.25, 1050], [0.45, 925], [0.65, 1040], [0.85, 960]];   // phone: Martha's bustle kept clear of the thread
 
 export default {
   id: 'lk10-portion',
@@ -83,8 +84,9 @@ export default {
       });
 
       /* v40a — Martha, busy; the whirl */
-      const toJ = [[2.0, 1060], [2.25, 930]];
-      const busyX = t < 1 ? 1080 : t < 2 ? kf(t - 1, KITCHEN) : kf(t, toJ);
+      const PT = S.portrait;
+      const toJ = [[2.0, PT ? 990 : 1060], [2.25, 930]];
+      const busyX = t < 1 ? (PT ? 990 : 1080) : t < 2 ? kf(t - 1, PT ? KITCHEN_P : KITCHEN) : kf(t, toJ);
       const busy = t > 1 && t < 2;
       const complain = es(t, 2.2, 2.35) * (1 - es(t, 2.95, 3.05));
       const pointM = es(t, 3.05, 3.2) * (1 - es(t, 3.95, 4.05));

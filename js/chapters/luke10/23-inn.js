@@ -86,7 +86,7 @@ export default {
       donkeyM.set({ x: lx - 120, y: ROAD.MID, s: 0.92, flip: false, walk: leading ? lx * 0.05 : undefined, nod: leading ? 0 : 2, o: 1 - arrived });
       const openK = es(t, 0.46, 0.58);
       facade.fade(1 - openK);
-      const leave = [[2.4, DOOR[0] - 40], [2.75, 560]];
+      const leave = [[2.4, DOOR[0] - 40], [2.75, S.portrait ? 770 : 560]];   // phone: he stops where he can still be seen waving
       const outX = kf(t, leave);
       const inX = t < 2.3 ? 1 : 0;
       samOut.set({ x: t < 1 ? lx + 10 : outX, y: ROAD.MID + 6, s: 0.98, flip: t >= 2.3, walk: leading || moving(t, leave) ? (t < 1 ? lx : outX) * 0.06 : undefined, armF: t < 1 ? 50 : 20 + es(t, 2.78, 2.9) * 110, armB: 20, head: t < 1 ? -4 : 0, o: t < 0.5 ? 1 - arrived : seg(t, 2.36, 2.42), blink: blinkAt(T, 3) });

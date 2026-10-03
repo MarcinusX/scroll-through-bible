@@ -48,7 +48,8 @@ export default {
 
     /* the seventy-two in front, pair by pair (still sprites) */
     const crowdL = S.layer({ par: 0.45, sh: 4 });
-    const pairs = NEAR.map(([x, y, s], i) => {
+    const pairs = NEAR.map(([x0, y, s], i) => {
+      const x = S.portrait ? 800 + (x0 - 800) * 0.8 : x0;   // phone: the outer pairs inside the screen, clear of the thread
       const left = x > 800;
       const a = folk(pc, true), b = i % 3 === 1 ? folk(pc, false) : folk(pc, true);
       const m = [

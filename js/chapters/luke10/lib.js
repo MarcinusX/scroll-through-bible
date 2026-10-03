@@ -401,7 +401,7 @@ export const LAKE_TOWNS = [
   { k: 'capernaum', x: 800, y: 540, w: 190, name: ['Kafarnaum', 'Capernaum'] },
   { k: 'bethsaida', x: 1130, y: 530, w: 150, name: ['Betsaida', 'Bethsaida'] },
 ];
-export function lakeView(S, { skyCols = DAY, sky2 = null, sunAt = [1250, 150], GY = 748, seed = 'lk10-lake' } = {}) {
+export function lakeView(S, { skyCols = DAY, sky2 = null, sunAt = [1250, 150], GY = 748, seed = 'lk10-lake', townsAt = null } = {}) {
   const c = makeCutter(seed);
   const sk = sky(S, skyCols);
   const sk2 = sky2 ? sky(S, sky2, { name: 'sky2', rise: 0 }) : null;
@@ -423,7 +423,8 @@ export function lakeView(S, { skyCols = DAY, sky2 = null, sunAt = [1250, 150], G
   shore.add(sh.out());
   const towns = {};
   const townL = S.layer({ par: 0.16, sh: 3 });
-  LAKE_TOWNS.forEach((tw) => {
+  LAKE_TOWNS.forEach((tw0) => {
+    const tw = townsAt && townsAt[tw0.k] ? { ...tw0, ...townsAt[tw0.k] } : tw0;   // optional: move a town (e.g. inward on a phone)
     const basalt = tw.k === 'chorazin';
     towns[tw.k] = { ...tw, el: townL.add(`<g transform="translate(${tw.x} ${tw.y})">${cityIconLk(makeCutter('lk10-t-' + tw.k), tw.w, basalt ? { wall: mix(C.rock3, C.storm, 0.2), wall2: mix(C.rock3, C.storm2, 0.35), tower: false } : { dome: tw.k === 'capernaum' })}</g>`) };
   });

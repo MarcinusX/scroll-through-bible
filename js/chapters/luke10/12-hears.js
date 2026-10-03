@@ -10,8 +10,8 @@ import { makeCutter } from '../../core/paper.js';
 import { stormCloud } from '../../assets/things.js';
 
 const JX = KN.X, JY = 688;
-const AX = 600, LX = 490;            // the elder and the listener
-const BX = 1000, RX = 1110;          // the young one and the scoffer
+let AX = 600, LX = 490;              // the elder and the listener
+let BX = 1000, RX = 1110;            // the young one and the scoffer
 const GY2 = 738;
 const LISTENER = { robe: C.roseRobe, mantle: C.sageRobe, hairStyle: 'veil', veil: C.cream, veil2: C.linen2, hair: C.hair2, skin: C.skin, beard: 'none', belt: C.ochre };
 const SCOFFER = { robe: mix(C.plumRobe, C.storm, 0.2), mantle: C.clayMantle, hair: C.hair3, hairStyle: 'short', beard: 'short', skin: C.skin2, belt: C.ochre };
@@ -27,6 +27,8 @@ export default {
   ],
   cam: { x: [-30, 30], y: [-120, 30], z: [1, 1.1] },
   build(S) {
+    // phone: the two pairs closer in, so the listener and the scoffer are on screen
+    [AX, LX, BX, RX] = S.portrait ? [615, 525, 985, 1070] : [600, 490, 1000, 1110];
     let light;
     const K = countrySet(S, {
       skyCols: GOLDEN, sunAt: [1260, 200],
@@ -98,7 +100,7 @@ export default {
       jesus.set({ x: JX, y: JY, s: 1.04, flip: t > 0.55, armF: 20 + bump(t, 0.3, 0.6) * 40 + lift * 50, armB: 10 + lift * 110, head: -lift * 20, blink: blinkAt(T) });
       pose(aura, { x: JX, y: JY - 120, s: 1 + lift * 0.3, o: 0.5 + lift * 0.3 });
       const sc = es(t, 1.7, 1.95, ease.back);
-      pose(shadowOn, { x: RX + 6, y: GY2 - 236, s: sc * 0.8, o: sc > 0.01 ? 1 : 0 });
+      pose(shadowOn, { x: RX + (S.portrait ? -24 : 6), y: GY2 - 236, s: sc * 0.8, o: sc > 0.01 ? 1 : 0 });
 
       S.cam.x = kf(t, [[0, -20], [0.5, -20], [0.6, 20], [1.0, 20], [1.2, 0], [2, 0]]);
       S.cam.y = kf(t, [[0, 20], [1.0, 20], [1.3, -80], [1.6, -80], [1.85, 0], [2, 0]]);

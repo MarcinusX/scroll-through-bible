@@ -39,7 +39,8 @@ export default {
     const aura = P.add(`<g>${glow(170, 0.6)}</g>`);
     const jesus = S.puppet(P.add(person(c, { ...CAST.jesus })));
     const crowdL = S.layer({ par: 0.45, sh: 4 });
-    const pairs = NEAR.map(([x, y, s], i) => {
+    const pairs = NEAR.map(([x0, y, s], i) => {
+      const x = S.portrait ? 800 + (x0 - 800) * 0.8 : x0;   // phone: the outer pairs inside the screen
       const left = x > 800;
       const m = [{ x: -30, y: -4, s, flip: left, o: folk(pc, true) }, { x: 30, y: 2, s: s * 0.97, flip: left, o: folk(pc, true) }];
       const joy = m.map((q, k) => ({ ...q, armF: 70 + k * 30, armB: 150 - k * 10, head: -10 }));
@@ -55,7 +56,7 @@ export default {
       const q = makeCutter(seed);
       return `<g transform="translate(-18 40)">${figure(q, folk(q, true), { x: 0, y: 0, s: 0.4, armF: 60, armB: 150, head: -14 })}</g><g class="w" transform="translate(18 -10) rotate(30)">${wisp(q, 1.5, '#3e3448')}</g>`;
     };
-    const BUB = [[530, 450], [800, 380], [1070, 450]].map(([x, y], i) => ({ i, x, y, el: fx.add(`<g>${thought(c, pic('lk10-pic' + i), { w: 140, h: 116 })}</g>`) }));
+    const BUB = (S.portrait ? [[585, 450], [800, 380], [1012, 450]] : [[530, 450], [800, 380], [1070, 450]]).map(([x, y], i) => ({ i, x, y, el: fx.add(`<g>${thought(c, pic('lk10-pic' + i), { w: 140, h: 116 })}</g>`) }));
     const pops = BUB.map(() => fx.add(`<g>${sparkle(c, 14)}</g>`));
 
     return (t, time) => {

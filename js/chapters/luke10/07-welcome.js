@@ -38,7 +38,8 @@ export default {
 
     /* the townsfolk: calm and welcoming twins (still sprites), on both sides of the square */
     const crowdL = S.layer({ par: 0.4, sh: 4 });
-    const GROUPS = [[300, 706, false], [470, 714, false], [1130, 714, true], [1300, 706, true]].map(([x, y, flip], i) => {
+    // phone: the welcoming groups closer in, clear of the edge and the thread
+    const GROUPS = (S.portrait ? [[370, 706, false], [520, 714, false], [1050, 714, true], [1210, 706, true]] : [[300, 706, false], [470, 714, false], [1130, 714, true], [1300, 706, true]]).map(([x, y, flip], i) => {
       const mem = [0, 1, 2].map((k) => ({ x: (k - 1) * 46 + pc.rr(-6, 6), y: (k % 2) * 10, s: 0.9, flip, o: folk(pc) }));
       const calm = crowdL.sprite(stillGroup(pc, mem.map((m) => ({ ...m, armF: 14, armB: 6 }))), x, y);
       const warm = crowdL.sprite(stillGroup(pc, mem.map((m, k) => ({ ...m, armF: 60 + k * 20, armB: 120 + k * 10, head: -8 }))), x, y);
