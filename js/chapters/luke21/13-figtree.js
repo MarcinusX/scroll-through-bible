@@ -11,7 +11,7 @@ import { bird } from '../../assets/things.js';
 import { figTree, kingdomDisc, kingdomArch, warm, halo, onString, SPRING, SUMMER, es, ease, bump, seg, fade, PI } from './lib.js';
 
 const GY = 700, TREE = [800, 690];
-const LENS = { x: 1050, y: 226, r: 100 };
+const LENS0 = { x: 1050, y: 226, r: 100 };
 
 function figLeaf(c, r = 22, col = C.leaf) {
   const pts = [];
@@ -52,6 +52,11 @@ export default {
   cam: { x: [-30, 30], y: [-50, 40], z: [0.96, 1.1] },
   build(S) {
     const c = S.c;
+    // on a phone the lens hangs higher and further in (clear of the progress thread), the gate opens nearer the middle and
+    // the almond and the pomegranate stand closer to the fig tree ("and all the trees" would be off-screen)
+    const PT = S.portrait;
+    const LENS = PT ? { x: 975, y: 150, r: 100 } : LENS0;
+    const GATEX = PT ? 1050 : 1130;
     sky(S, SPRING);
     const sk2 = sky(S, SUMMER, { name: 'summer', rise: 0 }).layer;
     sk2.fade(0);
@@ -81,7 +86,7 @@ export default {
     const treeL = S.layer({ par: 0.4, sh: 5 });
     const orchardGround = c.wave(GY - 8, [5, 2], [700, 200]);
     treeL.add(sheet().p(c.ridge(orchardGround, -1400, 3000, 1800, 12, 1), mix(C.hillNear, C.sand, 0.15)).out() + grass(c, { x0: -800, x1: 2400, y: GY - 8, fn: orchardGround, n: 40, h: 12, color: C.olive }));
-    const OT = [[430, 704, 150, 'almond'], [1170, 704, 140, 'pom'], [250, 714, 120, 'pom'], [1360, 716, 130, 'almond']];
+    const OT = [[PT ? 535 : 430, 704, 150, 'almond'], [PT ? 1048 : 1170, 704, 140, 'pom'], [250, 714, 120, 'pom'], [1360, 716, 130, 'almond']];
     OT.forEach(([x, y, h]) => treeL.add(`<g transform="translate(${x} ${y})">${smallTree(c, h)}</g>`));
     const crowns = OT.map(([x, y, h, k], i) => ({ i, x, y, el: treeL.add(`<g>${k === 'almond' ? crownOf(c, h, mix(C.leaf, C.sage, 0.3), C.sage, '#f3d6dc') : crownOf(c, h, C.moss, C.leaf, null)}</g>`) }));
     const ft = figTree(c, 1.25);
@@ -137,7 +142,7 @@ export default {
 
       /* v31 — the gate of the Kingdom opens on the hill; the crown comes down */
       const gk = es(t, 2.1, 2.35, ease.back);
-      const [gx, gy] = [1130, h2.fn(1130) + 6];
+      const [gx, gy] = [GATEX, h2.fn(GATEX) + 6];
       pose(gate, { x: gx, y: gy, s: gk, o: gk > 0.02 ? 1 : 0 });
       pose(gateGlow, { x: gx, y: gy - 60, s: 0.8 + (T ? Math.sin(T * 1.3) * 0.04 : 0), o: es(t, 2.25, 2.5) });
       const kk = es(t, 2.2, 2.5, ease.out);

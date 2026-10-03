@@ -28,7 +28,9 @@ export default {
     const P = J.pathL;
     const FLEE = Array.from({ length: 10 }, (_, i) => ({ i, side: i % 2 ? 1 : -1, u0: -0.18 * Math.floor(i / 2), seed: c.rr(0, 9), p: S.puppet(P.add(person(c, crowdPerson(c)))) }));
     // and out of the city on the road in front, both ways
-    const OUT = [[640, 612, 380, 740], [700, 612, 470, 748], [930, 612, 1180, 740], [990, 612, 1250, 750]].map(([x0, y0, x1, y1], i) => ({ x0, y0, x1, y1, i, seed: c.rr(0, 9), p: S.puppet(J.campL.add(person(c, crowdPerson(c)))) }));
+    // on a phone those leaving the city stop short of the frame and the thread, and the villager turns back further in
+    const PT = S.portrait;
+    const OUT = (PT ? [[640, 612, 470, 740], [700, 612, 530, 748], [930, 612, 1080, 740], [990, 612, 1120, 750]] : [[640, 612, 380, 740], [700, 612, 470, 748], [930, 612, 1180, 740], [990, 612, 1250, 750]]).map(([x0, y0, x1, y1], i) => ({ x0, y0, x1, y1, i, seed: c.rr(0, 9), p: S.puppet(J.campL.add(person(c, crowdPerson(c)))) }));
     const vill = S.puppet(J.fx.add(person(c, { robe: C.ochreRobe, hair: C.hair3, hairStyle: 'wrap', veil: C.linen2, beard: 'full', skin: C.skin3, belt: C.rope })));
 
     /* the scroll of what is written */
@@ -68,7 +70,7 @@ export default {
       const vk = es(t, 0.95, 1.3, (x) => x);
       const back = es(t, 1.36, 1.44);
       const leave = es(t, 1.45, 2.0, (x) => x);
-      const vx = lerp(lerp(1420, 1110, vk), 1330, leave);
+      const vx = PT ? lerp(lerp(1340, 1040, vk), 1320, leave) : lerp(lerp(1420, 1110, vk), 1330, leave);
       vill.set({ x: vx, y: 742, s: 0.8, flip: back < 0.5, walk: (vk > 0 && vk < 1) || (leave > 0 && leave < 1) ? vx * 0.05 : undefined, armB: bump(t, 1.28, 1.5) * 90, head: bump(t, 1.28, 1.45) * -10, o: vk > 0 && t < 2.05 ? 1 : 0, blink: blinkAt(T, 4) });
 
       /* v22 — the scroll unrolls; the seal */

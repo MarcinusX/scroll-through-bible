@@ -12,7 +12,7 @@ import { C, person, CAST, blinkAt, pose, lerp, sky, hanging, sheet, shade, mix }
 import { band, hillsWith, waveStrip, sun, moon, cloud, stars, grass } from '../../assets/nature.js';
 import { crowdKnot, sparkle, warm, es, ease, bump, seg, fade, tr, PI } from './lib.js';
 
-const SUN = [600, 170], MOON = [1060, 150];
+const SUN = [600, 170], MOON0 = [1060, 150];
 const TWI = ['#434d7a', '#72739a', '#b79ca6'];
 const DARK = ['#15182e', '#1f2340', '#2c2c46'];
 const GOLDEN = ['#6b5a86', '#e3b98a', '#f8e4b8'];
@@ -30,6 +30,9 @@ export default {
   cam: { x: [-30, 30], y: [-70, 40], z: [0.96, 1.08] },
   build(S) {
     const c = S.c;
+    // on a phone the moon hangs clear of the progress thread and the peoples stand on the visible shore
+    const PT = S.portrait;
+    const MOON = PT ? [1000, 140] : MOON0;
     sky(S, TWI);
     const sk2 = sky(S, DARK, { name: 'dark', rise: 0 }).layer;
     const sk3 = sky(S, GOLDEN, { name: 'gold', rise: 0 }).layer;
@@ -76,7 +79,9 @@ export default {
     shoreL.add(sheet().p(c.ridge(gfn, -1400, 3000, 1800, 12, 1), mix(C.sand, C.dune, 0.3)).out() + grass(c, { x0: -800, x1: 2400, y: SHORE - 40, fn: gfn, n: 24, h: 10, color: mix(C.olive, C.sand, 0.3) }));
     const spray = [360, 620, 980, 1240].map((x, i) => ({ x, i, el: shoreL.add(`<g><path d="${c.cut(c.blob(0, 0, 40, 22, 12, 0.35), 0.8, 4)}" fill="${C.foam}"/><path d="${c.cut(c.blob(-20, -24, 18, 14, 9, 0.3), 0.6, 3)}" fill="${C.foam}"/></g>`) }));
     const crowdL = S.layer({ par: 0.4, sh: 4 });
-    const G = [['l1', 330, SHORE + 6, 6, false], ['r1', 1270, SHORE + 6, 6, true], ['l2', 520, SHORE + 44, 4, false], ['r2', 1080, SHORE + 44, 4, true]];
+    const G = PT
+      ? [['l1', 550, SHORE + 6, 6, false], ['r1', 1010, SHORE + 6, 6, true], ['l2', 625, SHORE + 44, 4, false], ['r2', 945, SHORE + 44, 4, true]]
+      : [['l1', 330, SHORE + 6, 6, false], ['r1', 1270, SHORE + 6, 6, true], ['l2', 520, SHORE + 44, 4, false], ['r2', 1080, SHORE + 44, 4, true]];
     const P = {
       calm: { arms: [0, 30], armB: [0, 10], head: [-8, -2] },
       fear: { arms: [60, 85], armB: [25, 55], head: [8, 14] },

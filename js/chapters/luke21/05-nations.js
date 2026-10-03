@@ -52,7 +52,8 @@ export default {
 
     /* the map */
     const pB = T0.FL;
-    const SB = 1.12;
+    const PT = S.portrait;
+    const SB = PT ? 0.98 : 1.12;           // on a phone the map is a little smaller, so its rods clear the frame and the thread
     const mapEl = pB.add(`<g>${mapSheet(c, BW, BH)}${mapScene(c)}</g>`);
     const crackEl = pB.add(`<g><path d="${c.ribbon(CRACK, (u) => 3 + Math.sin(u * PI) * 5, 2)}" fill="${mix(C.soilDark, C.night2, 0.3)}"/></g>`);
     const pall = TOWNS.slice(0, 4).map(([x, y], i) => ({ x, y, i, el: pB.add(`<g><path d="${c.cut(c.blob(0, 0, 34, 18, 10, 0.25), 0.8, 4)}" fill="${mix(C.storm2, C.olive, 0.3)}" opacity=".7"/></g>`) }));
@@ -73,7 +74,7 @@ export default {
     const skyL = S.layer({ par: 0.04, sh: 3, rise: 0 });
     T0.set.hangL.el.before(skyL.el);
     const cometEl = skyL.add(`<g>${comet(c, 260)}</g>`);
-    const fires = [[330, 240], [560, 130], [1250, 330]].map(([x, y], i) => ({ x, y, i, el: skyL.add(`<g><circle r="40" fill="url(#warm-glow)"/><path d="${c.cut(c.star(0, 0, 16, 6, 7, 0.3), 0.3, 3)}" fill="${[C.lampFlame, C.sunDeep, C.terracotta][i]}"/></g>`) }));
+    const fires = (PT ? [[500, 230], [620, 110], [1020, 370]] : [[330, 240], [560, 130], [1250, 330]]).map(([x, y], i) => ({ x, y, i, el: skyL.add(`<g><circle r="40" fill="url(#warm-glow)"/><path d="${c.cut(c.star(0, 0, 16, 6, 7, 0.3), 0.3, 3)}" fill="${[C.lampFlame, C.sunDeep, C.terracotta][i]}"/></g>`) }));
     const redMoon = skyL.add(`<g><circle r="44" fill="url(#warm-glow)" opacity=".7"/><path d="${c.cut(c.circ(0, 0, 26, 30), 0.3, 4)}" fill="${mix(C.terracotta, C.clay, 0.3)}"/></g>`);
 
     return (t, time) => {
@@ -132,7 +133,7 @@ export default {
       });
       bowls.forEach((b) => {
         const k = es(t, 1.25 + b.i * 0.1, 1.5 + b.i * 0.1, ease.back) * (1 - es(t, 2.0, 2.2, ease.in));
-        pose(b.el, { x: [470, 1130, 1210][b.i], y: lerp(-300, [372, 330, 432][b.i], k) + (T ? Math.sin(T * 1.1 + b.i) * 2 : 0), r: (T ? Math.sin(T * 0.9 + b.i * 2) * 4 * k : 0) + (b.i - 1) * 6, o: k > 0.01 ? 1 : 0 });
+        pose(b.el, { x: (PT ? [540, 1025, 950] : [470, 1130, 1210])[b.i], y: lerp(-300, (PT ? [380, 330, 440] : [372, 330, 432])[b.i], k) + (T ? Math.sin(T * 1.1 + b.i) * 2 : 0), r: (T ? Math.sin(T * 0.9 + b.i * 2) * 4 * k : 0) + (b.i - 1) * 6, o: k > 0.01 ? 1 : 0 });
       });
 
       /* v11b — the comet, burning lights, a red moon */
@@ -143,7 +144,7 @@ export default {
         pose(f.el, { x: f.x, y: f.y, s: k * (1 + (T ? Math.sin(T * 5 + f.i) * 0.08 : 0)), r: T * 30, o: k > 0.01 ? 1 : 0 });
       });
       const rm = es(t, 2.15, 2.4);
-      pose(redMoon, { x: 1070, y: 270, s: 0.6 + rm * 0.4, o: rm });
+      pose(redMoon, { x: PT ? 1000 : 1070, y: PT ? 250 : 270, s: 0.6 + rm * 0.4, o: rm });
 
       S.cam.y = -es(t, 0.02, 0.4) * 30 * (1 - es(t, 2.0, 2.5)) - es(t, 2.1, 2.6) * 50;
       S.cam.z = 1 + es(t, 0.1, 0.5) * 0.03;

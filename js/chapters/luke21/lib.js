@@ -161,8 +161,11 @@ export function templeTeach(S, { skyCols = DAY, sky2 = null, sunAt = [1220, 160]
   const crowdL = S.layer({ par: 0.5, sh: 4 });
   const groups = [];
   if (crowd) {
-    [[440, TT.GY - 6, 'a', 6, false, 'stand', 0.9], [1160, TT.GY - 6, 'b', 6, true, 'stand', 0.9], [556, TT.GY + 46, 'c', 3, false, 'sit', 0.92], [1044, TT.GY + 46, 'd', 3, true, 'sit', 0.92]].forEach(([x, y, k, n, flip, P, s], i) => {
-      const o = { s, spread: 46, rows: P === 'sit' ? 1 : 2, flip, pose: P };
+    // on a phone the standing knots come in from the edges, so nobody is sliced by the frame or the thread
+    // (and every knot stands a little closer together, so the sitting ones too stay clear of the edge and the thread)
+    const PT = S.portrait, PO = PT ? 90 : 0;
+    [[440 + PO, TT.GY - 6, 'a', 6, false, 'stand', 0.9], [PT ? 1012 : 1160, TT.GY - 6, 'b', 6, true, 'stand', 0.9], [PT ? 566 : 556, TT.GY + 46, 'c', 3, false, 'sit', 0.92], [PT ? 1026 : 1044, TT.GY + 46, 'd', 3, true, 'sit', 0.92]].forEach(([x, y, k, n, flip, P, s], i) => {
+      const o = { s, spread: PT ? 36 : 46, rows: P === 'sit' ? 1 : 2, flip, pose: P };
       const K = crowdKnot('lk21-t-' + k, n, o);
       groups.push({ i, x, y, k, n, flip, P, s, o, mem: K.mem, sp: crowdL.sprite(K.m, x, y) });
     });
@@ -244,10 +247,15 @@ export function judeaSet(S, { skyCols = GOLD, sky2 = null, dim = false } = {}) {
   // the mountains of Judea, left and right, with paths
   const mtL = S.layer({ par: 0.14, sh: 3 });
   const mts = (x, w, h, col) => sheet().p(c.cut([[x - w / 2, 660], [x - w * 0.3, 660 - h * 0.6], [x - w * 0.1, 660 - h], [x + w * 0.08, 660 - h * 0.9], [x + w * 0.3, 660 - h * 0.55], [x + w / 2, 660]], 1, 12), col).out();
-  mtL.add(mts(160, 760, 400, mix(C.hillMid, C.rock2, 0.3)) + mts(1400, 760, 380, mix(C.hillMid, C.rock2, 0.25)));
+  // on a phone the mountains at the sides would be off-screen: they stand closer in, behind the city, and their paths
+  // climb out above its roofs (the same cut pieces, only placed and sized differently)
+  const PT = S.portrait;
+  mtL.add(PT
+    ? mts(600, 700, 460, mix(C.hillMid, C.rock2, 0.3)) + mts(1030, 700, 440, mix(C.hillMid, C.rock2, 0.25))
+    : mts(160, 760, 400, mix(C.hillMid, C.rock2, 0.3)) + mts(1400, 760, 380, mix(C.hillMid, C.rock2, 0.25)));
   const pathD = (pts) => c.ribbon(pts, (u) => 10 - u * 5);
-  const PATH_L = [[340, 640], [300, 580], [250, 510], [200, 440], [160, 370], [130, 310]];
-  const PATH_R = [[1070, 640], [1120, 580], [1180, 510], [1240, 440], [1300, 370], [1350, 310]];
+  const PATH_L = PT ? [[650, 560], [630, 500], [605, 440], [580, 370], [555, 300], [535, 240]] : [[340, 640], [300, 580], [250, 510], [200, 440], [160, 370], [130, 310]];
+  const PATH_R = PT ? [[960, 560], [980, 500], [1000, 440], [1015, 370], [1006, 300], [974, 244]] : [[1070, 640], [1120, 580], [1180, 510], [1240, 440], [1300, 370], [1350, 310]];
   mtL.add(sheet().p(pathD(PATH_L) + pathD(PATH_R), mix(C.sand, C.cream, 0.3)).out());
   mtL.add(olive(c, 60, 560, 0.5) + olive(c, 420, 600, 0.45) + cypress(c, 1520, 500, 90) + olive(c, 1290, 600, 0.5));
   // those who flee go on this sheet, behind the city

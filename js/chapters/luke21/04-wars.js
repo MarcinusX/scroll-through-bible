@@ -36,7 +36,9 @@ export default {
       () => `<g transform="translate(-4 12)">${pennant(c, C.plumRobe, { h: 36, w: 18 })}</g><g transform="translate(16 12) scale(.8)">${torch(c)}</g>`,
       () => `<g transform="translate(0 14)">${toySoldier(c, C.olive, { h: 32 })}</g>`,
     ];
-    const RUM = [[380, 460, -900, 300], [560, 400, -700, -200], [1030, 410, 2300, -100], [1210, 470, 2400, 400], [1150, 330, 1900, -400]].map(([x, y, fx, fyy], i) => ({ i, x, y, fx, fy: fyy, el: T0.fx.add(`<g>${speech(c, INNER[i](), { w: 74, h: 60, flip: i >= 2 })}</g>`) }));
+    // on a phone the rumours stop further in, clear of the frame and the progress thread
+    const RUMXY = S.portrait ? [[500, 470], [610, 360], [985, 380], [1050, 500], [1040, 270]] : [[380, 460], [560, 400], [1030, 410], [1210, 470], [1150, 330]];
+    const RUM = [[-900, 300], [-700, -200], [2300, -100], [2400, 400], [1900, -400]].map(([a, b], i) => [...RUMXY[i], a, b]).map(([x, y, fx, fyy], i) => ({ i, x, y, fx, fy: fyy, el: T0.fx.add(`<g>${speech(c, INNER[i](), { w: 74, h: 60, flip: i >= 2 })}</g>`) }));
 
     /* the hourglass and the line of days */
     const hg = T0.FL.add(`<g><path d="M0 -1600V-48" stroke="${STRING}" stroke-width="1.2"/>${hourglass(c, 110)}</g>`);

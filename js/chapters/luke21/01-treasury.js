@@ -13,12 +13,12 @@ import {
 } from './lib.js';
 
 const GY = TT.GY;
-const JX = 610;                 // Jesus stands here, the chests to His right
-const CH = [872, 1004, 1136];   // the chests
+const JX0 = 610;                // Jesus stands here, the chests to His right
+const CH0 = [872, 1004, 1136];  // the chests
 const CY = 684;                 // they stand here
 const CS = 1.12;
 const MOUTH = CY - 118 * CS;    // the trumpet mouths
-const WX = 1072;                // the widow stops here (by the middle chest)
+const WX0 = 1072;               // the widow stops here (by the middle chest)
 const BX = 820, BY = 208, ARM = 150;
 
 /** an open palm (seen from above, fingers up) with two copper coins on it; origin: centre of the palm */
@@ -50,11 +50,20 @@ export default {
   build(S) {
     const T0 = templeTeach(S, { crowd: false, dis: false, jesus: false });
     const c = S.c;
+    // on a phone the whole court draws together: the people, Peter, John and Jesus further right, the chests closer
+    // together and further left, so neither the listeners nor the rich and the widow are cut off by the frame
+    const PT = S.portrait;
+    const JX = PT ? 726 : JX0;
+    const CH = PT ? [840, 935, 1030] : CH0;
+    const WX = PT ? CH[1] + 68 : WX0;
+    const KX = PT ? [554, 568] : [300, 400];          // the knots of people
+    const DX = PT ? [630, 672] : [462, 514];          // Peter, John
+    const RX = PT ? [856, 86] : [900, 96];             // where the rich stroll back to (v4a): x0, step
 
     /* the people Jesus is teaching, on the left */
     const L = T0.crowdL;
-    const kStand = L.sprite(knot('lk21-tr-a', 6, { s: 0.9, spread: 46, rows: 2, flip: false }), 300, GY - 6);
-    const kSit = L.sprite(knot('lk21-tr-b', 3, { s: 0.92, spread: 50, rows: 1, flip: false, pose: 'sit' }), 400, GY + 40);
+    const kStand = L.sprite(knot('lk21-tr-a', 6, { s: 0.9, spread: PT ? 34 : 46, rows: 2, flip: false }), KX[0], GY - 6);
+    const kSit = L.sprite(knot('lk21-tr-b', 3, { s: 0.92, spread: PT ? 36 : 50, rows: 1, flip: false, pose: 'sit' }), KX[1], GY + 40);
 
     /* the offering chests */
     const chL = S.layer({ par: 0.47, sh: 5 });
@@ -93,8 +102,8 @@ export default {
       cur.set(es(t, 0.05, 0.85), T);
       T0.update(t, T, { sunDY: es(t, 4.0, 5.8) * 60 });
       T0.sk.blend(['#d3dfd6', '#f2e2c4', '#f6dcbc'], ['#dcc3a3', '#f2d3a2', '#f7e2bd'], es(t, 4.0, 5.8) * 0.8);
-      kStand.set({ x: 300, y: GY - 6 });
-      kSit.set({ x: 400, y: GY + 40 });
+      kStand.set({ x: KX[0], y: GY - 6 });
+      kSit.set({ x: KX[1], y: GY + 40 });
 
       /* cover — He teaches; v1 — He looks up and sees the rich at the chests */
       const look = es(t, 1.02, 1.3);
@@ -106,8 +115,8 @@ export default {
       });
       const [hx, hy] = headAt(JX, GY, TT.JS, false);
       T0.voice(hx, hy, bump(t, 0.1, 1.0) * 0.8 + es(t, 3.05, 3.3) * (1 - es(t, 5.8, 6)) * 0.7, T, { dir: 1, spread: 1.8 });
-      peter.set({ x: 462, y: GY + 12, s: 0.98, flip: false, head: -4 - look * 4 , armF: bump(t, 4.6, 5.0) * 20, blink: blinkAt(T, 3) });
-      john.set({ x: 514, y: GY + 18, s: 0.96, flip: false, head: -4 - look * 6, blink: blinkAt(T, 5) });
+      peter.set({ x: DX[0], y: GY + 12, s: 0.98, flip: false, head: -4 - look * 4 , armF: bump(t, 4.6, 5.0) * 20, blink: blinkAt(T, 3) });
+      john.set({ x: DX[1], y: GY + 18, s: 0.96, flip: false, head: -4 - look * 6, blink: blinkAt(T, 5) });
 
       // coins in the air: k 0..1 along the fall from a hand to a chest mouth
       let ci = 0;
@@ -127,7 +136,7 @@ export default {
         const x = k < 0.35 ? lerp(1500 + r.i * 40, cx + 52, k / 0.35) : k < 0.65 ? cx + 52 : lerp(cx + 52, 1560, (k - 0.65) / 0.35);
         const pour = bump(k, 0.33, 0.67);
         const again = es(t, 4.05 + r.i * 0.08, 4.5 + r.i * 0.08), away = es(t, 5.0, 5.45, ease.in);
-        const x2 = lerp(lerp(1540 + r.i * 60, 900 + r.i * 96, again), 1600 + r.i * 60, away);
+        const x2 = lerp(lerp(1540 + r.i * 60, RX[0] + r.i * RX[1], again), 1600 + r.i * 60, away);
         const show = again > 0 && away < 1;
         const walking = (show && ((again > 0 && again < 1) || away > 0)) || (k > 0 && k < 0.35) || (k > 0.65 && k < 1);
         r.p.set({
@@ -156,9 +165,9 @@ export default {
       ring(1, 2.78);
       const lk = es(t, 2.2, 2.45, ease.out) * (1 - es(t, 2.95, 3.15, ease.in));
       const ly0 = lerp(-1300, 110, lk);
-      pose(lens, { x: 1030, y: ly0, r: T ? Math.sin(T * 0.8) * 1.2 : 0, o: lk > 0.002 ? 1 : 0 });
+      pose(lens, { x: WX - 42, y: ly0, r: T ? Math.sin(T * 0.8) * 1.2 : 0, o: lk > 0.002 ? 1 : 0 });
       const tg = es(t, 2.35, 2.5, ease.back) * (1 - es(t, 2.9, 3.0));
-      pose(lensTag, { x: 1030, y: ly0 + 196, s: tg, o: tg > 0.02 ? 1 : 0 });
+      pose(lensTag, { x: WX - 42, y: ly0 + 196, s: tg, o: tg > 0.02 ? 1 : 0 });
       // her flat purse, turned out at the end: nothing left
       const [qx, qy] = handAt(wx, GY + 6, 0.86, true, 20 + turnOut * 70);
       pose(wPurse, { x: qx, y: qy - 4, r: turnOut * 170, s: 0.8, o: wIn >= 1 ? 1 : 0 });

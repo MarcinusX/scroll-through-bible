@@ -56,10 +56,12 @@ export default {
 
     /* the glints on the sanctuary and the golden gifts */
     const glints = [[716, 206], [884, 206], [800, 262], [644, 362], [956, 362], [800, 400]].map(([x, y], i) => ({ x, y, i, el: T0.bits.add(`<g>${sparkle(c, 16)}</g>`) }));
+    // on a phone the gifts hang further in (the lamp would hang under the progress thread)
+    const PT = S.portrait;
     const gifts = [
-      { x: 548, y: 330, m: `<g transform="scale(2.2)">${grapeBunch(c, 4.4, C.sun)}</g>` },
-      { x: 1052, y: 318, m: shield(c, 26) },
-      { x: 1156, y: 250, m: goldLamp(c) },
+      { x: PT ? 566 : 548, y: 330, m: `<g transform="scale(2.2)">${grapeBunch(c, 4.4, C.sun)}</g>` },
+      { x: PT ? 966 : 1052, y: PT ? 300 : 318, m: shield(c, 26) },
+      { x: PT ? 1042 : 1156, y: PT ? 226 : 250, m: goldLamp(c) },
     ].map((g, i) => ({ ...g, i, el: T0.bits.add(`<g>${onString(`<g transform="translate(0 20)">${g.m}</g>`, 1600)}</g>`) }));
 
     /* the flat: the little sanctuary on its hill; its stones come apart */

@@ -28,13 +28,15 @@ export default {
   build(S) {
     const J = judeaSet(S, { skyCols: ['#b9a3b4', '#e2b49c', '#f0cfad'], sky2: STORM, dim: true });
     const c = S.c;
+    const PT = S.portrait;
     const camp = campRing(J, c);
 
     /* the storm clouds */
     const clL = J.hangL;
-    const clouds = [[360, 150, 260], [820, 110, 300], [1220, 170, 240], [600, 230, 200]].map(([x, y, w], i) => ({ i, x, y, el: clL.add(`<g>${cloud(c, w, mix(C.storm, C.night2, 0.25), mix(C.storm2, C.night2, 0.2))}</g>`) }));
+    // (on a phone they hang over the mountains that stand behind the city there, not behind them or off-screen)
+    const clouds = (PT ? [[520, 100, 230], [800, 52, 280], [1060, 112, 210], [690, 150, 180]] : [[360, 150, 260], [820, 110, 300], [1220, 170, 240], [600, 230, 200]]).map(([x, y, w], i) => ({ i, x, y, el: clL.add(`<g>${cloud(c, w, mix(C.storm, C.night2, 0.25), mix(C.storm2, C.night2, 0.2))}</g>`) }));
     /* little lights of the villages on the hills (they go out) */
-    const lights = [[120, 520], [260, 560], [1330, 520], [1450, 560], [1200, 580]].map(([x, y], i) => ({ i, x, y, el: J.mtL.add(`<g>${warm(16, 0.9)}<path d="M-5 0L5 0L5 -8L-5 -8Z" fill="${C.plaster}"/><path d="M-2 -3L2 -3L2 -6L-2 -6Z" fill="${C.lampFlame}"/></g>`) }));
+    const lights = (PT ? [[470, 380], [585, 300], [1060, 330], [1110, 420], [990, 270]] : [[120, 520], [260, 560], [1330, 520], [1450, 560], [1200, 580]]).map(([x, y], i) => ({ i, x, y, el: J.mtL.add(`<g>${warm(16, 0.9)}<path d="M-5 0L5 0L5 -8L-5 -8Z" fill="${C.plaster}"/><path d="M-2 -3L2 -3L2 -6L-2 -6Z" fill="${C.lampFlame}"/></g>`) }));
     /* the sword hung over the land */
     const sword = J.fx.add(`<g><path d="M0 -1600V-30" stroke="${STRING}" stroke-width="1.2"/><g transform="rotate(180) scale(1.9)">${swordSil(c, 90, mix(C.night2, C.rock3, 0.3))}</g></g>`);
 
@@ -51,7 +53,7 @@ export default {
     const guard = S.puppet(F.add(roman(c, 1)));
 
     /* the city trampled: standards on the walls, a column marching in, the hourglass */
-    const wallStd = [[430, 470], [620, 452], [1000, 440], [1130, 470]].map(([x, y], i) => ({ i, x, y, el: J.cityL.add(`<g transform="scale(.26)">${eagleStandard(c, 300)}</g>`) }));
+    const wallStd = (PT ? [[490, 470], [620, 452], [1000, 440], [1080, 470]] : [[430, 470], [620, 452], [1000, 440], [1130, 470]]).map(([x, y], i) => ({ i, x, y, el: J.cityL.add(`<g transform="scale(.26)">${eagleStandard(c, 300)}</g>`) }));
     const column = Array.from({ length: 5 }, (_, i) => ({ i, p: S.puppet(J.campL.add(roman(c, i))) }));
     const hg = J.fx.add(`<g><path d="M0 -1600V-44" stroke="${STRING}" stroke-width="1.2"/>${hourglass(c, 96)}</g>`);
     const sandT = hg.querySelector('.sandT'), sandB = hg.querySelector('.sandB'), stream = hg.querySelector('.stream');
@@ -68,8 +70,9 @@ export default {
 
       /* v23a — the woman with child, her husband, the mother and her baby */
       const w = es(t, 0.0, 0.65, (x) => x) ;
-      const go = es(t, 1.15, 1.95, (x) => x);
-      const wx = lerp(lerp(420, 720, w), 1320, go);
+      // on a phone they are gone by the middle of the next sentence (not left half under the progress thread)
+      const go = PT ? es(t, 1.15, 1.65, (x) => x) : es(t, 1.15, 1.95, (x) => x);
+      const wx = lerp(lerp(420, 720, w), PT ? 1420 : 1320, go);
       const rest = bump(t, 0.6, 1.1);
       const walking = (w > 0 && w < 1) || (go > 0 && go < 1);
       wife.set({ x: wx, y: RY, s: 0.95, flip: false, walk: walking ? wx * 0.035 : undefined, amt: 0.5, lean: -3 + rest * 4, head: rest * 8, armF: 8, armB: 20, o: go < 1 ? 1 : 0, blink: blinkAt(T, 2) });
@@ -88,7 +91,8 @@ export default {
       pose(sword, { x: 1040, y: lerp(-500, 250, sk), r: T ? Math.sin(T * 0.7) * 1.5 : 0, o: sk > 0.002 ? 1 : 0 });
       lights.forEach((l) => pose(l.el, { x: l.x, y: l.y, o: 1 - es(t, 2.25 + l.i * 0.08, 2.35 + l.i * 0.08) }));
       const cg = es(t, 2.05, 2.95, (x) => x);
-      const gx = lerp(360, 1500, cg);
+      // on a phone the line is in the middle of the road at the pause (x.75), not leaving under the thread
+      const gx = PT ? lerp(200, 1640, Math.pow(cg, 2.4)) : lerp(360, 1500, cg);
       const capOn = cg > 0 && cg < 1 ? 1 : 0;
       guard.set({ x: gx, y: RY, s: 0.9, flip: false, walk: capOn ? gx * 0.05 : undefined, armB: 40, o: capOn, blink: blinkAt(T, 7) });
       const px = CAP.map((m) => gx - 90 - m.i * 70);

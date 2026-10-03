@@ -43,7 +43,7 @@ export default {
       T0.sk2.layer.fade(night);
       T0.starL.fade(night * 0.9);
       T0.dimL.fade(night * 0.9);
-      pose(T0.moonEl, { x: 1150, y: lerp(560, 150, es(t, 0.1, 0.45)), r: T ? Math.sin(T * 0.6) : 0, o: es(t, 0.1, 0.2) });
+      pose(T0.moonEl, { x: S.portrait ? 1050 : 1150, y: lerp(560, 150, es(t, 0.1, 0.45)), r: T ? Math.sin(T * 0.6) : 0, o: es(t, 0.1, 0.2) });
 
       /* kneel and pray (0.15–0.6), then rise and stand before Him (0.6–0.75) */
       const kneel = es(t, 0.14, 0.2);
