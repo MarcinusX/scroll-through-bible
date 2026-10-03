@@ -21,7 +21,8 @@ const FR = [
   { h: 2, x: 868, flip: true, o: { robe: C.mauve, hairStyle: 'veil', veil: C.wheat, veil2: C.ochre, hair: C.hair3, skin: C.skin3, beard: 'none', belt: C.plumRobe }, t0: 0.5, tamb: true },
   { h: 3, x: 960, flip: true, o: { robe: C.ochreRobe, mantle: C.clayMantle, hairStyle: 'veil', veil: C.linen2, veil2: C.stone2, hair: C.greyHair, skin: C.skin2, beard: 'none' }, t0: 0.62 },
 ];
-const ANG = [[560, 330, 0], [676, 250, 1], [924, 250, 2], [1040, 330, 3], [450, 450, 2], [1150, 450, 1]];
+const ANG_WIDE = [[560, 330, 0], [676, 250, 1], [924, 250, 2], [1040, 330, 3], [450, 450, 2], [1150, 450, 1]];
+const ANG_PHONE = [[604, 300, 0], [704, 228, 1], [896, 228, 2], [996, 300, 3], [584, 452, 2], [1016, 452, 1]];   // phone: the ring closes in
 
 /** the tax collector kneeling at Jesus' feet, for a round picture (plate coords, r 70) */
 function penitentPlate(c, id) {
@@ -51,6 +52,7 @@ export default {
     V.hangL.el.parentNode.insertBefore(heav.el, V.hangL.el);
     const heavGlow = heav.add(`<g opacity="0">${glow(420, 0.9)}</g>`);
     const angL = S.layer({ par: 0.12, sh: 5 });
+    const ANG = S.portrait ? ANG_PHONE : ANG_WIDE;
     const angels = ANG.map(([x, y, k], i) => ({ x, y, i, flip: x > 800, el: angL.add(`<g transform="translate(0 -1500)"><path d="M0 -1900V-120" stroke="${STRING}" stroke-width="1.2" fill="none"/><g transform="scale(${x > 800 ? -1.1 : 1.1} 1.1)">${choirAngel(c, i + 1, k)}</g></g>`) }));
     const plate = angL.add(`<g transform="translate(0 -1500)"><path d="M0 -1900V-76" stroke="${STRING}" stroke-width="1.2" fill="none"/>${penitentPlate(c, S.id('pen'))}</g>`);
 
@@ -102,7 +104,7 @@ export default {
       pose(shine, { x: cx, y: cy - 4, s: show, r: T * 30, o: show });
       pose(shineG, { x: cx, y: cy - 4, o: show });
       const jb = es(t, 1.14, 1.28, ease.back) * (1 - es(t, 2.1, 2.2));
-      pose(joyB, { x: hh - 30, y: hy - 40, s: Math.max(0.001, jb), o: jb > 0.01 ? 1 : 0 });
+      pose(joyB, { x: hh + (S.portrait ? 20 : -30), y: hy - 40, s: Math.max(0.001, jb), o: jb > 0.01 ? 1 : 0 });
 
       /* v10 — joy before the angels of God */
       const up = es(t, 2.04, 2.4);

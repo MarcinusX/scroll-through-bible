@@ -25,7 +25,7 @@ export default {
     { v: 4, cont: true, text: 'i nie idzie za zgubioną, aż ją znajdzie?' },
     { v: 5 },
   ],
-  cam: { x: [-40, 120], y: [-70, 50], z: [1, 1.14] },
+  cam: { x: [-40, 280], y: [-70, 50], z: [1, 1.14] },
   build(S) {
     const c = S.c;
     const N = (col, k = 0.45) => mix(col, C.night, k);
@@ -112,7 +112,8 @@ export default {
         pose(w.el, { x: w.x, y: w.y, s: k * (0.7 + 0.3 * Math.abs(Math.sin(T * 2 + w.i))), r: T * 20 + w.i * 10, o: k });
       });
 
-      S.cam.x = kf(t, [[0, -30], [0.4, 10], [0.9, 90], [1.3, 100], [1.8, 90]]);
+      // phone: the camera goes further right, so the ledge with the caught sheep comes in from under the thread
+      S.cam.x = S.portrait ? kf(t, [[0, -30], [0.4, 40], [0.9, 250], [1.3, 260], [1.8, 250]]) : kf(t, [[0, -30], [0.4, 10], [0.9, 90], [1.3, 100], [1.8, 90]]);
       S.cam.y = kf(t, [[0, 40], [0.4, 20], [0.9, -40], [1.3, -50], [1.8, -40]]);
       S.cam.z = kf(t, [[0, 1.02], [0.9, 1.1], [1.3, 1.12], [1.8, 1.08]]);
     };

@@ -60,7 +60,8 @@ export default {
       + [[-20, -40], [0, -54], [20, -30], [36, -50]].map(([x, y]) => `<g transform="translate(${x} ${y})">${goldCoin(oc, 5)}</g>`).join(''), { name: 'riot' });
     // the fattened calf
     const calfP = hungPlate(S, plL, oc, bg(mix(C.dawn, C.cream, 0.4)) + `<g transform="translate(-10 56) scale(.62)">${calf(oc)}</g><g transform="translate(40 72) scale(.6)">${platter(oc, 90)}</g><g transform="translate(40 50) scale(.6)">${steam(oc)}</g>`, { name: 'calf' });
-    const AT = [[820, 290], [700, 260], [900, 260], [1080, 260]];
+    // phone: the last picture (the calf) clear of the thread
+    const AT = S.portrait ? [[820, 290], [694, 260], [870, 260], [1032, 260]] : [[820, 290], [700, 260], [900, 260], [1080, 260]];
 
     return (t, time) => {
       const T = time;

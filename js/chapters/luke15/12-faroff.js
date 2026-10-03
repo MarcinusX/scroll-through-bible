@@ -86,7 +86,8 @@ export default {
         pose(w.el, { x: mx + Math.cos(a) * 190, y: my - 120 + Math.sin(a) * 120, s: k, r: T * 20, o: k });
       });
 
-      S.cam.x = kf(t, [[0, 220], [1.0, 200], [1.4, 60], [2.0, 60], [3.0, 240], [3.5, (onRoad(MEET)[0] - 800) / FM.P]]);
+      // phone: the camera starts further right, so the son far off on the road is not under the thread
+      S.cam.x = kf(t, [[0, S.portrait ? 330 : 220], [1.0, S.portrait ? 300 : 200], [1.4, S.portrait ? 190 : 60], [2.0, S.portrait ? 160 : 60], [3.0, 240], [3.5, (onRoad(MEET)[0] - 800) / FM.P]]);
       S.cam.y = kf(t, [[0, -30], [1.0, -20], [1.4, 20], [3.0, 30], [3.5, 190]]);
       S.cam.z = kf(t, [[0, 1.02], [1.4, 1.12], [2.0, 1.06], [3.0, 1.14], [3.5, 1.5]]);
     };

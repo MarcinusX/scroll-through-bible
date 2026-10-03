@@ -14,7 +14,8 @@ import {
 } from './lib.js';
 
 const JX = CT.JX, GY = CT.GY;
-const PH_X = [1100, 1172, 1246];
+const PH_X_WIDE = [1100, 1172, 1246];
+const PH_X_PHONE = [1048, 1088, 1128];   // phone: the Pharisees close up inside the screen
 const BX = 800, BY = 176, ARM = 210, ROD = 118;
 
 export default {
@@ -23,8 +24,9 @@ export default {
     { v: 7, text: 'Powiadam wam: Tak samo w niebie większa będzie radość z jednego grzesznika, który się nawraca,' },
     { v: 7, cont: true, text: 'niż z dziewięćdziesięciu dziewięciu sprawiedliwych, którzy nie potrzebują nawrócenia.' },
   ],
-  cam: { x: [-10, 40], y: [-40, 40], z: [1, 1.06] },
+  cam: { x: [-10, 120], y: [-40, 40], z: [1, 1.06] },
   build(S) {
+    const PH_X = S.portrait ? PH_X_PHONE : PH_X_WIDE;
     const H = courtSet(S, { skyCols: GOLDEN, sunAt: [1270, 250], table: false });
     const c = H.c;
 
@@ -107,7 +109,7 @@ export default {
         pose(h, { x: BX - Math.cos(r) * ARM + (i - 2) * 22, y: lerp(120, by - Math.sin(r) * ARM + ROD - 30 - (i % 2) * 14, k), o: k > 0 ? 1 : 0, s: 1 });
       });
 
-      S.cam.x = 10;
+      S.cam.x = S.portrait ? kf(t, [[0.8, 70], [1.2, 110]]) : 10;
       S.cam.y = kf(t, [[0, 30], [0.5, -10], [1.2, -30], [1.8, -20]]);
       S.cam.z = kf(t, [[0, 1.02], [0.6, 1.0], [1.8, 1.02]]);
     };

@@ -72,18 +72,21 @@ export default {
 
     /* the feast */
     const feast = S.layer({ par: 0.38, sh: 5 });
-    const table = feast.add(`<g transform="translate(560 ${GY + 16})">${lowTable(c, 300, 40)}<g transform="translate(-100 -42)">${bowl(c, { food: 'fruit' })}</g><g transform="translate(-40 -44)">${loaf(c, 14)}</g><g transform="translate(20 -40)">${cup(c, C.sun)}</g><g transform="translate(70 -40)">${cup(c, C.ochre)}</g><g transform="translate(110 -44)">${loaf(c, 12)}</g></g>`);
+    // phone: the table and the revellers close in from the edges
+    const RX = S.portrait ? [506, 616, 990, 1072] : [430, 560, 1000, 1110];
+    const TX = S.portrait ? 616 : 560;
+    const table = feast.add(`<g transform="translate(${TX} ${GY + 16})">${lowTable(c, 300, 40)}<g transform="translate(-100 -42)">${bowl(c, { food: 'fruit' })}</g><g transform="translate(-40 -44)">${loaf(c, 14)}</g><g transform="translate(20 -40)">${cup(c, C.sun)}</g><g transform="translate(70 -40)">${cup(c, C.ochre)}</g><g transform="translate(110 -44)">${loaf(c, 12)}</g></g>`);
     const revs = [
-      { x: 430, flip: false, o: REVELLERS[3], pose: 'sit', hold: `<g transform="translate(0 2)">${cup(c, C.sun)}</g>`, a: 60 },
-      { x: 560, flip: false, o: REVELLERS[1], pose: 'sit', hold: `<g transform="rotate(-70) translate(-6 -10) scale(1.3)">${flute(c)}</g>`, a: 90 },
-      { x: 1000, flip: true, o: REVELLERS[0], pose: 'stand', hold: `<g transform="translate(2 6)">${tambourine(c)}</g>`, a: 120 },
-      { x: 1110, flip: true, o: REVELLERS[2], pose: 'stand', hold: '', a: 100 },
+      { x: RX[0], flip: false, o: REVELLERS[3], pose: 'sit', hold: `<g transform="translate(0 2)">${cup(c, C.sun)}</g>`, a: 60 },
+      { x: RX[1], flip: false, o: REVELLERS[1], pose: 'sit', hold: `<g transform="rotate(-70) translate(-6 -10) scale(1.3)">${flute(c)}</g>`, a: 90 },
+      { x: RX[2], flip: true, o: REVELLERS[0], pose: 'stand', hold: `<g transform="translate(2 6)">${tambourine(c)}</g>`, a: 120 },
+      { x: RX[3], flip: true, o: REVELLERS[2], pose: 'stand', hold: '', a: 100 },
     ].map((r, i) => ({ ...r, i, p: S.puppet(feast.add(person(c, { ...r.o, pose: r.pose, holdF: r.hold }))) }));
     const rich = S.puppet(feast.add(addToHead(person(c, { ...YOUNGER_RICH, holdF: `<g transform="translate(0 2)">${cup(c, C.sun)}</g>`, holdB: `<g transform="translate(0 -4)">${purse(c, {})}</g>` }), `<g transform="translate(0 -6)">${laurel(c)}</g>`)));
     const emptyP = S.puppet(feast.add(person(c, { ...YOUNGER_RICH, holdF: `<g transform="translate(0 -2) rotate(180)">${purse(c, { full: false })}</g>` })));
     const rags = S.puppet(feast.add(ragsMarkup(c, { pose: 'sit' })));
     const emptyBowl = feast.add(`<g opacity="0">${bowl(c, { food: null, color: mix(C.pot, C.rock3, 0.3) })}</g>`);
-    const coins = Array.from({ length: 10 }, (_, i) => ({ i, el: feast.add(`<g opacity="0">${goldCoin(c, 6)}</g>`), tx: [430, 560, 1000, 1110][i % 4] + (i % 3 - 1) * 20 }));
+    const coins = Array.from({ length: 10 }, (_, i) => ({ i, el: feast.add(`<g opacity="0">${goldCoin(c, 6)}</g>`), tx: RX[i % 4] + (i % 3 - 1) * 20 }));
     const moth = feast.add(`<g opacity="0"><path d="${c.cut(c.ell(-5, 0, 6, 3.4, 8, -0.4), 0.2, 2) + c.cut(c.ell(5, 0, 6, 3.4, 8, 0.4), 0.2, 2)}" fill="${C.stone2}"/></g>`);
 
     return (t, time) => {
@@ -104,7 +107,7 @@ export default {
       pose(sn, { x: 800, y: lerp(-1500, 150, sk), r: T ? Math.sin(T * 0.5) : 0 });
       pose(sunG, { x: 800, y: 150, o: sk * 0.7 });
       pose(crow, { x: 1230, y: GY - 252, o: es(t, 1.6, 1.75) });
-      pose(table, { x: 560, y: GY + 16, o: 1 - es(t, 1.25, 1.4) });
+      pose(table, { x: TX, y: GY + 16, o: 1 - es(t, 1.25, 1.4) });
 
       /* v13b — reckless living: the cup, the coins flung, the dancing */
       const fling = (t % 0.25) / 0.25;

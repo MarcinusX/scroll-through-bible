@@ -14,7 +14,8 @@ import {
 } from './lib.js';
 
 const JX = CT.JX, GY = CT.GY;
-const PH_X = [1100, 1172, 1246];
+const PH_X_WIDE = [1100, 1172, 1246];
+const PH_X_PHONE = [1046, 1088, 1130];   // phone: the Pharisees stand closer together, inside the screen
 
 /** the round picture of the shepherd carrying his sheep home (plate coords, r 74) */
 function shepherdPlate(c, id) {
@@ -33,8 +34,10 @@ export default {
     { v: 2 },
     { v: 3 },
   ],
-  cam: { x: [-20, 60], y: [0, 50], z: [1, 1.08] },
+  cam: { x: [-20, 200], y: [0, 50], z: [1, 1.08] },
   build(S) {
+    const P = S.portrait;
+    const PH_X = P ? PH_X_PHONE : PH_X_WIDE;
     const H = courtSet(S);
     const c = H.c;
 
@@ -46,8 +49,10 @@ export default {
     const back2 = rowL.sprite(`<g>${standers([[-40, SINNERS[1], 20], [30, TAXMEN[0], 40]], true)}</g>`, 944, GY - 12);
 
     /* the guests: walkers, then seated cut-outs */
-    const seats = seatGuests(S, H.people);
-    const walkers = GUEST_SEATS.map((g, i) => ({ ...g, i, from: g.flip ? 1300 : 300, t0: 1.0 + [0.08, 0.0, 0.14, 0.04, 0.18][i], p: S.puppet(H.people.add(person(c, { ...g.o, holdB: g.o === PENITENT || g.o === TAXMEN[1] ? `<g transform="translate(0 -4)">${purse(c, {})}</g>` : '' }))) }));
+    // phone: the first guest on the left sits a little further in (the camera pans right for the Pharisees)
+    const SEATS = P ? GUEST_SEATS.map((g, i) => (i === 0 ? { ...g, x: 568 } : g)) : GUEST_SEATS;
+    const seats = seatGuests(S, H.people, SEATS);
+    const walkers = SEATS.map((g, i) => ({ ...g, i, from: g.flip ? 1300 : 300, t0: 1.0 + [0.08, 0.0, 0.14, 0.04, 0.18][i], p: S.puppet(H.people.add(person(c, { ...g.o, holdB: g.o === PENITENT || g.o === TAXMEN[1] ? `<g transform="translate(0 -4)">${purse(c, {})}</g>` : '' }))) }));
     const jesus = S.puppet(H.people.add(person(c, { ...JESUS, pose: 'sit' })));
     const bread = H.front.add(`<g opacity="0">${loaf(c, 14)}</g>`);
 
@@ -82,7 +87,7 @@ export default {
         pose(seats[w.i].el, { x: w.x + lean * listen * 3, y: GY, o: sat });
       });
       const bk = es(t, 1.2, 1.75, ease.out);
-      back1.set({ x: lerp(160, 520, bk), y: GY - 12, o: seg(t, 1.2, 1.3) });
+      back1.set({ x: lerp(160, P ? 650 : 520, bk), y: GY - 12, o: seg(t, 1.2, 1.3) });
       back2.set({ x: lerp(1400, 944, bk), y: GY - 12, o: seg(t, 1.2, 1.3) });
 
       /* Jesus: welcomes them; v2 breaks the bread and hands it to the tax collector; v3 lifts His hand */
@@ -115,7 +120,7 @@ export default {
       const pk = es(t, 3.1, 3.5, ease.out);
       flyAt(plate, pk, JX, 236, T, 0);
 
-      S.cam.x = kf(t, [[0.8, 0], [2.0, 30], [3.0, 30], [3.6, 0]]);
+      S.cam.x = P ? kf(t, [[0.8, 0], [1.6, 30], [2.1, 175], [2.9, 175], [3.5, 165]]) : kf(t, [[0.8, 0], [2.0, 30], [3.0, 30], [3.6, 0]]);
       S.cam.y = kf(t, [[0.8, 30], [2.0, 40], [3.2, 10]]);
       S.cam.z = kf(t, [[0.8, 1.0], [1.9, 1.05], [3.2, 1.02]]);
     };

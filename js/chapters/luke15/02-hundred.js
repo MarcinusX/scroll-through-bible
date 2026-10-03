@@ -13,7 +13,8 @@ import {
 } from './lib.js';
 
 const P = 0.45, GY = 660;
-const STRAY = [[860, 648], [960, 630], [1030, 612], [1080, 596], [1110, 586], [1128, 580]];
+const STRAY_WIDE = [[860, 648], [960, 630], [1030, 612], [1080, 596], [1110, 586], [1128, 580]];
+const STRAY_PHONE = [[860, 648], [930, 634], [980, 620], [1020, 606], [1046, 598], [1062, 592]];   // phone: it strays off short of the thread
 const GO = [[800, 668], [900, 652], [1000, 626], [1080, 600], [1150, 572], [1214, 546]];
 const TAG = [1000, 150];
 
@@ -28,6 +29,8 @@ export default {
   cam: { x: [-20, 90], y: [0, 40], z: [1, 1.06] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;
+    const STRAY = PH ? STRAY_PHONE : STRAY_WIDE;
     const set = pastureSet(S, { skyCols: ['#cfddd6', '#f1e1c0', '#f7e3c2'], sunAt: [1250, 170], groundY: 640, far: mix(C.hillFar, C.dune, 0.3), mid: mix(C.dune, C.hillMid, 0.35), meadow: mix(C.sand2, C.hillNear, 0.35) });
     // the evening sky, cross-faded in as he goes
     const eve = skyFade(S, EVE, set.sk.layer);
@@ -48,7 +51,9 @@ export default {
     const groups = [];
     for (let gi = 0; gi < 10; gi++) {
       const row = gi >= 5 ? 1 : 0;
-      const cx = 320 + (gi % 5) * 104 + c.rr(-12, 12) + row * 46, cy = row ? 650 : 616;
+      const jx = c.rr(-12, 12);
+      // phone: the hundred close up into the width of the screen
+      const cx = PH ? 556 + (gi % 5) * 62 + jx + row * 40 : 320 + (gi % 5) * 104 + jx + row * 46, cy = row ? 650 : 616;
       let m = '';
       const n = gi === 0 ? 9 : 10;
       Array.from({ length: n }, () => [c.rr(-46, 46), c.rr(-13, 13)]).sort((a, b) => a[1] - b[1]).forEach(([dx, dy]) => { m += `<g transform="translate(${dx.toFixed(1)} ${dy.toFixed(1)}) scale(${c.chance(0.5) ? 0.56 : -0.56} .56)">${ewe(c, { wool: c.pick(WOOLS) })}</g>`; });

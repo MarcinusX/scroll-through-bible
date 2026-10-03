@@ -18,7 +18,8 @@ import {
 
 const GY = 700;
 const ROAD2 = [[1090, 708], [980, 702], [860, 690], [740, 664], [640, 628], [566, 590], [516, 552], [488, 516]];
-const PLATES = [[556, 240], [716, 226], [876, 226], [1036, 240]];
+const PLATES_WIDE = [[556, 240], [716, 226], [876, 226], [1036, 240]];
+const PLATES_PHONE = [[590, 244], [720, 222], [850, 222], [980, 244]];   // phone: the four pictures clear of the thread
 
 export default {
   id: 'lk15-arise',
@@ -82,12 +83,14 @@ export default {
     const plates = inners.map((inner, i) => plL.add(`<g transform="translate(0 -1500)"><path d="M0 -1900V-70" stroke="${STRING}" stroke-width="1.2" fill="none"/>${roundel(oc, inner, { r: 64, id: S.id('pl' + i) })}${i === 2 ? `<g class="x" opacity="0">${crossX(oc, 44)}</g>` : ''}</g>`));
     const cross = plates[2].querySelector('.x');
 
+    const PLATES = S.portrait ? PLATES_PHONE : PLATES_WIDE;
+    const SUNX = S.portrait ? 572 : 520;   // phone: the rising sun whole, not halved by the frame
     return (t, time) => {
       const T = time;
       skM.fade(es(t, 0.2, 1.6));
       const sunY = lerp(470, 400, es(t, 0.0, 2.0));
-      pose(sn, { x: 520, y: sunY, r: T ? Math.sin(T * 0.5) : 0 });
-      pose(sunG, { x: 520, y: sunY, r: T * 2, o: 0.9 });
+      pose(sn, { x: SUNX, y: sunY, r: T ? Math.sin(T * 0.5) : 0 });
+      pose(sunG, { x: SUNX, y: sunY, r: T * 2, o: 0.9 });
 
       /* v18a — he gets up, drops the staff, turns to the far house and sets out */
       const up = seg(t, 0.2, 0.24);

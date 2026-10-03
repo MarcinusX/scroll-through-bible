@@ -65,7 +65,8 @@ export default {
       kneel.set({ x: SX, y: GY, s: 1.0, o: knO, armF: 60 + bowDown * 20 + lifted * 30, armB: 60 - bowDown * 20, head: 10 + bowDown * 20 - lifted * 20, lean: bowDown * 22 - lifted * 16, blink: blinkAt(T, 1) });
       const ck = es(t, 0.12, 0.26, ease.back) * (1 - es(t, 1.0, 1.1));
       const [khx, khy] = headP(SX, GY, 1.0, false, 'kneel');
-      pose(confess, { x: khx - 20, y: khy - 30, s: Math.max(0.001, ck), o: ck > 0.01 ? 1 : 0 });
+      pose(confess, { x: khx + (S.portrait ? 40 : -20),   // phone: the bubble clear of the left edge
+         y: khy - 30, s: Math.max(0.001, ck), o: ck > 0.01 ? 1 : 0 });
       const stand = seg(t, 1.72, 1.76) * (1 - seg(t, 2.66, 2.7));
       standR.set({ x: SX, y: GY, s: 1.0, o: stand, armF: 40, armB: 20, head: 8, blink: blinkAt(T, 1) });
 

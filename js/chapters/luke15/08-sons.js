@@ -15,7 +15,7 @@ import {
 } from './lib.js';
 
 const GY = FM.GY;
-const FX = 600, EX = 452, YX = 730;
+const FX = 600, EX_WIDE = 452, YX = 730;
 const CH = [640, GY + 6];
 const HL = 500, HR = 772;
 
@@ -36,8 +36,9 @@ export default {
     { v: 12, cont: true, text: 'Podzielił więc majątek między nich.' },
     { v: 13, text: 'Niedługo potem młodszy syn, zabrawszy wszystko, odjechał w dalekie strony' },
   ],
-  cam: { x: [-80, 200], y: [-40, 40], z: [1, 1.1] },
+  cam: { x: [-80, 240], y: [-40, 40], z: [1, 1.1] },
   build(S) {
+    const EX = S.portrait ? 522 : EX_WIDE;   // phone: the elder son stands inside the screen
     const F = farmSet(S, { skyCols: MORNING, sunAt: [1250, 150] });
     const c = F.c;
     const L = F.people;
@@ -110,7 +111,7 @@ export default {
       walkCamel(camelEl, (t < 3.22 ? es(t, 2.9, 3.14) * 12 : ride * 60), (t > 2.9 && t < 3.14) || (t > 3.22 && ride < 1) ? 1 : 0);
       fade(camelEl.querySelector('g[transform^="translate(-20 -150)"]'), mount);
 
-      S.cam.x = kf(t, [[0, -40], [2.9, -40], [3.4, 120], [3.9, 160]]);
+      S.cam.x = kf(t, [[0, -40], [2.9, -40], [3.4, S.portrait ? 150 : 120], [3.9, S.portrait ? 230 : 160]]);   // phone: follow the rider further, off the thread
       S.cam.y = kf(t, [[0, 20], [2.9, 20], [3.9, -20]]);
       S.cam.z = kf(t, [[0, 1.04], [1.1, 1.08], [2.9, 1.06], [3.9, 1.02]]);
     };

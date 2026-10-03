@@ -56,7 +56,7 @@ export default {
     { v: 24, cont: true, text: 'zaginął, a odnalazł się".' },
     { v: 24, cont: true, text: 'I zaczęli się bawić.' },
   ],
-  cam: { x: [-260, 120], y: [-30, 50], z: [1, 1.12] },
+  cam: { x: [-280, 120], y: [-30, 50], z: [1, 1.12] },
   build(S) {
     const F = farmSet(S, { skyCols: NIGHT, moonAt: [1240, 150], starsN: 110, tint: 0.26, tintCol: mix(C.night, C.indigo, 0.5), lit: 1, lanterns: true });
     const c = F.c;
@@ -76,10 +76,11 @@ export default {
     ].map(([x, dy, m], i) => ({ i, x, y: GY + 22 + dy, el: F.front.add(`<g opacity="0">${m}</g>`) }));
     const dishSteam = F.front.add(`<g opacity="0">${steam(c)}</g>`);
     /* the dancers and players (they come in at the end) */
+    const PLX = S.portrait ? [830, 910, 990] : [880, 990, 1090];   // phone: the players clear of the thread
     const players = [
-      { x: 880, o: SERVANTS[3], hold: `<g transform="rotate(-70) translate(-6 -10) scale(1.3)">${flute(c)}</g>`, a: 90, pose: 'stand' },
-      { x: 990, o: SERVANTS[2], hold: `<g transform="translate(2 6)">${tambourine(c)}</g>`, a: 130, pose: 'stand', flip: true },
-      { x: 1090, o: SERVANTS[1], hold: `<g transform="rotate(-20) translate(0 -10) scale(.9)">${harp(c)}</g>`, a: 60, pose: 'stand', flip: true },
+      { x: PLX[0], o: SERVANTS[3], hold: `<g transform="rotate(-70) translate(-6 -10) scale(1.3)">${flute(c)}</g>`, a: 90, pose: 'stand' },
+      { x: PLX[1], o: SERVANTS[2], hold: `<g transform="translate(2 6)">${tambourine(c)}</g>`, a: 130, pose: 'stand', flip: true },
+      { x: PLX[2], o: SERVANTS[1], hold: `<g transform="rotate(-20) translate(0 -10) scale(.9)">${harp(c)}</g>`, a: 60, pose: 'stand', flip: true },
     ].map((p, i) => ({ ...p, i, p: S.puppet(L.add(person(c, { ...p.o, holdF: p.hold }))) }));
     const notes = Array.from({ length: 8 }, (_, i) => ({ i, el: F.fx.add(`<g opacity="0">${note(c, [C.terracotta, C.plumRobe, C.teal2][i % 3])}</g>`) }));
 
@@ -101,7 +102,7 @@ export default {
       F.lamps.forEach((lp, i) => pose(lp.el, { x: lp.x, y: lp.y, r: T ? Math.sin(T * 0.8 + i) * (2 + es(t, 4.0, 4.2) * 4) : 0 }));
 
       /* v23a — the fattened calf led across and away */
-      const CK = [[0.04, 1200], [0.9, 200]];
+      const CK = [[0.04, 1200], [0.75, 900], [0.9, 600]];   // at x.75 the calf is beside the gate, not hidden behind the son and the table
       const cx = kf(t, CK, (x) => x);
       pose(calfEl, { x: cx + 70, y: GY - 2, sx: -1, s: 0.95, o: 1 - es(t, 0.86, 0.92) });
       leader.set({ x: cx, y: GY, s: 0.96, flip: true, o: 1 - es(t, 0.86, 0.92), walk: t < 0.9 ? cx * 0.06 : undefined, armF: 40, armB: 10, blink: blinkAt(T, 4) });
@@ -139,7 +140,7 @@ export default {
         pose(n.el, { x: 860 + (n.i % 4) * 70 + Math.sin(k * 6 + n.i) * 16, y: 520 - k * 220, s: 0.9 + k * 0.4, r: Math.sin(k * 5 + n.i) * 14, o: on * Math.sin(k * PI) });
       });
 
-      S.cam.x = kf(t, [[0, 40], [0.9, -200], [1.3, -240], [2.0, -170], [3.6, -120], [4.0, -20], [4.5, 40]]);
+      S.cam.x = S.portrait ? kf(t, [[0, 40], [0.9, -220], [1.3, -260], [3.6, -250], [4.0, -150], [4.5, -90]]) : kf(t, [[0, 40], [0.9, -200], [1.3, -240], [2.0, -170], [3.6, -120], [4.0, -20], [4.5, 40]]);
       S.cam.y = kf(t, [[0, 30], [2.0, 0], [3.6, 0], [4.3, 30]]);
       S.cam.z = kf(t, [[0, 1.02], [1.3, 1.08], [2.0, 1.02], [4.0, 1.02], [4.6, 1.08]]);
     };

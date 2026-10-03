@@ -75,7 +75,7 @@ export default {
     { v: 17, text: 'Wtedy zastanowił się i rzekł:' },
     { v: 17, cont: true, text: 'Iluż to najemników mojego ojca ma pod dostatkiem chleba, a ja tu z głodu ginę.' },
   ],
-  cam: { x: [-160, 160], y: [-40, 50], z: [1, 1.12] },
+  cam: { x: [-280, 160], y: [-40, 50], z: [1, 1.12] },
   build(S) {
     const c = S.c;
     const skD = S.layer({ par: 0, sky: true });
@@ -135,6 +135,7 @@ export default {
     const cloudEl = thinkL.add(`<g transform="translate(0 -1500)"><path d="M0 -1900V-86" stroke="${STRING}" stroke-width="1.2" fill="none"/>${plenty(c, S.id('plenty'))}</g>`);
     const dots = [0, 1, 2].map((i) => thinkL.add(`<g opacity="0"><path d="${c.cut(c.circ(0, 0, 6 + i * 3, 10), 0.2, 3)}" fill="${C.cream}"/></g>`));
 
+    const PH = S.portrait;
     return (t, time) => {
       const T = time;
       const eve = es(t, 4.0, 4.6);
@@ -153,7 +154,8 @@ export default {
       const bx = kf(t, BK);
       const bow = es(t, 0.44, 0.58);
       const point = es(t, 0.6, 0.76) * (1 - es(t, 1.4, 1.6));
-      citizen.set({ x: DOORX + 20, y: GY, s: 1.04, armF: 20 + point * 80, armB: 10, head: -point * 4, blink: blinkAt(T, 3) });
+      citizen.set({ x: DOORX + 20, y: GY, s: 1.04, o: PH ? 1 - seg(t, 2.0, 2.05) : 1,   // phone: gone in while off-screen, no sliver at the edge later
+        armF: 20 + point * 80, armB: 10, head: -point * 4, blink: blinkAt(T, 3) });
       beg.set({ x: bx, y: GY, s: 1.0, flip: true, o: 1 - seg(t, 1.04, 1.08), walk: moving(t, BK) ? bx * 0.06 : undefined, armF: 20 + bow * 40, armB: 10 + bow * 40, lean: -bow * 14, head: bow * 16, blink: blinkAt(T, 1) });
       fade(beg.el.querySelector('[data-part="sad"]'), 1);
 
@@ -178,7 +180,7 @@ export default {
 
       /* v16b — no one gave him any: two of the house pass by, looking away */
       passers.forEach((p) => {
-        const K = [[p.t0, 300], [p.t0 + 0.9, 1300]];
+        const K = PH ? [[p.t0, 300], [p.t0 + 0.92, 1240]] : [[p.t0, 300], [p.t0 + 0.9, 1300]];   // phone: still inside the screen at x.75
         const x = kf(t, K, (u) => u);
         p.p.set({ x, y: GY, s: 0.96, o: seg(t, p.t0, p.t0 + 0.03) * (1 - seg(t, p.t0 + 0.88, p.t0 + 0.9)), walk: moving(t, K) ? x * 0.06 : undefined, armF: p.i ? 50 : 150, armB: 10, head: p.i ? -10 : -6, blink: blinkAt(T, p.i + 5) });
       });
@@ -196,7 +198,7 @@ export default {
       dots.forEach((d, i) => pose(d, { x: kx + 20 + i * 18, y: ky - 50 - i * 34, o: es(t, 5.0 + i * 0.06, 5.1 + i * 0.06) }));
       pose(bowlE, { x: TX - 30, y: GY - 6, s: 1.4, o: es(t, 5.3, 5.45) });
 
-      S.cam.x = kf(t, [[0, -150], [0.9, -140], [1.3, 60], [2.0, 100], [3.9, 100], [4.4, 60], [5.2, 20]]);
+      S.cam.x = PH ? kf(t, [[0, -270], [0.9, -260], [1.3, 60], [2.0, 100], [3.9, 100], [4.4, 60], [5.2, 20]]) : kf(t, [[0, -150], [0.9, -140], [1.3, 60], [2.0, 100], [3.9, 100], [4.4, 60], [5.2, 20]]);
       S.cam.y = kf(t, [[0, 30], [4.4, 30], [5.3, -20]]);
       S.cam.z = kf(t, [[0, 1.06], [1.3, 1.04], [2.4, 1.1], [3.9, 1.08], [5.3, 1.02]]);
     };

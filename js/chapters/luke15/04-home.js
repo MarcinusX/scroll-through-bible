@@ -62,7 +62,7 @@ export default {
       neighbours.forEach((n) => {
         V.light(n.h, es(t, n.t0 - 0.12, n.t0));
         const door = V.houses[n.h].door;
-        const NK = [[n.t0, door], [n.t0 + 0.2, n.x]];
+        const NK = [[n.t0, door], [n.t0 + 0.2, S.portrait && n.i === 0 ? 548 : n.x]];   // phone: the first neighbour comes inside the screen
         const x = kf(t, NK);
         const cheer = es(t, 1.55 + n.i * 0.05, 1.7 + n.i * 0.05);
         const armF = n.tamb ? 40 + cheer * 60 : 50;
