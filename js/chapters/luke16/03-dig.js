@@ -45,7 +45,7 @@ export default {
     { v: 3, cont: true, text: 'Kopać nie mogę, żebrać się wstydzę.' },
     { v: 4 },
   ],
-  cam: { x: [-80, 10], y: [-20, 40], z: [1, 1.14] },
+  cam: { x: [-180, 10], y: [-20, 40], z: [1, 1.14] },
   build(S) {
     const E = estateSet(S);
     const c = E.c;
@@ -111,6 +111,7 @@ export default {
       S.cam.x = kf(t, [[-0.5, -20], [1.0, -30], [1.5, -60], [2.2, -40], [2.9, -10]]);
       S.cam.y = kf(t, [[-0.5, 20], [0.4, 30], [2.2, 30]]);
       S.cam.z = kf(t, [[-0.5, 1.06], [0.4, 1.12], [1.5, 1.1], [2.2, 1.12]]);
+      if (S.portrait) S.cam.x -= 100;   // phone: the beggar in the gateway and the dug bed in from the left edge
     };
   },
 };

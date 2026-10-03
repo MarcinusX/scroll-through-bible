@@ -43,7 +43,7 @@ export default {
     { v: 11 },
     { v: 12 },
   ],
-  cam: { x: [-20, 40], y: [-40, 40], z: [1, 1.12] },
+  cam: { x: [-20, 190], y: [-40, 40], z: [1, 1.12] },
   build(S) {
     const E = estateSet(S);
     const c = E.c;
@@ -113,6 +113,7 @@ export default {
       S.cam.x = kf(t, [[-0.5, 20], [1, 20], [1.6, 0], [2.2, 20]]);
       S.cam.y = kf(t, [[-0.5, 20], [2.0, 20], [2.3, -10], [3, 10]]);
       S.cam.z = kf(t, [[-0.5, 1.06], [2.0, 1.08], [2.3, 1.04], [3, 1.08]]);
+      if (S.portrait) S.cam.x += kf(t, [[-0.5, 150], [1.3, 150], [1.6, 10], [2.0, 10], [2.3, 150]]);   // phone: the master and his chest clear of the thread; the thief's creep to the gate stays in
     };
   },
 };

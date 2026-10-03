@@ -84,19 +84,20 @@ export default {
 
     const pop = (el, k, x, y) => pose(el, { x, y, s: Math.max(0.001, k), o: k > 0.01 ? 1 : 0 });
 
+    const AX = AF.AX + (S.portrait ? 40 : 0);   // phone: Abraham and Lazarus drawn in from the left edge
     return (t, time) => {
       const T = time;
       A.update(t, T, { fl: 1, heatX: AF.RX + 20 });
       const abSpeak = es(t, 2.05, 2.2) * (1 - es(t, 2.95, 3.05)) + es(t, 4.05, 4.2);
-      abr.set({ x: AF.AX, y: A.hfn(AF.AX) + 4, s: 0.9, armF: 60, armB: 40 + abSpeak * 110, head: 2, blink: blinkAt(T, 1) });
-      laz.set({ x: AF.AX + 52, y: A.hfn(AF.AX + 52) + 8, s: 0.8, armF: 20, armB: 10, head: -4, lean: -8, blink: blinkAt(T, 3) });
+      abr.set({ x: AX, y: A.hfn(AX) + 4, s: 0.9, armF: 60, armB: 40 + abSpeak * 110, head: 2, blink: blinkAt(T, 1) });
+      laz.set({ x: AX + 52, y: A.hfn(AX + 52) + 8, s: 0.8, armF: 20, armB: 10, head: -4, lean: -8, blink: blinkAt(T, 3) });
       const plead = es(t, 0.05, 0.2) * (1 - es(t, 1.9, 2.05)) + es(t, 3.05, 3.2) * (1 - es(t, 3.95, 4.05));
       const bow = es(t, 4.2, 4.5);
       rich.set({ x: AF.RX + 10, y: HY + 2, s: 1.0, flip: true, armF: 60 + plead * 70 - bow * 30, armB: 80 + plead * 60 - bow * 60, head: -8 + bow * 26, lean: bow * 8, blink: bow > 0.5 ? 0.9 : blinkAt(T, 2) });
       const [rhx, rhy] = headAt(AF.RX + 10, HY + 2, 1.0, true, 'kneel');
       pop(ask, es(t, 0.15, 0.28, ease.back) * (1 - es(t, 0.95, 1.05)), rhx - 16, rhy - 26);
       pop(ask2, es(t, 3.12, 3.25, ease.back) * (1 - es(t, 3.95, 4.05)), rhx - 16, rhy - 26);
-      const [ahx, ahy] = headAt(AF.AX, A.hfn(AF.AX) + 4, 0.9, false, 'sit');
+      const [ahx, ahy] = headAt(AX, A.hfn(AX) + 4, 0.9, false, 'sit');
       void ahx; void ahy; void ab;
       /* the vision: comes down (v27); kneeling (v30); turned away, and moved aside for the last picture (v31) */
       const dk = es(t, 0.2, 0.5, ease.out);
@@ -111,7 +112,7 @@ export default {
       pose(five, { x: vx, y: vy + VR * vs + 24, o: fk });
       /* v28 — the messenger's way */
       const way = es(t, 1.2, 1.7) * (1 - es(t, 2.05, 2.25));
-      const p0 = [AF.AX + 110, A.hfn(AF.AX + 110) - 6], p1 = [VX - 50, VY + VR * 0.86 - 10];
+      const p0 = [AX + 110, A.hfn(AX + 110) - 6], p1 = [VX - 50, VY + VR * 0.86 - 10];
       dots.forEach((d) => { const u = (d.i + 1) / 10; const x = lerp(p0[0], p1[0], u), y = lerp(p0[1], p1[1], u) - Math.sin(u * PI) * 60; pose(d.el, { x, y, o: way > u ? 1 - es(t, 2.05, 2.25) : 0 }); });
       const wu = es(t, 1.3, 1.8);
       pose(walker, { x: lerp(p0[0], p1[0], wu * 0.5), y: lerp(p0[1], p1[1], wu * 0.5) - Math.sin(wu * 0.5 * PI) * 60, o: way > 0.05 ? way : 0 });

@@ -19,7 +19,7 @@ export default {
     { v: 2, text: 'Przywołał go do siebie i rzekł mu: "Cóż to słyszę o tobie?' },
     { v: 2, cont: true, text: 'Zdaj sprawę z twego zarządu, bo już nie będziesz mógł być rządcą".' },
   ],
-  cam: { x: [-20, 60], y: [-20, 40], z: [1, 1.14] },
+  cam: { x: [-20, 230], y: [-20, 40], z: [1, 1.14] },
   build(S) {
     const E = estateSet(S);
     const c = E.c;
@@ -65,6 +65,7 @@ export default {
       S.cam.x = kf(t, [[-0.5, 30], [1.0, 40], [1.4, 50]]);
       S.cam.y = kf(t, [[-0.5, 20], [0.4, 30], [1.4, 30]]);
       S.cam.z = kf(t, [[-0.5, 1.06], [0.4, 1.12], [1.2, 1.12], [1.6, 1.14]]);
+      if (S.portrait) S.cam.x += 170;   // phone: the master, his words and the tale over him clear of the thread
     };
   },
 };

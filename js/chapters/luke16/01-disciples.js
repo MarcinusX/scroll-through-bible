@@ -39,7 +39,7 @@ export default {
     { cover: true },
     { v: 1 },
   ],
-  cam: { x: [-20, 30], y: [-60, 40], z: [1, 1.1] },
+  cam: { x: [-20, 80], y: [-60, 40], z: [0.94, 1.1] },
   build(S) {
     const Q = villageSet(S, { skyCols: AFTER, dis: ['peter', 'john'], ph: 3, crowdSeeds: ['lk16-vL', 'lk16-vR'], sunAt: [1250, 190] });
     const c = Q.c;
@@ -48,6 +48,7 @@ export default {
     const coins = [0, 1, 2, 3, 4, 5].map((i) => ({ i, el: Q.flyL.add(`<g opacity="0">${coin(c, 5)}</g>`) }));
     const tale = Q.flyL.add(`<g opacity="0">${speech(c, `<g transform="translate(-8 -14) scale(.5)">${purse(c)}</g><g transform="translate(10 6)">${coin(c, 4)}</g><g transform="translate(-14 10)">${coin(c, 4)}</g>`, { w: 58, h: 42, flip: false })}</g>`);
     const cur = curtains(S);
+    const PS = S.portrait ? [-20, -40, -60] : [0, 0, 0];   // phone: the Pharisees drawn in from under the thread
 
     return (t, time) => {
       const T = time;
@@ -58,7 +59,7 @@ export default {
       Q.pose(t, T,
         { flip: turn > 0.5, armF: 16 + speak * 56, armB: 8 + speak * 20, head: -2 - speak * 4, blink: blinkAt(T, 2) },
         (d) => ({ x: d.x - 40, flip: false, armF: 10, armB: 6, head: -4 + es(t, 1.3, 1.5) * -6, blink: blinkAt(T, d.seed) }),
-        (m) => ({ head: 2 + es(t, 1.4, 1.6) * 4, lean: -es(t, 1.4, 1.6) * 3, blink: blinkAt(T, m.seed) }));
+        (m) => ({ x: m.x + PS[m.i], head: 2 + es(t, 1.4, 1.6) * 4, lean: -es(t, 1.4, 1.6) * 3, blink: blinkAt(T, m.seed) }));
       const pk = es(t, 1.08, 1.4, ease.out);
       const px = PX, py = lerp(-500, PY, pk);
       pose(pan, { x: px, y: py, r: T ? Math.sin(T * 0.7) * 0.6 * pk : 0, o: pk > 0.004 ? 1 : 0 });
@@ -80,6 +81,7 @@ export default {
       S.cam.z = kf(t, [[0, 1.08], [1.0, 1.08], [1.4, 1.02]]);
       S.cam.y = kf(t, [[0, 30], [1.0, 30], [1.4, -40]]);
       S.cam.x = kf(t, [[0, 0], [1.0, 0], [1.4, 0]]);
+      if (S.portrait) { S.cam.x += 50; S.cam.z -= 0.06; }
     };
   },
 };

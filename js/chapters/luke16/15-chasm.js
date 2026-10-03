@@ -37,13 +37,14 @@ export default {
     const poor = A.fly.add(`<g><g transform="translate(-8 -6)">${crumb(c, 8)}</g>${sheet().p(c.cut([[4, -4], [22, -8], [24, -2], [6, 2]], 0.6, 3), mix(C.sand2, C.stone2, 0.5)).out()}</g>`);
     const comfort = A.fly.add(`<g opacity="0">${glow(40, 1, 'halo-glow')}${sparkle(c, 14)}</g>`);
 
+    const AX = AF.AX + (S.portrait ? 40 : 0);   // phone: Abraham and Lazarus drawn in from the left edge
     return (t, time) => {
       const T = time;
       A.update(t, T, { fl: 1, heatX: AF.RX + 20 });
       /* Abraham speaks */
       const speak = es(t, 0.05, 0.2) * (1 - es(t, 2.6, 2.9));
-      abr.set({ x: AF.AX, y: A.hfn(AF.AX) + 4, s: 0.9, armF: 60, armB: 40 + speak * 110, head: 2, blink: blinkAt(T, 1) });
-      laz.set({ x: AF.AX + 52, y: A.hfn(AF.AX + 52) + 8, s: 0.8, armF: 20, armB: 10, head: -4, lean: -8, blink: blinkAt(T, 3) });
+      abr.set({ x: AX, y: A.hfn(AX) + 4, s: 0.9, armF: 60, armB: 40 + speak * 110, head: 2, blink: blinkAt(T, 1) });
+      laz.set({ x: AX + 52, y: A.hfn(AX + 52) + 8, s: 0.8, armF: 20, armB: 10, head: -4, lean: -8, blink: blinkAt(T, 3) });
       /* the scales: then (heavy on his side), now (heavy on Lazarus' side), gone */
       const dk = es(t, 0.1, 0.4, ease.out) * (1 - es(t, 2.05, 2.3, ease.in));
       const by = lerp(-500, BY, dk);
@@ -61,7 +62,7 @@ export default {
         pose(g.el, { x: lerp(x0, AF.EDGE + 90 + g.i * 10, fall), y: lerp(y0, 1100, fall), r: fall * 400, o: dk > 0.004 && fall < 0.97 ? 1 : 0 });
       });
       /* v26 — the chasm opens; the plank falls short */
-      const wide = es(t, 2.1, 2.5);
+      const wide = es(t, 2.1, 2.5) * (S.portrait ? 0.6 : 1);   // phone: the lands part a little less, so both stay in
       A.height.shift(-wide * 50, 0); A.abr.shift(-wide * 50, 0); A.light.shift(-wide * 50, 0);
       A.hades.shift(wide * 50, 0); A.fire.shift(wide * 50, 0); A.act.shift(wide * 50, 0); A.heat.shift(wide * 50, 0);
       A.chasm.shift(0, 0);

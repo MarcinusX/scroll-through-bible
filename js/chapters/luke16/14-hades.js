@@ -32,6 +32,7 @@ export default {
     const cry = A.W.add(`<g opacity="0">${say(c, [tr('Ojcze Abrahamie,', 'Father Abraham,'), tr('ulituj się nade mną!', 'have mercy on me!')], { size: 19, side: -1 })}</g>`);
     const drop = A.W.add(`<g opacity="0"><circle r="34" fill="${C.cream}" opacity=".92"/>${fingerDrop(c)}</g>`);
 
+    const AX = AF.AX + (S.portrait ? 40 : 0);   // phone: Abraham and Lazarus drawn in from the left edge
     return (t, time) => {
       const T = time;
       A.update(t, T, { fl: 1, heatX: AF.RX + 20 });
@@ -39,11 +40,11 @@ export default {
       /* v23 — he lifts his eyes and sees them far off */
       const lift = es(t, 0.15, 0.35);
       const kn = seg(t, 1.05, 1.1);
-      pose(lie, { x: RX + 90, y: HY + 4, r: -lift * 14, o: 1 - kn, ox: 0 });
+      pose(lie, { x: RX + (S.portrait ? 30 : 90), y: HY + 4, r: -lift * 14, o: 1 - kn, ox: 0 });
       const reach = es(t, 1.1, 1.3);
       kneel.set({ x: RX, y: HY + 2, s: 1.0, flip: true, o: kn, armF: 90 + reach * 40, armB: 110 + reach * 40, head: -14, blink: blinkAt(T, 2) });
-      abr.set({ x: AF.AX, y: A.hfn(AF.AX) + 4, s: 0.9, armF: 60, armB: 40, head: 4, blink: blinkAt(T, 1) });
-      laz.set({ x: AF.AX + 52, y: A.hfn(AF.AX + 52) + 8, s: 0.8, armF: 20, armB: 10, head: -4, lean: -8, blink: blinkAt(T, 3) });
+      abr.set({ x: AX, y: A.hfn(AX) + 4, s: 0.9, armF: 60, armB: 40, head: 4, blink: blinkAt(T, 1) });
+      laz.set({ x: AX + 52, y: A.hfn(AX + 52) + 8, s: 0.8, armF: 20, armB: 10, head: -4, lean: -8, blink: blinkAt(T, 3) });
       /* v24 — the cry; the fingertip and the water */
       const [hx, hy] = headAt(RX, HY + 2, 1.0, true, 'kneel');
       const ck = es(t, 1.2, 1.35, ease.back);

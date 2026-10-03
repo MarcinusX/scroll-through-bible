@@ -47,13 +47,13 @@ export default {
     const mid = S.layer({ par: 0.15, sh: 3 });
     mid.add(hillsWith(c, { y: 560, amps: [14, 6, 2], lens: [800, 260, 100], color: mix(C.hillNear, C.wheat, 0.25), trees: 12, treeColor: C.olive, treeH: 18 }).markup);
     /* the golden height with the tents */
+    const glowL = S.layer({ par: 0.2, sh: 0, flat: true, rise: 0 });   // the tents' glows, behind the tents
     const hL = S.layer({ par: 0.2, sh: 4, rise: 0 });
     const height = hL.add(`<g>${sheet().p(c.cut([[780, 760], [810, 600], [860, 572], [960, 556], [1080, 560], [1180, 580], [1260, 620], [1300, 760]], 1.2, 10), mix(C.halo, C.cream, 0.3)).x(c.cut(c.blob(880, 600, 60, 20, 10, 0.3), 1, 6) + c.cut(c.blob(1180, 610, 50, 18, 10, 0.3), 1, 6), '#fff6dc', 'opacity=".8"').out()}</g>`);
     const tents = TENTS.map(([x, y], i) => ({ i, x, y, el: hL.add(`<g>${lightTent(c, 110 - i * 6, 96 - i * 6)}</g>`) }));
     /* the road */
     const G = S.layer({ par: 0.3, sh: 3 });
     G.add(sheet().p(c.cut([[-1100, GY - 16], [2700, GY - 16], [2700, 1900], [-1100, 1900]], 0.6, 16), mix(C.sand, C.hillMid, 0.3)).p(c.cut([[-1100, GY - 4], [880, GY - 6], [960, GY + 30], [-1100, GY + 40]], 0.6, 16), mix(C.sand2, C.dune, 0.3)).out() + grass(c, { x0: -600, x1: 2200, y: GY + 60, n: 30, h: 12, color: C.olive }));
-    const back = S.layer({ par: 0.36, sh: 0, flat: true });
     const act = S.layer({ par: 0.38, sh: 5 });
     const poor = POOR.map(([x, k], i) => {
       const o = k === 'beggar' ? BEGGAR : k === 'widow' ? WIDOW : CHILD;
@@ -69,19 +69,20 @@ export default {
     const bag = act.add(`<g>${purse(c)}</g>`);
     const coins = POOR.map(() => act.add(`<g opacity="0">${coin(c, 7)}</g>`));
     const crumble = act.add(`<g opacity="0">${dustM(c, 20, C.sun)}</g>`);
-    const glows = TENTS.map(() => back.add(`<g opacity="0">${glow(80, 0.9, 'halo-glow')}</g>`));
+    const glows = TENTS.map(() => glowL.add(`<g opacity="0">${glow(80, 0.9, 'halo-glow')}</g>`));
 
+    const D = S.portrait ? -120 : 0;   // phone: the height with its tents and the three in white clear of the thread
     return (t, time) => {
       const T = time;
       /* giving along the road */
-      const GK = [[-0.3, 380], [0.08, 450], [0.14, 450], [0.2, 550], [0.26, 550], [0.32, 640], [0.4, 640], [0.52, 760], [0.62, 780], [0.8, 870], [0.95, 940]];
+      const GK = [[-0.3, 380], [0.08, 450], [0.14, 450], [0.2, 550], [0.26, 550], [0.32, 640], [0.4, 640], [0.52, 760], [0.62, 780], [0.8, 815], [0.95, 830]];   // he stops short of the first in white
       const gx = kf(t, GK);
       const giveA = (a) => bump(t, a, a + 0.08);
       const give = giveA(0.08) + giveA(0.2) + giveA(0.33);
-      const up = gx > 780 ? es(gx, 780, 940) : 0;
-      giver.set({ x: gx, y: GY - up * 150, s: 1.0 - up * 0.3, walk: moving(t, GK) ? gx * 0.06 : undefined, armF: 20 + give * 50, armB: 10, head: give * 10, blink: blinkAt(T, 2), o: 1 - es(t, 0.92, 1.0) });
+      const up = gx > 780 ? es(gx, 780, 830) : 0;
+      giver.set({ x: gx + D * up, y: GY - up * 150, s: 1.0 - up * 0.3, walk: moving(t, GK) ? gx * 0.06 : undefined, armF: 20 + give * 50, armB: 10, head: give * 10, blink: blinkAt(T, 2), o: 1 - es(t, 0.92, 1.0) });
       const empty = es(t, 0.42, 0.5);
-      const [bx, by] = [gx - 20, GY - 96 - up * 150];
+      const [bx, by] = [gx + D * up - 20, GY - 96 - up * 150];
       pose(bag, { x: bx, y: by, s: (1 - up * 0.3) * (1 - empty * 0.4), sy: 1 - empty * 0.4, o: 1 - es(t, 0.6, 0.66) });
       pose(crumble, { x: bx + 30, y: by + 50 + es(t, 0.44, 0.56) * 20, s: 0.5 + es(t, 0.44, 0.56), o: bump(t, 0.44, 0.58) });
       coins.forEach((cn, i) => {
@@ -99,12 +100,12 @@ export default {
         m.p.set({ x: m.x, y: GY + (m.k === 'child' ? 0 : -2), s: m.s, o: 1 - es(t, 0.5, 0.58), armF: 40 + got * 30, armB: 10 + got * 20, head: -8 * got, blink: blinkAt(T, 3 + m.i) });
         const inK = es(t, 0.6 + m.i * 0.04, 0.72 + m.i * 0.04);
         const beck = Math.sin(Math.max(0, t - 0.7) * 40 + m.i) * 0.5 + 0.5;
-        m.w.set({ x: TENTS[m.i][0] - 30, y: m.wy, s: 0.7, flip: true, o: inK, armF: 60 + beck * 30 * inK, armB: 20, head: -4, blink: blinkAt(T, 5 + m.i) });
+        m.w.set({ x: TENTS[m.i][0] + 20 + D, y: m.wy, s: 0.7, flip: true, o: inK, armF: 60 + beck * 30 * inK, armB: 20, head: -4, blink: blinkAt(T, 5 + m.i) });
       });
-      pose(gold, { o: 0.5 + tentsOpen * 0.5 });
-      tents.forEach((tn) => pose(tn.el, { x: tn.x, y: tn.y, s: 0.8 + tentsOpen * 0.2 }));
-      glows.forEach((g, i) => pose(g, { x: TENTS[i][0], y: TENTS[i][1] - 40, o: tentsOpen }));
-      pose(height, { o: 0.6 + tentsOpen * 0.4 });
+      pose(gold, { x: D, o: 0.5 + tentsOpen * 0.5 });
+      tents.forEach((tn) => pose(tn.el, { x: tn.x + D, y: tn.y, s: 0.8 + tentsOpen * 0.2 }));
+      glows.forEach((g, i) => pose(g, { x: TENTS[i][0] + D, y: TENTS[i][1] - 40, o: tentsOpen }));
+      pose(height, { x: D, o: 0.6 + tentsOpen * 0.4 });
 
       S.cam.x = kf(t, [[-0.5, -10], [0.4, 0], [0.7, 20]]);
       S.cam.y = kf(t, [[-0.5, 20], [0.5, 20], [0.7, -20]]);

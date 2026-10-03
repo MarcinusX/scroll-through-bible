@@ -28,7 +28,7 @@ export default {
     { v: 7, cont: true, text: 'Ten odrzekł: "Sto korcy pszenicy".' },
     { v: 7, cont: true, text: 'Mówi mu: "Weź swoje zobowiązanie i napisz: osiemdziesiąt".' },
   ],
-  cam: { x: [-40, 40], y: [-40, 40], z: [1, 1.12] },
+  cam: { x: [-110, 40], y: [-40, 40], z: [1, 1.12] },
   build(S) {
     const E = estateSet(S);
     const c = E.c;
@@ -146,6 +146,7 @@ export default {
       S.cam.x = kf(t, [[-0.5, -20], [0.5, -10], [3.0, -10], [3.4, -20]]);
       S.cam.y = kf(t, [[-0.5, 30], [0.6, 20], [1.2, -10], [6, -10]]);
       S.cam.z = kf(t, [[-0.5, 1.04], [0.6, 1.08], [1.2, 1.04]]);
+      if (S.portrait) S.cam.x -= 70;   // phone: the whole queue of debtors in from the left edge
     };
   },
 };

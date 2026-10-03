@@ -38,7 +38,7 @@ export default {
     { v: 21, text: 'Pragnął on nasycić się odpadkami ze stołu bogacza;' },
     { v: 21, cont: true, text: 'nadto i psy przychodziły i lizały jego wrzody.' },
   ],
-  cam: { x: [-80, 60], y: [-30, 40], z: [1, 1.14] },
+  cam: { x: [-170, 100], y: [-30, 40], z: [1, 1.14] },
   build(S) {
     const P = palaceSet(S, { skyCols: FEAST });
     const c = P.c;
@@ -46,7 +46,8 @@ export default {
     const suns = [0, 1].map(() => P.skyFx.add(`<g opacity="0">${sun(c, 30)}</g>`));
     const mn = P.skyFx.add(`<g opacity="0">${moon(c, 26)}</g>`);
     /* the feast */
-    const guests = GUESTS.map(([x, o], i) => ({ i, x, p: S.puppet(P.hall.add(person(c, { ...o, pose: 'sit' }))) }));
+    const PO = S.portrait;   // phone: the far guest and the passing days in from the edges; the dogs in from the left
+    const guests = GUESTS.map(([x, o], i) => ({ i, x: PO && i ? 1104 : x, p: S.puppet(P.hall.add(person(c, { ...o, pose: 'sit' }))) }));
     const cushion = P.act.add(`<g>${sheet().p(c.cut(c.blob(0, -8, 56, 12, 12, 0.1), 0.4, 4), PURPLE_C).x(c.ribbon([[-50, -6], [50, -6]], 2), C.sun, 'opacity=".8"').out()}</g>`);
     const rich = S.puppet(P.act.add(person(c, { ...RICHMAN, pose: 'sit', holdF: `<g transform="rotate(-90) translate(0 2)">${cup(c, C.sun)}</g>` })));
     const dishes = [[970, platter(c, { w: 60 })], [1010, `<g transform="scale(1.2)">${bowl(c, { food: 'fruit', color: C.skyVeil })}</g>`], [1110, loaf(c, 16)], [1130, cup(c, C.sun)], [1200, platter(c, { w: 50 })], [1235, loaf(c, 13)]]
@@ -67,7 +68,7 @@ export default {
       P.update(t, T, { lit: 1, open: 0.25 });
       /* v19 — purple and linen; dish after dish; day after day */
       const DAYS = [[0.12, 0.42, suns[0]], [0.42, 0.7, mn], [0.7, 1.0, suns[1]]];
-      DAYS.forEach(([a, b, el]) => { const k = seg(t, a, b); pose(el, { x: lerp(430, 720, k), y: 320 - Math.sin(k * PI) * 150, o: k > 0 && k < 1 ? Math.sin(k * PI) * 1.4 : 0 }); });
+      DAYS.forEach(([a, b, el]) => { const k = seg(t, a, b); pose(el, { x: lerp(PO ? 500 : 430, PO ? 760 : 720, k), y: 320 - Math.sin(k * PI) * 150, o: k > 0 && k < 1 ? Math.sin(k * PI) * 1.4 : 0 }); });
       const toast = bump(t, 0.5, 0.9) + bump(t, 1.5, 1.9) * 0.6;
       pose(cushion, { x: RX, y: FL + 18 });
       rich.set({ x: RX, y: FL + 10, s: 1.0, armF: 40 + toast * 60, armB: 10, head: -4 - toast * 6, blink: blinkAt(T, 1) });
@@ -117,6 +118,7 @@ export default {
       S.cam.x = kf(t, [[-0.5, 50], [0.9, 50], [1.3, -60], [2.0, -60], [2.1, -30], [2.6, -30], [3.0, -60]]);
       S.cam.y = kf(t, [[-0.5, -10], [0.3, 10], [3, 20]]);
       S.cam.z = kf(t, [[-0.5, 1.02], [0.4, 1.08], [1.3, 1.1]]);
+      if (PO) S.cam.x += kf(t, [[-0.5, 60], [0.9, 60], [1.3, 140], [2.9, 140], [3.1, -110]]);
     };
   },
 };

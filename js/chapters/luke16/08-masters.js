@@ -11,7 +11,7 @@ import { band, house } from '../../assets/nature.js';
 import { tray, handBell, heart, mammon, fatherLight, rayBurst, glow, handAt, headAt, kf, moving, tr, es, ease, bump, seg, PI } from './lib.js';
 
 const GY = 712;
-const LD = 540, RD = 1060;      // the two doorways
+const LD0 = 540, RD0 = 1060;    // the two doorways
 const SX = 800;
 const SERVANT = { robe: C.linen2, mantle: null, hair: C.hair, hairStyle: 'short', beard: 'short', skin: C.skin3, belt: C.rope };
 const LORD_L = { robe: C.tealRobe, mantle: C.dustyBlue, skin: C.skin2, hair: C.greyHair, hairStyle: 'wrap', veil: C.linen, veil2: C.teal2, beard: 'full', beardColor: C.greyHair, belt: C.leather };
@@ -38,6 +38,9 @@ export default {
   cam: { x: [-30, 30], y: [-60, 40], z: [1, 1.12] },
   build(S) {
     const c = S.c;
+    const PO = S.portrait;   // phone: the two masters in their doorways and the servant's runs drawn in from the edges
+    const LD = PO ? 600 : LD0, RD = PO ? 990 : RD0;
+    const nx = (x) => (PO ? 800 + (x - 800) * 0.8 : x);
     sky(S, ['#cfd9d3', '#efe3c8', '#f6e7cc']);
     const far = S.layer({ par: 0.1, sh: 2 });
     let hs = '';
@@ -66,7 +69,7 @@ export default {
     return (t, time) => {
       const T = time;
       /* v13a — both call; he runs to and fro and stops, torn */
-      const SK = [[0, SX], [0.14, 680], [0.22, 680], [0.4, 920], [0.48, 920], [0.62, SX], [1.0, SX], [1.12, 750], [1.5, 750], [1.62, 850], [2.0, 850], [2.1, SX], [2.5, SX], [2.9, 680]];
+      const SK = [[0, SX], [0.14, 680], [0.22, 680], [0.4, 920], [0.48, 920], [0.62, SX], [1.0, SX], [1.12, 750], [1.5, 750], [1.62, 850], [2.0, 850], [2.1, SX], [2.5, SX], [2.9, 680]].map(([k, x]) => [k, nx(x)]);
       const sx = kf(t, SK);
       const torn = es(t, 0.6, 0.7) * (1 - es(t, 0.95, 1.05));
       const side = t < 1.0 ? 0 : t < 1.55 ? -1 : t < 2.05 ? 1 : 0;

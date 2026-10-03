@@ -48,7 +48,7 @@ export default {
     { v: 16, cont: true, text: 'odtąd głosi się Dobrą Nowinę o królestwie Bożym, i każdy gwałtem wdziera się do niego.' },
     { v: 17 },
   ],
-  cam: { x: [-20, 20], y: [-90, 40], z: [1, 1.1] },
+  cam: { x: [-20, 60], y: [-90, 40], z: [1, 1.1] },
   build(S) {
     const Q = villageSet(S, { skyCols: AFTER, dis: ['peter', 'john'], ph: 3, crowdSeeds: ['lk16-vL', 'lk16-vR'], sunAt: [1250, 190] });
     const c = Q.c;
@@ -82,21 +82,26 @@ export default {
     const heaven = hang.add(`<g opacity="0"><path d="M0 -1600V-60" stroke="${STRING}" stroke-width="1.2" fill="none"/>${sheet().p(c.cut(c.circ(0, 0, 62, 30), 0.4, 5), mix(C.night, C.indigo, 0.4)).out()}<g transform="translate(-18 -14) scale(.4)">${sun(c, 40)}</g><g transform="translate(22 18) scale(.5)">${moon(c, 30)}</g>${[[20, -30], [-30, 26], [36, -6], [-8, 36]].map(([x, y]) => `<path d="${c.poly(c.star(x, y, 5, 2, 4, 0))}" fill="${C.star}"/>`).join('')}</g>`);
     const earth = hang.add(`<g opacity="0"><path d="M0 -1600V-60" stroke="${STRING}" stroke-width="1.2" fill="none"/>${globe(c, 60)}</g>`);
 
+    /* phone: the strip of the ages narrowed to fit between the frame and the thread; heaven and earth hung over the
+       page's corners rather than off its sides; the Pharisees drawn in from under the thread */
+    const PO = S.portrait;
+    const XS = PO ? 515 : X0, KS = PO ? 0.8 : 1;
+    const PS = PO ? [-25, -55, -90] : [0, 0, 0];
     return (t, time) => {
       const T = time;
       /* v16a — the strip of the ages unrolls to John */
       const un = es(t, 0.05, 0.6);
       const up = es(t, 2.02, 2.25, ease.in);
       const sy = lerp(TY, -500, up);
-      pose(stripEl, { x: X0, y: sy, sx: Math.max(0.01, un), o: un > 0.01 ? 1 : 0 });
+      pose(stripEl, { x: XS, y: sy, s: KS, sx: Math.max(0.01, un), o: un > 0.01 ? 1 : 0 });
       items.forEach((it) => {
         const k = es(t, 0.1 + it.dx / L * 0.5, 0.18 + it.dx / L * 0.5, ease.back);
-        pose(it.el, { x: X0 + it.dx, y: sy, s: k, o: k > 0.01 ? 1 : 0 });
+        pose(it.el, { x: XS + it.dx * KS, y: sy, s: k * KS, o: k > 0.01 ? 1 : 0 });
       });
       const l1 = es(t, 0.45, 0.6) * (1 - up);
-      pose(labLaw, { x: X0 + 190, y: sy + 66, o: l1 });
-      pose(labJohn, { x: X0 + 480, y: sy + 66, o: es(t, 0.55, 0.7) * (1 - up) });
-      pose(labKing, { x: X0 + 640, y: sy + 66, o: es(t, 1.1, 1.25) * (1 - up) });
+      pose(labLaw, { x: XS + 190 * KS, y: sy + 66 * KS, o: l1 });
+      pose(labJohn, { x: XS + 480 * KS, y: sy + 66 * KS, o: es(t, 0.55, 0.7) * (1 - up) });
+      pose(labKing, { x: XS + 640 * KS, y: sy + 66 * KS, o: es(t, 1.1, 1.25) * (1 - up) });
       /* v16b — the gate; the people press in */
       const gd = es(t, 1.05, 1.35, ease.out) * (1 - es(t, 2.9, 3.0));
       const gy = lerp(-200, GY, gd);
@@ -108,19 +113,20 @@ export default {
       pose(dR, { x: GX + 60, y: gy, sx: 1 - open * 0.85, o: gOn });
       pose(spill, { x: GX, y: GY - 90, s: 0.6 + open * 0.4, r: T * 3, o: open * 0.8 * (1 - es(t, 2.0, 2.3)) });
       const press = es(t, 1.4, 1.8) * (1 - es(t, 2.1, 2.4));
-      Q.CROWD.forEach((g) => { const dx = (g.x < 800 ? 1 : -1) * press * 70; g.calm.set({ x: g.x + dx, y: g.y - press * 16, o: 1 - press }); g.wow.set({ x: g.x + dx, y: g.y - press * 16, o: press }); });
+      // (phone: the right crowd presses in further, clear of the thread)
+      Q.CROWD.forEach((g) => { const dx = (g.x < 800 ? 1 : -1) * press * (PO && g.x > 800 ? 130 : 70); g.calm.set({ x: g.x + dx, y: g.y - press * 16, o: 1 - press }); g.wow.set({ x: g.x + dx, y: g.y - press * 16, o: press }); });
       Q.pose(t, T,
         { armF: 16 + es(t, 0.05, 0.2) * 40 + press * 40, armB: 8 + press * 100, head: -4 - es(t, 2.1, 2.3) * 6, blink: blinkAt(T, 2) },
         (d) => ({ head: -8, blink: blinkAt(T, d.seed) }),
-        (m) => ({ head: 4, lean: -press * 4, blink: blinkAt(T, m.seed) }));
+        (m) => ({ x: m.x + PS[m.i], head: 4, lean: -press * 4, blink: blinkAt(T, m.seed) }));
       /* v17 — heaven and earth pass; the stroke stays */
       const pk = es(t, 2.1, 2.4, ease.out);
       const py = lerp(-500, 280, pk);
       pose(pageEl, { x: 800, y: py, o: pk > 0.004 ? 1 : 0 });
       const pass = es(t, 2.5, 2.95);
       const hk = es(t, 2.15, 2.4, ease.out);
-      pose(heaven, { x: 560, y: lerp(-500, 260, hk) - pass * 140, r: pass * -20, s: 1 - pass * 0.3, o: hk > 0.004 ? 1 - pass * 0.8 : 0 });
-      pose(earth, { x: 1040, y: lerp(-500, 300, hk) - pass * 140, r: pass * 20, s: 1 - pass * 0.3, o: hk > 0.004 ? 1 - pass * 0.8 : 0 });
+      pose(heaven, { x: PO ? 640 : 560, y: lerp(-500, PO ? 70 : 260, hk) - pass * 140, r: pass * -20, s: 1 - pass * 0.3, o: hk > 0.004 ? 1 - pass * 0.8 : 0 });
+      pose(earth, { x: PO ? 960 : 1040, y: lerp(-500, PO ? 90 : 300, hk) - pass * 140, r: pass * 20, s: 1 - pass * 0.3, o: hk > 0.004 ? 1 - pass * 0.8 : 0 });
       const sk = es(t, 2.45, 2.6);
       const SXp = 800 + 122, SYp = py - 80;
       pose(stroke, { x: SXp, y: SYp, s: 1.3, o: pk > 0.98 ? 1 - sk : 0 });
@@ -130,6 +136,7 @@ export default {
       S.cam.x = kf(t, [[-0.5, 0], [3, 0]]);
       S.cam.y = kf(t, [[-0.5, 20], [0.1, -40], [1.0, -40], [1.3, -10], [2.0, -10], [2.3, -50]]);
       S.cam.z = kf(t, [[-0.5, 1.06], [0.3, 1.02], [2.2, 1.02]]);
+      if (S.portrait) S.cam.x += 40;
     };
   },
 };

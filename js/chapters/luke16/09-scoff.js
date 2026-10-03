@@ -39,7 +39,7 @@ export default {
     { v: 15, text: 'Powiedział więc do nich: «To wy właśnie wobec ludzi udajecie sprawiedliwych, ale Bóg zna wasze serca.' },
     { v: 15, cont: true, text: 'To bowiem, co za wielkie uchodzi między ludźmi, obrzydliwością jest w oczach Bożych.' },
   ],
-  cam: { x: [-10, 60], y: [-80, 40], z: [1, 1.12] },
+  cam: { x: [-10, 110], y: [-80, 40], z: [0.94, 1.12] },
   build(S) {
     const Q = villageSet(S, { skyCols: AFTER, dis: ['peter', 'john'], ph: 3, crowdSeeds: ['lk16-vL', 'lk16-vR'], sunAt: [1250, 190] });
     const c = Q.c;
@@ -50,6 +50,7 @@ export default {
     const purses = Q.phs.map(() => Q.act.add(`<g>${beltPurse(c)}</g>`));
     const hearts = Q.phs.map(() => Q.W.add(`<g opacity="0">${stoneHeart(c, 22)}<g transform="translate(0 -2)">${coin(c, 7)}</g></g>`));
     const laughs = Q.phs.map(() => Q.W.add(`<g opacity="0">${laughMarks(c)}</g>`));
+    const PS = S.portrait ? [-20, -40, -60] : [0, 0, 0];   // phone: the scoffing Pharisees drawn in from under the thread
 
     return (t, time) => {
       const T = time;
@@ -67,10 +68,10 @@ export default {
       Q.pose(t, T,
         { flip: false, armF: 16 + turn * 60 - rise * 20, armB: 8 + turn * 20, head: -2 - rise * 8 * (1 - grey), blink: blinkAt(T, 2) },
         (d) => ({ head: -4 + laugh * 4, blink: blinkAt(T, d.seed) }),
-        (m) => ({ head: -laugh * 16 + shake * 3 - preen * 10 + seen * 10 * (1 - rise) - rise * 14 * (1 - grey), lean: -laugh * 8 - preen * 6, armF: 10 + (m.i === 0 ? laugh * 80 : laugh * 30) + preen * 20, armB: 8 + laugh * 40, blink: blinkAt(T, m.seed) }));
+        (m) => ({ x: m.x + PS[m.i], head: -laugh * 16 + shake * 3 - preen * 10 + seen * 10 * (1 - rise) - rise * 14 * (1 - grey), lean: -laugh * 8 - preen * 6, armF: 10 + (m.i === 0 ? laugh * 80 : laugh * 30) + preen * 20, armB: 8 + laugh * 40, blink: blinkAt(T, m.seed) }));
       Q.amaze(Math.max(preen, rise * (1 - grey)) * 0.9);
       Q.phs.forEach((m, i) => {
-        const x = m.x, y = F + (m.i % 2 ? -4 : 4);
+        const x = m.x + PS[m.i], y = F + (m.i % 2 ? -4 : 4);
         pose(purses[i], { x: x - 12, y: y - 90 * 0.96, r: shake * 8 });
         const [hx, hy] = headAt(x, y, 0.96, true);
         const lk = laugh;
@@ -90,6 +91,7 @@ export default {
       S.cam.x = kf(t, [[-0.5, 40], [1.0, 40], [2.0, 30]]);
       S.cam.y = kf(t, [[-0.5, 30], [1.0, 20], [2.0, 10], [2.3, -50]]);
       S.cam.z = kf(t, [[-0.5, 1.1], [1.0, 1.1], [2.0, 1.06], [2.3, 1.0]]);
+      if (S.portrait) { S.cam.x += 50; S.cam.z -= 0.06; }
     };
   },
 };

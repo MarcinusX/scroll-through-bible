@@ -50,6 +50,8 @@ export default {
     const tomb = P.trap.add(`<g>${tombRock(c, 340, 230)}</g>`);
     const stone = P.trap.add(`<g>${tombStone(c, 56)}</g>`);
 
+    const PO = S.portrait;   // phone: the tomb parked out of sight below, and risen clear of the thread
+    const TXp = PO ? 1010 : TX, TY0 = GY + (PO ? 800 : 420);
     return (t, time) => {
       const T = time;
       const night = es(t, 0.05, 0.5);
@@ -84,9 +86,9 @@ export default {
       rich.set({ x: RX, y: FL + 10, s: 1.0, o: 1 - es(t, 1.5, 1.6), armF: 40 - fall * 30, armB: 10, head: fall * 24, lean: fall * 10, blink: fall > 0.3 ? 0.9 : blinkAt(T, 1) });
       pose(cushion, { x: RX, y: FL + 18, o: 1 - es(t, 1.5, 1.6) });
       const rise = es(t, 1.35, 1.6, ease.out);
-      pose(tomb, { x: TX, y: lerp(GY + 420, GY + 10, rise) });
+      pose(tomb, { x: TXp, y: lerp(TY0, GY + 10, rise) });
       const roll = es(t, 1.62, 1.8);
-      pose(stone, { x: TX + lerp(110, 0, roll), y: lerp(GY + 420, GY + 10, rise) - 56, r: -roll * 200 });
+      pose(stone, { x: TXp + lerp(110, 0, roll), y: lerp(TY0, GY + 10, rise) - 56, r: -roll * 200 });
 
       S.cam.x = kf(t, [[-0.5, -60], [0.3, -40], [0.9, -30], [1.1, 30]]);
       S.cam.y = kf(t, [[-0.5, 20], [0.3, 0], [0.8, -40], [1.05, -30], [1.3, 20]]);
