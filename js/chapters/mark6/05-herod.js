@@ -83,7 +83,8 @@ export default {
 
     /* ---------- the court ---------- */
     const act = S.layer({ par: 0.55, sh: 5 });
-    const COURT = [[440, 0], [520, 1], [600, 2], [1000, 3], [1080, 4], [1160, 5]].map(([x, i]) => ({ x, i, seed: c.rr(0, 6), p: S.puppet(act.add(person(c, noble(c, i)))) }));
+    // phone: the courtiers closer in, so the two who speak (Elijah! a prophet!) are not under the thread
+    const COURT = (S.portrait ? [[500, 0], [565, 1], [630, 2], [965, 3], [1020, 4], [1070, 5]] : [[440, 0], [520, 1], [600, 2], [1000, 3], [1080, 4], [1160, 5]]).map(([x, i]) => ({ x, i, seed: c.rr(0, 6), p: S.puppet(act.add(person(c, noble(c, i)))) }));
     const messenger = S.puppet(act.add(person(c, { robe: C.wheatRobe, belt: C.leather, hair: C.hair2, hairStyle: 'short', beard: 'none', skin: C.skin3 })));
     const hMark = (o) => withFace(withFace(person(c, o), crown(c)), faceBits(c));
     const herodSit = S.puppet(act.add(hMark({ ...LOOK.herod, pose: 'sit' })));
@@ -98,7 +99,8 @@ export default {
 
     /* ---------- drapes in front ---------- */
     const fg = S.layer({ par: 0.9, sh: 8 });
-    fg.add(sheet().p(c.cut([[-1200, -1400], [2800, -1400], [2800, 70], [-1200, 80]], 0.8, 16), shade(C.plumRobe, -0.2)).x(c.ribbon([[-1200, 66], [2800, 62]], 6), C.sun).out());
+    // phone: the drape is a valance, not a sheet filling the top of the tall screen
+    fg.add(sheet().p(c.cut([[-1200, S.portrait ? -10 : -1400], [2800, S.portrait ? -10 : -1400], [2800, 70], [-1200, 80]], 0.8, 16), shade(C.plumRobe, -0.2)).x(c.ribbon([[-1200, 66], [2800, 62]], 6), C.sun).out());
 
     return (t, time) => {
       const T = time;

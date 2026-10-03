@@ -20,6 +20,8 @@ const DIS = [
   { k: 'thomas', o: CAST.thomas, x: 555, out: 330, back: 440 },
 ];
 const BASKETS = [450, 530, 610, 690, 910, 990, 1070];
+const BASKETS_P = [520, 580, 640, 700, 880, 940, 1000];   // phone: all seven inside the screen
+const OUT_P = { peter: 1090, andrew: 520, james: 1030, john: 570, matthew: 1110, thomas: 480 };   // phone: carrying it out stays in view
 
 export default {
   id: 'm8-loaves',
@@ -38,10 +40,12 @@ export default {
   cam: { x: [-40, 40], y: [-60, 130], z: [0.86, 1.32] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;
+    const SUNX = P ? 1010 : 1200;
     const SKY = ['#d9e1d2', '#f1e6c9', '#f5e0bd'];
     const sk = sky(S, SKY);
     const hangL = S.layer({ par: 0.05, sh: 5 });
-    const sunEl = hanging(hangL, sun(c, 50), { x: 1200, y: 150, len: 800 });
+    const sunEl = hanging(hangL, sun(c, 50), { x: SUNX, y: 150, len: 800 });
     const cl1 = hanging(hangL, cloud(c, 200), { x: 470, y: 170, len: 700 });
     const cl2 = hanging(hangL, cloud(c, 140), { x: 1020, y: 250, len: 700 });
     const heaven = hangL.add(`<g>${rays(c, { n: 16, r0: 30, r1: 700, spread: 0.05, color: '#fff3cf' })}<circle r="160" fill="url(#halo-glow)"/></g>`);
@@ -93,7 +97,8 @@ export default {
     const frontL = S.layer({ par: 0.55, sh: 5 });
     frontL.add(`<g transform="translate(${JX + 6} ${FY + 10})">${cloth(c, 250, 24)}</g>`);
     const loaves = Array.from({ length: 7 }, (_, i) => ({ i, el: frontL.add(`<g>${loaf(c, 16)}</g>`), x: JX - 96 + i * 32, y: FY + 6 }));
-    const dis = DIS.map((d, i) => {
+    const dis = DIS.map((d0, i) => {
+      const d = P ? { ...d0, x: 800 + (d0.x - 800) * 0.8, back: 800 + (d0.back - 800) * 0.66, out: OUT_P[d0.k] } : d0;   // phone: the six stand closer in, clear of the thread
       const p = S.puppet(frontL.add(person(c, d.o)));
       const bk = frontL.add(`<g>${basket(c, { w: 42, h: 30, heapK: 'heap-' + d.k })}</g>`);
       return { ...d, i, p, bk, heap: S.$('heap-' + d.k), seed: c.rr(0, 9) };
@@ -109,7 +114,7 @@ export default {
 
     /* ---------- seven baskets of pieces ---------- */
     const bL = S.layer({ par: 0.6, sh: 5 });
-    const baskets = BASKETS.map((x, i) => ({ i, x, el: bL.add(`<g>${basket(c, { w: 58, h: 40, full: true })}</g>`), num: bL.add(`<g>${tag(c, String(i + 1), { size: 20, w: 34 })}</g>`) }));
+    const baskets = (P ? BASKETS_P : BASKETS).map((x, i) => ({ i, x, el: bL.add(`<g>${basket(c, { w: 58, h: 40, full: true })}</g>`), num: bL.add(`<g>${tag(c, String(i + 1), { size: 20, w: 34 })}</g>`) }));
 
     /* ---------- speech ---------- */
     const bubL = S.layer({ par: 0.55, sh: 4 });
@@ -122,7 +127,7 @@ export default {
     return (t, time) => {
       const T = time;
       sk.blend(SKY, ['#e4d9c4', '#f3dfbd', '#f2d2ac'], es(t, 6, 10));
-      swing(sunEl, 1200, 150 + es(t, 0, 10) * 70, T, 1.1, 0.7);
+      swing(sunEl, SUNX, 150 + es(t, 0, 10) * 70, T, 1.1, 0.7);
       swing(cl1, 470 + Math.sin(T * 0.1) * 26, 170, T, 1.4, 0.6, 1);
       swing(cl2, 1020 + Math.sin(T * 0.13 + 2) * 26, 250, T, 1.4, 0.8, 2);
       const on4000 = es(t, 8.05, 8.4, ease.back) * (1 - es(t, 9.4, 9.8));
@@ -215,10 +220,11 @@ export default {
 
       /* seven baskets of pieces, counted */
       baskets.forEach((b) => {
-        const k = es(t, 7.45 + b.i * 0.06, 7.62 + b.i * 0.06, ease.back);
+        const st = P ? 0.025 : 0.06;   // phone: the seventh basket is in by x.75 too
+        const k = es(t, 7.45 + b.i * st, 7.62 + b.i * st, ease.back);
         const y = FY + 36 + Math.abs(b.x - JX) * 0.04;
         pose(b.el, { x: b.x, y, s: k * (1 - es(t, 9.3, 9.6)), o: k > 0.02 ? 1 : 0 });
-        const nk = es(t, 7.5 + b.i * 0.06, 7.66 + b.i * 0.06, ease.back) * (1 - es(t, 8.1, 8.3));
+        const nk = es(t, 7.5 + b.i * st, 7.66 + b.i * st, ease.back) * (1 - es(t, 8.1, 8.3));
         pose(b.num, { x: b.x, y: y - 100, s: nk, o: nk > 0.02 ? 1 : 0 });
       });
 

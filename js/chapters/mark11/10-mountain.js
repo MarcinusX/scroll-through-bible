@@ -12,9 +12,9 @@ import { scrap } from '../mark2/lib.js';
 
 const PI = Math.PI;
 const GROUND = 648;
-const MX = 880, MY = 528;       // the mountain's foot
-const SEA = [1150, 566];        // where it lands
-const JX = 560;
+const MX0 = 880, MY = 528;       // the mountain's foot
+const SEA0 = [1150, 566];        // where it lands
+const JX0 = 560;
 
 export default {
   id: 'm11-mountain',
@@ -29,6 +29,9 @@ export default {
   cam: { x: [-60, 160], y: [-80, 40], z: [0.94, 1.14] },
   build(S) {
     const c = S.c;
+    // phone: the shore, the mountain and the sea come 120 further in, and the people stand closer together
+    const P = S.portrait, D = P ? -120 : 0;
+    const MX = MX0 + D, SEA = [SEA0[0] + D, SEA0[1]], JX = P ? 650 : JX0, KX = P ? 801 : 756;
     const SKY = ['#cfe0de', '#f0e6cb', '#f8ebd3'];
     const sk = sky(S, SKY);
     const heav = S.layer({ par: 0.02, sh: 1, flat: true });
@@ -41,17 +44,17 @@ export default {
     /* ---------- far hills of Moab and the sea ---------- */
     S.layer({ par: 0.07, sh: 2 }).add(band(c, { y: 470, amps: [16, 8, 3], lens: [1100, 400, 140], color: mix(C.hillFar, C.duskViolet, 0.25), x0: -1400, x1: 3200 }).markup);
     const seaL = S.layer({ par: 0.12, sh: 2 });
-    seaL.add(sheet().p(c.cut([[960, 552], [1060, 542], [3200, 536], [3200, 900], [960, 900]], 1, 16), C.lake).out());
+    seaL.add(`<g transform="translate(${D} 0)">${sheet().p(c.cut([[960, 552], [1060, 542], [3200, 536], [3200, 900], [960, 900]], 1, 16), C.lake).out()}</g>`);
     /* ---------- the mountain on strings (its roots hidden in the hill until it rises) ---------- */
     const mtL = S.layer({ par: 0.14, sh: 5 });
     const strings = mtL.add(`<g opacity="0"><path d="M-120 -2400V-240M120 -2400V-236" stroke="rgba(74,54,34,.6)" stroke-width="1.6" fill="none"/></g>`);
     const mt = mtL.add(`<g>${mountain(c, 420, 300)}</g>`);
     const hillL = S.layer({ par: 0.14, sh: 3 });
     const hp = [[-1400, 548], [-600, 540], [200, 546], [800, 540], [1000, 548], [1080, 566], [1000, 900], [-1400, 900]];
-    hillL.add(sheet().p(c.cut(hp, 1.2, 12), C.hillMid).out());
+    hillL.add(`<g transform="translate(${D} 0)">${sheet().p(c.cut(hp, 1.2, 12), C.hillMid).out()}</g>`);
     // the front of the sea: waves that cover the falling mountain
     const seaFront = S.layer({ par: 0.2, sh: 3, pad: 160 });
-    seaFront.add(`<g>${waveStrip(c, { y: 576, len: 110, amp: 7, color: C.lake2, x0: 1010, x1: 3200, bottom: 900 })}</g>`);
+    seaFront.add(`<g transform="translate(${D} 0)">${waveStrip(c, { y: 576, len: 110, amp: 7, color: C.lake2, x0: 1010, x1: 3200, bottom: 900 })}</g>`);
     const splashL = S.layer({ par: 0.2, sh: 3 });
     const drops = Array.from({ length: 16 }, (_, i) => ({ i, el: splashL.add(`<path d="${c.cut([[0, -9], [5, 2], [0, 7], [-5, 2]], 0.2, 3)}" fill="${i % 3 ? C.foam : C.lake}"/>`), a: PI + (i + 0.5) / 16 * PI, v: c.rr(90, 200) }));
     const rings = [0, 1, 2].map((i) => splashL.add(`<path d="${c.ribbon(c.arc(0, 0, 60, 12, 0, PI * 2, 24), 3)}" fill="${C.foam}"/>`));
@@ -66,12 +69,12 @@ export default {
     /* ---------- people ---------- */
     const L = S.layer({ par: 0.5, sh: 5 });
     const PRAY = [
-      { o: CAST.peter, x: 330, y: GROUND - 6 }, { o: CAST.john, x: 430, y: GROUND - 2 },
-      { o: CAST.james, x: 960, y: GROUND - 4 }, { o: CAST.matthew, x: 1060, y: GROUND - 8 },
+      { o: CAST.peter, x: P ? 470 : 330, y: GROUND - 6 }, { o: CAST.john, x: P ? 555 : 430, y: GROUND - 2 },
+      { o: CAST.james, x: P ? 945 : 960, y: GROUND - 4 }, { o: CAST.matthew, x: P ? 1025 : 1060, y: GROUND - 8 },
     ].map((d, i) => ({ ...d, i, seed: c.rr(0, 9), pS: S.puppet(L.add(person(c, d.o))), pK: S.puppet(L.add(person(c, { ...d.o, pose: 'kneel' }))) }));
     const jesus = S.puppet(L.add(person(c, { ...CAST.jesus })));
     // two who have something against each other: Andrew and Thomas, a rope knotted between them
-    const PAIR = [{ o: CAST.andrew, x: 700, flip: true }, { o: CAST.thomas, x: 812, flip: false }].map((d, i) => ({ ...d, i, seed: c.rr(0, 9), p: S.puppet(L.add(person(c, d.o))) }));
+    const PAIR = [{ o: CAST.andrew, x: KX - 56, flip: true }, { o: CAST.thomas, x: KX + 56, flip: false }].map((d, i) => ({ ...d, i, seed: c.rr(0, 9), p: S.puppet(L.add(person(c, d.o))) }));
     const fx = S.layer({ par: 0.5, sh: 6 });
     const ropeL = fx.add(`<g>${ropeHalf(c, 60, -1)}</g>`), ropeR = fx.add(`<g>${ropeHalf(c, 60, 1)}</g>`);
     const knot = fx.add(`<g>${knotBall(c, 14)}</g>`);
@@ -152,17 +155,17 @@ export default {
         const facing = untie > 0.4 ? !p.flip : p.flip;
         p.p.set({ x, y: GROUND - 2, s: 0.92, flip: facing, o: seg(t, 3.9, 3.98), walk: (inPair > 0 && inPair < 1) || (hug > 0 && hug < 1) ? x * 0.05 + p.i : undefined, armF: inPair * 30 * (1 - untie) + hug * 70, armB: hug * 60, head: (1 - untie) * -6 + hug * 6, lean: hug * 6 * (p.i ? -1 : 1), blink: blinkAt(T, p.seed) });
       });
-      const kx = 756, ky = GROUND - 104;
+      const kx = KX, ky = GROUND - 104;
       const loose = untie;
       pose(knot, { x: kx, y: ky, s: 1 - loose, r: loose * 90, o: seg(t, 3.9, 4.0) * (1 - loose) });
       pose(ropeL, { x: kx - loose * 10, y: ky + loose * 30, r: -loose * 50, o: seg(t, 3.9, 4.0) * (1 - es(t, 4.8, 5.0)) });
       pose(ropeR, { x: kx + loose * 10, y: ky + loose * 30, r: loose * 50, o: seg(t, 3.9, 4.0) * (1 - es(t, 4.8, 5.0)) });
-      pose(embraceGlow, { x: 756, y: GROUND - 100, s: 1, o: hug * 0.8 * (1 - heaven * 0.3) });
+      pose(embraceGlow, { x: KX, y: GROUND - 100, s: 1, o: hug * 0.8 * (1 - heaven * 0.3) });
 
       /* v25b — the Father in heaven forgives: dark scraps float away and turn to light */
       faults.forEach((f) => {
         const d = f.d;
-        const bx = d.x || 756, by = (d.y || GROUND) - 130;
+        const bx = d.x || KX, by = (d.y || GROUND) - 130;
         const k = es(t, 5.1 + f.i * 0.05, 5.8, ease.in);
         const x = bx + Math.sin(f.i * 2 + k * 3) * 30, y = by - k * 360;
         pose(f.el, { x, y, r: k * 200, s: 1 - k * 0.3, o: seg(t, 5.0, 5.08) * (1 - es(t, 5.45 + f.i * 0.03, 5.6 + f.i * 0.03)) });

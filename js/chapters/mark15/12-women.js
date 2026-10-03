@@ -74,7 +74,7 @@ export default {
         face(w.p.el, 'tear', w.i === 1 ? es(t, 0.7, 0.9) * (1 - es(t, 2.9, 3.4)) : 0);
         const tk = es(t, 1.05 + w.i * 0.14, 1.4 + w.i * 0.14);
         const [hx, hy] = headAt(w.x, GY, 1.08, w.f);
-        swing(w.tag, hx + (w.i === 0 ? -10 : w.i === 1 ? 60 : 0), hy - 190 - (1 - tk) * 700, T, 1.3, 0.9, w.i);
+        swing(w.tag, hx + (w.i === 0 ? (S.portrait ? 30 : -10) : w.i === 1 ? 60 : 0), hy - 190 - (1 - tk) * 700, T, 1.3, 0.9, w.i);
       });
       const mk = es(t, 2.05, 2.4) * (1 - es(t, 3.1, 3.4));
       swing(mem, 800, 292 - (1 - mk) * 800, T, 0.9, 0.7, 2);

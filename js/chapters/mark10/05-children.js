@@ -37,6 +37,7 @@ export default {
   cam: { x: [-60, 60], y: [-30, 40], z: [1, 1.16] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;   // phone: the families stand closer, clear of the progress thread
     const R = roadSet(S, { jer: 0.16, jerX: 1210, roadX: 900, trees: 16, clouds: [[500, 120, 170], [1100, 180, 130]] });
     const vil = S.layer({ par: 0.28, sh: 3 });
     vil.add(house(c, 1180, 594, 80, 60) + house(c, 1270, 600, 60, 44) + house(c, 290, 596, 70, 50));
@@ -51,9 +52,9 @@ export default {
     /* the families */
     const pL = S.layer({ par: 0.5, sh: 5 });
     const PARENTS = [
-      { o: { ...crowdPerson(c), hairStyle: 'veil', beard: 'none', robe: C.lavender, veil: C.cream }, x: 1010, y: GY - 30, s: 0.9 },
-      { o: { ...crowdPerson(c), hairStyle: 'short', beard: 'full', robe: C.ochreRobe, mantle: C.sageRobe }, x: 1110, y: GY - 34, s: 0.9 },
-      { o: { ...crowdPerson(c), hairStyle: 'veil', beard: 'none', robe: C.skyVeil, veil: C.blushVeil }, x: 1200, y: GY - 26, s: 0.88 },
+      { o: { ...crowdPerson(c), hairStyle: 'veil', beard: 'none', robe: C.lavender, veil: C.cream }, x: P ? 925 : 1010, y: GY - 30, s: 0.9 },
+      { o: { ...crowdPerson(c), hairStyle: 'short', beard: 'full', robe: C.ochreRobe, mantle: C.sageRobe }, x: P ? 980 : 1110, y: GY - 34, s: 0.9 },
+      { o: { ...crowdPerson(c), hairStyle: 'veil', beard: 'none', robe: C.skyVeil, veil: C.blushVeil }, x: P ? 1030 : 1200, y: GY - 26, s: 0.88 },
     ].map((m, i) => ({ ...m, i, seed: c.rr(0, 9), p: S.puppet(pL.add(person(c, m.o))) }));
     // the disciples who block the way (standing and, for Peter, kneeling at the little door)
     const DIS = [TWELVE[0], TWELVE[3], TWELVE[1], TWELVE[2]].map((d, i) => ({ ...d, i, seed: c.rr(0, 9), el: pL.add(withFace(person(c, d.o), faceBits(c))) }));
@@ -61,7 +62,7 @@ export default {
     const peterKneel = S.puppet(pL.add(person(c, { ...TWELVE[0].o, pose: 'kneel' })));
     const KIDS = Array.from({ length: 5 }, (_, i) => {
       const el = pL.add(withFace(person(c, child(c, i)), faceBits(c)));
-      return { i, el, p: S.puppet(el), seed: c.rr(0, 9), crown: null, x0: 960 + i * 58, y0: GY + (i % 2) * 10, s: 0.5 + (i % 3) * 0.03 };
+      return { i, el, p: S.puppet(el), seed: c.rr(0, 9), crown: null, x0: P ? 900 + i * 38 : 960 + i * 58, y0: GY + (i % 2) * 10, s: 0.5 + (i % 3) * 0.03 };
     });
     const jSitEl = pL.add(person(c, { ...CAST.jesus, pose: 'sit' }));
     const jStandEl = pL.add(withFace(person(c, { ...CAST.jesus }), faceBits(c)));
@@ -77,7 +78,7 @@ export default {
     fg.add(bush(c, 200, 990, 230, C.sage, C.moss) + rock(c, 1420, 990, 210, 70, C.rock2));
 
     // where the children go when they reach him (around him)
-    const AT = [[JX - 110, GY + 14], [JX - 58, GY + 30], [JX + 76, GY + 30], [JX + 128, GY + 14], [JX - 168, GY + 24]];
+    const AT = [[JX - 110, GY + 14], [JX - 58, GY + 30], [JX + 76, GY + 30], P ? [JX - 218, GY + 14] : [JX + 128, GY + 14], [JX - 168, GY + 24]];   // phone: one child stands left, so Peter is seen kneeling at the door
 
     return (t, time) => {
       const T = time;
@@ -98,7 +99,7 @@ export default {
         face(d.el, 'angry', scold);
         face(d.el, 'sad', es(t, 2.1, 2.3) * (1 - es(t, 3.2, 3.5)));
       });
-      const doorX = 990;
+      const doorX = P ? 905 : 990;   // phone: the little door stands in front of the families, not behind them
       const pgo = es(t, 5.05, 5.35);
       const px = lerp(470, doorX - 70, pgo);
       if (pgo > 0 && pgo < 1) DIS[0].p.set({ x: px, y: lerp(GY - 60, GY - 10, pgo), s: lerp(0.78, 0.86, pgo), walk: px * 0.06, blink: 0, o: 1 - pk });
@@ -109,7 +110,7 @@ export default {
       const come = es(t, -0.2, 0.75);
       PARENTS.forEach((m) => {
         const stepBack = es(t, 3.6, 4.1);
-        const x = lerp(m.x + 480, m.x, come) + stepBack * 90;
+        const x = lerp(m.x + 480, m.x, come) + stepBack * (P ? 20 : 90) + (P ? es(t, 4.6, 5.0) * (1 - es(t, 6.2, 6.5)) * (50 - m.i * 22) : 0);   // phone: they make room for the door
         const release = 1 - es(t, 3.3, 3.6);
         const push = es(t, 0.4, 0.8) * (1 - block) * release;
         m.p.set({ x, y: m.y - stepBack * 16, s: m.s * (1 - stepBack * 0.06), flip: true, walk: (come > 0 && come < 1) || (stepBack > 0 && stepBack < 1) ? x * 0.05 + m.i : undefined, armF: 14 + push * 40 + block * 60 * release + stepBack * 30, armB: block * 50 * release + stepBack * 20, head: block * 6 - stepBack * 4, blink: blinkAt(T, m.seed) });
@@ -151,7 +152,7 @@ export default {
         pose(sp, { x: JX - 120 + i * 80, y: GY - 150 - k * 120, s: 0.8, o: es(t, 6.2, 6.5) * Math.sin(k * Math.PI) });
       });
 
-      S.cam.x = -20 + es(t, 4.8, 5.2) * 60 * (1 - es(t, 5.9, 6.3)) - es(t, 5.9, 6.3) * 30;
+      S.cam.x = -20 + es(t, 4.8, 5.2) * 60 * (1 - es(t, 5.9, 6.3)) - es(t, 5.9, 6.3) * (P ? 0 : 30);
       S.cam.z = 1 + es(t, 1.9, 2.3) * 0.05 + es(t, 5.9, 6.4) * 0.08;
       S.cam.y = -es(t, 1.9, 2.3) * 10 + es(t, 5.9, 6.4) * 30;
     };

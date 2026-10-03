@@ -11,6 +11,9 @@ import { ELEVEN, LOOK, voiceRings, headAt, wisp, sparkle, snake, cup, bubble, FO
 const GY = 740, JX = 800, R = 115;
 const ROW = [580, 690, 800, 910, 1020].map((x) => [x, 205]);
 const SLOT = [[545, 340], [1055, 340], [545, 500], [1055, 500], [800, 385]];
+// phone: the played plates park nearer the middle (the right ones were under the thread), and the plate
+// in the middle is a little smaller so it doesn't cover them
+const SLOT_P = [[600, 340], [1000, 340], [600, 500], [1000, 500], [800, 385]];
 const MID = [800, 385];
 
 export default {
@@ -71,7 +74,7 @@ export default {
 
     /* Jesus and the disciples */
     const PL = S.layer({ par: 0.5, sh: 5 });
-    const D = [0, 2, 4, 1, 3, 7].map((j, i) => ({ ...ELEVEN[j], i, x: [440, 520, 600, 1000, 1080, 1160][i], y: GY - [20, 10, 0, 0, 10, 20][i], seed: c.rr(0, 9) }));
+    const D = [0, 2, 4, 1, 3, 7].map((j, i) => ({ ...ELEVEN[j], i, x: (S.portrait ? [500, 565, 630, 955, 1010, 1060] : [440, 520, 600, 1000, 1080, 1160])[i], y: GY - [20, 10, 0, 0, 10, 20][i], seed: c.rr(0, 9) }));
     D.forEach((m) => { m.flip = m.x > JX; m.p = S.puppet(PL.add(person(c, { ...m.o }))); });
     const jesus = S.puppet(PL.add(person(c, { ...CAST.jesus })));
     const voice = voiceRings(PL, c, { n: 3, color: C.halo, r: 40, w: 6 });
@@ -93,8 +96,10 @@ export default {
         let [x, y] = ROW[p.i];
         y = lerp(-1000, y, drop);
         x = lerp(x, MID[0], toMid); y = lerp(y, MID[1], toMid);
-        x = lerp(x, SLOT[p.i][0], toSlot); y = lerp(y, SLOT[p.i][1], toSlot);
-        const sc = lerp(0.42, 1.2, toMid) * (1 - toSlot * 0.52);
+        const SL = S.portrait ? SLOT_P : SLOT;
+        x = lerp(x, SL[p.i][0], toSlot); y = lerp(y, SL[p.i][1], toSlot);
+        const big = S.portrait ? 1.0 : 1.2;
+        const sc = S.portrait ? lerp(0.42, big, toMid) * lerp(1, 0.576 / big, toSlot) : lerp(0.42, 1.2, toMid) * (1 - toSlot * 0.52);
         swing(p.el, x, y, time, 1, 0.7, p.i);
         const turn = es(t, a + 0.05, a + 0.3);
         const sx = Math.cos(turn * PI);

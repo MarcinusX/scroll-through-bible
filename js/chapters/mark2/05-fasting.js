@@ -34,13 +34,14 @@ export default {
     { v: 18, cont: true, text: 'Przyszli więc do Niego i pytali: «Dlaczego uczniowie Jana i uczniowie faryzeuszów poszczą, a Twoi uczniowie nie poszczą?»' },
     { v: 19, text: 'Jezus im odpowiedział: «Czy goście weselni mogą pościć, dopóki pan młody jest z nimi?' },
   ],
-  cam: { x: [-170, 30], y: [-40, 40], z: [1, 1.12] },
+  cam: { x: [-420, 30], y: [-40, 40], z: [1, 1.12] },
   build(S) {
     const c = S.c;
     const SKY = ['#d5e4dc', '#f1e7cc', '#f8ecd3'];
     sky(S, SKY);
     const hangL = S.layer({ par: 0.05, sh: 5 });
-    const sunEl = hanging(hangL, sun(c, 50), { x: 1150, y: 130, len: 700 });
+    const SUNX = S.portrait ? 960 : 1150;   // phone: not under the progress thread
+    const sunEl = hanging(hangL, sun(c, 50), { x: SUNX, y: 130, len: 700 });
     const cl1 = hanging(hangL, cloud(c, 180), { x: 470, y: 170, len: 600 });
 
     const far = S.layer({ par: 0.12, sh: 2 });
@@ -76,18 +77,21 @@ export default {
       { x: 408, mk: (pose) => scribe(c, 0, { pose }) },
       { x: 478, mk: (pose) => scribe(c, 2, { pose }) },
     ].map((f, i) => {
+      // phone: kneel a little further right, and stand closer together after they walk up
+      if (S.portrait) f.x += 80;
       if (f.o) f.mk = (pose) => person(c, { ...f.o, pose });
       const cc = c;
       const kn = S.puppet(fastL.add(f.mk('kneel')));
       const st = S.puppet(fastL.add(f.mk('stand')));
-      return { ...f, i, kn, st, seed: cc.rr(0, 9), to: 420 + i * 58, bowl: fastL.add(`<g>${bowl(c, { food: null, color: C.stone2, w: 30 })}</g>` ) };
+      return { ...f, i, kn, st, seed: cc.rr(0, 9), to: S.portrait ? 500 + i * 52 : 420 + i * 58, bowl: fastL.add(`<g>${bowl(c, { food: null, color: C.stone2, w: 30 })}</g>` ) };
     });
 
     /* Jesus and his disciples eating under the tree */
     const eatL = S.layer({ par: 0.6, sh: 5 });
     const DIS = [
       { k: 'peter', x: 660 }, { k: 'andrew', x: 718 }, { k: 'james', x: 930 }, { k: 'john', x: 990 }, { k: 'matthew', x: 1052 },
-    ].map((d, i) => ({ ...d, i, flip: d.x > 800, seed: c.rr(0, 9), p: S.puppet(eatL.add(person(c, { ...CAST[d.k], pose: 'sit' }))) }));
+    ].map((d, i) => (S.portrait && i > 1 ? { ...d, x: d.x - 14 - (i - 2) * 4 } : d))   // phone: the last one clear of the thread
+      .map((d, i) => ({ ...d, i, flip: d.x > 800, seed: c.rr(0, 9), p: S.puppet(eatL.add(person(c, { ...CAST[d.k], pose: 'sit' }))) }));
     const jesus = S.puppet(eatL.add(person(c, { ...CAST.jesus, pose: 'sit' })));
     const cloth = sheet();
     cloth.p(c.cut([[620, Y + 4], [1090, Y + 2], [1110, Y + 30], [600, Y + 32]], 0.8, 10), C.cream);
@@ -110,7 +114,7 @@ export default {
 
     return (t, time) => {
       const T = time;
-      swing(sunEl, 1150, 130, T, 1, 0.6);
+      swing(sunEl, SUNX, 130, T, 1, 0.6);
       swing(cl1, 470 + Math.sin(T * 0.1) * 24, 170, T, 1.2, 0.7, 1);
 
       /* the fasting ones */
@@ -156,8 +160,10 @@ export default {
       });
 
       /* camera */
-      S.cam.x = kf(t, [[-0.5, -120], [0.9, -120], [1.5, -60], [2.1, 0]]);
-      S.cam.z = kf(t, [[-0.5, 1.08], [0.9, 1.08], [1.5, 1.04], [2.1, 1.02], [2.7, 1.0]]);
+      // phone: the fasting ones kneel far left of the meal; show them, then both groups
+      const P = S.portrait;
+      S.cam.x = kf(t, [[-0.5, P ? -400 : -120], [0.9, P ? -400 : -120], [1.5, P ? -180 : -60], [2.1, P ? -90 : 0]]);
+      S.cam.z = kf(t, [[-0.5, P ? 1.0 : 1.08], [0.9, P ? 1.0 : 1.08], [1.5, 1.04], [2.1, 1.02], [2.7, 1.0]]);
       S.cam.y = kf(t, [[-0.5, 20], [1.5, 20], [2.1, 0], [2.7, -20]]);
     };
   },

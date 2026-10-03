@@ -13,7 +13,7 @@ import { tr } from '../../core/i18n.js';
 import { roadSet, jericho, TWELVE, LOOK, say, slip, nameTag, beggarBowl, cloakFly, cloakSpread, voiceRings, headAt, spark } from './lib.js';
 
 const GY = 668;
-const BX = 1010, BY = 700;       // where Bartimaeus sits
+const BX_W = 1010, BY = 700;       // where Bartimaeus sits
 const JSTOP = 770;               // where Jesus stops
 const CITY = 250;                // Jericho's gate
 
@@ -37,6 +37,9 @@ export default {
   cam: { x: [-260, 160], y: [-30, 40], z: [1, 1.14] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;
+    // phone: Bartimaeus and the people round him sit further in, clear of the progress thread
+    const BX = P ? 960 : BX_W;
     const R = roadSet(S, { skyCols: ['#d3e0d8', '#f1e4c6', '#f7e3c2'], road: false, jer: 0.85, jerX: 1330, farY: 400, hillY: 470, groundY: 570, trees: 10, treeCol: C.olive, hillCol: mix(C.hillMid, C.dune, 0.35), groundCol: mix(C.sand, C.dune, 0.3), sunAt: [1260, 150], clouds: [[560, 130, 170], [1040, 100, 120]] });
     const G = R.groundL;
     // the road out of Jericho, climbing towards Jerusalem
@@ -58,7 +61,7 @@ export default {
     const DIS = [0, 3, 1, 2, 6, 7].map((k, i) => ({ i, p: S.puppet(pL.add(person(c, TWELVE[k].o))), seed: c.rr(0, 9), dx: -90 - i * 52, dy: (i % 2) * 16 - 10 }));
     const jesus = S.puppet(pL.add(person(c, { ...CAST.jesus })));
     // the people who hush him, then call him
-    const NEAR = [[1110, GY + 20, true], [1180, GY + 8, true], [905, GY + 24, false]].map(([x, y, flip], i) => ({ i, x, y, flip, p: S.puppet(pL.add(person(c, crowdPerson(c, { hairStyle: i === 2 ? 'veil' : 'short', beard: i === 2 ? 'none' : 'short' })))), seed: c.rr(0, 9) }));
+    const NEAR = (P ? [[1040, GY + 20, true], [1095, GY + 8, true], [860, GY + 24, false]] : [[1110, GY + 20, true], [1180, GY + 8, true], [905, GY + 24, false]]).map(([x, y, flip], i) => ({ i, x, y, flip, p: S.puppet(pL.add(person(c, crowdPerson(c, { hairStyle: i === 2 ? 'veil' : 'short', beard: i === 2 ? 'none' : 'short' })))), seed: c.rr(0, 9) }));
 
     const matL = S.layer({ par: 0.5, sh: 4 });
     const mat = matL.add(`<g>${cloakSpread(c, mix(C.sand2, C.wood3, 0.4))}</g>`);
@@ -177,7 +180,7 @@ export default {
         const rebuke = es(t, 4.05 + n.i * 0.06, 4.3 + n.i * 0.06) * (1 - es(t, 5.9, 6.1));
         const kind = es(t, 7.05, 7.3) * (1 - es(t, 8.1, 8.3));
         n.p.set({ x: n.x + follow * 360 + (n.i === 2 ? es(t, 8.2, 8.5) * 40 : 0), y: n.y - (n.i === 2 ? es(t, 8.2, 8.5) * 34 : 0), o: es(t, 1.2, 1.5), s: 0.9, flip: n.flip, lean: rebuke * (n.flip ? -8 : 8) + kind * (n.flip ? -12 : 12), armF: rebuke * 150 + kind * 70, armB: rebuke * 30 + kind * (n.i === 0 ? 110 : 20), head: rebuke * 10 + kind * 12, walk: follow > 0 && follow < 1 ? n.x * 0.07 : undefined, blink: blinkAt(T, n.seed) });
-        pose(hush[n.i], { x: n.x + (n.flip ? -20 : 20), y: n.y - 190, s: es(t, 4.1 + n.i * 0.08, 4.3 + n.i * 0.08, ease.back) * 0.9, o: t > 4.1 && t < 5.1 ? 1 - es(t, 4.95, 5.1) : 0 });
+        pose(hush[n.i], { x: n.x + (n.flip ? (P ? -70 : -20) : 20), y: n.y - 190, s: es(t, 4.1 + n.i * 0.08, 4.3 + n.i * 0.08, ease.back) * 0.9, o: t > 4.1 && t < 5.1 ? 1 - es(t, 4.95, 5.1) : 0 });
       });
       pose(callHim, { x: JSTOP + 20, y: GY - 226, s: es(t, 6.05, 6.3, ease.back), o: t > 6.05 && t < 7.05 ? 1 - es(t, 6.9, 7.05) : 0 });
       pose(cheer, { x: NEAR[0].x - 150, y: GY - 196, s: es(t, 7.05, 7.3, ease.back), o: t > 7.05 && t < 8.05 ? 1 - es(t, 7.9, 8.05) : 0 });

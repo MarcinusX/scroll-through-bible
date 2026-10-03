@@ -29,7 +29,7 @@ export default {
     { v: 12, text: 'On wstał, wziął zaraz swoje łoże i wyszedł na oczach wszystkich.' },
     { v: 12, cont: true, text: 'Zdumieli się wszyscy i wielbili Boga mówiąc: «Jeszcze nigdy nie widzieliśmy czegoś podobnego».' },
   ],
-  cam: { x: [-150, 110], y: [-60, 40], z: [0.96, 1.16] },
+  cam: { x: [-240, 110], y: [-60, 40], z: [0.96, 1.16] },
   build(S) {
     const c = S.c;
     const sk = sky(S, ['#c9dfdc', '#e9e6cf', '#f5ead4']);
@@ -297,7 +297,9 @@ export default {
       });
 
       /* camera */
-      S.cam.x = kf(t, [[1.6, 0], [2.1, -120], [4.9, -120], [5.3, -60], [6.9, -60], [7.2, 0], [11.3, 0], [11.7, 90], [12.05, 90], [12.4, 0]]);
+      // phone: further left while the scribes on their bench (x 330–630) are the subject
+      const SL = S.portrait ? -230 : -120, SM = S.portrait ? -200 : -60;
+      S.cam.x = kf(t, [[1.6, 0], [2.1, SL], [4.9, SL], [5.3, SM], [6.9, SM], [7.2, 0], [11.3, 0], [11.7, 90], [12.05, 90], [12.4, 0]]);
       S.cam.z = kf(t, [[-0.5, 1.02], [0.6, 1.08], [1.6, 1.1], [2.1, 1.12], [4.9, 1.12], [5.3, 1.04], [6.9, 1.04], [7.2, 1.0], [9.0, 1.0], [9.4, 1.06], [11.3, 1.06], [11.7, 1.04], [12.05, 1.04], [12.4, 0.98]]);
       S.cam.y = kf(t, [[-0.5, 0], [0.6, -30], [1.1, 10], [2.1, 20], [4.9, 20], [6.9, 10], [7.2, -40], [9.0, -40], [9.4, 10], [12.05, 10], [12.4, -20]]);
     };

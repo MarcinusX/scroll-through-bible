@@ -25,6 +25,7 @@ export default {
   cam: { x: [-80, 40], y: [-80, 70], z: [0.96, 1.12] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;
     const SKY = ['#c3d8da', '#f0e3c8', '#f6e4c2'];
     const sk = sky(S, SKY);
     const hangL = S.layer({ par: 0.05, sh: 5 });
@@ -67,10 +68,10 @@ export default {
     slopeL.add(sheet().p(c.cut(lp, 1, 10), mix(C.hillNear, C.sage, 0.3)).out());
     slopeL.add(olive(c, 760, lfn(760) + 8, 0.7) + olive(c, 1150, lfn(1150) + 8, 0.8) + olive(c, 1480, lfn(1480) + 8, 0.6) + rock(c, 930, lfn(930) + 14, 70, 30, C.rock2) + grass(c, { x0: 660, x1: 2200, y: 500, fn: lfn, n: 26, h: 12, color: C.moss }));
     // the herdsmen with their staffs
-    const HERD = [LOOK.herdsman, LOOK.herdsman2].map((o, i) => ({ i, x: [1110, 1200][i], p: S.puppet(mtL.add(person(c, { ...o, holdF: `<g transform="rotate(-10)">${staff(c, 190)}</g>` }))), seed: c.rr(0, 9) }));
+    const HERD = [LOOK.herdsman, LOOK.herdsman2].map((o, i) => ({ i, x: (P ? [975, 1035] : [1110, 1200])[i], p: S.puppet(mtL.add(person(c, { ...o, holdF: `<g transform="rotate(-10)">${staff(c, 190)}</g>` }))), seed: c.rr(0, 9) }));
     const puffs = [0, 1, 2, 3, 4].map((i) => mtL.add(`<g>${dust(c, 24, C.sand2)}</g>`));
     const splashes = [0, 1, 2, 3, 4, 5].map((i) => mtL.add(`<g>${sheet().x([0, 1, 2, 3, 4].map((k) => c.cut([[-3, 0], [-6 + k * 3 - 6, -20 - (k % 2) * 12], [0, -26 - (k === 2 ? 14 : 0)], [6, 0]].map(([x, y]) => [x + (k - 2) * 7, y]), 0.3, 3)).join(''), C.foam).out(false)}</g>`));
-    const twoK = hanging(hangL, tag(c, tr('około 2000', 'about 2000'), { size: 24 }), { x: 1020, y: -1000, len: 500 });
+    const twoK = hanging(hangL, tag(c, tr('około 2000', 'about 2000'), { size: 24 }), { x: P ? 960 : 1020, y: -1000, len: 500 });
 
     /* ---------- the beach in front ---------- */
     const beach = S.layer({ par: 0.45, sh: 3 });
@@ -84,7 +85,7 @@ export default {
 
     /* ---------- people ---------- */
     const pL = S.layer({ par: 0.5, sh: 5 });
-    const DIS = [CAST.peter, CAST.john, CAST.james, CAST.andrew].map((cast, i) => ({ i, x: 990 + i * 58, seed: c.rr(0, 9), p: S.puppet(pL.add(person(c, { ...cast }))) }));
+    const DIS = [CAST.peter, CAST.john, CAST.james, CAST.andrew].map((cast, i) => ({ i, x: P ? 905 + i * 44 : 990 + i * 58, seed: c.rr(0, 9), p: S.puppet(pL.add(person(c, { ...cast }))) }));
     const man = S.puppet(pL.add(person(c, { ...LOOK.wild, pose: 'kneel' })));
     const manSit = S.puppet(pL.add(person(c, { ...LOOK.wild, pose: 'sit', eyes: 'closed' })));
     const jesus = S.puppet(pL.add(person(c, { ...CAST.jesus })));
@@ -94,7 +95,7 @@ export default {
     const beg = swL.add(`<g>${cry(c, [tr('Poślij nas w świnie,', 'Send us into the pigs,'), tr('żebyśmy w nie wejść mogli!', 'that we may enter into them!')], { size: 19, dir: 1 })}</g>`);
     const imps = Array.from({ length: 26 }, (_, i) => {
       const cl = clusters[i % clusters.length];
-      return { i, cl, el: swL.add(`<g>${spirit(c, c.rr(0.7, 1.05))}</g>`), ph: c.rr(0, 6), home: [lerp(470, 700, (i * 7 % 26) / 26) + c.rr(-16, 16), c.rr(440, 560)], d: c.rr(0, 0.4) };
+      return { i, cl, el: swL.add(`<g>${spirit(c, c.rr(0.7, 1.05))}</g>`), ph: c.rr(0, 6), home: [lerp(P ? 530 : 470, P ? 740 : 700, (i * 7 % 26) / 26) + c.rr(-16, 16), c.rr(440, 560)], d: c.rr(0, 0.4) };
     });
     const bangs = [0, 1, 2, 3].map((i) => swL.add(`<g>${glyphTag(c, '!', { size: 20 })}</g>`));
 
@@ -145,7 +146,7 @@ export default {
         const k = seg(t, 4.7 + i * 0.16, 5.6 + i * 0.16);
         pose(r, { x: WATER[0] - 14 + (i % 2) * 20, y: WATER[1] + 6, s: 0.3 + k * 2.2, sy: 0.3 + k * 0.5, o: (1 - k) * 0.8 * (k > 0 ? 1 : 0) });
       });
-      swing(twoK, 1020, -1000 + es(t, 4.05, 4.45, ease.back) * 1170 - es(t, 5.4, 5.9) * 1170, T, 1.4, 0.8);
+      swing(twoK, P ? 960 : 1020, -1000 + es(t, 4.05, 4.45, ease.back) * 1170 - es(t, 5.4, 5.9) * 1170, T, 1.4, 0.8);
 
       HERD.forEach((h) => {
         const alarm = es(t, 3.4, 3.6);
@@ -164,7 +165,7 @@ export default {
         pose(m.el, { x: x + Math.cos(ph) * 7 * (1 - fly), y: y + Math.sin(ph * 1.2) * 6 * (1 - fly), r: Math.sin(ph) * 10 + lean, s: 1 - fly * 0.55, o: 1 - seg(t, 3.6 + m.d, 3.8 + m.d) });
       });
       const k = es(t, 1.08, 1.28, ease.back) * (1 - es(t, 1.85, 2.0));
-      pose(beg, { x: 590, y: 430, s: k, r: k > 0.02 ? Math.sin(T * 7) * 2 : 0, o: k > 0.02 ? 1 : 0 });
+      pose(beg, { x: P ? 790 : 590, y: 430, s: k, r: k > 0.02 ? Math.sin(T * 7) * 2 : 0, o: k > 0.02 ? 1 : 0 });
       bangs.forEach((b, i) => {
         const cl = clusters[2 + i * 3];
         const q = es(t, 3.55 + i * 0.06, 3.7 + i * 0.06, ease.back) * (1 - es(t, 4.0, 4.1));
@@ -185,7 +186,7 @@ export default {
 
       /* camera: tilt up to the mountain, widen for the rush, settle on the calm water */
       S.cam.y = 60 - es(t, 0.1, 0.9) * 100 + es(t, 1, 1.6) * 40 - es(t, 3.0, 3.6) * 40 + es(t, 5.3, 6) * 30;
-      S.cam.x = -es(t, 4.0, 4.8) * 50 + es(t, 5.4, 6) * 30;
+      S.cam.x = P ? -es(t, 4.0, 4.8) * 70 : -es(t, 4.0, 4.8) * 50 + es(t, 5.4, 6) * 30;   // phone: stay over the lake where they drown
       S.cam.z = 1.06 - es(t, 0.1, 0.9) * 0.06 + es(t, 1, 1.6) * 0.04 - es(t, 3.9, 4.6) * 0.08 + es(t, 5.3, 6) * 0.04;
     };
   },

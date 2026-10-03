@@ -31,6 +31,9 @@ export default {
   cam: { x: [(560 - 800) / P, (1720 - 800) / P], y: [0, 80], z: [1, 1.1] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;   // phone: the camera leans toward the net and the boat, the boat comes closer
+    const BXP = PH ? 1745 : BX, DB = BX - BXP;
+    const K = PH ? 0.8 : 1;   // phone: the crew sits closer together in the boat
     sky(S, ['#c2dcd8', '#e8ecd9', '#f5ebd1']);
     const hangL = S.layer({ par: 0.04, sh: 5 });
     const sunEl = hanging(hangL, sun(c, 50), { x: 1250, y: 160, len: 700 });
@@ -112,7 +115,7 @@ export default {
       if (t < 3.6) return 760;
       if (t < 4.9) return lerp(760, 1540, es(t, 3.6, 4.9, ease.sine));
       if (t < 7.55) return 1540;
-      return lerp(1540, 1580, es(t, 7.55, 7.98));
+      return lerp(1540, PH ? 1550 : 1580, es(t, 7.55, 7.98));
     };
 
     return (t, time) => {
@@ -138,7 +141,7 @@ export default {
       // net: a bundle in the hand, thrown, opening in the air, landing flat on the water
       const [nhx, nhy] = hand(950, WADE, 1.02, false, 40 + wind * 110 - fling * 150, -wind * 8 + fling * 12);
       const fly = seg(t, 1.3, 1.62), land = es(t, 1.55, 1.68);
-      const tx = 1190, ty = 600;
+      const tx = PH ? 1165 : 1190, ty = 600;
       const nx = lerp(nhx, tx, ease.out(fly)), ny = lerp(nhy, ty, fly) - Math.sin(fly * PI) * 150;
       pose(bundle, { x: nhx, y: nhy, o: t < 1.3 ? seg(t, -0.1, 0) : 0, r: 20 });
       const open = ease.out(seg(t, 1.3, 1.55));
@@ -165,28 +168,29 @@ export default {
       splash.forEach((sp, i) => pose(sp, { x: i ? 1068 : 950, y: 654, s: bump(t, 3.0, 3.2) * 1.2, o: bump(t, 3.0, 3.2) }));
       const approach = es(t, 3.1, 3.5);
       const sBase = lerp(950, 880, approach), aBase = lerp(1068, 990, approach);
-      const sx = Math.max(sBase, jx - 125), ax = Math.max(aBase, jx - 235);
-      const sMov = Math.abs(Math.max(lerp(950, 880, es(t + 0.02, 3.1, 3.5)), jesusX(t + 0.02) - 125) - sx) > 0.1;
-      const aMov = Math.abs(Math.max(lerp(1068, 990, es(t + 0.02, 3.1, 3.5)), jesusX(t + 0.02) - 235) - ax) > 0.1;
+      const FS = PH ? 95 : 125, FA = PH ? 168 : 235;   // phone: Simon and Andrew follow closer behind
+      const sx = Math.max(sBase, jx - FS), ax = Math.max(aBase, jx - FA);
+      const sMov = Math.abs(Math.max(lerp(950, 880, es(t + 0.02, 3.1, 3.5)), jesusX(t + 0.02) - FS) - sx) > 0.1;
+      const aMov = Math.abs(Math.max(lerp(1068, 990, es(t + 0.02, 3.1, 3.5)), jesusX(t + 0.02) - FA) - ax) > 0.1;
       simon.set({ x: sx, y: SHORE - 4, s: 1.02, flip: jx < sx - 10, o: out, walk: sMov ? sx * 0.05 : undefined, armF: 14, blink: blinkAt(time, 1) });
       andrew.set({ x: ax, y: SHORE + 4, s: 1.0, flip: jx < ax - 10, o: out, walk: aMov ? ax * 0.05 : undefined, armF: 12, blink: blinkAt(time, 2) });
 
       /* v19: James and John in the boat mending the nets; Zebedee at the stern */
       const bob = Math.sin(time * 1.3) * 2;
-      pose(boatG, { x: BX, y: BY + bob, s: 1.12, r: Math.sin(time * 0.9) * 0.6 });
+      pose(boatG, { x: BXP, y: BY + bob, s: 1.12, r: Math.sin(time * 0.9) * 0.6 });
       const mend = (k) => 50 + Math.sin(time * 5 + k) * 18;
       const look = es(t, 4.7, 4.9);
       const leave = es(t, 7.05, 7.12);
-      jamesB.set({ x: -60, y: -16, s: 0.95, o: 1 - leave, armF: mend(0) * (1 - look * 0.6) + look * 10, armB: 30, head: 8 - look * 8, blink: blinkAt(time, 3), flip: look > 0.5 });
-      johnB.set({ x: 20, y: -16, s: 0.95, o: 1 - leave, armF: mend(2) * (1 - look * 0.6) + look * 10, armB: 26, head: 10 - look * 10, blink: blinkAt(time, 4), flip: look > 0.5 });
+      jamesB.set({ x: -60 * K, y: -16, s: 0.95, o: 1 - leave, armF: mend(0) * (1 - look * 0.6) + look * 10, armB: 30, head: 8 - look * 8, blink: blinkAt(time, 3), flip: look > 0.5 });
+      johnB.set({ x: 20 * K, y: -16, s: 0.95, o: 1 - leave, armF: mend(2) * (1 - look * 0.6) + look * 10, armB: 26, head: 10 - look * 10, blink: blinkAt(time, 4), flip: look > 0.5 });
       const wave = es(t, 7.45, 7.65);
-      zeb.set({ x: -140, y: -16, s: 0.95, armF: 30 + bump(t, 7.1, 7.5) * 40 + wave * 60, armB: 20 + wave * (110 + Math.sin(time * 6) * 20), head: -wave * 6, flip: true, blink: blinkAt(time, 5) });
-      h1.set({ x: 110, y: 2, s: 0.9, flip: true, armF: 40 + Math.sin(time * 1.3) * 6, armB: 60, blink: blinkAt(time, 6) });
-      h2.set({ x: 160, y: 2, s: 0.88, flip: true, armF: 30 + bump(t, 7.2, 7.8) * 30, armB: 20, head: 4, blink: blinkAt(time, 7) });
+      zeb.set({ x: -140 * K, y: -16, s: 0.95, armF: 30 + bump(t, 7.1, 7.5) * 40 + wave * 60, armB: 20 + wave * (110 + Math.sin(time * 6) * 20), head: -wave * 6, flip: true, blink: blinkAt(time, 5) });
+      h1.set({ x: 110 * K, y: 2, s: 0.9, flip: true, armF: 40 + Math.sin(time * 1.3) * 6, armB: 60, blink: blinkAt(time, 6) });
+      h2.set({ x: 160 * K, y: 2, s: 0.88, flip: true, armF: 30 + bump(t, 7.2, 7.8) * 30, armB: 20, head: 4, blink: blinkAt(time, 7) });
 
       /* v20: they step out of the boat and fall in behind */
       const walk2 = es(t, 7.15, 7.75);
-      const jmx = lerp(1690, 1225, walk2), jnx = lerp(1780, 1115, walk2);
+      const jmx = lerp(1690 - DB, 1225, walk2), jnx = lerp(1780 - DB, 1115, walk2);
       const moving2 = walk2 > 0 && walk2 < 1;
       const fin = es(t, 7.55, 7.98);
       james.set({ x: jmx + fin * 80, y: lerp(784, SHORE + 2, walk2), s: 1.0, flip: moving2, o: leave, walk: moving2 || (fin > 0 && fin < 1) ? jmx * 0.05 : undefined, blink: blinkAt(time, 3) });
@@ -194,11 +198,12 @@ export default {
 
       /* camera walks along the shore with Jesus */
       let cx;
-      if (t < 1) cx = lerp(640, 860, es(t, 0, 1));
-      else if (t < 3.6) cx = 860;
-      else if (t < 4.95) cx = lerp(860, 1690, es(t, 3.6, 4.95, ease.sine));
-      else if (t < 7.1) cx = 1690;
-      else cx = lerp(1690, 1480, es(t, 7.1, 7.9));
+      const C1 = PH ? 900 : 860, C2 = PH ? 1660 : 1690, C3 = PH ? 1440 : 1480;
+      if (t < 1) cx = lerp(640, C1, es(t, 0, 1));
+      else if (t < 3.6) cx = C1;
+      else if (t < 4.95) cx = lerp(C1, C2, es(t, 3.6, PH ? 4.7 : 4.95, ease.sine));
+      else if (t < 7.1) cx = C2;
+      else cx = lerp(C2, C3, es(t, 7.1, 7.9));
       S.cam.x = (cx - 800) / P;
       S.cam.y = 60;
       S.cam.z = 1.04 + bump(t, 1.0, 2.0) * 0.03;

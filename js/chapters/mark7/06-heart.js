@@ -23,6 +23,7 @@ export default {
   cam: { x: [-20, 60], y: [-80, 60], z: [1, 1.12] },
   build(S) {
     const c = S.c;
+    const DX = S.portrait ? 990 : DOLL.x;   // phone: the stained doll inside the frame, clear of the thread
     const R = room(S, { sky: ['#232a55', '#3a3f72', '#6b5d86'], night: true });
     const FLOOR = R.FLOOR;
 
@@ -48,7 +49,7 @@ export default {
     const lid = fx.add(`<g>${hb.lid}</g>`);
     const inner = fx.add(`<g><circle r="46" fill="${DARK}" opacity=".35"/></g>`);
     const doll = paperDoll(c, DOLL.h);
-    const dollEl = hanging(fx, `<g transform="translate(0 ${DOLL.h + 20})"><g>${doll.body}</g><g data-g="stain" opacity="0">${doll.stain}</g><g transform="translate(${doll.P.heart[0]} ${doll.P.heart[1]})">${dollHeart(c, 15)}</g><g data-g="dark" opacity="0" transform="translate(${doll.P.heart[0]} ${doll.P.heart[1]})">${sheet().p(c.cut(c.blob(0, 0, 14, 12, 10, 0.2), 0.6, 4), mix(C.night2, C.jesusMantle, 0.35)).out()}</g></g>`, { x: DOLL.x, y: DOLL.top, len: 700 });
+    const dollEl = hanging(fx, `<g transform="translate(0 ${DOLL.h + 20})"><g>${doll.body}</g><g data-g="stain" opacity="0">${doll.stain}</g><g transform="translate(${doll.P.heart[0]} ${doll.P.heart[1]})">${dollHeart(c, 15)}</g><g data-g="dark" opacity="0" transform="translate(${doll.P.heart[0]} ${doll.P.heart[1]})">${sheet().p(c.cut(c.blob(0, 0, 14, 12, 10, 0.2), 0.6, 4), mix(C.night2, C.jesusMantle, 0.35)).out()}</g></g>`, { x: DX, y: DOLL.top, len: 700 });
     const stainG = dollEl.querySelector('[data-g="stain"]'), darkHeart = dollEl.querySelector('[data-g="dark"]');
     // 4 things in v21, 9 in v22 — placed on a ring round the box
     const THINGS = DARK_KINDS.map((k, i) => {
@@ -76,7 +77,7 @@ export default {
         d.p.set({ x: d.x, y: SEAT, s: 0.9, flip: d.flip, armF: 20 + shrink * 40, armB: shrink * 60, head: -look * 14 * (1 - sober) + sober * 12, lean: (d.flip ? 1 : -1) * shrink * 4, blink: blinkAt(T, d.seed) });
       });
       matthew.set({ x: 540, y: FLOOR + 4, s: 0.86, head: -es(t, 0.3, 0.6) * 12 + sober * 16, armF: bump(t, 1.2, 3.0) * 40, blink: blinkAt(T, 6) });
-      thomas.set({ x: 1068, y: FLOOR + 4, s: 0.86, flip: true, head: -es(t, 0.3, 0.6) * 12 + sober * 16, armF: bump(t, 1.2, 3.0) * 40, blink: blinkAt(T, 8) });
+      thomas.set({ x: S.portrait ? 1036 : 1068, y: FLOOR + 4, s: 0.86, flip: true, head: -es(t, 0.3, 0.6) * 12 + sober * 16, armF: bump(t, 1.2, 3.0) * 40, blink: blinkAt(T, 8) });
 
       /* v20 — the heart comes down; its lid stirs */
       const bK = es(t, -0.3, 0.3, ease.out);
@@ -99,7 +100,7 @@ export default {
         const hover = Math.sin(T * 1.6 + th.seed) * 5;
         let x = lerp(src[0], th.to[0], k), y = lerp(src[1], th.to[1], k) - Math.sin(k * PI) * 30 + hover * k;
         // v23 — they all go over to the doll
-        const land = [DOLL.x + Math.cos(th.i * 2.4) * 36, dollTop + 60 + ((th.i * 37) % 150)];
+        const land = [DX + Math.cos(th.i * 2.4) * 36, dollTop + 60 + ((th.i * 37) % 150)];
         const g = es(t, 3.05 + th.i * 0.025, 3.45 + th.i * 0.025, ease.io);
         x = lerp(x, land[0], g); y = lerp(y, land[1], g) - Math.sin(g * PI) * 40;
         pose(th.el, { x, y, s: (0.7 + k * 0.65) * (1 - g * 0.6), r: Math.sin(T * 1.3 + th.seed) * 10 * (1 - g), o: k > 0.01 ? 1 - es(t, 3.5 + th.i * 0.02, 3.7 + th.i * 0.02) : 0 });
@@ -107,7 +108,7 @@ export default {
 
       /* the doll: it waits on the right, and takes the stain */
       const dK = es(t, 2.9, 3.2, ease.out);
-      swing(dollEl, DOLL.x, DOLL.top - (1 - dK) * 1150, T, 0.6, 0.5, 2);
+      swing(dollEl, DX, DOLL.top - (1 - dK) * 1150, T, 0.6, 0.5, 2);
       fade(stainG, es(t, 3.4, 3.8) * 0.85);
       fade(darkHeart, es(t, 3.4, 3.7));
 

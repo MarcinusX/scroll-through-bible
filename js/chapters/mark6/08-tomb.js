@@ -32,7 +32,7 @@ export default {
     { v: 28, cont: true, text: 'dał ją dziewczęciu, a dziewczę dało swej matce.' },
     { v: 29 },
   ],
-  cam: { x: [-60, 640], y: [0, 60], z: [1, 1.18] },
+  cam: { x: [-220, 640], y: [0, 60], z: [1, 1.18] },
   build(S) {
     const c = S.c;
     const DUSK = [mix(SEPIA.sky[0], C.duskViolet, 0.55), mix(SEPIA.sky[1], C.dusk, 0.3), SEPIA.sky[2]];
@@ -146,7 +146,8 @@ export default {
       pose(body, { x: cx + 6 + laid * 60, y: Y - 168 + Math.abs(Math.sin(cx * 0.05)) * 2 + laid * 20, o: es(t, 3.9, 4.0) * (1 - laid) });
       pose(stoneEl, { x: TOMB + 110 - roll * 110, y: Y - 68, r: -roll * 200 });
 
-      S.cam.x = kf(t, [[0, -110], [0.6, -60], [0.9, 80], [1.9, 80], [2.6, -60], [3.9, -60], [4.4, 600]]);
+      // phone: the king at his door, and Herodias taking the platter, inside the screen
+      S.cam.x = S.portrait ? kf(t, [[0, -200], [0.75, -150], [0.95, 80], [1.9, 80], [2.6, -160], [3.9, -160], [4.4, 600]]) : kf(t, [[0, -110], [0.6, -60], [0.9, 80], [1.9, 80], [2.6, -60], [3.9, -60], [4.4, 600]]);
       S.cam.z = kf(t, [[0, 1.08], [1.2, 1.14], [1.9, 1.14], [2.6, 1.08], [3.6, 1.12], [4.4, 1.1]]);
       S.cam.y = kf(t, [[0, 30], [5, 40]]);
     };

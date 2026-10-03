@@ -89,6 +89,7 @@ export default {
   cam: { x: [-20, 60], y: [-60, 30], z: [1, 1.1] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;   // phone: the crowd and the three scribes come inward, clear of the frame and the thread
     const sk = sky(S, ['#d4e2dc', '#efe6cf', '#f4e2c6']);
     const hangL = S.layer({ par: 0.05, sh: 4 });
     const cl1 = hanging(hangL, cloud(c, 170), { x: 430, y: 150, len: 600 });
@@ -111,14 +112,16 @@ export default {
     const square = S.layer({ par: 0.34, sh: 3 });
     square.add(sheet().p(c.ridge(c.wave(560, [5, 2], [700, 170]), -900, 2500, 1700, 12, 1), C.sand).out());
     square.add(house(c, 180, 560, 150, 110) + house(c, 360, 556, 110, 84) + olive(c, 1140, 566, 0.9) + palm(c, 1350, 566, 200));
+    // phone: a taller signpost a little further in, so its board shows above the scribes and clear of the thread
+    const SDX = S.portrait ? -85 : 0, SDY = S.portrait ? -62 : 0;
     const sign = sheet();
-    sign.p(c.ribbon([[1110, 610], [1112, 520]], 6), C.wood2);
-    sign.p(c.cut([[1070, 520], [1180, 520], [1196, 534], [1180, 548], [1070, 548]], 0.4, 5), C.wood3);
-    square.add(`${sign.out()}<text x="1128" y="540" text-anchor="middle" font-family="EB Garamond, Georgia, serif" font-size="17" font-style="italic" fill="${C.ink}">${tr('Jerozolima', 'Jerusalem')}</text>`);
+    sign.p(c.ribbon([[1110 + SDX, 610], [1112 + SDX, 520 + SDY]], 6), C.wood2);
+    sign.p(c.cut([[1070, 520], [1180, 520], [1196, 534], [1180, 548], [1070, 548]].map(([x, y]) => [x + SDX, y + SDY]), 0.4, 5), C.wood3);
+    square.add(`${sign.out()}<text x="${1128 + SDX}" y="${540 + SDY}" text-anchor="middle" font-family="EB Garamond, Georgia, serif" font-size="17" font-style="italic" fill="${C.ink}">${tr('Jerozolima', 'Jerusalem')}</text>`);
 
     /* the crowd at the left */
     const crowdL = S.layer({ par: 0.42, sh: 3 });
-    const CROWD = [[380, 612, 0.72], [440, 606, 0.7], [500, 616, 0.74], [560, 610, 0.72], [410, 650, 0.8], [480, 656, 0.82], [550, 652, 0.8], [620, 648, 0.78]].map(([x, y, s], i) => ({ x, y, s, i, seed: c.rr(0, 9), sit: i >= 4, p: S.puppet(crowdL.add(person(c, { ...crowdPerson(c), pose: i >= 4 ? 'sit' : 'stand' }))) }));
+    const CROWD = [[380, 612, 0.72], [440, 606, 0.7], [500, 616, 0.74], [560, 610, 0.72], [410, 650, 0.8], [480, 656, 0.82], [550, 652, 0.8], [620, 648, 0.78]].map(([x, y, s], i) => ({ x: x + (P ? 40 : 0), y, s, i, seed: c.rr(0, 9), sit: i >= 4, p: S.puppet(crowdL.add(person(c, { ...crowdPerson(c), pose: i >= 4 ? 'sit' : 'stand' }))) }));
 
     /* the picture frame of the parables */
     const frameL = S.layer({ par: 0.4, sh: 7 });
@@ -146,7 +149,7 @@ export default {
 
     /* the scribes (right) and Jesus */
     const act = S.layer({ par: 0.5, sh: 5 });
-    const SCR = [0, 1, 2].map((i) => ({ i, x: [950, 1036, 1116][i], y: [664, 672, 660][i], s: [0.96, 0.98, 0.94][i], seed: c.rr(0, 9), p: S.puppet(act.add(person(c, scribe(c, i)))) }));
+    const SCR = [0, 1, 2].map((i) => ({ i, x: (P ? [922, 1000, 1074] : [950, 1036, 1116])[i], y: [664, 672, 660][i], s: [0.96, 0.98, 0.94][i], seed: c.rr(0, 9), p: S.puppet(act.add(person(c, scribe(c, i)))) }));
     const jesus = S.puppet(act.add(person(c, { ...CAST.jesus })));
     const cloudEl = act.add(`<g opacity="0">${inkCloud(c)}</g>`);
     const flies = Array.from({ length: 7 }, (_, i) => ({ i, el: act.add(`<g opacity="0">${fly(c)}</g>`), ph: c.rr(0, 6), r: c.rr(60, 120) }));
@@ -165,7 +168,7 @@ export default {
       const closer = es(t, 2.1, 2.5);
       SCR.forEach((m) => {
         const k = come(m.i);
-        const x = lerp(m.x + 520, m.x, k) - closer * 50;
+        const x = lerp(m.x + 520, m.x, k) - closer * (P ? 30 : 50);
         const accuse = es(t, 1.05 + m.i * 0.08, 1.25 + m.i * 0.08) * (1 - es(t, 2.0, 2.2));
         const shaken = es(t, 6.2, 6.5);
         m.p.set({ x, y: m.y, s: m.s, flip: true, walk: (k > 0 && k < 1) || (t > 2.1 && t < 2.5) ? x * 0.06 : undefined, armF: 20 + accuse * (m.i === 1 ? 70 : 40), armB: accuse * (m.i === 0 ? 110 : 0), head: -accuse * 6 + es(t, 2.5, 2.8) * -8 + shaken * 10, lean: -accuse * 4 + shaken * 4, blink: blinkAt(T, m.seed) });

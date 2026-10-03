@@ -49,9 +49,12 @@ export default {
     { v: 18, cont: true, text: 'Czuli bowiem lęk przed Nim, gdyż cały tłum był zachwycony Jego nauką.' },
     { v: 19 },
   ],
-  cam: { x: [-120, 100], y: [-60, 40], z: [0.95, 1.12] },
+  cam: { x: [-120, 200], y: [-60, 40], z: [0.95, 1.12] },
   build(S) {
     const c = S.c;
+    // phone: the den comes down further in, and the plotting priests and scribes stand inside the screen
+    const PH = S.portrait;
+    const PRX = PH ? 90 : 0;
     const DAY = ['#d0e2dd', '#f1e6c9', '#f8ebd3'], DUSK = ['#6f6a9a', '#d99a86', '#f0b88e'];
     const { sk, sunEl, cl1, sanct } = templeCourt(S, { skyCols: DAY, floorY: FLOOR + 40, sanctX: 800, sunAt: [1230, 150] });
     const starL = S.layer({ par: 0.02, sh: 1, flat: true });
@@ -76,7 +79,7 @@ export default {
     const prL = S.layer({ par: 0.4, sh: 4 });
     const PR = [
       { m: priest(c, 0), x: 350 }, { m: scribe(c, 0), x: 420 }, { m: priest(c, 1), x: 490 }, { m: scribe(c, 1), x: 560 },
-    ].map((d, i) => ({ ...d, i, seed: c.rr(0, 9), p: S.puppet(prL.add(withFace(d.m, faceBits(c)))) }));
+    ].map((d, i) => ({ ...d, x: d.x + PRX, i, seed: c.rr(0, 9), p: S.puppet(prL.add(withFace(d.m, faceBits(c)))) }));
     PR.forEach((d) => { d.sad = d.p.el.querySelector('[data-part="sad"]'); d.angry = d.p.el.querySelector('[data-part="angry"]'); });
     const messenger = { seed: c.rr(0, 9), p: S.puppet(prL.add(person(c, townsfolk(c, { man: true, robe: C.linen2, mantle: null, belt: C.dustyBlue })))) };
     const plots = PR.slice(0, 3).map(() => prL.add(`<g>${thought(c, GLYPH.storm(c), { w: 58, h: 46, fill: mix(C.storm, C.stone2, 0.35) })}</g>`));
@@ -134,12 +137,12 @@ export default {
         n.p.set({ x, y: FLOOR + 4 - (n.i % 2) * 8, s: 0.92, flip: n.x > 800, o: seg(t, 0.3 + n.i * 0.08, 0.4 + n.i * 0.08) * (1 - es(t, 1.0, 1.25)), armB: 140 * es(t, 0.6, 0.9), armF: 90 * es(t, 0.6, 0.9), head: -14 * es(t, 0.6, 0.9), blink: blinkAt(T, n.seed) });
       });
       /* v17b — the den of robbers comes down over the wrecked market */
-      swing(caveEl, 1150, FLOOR + 4 - (1 - es(t, 1.05, 1.35, ease.out)) * 900 - es(t, 1.9, 2.15, ease.in) * 900, T, 0.5, 0.7);
+      swing(caveEl, PH ? 1060 : 1150, FLOOR + 4 - (1 - es(t, 1.05, 1.35, ease.out)) * 900 - es(t, 1.9, 2.15, ease.in) * 900, T, 0.5, 0.7);
       const eyesOn = den * (0.6 + 0.4 * Math.abs(Math.sin(T * 1.3)));
 
       /* v18a — word reaches the chief priests and the scribes; they plot */
       const run = es(t, 2.0, 2.4);
-      const mx = lerp(1500, 640, run);
+      const mx = lerp(1500, PH ? 720 : 640, run);
       messenger.p.set({ x: mx, y: FLOOR - 30, s: 0.86, flip: true, walk: run > 0 && run < 1 ? mx * 0.08 : undefined, armF: bump(t, 2.35, 2.9) * 70, armB: run < 1 ? 50 : 0, blink: blinkAt(T, messenger.seed), o: seg(t, 1.98, 2.05) * (1 - es(t, 3.0, 3.2)) });
       const huddle = es(t, 2.4, 2.7) * (1 - es(t, 3.05, 3.3));
       const fear = es(t, 3.05, 3.35);
@@ -181,11 +184,11 @@ export default {
       const out = es(t, 4.4, 4.98, ease.in);
       const jx = JX - out * 760;
       jesus.set({ x: jx, y: FLOOR, s: 1.04, flip: out > 0.02, walk: out > 0 && out < 1 ? jx * 0.05 : undefined, armF: teach * (50 + Math.sin(T * 1.5) * 16) + bump(t, 1.1, 1.9) * 60, armB: teach * 30 + prayK * 20 * (1 - teach), head: -prayK * 6, blink: blinkAt(T) });
-      DIS.forEach((d) => { const x = 900 + d.i * 50 + (d.i % 2) * 10 - out * 1000; d.p.set({ x, y: FLOOR - 26 + (d.i % 2) * 8, s: 0.84, flip: true, walk: out > 0 && out < 1 ? x * 0.05 + d.i : undefined, head: -prayK * 4, blink: blinkAt(T, d.seed), o: 1 - seg(t, 4.9, 5) }); });
+      DIS.forEach((d) => { const x = 900 + d.i * 50 + (d.i % 2) * 10 - out * 1000; d.p.set({ x, y: FLOOR - 26 + (d.i % 2) * 8, s: 0.84, flip: true, walk: out > 0 && out < 1 ? x * 0.05 + d.i : undefined, head: -prayK * 4, blink: blinkAt(T, d.seed), o: (1 - seg(t, 4.9, 5)) * (1 - den) }); });   // they step out of sight while the den hangs there (else they'd seem to stand in it)
       lamps.forEach((l) => { fade(l.glow, es(t, 4.1 + l.i * 0.05, 4.25 + l.i * 0.05)); swing(l.el, l.x, FLOOR - 290, T, 1.4, 0.9, l.i); });
       eyeEls.forEach((e) => fade(e, eyesOn));
 
-      S.cam.x = es(t, 1.0, 1.3) * 90 * (1 - es(t, 1.9, 2.2)) - es(t, 2.0, 2.4) * 110 * (1 - es(t, 3.2, 3.5)) - es(t, 4.4, 4.98) * 60;
+      S.cam.x = es(t, 1.0, 1.3) * (PH ? 190 : 90) * (1 - es(t, 1.9, 2.2)) - es(t, 2.0, 2.4) * 110 * (1 - es(t, 3.2, 3.5)) - es(t, 4.4, 4.98) * 60;
       S.cam.z = 1.02 - sd * 0.04 + es(t, 2.2, 2.6) * 0.06 * (1 - es(t, 3.2, 3.5));
       S.cam.y = -sd * 40 + es(t, 2.2, 2.6) * 20 * (1 - es(t, 3.2, 3.5));
     };

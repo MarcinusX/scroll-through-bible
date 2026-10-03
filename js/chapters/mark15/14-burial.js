@@ -11,7 +11,7 @@ import { awning, tombStone } from '../mark6/lib.js';
 import { kf, moving, hand, headAt, coin, nameTag, withFace, faceBits, face, man, shadowPerson, crossSil, crossHead, skullHill, linenRoll, shroud, litter, hanging, swing, LOOK, SKIES, INK, PI } from './lib.js';
 
 const GY = 694;
-const HX = 430, HT = 430, HH = 190;              // the hill with its crosses, off to the left
+const HT = 430, HH = 190;                        // the hill with its crosses, off to the left (HX: see build)
 const DX = 930, DB = 650, DW = 100, DH = 146;     // the tomb door
 const SR = 76;                                    // the stone
 
@@ -24,9 +24,11 @@ export default {
     { v: 46, cont: true, text: 'Przed wejście do grobu zatoczył kamień.' },
     { v: 47 },
   ],
-  cam: { x: [-240, 120], y: [-60, 60], z: [1, 1.22] },
+  cam: { x: [-620, 160], y: [-60, 60], z: [1, 1.22] },
   build(S) {
     const c = S.c;
+    const HX = S.portrait ? 560 : 430;               // phone: the hill nearer the middle, so the taking-down is seen
+    const MX = S.portrait ? 640 : 560;               // phone: the two Marys (and their tags) further in
     const sk = sky(S, SKIES.dusk);
     const starL = S.layer({ par: 0.02, sh: 1, flat: true });
     starL.add(stars(c, { x0: -600, x1: 2200, y0: -400, y1: 380, n: 60 }));
@@ -132,18 +134,19 @@ export default {
 
       /* v47 — the two Marys watch where He is laid; the first star */
       marys.forEach((m) => {
-        const K = [[3.9, [-120 - m.i * 80, GY + 6]], [4.45, [560 - m.i * 100, GY + 6]]];
+        const K = [[3.9, [-120 - m.i * 80, GY + 6]], [4.45, [MX - m.i * 100, GY + 6]]];
         const [x, y] = kf(t, K);
         m.p.set({ x, y, s: 1.06, flip: false, walk: moving(t, K) ? x * 0.05 : undefined, armF: 14 + (m.i ? 30 : 0), armB: 8, head: -4, o: es(t, 3.9, 4.0), blink: blinkAt(T, 3 + m.i) });
         face(m.p.el, 'sad', 1);
         const tk = es(t, 4.4 + m.i * 0.1, 4.7 + m.i * 0.1);
-        const [hx, hy] = headAt(560 - m.i * 100, GY + 6, 1.06, false);
+        const [hx, hy] = headAt(MX - m.i * 100, GY + 6, 1.06, false);
         swing(tags[m.i], hx + (m.i ? -20 : 20), hy - 190 - (1 - tk) * 700, T, 1.2, 0.8, m.i);
       });
       const st = es(t, 4.4, 4.9);
       pose(theStar, { x: DX + 20, y: 200, s: 0.4 + st * 0.6 + Math.sin(T * 2) * 0.04 * st, o: st });
 
-      S.cam.x = lerp(-200, 0, es(t, 0.8, 1.3)) - es(t, 0.9, 1.3) * 60 * (1 - es(t, 1.8, 2.3)) + es(t, 2.1, 2.9) * 110 - es(t, 3.8, 4.4) * 150;
+      S.cam.x = lerp(S.portrait ? -600 : -200, 0, es(t, 0.8, 1.3))   // phone: start far enough left to see the linen stall and its merchant
+        - es(t, 0.9, 1.3) * 60 * (1 - es(t, 1.8, 2.3)) + es(t, 2.1, 2.9) * (S.portrait ? 150 : 110) - es(t, 3.8, 4.4) * (S.portrait ? 190 : 150);   // phone: the waiting stone clear of the thread
       S.cam.y = -es(t, 0.9, 1.3) * 40 * (1 - es(t, 1.8, 2.3)) + es(t, 3.8, 4.4) * 20;
       S.cam.z = 1.08 + es(t, 0.9, 1.3) * 0.1 * (1 - es(t, 1.8, 2.3)) - es(t, 3.8, 4.4) * 0.06;
     };

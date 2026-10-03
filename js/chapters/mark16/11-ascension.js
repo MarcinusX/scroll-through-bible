@@ -71,7 +71,8 @@ export default {
     const PL = S.layer({ par: 0.45, sh: 5 });
     const START = [[540, 732], [610, 718], [670, 706], [930, 706], [990, 718], [1060, 732], [480, 760], [580, 770], [1020, 770], [1120, 760], [720, 790]];
     const PAIR = [0, 0, 1, 2, 2, 3, 1, 4, 5, 3, 4]; // two by two (Peter walks with Andrew…)
-    const M = ELEVEN.map((m, i) => ({ ...m, i, sx: START[i][0], sy: START[i][1], road: PAIR[i], seed: c.rr(0, 9), lag: (i % 2) * 0.05 + c.rr(0, 0.04) })).sort((a, b) => a.sy - b.sy);
+    // phone: they gather closer round the hilltop, so the outermost are not cut by the frame and the thread
+    const M = ELEVEN.map((m, i) => ({ ...m, i, sx: S.portrait ? TOP[0] + (START[i][0] - TOP[0]) * 0.72 : START[i][0], sy: START[i][1], road: PAIR[i], seed: c.rr(0, 9), lag: (i % 2) * 0.05 + c.rr(0, 0.04) })).sort((a, b) => a.sy - b.sy);
     M.forEach((m) => { m.p = S.puppet(PL.add(person(c, { ...m.o }))); });
     const strings = PL.add(`<g><path d="M-9 -1800V-150M11 -1800V-150" stroke="rgba(74,54,34,.55)" stroke-width="1.3" fill="none"/></g>`);
     const jStand = S.puppet(PL.add(person(c, { ...CAST.jesus })));

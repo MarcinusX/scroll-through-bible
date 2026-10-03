@@ -43,7 +43,10 @@ export default {
     const DIM = ['#a9b3bd', '#d7d0c4', '#e6d6c0'];
     const sk = sky(S, DAY);
     const hangL = S.layer({ par: 0.04, sh: 4 });
-    const sunEl = hanging(hangL, sun(c, 42), { x: 1210, y: 150, len: 800 });
+    // phone: the sun, and the cloud that dims it (v12), inside the screen and above the plates
+    const PH = S.portrait;
+    const SUN = PH ? [965, 90] : [1210, 150], SHX = PH ? 960 : 1190, SHY = PH ? 110 : 180;
+    const sunEl = hanging(hangL, sun(c, 42), { x: SUN[0], y: SUN[1], len: 800 });
     const shadowCloud = hanging(hangL, cloud(c, 260, mix(C.storm, C.stone2, 0.55), mix(C.storm2, C.stone2, 0.4)), { x: 1210, y: 170, len: 900 });
 
     // the valley far below, where a crowd is already waiting
@@ -100,8 +103,8 @@ export default {
       const T = time;
       const dim = bump(t, 4.05, 5.2) * 0.9 + es(t, 5.3, 5.9) * 0.4;
       sk.blend(DAY, DIM, dim);
-      swing(sunEl, 1210, 150, T, 1, 0.6);
-      swing(shadowCloud, 1190, lerp(-1000, 180, es(t, 4.05, 4.5)) - es(t, 5.5, 6) * 1200, T, 1, 0.6, 2);
+      swing(sunEl, SUN[0], SUN[1], T, 1, 0.6);
+      swing(shadowCloud, SHX, lerp(-1000, SHY, es(t, 4.05, 4.5)) - es(t, 5.5, 6) * 1200, T, 1, 0.6, 2);
 
       /* walking: beat 0 down the path, then slowly on while they talk */
       const lead = lerp(0, 0.72, es(t, 0, 0.8)) + es(t, 1, 6) * 0.1;

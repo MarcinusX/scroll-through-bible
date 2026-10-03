@@ -40,7 +40,7 @@ export default {
     const sk = sky(S, GOLD);
     const hangL = S.layer({ par: 0.05, sh: 5 });
     const sunGlow = hangL.add(`<circle r="220" fill="url(#warm-glow)" opacity=".6"/>`);
-    const sunEl = hanging(hangL, sun(c, 50, { rays: C.sunDeep, disc: '#f0b36a', inner: '#f6c98c' }), { x: 1170, y: 250, len: 900 });
+    const sunEl = hanging(hangL, sun(c, 50, { rays: C.sunDeep, disc: '#f0b36a', inner: '#f6c98c' }), { x: S.portrait ? 1010 : 1170, y: 250, len: 900 });   // phone: not under the progress thread
     const cl1 = hanging(hangL, cloud(c, 190, C.cream, C.peach), { x: 420, y: 170, len: 700 });
     const birds = flock(S, hangL, 4, (cc) => bird(cc, { color: C.bird }), { y: 260, speed: 40, scale: 0.5 });
 
@@ -86,8 +86,9 @@ export default {
       const T = time;
       sk.blend(GOLD, DUSK, es(t, 0.5, 3.2, ease.sine));
       const sy = 250 + es(t, -0.5, 3.4) * 90;
-      swing(sunEl, 1170, sy, T, 0.9, 0.5);
-      pose(sunGlow, { x: 1170, y: sy, s: 1 + es(t, 2, 3) * 0.3 });
+      const SUNX = S.portrait ? 1010 : 1170;
+      swing(sunEl, SUNX, sy, T, 0.9, 0.5);
+      pose(sunGlow, { x: SUNX, y: sy, s: 1 + es(t, 2, 3) * 0.3 });
       swing(cl1, 420 + Math.sin(T * 0.1) * 20, 170, T, 1.1, 0.6, 1);
       birds(T, 1);
 

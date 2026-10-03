@@ -8,7 +8,7 @@ import { seg, es, ease, bump, fade } from '../../core/anim.js';
 import { tr } from '../../core/i18n.js';
 import { olivesSet, SKIES, FOUR, figTree, roundel, voiceRings, PI } from './lib.js';
 
-const GY = 690, TREE = [452, 684], DOOR = [1150, GY];
+const GY = 690, TREE = [452, 684], DOOR0 = [1150, GY];
 const LENS = { x: 640, y: 246, r: 104 };
 
 /** a fig leaf (three lobes), origin at its stalk, pointing up */
@@ -29,9 +29,12 @@ export default {
     { v: 28, cont: true, text: 'Kiedy już jego gałąź nabiera soków i wypuszcza liście, poznajecie, że blisko jest lato.' },
     { v: 29 },
   ],
-  cam: { x: [-30, 30], y: [-40, 40], z: [1, 1.08] },
+  cam: { x: [-70, 70], y: [-40, 40], z: [1, 1.08] },
   build(S) {
     const c = S.c;
+    // phone: a slightly smaller door further in, the two on the right closer to Jesus, the camera a bit further right
+    const PH = S.portrait;
+    const DOOR = PH ? [1080, GY] : DOOR0, DS = PH ? 0.85 : 1, PAN = PH ? 60 : 25, PANL = PH ? 65 : 20;
     const SUMMER = ['#b9d8d8', '#f1ecc8', '#fbeec6'];
     const set = olivesSet(S, { skyCols: SKIES.morning, tintCol: C.cream, tintK: 0.05, sunXY: [1240, 330], templeGlow: 0.4 });
     const birds = flock(S, set.hangL, 3, (cc) => bird(cc, { color: C.bird }), { y: 200, speed: 60, scale: 0.4 });
@@ -62,7 +65,7 @@ export default {
 
     /* Jesus and the four */
     const P = S.layer({ par: 0.55, sh: 5 });
-    const pos = [{ x: 575 }, { x: 648 }, { x: 952 }, { x: 1022 }];
+    const pos = [{ x: 575 }, { x: 648 }, { x: PH ? 920 : 952 }, { x: PH ? 985 : 1022 }];
     const four = FOUR.map((f, i) => ({ ...f, i, x: pos[i].x, flip: pos[i].x > 800, seed: c.rr(0, 9), p: S.puppet(P.add(person(c, f.o))) }));
     const J = S.puppet(P.add(person(c, { ...CAST.jesus })));
     const voice = voiceRings(P, c, { n: 3, r: 26, w: 4 });
@@ -106,11 +109,11 @@ export default {
       const dIn = es(t, 1.95, 2.3, ease.out);
       const open = es(t, 2.35, 2.75);
       const dy = DOOR[1] + (1 - dIn) * 400;
-      pose(frame, { x: DOOR[0], y: dy, o: dIn > 0.01 ? 1 : 0 });
-      pose(glowIn, { x: DOOR[0], y: dy, o: dIn > 0.01 ? 1 : 0 });
-      pose(door, { x: DOOR[0] - 64, y: dy, sx: 1 - open * 0.3, o: dIn > 0.01 ? 1 : 0 });
-      pose(light, { x: DOOR[0], y: dy, o: es(t, 2.2, 2.5) * (0.7 + open * 0.3) });
-      pose(spill, { x: DOOR[0], y: dy, sx: 0.3 + open * 0.7, o: open });
+      pose(frame, { x: DOOR[0], y: dy, s: DS, o: dIn > 0.01 ? 1 : 0 });
+      pose(glowIn, { x: DOOR[0], y: dy, s: DS, o: dIn > 0.01 ? 1 : 0 });
+      pose(door, { x: DOOR[0] - 64 * DS, y: dy, s: DS, sx: 1 - open * 0.3, o: dIn > 0.01 ? 1 : 0 });
+      pose(light, { x: DOOR[0], y: dy, s: DS, o: es(t, 2.2, 2.5) * (0.7 + open * 0.3) });
+      pose(spill, { x: DOOR[0], y: dy, s: DS, sx: 0.3 + open * 0.7, o: open });
 
       /* Jesus points: to the tree (0), shows the branch (1), to the door (2) */
       const toTree = es(t, 0.05, 0.3) * (1 - es(t, 1.9, 2.1));
@@ -125,7 +128,7 @@ export default {
         m.p.set({ x: m.x, y: GY + (m.i % 2) * 4, s: 0.92, flip, head: -lookTree * 10 - bump(t, 1.2, 1.9) * 6, armF: (m.k === 'peter' ? bump(t, 1.3, 1.9) * 80 : 0) + (m.k === 'john' ? lookDoor * 60 : 0), blink: blinkAt(T, m.seed) });
       });
 
-      S.cam.x = -es(t, 0.1, 0.6) * 20 * (1 - es(t, 1.9, 2.3)) + es(t, 1.95, 2.4) * 25;
+      S.cam.x = -es(t, 0.1, 0.6) * PANL * (1 - es(t, 1.9, 2.3)) + es(t, 1.95, 2.4) * PAN;
       S.cam.y = -es(t, 0.1, 0.6) * 20 * (1 - es(t, 1.9, 2.3));
     };
   },

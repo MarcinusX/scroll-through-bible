@@ -21,13 +21,14 @@ export default {
     { v: 26, cont: true, text: 'i jadł chleby pokładne, które tylko kapłanom jeść wolno;' },
     { v: 26, cont: true, text: 'i dał również swoim towarzyszom».' },
   ],
-  cam: { x: [-60, 20], y: [-30, 40], z: [1, 1.12] },
+  cam: { x: [-340, 20], y: [-30, 40], z: [1, 1.12] },
   build(S) {
     const c = S.c;
     // an old picture: parchment sky, sepia hills
     sky(S, [mix(C.parchment, C.dawn, 0.4), C.parchment, mix(C.cream, C.sand, 0.4)]);
     const hangL = S.layer({ par: 0.05, sh: 4 });
-    const sunEl = hanging(hangL, sun(c, 42, { rays: C.ochre, disc: mix(C.sun, C.parchment, 0.3), inner: mix(C.sun, C.cream, 0.5) }), { x: 470, y: 170, len: 700 });
+    const SUNX = S.portrait ? 560 : 470;   // phone: not cut by the left edge
+    const sunEl = hanging(hangL, sun(c, 42, { rays: C.ochre, disc: mix(C.sun, C.parchment, 0.3), inner: mix(C.sun, C.cream, 0.5) }), { x: SUNX, y: 170, len: 700 });
     const cl = hanging(hangL, cloud(c, 170, C.cream, C.parchment), { x: 1150, y: 160, len: 700 });
     const far = S.layer({ par: 0.12, sh: 2 });
     far.add(band(c, { y: 450, amps: [26, 10, 3], lens: [900, 330, 120], color: mix(C.dune, C.parchment, 0.45) }).markup);
@@ -89,11 +90,11 @@ export default {
 
     // the travellers' road
     const dKeys = [[-0.6, 180], [0.9, 540], [1.05, 540], [1.45, 650]];
-    const cX = (i) => [452, 372, 292][i];
+    const cX = (i) => (S.portrait ? [466, 404, 342] : [452, 372, 292])[i];   // phone: the companions closer together
 
     return (t, time) => {
       const T = time;
-      swing(sunEl, 470, 170, T, 1, 0.6);
+      swing(sunEl, SUNX, 170, T, 1, 0.6);
       swing(cl, 1150 + Math.sin(T * 0.1) * 20, 160, T, 1.1, 0.6, 1);
       pose(heat, { y: -((T * 16) % 16), o: 1 - es(t, 1.0, 1.4) });
 
@@ -164,15 +165,19 @@ export default {
       const la = es(t, 1.1, 1.4, ease.back);
       pose(tagA, { x: 792, y: lerp(-200, Y - 290, la), r: Math.sin(T * 1.1 + 2) * 3, o: la > 0.01 ? 1 : 0 });
       const sg = es(t, 2.05, 2.4, ease.back);
-      pose(sign, { x: TABLE.x + 90, y: lerp(-200, 230, sg), r: Math.sin(T * 0.9) * 2, o: sg > 0.01 ? 1 : 0 });
+      pose(sign, { x: TABLE.x + (S.portrait ? 40 : 90), y: lerp(-200, 230, sg), r: Math.sin(T * 0.9) * 2, o: sg > 0.01 ? 1 : 0 });
       sparks.forEach((sp, i) => {
         const k = es(t, 3.55 + i * 0.1, 3.8 + i * 0.1, ease.back);
         const m = COMP[i];
-        const [hx, hy] = headAt(cX(m.i), Y, 0.96, false);
+        // over the companion where he ends up (not where he started walking)
+        const mx = kf(t, dKeys.map(([k, v]) => [k + 0.08 * (m.i + 1), v - (540 - cX(m.i))]));
+        const [hx, hy] = headAt(mx, Y + (m.i % 2 ? 6 : -4), 0.96, false);
         pose(sp, { x: hx + 26, y: hy - 30, s: k * 0.8, r: T * 30, o: k > 0.01 ? 1 : 0 });
       });
 
-      S.cam.x = kf(t, [[-0.6, -40], [0.9, -40], [1.3, 0], [2.9, 0], [3.2, -40]]);
+      // phone: further left, so David's hungry companions are on screen with the priest
+      const P = S.portrait;
+      S.cam.x = kf(t, [[-0.6, P ? -320 : -40], [0.9, P ? -320 : -40], [1.3, P ? -80 : 0], [2.9, P ? -80 : 0], [3.2, P ? -100 : -40]]);
       S.cam.z = kf(t, [[-0.6, 1.02], [1.3, 1.04], [1.9, 1.1], [2.9, 1.1], [3.2, 1.04]]);
       S.cam.y = kf(t, [[-0.6, 20], [1.9, 30], [3.2, 20]]);
     };

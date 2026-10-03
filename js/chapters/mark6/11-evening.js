@@ -71,7 +71,7 @@ export default {
     const DIS = [
       { o: CAST.peter, x: 640, from: 300 }, { o: LOOK.philip, x: 580, from: 240 }, { o: CAST.john, x: 520, from: 200 },
       { o: CAST.andrew, x: 960, from: 1300, andrew: true }, { o: CAST.james, x: 1030, from: 1360 }, { o: LOOK.judas, x: 1100, from: 1420, purse: true },
-    ].map((d, i) => ({ ...d, i, left: d.x < 800, seed: c.rr(0, 6) }));
+    ].map((d) => (S.portrait && d.x > 800 ? { ...d, x: d.x - 20 - (d.x - 960) * 0.3 } : d)).map((d, i) => ({ ...d, i, left: d.x < 800, seed: c.rr(0, 6) }));
     DIS.forEach((d) => {
       const extra = d.purse ? { holdB: `<g transform="translate(0 10) scale(.8)">${purse(c)}</g>` } : d.andrew ? { holdF: `<g transform="translate(0 4) rotate(80)"><g transform="translate(0 22)">${basket(c, { w: 44, h: 24 })}</g></g>` } : {};
       const el = act.add(person(c, { ...d.o, ...extra }));
@@ -99,7 +99,7 @@ export default {
       const lateK = es(t, -0.3, 1.2);
       sk.blend(DAY, LATE, lateK);
       warm.fade(lateK * 0.1);
-      swing(sunEl, 1160, 150 + lateK * 230, T, 1.1, 0.6);
+      swing(sunEl, S.portrait ? 680 : 1160, 150 + lateK * 230, T, 1.1, 0.6);   // phone: the sun clear of the thread and of the 200 denarii
       swing(cl1, 520 + Math.sin(T * 0.1) * 30, 150, T, 1.4, 0.6, 1);
       birds(T, 1);
       villageGlow.forEach((g) => fade(g, bump(t, 1.05, 1.95)));
@@ -137,7 +137,7 @@ export default {
       pose(money, { x: 960, y: lerp(-500, 340, mk), s: 1.3, r: Math.sin(T * 1.1) * 2.5, o: mk > 0.01 ? 1 : 0 });
 
       /* v38b — five loaves and two fish rise out of Andrew's basket */
-      const [bx, by] = hand(960, Y, 0.9, true, 80);
+      const [bx, by] = hand(DIS[3].x, Y, 0.9, true, 80);
       loaves.forEach((l, i) => {
         const k = es(t, 5.15 + i * 0.06, 5.4 + i * 0.06, ease.back);
         const a = PI * (1.15 + i * 0.12);
@@ -145,11 +145,11 @@ export default {
       });
       fishes.forEach((f, i) => {
         const k = es(t, 5.5 + i * 0.08, 5.75 + i * 0.08, ease.back);
-        pose(f, { x: lerp(bx, 1050 + i * 70, k), y: lerp(by, 500 - i * 12, k), s: k * 1.3, r: -10 + i * 20, o: k > 0.01 ? 1 : 0 });
+        pose(f, { x: lerp(bx, (S.portrait ? 990 : 1050) + i * (S.portrait ? 60 : 70), k), y: lerp(by, 500 - i * 12, k), s: k * 1.3, r: -10 + i * 20, o: k > 0.01 ? 1 : 0 });
       });
       const k5 = es(t, 5.45, 5.6, ease.back), k2 = es(t, 5.75, 5.9, ease.back);
       pose(n5, { x: 750, y: 470, s: k5, o: k5 > 0.01 ? 1 : 0 });
-      pose(n2, { x: 1170, y: 450, s: k2, o: k2 > 0.01 ? 1 : 0 });
+      pose(n2, { x: S.portrait ? 1090 : 1170, y: S.portrait ? 420 : 450, s: k2, o: k2 > 0.01 ? 1 : 0 });
 
       S.cam.z = kf(t, [[0, 1.06], [1, 1.1], [3, 1.08], [4, 1.04], [5, 1.12]]);
       S.cam.y = kf(t, [[0, 30], [1, 40], [4, 20], [5, 50]]);

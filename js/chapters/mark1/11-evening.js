@@ -28,6 +28,7 @@ export default {
   cam: { x: [-20, 20], y: [0, 70], z: [1, 1.14] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;   // phone: the gathered town stands closer to the door, inside the screen
     sky(S, ['#8f86ad', '#e3a58e', '#f3c79e']);
     const night = sky(S, [C.night2, '#39407a', '#6a5f8e'], { name: 'night' }).layer;
     night.fade(0);
@@ -63,6 +64,7 @@ export default {
     /* ---------- the crowd, the sick, Jesus ---------- */
     const L = S.layer({ par: P, sh: 4 });
     const backRow = crowd(S, L, [{ y: 690, s: 0.7, n: 12, x0: 330, x1: 1270 }], {}).filter((m) => Math.abs(m.x - DOOR) > 110);
+    if (PH) backRow.forEach((m) => { const d = Math.abs(m.x - DOOR); m.x = DOOR + Math.sign(m.x - DOOR) * (100 + (d - 110) * 0.45); });
     backRow.forEach((m, i) => { m.side = m.x < DOOR ? -1 : 1; m.d = c.rr(0, 0.5); m.lamp = i % 3 === 0; });
     const lamps = backRow.filter((m) => m.lamp).map((m) => ({ m, el: L.add(`<g opacity="0">${handLamp(c)}</g>`) }));
     const jesus = S.puppet(L.add(person(c, { ...CAST.jesus })));
@@ -80,11 +82,12 @@ export default {
     const blind = S.puppet(L.add(person(c, { ...BLIND, eyes: 'closed' })));
     const seeing = S.puppet(L.add(person(c, BLIND)));
     const child = S.puppet(L.add(person(c, { robe: C.roseRobe, hairStyle: 'short', hair: C.hair2, skin: C.skin })));
-    const poss = [{ x: 560, y: 730, flip: false, o: { robe: C.plumRobe, hairStyle: 'wild', hair: C.hair3, beard: 'short', skin: C.skin4 } }, { x: 1060, y: 734, flip: true, o: { robe: C.clayMantle, hairStyle: 'wild', hair: C.hair, beard: 'none', skin: C.skin } }]
+    const poss = [{ x: 560, y: 730, flip: false, o: { robe: C.plumRobe, hairStyle: 'wild', hair: C.hair3, beard: 'short', skin: C.skin4 } }, { x: PH ? 1030 : 1060, y: 734, flip: true, o: { robe: C.clayMantle, hairStyle: 'wild', hair: C.hair, beard: 'none', skin: C.skin } }]
       .map((pp, i) => ({ ...pp, i, p: S.puppet(L.add(person(c, pp.o))), shards: shadowShards(c, { n: 7, r: 62 }).map((sh) => ({ ...sh, el: L.add(`<g opacity="0">${sh.m}</g>`), drift: c.rr(0.7, 1.2) })), talk: L.add(`<g opacity="0">${bubble('!?', { size: 22, w: 48, jag: true, c, fill: '#3a3048', ink: C.cream })}</g>`) }));
     const bursts = [0, 1, 2, 3, 4].map(() => L.add(`<g opacity="0"><circle r="80" fill="url(#halo-glow)"/>${rays(c, { n: 10, r0: 20, r1: 90, spread: 0.08, color: '#fff3cf' })}</g>`));
     const eyesSpark = L.add(`<g opacity="0">${sparkle(c, 14)}</g>`);
     const frontRow = crowd(S, L, [{ y: 812, s: 0.95, n: 3, x0: 280, x1: 560 }, { y: 814, s: 0.95, n: 3, x0: 1050, x1: 1330 }]);
+    if (PH) frontRow.forEach((m) => { m.x = m.x < DOOR ? 478 + (m.x - 280) * 0.34 : 990 + (m.x - 1050) * 0.25; });
     frontRow.forEach((m) => { m.side = m.x < DOOR ? -1 : 1; m.d = c.rr(0, 0.4); });
 
     return (t, time) => {
@@ -161,7 +164,7 @@ export default {
       const [jhx, jhy] = headAt(DOOR, 712, 1.0);
       const hs = es(t, 5.2, 5.35, ease.back) * (1 - es(t, 5.85, 5.95));
       pose(hush, { x: jhx + 70, y: jhy - 80, s: hs, o: hs > 0 ? 1 : 0 });
-      const BURST = [[mx - 70, 630, 3.2], [650, 600, 3.42], [975, 600, 3.64], [560, 590, 4.1], [1060, 594, 4.2]];
+      const BURST = [[mx - 70, 630, 3.2], [650, 600, 3.42], [975, 600, 3.64], [560, 590, 4.1], [PH ? 1030 : 1060, 594, 4.2]];
       bursts.forEach((b, i) => { const k = bump(t, BURST[i][2], BURST[i][2] + 0.5); pose(b, { x: BURST[i][0], y: BURST[i][1], s: 0.4 + k * 0.9, r: time * 20, o: k * 0.9 }); });
 
       /* v34b/c: the shadows are driven out; they try to speak and are silenced */

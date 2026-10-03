@@ -13,7 +13,9 @@ import { houseSection, TWELVE, LOOK, speech, GLYPH, paperCrown, measureRod, basi
 const PI = Math.PI;
 const PAR = 0.4;
 const X0 = 480, X1 = 1120, FLOOR = 650, CEIL = 300;
-const SEATS = [[534, 0.76], [572, 0.78], [610, 0.8], [648, 0.8], [690, 0.82], [910, 0.82], [952, 0.8], [990, 0.8], [1028, 0.78], [1066, 0.76]];
+// phone: the Twelve sit a little closer, so the last of each row is clear of the frame and the thread
+const SEATS_P = [[560, 0.76], [595, 0.78], [630, 0.8], [665, 0.8], [702, 0.82], [898, 0.82], [935, 0.8], [970, 0.8], [1005, 0.78], [1040, 0.76]];
+const SEATS_L = [[534, 0.76], [572, 0.78], [610, 0.8], [648, 0.8], [690, 0.82], [910, 0.82], [952, 0.8], [990, 0.8], [1028, 0.78], [1066, 0.76]];
 
 export default {
   id: 'm9-greatest',
@@ -28,9 +30,11 @@ export default {
     { v: 37, text: '«Kto przyjmuje jedno z tych dzieci w imię moje, Mnie przyjmuje;' },
     { v: 37, cont: true, text: 'a kto Mnie przyjmuje, nie przyjmuje Mnie, lecz Tego, który Mnie posłał».' },
   ],
-  cam: { x: [-160, 20], y: [-40, 50], z: [0.98, 1.16] },
+  cam: { x: [-480, 20], y: [-40, 50], z: [0.98, 1.16] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;
+    const SEATS = PH ? SEATS_P : SEATS_L;
     sky(S, ['#c6dcda', '#ebe6d0', '#f4e6cc']);
     const hangL = S.layer({ par: 0.04, sh: 4 });
     const sunEl = hanging(hangL, sun(c, 40), { x: 1240, y: 140, len: 800 });
@@ -47,13 +51,13 @@ export default {
     shoreL.add(palm(c, 250, 560, 190) + palm(c, 1330, 562, 170) + olive(c, 1460, 566, 0.8) + rock(c, 380, 600, 50, 20));
     // a little sign: Capernaum
     const signL = S.layer({ par: PAR, sh: 4 });
-    signL.add(`<g transform="translate(250 ${FLOOR - 40})">${sheet().p(c.cut(c.rect(-4, -120, 8, 122), 0.3, 6), C.wood2).p(c.cut([[-70, -118], [70, -118], [84, -100], [70, -82], [-70, -82]], 0.4, 6), C.wood3).out()}<text x="4" y="-93" text-anchor="middle" font-family="EB Garamond, Georgia, serif" font-size="21" font-style="italic" fill="${C.ink}">${tr('Kafarnaum', 'Capernaum')}</text></g>`);
+    signL.add(`<g transform="translate(${PH ? 352 : 250} ${FLOOR - (PH ? 80 : 40)})">${sheet().p(c.cut(c.rect(-4, -120, 8, 122), 0.3, 6), C.wood2).p(c.cut([[-70, -118], [70, -118], [84, -100], [70, -82], [-70, -82]], 0.4, 6), C.wood3).out()}<text x="4" y="-93" text-anchor="middle" font-family="EB Garamond, Georgia, serif" font-size="21" font-style="italic" fill="${C.ink}">${tr('Kafarnaum', 'Capernaum')}</text></g>`);
 
     /* ---------- the house ---------- */
     const H = houseSection(c, { x0: X0, x1: X1, floor: FLOOR, ceil: CEIL, doorX: 60 });
     const houseL = S.layer({ par: PAR, sh: 4 });
     houseL.add(H.back);
-    houseL.add(`<g transform="translate(${X1 - 70} ${FLOOR + 4})">${measureRod(c, 220)}</g>`);
+    houseL.add(`<g transform="translate(${X1 - (PH ? 100 : 70)} ${FLOOR + 4})">${measureRod(c, 220)}</g>`);
     // light from above (the One who sent me)
     const beamL = S.layer({ par: PAR, sh: 1, flat: true });
     const beam = beamL.add(`<g opacity="0"><path d="${c.poly([[760, CEIL - 40], [840, CEIL - 40], [960, FLOOR + 30], [640, FLOOR + 30]])}" fill="#fff1c4" opacity=".55"/><circle cx="800" cy="${CEIL}" r="160" fill="url(#halo-glow)"/></g>`);
@@ -88,7 +92,7 @@ export default {
       /* beat 0: they come along the shore road to the house */
       const arr = es(t, 0, 0.85);
       ARR.forEach((a) => {
-        const x = lerp(-80 - a.i * 70, 440 - a.i * 70, arr);
+        const x = PH ? lerp(60 - a.i * 52, 520 - a.i * 52, arr) : lerp(-80 - a.i * 70, 440 - a.i * 70, arr);
         a.p.set({ x, y: FLOOR + 40 + (a.i % 2) * 6, s: 0.86, o: 1 - es(t, 0.9, 1.02), walk: arr > 0 && arr < 1 ? x * 0.05 + a.i : undefined, amt: 0.8, blink: blinkAt(T, a.seed) });
       });
 
@@ -140,7 +144,7 @@ export default {
       fade(beam, es(t, 8.05, 8.5));
 
       /* camera: from the road to the room */
-      S.cam.x = kf(t, [[0, -150], [0.85, -100], [1.2, 0]]);
+      S.cam.x = kf(t, PH ? [[0, -480], [0.85, -462], [1.2, 0]] : [[0, -150], [0.85, -100], [1.2, 0]]);   // phone: further left, to the sign
       S.cam.z = kf(t, [[0, 1], [1.2, 1.06], [6, 1.06], [6.6, 1.14]]);
       S.cam.y = kf(t, [[0, 30], [1.2, 20], [6, 20], [6.6, 40]]);
     };

@@ -19,7 +19,7 @@ export default {
     { v: 15, text: 'Wtedy Piłat, chcąc zadowolić tłum, uwolnił Barabasza,' },
     { v: 15, cont: true, text: 'Jezusa zaś kazał ubiczować i wydał na ukrzyżowanie.' },
   ],
-  cam: { x: [-40, 160], y: [-60, 100], z: [1, 1.2] },
+  cam: { x: [-40, 420], y: [-60, 100], z: [1, 1.2] },
   build(S) {
     const c = S.c;
     const H = squareSet(S);
@@ -59,7 +59,7 @@ export default {
       /* platform */
       const take = es(t, 5.05, 5.35);
       K.sols[0].set({ x: 640 + take * 100, y: PLAT, s: 0.84, flip: false, walk: take > 0 && take < 1 ? take * 12 : undefined, armF: 34 + take * 20, armB: 8 + take * 50, blink: blinkAt(T, 4) });
-      K.sols[1].set({ x: 1110 - take * 200, y: PLAT, s: 0.84, flip: true, walk: take > 0 && take < 1 ? take * 12 : undefined, armF: 34, armB: 8 + take * 60, blink: blinkAt(T, 5) });
+      K.sols[1].set({ x: (S.portrait ? 1045 : 1110) - take * 200, y: PLAT, s: 0.84, flip: true, walk: take > 0 && take < 1 ? take * 12 : undefined, armF: 34, armB: 8 + take * 60, blink: blinkAt(T, 5) });
       K.jes.set({ x: JX, y: PLAT, s: 0.88, flip: false, armF: 30, armB: 28, head: 4 + es(t, 1.0, 1.3) * 4 + take * 4, blink: blinkAt(T) });
       const ask = es(t, 0.05, 0.3) * (1 - es(t, 0.9, 1.1));
       const open = es(t, 2.05, 2.3) * (1 - es(t, 2.9, 3.1));
@@ -91,7 +91,13 @@ export default {
         const k = second ? seg(t, 3.1 + (cr.i - 5) * 0.08, 3.9 + (cr.i - 5) * 0.08) : seg(t, 1.1 + cr.i * 0.1, 2.0 + cr.i * 0.1);
         const m = K.people[cr.m % K.people.length];
         const [hx, hy] = headAt(m.x, m.y, m.s, m.flip);
-        pose(cr.el, { x: hx + Math.sin(k * 3 + cr.seed) * 20, y: hy - 20 - k * (second ? 200 : 150), s: (0.6 + 0.5 * ease.out(Math.min(1, k * 3))) * (second ? 1.1 : 0.9), r: Math.sin(cr.seed) * 6, o: k > 0 && k < 1 ? Math.min(1, k * 6) * (1 - Math.max(0, k - 0.6) / 0.4) : 0 });
+        const cs = (0.6 + 0.5 * ease.out(Math.min(1, k * 3))) * (second ? 1.1 : 0.9);
+        let cx0 = hx + Math.sin(k * 3 + cr.seed) * 20;
+        if (S.portrait) {   // phone: keep the whole cry inside the frame and off the thread (origin is the tail tip, the bubble sits to one side)
+          const sz = cr.i < 5 ? 17 : 21, ww = 12 * sz * 0.46 + sz * 1.7, off = -(cr.i % 2 ? 1 : -1) * (ww / 2 - 18) * cs, hw = (ww / 2) * 1.2 * cs;
+          cx0 = Math.max(465 + hw, Math.min(1085 - hw, cx0 + off)) - off;
+        }
+        pose(cr.el, { x: cx0, y: hy - 20 - k * (second ? 200 : 150), s: cs, r: Math.sin(cr.seed) * 6, o: k > 0 && k < 1 ? Math.min(1, k * 6) * (1 - Math.max(0, k - 0.6) / 0.4) : 0 });
       });
       H.crowdL.shift(Math.sin(t * 40) * 3 * roar2, 0);
 
@@ -119,7 +125,7 @@ export default {
       const down = es(t, 5.25, 5.75, ease.out);
       swing(curtainEl, JX, 160 - (1 - down) * 520, T * down, 0.4, 0.5);
 
-      S.cam.x = es(t, 4.0, 4.4) * 160 * (1 - es(t, 4.95, 5.3));
+      S.cam.x = es(t, 4.0, 4.4) * (S.portrait ? 400 : 160) * (1 - es(t, 4.95, 5.3));   // phone: Barabbas walks out of a cell that is otherwise under the thread
       S.cam.y = -20 + es(t, 1.0, 1.4) * 40 * (1 - es(t, 2.0, 2.3)) + es(t, 3.0, 3.4) * 60 * (1 - es(t, 4.0, 4.3)) + es(t, 4.0, 4.4) * 80 * (1 - es(t, 4.95, 5.3)) - es(t, 5.1, 5.6) * 30;
       S.cam.z = 1.02 + es(t, 4.0, 4.4) * 0.16 * (1 - es(t, 4.95, 5.3)) + es(t, 5.1, 5.7) * 0.08;
     };

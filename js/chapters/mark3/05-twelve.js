@@ -27,7 +27,7 @@ export default {
     { v: 18, cont: true, text: 'Tomasza, Jakuba, syna Alfeusza, Tadeusza, Szymona Gorliwego' },
     { v: 19 },
   ],
-  cam: { x: [-30, 30], y: [-20, 40], z: [1, 1.08] },
+  cam: { x: [-30, 50], y: [-20, 40], z: [1, 1.08] },
   build(S) {
     const c = S.c;
     const GOLD = [mix(C.skyBlue, C.dawn, 0.35), mix(C.dawn, C.sun, 0.15), C.apricot];
@@ -60,7 +60,8 @@ export default {
     const tagL = S.layer({ par: 0.4, sh: 5 });
     const spotL = S.layer({ par: 0.4, sh: 1, flat: true });
     const AP = TWELVE.map((a, i) => {
-      const x = 468 + (i * 664) / 11, k = Math.pow((x - 800) / 332, 2);
+      // phone: the row is drawn narrower so Peter's and Judas's tags stay inside the screen
+      const x = S.portrait ? 512 + (i * 550) / 11 : 468 + (i * 664) / 11, k = Math.pow((x - 800) / (S.portrait ? 275 : 332), 2);
       const m = { ...a, i, x, y: 604 - 40 * (1 - k), s: 0.74 + 0.1 * k, flip: x > 800, seed: c.rr(0, 9), at: AT[i], level: i % 2 };
       m.spot = spotL.add(`<g opacity="0"><ellipse cx="0" cy="-60" rx="70" ry="110" fill="url(#warm-glow)"/></g>`);
       m.p = S.puppet(arcL.add(person(c, { ...a.o })));
@@ -140,7 +141,7 @@ export default {
       pose(win, { x: 1272, y: h2.fn(1250) - 12, o: es(t, 5.6, 5.9) });
 
       S.cam.z = 1 + es(t, 0.9, 1.4) * 0.04 - es(t, 2.9, 3.2) * 0.04;
-      S.cam.x = -es(t, 0.9, 1.4) * 20 + es(t, 2.9, 3.2) * 20 + es(t, 4.9, 5.3) * 20;
+      S.cam.x = -es(t, 0.9, 1.4) * 20 + es(t, 2.9, 3.2) * 20 + es(t, 4.9, 5.3) * (S.portrait ? 45 : 20);   // phone: a little further, to Judas
       S.cam.y = -es(t, 1.9, 2.2) * 20 + es(t, 2.9, 3.2) * 20;
     };
   },

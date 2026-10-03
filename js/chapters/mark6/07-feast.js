@@ -62,7 +62,7 @@ export default {
     const back = S.layer({ par: 0.5, sh: 4 });
     const GUESTS = [
       { x: 560, i: 0 }, { x: 626, i: 1, helm: true }, { x: 692, i: 2 }, { x: 908, i: 3, helm: true }, { x: 974, i: 4 }, { x: 1040, i: 5 }, { x: 1106, i: 6, helm: true },
-    ].map((g) => {
+    ].map((g) => (S.portrait && g.x > 800 ? { ...g, x: 890 + (g.i - 3) * 55 } : g)).map((g) => {
       let m = person(c, { ...noble(c, g.i), pose: 'sit' });
       if (g.helm) m = withFace(m, helmet(c));
       return { ...g, from: g.x < 800 ? -300 : 1900, p: S.puppet(back.add(m)), seed: c.rr(0, 6) };
@@ -181,7 +181,8 @@ export default {
         pose(e, { x: ex, y: ey - 34, s: k * 0.8, o: k > 0.02 ? 1 : 0 });
       });
 
-      S.cam.x = kf(t, [[0, -140], [0.9, -140], [1.3, 0], [5.0, 0], [5.4, -300], [7.0, -300], [7.4, 0]]);
+      S.cam.x = kf(t, [[0, S.portrait ? -320 : -140], [0.9, S.portrait ? -320 : -140], [1.3, 0],   // phone: Herodias at her door in sight
+         [5.0, 0], [5.4, -300], [7.0, -300], [7.4, 0]]);
       S.cam.z = kf(t, [[0, 1.38], [1.3, 1.32], [2.2, 1.36], [5.0, 1.36], [5.4, 1.44], [7.0, 1.44], [7.4, 1.38], [8.3, 1.46]]);
       S.cam.y = kf(t, [[0, 110], [1.3, 100], [5.4, 130], [7.0, 130], [7.4, 110], [8.3, 130]]);
     };

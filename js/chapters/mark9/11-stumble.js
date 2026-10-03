@@ -34,6 +34,11 @@ export default {
   cam: { x: [-60, 60], y: [-30, 40], z: [1, 1.1] },
   build(S) {
     const c = S.c;
+    // phone: the valley of fire, its label and the rain drawn in from under the thread; the cards
+    // and the millstone a little further in
+    const PH = S.portrait;
+    const FX = PH ? 975 : 1090, DX = FX - 1090;
+    const CX = PH ? 955 : CARD[0], MX = PH ? 535 : 490;
     sky(S, ['#c7d9d8', '#ebe3cd', '#f4e1c4']);
     const hangL = S.layer({ par: 0.04, sh: 4 });
     const cl1 = hanging(hangL, cloud(c, 170), { x: 560, y: 120, len: 700 });
@@ -48,9 +53,9 @@ export default {
     const landL = S.layer({ par: P, sh: 3 });
     const g = sheet();
     g.p(c.cut([[570, 1700], [570, 560], [620, 530], [680, 470], [760, 440], [840, 438], [920, 470], [1040, 530], [1300, 560], [2500, 560], [2500, 1700]], 1.2, 10), mix(C.hillNear, C.sage2, 0.4));
-    g.p(c.cut([[960, 566], [1010, 600], [1170, 606], [1230, 570], [1200, 560]], 0.8, 8), mix(C.soilDark, C.hillNear, 0.3));
+    g.p(c.cut([[960, 566], [1010, 600], [1170, 606], [1230, 570], [1200, 560]].map(([x, y]) => [x + DX, y]), 0.8, 8), mix(C.soilDark, C.hillNear, 0.3));
     g.p(c.ribbon(PATHG.map(([x, y]) => [x, y + 4]), 16, 2), mix(C.sand, C.hillNear, 0.3));
-    g.p(c.ribbon([[990, 654], [1040, 626], [1090, 600]], 12, 2), mix(C.sand2, C.soilDark, 0.35), 'opacity=".6"');
+    g.p(c.ribbon([[990, 654], [1040 + DX / 2, 626], [1090 + DX, 600]], 12, 2), mix(C.sand2, C.soilDark, 0.35), 'opacity=".6"');
     g.p(c.cut([[-900, 700], [2500, 700], [2500, 1700], [-900, 1700]], 1, 20), mix(C.sand, C.sage2, 0.45));
     g.p(c.ribbon([[1180, 704], [1000, 694], [880, 692]], 14, 2), mix(C.sand, C.hillNear, 0.3));
     landL.add(g.out());
@@ -59,11 +64,11 @@ export default {
     const gateGlow = landL.add(`<g>${G.light}</g>`);
     landL.add(`<g transform="translate(${GATE[0]} ${GATE[1]})">${G.arch}</g>`);
     const F = firePit(c, 200);
-    landL.add(`<g transform="translate(1090 570)">${F.pit}</g>`);
+    landL.add(`<g transform="translate(${FX} 570)">${F.pit}</g>`);
     const flames = F.flames.map((f, i) => ({ ...f, i, el: landL.add(`<g>${f.m}</g>`) }));
     const labelLife = hanging(landL, labelOnString(tr('życie', 'life'), { size: 20 }), { x: GATE[0], y: 250, len: 800 });
     const labelKing = hanging(landL, labelOnString(tr('królestwo Boże', 'God’s Kingdom'), { size: 20 }), { x: GATE[0], y: 250, len: 800 });
-    const labelFire = hanging(landL, labelOnString(tr('Gehenna', 'Gehenna'), { size: 18 }), { x: 1110, y: 420, len: 800 });
+    const labelFire = hanging(landL, labelOnString(tr('Gehenna', 'Gehenna'), { size: 18 }), { x: FX + 20, y: 420, len: 800 });
 
     /* ---------- the little one who stumbles, and the travellers ---------- */
     const walkL = S.layer({ par: P, sh: 4 });
@@ -80,7 +85,7 @@ export default {
 
     /* ---------- rain that cannot put out the fire (v48) ---------- */
     const rainL = S.layer({ par: P, sh: 3 });
-    const rCloud = hanging(rainL, stormCloud(c, 240, mix(C.storm, C.stone2, 0.4), mix(C.storm2, C.stone2, 0.3)), { x: 1090, y: 400, len: 900 });
+    const rCloud = hanging(rainL, stormCloud(c, 240, mix(C.storm, C.stone2, 0.4), mix(C.storm2, C.stone2, 0.3)), { x: FX, y: 400, len: 900 });
     const rainEl = rainL.add(`<g opacity="0">${rain(c, { x0: -90, x1: 90, y0: 0, y1: 150, n: 40, slant: -10 })}</g>`);
 
     /* ---------- Jesus and the child, in front ---------- */
@@ -91,8 +96,8 @@ export default {
 
     /* ---------- the millstone and the cards come down from the flies ---------- */
     const flyL = S.layer({ par: 0.15, sh: 6 });
-    const stone = hanging(flyL, `<g transform="scale(.9)">${millstone(c, 50)}</g>`, { x: 490, y: 250, len: 900 });
-    const cards = [paperHand(c, C.skin2, 1.3), `<g transform="translate(-16 12) scale(1.2)">${paperFoot(c)}</g>`, `<g transform="scale(1.4)">${paperEye(c, 34)}</g>`].map((icon, i) => ({ i, t0: 2 + i * 2, el: hanging(flyL, `<g transform="translate(0 0)">${stumbleCard(c, `<g transform="translate(0 ${i === 0 ? 20 : 0})">${icon}</g>`)}</g>`, { x: CARD[0], y: CARD[1], len: 900 }) }));
+    const stone = hanging(flyL, `<g transform="scale(.9)">${millstone(c, 50)}</g>`, { x: MX, y: 250, len: 900 });
+    const cards = [paperHand(c, C.skin2, 1.3), `<g transform="translate(-16 12) scale(1.2)">${paperFoot(c)}</g>`, `<g transform="scale(1.4)">${paperEye(c, 34)}</g>`].map((icon, i) => ({ i, t0: 2 + i * 2, el: hanging(flyL, `<g transform="translate(0 0)">${stumbleCard(c, `<g transform="translate(0 ${i === 0 ? 20 : 0})">${icon}</g>`)}</g>`, { x: CX, y: CARD[1], len: 900 }) }));
     cards.forEach((cd) => { cd.obj = cd.el.querySelector('.obj'); });
     const sc = flyL.add(`<g opacity="0">${scissors(c, 60)}</g>`);
     const bladeA = sc.querySelector('.bA'), bladeB = sc.querySelector('.bB');
@@ -114,21 +119,21 @@ export default {
       /* beat 1: the millstone drops into the sea */
       const ms = es(t, 1.05, 1.3, ease.back);
       const drop = es(t, 1.45, 1.75, ease.in);
-      swing(stone, 490, lerp(-1000, 250, ms) + drop * 300 + es(t, 1.75, 2.1) * 60, T, 1.2 * (1 - drop), 0.8, 1);
+      swing(stone, MX, lerp(-1000, 250, ms) + drop * 300 + es(t, 1.75, 2.1) * 60, T, 1.2 * (1 - drop), 0.8, 1);
       fade(stone, 1 - es(t, 1.72, 2));
       const sink = seg(t, 1.72, 2.3);
-      pose(splash, { x: 490, y: 560, o: sink > 0 && sink < 1 ? 1 : 0 });
+      pose(splash, { x: MX, y: 560, o: sink > 0 && sink < 1 ? 1 : 0 });
       rips.forEach((r, i) => pose(r, { s: 0.5 + ((sink * 1.4 + i * 0.3) % 1) * 3, o: (1 - ((sink * 1.4 + i * 0.3) % 1)) * 0.9 }));
-      pose(bubbles, { x: 490, y: 560 - sink * 30, o: bump(t, 1.8, 2.4) });
+      pose(bubbles, { x: MX, y: 560 - sink * 30, o: bump(t, 1.8, 2.4) });
 
       /* beats 2, 4, 6: a card comes down, the scissors snip it away and it falls */
-      let scX = CARD[0] + 40, scY = CARD[1] - 30, scO = 0, snip = 0;
+      let scX = CX + 40, scY = CARD[1] - 30, scO = 0, snip = 0;
       cards.forEach((cd) => {
         const down = es(t, cd.t0, cd.t0 + 0.3, ease.back);
         const fall = es(t, cd.t0 + 0.62, cd.t0 + 0.98, ease.in);
         if (t > cd.t0 - 0.1 && t < cd.t0 + 1) { scO = es(t, cd.t0 + 0.3, cd.t0 + 0.4) * (1 - es(t, cd.t0 + 0.75, cd.t0 + 0.9)); snip = bump(t, cd.t0 + 0.45, cd.t0 + 0.62); }
         const gone = es(t, cd.t0 + 0.95, cd.t0 + 1.2);
-        swing(cd.el, CARD[0], lerp(-1000, CARD[1], down) - gone * 1300, T, 1.2 * (1 - fall), 0.8, cd.i);
+        swing(cd.el, CX, lerp(-1000, CARD[1], down) - gone * 1300, T, 1.2 * (1 - fall), 0.8, cd.i);
         pose(cd.obj, { x: fall * 50, y: fall * 640, r: fall * 35, o: 1 - es(t, cd.t0 + 0.85, cd.t0 + 0.98) });
       });
       pose(sc, { x: scX, y: scY + 40, r: 90, o: scO });
@@ -149,14 +154,14 @@ export default {
       const king = es(t, 7.05, 7.3);
       swing(labelLife, GATE[0], lerp(lerp(-1000, 250, es(t, 2.9, 3.2, ease.back)), -1000, king), T, 1.2, 0.8, 5);
       swing(labelKing, GATE[0], lerp(-1000, 250, king), T, 1.2, 0.8, 6);
-      swing(labelFire, 1110, lerp(-1000, 420, es(t, 3.4, 3.7, ease.back)), T, 1.2, 0.8, 7);
+      swing(labelFire, FX + 20, lerp(-1000, 420, es(t, 3.4, 3.7, ease.back)), T, 1.2, 0.8, 7);
 
       /* the fire that is never quenched */
       const flare = Math.max(bump(t, 3.5, 4), bump(t, 5.5, 6), bump(t, 7.5, 8), es(t, 8.1, 8.5));
-      flames.forEach((f) => pose(f.el, { x: 1090 + f.x, y: 570 + f.y, sy: 0.7 + flare * 0.5 + Math.sin(T * 6 + f.i * 1.7) * 0.12, sx: 1 + Math.sin(T * 5 + f.i) * 0.08, o: 0.9 }));
+      flames.forEach((f) => pose(f.el, { x: FX + f.x, y: 570 + f.y, sy: 0.7 + flare * 0.5 + Math.sin(T * 6 + f.i * 1.7) * 0.12, sx: 1 + Math.sin(T * 5 + f.i) * 0.08, o: 0.9 }));
       const rn = es(t, 8.05, 8.35, ease.back);
-      swing(rCloud, 1090, lerp(-1000, 440, rn), T, 1, 0.8, 8);
-      pose(rainEl, { x: 1090, y: 450 + ((T * 120) % 40), o: rn * 0.9 });
+      swing(rCloud, FX, lerp(-1000, 440, rn), T, 1, 0.8, 8);
+      pose(rainEl, { x: FX, y: 450 + ((T * 120) % 40), o: rn * 0.9 });
 
       /* Jesus teaches, with the child beside him */
       const pointUp = es(t, 3.05, 3.3) * 0.5 + es(t, 2.05, 2.3) * 0.5;

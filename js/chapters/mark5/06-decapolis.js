@@ -10,7 +10,7 @@ import { LOOK, kf, shoreSet, bubble, heart, glyphTag, mapSheet, mapTown, DECAPOL
 
 const PI = Math.PI;
 const JX = 760, FEET = 722;
-const MAP = { x: 500, y: 172, s: 1.08 };            // map top-left in world units, scale
+const MAP0 = { x: 500, y: 172, s: 1.08 };            // map top-left in world units, scale
 const ROUTE = ['Hippos', 'Gadara', 'Scytopolis', 'Pella', 'Dion', 'Geraza', 'Filadelfia', 'Kanata', 'Rafana', 'Damaszek'];
 
 export default {
@@ -25,6 +25,8 @@ export default {
   cam: { x: [-60, 60], y: [-60, 50], z: [0.96, 1.14] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;
+    const MAP = P ? { x: 476, y: 172, s: 0.98 } : MAP0;   // phone: the whole map inside the screen, Kanata clear of the thread
     const SKY = ['#c2d6d8', '#f1e1c4', '#f5dcb4'];
     const set = shoreSet(S, { skyCols: SKY, sunAt: [1200, 170], sunR: 42 });
 
@@ -80,9 +82,9 @@ export default {
       /* v18 — Jesus steps into the boat; the man kneels and begs to come too */
       const inBoat = es(t, 0.5, 0.56);
       const sail = es(t, 3.0, 4.6);
-      const bx = lerp(600, -200, sail), by = 758;
+      const bx = lerp(P ? 640 : 600, -200, sail), by = 758;   // phone: the boat a little further in, the stern clear of the frame
       pose(boatG, { x: bx, y: by + Math.sin(T * 1.3) * 2, s: 0.9, r: Math.sin(T * 1.1) * 0.8 });
-      const jx = kf(t, [[0.1, JX], [0.5, 690]]);
+      const jx = kf(t, [[0.1, JX], [0.5, P ? 730 : 690]]);
       jesus.set({ x: jx, y: FEET, s: 1, flip: true, o: 1 - inBoat, walk: t > 0.1 && t < 0.5 ? jx * 0.06 : undefined, blink: blinkAt(T) });
       const bless = es(t, 1.05, 1.35) * (1 - es(t, 2.0, 2.2));
       const point = es(t, 2.05, 2.3) * (1 - es(t, 2.9, 3.1));
@@ -95,7 +97,7 @@ export default {
       dis.forEach((d) => d.p.set({ x: -130 + d.i * 52, y: 0, s: 0.92, flip: false, armF: 20 + (d.i === 3 ? es(t, 0.2, 0.6) * 40 : 0), armB: 10, head: 2, blink: blinkAt(T, d.seed) }));
 
       const rise = es(t, 2.2, 2.3);
-      const mx = kf(t, [[0, 1100], [0.55, 870], [2.3, 870], [3.2, 1420]]);
+      const mx = kf(t, [[0, 1100], [0.55, 870], [2.3, 870], [3.2, P ? 1090 : 1420]]);   // phone: he sets off home on screen
       manK.set({ x: 870, y: FEET, s: 1, flip: true, o: seg(t, 0.5, 0.56) * (1 - rise), armF: 90 + bless * -20, armB: 110 - bless * 40, lean: 14 - bless * 10, head: -8 + bless * 14, blink: blinkAt(T, 4) });
       man.set({ x: mx, y: FEET, s: 1, flip: t < 2.35, o: ((1 - seg(t, 0.5, 0.56)) + rise) * (1 - seg(t, 2.95, 3.2)), walk: (t < 0.55 || t > 2.35) ? mx * 0.05 : undefined, armF: 30 + bump(t, 2.3, 2.9) * 40, armB: 10, head: -point * 6, blink: blinkAt(T, 4) });
       const k1 = es(t, 0.6, 0.8, ease.back) * (1 - es(t, 1.0, 1.1));

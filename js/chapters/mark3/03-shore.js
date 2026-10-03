@@ -21,9 +21,11 @@ export default {
   cam: { x: [-30, 30], y: [0, 70], z: [1, 1.12] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;   // phone: sun, boat, the possessed and their cry come inside the screen
+    const SUNX = P ? 990 : 1180, BX = P ? 950 : 1000;
     sky(S, ['#cadfdb', '#eee5cc', '#f7ead3']);
     const hangL = S.layer({ par: 0.05, sh: 5 });
-    const sunEl = hanging(hangL, sun(c, 48), { x: 1180, y: 160, len: 700 });
+    const sunEl = hanging(hangL, sun(c, 48), { x: SUNX, y: 160, len: 700 });
     const cl1 = hanging(hangL, cloud(c, 200), { x: 500, y: 150, len: 600 });
     const cl2 = hanging(hangL, cloud(c, 140), { x: 930, y: 215, len: 700 });
 
@@ -84,8 +86,8 @@ export default {
     const hushRays = main.add(`<g opacity="0">${[0, 1, 2].map((i) => `<path d="${c.ribbon(c.arc(0, 0, 30 + i * 16, 30 + i * 16, -0.7, 0.7, 10), 4)}" fill="${C.cream}"/>`).join('')}</g>`);
     const SPIRIT = { robe: mix(C.storm, C.lavender, 0.45), hair: C.hair3, hairStyle: 'wild', beard: 'wild', skin: mix(C.skin3, C.rock2, 0.35), belt: null };
     const POSS = [
-      { x: 945, y: 700, s: 0.9, o: SPIRIT },
-      { x: 1050, y: 690, s: 0.86, o: { ...SPIRIT, robe: mix(C.plumRobe, C.storm, 0.4), hairStyle: 'wild', beard: 'none', hair: C.hair } },
+      { x: P ? 910 : 945, y: 700, s: 0.9, o: SPIRIT },
+      { x: P ? 1000 : 1050, y: 690, s: 0.86, o: { ...SPIRIT, robe: mix(C.plumRobe, C.storm, 0.4), hairStyle: 'wild', beard: 'none', hair: C.hair } },
     ].map((m, i) => {
       m.i = i; m.seed = c.rr(0, 9);
       m.stand = S.puppet(main.add(person(c, { ...m.o })));
@@ -98,7 +100,7 @@ export default {
 
     return (t, time) => {
       const T = time;
-      swing(sunEl, 1180, 160, T, 1.2, 0.7);
+      swing(sunEl, SUNX, 160, T, 1.2, 0.7);
       swing(cl1, 500 + Math.sin(T * 0.1) * 30, 150, T, 1.5, 0.6, 1);
       swing(cl2, 930 + Math.sin(T * 0.13 + 2) * 30, 215, T, 1.5, 0.8, 2);
       wv.shift((T * 14) % 140 - 70);
@@ -121,7 +123,7 @@ export default {
       });
       const bIn = es(t, 0.3, 0.9);
       const bob = Math.sin(T * 1.4) * 2;
-      const bx = lerp(1260, 1000, bIn), by = 596;
+      const bx = lerp(1260, BX, bIn), by = 596;
       pose(boatG, { x: bx, y: by + bob, s: 0.72, r: Math.sin(T * 1.1) * 0.8 });
       peter.set({ x: 70, y: -26, s: 0.95, flip: true, armF: 40 + bump(t, 0.3, 0.9) * 30, armB: 20 + es(t, 0.8, 1) * 30, head: -3, blink: blinkAt(T, 4) });
 
@@ -176,7 +178,7 @@ export default {
       // the cry is sealed shut, like the Pharisees' lips, and fades
       const cryOn = es(t, 2.3, 2.5, ease.back);
       const sealed = es(t, 3.18, 3.35, ease.back);
-      pose(cry, { x: 1010, y: 470 + Math.sin(T * 5) * 2 * (1 - stern), sy: Math.max(0.02, cryOn * (1 - sealed * 0.12)), sx: Math.max(0.02, cryOn * (1 - sealed * 0.12)), r: Math.sin(T * 4) * 2 * (1 - stern) - sealed * 5, o: cryOn > 0.02 ? 1 - es(t, 3.5, 3.9) * 0.45 : 0 });
+      pose(cry, { x: P ? 940 : 1010, y: 470 + Math.sin(T * 5) * 2 * (1 - stern), sy: Math.max(0.02, cryOn * (1 - sealed * 0.12)), sx: Math.max(0.02, cryOn * (1 - sealed * 0.12)), r: Math.sin(T * 4) * 2 * (1 - stern) - sealed * 5, o: cryOn > 0.02 ? 1 - es(t, 3.5, 3.9) * 0.45 : 0 });
       pose(cryTape, { x: 0, y: -36, s: lerp(1.3, 1, sealed), o: sealed });
       const [jhx, jhy] = handAt(JX, JY, 1.04, false, 12 + stern * 70);
       pose(hushRays, { x: jhx + 14, y: jhy, s: 0.7 + seg(t, 3.1, 3.6) * 0.7, o: bump(t, 3.05, 3.9) });

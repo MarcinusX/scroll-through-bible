@@ -27,6 +27,8 @@ export default {
   cam: { x: [-60, 40], y: [-40, 60], z: [1, 1.18] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;   // phone: the tally stone, the lion and the hare, the right angel come inward
+    const TX = PH ? 985 : 1070;
     sky(S, ['#d7dccf', '#f1dcb5', '#f5dcb2']);
     const nightSky = sky(S, [C.night2, C.night, '#4a4f86'], { name: 'night' }).layer;
     const dawnSky = sky(S, ['#b8a9c9', '#f0bfa2', '#f7d9b4'], { name: 'dawn' }).layer;
@@ -51,7 +53,7 @@ export default {
     gs.x(peb, C.rock2, 'opacity=".6"');
     G.add(gs.out());
     G.add(scrub(c, 470, 660, 34) + scrub(c, 1110, 668, 30) + rock(c, 1260, 700, 120, 54, C.rock));
-    const tally = G.add(`<g transform="translate(1070 722)">${tallyStone(c, 190, 70)}</g>`);
+    const tally = G.add(`<g transform="translate(${TX} 722)">${tallyStone(c, 190, 70)}</g>`);
     const marks = Array.from(tally.querySelectorAll('.tally'));
     const forty = G.add(`<g opacity="0">${paperLabel('40', { size: 30 })}</g>`);
 
@@ -63,11 +65,11 @@ export default {
     const tempter = S.puppet(A.add(person(c, { ...TEMPTER, holdF: `<g data-k="stone">${stone}</g><g data-k="bread" opacity="0">${bread}</g>` })));
     const stoneEl = S.$('stone'), breadEl = S.$('bread');
     const beasts = [
-      { m: lion(c), x: 1010, y: GY + 6, from: 1700, s: 1.05, flip: true, d: 0 },
+      { m: lion(c), x: PH ? 945 : 1010, y: GY + 6, from: 1700, s: PH ? 0.92 : 1.05, flip: true, d: 0 },
       { m: ibex(c), x: 560, y: GY - 6, from: -300, s: 1, flip: false, d: 0.1 },
       { m: fox(c), x: 660, y: GY + 14, from: -250, s: 0.9, flip: false, d: 0.2 },
-      { m: hare(c), x: 1230, y: GY - 4, from: 1700, s: 0.9, flip: true, d: 0.25 },
-      { m: snake(c), x: 900, y: GY + 16, from: 1000, s: 0.8, flip: true, d: 0.3 },
+      { m: hare(c), x: PH ? 512 : 1230, y: GY - 4, from: PH ? -300 : 1700, s: 0.9, flip: !PH, d: 0.25 },
+      { m: snake(c), x: PH ? 862 : 900, y: GY + 16, from: 1000, s: 0.8, flip: true, d: 0.3 },
     ].map((b, i) => ({ ...b, el: A.add(`<g>${b.m}</g>`), i }));
 
     /* ---------- Jesus ---------- */
@@ -82,7 +84,7 @@ export default {
     /* ---------- angels on strings ---------- */
     const angels = [
       { x: 620, y: GY - 60, hold: `<g transform="translate(0 6)">${breadBasket(c)}</g>`, flip: false },
-      { x: 990, y: GY - 70, hold: `<g transform="translate(2 12)">${jug(c)}</g>`, flip: true },
+      { x: PH ? 960 : 990, y: GY - 70, hold: `<g transform="translate(2 12)">${jug(c)}</g>`, flip: true },
     ].map((a, i) => {
       const el = hanging(JL, `<g transform="translate(0 176)"><g class="wbox">${wings(c)}</g>${person(c, { ...ANGEL, mantle: i ? C.blushVeil : C.skyVeil, holdF: a.hold })}</g>`, { x: a.x, y: a.y - 176, len: 900 });
       return { ...a, el, p: S.puppet(el.querySelector('.fig')), wbox: el.querySelector('.wbox'), wF: el.querySelector('.wingFr'), wB: el.querySelector('.wingBk'), i };
@@ -117,7 +119,7 @@ export default {
       const shown = Math.floor(seg(t, 1.05, 1.9) * 40 + 0.001);
       marks.forEach((m, i) => fade(m, i < shown ? 1 : 0));
       const f40 = es(t, 1.85, 2.0, ease.back);
-      pose(forty, { x: 1070, y: 626 + Math.sin(time * 1.5) * 3, s: f40, r: Math.sin(time) * 3, o: f40 > 0 ? 1 - es(t, 2.6, 2.9) * 0.6 : 0 });
+      pose(forty, { x: TX, y: 626 + Math.sin(time * 1.5) * 3, s: f40, r: Math.sin(time) * 3, o: f40 > 0 ? 1 - es(t, 2.6, 2.9) * 0.6 : 0 });
 
       /* ---------- v12: the Spirit leads Him out ---------- */
       const w = es(t, 0.02, 0.9);

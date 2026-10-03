@@ -74,6 +74,7 @@ export default {
   cam: { x: [-30, 60], y: [-20, 70], z: [1, 1.16] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;   // phone: the outermost benches, and the plot, come inside the screen
     sky(S, ['#cfe2df', '#eee5cc', '#f7ead3']);
 
     /* ---------- the hall: back wall with high windows, the ark of the scrolls ---------- */
@@ -162,8 +163,8 @@ export default {
     /* ---------- the Pharisees on the benches ---------- */
     const phL = S.layer({ par: 0.3, sh: 4 });
     const PH = [
-      { x: 425, s: 0.72 }, { x: 510, s: 0.74 }, { x: 596, s: 0.72 },
-      { x: 1004, s: 0.72 }, { x: 1090, s: 0.74 }, { x: 1175, s: 0.72 },
+      { x: P ? 482 : 425, s: 0.72 }, { x: P ? 546 : 510, s: 0.74 }, { x: P ? 610 : 596, s: 0.72 },
+      { x: P ? 966 : 1004, s: 0.72 }, { x: P ? 1020 : 1090, s: 0.74 }, { x: P ? 1074 : 1175, s: 0.72 },
     ].map((m, i) => {
       const look = pharisee(c, i);
       m.i = i; m.flip = m.x > 800; m.dir = m.flip ? -1 : 1; m.seed = c.rr(0, 9); m.y = BENCH;
@@ -207,10 +208,10 @@ export default {
     act.add(frontBench(300, 640) + frontBench(1000, 1320));
     const glowMan = act.add(`<ellipse cx="0" cy="0" rx="120" ry="150" fill="url(#warm-glow)" opacity="0"/>`);
     const FOLK = [
-      { x: 405, o: woman(c, { robe: C.roseRobe, veil: C.skyVeil }), s: 0.9 },
-      { x: 478, o: man(c), s: 0.92 },
-      { x: 1082, o: man(c), s: 0.92 },
-      { x: 1160, o: woman(c, { veil: C.blushVeil }), s: 0.9 },
+      { x: P ? 462 : 405, o: woman(c, { robe: C.roseRobe, veil: C.skyVeil }), s: 0.9 },
+      { x: P ? 512 : 478, o: man(c), s: 0.92 },
+      { x: P ? 1016 : 1082, o: man(c), s: 0.92 },
+      { x: P ? 1070 : 1160, o: woman(c, { veil: C.blushVeil }), s: 0.9 },
     ].map((f, i) => ({ ...f, i, flip: f.x > 800, seed: c.rr(0, 9), p: S.puppet(act.add(person(c, { ...f.o, pose: 'sit' }))) }));
     const manLook = { robe: C.sageRobe, mantle: null, hair: C.hair2, hairStyle: 'short', beard: 'short', skin: C.skin2, belt: C.leather };
     const hand = witheredHand(c);
@@ -238,7 +239,8 @@ export default {
     const silMk = SIL.map((m, i) => `<g data-part="sil" data-i="${i}">${shadowPerson(c, m.o)}</g>`).join('');
     const doorway = sheet().p(c.cut([[-138, 184], [-138, 60], [-110, 30], [-80, 60], [-80, 184]], 0.4, 6), mix(C.apricot, C.ochre, 0.2)).out();
     const scheme = sheet().p(c.cut(c.blob(0, 0, 46, 22, 14, 0.2), 1.4, 4), '#3b2a22').x(c.ribbon(c.cbez([-30, 0], [-10, -18], [10, 18], [30, -2], 14), 2.4), mix(C.apricot, C.ochre, 0.3)).out();
-    const inset = hanging(insetL, `${fr.out()}<g>${back}${doorway}</g><g transform="translate(0 182)">${silMk}</g><g data-part="scheme" opacity="0" transform="translate(0 70)">${scheme}</g><g transform="translate(0 214)">${strip(c, tr('narada', 'the plot'), { size: 17 })}</g>`, { x: 1010, y: 160, len: 700 });
+    const inset = hanging(insetL, `${fr.out()}<g>${back}${doorway}</g><g transform="translate(0 182)">${silMk}</g><g data-part="scheme" opacity="0" transform="translate(0 70)">${scheme}</g><g transform="translate(0 214)">${strip(c, tr('narada', 'the plot'), { size: 17 })}</g>`, { x: P ? 900 : 1010, y: 160, len: 700 });
+    const INX = P ? 900 : 1010;
     const sils = Array.from(inset.querySelectorAll('[data-part="sil"]')).map((el, i) => ({ ...SIL[i], p: S.puppet(el.firstElementChild), seed: c.rr(0, 9) }));
     const schemeEl = inset.querySelector('[data-part="scheme"]');
 
@@ -361,7 +363,7 @@ export default {
 
       /* ---------- the plot, seen as a shadow-play ---------- */
       const inD = es(t, 11.3, 11.7, ease.out);
-      pose(inset, { x: 1010, y: lerp(-400, 150, inD), r: Math.sin(T * 0.6) * 1.2, o: inD > 0.001 ? 1 : 0 });
+      pose(inset, { x: INX, y: lerp(-400, 150, inD), r: Math.sin(T * 0.6) * 1.2, o: inD > 0.001 ? 1 : 0 });
       const huddle = es(t, 11.5, 11.9);
       sils.forEach((m, i) => {
         m.p.set({ x: m.x * lerp(1.15, 0.8, huddle), y: 0, s: 0.52, flip: m.flip, lean: (m.flip ? -1 : 1) * huddle * 12, head: huddle * 14 + Math.sin(T * 3 + m.seed) * 3 * huddle, armF: huddle * (i % 2 ? 60 : 30) + Math.sin(T * 2.4 + m.seed) * 8 * huddle, blink: 0 });

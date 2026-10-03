@@ -21,7 +21,7 @@ export default {
     { v: 17, text: 'Jezus usłyszał to i rzekł do nich: «Nie potrzebują lekarza zdrowi, lecz ci, którzy się źle mają.' },
     { v: 17, cont: true, text: 'Nie przyszedłem powołać sprawiedliwych, ale grzeszników».' },
   ],
-  cam: { x: [-140, 40], y: [-40, 40], z: [1, 1.14] },
+  cam: { x: [-460, 40], y: [-40, 40], z: [1, 1.14] },
   build(S) {
     const c = S.c;
     const DUSK = [C.duskViolet, C.dusk, C.peach];
@@ -73,7 +73,8 @@ export default {
 
     /* scribes of the Pharisees, outside the low wall */
     const outL = S.layer({ par: 0.42, sh: 4 });
-    const PH = [210, 290, 370].map((x, i) => ({ x, i, s: 0.9, seed: c.rr(0, 9), p: S.puppet(outL.add(scribe(c, i))) }));
+    // phone: a little closer to the gate, so the camera can show them with the disciples
+    const PH = (S.portrait ? [300, 362, 424] : [210, 290, 370]).map((x, i) => ({ x, i, s: 0.9, seed: c.rr(0, 9), p: S.puppet(outL.add(scribe(c, i))) }));
     PH.forEach((m) => { m.bub = outL.add(`<g>${thought(c, GLYPH.frown(c))}</g>`); });
     const wallL = S.layer({ par: 0.44, sh: 5 });
     const ws = sheet();
@@ -195,7 +196,7 @@ export default {
         pose(m.bub, { x: hx + 6, y: hy - 26, s: b * 0.95, o: b > 0.01 ? 1 : 0 });
       });
       const a = es(t, 3.1, 3.3, ease.back) * (1 - es(t, 4.0, 4.15));
-      const [ahx, ahy] = headAt(370, 652, 0.9, false);
+      const [ahx, ahy] = headAt(PH[2].x, 652, 0.9, false);
       pose(ask, { x: ahx + 26, y: ahy - 4, s: a, o: a > 0.01 ? 1 : 0 });
 
       /* v17 — the physician; the sinners' burdens lifted into light */
@@ -214,8 +215,10 @@ export default {
       });
 
       /* camera */
-      S.cam.x = kf(t, [[0, 20], [1.8, 20], [2.2, -110], [4.0, -110], [4.4, -30], [5.1, 0]]);
-      S.cam.z = kf(t, [[-0.5, 1.02], [1.0, 1.06], [1.8, 1.0], [2.2, 1.1], [4.0, 1.1], [4.4, 1.04], [5.1, 1.04], [5.7, 1.0]]);
+      // phone: the scribes outside the wall are far left of the table, so pan further and don't zoom in
+      const P = S.portrait;
+      S.cam.x = kf(t, [[0, 20], [1.8, 20], [2.2, P ? -440 : -110], [4.0, P ? -440 : -110], [4.4, P ? -250 : -30], [5.1, 0]]);
+      S.cam.z = kf(t, [[-0.5, 1.02], [1.0, 1.06], [1.8, 1.0], [2.2, P ? 1.0 : 1.1], [4.0, P ? 1.0 : 1.1], [4.4, 1.04], [5.1, 1.04], [5.7, 1.0]]);
       S.cam.y = kf(t, [[-0.5, 0], [1.0, 20], [2.2, 10], [4.4, -20], [5.1, 10]]);
     };
   },

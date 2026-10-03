@@ -26,6 +26,9 @@ export default {
   cam: { x: [-120, 80], y: [-60, 90], z: [0.96, 1.2] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;
+    // phone: the boat lands further right (higher on the water) so it is seen; the Pharisees stand closer in
+    const BXp = PH ? 660 : BX, BYp = PH ? 594 : BY;
     const SKY = ['#c9dfdc', '#eee6cf', '#f6ead3'];
     const sk = sky(S, SKY);
     const hangL = S.layer({ par: 0.05, sh: 5 });
@@ -67,7 +70,7 @@ export default {
 
     /* ---------- people on the beach ---------- */
     const P = S.layer({ par: 0.5, sh: 5 });
-    const phs = [0, 1, 2].map((i) => ({ i, p: S.puppet(P.add(person(c, pharisee(i)))), x: 960 + i * 78, from: 1560 + i * 90, seed: c.rr(0, 9) }));
+    const phs = [0, 1, 2].map((i) => ({ i, p: S.puppet(P.add(person(c, pharisee(i)))), x: PH ? 890 + i * 58 : 960 + i * 78, from: 1560 + i * 90, seed: c.rr(0, 9) }));
     const peter = S.puppet(P.add(person(c, CAST.peter)));
     const john = S.puppet(P.add(person(c, CAST.john)));
     const jesus = S.puppet(P.add(person(c, { ...CAST.jesus })));
@@ -90,14 +93,14 @@ export default {
 
       /* the heaven flat: let down on the demand, nothing in it, flown out on "no sign" */
       const down = es(t, 2.1, 2.55) * (1 - es(t, 4.25, 4.75));
-      swing(heav, 800, 110 - (1 - down) * 560, T, 0.7, 0.6, 1);
+      swing(heav, 800, 110 - (1 - down) * (PH ? 950 : 560), T, 0.7, 0.6, 1);
       const wait = seg(t, 2.6, 4.2);
       pose(qMark, { x: 0, y: 125, s: 1 + Math.sin(T * 2.2) * 0.04, r: Math.sin(T * 1.3) * 6, o: 1 - wait * 0.55 });
 
       /* v10 — the boat crosses and lands; v13 — it leaves for the other side */
       const arrive = es(t, 0.02, 0.62);
       const leave = es(t, 5.4, 5.95);
-      const bx = lerp(-260, BX, arrive) - leave * 150, by = BY - leave * 80, bs = 0.86 - leave * 0.36;
+      const bx = lerp(-260, BXp, arrive) - leave * (PH ? -40 : 150), by = BYp - leave * (PH ? 50 : 80), bs = 0.86 - leave * 0.36;
       pose(boatG, { x: bx, y: by + Math.sin(T * 1.4) * 2, s: bs, r: Math.sin(T * 1.1) * 0.8 });
       const ashore = es(t, 0.68, 0.74) * (1 - es(t, 5.3, 5.36));
       bj.set({ x: 20, y: -10, s: 1, o: 1 - ashore, armF: 30 + bump(t, 0.2, 0.7) * 40, blink: blinkAt(T), flip: leave > 0 });
@@ -106,7 +109,7 @@ export default {
       ba.set({ x: -120, y: -6, s: 0.95, armF: 55 + Math.sin(T * 1.3 + 1) * 5, armB: 45, flip: false, blink: blinkAt(T, 4) });
 
       // Jesus steps onto the beach, meets them; later walks back to the boat
-      const jKeys = [[0.7, [BX + 170, SHORE + 40]], [0.98, [JX, JY]], [5.0, [JX, JY]], [5.3, [BX + 170, SHORE + 40]]];
+      const jKeys = [[0.7, [BXp + 170, SHORE + 40]], [0.98, [JX, JY]], [5.0, [JX, JY]], [5.3, [BXp + 170, SHORE + 40]]];
       const [jx, jy] = kf(t, jKeys);
       const jWalk = moving(t, jKeys, 1);
       const sigh = bump(t, 3.02, 3.85);
@@ -120,7 +123,7 @@ export default {
         blink: sigh > 0.4 ? 0.85 : blinkAt(T),
       });
       [[peter, 0], [john, 1]].forEach(([p, i]) => {
-        const keys = [[0.72 + i * 0.05, [BX + 180, SHORE + 40]], [1.0 + i * 0.05, [640 - i * 60, JY - 10 + i * 12]], [5.05 + i * 0.05, [640 - i * 60, JY - 10 + i * 12]], [5.3, [BX + 180, SHORE + 40]]];
+        const keys = [[0.72 + i * 0.05, [BXp + 180, SHORE + 40]], [1.0 + i * 0.05, [640 - i * 60, JY - 10 + i * 12]], [5.05 + i * 0.05, [640 - i * 60, JY - 10 + i * 12]], [5.3, [BXp + 180, SHORE + 40]]];
         const [x, y] = kf(t, keys);
         const w = moving(t, keys, 1);
         p.set({ x, y, s: 0.9, o: ashore, flip: w ? kf(t + 0.02, keys)[0] < x : false, walk: w ? (x + y) * 0.05 : undefined, head: bump(t, 2.2, 3) * -14, armF: bump(t, 1.3, 2.4) * 20, blink: blinkAt(T, 3 + i) });
@@ -159,7 +162,7 @@ export default {
       const why = es(t, 3.35, 3.5, ease.back) * (1 - es(t, 3.95, 4.05));
       pose(whyB, { x: hx + 20, y: hy - 30, s: why, o: why > 0.02 ? 1 : 0 });
 
-      S.cam.x = lerp(-120, 0, es(t, 0, 0.8)) + es(t, 5.2, 5.9) * -110;
+      S.cam.x = lerp(-120, 0, es(t, 0, 0.8)) + es(t, 5.2, 5.9) * (PH ? -40 : -110);
       S.cam.z = 1.02 + es(t, 0.7, 1.4) * 0.12 - es(t, 2.0, 2.4) * 0.12 + es(t, 2.95, 3.3) * 0.12 - es(t, 4.2, 4.6) * 0.08 - es(t, 5.2, 5.9) * 0.06;
       S.cam.y = es(t, 0.7, 1.4) * 60 - es(t, 2.0, 2.4) * 110 + es(t, 2.95, 3.3) * 110 - es(t, 4.2, 4.6) * 40 - es(t, 5.2, 5.9) * 20;
     };

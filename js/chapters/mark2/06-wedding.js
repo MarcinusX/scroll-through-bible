@@ -24,7 +24,8 @@ export default {
     const dark = sky(S, [C.night2, C.night, mix(C.indigo, C.night, 0.3)], { name: 'dark' }).layer;
     const hangL = S.layer({ par: 0.04, sh: 3 });
     hangL.add(stars(c, { x0: -600, x1: 2200, y0: -300, y1: 380, n: 90 }));
-    const moonEl = hanging(hangL, `<circle r="110" fill="url(#halo-glow)" opacity=".5"/>${moon(c, 40)}`, { x: 1160, y: 150, len: 700 });
+    const MOONX = S.portrait ? 1000 : 1160;   // phone: not under the progress thread
+    const moonEl = hanging(hangL, `<circle r="110" fill="url(#halo-glow)" opacity=".5"/>${moon(c, 40)}`, { x: MOONX, y: 150, len: 700 });
     const cloudEl = hanging(hangL, cloud(c, 230, mix(C.storm, C.duskViolet, 0.4), mix(C.storm2, C.duskViolet, 0.3)), { x: 1500, y: 160, len: 700 });
 
     /* the village at night */
@@ -68,7 +69,8 @@ export default {
     const SPEC = [
       { x: 470, hold: 'tamb' }, { x: 548 }, { x: 626, hold: 'cup' },
       { x: 976, hold: 'cup' }, { x: 1054 }, { x: 1132, hold: 'tamb' },
-    ].map((g, i) => {
+    ].map((g, i) => (S.portrait ? { ...g, x: [506, 566, 628, 974, 1030, 1080][i] } : g))   // phone: the outer dancers inside the screen
+      .map((g, i) => {
       const o = townsfolk(c, { mantle: null });
       const holdF = g.hold === 'tamb' ? `<g transform="translate(0 6)">${tambourine(c)}</g>` : g.hold === 'cup' ? `<g transform="translate(0 -4) rotate(180)">${cup(c, C.clay)}</g>` : '';
       return { ...g, i, o, flip: g.x > 800, ph: c.rr(0, 6), seed: c.rr(0, 9), st: S.puppet(guestL.add(person(c, { ...o, holdF }))), sit: S.puppet(guestL.add(person(c, { ...o, pose: 'kneel' }))) };
@@ -98,8 +100,8 @@ export default {
       dark.fade(night);
       tint.fade(night * 0.32);
       fade(pool, 0.5 * (1 - night * 0.8));
-      swing(moonEl, 1160, 150, T, 0.8, 0.5);
-      swing(cloudEl, lerp(1500, 1170, es(t, 1.0, 1.6)), 160, T, 1, 0.6, 1);
+      swing(moonEl, MOONX, 150, T, 0.8, 0.5);
+      swing(cloudEl, lerp(1500, MOONX + 10, es(t, 1.0, 1.6)), 160, T, 1, 0.6, 1);
 
       /* lanterns glow, then go out one by one (one stays, faint) */
       LAN.forEach((l) => {

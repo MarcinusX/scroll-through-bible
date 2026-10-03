@@ -16,12 +16,14 @@ export default {
   cam: { x: [-40, 40], y: [-40, 140], z: [1, 1.3] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;
+    const SUNX = P ? 1020 : 1190, SUNY = P ? 70 : 170;   // phone: the sun clear of the thread, above the plates
     const SKY = ['#cadfdb', '#eee5cc', '#f7ead3'];
     const sk = sky(S, SKY);
 
     // sun & clouds hang on strings
     const hangL = S.layer({ par: 0.05, sh: 5 });
-    const sunEl = hanging(hangL, sun(c, 52), { x: 1190, y: 170, len: 700 });
+    const sunEl = hanging(hangL, sun(c, 52), { x: SUNX, y: SUNY, len: 700 });
     const cl1 = hanging(hangL, cloud(c, 220), { x: 520, y: 150, len: 600 });
     const cl2 = hanging(hangL, cloud(c, 150), { x: 960, y: 245, len: 700 });
     const birds = flock(S, hangL, 5, (cc) => bird(cc, { color: C.bird }), { y: 250, speed: 55, scale: 0.55 });
@@ -68,10 +70,10 @@ export default {
 
     // parable images rising from the boat like soap-bubbles of paper
     const plates = [
-      { icon: `<g transform="translate(0 16)">${sprout(c, { h: 30 })}</g>`, x: 575, y: 340 },
-      { icon: `<g transform="translate(-4 10) scale(.8)">${oilLamp(c)}</g>`, x: 725, y: 300 },
-      { icon: `<g transform="translate(0 30) scale(.12)">${mustardTree(c, { h: 420 }).replace(/class="grow"/g, '')}</g>`, x: 895, y: 300 },
-      { icon: `<g transform="translate(6 2) scale(.55) rotate(20)">${sickle(c)}</g>`, x: 1050, y: 340 },
+      { icon: `<g transform="translate(0 16)">${sprout(c, { h: 30 })}</g>`, x: P ? 595 : 575, y: 340 },
+      { icon: `<g transform="translate(-4 10) scale(.8)">${oilLamp(c)}</g>`, x: P ? 730 : 725, y: 300 },
+      { icon: `<g transform="translate(0 30) scale(.12)">${mustardTree(c, { h: 420 }).replace(/class="grow"/g, '')}</g>`, x: P ? 870 : 895, y: 300 },
+      { icon: `<g transform="translate(6 2) scale(.55) rotate(20)">${sickle(c)}</g>`, x: P ? 1005 : 1050, y: 340 },
     ].map((pl) => {
       const disc = sheet().p(c.cut(c.circ(0, 0, 42, 30), 0.6, 5), C.cream).out();
       pl.el = hanging(boatL, `<g transform="translate(0 0)">${disc}${pl.icon}</g>`, { x: pl.x, y: pl.y, len: 500 });
@@ -95,7 +97,7 @@ export default {
       cur.set(es(t, 0.05, 0.85), time);
       sk.blend(SKY, ['#d8e6df', '#f4ead2', '#f9efdc'], seg(t, 1, 5));
 
-      swing(sunEl, 1190, 170 - es(t, 0, 2) * 30, tt, 1.2, 0.7);
+      swing(sunEl, SUNX, SUNY - es(t, 0, 2) * 30, tt, 1.2, 0.7);
       swing(cl1, 520 + Math.sin(tt * 0.1) * 30, 150, tt, 1.5, 0.6, 1);
       swing(cl2, 960 + Math.sin(tt * 0.13 + 2) * 30, 245, tt, 1.5, 0.8, 2);
       birds(tt, 1 - es(t, 4, 4.4));

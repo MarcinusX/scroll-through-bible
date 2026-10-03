@@ -73,7 +73,9 @@ export default {
     /* ---------- the circle of disciples; Jesus ---------- */
     const P = S.layer({ par: 0.55, sh: 5 });
     P.add(rock(c, JX, GY + 6, 110, 40, C.rock2));
-    const dis = DIS.map((d, i) => ({ ...d, i, p: S.puppet(P.add(person(c, { ...d.o, pose: 'sit' }))), seed: c.rr(0, 9) }));
+    // phone: the circle drawn in, so the last disciple is not under the thread
+    const DX = S.portrait ? [560, 625, 690, 920, 995, 1060] : DIS.map((d) => d.x);
+    const dis = DIS.map((d, i) => ({ ...d, x: DX[i], i, p: S.puppet(P.add(person(c, { ...d.o, pose: 'sit' }))), seed: c.rr(0, 9) }));
     const jSit = S.puppet(P.add(person(c, { ...CAST.jesus, pose: 'sit' })));
     const jSt = S.puppet(P.add(person(c, { ...CAST.jesus })));
     const pSt = S.puppet(P.add(person(c, CAST.peter)));
@@ -94,7 +96,7 @@ export default {
 
       /* the screen: down for v31, flown out after */
       const down = es(t, -0.2, 0.25, ease.back) * (1 - es(t, 4.1, 4.5));
-      swing(scr, JX, 150 - (1 - down) * 600, T, 0.6, 0.6, 1);
+      swing(scr, JX, 150 - (1 - down) * (S.portrait ? 950 : 600), T, 0.6, 0.6, 1);
       // v31a — the Son of Man walks the road, burdened
       const walkU = seg(t, 0.05, 1.8);
       const sx = lerp(-230, 40, walkU), sy = lerp(222, 192, walkU);
@@ -152,7 +154,7 @@ export default {
       /* v32a — He speaks openly: words fly clearly to everyone */
       words.forEach((w) => {
         const k = ((T * 0.3 + w.i / words.length) % 1);
-        const to = DIS[w.i % 6].x;
+        const to = DX[w.i % 6];
         pose(w.el, { x: lerp(JX, to, k), y: GY - 150 - Math.sin(k * PI) * 70, r: Math.sin(T * 2 + w.i) * 10, s: 0.8, o: openly * Math.min(1, k * 5) * (1 - k * 0.6) });
       });
       const bk = es(t, 5.6, 5.75, ease.back) * (1 - es(t, 5.98, 6.05));
@@ -162,7 +164,7 @@ export default {
       const gt = es(t, 7.1, 7.35, ease.back);
       pose(godT, { x: jhx - 10, y: jhy - 110, s: gt, o: gt > 0.02 ? 1 : 0, r: Math.sin(T * 1.2) * 3 });
       const mt = es(t, 7.35, 7.55, ease.back);
-      pose(manT, { x: phx + 60, y: phy - 90 + es(t, 7.7, 8) * 20, s: mt * (1 - es(t, 7.8, 8) * 0.2), o: mt > 0.02 ? 1 - es(t, 7.75, 8) * 0.5 : 0, r: -6 });
+      pose(manT, { x: phx + (S.portrait ? 0 : 60), y: phy - 90 + es(t, 7.7, 8) * 20, s: mt * (1 - es(t, 7.8, 8) * 0.2), o: mt > 0.02 ? 1 - es(t, 7.75, 8) * 0.5 : 0, r: -6 });
 
       S.cam.x = es(t, 5.1, 5.7) * 40;
       S.cam.z = 1.04 - es(t, 4.0, 4.4) * 0.02 + es(t, 5.0, 5.6) * 0.1;

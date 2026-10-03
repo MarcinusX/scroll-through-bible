@@ -19,9 +19,11 @@ export default {
     { v: 34, cont: true, text: 'Zostawił swój dom, powierzył swoim sługom staranie o wszystko,' },
     { v: 34, cont: true, text: 'każdemu wyznaczył zajęcie, a odźwiernemu przykazał, żeby czuwał.' },
   ],
-  cam: { x: [-30, 60], y: [-40, 40], z: [1, 1.1] },
+  cam: { x: [-30, 100], y: [-40, 40], z: [1, 1.1] },
   build(S) {
     const c = S.c;
+    // phone: the doorkeeper a step nearer the gate and the camera a little further right, so he is on screen
+    const PH = S.portrait;
     const DAY = ['#e6d3b4', '#f1dfbf', '#f7e8cf'];
     const sk = sky(S, DAY);
     const hangL = S.layer({ par: 0.04, sh: 4 });
@@ -120,12 +122,12 @@ export default {
 
       /* the doorkeeper: at the gate; gets his lamp (3) */
       const lampOn = es(t, 3.15, 3.22);
-      const dkx = 1116;
+      const dkx = PH ? 1062 : 1116;
       dk.set({ x: dkx, y: F, s: 0.96, flip: true, o: 1 - lampOn, armF: 10, head: -4, blink: blinkAt(T, 7) });
       dkLamp.set({ x: dkx, y: F, s: 0.96, flip: true, o: lampOn, armF: 60, armB: 10, head: -2, blink: blinkAt(T, 7) });
       pose(H.gateDoor, { x: HOUSE.GATE - 36, y: F + 38, sx: 1 - es(t, 3.4, 3.6) * 0.8 });
 
-      S.cam.x = es(t, 1.7, 2.2) * 20 + es(t, 3.4, 3.9) * 50;
+      S.cam.x = es(t, 1.7, 2.2) * (PH ? 50 : 20) + es(t, 3.4, 3.9) * (PH ? 25 : 50);
       S.cam.z = 1 + es(t, 3.4, 3.9) * 0.04;
     };
   },

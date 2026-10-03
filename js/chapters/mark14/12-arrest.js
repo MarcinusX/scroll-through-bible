@@ -28,7 +28,7 @@ export default {
     { v: 49, cont: true, text: 'Ale Pisma muszą się wypełnić».' },
     { v: 50 },
   ],
-  cam: { x: [-80, 160], y: [-40, 220], z: [1, 1.6] },
+  cam: { x: [-260, 160], y: [-40, 220], z: [1, 1.6] },
   build(S) {
     const c = S.c;
     const G = garden(S, { moonAt: [1240, 150], rockX: 1400, city: false });
@@ -44,7 +44,8 @@ export default {
     const mob = kinds.map((k, i) => {
       const prop = k === 'torch' ? torch(c, 54) : k === 'sword' ? sword(c, 56) : club(c, 60);
       const el = mobL.add(`<g>${shadowPerson(c, guardOpts(c), INK)}<g class="prop" transform="translate(30 -96) rotate(${k === 'torch' ? -8 : 10})">${prop.replace(/fill="(#[0-9a-f]{6})"/g, (m, col) => k === 'torch' ? m : `fill="${mix(col, INK, 0.5)}"`)}</g></g>`);
-      return { i, k, el, fl: el.querySelector('.flame'), x: 180 + i * 50 + (i % 2) * 14, y: GY - 14 + (i % 3) * 10, s: 0.9 + (i % 2) * 0.06, from: -300 - i * 60 };
+      const x = 180 + i * 50 + (i % 2) * 14;   // phone: the band closer together (below)
+      return { i, k, el, fl: el.querySelector('.flame'), x: S.portrait ? 150 + x * 0.75 : x, y: GY - 14 + (i % 3) * 10, s: 0.9 + (i % 2) * 0.06, from: -300 - i * 60 };
     });
     // the high priest's servant (in colour), and Judas
     const P = S.layer({ par: 0.52, sh: 5 });
@@ -54,7 +55,7 @@ export default {
     const judas = S.puppet(jdEl);
     // the disciples on the right
     const DIS = [{ k: 'peter', x: 900 }, { k: 'john', x: 965 }, { k: 'james', x: 1030 }, { k: 'andrew', x: 1095 }, { k: 'thomas', x: 1160 }, { k: 'philip', x: 1225 }]
-      .map((d, i) => ({ ...d, i, seed: c.rr(0, 9), p: S.puppet(P.add(withFace(person(c, TW[d.k]), faceBits(c)))) }));
+      .map((d, i) => ({ ...d, x: S.portrait ? 900 + (d.x - 900) * 0.45 : d.x, i, seed: c.rr(0, 9), p: S.puppet(P.add(withFace(person(c, TW[d.k]), faceBits(c)))) }));   // phone: the six closer together, the last not under the thread
     DIS.forEach((d) => { d.sad = d.p.el.querySelector('[data-part="sad"]'); });
     const peterSword = S.puppet(P.add(person(c, { ...TW.peter, holdF: `<g transform="rotate(-100)">${sword(c, 56)}</g>` })));
     const jEl = P.add(withFace(person(c, { ...CAST.jesus }), faceBits(c)));
@@ -68,7 +69,8 @@ export default {
     const spotL = S.layer({ par: 0.56, sh: 0, flat: true });
     spotL.add(vignette(S, { cx: 770, cy: 520, r: 300, col: '#0c0a18', o: 0.75 }));
     const fx = S.layer({ par: 0.58, sh: 4 });
-    const authority = hanging(fx, discPlate(c, seal(c, 26), { r: 34, rim: C.stone2, fill: C.parchment }), { x: 520, y: 300, len: 600 });
+    const AX = S.portrait ? 540 : 420;   // phone: the high priests' seal over the band, inside the screen
+    const authority = hanging(fx, discPlate(c, seal(c, 26), { r: 34, rim: C.stone2, fill: C.parchment }), { x: S.portrait ? AX : 520, y: 300, len: 600 });
     const sign = fx.add(`<g>${speech(c, (() => {
       const s = sheet();
       s.p(c.cut(c.circ(-10, 0, 9, 12), 0.2, 3), C.skin2).p(c.cut(c.circ(10, 0, 9, 12), 0.2, 3), C.skin);
@@ -112,7 +114,7 @@ export default {
       vis(pool, { x: lerp(-200, 420, band) + surge * 200, y: GY, o: 1 });
       darkL.fade(0.7 + es(t, 3.05, 3.4) * 0.3);
       const aIn = es(t, 1.2, 1.5, ease.out) * (1 - es(t, 1.9, 2.1, ease.in));
-      vis(authority, { x: 420, y: 330 - (1 - aIn) * 600, r: Math.sin(T) * 3, o: aIn > 0.01 ? 1 : 0 });
+      vis(authority, { x: AX, y: 330 - (1 - aIn) * 600, r: Math.sin(T) * 3, o: aIn > 0.01 ? 1 : 0 });
       const sg = es(t, 2.2, 2.4, ease.back) * (1 - es(t, 2.85, 2.95));
       const [jhx, jhy] = headAt(jdx, jdy, 1.0, true);
       vis(sign, { x: jhx - 8, y: jhy - 24, s: sg, o: sg > 0.01 ? 1 : 0 });
@@ -166,8 +168,12 @@ export default {
       const sIn = es(t, 8.05, 8.4, ease.out) * (1 - es(t, 8.9, 9.1, ease.in));
       vis(scroll, { x: JX, y: 320 - (1 - sIn) * 700, r: Math.sin(T * 0.8) * 1.5, o: sIn > 0.01 ? 1 : 0 });
 
-      S.cam.x = kf(t, [[-0.5, -60], [0.8, -40], [1.8, -80], [2.9, -60], [3.4, -30], [4.0, -30], [4.5, 0], [5.0, 40], [5.9, 40], [6.3, 0], [9.0, 0], [9.6, 40]]);
-      S.cam.z = kf(t, [[-0.5, 1.06], [0.8, 1.16], [1.8, 1.06], [2.9, 1.2], [3.4, 1.5], [4.0, 1.5], [4.5, 1.2], [5.0, 1.36], [5.9, 1.3], [6.3, 1.14], [9.0, 1.14], [9.6, 1.08]]);
+      // phone: the camera stands further left while the band arrives, so it (and the seal that sent it) is in the picture
+      S.cam.x = kf(t, S.portrait ? [[-0.5, -100], [0.8, -20], [1.8, -250], [2.9, -110], [3.4, -30], [4.0, -30], [4.5, 0], [5.0, 40], [5.9, 40], [6.3, 0], [9.0, 0], [9.6, 40]]
+        : [[-0.5, -60], [0.8, -40], [1.8, -80], [2.9, -60], [3.4, -30], [4.0, -30], [4.5, 0], [5.0, 40], [5.9, 40], [6.3, 0], [9.0, 0], [9.6, 40]]);
+      // phone: a little wider while they seize Him and Peter strikes, so the six by Him are not under the thread
+      S.cam.z = kf(t, S.portrait ? [[-0.5, 1.06], [0.8, 1.16], [1.8, 1.06], [2.9, 1.2], [3.4, 1.5], [4.0, 1.5], [4.5, 1.08], [5.0, 1.2], [5.9, 1.16], [6.3, 1.14], [9.0, 1.14], [9.6, 1.08]]
+        : [[-0.5, 1.06], [0.8, 1.16], [1.8, 1.06], [2.9, 1.2], [3.4, 1.5], [4.0, 1.5], [4.5, 1.2], [5.0, 1.36], [5.9, 1.3], [6.3, 1.14], [9.0, 1.14], [9.6, 1.08]]);
       S.cam.y = kf(t, [[-0.5, 30], [0.8, 90], [1.8, 50], [2.9, 120], [3.4, 200], [4.0, 200], [4.5, 110], [5.0, 150], [5.9, 140], [6.3, 60], [9.0, 60], [9.6, 40]]);
     };
   },

@@ -29,7 +29,11 @@ export default {
   cam: { x: [-20, 20], y: [0, 40], z: [1, 1.18] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;
     const set = vineyardSet(S);
+    // phone: the tower, the far-land plate and the sun come in from the edges
+    const TOWER = P ? 560 : VY.TOWER;
+    const AB = P ? [990, 290] : VY.ABROAD;
 
     /* people */
     const pl = S.layer({ par: 0.5, sh: 5 });
@@ -56,7 +60,7 @@ export default {
 
     return (t, time) => {
       const T = time;
-      set.update(t, T, { sunX: 470 + es(t, 0, 9) * 260, sunY: 170 - es(t, 0, 4) * 20 + es(t, 4, 9) * 10 });
+      set.update(t, T, { sunX: (P ? 560 : 470) + es(t, 0, 9) * (P ? 200 : 260), sunY: 170 - es(t, 0, 4) * 20 + es(t, 4, 9) * 10 });
 
       /* v1a — the owner walks along and the vines spring up */
       let ox = kf(t, walkKeys, (u) => u);
@@ -86,7 +90,7 @@ export default {
       pose(fr.lintel, { x: VY.GATE0 - 12, y: VY.WALL_F - 170 - (1 - lk) * 40, o: lk });
       const pk = es(t, 1.35, 1.55, ease.back);
       pose(fr.press, { x: VY.PRESS, y: 720 + (1 - pk) * 30, s: 1.25, sx: 1.25 * (0.4 + 0.6 * pk), o: pk > 0.01 ? 1 : 0 });
-      set.tower.forEach((el, i) => { const k = es(t, 1.55 + i * 0.09, 1.66 + i * 0.09, ease.out); pose(el, { x: VY.TOWER, y: 606 - (1 - k) * 70, o: k }); });
+      set.tower.forEach((el, i) => { const k = es(t, 1.55 + i * 0.09, 1.66 + i * 0.09, ease.out); pose(el, { x: TOWER, y: 606 - (1 - k) * 70, o: k }); });
 
       /* v1c — the tenants come in, take the key; the owner sails away to a far land */
       ten.forEach((m) => {
@@ -113,7 +117,7 @@ export default {
       const sail = seg(t, 2.8, 3.8);
       pose(set.shipEl, { x: lerp(820, 1260, sail), y: 436, s: lerp(0.9, 0.35, sail), o: t > 2.8 ? 1 - seg(t, 3.6, 3.8) : 0 });
       const plateDrop = es(t, 2.75, 3.15, ease.out);
-      pose(set.plateEl, { x: VY.ABROAD[0], y: lerp(-800, VY.ABROAD[1], plateDrop), r: Math.sin(T * 0.8) * 1.2 });
+      pose(set.plateEl, { x: AB[0], y: lerp(-800, AB[1], plateDrop), r: Math.sin(T * 0.8) * 1.2 });
       // in the far land the owner points each time he sends someone
       const send = Math.max(bump(t, 3.2, 3.7), bump(t, 5.05, 5.5), bump(t, 7.0, 7.4), bump(t, 8.0, 8.9));
       set.pOwner.set({ x: 0, y: 0, s: 1, flip: true, armF: 30 + send * 70, head: send * 6, blink: blinkAt(T, 4) });

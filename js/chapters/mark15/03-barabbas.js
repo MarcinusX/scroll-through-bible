@@ -26,7 +26,7 @@ export default {
     { v: 10 },
     { v: 11 },
   ],
-  cam: { x: [-40, 200], y: [-40, 120], z: [1, 1.3] },
+  cam: { x: [-40, 440], y: [-40, 120], z: [1, 1.3] },
   build(S) {
     const c = S.c;
     const H = squareSet(S);
@@ -100,7 +100,7 @@ export default {
 
       /* the platform: soldiers, Jesus, Pilate */
       K.sols[0].set({ x: 640, y: PLAT, s: 0.84, flip: false, armF: 34, armB: 8, blink: blinkAt(T, 4) });
-      K.sols[1].set({ x: 1110, y: PLAT, s: 0.84, flip: true, armF: 34, armB: 8, blink: blinkAt(T, 5) });
+      K.sols[1].set({ x: S.portrait ? 1045 : 1110, y: PLAT, s: 0.84, flip: true, armF: 34, armB: 8, blink: blinkAt(T, 5) });
       const offerK = es(t, 4.05, 4.35) * (1 - es(t, 5.0, 5.3));
       K.jes.set({ x: JX, y: PLAT, s: 0.88, flip: false, armF: 30, armB: 28, head: 4 - offerK * 4, blink: blinkAt(T) });
       const think = es(t, 5.05, 5.3) * (1 - es(t, 5.9, 6.1));
@@ -154,7 +154,8 @@ export default {
         pose(sh, { x: hx + (i % 2 ? -8 : 8), y: hy - 20, s: k * 0.95, o: k > 0.02 ? 1 : 0, r: (i % 2 ? 4 : -4) });
       });
 
-      S.cam.x = lookBar * 170 + es(t, 5.0, 5.4) * 60 * (1 - es(t, 5.9, 6.2));
+      S.cam.x = lookBar * (S.portrait ? 420 : 170) +   // phone: pan far enough that Barabbas' cell clears the thread
+         es(t, 5.0, 5.4) * 60 * (1 - es(t, 5.9, 6.2));
       S.cam.y = lookBar * 110 - es(t, 3.2, 3.8) * 10 + es(t, 5.9, 6.4) * 50;
       S.cam.z = 1.02 + lookBar * 0.24 + es(t, 5.0, 5.4) * 0.06 * (1 - es(t, 5.9, 6.2));
     };

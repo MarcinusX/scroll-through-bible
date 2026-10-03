@@ -23,7 +23,7 @@ export default {
   build(S) {
     const c = S.c;
     const SKY = ['#d6dcd6', '#f2e2c6', '#f6dcb4'];
-    const set = streetSet(S, { skyCols: SKY, sunAt: [1180, 190] });
+    const set = streetSet(S, { skyCols: SKY, sunAt: S.portrait ? [1000, 60] : [1180, 190] });   // phone: the sun hangs inward, not as a sliver under the thread
     const dim = S.layer({ par: 0, sh: 1, flat: true });
     dim.add(`<rect x="-3000" y="-3000" width="8000" height="8000" fill="#3b3450"/>`);
 

@@ -20,12 +20,15 @@ export default {
   cam: { x: [-140, 420], y: [-40, 200], z: [1, 1.5] },
   build(S) {
     const c = S.c;
-    const G = garden(S, { moonAt: [1150, 170], rockX: 1400, wall: true, city: true });
+    const PT = S.portrait;
+    const MX = PT ? 1040 : 1150;          // phone: the moon (and the cloud that covers it) clear of the progress thread
+    const SX = PT ? 600 : 340;            // phone: the name of the garden inside the screen
+    const G = garden(S, { moonAt: [MX, 170], rockX: 1400, wall: true, city: true });
     // a dark cloud that slides over the moon
     const cl = hanging(G.hang, cloud(c, 230, mix(C.storm2, C.indigo, 0.3), mix(C.storm2, C.night, 0.4)), { x: 1500, y: 190, len: 700 });
     // the name of the place, and an olive press stone by the gate
     const signL = S.layer({ par: 0.34, sh: 4 });
-    const sign = hanging(signL, wordTag(c, tr('Getsemani', 'Gethsemane'), { size: 20 }), { x: 340, y: 470, len: 400 });
+    const sign = hanging(signL, wordTag(c, tr('Getsemani', 'Gethsemane'), { size: 20 }), { x: SX, y: 470, len: 400 });
     signL.add(`<g transform="translate(560 ${GY - 40})">${sheet().p(c.cut(c.ell(0, -30, 44, 30, 20), 0.6, 5), mix(C.rock2, C.indigo, 0.3)).p(c.cut(c.ell(0, -30, 10, 7, 10), 0.3, 3), mix(C.rock3, C.indigo, 0.4)).out()}</g>`);
     const darkL = S.layer({ par: 0.4, sh: 0, flat: true });
     darkL.add(`<rect x="-3000" y="-3000" width="8000" height="8000" fill="#120f24" opacity=".35"/>`);
@@ -34,7 +37,8 @@ export default {
     const EIGHT = [
       { k: 'andrew', x: 400 }, { k: 'thomas', x: 455 }, { k: 'matthew', x: 510 }, { k: 'philip', x: 565 },
       { k: 'bartholomew', x: 620 }, { k: 'jamesA', x: 675 }, { k: 'thaddaeus', x: 730 }, { k: 'simonZ', x: 785 },
-    ].map((d, i) => ({ ...d, i, seed: c.rr(0, 9), stand: S.puppet(P.add(person(c, TW[d.k]))), sit: S.puppet(P.add(person(c, { ...TW[d.k], pose: 'sit' }))) }));
+    ].map((d) => (PT ? { ...d, x: 785 + (d.x - 785) * 0.7 } : d))   // phone: the eight sit closer, the first not cut by the frame
+      .map((d, i) => ({ ...d, i, seed: c.rr(0, 9), stand: S.puppet(P.add(person(c, TW[d.k]))), sit: S.puppet(P.add(person(c, { ...TW[d.k], pose: 'sit' }))) }));
     const THREE = [{ k: 'john', x: 940 }, { k: 'james', x: 1000 }, { k: 'peter', x: 1060 }].map((d, i) => ({
       ...d, i, seed: c.rr(0, 9), stand: S.puppet(P.add(person(c, TW[d.k]))), sit: S.puppet(P.add(person(c, { ...TW[d.k], pose: 'sit' }))),
     }));
@@ -54,11 +58,11 @@ export default {
 
     return (t, time) => {
       const T = time;
-      swing(G.moon, 1150, 170, T, 1, 0.6);
+      swing(G.moon, MX, 170, T, 1, 0.6);
       const cover = es(t, 2.05, 2.8);
-      vis(cl, { x: lerp(1520, 1160, cover), y: 196, r: Math.sin(T * 0.6) * 1, o: 1 });
+      vis(cl, { x: lerp(1520, MX + 10, cover), y: 196, r: Math.sin(T * 0.6) * 1, o: 1 });
       darkL.fade(es(t, 2.1, 2.8));
-      vis(sign, { x: 340, y: 470 - (1 - es(t, -0.2, 0.3, ease.out)) * 500, r: Math.sin(T * 1.1) * 3, o: 1 });
+      vis(sign, { x: SX, y: 470 - (1 - es(t, -0.2, 0.3, ease.out)) * 500, r: Math.sin(T * 1.1) * 3, o: 1 });
 
       /* everyone comes in through the gate; eight sit by the wall */
       EIGHT.forEach((d) => {
@@ -89,7 +93,7 @@ export default {
       const w = es(t, 3.5, 3.7, ease.back);
       vis(watch, { x: hx - 20, y: hy - 10, s: w, o: w > 0.01 ? 1 : 0 });
 
-      S.cam.x = kf(t, [[-0.5, -120], [0.8, -60], [1.9, -40], [2.7, 360], [3.9, 380]]);
+      S.cam.x = kf(t, PT ? [[-0.5, -120], [0.8, -30], [1.9, -10], [2.7, 330], [3.9, 345]] : [[-0.5, -120], [0.8, -60], [1.9, -40], [2.7, 360], [3.9, 380]]);   // phone: a little to the right with the eight, a little back with the three
       S.cam.z = kf(t, [[-0.5, 1.02], [0.8, 1.12], [1.9, 1.16], [2.7, 1.3], [3.9, 1.4]]);
       S.cam.y = kf(t, [[-0.5, 20], [0.8, 90], [1.9, 110], [2.7, 150], [3.9, 170]]);
     };

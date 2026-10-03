@@ -28,6 +28,7 @@ export default {
   cam: { x: [-60, 40], y: [-60, 30], z: [1, 1.1] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;
     const SKY = ['#d3e3dc', '#f1e7cd', '#f8ecd6'];
     const sk = sky(S, SKY);
     const hangL = S.layer({ par: 0.05, sh: 4 });
@@ -63,9 +64,11 @@ export default {
     const PH = [
       { i: 3, x: 432 }, { i: 4, x: 484 }, { i: 1, x: 540 }, { i: 2, x: 594 }, { i: 0, x: 650 },
     ].map((m, j) => ({ ...m, j, seed: c.rr(0, 9), p: S.puppet(ppl.add(pharisee(c, m.i))) }));
+    if (P) PH.forEach((m, j) => { m.x = 540 + j * 36; });   // phone: both groups closer in, no one under the frame or the thread
     const DS = [
       { o: CAST.peter, x: 960 }, { o: CAST.andrew, x: 1016 }, { o: CAST.james, x: 1076 }, { o: CAST.john, x: 1132 }, { o: CAST.thomas, x: 1186 },
     ].map((d, i) => ({ ...d, i, seed: c.rr(0, 9), p: S.puppet(ppl.add(person(c, d.o))) }));
+    if (P) DS.forEach((d, i) => { d.x = 912 + i * 36; });
     const jesus = S.puppet(ppl.add(person(c, { ...CAST.jesus })));
     // scrolls in the Pharisees' hands (v7–9)
     const held = PH.map((m, j) => ppl.add(`<g>${ruleScroll(c, [C.terracotta, C.teal2, C.ochre, C.plumRobe, C.moss][j], 1.1)}</g>`));
@@ -92,6 +95,7 @@ export default {
     const pile = fx.add(`<g>${hang2(`${board}<g>${scrollPile(c, 15, 190)}</g><g transform="translate(0 46)">${nameTag(c, tr('tradycja ludzka', 'human tradition'), { size: 15 })}</g>`, 100, 400)}</g>`);
     const extra = Array.from({ length: 10 }, (_, i) => ({ i, el: fx.add(`<g>${ruleScroll(c, [C.terracotta, C.teal2, C.ochre, C.plumRobe][i % 4], 1.2)}</g>`), x: c.rr(-90, 90), r: c.rr(60, 120) }));
 
+    const PILE = P ? 950 : 1080;   // phone: the heap of scrolls ends up inside the frame
     return (t, time) => {
       const T = time;
       swing(sunEl, 1210, 140, T, 1, 0.6);
@@ -145,7 +149,7 @@ export default {
       const glowK = es(t, 1.95, 2.3) * (1 - es(t, 3.95, 4.2));
       pose(glow, { x: GLOW.x, y: GLOW.y + Math.sin(T * 0.9) * 3, s: 0.7 + glowK * 0.3, o: glowK });
       const away = es(t, 2.35, 2.95, ease.io);
-      const hx = lerp(FACE.x - 20, 450, away), hy = lerp(FACE.y + 90, 440, away) - (1 - faceK) * 1150;
+      const hx = lerp(FACE.x - 20, P ? 505 : 450, away), hy = lerp(FACE.y + 90, 440, away) - (1 - faceK) * 1150;
       swing(heartEl, hx, hy, T, 2.2, 0.9, 2);
       pose(heartEl.querySelector('.obj'), { s: 1 - away * 0.5, o: faceK > 0.01 ? 1 : 0 });
       const mouth = [FACE.x + 12, FACE.y - (1 - faceK) * 1150];
@@ -172,18 +176,18 @@ export default {
       /* v8 — the tablets set aside; the Pharisees hold on to their heap of scrolls */
       const tabK = es(t, 4.0, 4.35, ease.out);
       const aside = es(t, 4.45, 4.95);
-      const tx = lerp(JX, 1120, aside), ty = 170 - (1 - tabK) * 1150 + aside * 40;
+      const tx = lerp(JX, P ? 1020 : 1120, aside), ty = 170 - (1 - tabK) * 1150 + aside * 40;
       pose(tab, { x: tx, y: ty + Math.sin(T * 0.8) * 2, r: aside * 16 + Math.sin(T * 0.7) * 0.6 });
       fade(tabGlow, tabK * (1 - aside) * 0.9);
       pose(tab.querySelector('.obj'), { s: 1 - aside * 0.22, o: tabK > 0.01 ? 1 - aside * 0.25 : 0 });
       const pileK = es(t, 4.5, 4.9, ease.back);
-      const pileX = lerp(560, 1080, es(t, 5.1, 5.6));
+      const pileX = lerp(P ? 620 : 560, PILE, es(t, 5.1, 5.6));
       pose(pile, { x: pileX, y: 300 - (1 - pileK) * 1150 + aside * 0 + Math.sin(T * 0.8 + 1) * 2, o: pileK > 0.01 ? 1 : 0 });
 
       /* v9 — "full well do you set aside": more scrolls pile up in front of the tablets */
       extra.forEach((e) => {
         const k = es(t, 5.25 + e.i * 0.06, 5.55 + e.i * 0.06, ease.out);
-        pose(e.el, { x: 1080 + e.x * 0.9, y: lerp(-80, 270 - (e.i % 3) * 22 - Math.floor(e.i / 3) * 14, k), r: e.r, o: k > 0.01 ? 1 : 0 });
+        pose(e.el, { x: PILE + e.x * 0.9, y: lerp(-80, 270 - (e.i % 3) * 22 - Math.floor(e.i / 3) * 14, k), r: e.r, o: k > 0.01 ? 1 : 0 });
       });
 
       S.cam.z = 1 + es(t, 0.0, 0.8) * 0.03 + es(t, 1.9, 2.4) * 0.03 - es(t, 4.0, 4.4) * 0.03;

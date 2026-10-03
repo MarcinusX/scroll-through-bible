@@ -43,7 +43,8 @@ export default {
     const jEl = hallL.add(withFace(person(c, { ...CAST.jesus, holdF: cord(c) }), faceBits(c)));
     const jesus = S.puppet(jEl);
     const jSad = jEl.querySelector('[data-part="sad"]');
-    [0, 1].forEach((i) => S.puppet(hallL.add(person(c, guardOpts(c)))).set({ x: 670 + i * 130, y: HALL, s: 0.72, flip: i === 1, armF: 20 }));
+    [0, 1].forEach((i) => S.puppet(hallL.add(person(c, guardOpts(c)))).set({ x: (S.portrait ? 645 : 670) + i * (S.portrait ? 115 : 130),   // phone: the guard on His right clear of the thread
+      y: HALL, s: 0.72, flip: i === 1, armF: 20 }));
 
     const Y = R.yard();
     // the rooster on the wall
@@ -99,7 +100,7 @@ export default {
       const ember = es(t, 10.9, 11.8);
       Y.tongues.forEach((tg, i) => pose(tg, { x: [-30, 22, -8, 14, -22, 2][i], y: -16, sy: (1 - ember * 0.75) * (0.85 + Math.sin(T * (6 + i) + i) * 0.15), sx: 1 + Math.sin(T * 5 + i * 2) * 0.06 }));
       Y.glowL.fade((0.85 + Math.sin(T * 4) * 0.08) * (1 - ember * 0.6));
-      jesus.set({ x: 730, y: HALL, s: 0.72, flip: true, armF: 24, armB: 14, head: 12 - es(t, 8.1, 8.4) * 14, blink: blinkAt(T) });
+      jesus.set({ x: S.portrait ? 702 : 730, y: HALL, s: 0.72, flip: true, armF: 24, armB: 14, head: 12 - es(t, 8.1, 8.4) * 14, blink: blinkAt(T) });
       fade(jSad, 0.8);
 
       /* the maid comes; looks; speaks; follows him to the porch; speaks to the bystanders */
@@ -181,12 +182,17 @@ export default {
       mks.forEach((m, i) => fade(m, [es(t, 3.3, 3.4), es(t, 6.3, 6.4), es(t, 8.3, 8.4)][i]));
       // the memory
       const memK = es(t, 10.05, 10.4, ease.out) * (1 - es(t, 10.9, 11.15, ease.in));
-      vis(memory, { x: GATE + 330, y: 420 - (1 - memK) * 700, r: Math.sin(T * 0.7) * 1.5, o: memK > 0.01 ? 1 : 0 });
+      vis(memory, { x: S.portrait ? GATE + 160 : GATE + 330, y: 420 - (1 - memK) * 700, r: Math.sin(T * 0.7) * 1.5, o: memK > 0.01 ? 1 : 0 });
 
       /* camera: the courtyard; a look up at Him when Peter swears; the dawn at the end */
-      S.cam.x = kf(t, [[-0.5, -500], [0.9, -680], [4.05, -680], [4.7, -920], [7.9, -920], [8.2, -860], [8.9, -860], [9.3, -940], [10.9, -1000], [11.3, -1160], [11.8, -1180]]);
+      // phone: at the fire the camera stands a little further right and less close (Him upstairs and the bystanders clear of the
+      // thread); when Peter swears, the look up takes in both him at the porch and Him in the hall; the memory hangs further left
+      const PT = S.portrait;
+      S.cam.x = kf(t, PT ? [[-0.5, -400], [0.9, -500], [4.05, -500], [4.7, -960], [5.0, -960], [5.3, -895], [7.9, -895], [8.2, -630], [8.9, -630], [9.3, -940], [10.9, -1000], [11.3, -1160], [11.8, -1180]]
+        : [[-0.5, -500], [0.9, -680], [4.05, -680], [4.7, -920], [7.9, -920], [8.2, -860], [8.9, -860], [9.3, -940], [10.9, -1000], [11.3, -1160], [11.8, -1180]]);
       S.cam.y = kf(t, [[-0.5, 200], [0.9, 290], [4.05, 290], [4.7, 280], [7.9, 280], [8.2, 60], [8.9, 60], [9.3, 250], [10.9, 280], [11.3, 300], [11.8, 310]]);
-      S.cam.z = kf(t, [[-0.5, 1.4], [0.9, 1.56], [1.2, 1.7], [2.9, 1.66], [4.05, 1.56], [4.7, 1.5], [7.9, 1.6], [8.2, 1.14], [8.9, 1.14], [9.3, 1.5], [10.9, 1.6], [11.3, 1.95], [11.8, 2.1]]);
+      S.cam.z = kf(t, PT ? [[-0.5, 1.26], [0.9, 1.34], [1.2, 1.44], [2.9, 1.42], [4.05, 1.34], [4.7, 1.5], [7.9, 1.6], [8.2, 1.02], [8.9, 1.02], [9.3, 1.5], [10.9, 1.6], [11.3, 1.95], [11.8, 2.1]]
+        : [[-0.5, 1.4], [0.9, 1.56], [1.2, 1.7], [2.9, 1.66], [4.05, 1.56], [4.7, 1.5], [7.9, 1.6], [8.2, 1.14], [8.9, 1.14], [9.3, 1.5], [10.9, 1.6], [11.3, 1.95], [11.8, 2.1]]);
     };
   },
 };

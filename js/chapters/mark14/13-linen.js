@@ -15,7 +15,7 @@ export default {
     { v: 51, cont: true, text: 'Chcieli go chwycić,' },
     { v: 52 },
   ],
-  cam: { x: [-80, 80], y: [-40, 160], z: [1, 1.4] },
+  cam: { x: [-280, 80], y: [-40, 160], z: [1, 1.4] },
   build(S) {
     const c = S.c;
     const G = garden(S, { moonAt: [1200, 150], rockX: 1500, city: true });
@@ -27,7 +27,7 @@ export default {
     const guards = Array.from({ length: 7 }, (_, i) => {
       const hasT = i % 2 === 0;
       const el = procL.add(`<g>${shadowPerson(c, guardOpts(c), INK)}${hasT ? `<g transform="translate(30 -96)">${torch(c, 50)}</g>` : ''}</g>`);
-      return { i, el, fl: el.querySelector('.flame'), dx: [-230, -170, -110, 90, 150, 210, 270][i] };
+      return { i, el, fl: el.querySelector('.flame'), dx: [-230, -170, -110, 90, 150, 210, 270][i] * (S.portrait && i > 2 ? 0.55 : 1) };   // phone: the guards ahead of Him closer, not under the thread
     });
     const jesus = S.puppet(procL.add(person(c, { ...CAST.jesus, holdF: cord(c) })));
     // the two at the back who turn and grab
@@ -72,7 +72,8 @@ export default {
       vis(cloth, { x: lerp(yx + 2, hx, lift), y: lerp(yy - 150, hy - 6, lift), s: 0.9, r: lift * -10 + Math.sin(T * 1.5) * 2 * lift, o: escape });
 
       darkL.fade(0.8);
-      S.cam.x = kf(t, [[-0.5, -40], [1.0, -60], [2.0, -80], [2.9, -60]]);
+      // phone: the camera stands further left, so the young man (at the back of the band) is inside the screen
+      S.cam.x = kf(t, S.portrait ? [[-0.5, -220], [1.0, -240], [2.0, -250], [2.6, -80], [2.9, -50]] : [[-0.5, -40], [1.0, -60], [2.0, -80], [2.9, -60]]);
       S.cam.z = kf(t, [[-0.5, 1.1], [1.0, 1.24], [2.0, 1.3], [2.9, 1.2]]);
       S.cam.y = kf(t, [[-0.5, 60], [1.0, 120], [2.0, 130], [2.9, 100]]);
     };

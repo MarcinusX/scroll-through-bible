@@ -8,7 +8,8 @@ import { es, ease, bump, seg } from '../../core/anim.js';
 import { tr } from '../../core/i18n.js';
 import { templeCourt, LOOK, pharisee, herodian, moodPuppet, voiceRings, bubble, thought, snare, maskOnStick, denarius, coin, purse, taxChest, glowHeart, sparkle, headAt, hand, sheet } from './lib.js';
 
-const QX = [944, 1012, 1080, 1148];     // the questioners' places
+const QX0 = [944, 1012, 1080, 1148];    // the questioners' places
+const QXP = [904, 964, 1024, 1084];    // … on a phone (clear of the thread)
 const JX = 770;
 
 export default {
@@ -28,6 +29,10 @@ export default {
   cam: { x: [-30, 30], y: [-30, 30], z: [1, 1.12] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;
+    const QX = P ? QXP : QX0;
+    // phone: the senders stand inside the screen (the disciples come in after they go), Caesar's chest too
+    const CHX = P ? 505 : 404;
     const set = templeCourt(S);
     const F = set.FLOOR;
 
@@ -39,8 +44,8 @@ export default {
 
     /* people */
     const pl = S.layer({ par: 0.5, sh: 5 });
-    const leaders = [LOOK.elder, LOOK.priest, LOOK.lscribe].map((o, i) => ({ p: S.puppet(pl.add(person(c, o))), x: 300 + i * 56, i, seed: c.rr(0, 9) }));
-    const dis = [CAST.john, CAST.peter, CAST.james].map((o, i) => ({ p: S.puppet(pl.add(person(c, o))), x: 600 - i * 58, y: F + 10 + (i % 2) * 8, i }));
+    const leaders = [LOOK.elder, LOOK.priest, LOOK.lscribe].map((o, i) => ({ p: S.puppet(pl.add(person(c, o))), x: (P ? 476 : 300) + i * 56, i, seed: c.rr(0, 9) }));
+    const dis = [CAST.john, CAST.peter, CAST.james].map((o, i) => ({ p: S.puppet(pl.add(person(c, o))), x: P ? 650 - i * 52 : 600 - i * 58, y: F + 10 + (i % 2) * 8, i }));
     const looks = [pharisee(c, 0), pharisee(c, 1), herodian(c, 0), herodian(c, 1)];
     const Q = looks.map((o, i) => ({ i, p: moodPuppet(S, pl, c, o), seed: c.rr(0, 9) }));
     const jesus = S.puppet(pl.add(person(c, { ...CAST.jesus })));
@@ -115,7 +120,8 @@ export default {
         armB: 10 + bump(t, 4.1, 4.9) * 40 + give * 80 * (1 - es(t, 9.0, 9.3)),
       });
       voice(JX + 26, F - 176, bump(t, 4.02, 4.95) + bump(t, 5.02, 5.95) + bump(t, 8.02, 8.95), T, { dir: 1 });
-      dis.forEach((d) => d.p.set({ x: d.x, y: d.y, s: 0.9, head: -point * 14, armF: marvel * 40, blink: blinkAt(T, d.i + 2) }));
+      const disIn = P ? es(t, 0.9, 1.3) : 1;
+      dis.forEach((d) => { const x = d.x - (1 - disIn) * 420; d.p.set({ x, y: d.y, s: 0.9, walk: disIn > 0 && disIn < 1 ? x * 0.05 + d.i : undefined, head: -point * 14, armF: marvel * 40, blink: blinkAt(T, d.i + 2) }); });
       sitters.forEach((m) => m.p.set({ x: m.x, y: m.y, s: m.s, flip: m.x > 800, head: -point * 14 - 4, armF: marvel * (m.i % 2 ? 50 : 0), blink: blinkAt(T, m.seed) }));
 
       /* bubbles */
@@ -144,13 +150,13 @@ export default {
       const dk = es(t, 6.3, 6.75, ease.out);
       const toCaesar = es(t, 8.1, 8.5, ease.io);
       pose(big, {
-        x: lerp(800, 404, toCaesar), y: lerp(lerp(-800, 272, dk), 560, toCaesar), s: lerp(1, 0.12, toCaesar), r: Math.sin(T * 0.7) * 2 * (1 - toCaesar),
+        x: lerp(800, CHX, toCaesar), y: lerp(lerp(-800, 272, dk), 560, toCaesar), s: lerp(1, 0.12, toCaesar), r: Math.sin(T * 0.7) * 2 * (1 - toCaesar),
         o: 1 - es(t, 8.45, 8.55),
       });
       /* v17 — to Caesar his coin, to God the heart */
       const chk = es(t, 7.9, 8.15, ease.back);
-      pose(chest, { x: 404, y: F + 8, s: chk, o: chk > 0.01 ? 1 : 0 });
-      pose(chestTag, { x: 404, y: F - 120, s: chk * (1 - es(t, 9.4, 9.5)), o: chk > 0.02 ? 1 : 0 });
+      pose(chest, { x: CHX, y: F + 8, s: chk, o: chk > 0.01 ? 1 : 0 });
+      pose(chestTag, { x: CHX, y: F - 120, s: chk * (1 - es(t, 9.4, 9.5)), o: chk > 0.02 ? 1 : 0 });
       const hk = es(t, 8.3, 8.5, ease.back), up = es(t, 8.55, 8.95, ease.io);
       const [bx, by] = hand(JX, F, 1.02, false, 150);
       pose(heartEl, { x: lerp(bx - 60, 800, up), y: lerp(by - 20, 300, up), s: hk * (1 - up * 0.3), o: hk > 0.01 ? 1 - es(t, 9.3, 9.6) : 0 });

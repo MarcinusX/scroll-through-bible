@@ -36,7 +36,7 @@ export default {
     { v: 20, text: 'Herod bowiem czuł lęk przed Janem, znając go jako męża prawego i świętego, i brał go w obronę.' },
     { v: 20, cont: true, text: 'Ilekroć go posłyszał, odczuwał duży niepokój, a przecież chętnie go słuchał.' },
   ],
-  cam: { x: [-40, 40], y: [0, 50], z: [1, 1.14] },
+  cam: { x: [-40, 160], y: [0, 50], z: [1, 1.14] },
   build(S) {
     const c = S.c;
     sky(S, SEPIA.sky);
@@ -146,8 +146,9 @@ export default {
       herodias.set({ x: lerp(1400, 1060, hdIn) - toward * 110, y: Y + 4, s: 0.96, flip: t > 2.1 && t < 4.9, o: hdIn > 0 ? 1 : 0, walk: hdIn > 0 && hdIn < 1 ? t * 30 : toward > 0 && toward < 1 ? t * 30 : undefined, armF: bump(t, 1.3, 1.9) * 40 + toward * 60, armB: es(t, 2.4, 2.7) * 50 * (1 - es(t, 4.0, 4.3)), head: -bump(t, 2.3, 2.9) * 8, blink: blinkAt(T, 4) });
       attr(hdBrows, 'opacity', (es(t, 2.3, 2.6) * (1 - es(t, 4.9, 5.1))).toFixed(2));
       const phK = es(t, 1.15, 1.4) * (1 - es(t, 1.85, 2.0));
-      const phx = lerp(1230, 1330, es(t, 1.55, 1.95));
-      philip.set({ x: phx, y: Y + 10, s: 0.9, flip: t < 1.55, o: phK, walk: t > 1.55 && t < 1.95 ? phx * 0.06 : undefined, armF: bump(t, 1.2, 1.55) * 50, head: 10, blink: blinkAt(T, 9) });
+      const phA = S.portrait ? 1.76 : 1.55;   // phone: he is still in sight at the pause, then leaves
+      const phx = lerp(S.portrait ? 1105 : 1230, 1330, es(t, phA, 1.95));
+      philip.set({ x: phx, y: Y + 10, s: 0.9, flip: t < phA, o: phK, walk: t > phA && t < 1.95 ? phx * 0.06 : undefined, armF: bump(t, 1.2, 1.55) * 50, head: 10, blink: blinkAt(T, 9) });
       const gar = es(t, 1.15, 1.4) * (1 - es(t, 2.9, 3.1));
       pose(hallGar, { x: 830, y: 390 - (1 - gar) * 420, o: gar > 0.01 ? 1 : 0 });
 
@@ -156,7 +157,7 @@ export default {
       tg(tagJ, 500, CELL.top - 130, es(t, 0.1, 0.4, ease.back) * (1 - es(t, 0.95, 1.1)));
       tg(tagH, 960, 290, es(t, 0.05, 0.35, ease.back) * (1 - es(t, 1.95, 2.1)));
       tg(tagHd, 1070, 320, es(t, 1.1, 1.4, ease.back) * (1 - es(t, 1.95, 2.1)));
-      tg(tagF, 1290, 400, es(t, 1.2, 1.45, ease.back) * (1 - es(t, 1.85, 2.0)));
+      tg(tagF, S.portrait ? 1095 : 1290, S.portrait ? 420 : 400, es(t, 1.2, 1.45, ease.back) * (1 - es(t, 1.85, 2.0)));
 
       /* v18 — "It is not lawful for you…" */
       const lw = es(t, 2.1, 2.3, ease.back) * (1 - es(t, 2.9, 3.05));
@@ -181,7 +182,8 @@ export default {
       });
       pose(heartish, { x: px, y: py, s: 1, o: es(t, 5.3, 5.6) * 0.6 });
 
-      S.cam.x = kf(t, [[0, -30], [0.9, -30], [1.2, 40], [1.9, 40], [2.2, 0], [4.9, 0], [5.2, -20]]);
+      S.cam.x = kf(t, [[0, -30], [0.9, -30], [1.2, S.portrait ? 140 : 40], [1.9, S.portrait ? 140 : 40],   // phone: Philip and his name in sight
+         [2.2, 0], [4.9, 0], [5.2, -20]]);
       S.cam.z = kf(t, [[0, 1.06], [1.2, 1.1], [2.2, 1.06], [4.9, 1.06], [5.3, 1.12]]);
       S.cam.y = kf(t, [[0, 20], [5.3, 40]]);
     };

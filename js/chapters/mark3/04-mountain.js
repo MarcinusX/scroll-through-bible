@@ -31,11 +31,13 @@ export default {
   cam: { x: [-20, 20], y: [-80, 80], z: [1, 1.2] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;   // phone: the sun, the villages and the sent-out Twelve stay inside the screen
+    const SUNX = P ? 1010 : 1120;
     const DAWN = [mix(C.duskViolet, C.skyBlue, 0.4), C.dawn, C.peach];
     const DAY = [C.skyBlue, mix(C.cream, C.skyBlue, 0.3), C.dawn];
     const sk = sky(S, DAWN);
     const hangL = S.layer({ par: 0.04, sh: 4 });
-    const sunEl = hanging(hangL, sun(c, 54), { x: 1120, y: 300, len: 800 });
+    const sunEl = hanging(hangL, sun(c, 54), { x: SUNX, y: 300, len: 800 });
     const cl1 = hanging(hangL, cloud(c, 180, C.cream, C.peach), { x: 470, y: 170, len: 600 });
     const cl2 = hanging(hangL, cloud(c, 130, C.cream, C.peach), { x: 1180, y: 120, len: 600 });
 
@@ -63,8 +65,8 @@ export default {
     const vil = sheet();
     vil.p(c.cut([[-900, FOOT + 10], [2500, FOOT + 10], [2500, 1700], [-900, 1700]], 1, 20), mix(C.sage2, C.sand, 0.4));
     mt.add(vil.out());
-    const TOWNS = [[492, 628], [1108, 628]];
-    mt.add(town(c, { x: TOWNS[0][0], y: TOWNS[0][1], n: 5, spread: 150, sc: 0.8 }) + town(c, { x: TOWNS[1][0], y: TOWNS[1][1], n: 5, spread: 150, sc: 0.8 }));
+    const TOWNS = P ? [[560, 628], [1040, 628]] : [[492, 628], [1108, 628]];
+    mt.add(town(c, { x: TOWNS[0][0], y: TOWNS[0][1], n: 5, spread: P ? 120 : 150, sc: 0.8 }) + town(c, { x: TOWNS[1][0], y: TOWNS[1][1], n: 5, spread: P ? 120 : 150, sc: 0.8 }));
 
     /* roads down to the villages (drawn on in beat 4) */
     const roadL = S.layer({ par: PAR, sh: 1, flat: true });
@@ -105,7 +107,7 @@ export default {
       a.lp = a.line.querySelector('path');
       a.side = [0, 1, 2, 6, 7, 8].includes(a.i) ? 0 : 1;
       a.rank = a.side === 0 ? [0, 1, 2, 6, 7, 8].indexOf(a.i) : [3, 4, 5, 9, 10, 11].indexOf(a.i);
-      a.town = [a.side ? 1132 - a.rank * 27 : 468 + a.rank * 27, 660 + (a.rank % 2) * 10];
+      a.town = [a.side ? (P ? 1072 : 1132) - a.rank * (P ? 24 : 27) : (P ? 528 : 468) + a.rank * (P ? 24 : 27), 660 + (a.rank % 2) * 10];
     });
     const voices = [0, 1].map((side) => glowL.add(`<g opacity="0">${[0, 1, 2].map((i) => `<path data-part="w" d="${c.ribbon(c.arc(0, 0, 22 + i * 14, 22 + i * 14, -0.8, 0.8, 10), 4)}" fill="${C.cream}"/>`).join('')}</g>`));
     const jesus = S.puppet(folk.add(person(c, { ...CAST.jesus })));
@@ -120,7 +122,7 @@ export default {
     return (t, time) => {
       const T = time;
       sk.blend(DAWN, DAY, es(t, 0, 3, ease.sine));
-      swing(sunEl, 1120, 300 - es(t, -0.3, 2.5) * 150, T, 1, 0.6);
+      swing(sunEl, SUNX, 300 - es(t, -0.3, 2.5) * 150, T, 1, 0.6);
       swing(cl1, 470 + t * 8, 170, T, 1.4, 0.6, 1);
       swing(cl2, 1180 - t * 6, 120, T, 1.4, 0.7, 2);
 

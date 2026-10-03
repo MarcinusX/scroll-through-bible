@@ -20,12 +20,13 @@ export default {
     { v: 24 },
     { v: 25, text: 'On im odpowiedział: «Czy nigdy nie czytaliście, co uczynił Dawid,' },
   ],
-  cam: { x: [-40, 40], y: [-40, 40], z: [1, 1.12] },
+  cam: { x: [-40, 150], y: [-40, 40], z: [1, 1.12] },
   build(S) {
     const c = S.c;
     sky(S, ['#d8e3d6', '#f4e6c4', '#f8e9cf']);
     const hangL = S.layer({ par: 0.05, sh: 5 });
-    const sunEl = hanging(hangL, sun(c, 50), { x: 1180, y: 150, len: 700 });
+    const SUNX = S.portrait ? 980 : 1180;   // phone: not under the progress thread
+    const sunEl = hanging(hangL, sun(c, 50), { x: SUNX, y: 150, len: 700 });
     const cl1 = hanging(hangL, cloud(c, 190), { x: 420, y: 150, len: 700 });
     const birds = flock(S, hangL, 4, (cc) => bird(cc, { color: C.bird }), { y: 250, speed: 45, scale: 0.5 });
     const tag = hanging(hangL, sabbathTag(c, tr('szabat', 'Sabbath')), { x: 800, y: 110, len: 700 });
@@ -53,7 +54,8 @@ export default {
       const m = /translate\(([-\d.]+) ([-\d.]+)\)/.exec(ear.getAttribute('transform')) || [0, 0, -120];
       return { x, i, el, ear, stem: el.querySelector('.stem'), ex0: +m[1], ey0: +m[2] };
     });
-    const PH = [1236, 1312].map((x, i) => ({ x, i, seed: c.rr(0, 9), p: S.puppet(act.add(scribe(c, i + 1, { holdB: i === 0 ? `<g transform="translate(0 6) rotate(90) scale(.5)">${scrollOpen(c, 60, 30)}</g>` : '' }))) }));
+    // phone: the Pharisees rise closer, where the camera can reach them
+    const PH = (S.portrait ? [1115, 1180] : [1236, 1312]).map((x, i) => ({ x, i, seed: c.rr(0, 9), p: S.puppet(act.add(scribe(c, i + 1, { holdB: i === 0 ? `<g transform="translate(0 6) rotate(90) scale(.5)">${scrollOpen(c, 60, 30)}</g>` : '' }))) }));
     const DIS = [
       { k: 'james', x: 560 }, { k: 'andrew', x: 640 }, { k: 'peter', x: 930 }, { k: 'john', x: 1020 },
     ].map((d, i) => ({ ...d, i, seed: c.rr(0, 9), p: S.puppet(act.add(person(c, { ...CAST[d.k] }))) }));
@@ -78,7 +80,7 @@ export default {
 
     return (t, time) => {
       const T = time;
-      swing(sunEl, 1180, 150, T, 1, 0.6);
+      swing(sunEl, SUNX, 150, T, 1, 0.6);
       swing(cl1, 420 + Math.sin(T * 0.1) * 24, 150, T, 1.2, 0.7, 1);
       birds(T, 1);
       const tg = es(t, 0.15, 0.55, ease.back);
@@ -135,7 +137,7 @@ export default {
         m.p.set({ x: m.x - up * 30, y: lerp(PATH + 150, PATH + 4, up), s: 0.98, flip: true, o: up > 0.01 ? 1 : 0, armF: point * 90 + up * 10, armB: m.i === 1 ? es(t, 2.35, 2.6) * 60 : 20, head: -point * 4 + es(t, 3.2, 3.5) * 8, lean: point * 4, blink: blinkAt(T, m.seed) });
       });
       const lk = es(t, 2.3, 2.5, ease.back) * (1 - es(t, 2.95, 3.1));
-      const [lhx, lhy] = headAt(1206, PATH + 4, 0.98, true);
+      const [lhx, lhy] = headAt(PH[0].x - 30, PATH + 4, 0.98, true);
       pose(look, { x: lhx - 20, y: lhy - 14, s: lk, o: lk > 0.01 ? 1 : 0 });
 
       /* "Have you never read…?" — the scroll rises and opens */
@@ -145,7 +147,7 @@ export default {
 
       S.cam.z = kf(t, [[-0.5, 1.02], [0.9, 1.04], [1.2, 1.1], [1.9, 1.1], [2.2, 1.04], [3.1, 1.04], [3.8, 1.0]]);
       S.cam.y = kf(t, [[-0.5, 10], [1.2, 30], [1.9, 30], [2.2, 10], [3.1, 10], [3.8, -30]]);
-      S.cam.x = kf(t, [[1.9, 0], [2.3, 30], [3.1, 0]]);
+      S.cam.x = S.portrait ? kf(t, [[1.9, 0], [2.3, 150], [3.1, 130]]) : kf(t, [[1.9, 0], [2.3, 30], [3.1, 0]]);
     };
   },
 };

@@ -111,9 +111,11 @@ export default {
       const handing = es(t, 2.05, 2.5);
       seller.set({ x: SX + 10, y: GY - 60, s: 0.92, flip: true, armF: bump(t, 1.1, 1.5) * 140 + bump(t, 1.35, 1.6) * 40 + handing * 70 - es(t, 2.5, 2.7) * 40, armB: bump(t, 1.1, 1.5) * 150, head: -bump(t, 1.35, 1.6) * 8, blink: blinkAt(time, 4) });
 
+      const P = S.portrait;
       W.forEach((w) => {
         const d = w.i * 0.14;
-        const walk = es(t, 1.05 + d, 1.8 + d, ease.out);
+        // phone: all three are in and named by the sentence's pause (Salome came in off-screen)
+        const walk = P ? es(t, 1.02 + w.i * 0.08, 1.5 + w.i * 0.08, ease.out) : es(t, 1.05 + d, 1.8 + d, ease.out);
         const step = es(t, 2.0, 2.2) * 30;
         const x = lerp(-120 - w.i * 90, w.x, walk) + step;
         const got = es(t, 2.2 + w.i * 0.12, 2.4 + w.i * 0.12);
@@ -128,7 +130,8 @@ export default {
         pose(j.el, { x: lerp(from[0], hx + 4, tk), y: lerp(from[1], hy + 10, tk) - bump(t, 2.1 + w.i * 0.12, 2.35 + w.i * 0.12) * 30, s: 0.95, o: 1 - seg(t, 2.35 + w.i * 0.12, 2.36 + w.i * 0.12) });
         pose(held[w.i].el, { x: hx + 4, y: hy + 10, s: 0.95, o: seg(t, 2.35 + w.i * 0.12, 2.36 + w.i * 0.12) });
         // their names drop in on strings as they arrive
-        const tg = es(t, 1.45 + w.i * 0.12, 1.8 + w.i * 0.12, ease.back) * (1 - es(t, 2.9, 3.2));
+        // phone: names hang by 1.75, and go up before the thought bubble covers Mary Magdalene's
+        const tg = P ? es(t, 1.25 + w.i * 0.1, 1.55 + w.i * 0.1, ease.back) * (1 - es(t, 2.35, 2.55)) : es(t, 1.45 + w.i * 0.12, 1.8 + w.i * 0.12, ease.back) * (1 - es(t, 2.9, 3.2));
         const [tx, ty] = headAt(x, GY, w.s, false);
         pose(tags[w.i].el, { x: tx, y: lerp(-1000, ty - 118, tg), r: Math.sin(time * 1.1 + w.i) * 2 });
         // fragrance

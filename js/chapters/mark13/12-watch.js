@@ -35,6 +35,9 @@ export default {
   cam: { x: [-30, 40], y: [-60, 40], z: [0.97, 1.08] },
   build(S) {
     const c = S.c;
+    // phone: the doorkeeper a step nearer the gate (as in the scene before), the four plates closer
+    // together, the road's question over the gate (the road itself runs off the screen)
+    const PH = S.portrait;
     S.defs(`<clipPath id="m13-watch-clip"><circle r="47"/></clipPath>`);
     /* behind everything: the Mount of Olives at night (revealed at the end) */
     const set = olivesSet(S, { skyCols: SKIES.night, tintCol: NIGHTC, tintK: 0.45, moonXY: [1210, 130], templeGlow: 0.2 });
@@ -45,7 +48,7 @@ export default {
       { y: 640, s: 0.6, n: 10, x0: 240, x1: 1360 },
       { y: 676, s: 0.72, n: 6, x0: 200, x1: 560 },
       { y: 676, s: 0.72, n: 6, x0: 1040, x1: 1400 },
-    ].forEach((row) => { for (let i = 0; i < row.n; i++) allPeople.push({ x: lerp(row.x0, row.x1, (i + c.rr(0.15, 0.85)) / row.n), y: row.y + c.rr(-4, 4), s: row.s * c.rr(0.9, 1.08) }); });
+    ].forEach((row) => { for (let i = 0; i < row.n; i++) allPeople.push({ x: ((x) => (PH ? 800 + (x - 800) * 0.5 : x))(lerp(row.x0, row.x1, (i + c.rr(0.15, 0.85)) / row.n)), y: row.y + c.rr(-4, 4), s: row.s * c.rr(0.9, 1.08) }); });
     allPeople.sort((a, b) => a.y - b.y).forEach((m) => { m.seed = c.rr(0, 9); m.p = S.puppet(mount.add(tint(person(c, crowdPerson(c)), NIGHTC, 0.3))); m.p.set({ x: m.x, y: m.y, s: m.s, flip: m.x > 800, o: 0 }); });
     allPeople.forEach((m) => { m.fl = mount.add(`<g>${flame(c, 16)}</g><g><circle r="26" fill="url(#warm-glow)"/></g>`); m.glow = m.fl.nextElementSibling || m.fl; });
     const fourPos = [590, 660, 940, 1010];
@@ -78,7 +81,7 @@ export default {
 
     /* the four watches */
     const fx = S.layer({ par: 0.2, sh: 6 });
-    const WATCH = ['eve', 'mid', 'cock', 'morn'].map((k, i) => ({ k, i, x: 560 + i * 160, el: fx.add(`<g>${watchPlate(c, k)}</g>`) }));
+    const WATCH = ['eve', 'mid', 'cock', 'morn'].map((k, i) => ({ k, i, x: PH ? 590 + i * 145 : 560 + i * 160, el: fx.add(`<g>${watchPlate(c, k)}</g>`) }));
     WATCH.forEach((w) => { w.lit = w.el.querySelector('.lit'); });
     const SKYW = [['#6d5a86', '#d88d78', '#f0b98e'], SKIES.deep, ['#4e4a74', '#8e7c9a', '#c7a6a4'], ['#8fa3b8', '#e9c9a8', '#f7e2bf']];
 
@@ -106,7 +109,7 @@ export default {
 
       /* the doorkeeper keeps his lamp burning all night; lifts it when the master comes */
       const alarm = es(t, 2.3, 2.45) * (1 - es(t, 2.85, 3));
-      dk.set({ x: 1116, y: F, s: 0.96, flip: true, armF: 60 + alarm * 45, armB: 10 + alarm * 60, head: -2 - alarm * 6, blink: blinkAt(T, 7) });
+      dk.set({ x: PH ? 1062 : 1116, y: F, s: 0.96, flip: true, armF: 60 + alarm * 45, armB: 10 + alarm * 60, head: -2 - alarm * 6, blink: blinkAt(T, 7) });
       pose(dkFlame, { x: 27, y: -12, sy: 1 + Math.sin(T * 7) * 0.1, sx: 1 + Math.sin(T * 5) * 0.06 });
       fade(dkGlow, 0.8 + alarm * 0.2 + Math.sin(T * 3) * 0.05);
       pose(H.ovenEl.querySelector('.glow'), { x: 0, y: 0, o: 0.35 + Math.sin(T * 3) * 0.08 });
@@ -128,11 +131,12 @@ export default {
 
       /* the road: empty, a question (beat 0); the master comes suddenly (beat 2) */
       const q = es(t, 0.2, 0.45, ease.back) * (1 - es(t, 2.1, 2.2));
-      pose(roadQ, { x: 1470, y: 470 + Math.sin(T * 1.2) * 4, s: q, o: q > 0.01 ? 1 : 0 });
+      pose(roadQ, { x: PH ? 1050 : 1470, y: (PH ? 380 : 470) + Math.sin(T * 1.2) * 4, s: q, o: q > 0.01 ? 1 : 0 });
       const come = seg(t, 2.12, 2.6);
       const [mx, my] = along(HOUSE.ROAD, 1 - come);
       const step = es(t, 2.6, 2.78);
-      master.set({ x: come >= 1 ? lerp(1052, 985, step) : mx, y: my, s: 1 - (1 - come) * 0.5, flip: true, o: come > 0 ? 1 : 0, walk: (come > 0 && come < 1) || (step > 0 && step < 1) ? (come < 1 ? mx : 1052 - step * 67) * 0.08 : undefined, amt: 1.3, armB: 30, armF: es(t, 2.6, 2.8) * 70, head: -2, blink: blinkAt(T, 3) });
+      const MX = PH ? 935 : 985;   // phone: he steps past the doorkeeper, not onto him
+      master.set({ x: come >= 1 ? lerp(1052, MX, step) : mx, y: my, s: 1 - (1 - come) * 0.5, flip: true, o: come > 0 ? 1 : 0, walk: (come > 0 && come < 1) || (step > 0 && step < 1) ? (come < 1 ? mx : 1052 - step * (1052 - MX)) * 0.08 : undefined, amt: 1.3, armB: 30, armF: es(t, 2.6, 2.8) * 70, head: -2, blink: blinkAt(T, 3) });
 
       /* the Mount: Jesus lifts his lamp over everyone; lights kindle in every hand */
       const all = es(t, 3.2, 3.6);

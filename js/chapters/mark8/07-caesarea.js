@@ -55,9 +55,9 @@ export default {
     /* ---------- three portraits ---------- */
     const pL = S.layer({ par: 0.1, sh: 7 });
     const ports = [
-      { o: LOOK.baptist, name: tr('Jan Chrzciciel', 'John the Baptist'), x: 540 },
+      { o: LOOK.baptist, name: tr('Jan Chrzciciel', 'John the Baptist'), x: S.portrait ? 580 : 540 },
       { o: LOOK.elijah, name: tr('Eliasz', 'Elijah'), x: 800, extra: `<g transform="translate(34 58)"><path d="M0 0C-8 -10 -6 -22 0 -34C6 -22 8 -10 0 0Z" fill="${C.sunDeep}"/><path d="M0 -4C-3 -10 -3 -16 0 -22C3 -16 3 -10 0 -4Z" fill="${C.lampFlame}"/></g>` },
-      { o: LOOK.prophet, name: tr('prorok', 'a prophet'), x: 1060 },
+      { o: LOOK.prophet, name: tr('prorok', 'a prophet'), x: S.portrait ? 1020 : 1060 },   // phone: clear of the thread
     ].map((p, i) => ({ ...p, i, el: hanging(pL, portrait(S, p.o, p.name, { w: 118, h: 150, extra: p.extra || '' }), { x: p.x, y: 240, len: 900 }) }));
 
     /* ---------- the Messiah: glory, crown of light, oil ---------- */
@@ -134,7 +134,7 @@ export default {
         pose(q.el, { x: d.x - 10, y: GY - 220, s: k * 0.9, r: Math.sin(T * 2 + j) * 5, o: k > 0.02 ? 1 : 0 });
       });
       const ps = es(t, 4.08, 4.25, ease.back) * (1 - es(t, 4.95, 5.05));
-      pose(peterSay, { x: 876, y: GY - 150, s: ps, o: ps > 0.02 ? 1 : 0 });
+      pose(peterSay, { x: S.portrait ? 836 : 876, y: GY - 150, s: ps, o: ps > 0.02 ? 1 : 0 });
       pose(gl, { x: hx, y: hy + 10, s: 0.5 + lum * 0.6, r: T * 3, o: lum });
       const cr = es(t, 4.2, 4.55);
       pose(crownEl, { x: hx, y: hy - 38 - (1 - cr) * 220, s: 0.7 + cr * 0.3, o: cr * (1 - es(t, 5.3, 5.8) * 0.6) });

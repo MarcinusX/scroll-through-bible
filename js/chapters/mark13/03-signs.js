@@ -81,7 +81,8 @@ export default {
   build(S) {
     const c = S.c;
     const TK = 0.28;
-    const SA = 1.18, SB = 1.1;
+    const PH = S.portrait;   // phone: both panels a little smaller and inside the screen, the hourglass above the map
+    const SA = PH ? 1.06 : 1.18, SB = PH ? 1.0 : 1.1;
     const set = olivesSet(S, { skyCols: SKIES.twilight, tintK: TK, sunXY: [1150, 420], moonXY: [1210, 150] });
 
     /* the circle */
@@ -92,7 +93,7 @@ export default {
 
     /* ---------- panel A: the road ---------- */
     const pA = S.layer({ par: 0.3, sh: 6 });
-    const A = { el: pA.add(`<g>${plate(c, AW, AH)}${roadScene(c)}</g>`), x: 800, y: 104 };
+    const A = { el: pA.add(`<g>${plate(c, AW, AH)}${roadScene(c)}</g>`), x: PH ? 790 : 800, y: 104 };
     const sign = pA.add(`<g>${pointer(c, '', { dir: -1, size: 1 }).replace('<text', '<text opacity="0"')}</g>`);
     const TRAV = Array.from({ length: 6 }, (_, i) => ({ i, u0: 0.02 + i * 0.07, follow: i !== 0 && i !== 3, seed: c.rr(0, 9), p: S.puppet(pA.add(person(c, crowdPerson(c)))) }));
     const MASK_COLS = [[C.plumRobe, C.sun], [C.terracotta, C.halo], [C.indigo, C.sun]];
@@ -104,7 +105,7 @@ export default {
 
     /* ---------- panel B: the map ---------- */
     const pB = S.layer({ par: 0.3, sh: 6 });
-    const B = { el: pB.add(`<g>${mapSheet(c, BW, BH)}<g transform="translate(0 0)">${mapScene(c)}</g></g>`), x: 800, y: 116 };
+    const B = { el: pB.add(`<g>${mapSheet(c, BW, BH)}<g transform="translate(0 0)">${mapScene(c)}</g></g>`), x: PH ? 785 : 800, y: 116 };
     const crackEl = pB.add(`<g><path d="${c.ribbon(CRACK, (u) => 3 + Math.sin(u * PI) * 5, 2)}" fill="${mix(C.soilDark, C.night2, 0.3)}"/></g>`);
     const dawnEl = pB.add(`<g><circle cy="130" r="120" fill="url(#warm-glow)"/><path d="${c.ribbon(CRACK.slice(3, 8), 3.4)}" fill="${C.lampGlow}"/></g>`);
     const shootEl = pB.add(`<g>${shoot(c, 44)}</g>`);
@@ -214,7 +215,7 @@ export default {
 
       // hourglass (beat 4): not yet the end
       const hk = es(t, 4.0, 4.35, ease.back) * (1 - es(t, 7.6, 8) * 0.2);
-      pose(hg, { x: 1172, y: lerp(-300, 250, hk) + Math.sin(T * 0.9) * 2, r: Math.sin(T * 0.8) * 1.5 * hk, o: hk > 0.01 ? 1 : 0 });
+      pose(hg, { x: PH ? 1010 : 1172, y: (PH ? lerp(-700, -60, hk) : lerp(-300, 250, hk)) + Math.sin(T * 0.9) * 2, r: Math.sin(T * 0.8) * 1.5 * hk, o: hk > 0.01 ? 1 : 0 });
       const sand = seg(t, 4.0, 8);
       pose(sandT, { x: 0, y: -3, sy: 1 - sand * 0.25 });
       pose(sandB, { x: 0, y: 48, sy: 0.3 + sand * 0.3 });

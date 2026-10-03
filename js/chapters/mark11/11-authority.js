@@ -35,6 +35,10 @@ export default {
   cam: { x: [-80, 120], y: [-70, 40], z: [0.95, 1.14] },
   build(S) {
     const c = S.c;
+    // phone: the six leaders stand closer together, their name tags and the seal hang inside the screen
+    const P = S.portrait;
+    const LX = P ? [870, 912, 954, 996, 1038, 1080] : null;
+    const SEALX = P ? 1000 : 1070;
     const SKY = ['#d0e2dd', '#f1e6c9', '#f8ebd3'];
     const { sk, sunEl, cl1 } = templeCourt(S, { skyCols: SKY, floorY: FLOOR + 40, sanctX: 800, sunAt: [1230, 140] });
 
@@ -44,12 +48,12 @@ export default {
       { m: priest(c, 0), x: 930, y: FLOOR - 6, k: 'p' }, { m: priest(c, 1), x: 1010, y: FLOOR - 22, k: 'p' },
       { m: scribe(c, 0), x: 1080, y: FLOOR - 4, k: 's' }, { m: scribe(c, 2), x: 1150, y: FLOOR - 20, k: 's' },
       { m: elder(c, 0), x: 1220, y: FLOOR - 2, k: 'e' }, { m: elder(c, 1), x: 1290, y: FLOOR - 18, k: 'e' },
-    ].map((d, i) => ({ ...d, i, seed: c.rr(0, 9), p: S.puppet(LD.add(withFace(d.m, faceBits(c)))) }));
+    ].map((d, i) => ({ ...d, x: LX ? LX[i] : d.x, i, seed: c.rr(0, 9), p: S.puppet(LD.add(withFace(d.m, faceBits(c)))) }));
     LEADERS.forEach((d) => { d.angry = d.p.el.querySelector('[data-part="angry"]'); });
     const tags = [
-      { text: tr('arcykapłani', 'chief priests'), x: 970, y: 300 },
-      { text: tr(['uczeni', 'w Piśmie'], ['scribes']), x: 1115, y: 330 },
-      { text: tr('starsi', 'elders'), x: 1255, y: 300 },
+      { text: tr('arcykapłani', 'chief priests'), x: P ? 885 : 970, y: 300 },
+      { text: tr(['uczeni', 'w Piśmie'], ['scribes']), x: P ? 985 : 1115, y: 330 },
+      { text: tr('starsi', 'elders'), x: P ? 1070 : 1255, y: 300 },
     ].map((g, i) => ({ ...g, i, el: hanging(LD, nameTag(c, g.text, { size: 16 }), { x: g.x, y: g.y, len: 800 }) }));
 
     /* ---------- Jesus and the disciples, walking in the porch ---------- */
@@ -63,7 +67,7 @@ export default {
     const ask2 = fx.add(`<g>${bubble(c, [tr('Kto Ci dał', 'Who gave you'), tr('tę władzę?', 'this authority?')], { size: 18, tail: 1 })}</g>`);
     // a seal of authority with a question
     const sealM = sheet().p(c.cut(c.circ(0, 0, 34, 24), 0.8, 4), C.terracotta).p(c.cut(c.star(0, 0, 22, 14, 8, 0), 0.4, 3), shade(C.terracotta, -0.15)).out();
-    const seal = hanging(fx, `${sealM}<g transform="translate(40 -24) scale(.8)">${question(c)}</g>`, { x: 1060, y: 250, len: 800 });
+    const seal = hanging(fx, `${sealM}<g transform="translate(40 -24) scale(.8)">${question(c)}</g>`, { x: SEALX, y: 250, len: 800 });
     // "one question": a single card with a big "1?"
     const oneCard = hanging(fx, card(c, `<text x="0" y="12" text-anchor="middle" font-family="${FONT}" font-size="56" fill="${C.terracotta}">?</text>`, tr('jedno pytanie', 'one question'), { w: 120, h: 132 }), { x: 800, y: 170, len: 800 });
     // the two answers
@@ -108,7 +112,7 @@ export default {
       const a2 = es(t, 3.05, 3.25, ease.back) * (1 - es(t, 3.95, 4.1));
       pose(ask2, { x: p2x - 40, y: p2y - 34, s: a2, o: a2 > 0.02 ? 1 : 0 });
       const sd = es(t, 3.1, 3.45, ease.back) * (1 - es(t, 3.95, 4.2));
-      swing(seal, 1070, 230 - (1 - sd) * 700, T, 1.6, 0.9, 2);
+      swing(seal, SEALX, 230 - (1 - sd) * 700, T, 1.6, 0.9, 2);
 
       /* v29 — "I will ask you one question" */
       const oc = es(t, 4.1, 4.45, ease.back) * (1 - es(t, 6.0, 6.2));
@@ -124,7 +128,7 @@ export default {
       const js = es(t, 7.05, 7.25, ease.back);
       pose(jSay, { x: jhx - 10, y: jhy - 36, s: js, o: js > 0.02 ? 1 : 0 });
 
-      S.cam.x = -40 + inK * 40 + approach * 60 - es(t, 4.0, 4.4) * 40;
+      S.cam.x = -40 + inK * 40 + approach * (P ? 100 : 60) - es(t, 4.0, 4.4) * 40;
       S.cam.y = -es(t, 4.0, 4.4) * 30 - es(t, 6.0, 6.4) * 30;
       S.cam.z = 1.04 - es(t, 6.0, 6.4) * 0.06;
     };

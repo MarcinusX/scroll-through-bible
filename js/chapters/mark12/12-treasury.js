@@ -28,6 +28,7 @@ export default {
   cam: { x: [-40, 30], y: [-30, 30], z: [1, 1.1] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;
     const set = templeCourt(S);
     const F = set.FLOOR;
 
@@ -57,9 +58,10 @@ export default {
     const pl = S.layer({ par: 0.5, sh: 5 });
     const passers = [0, 1, 2, 3].map((i) => ({ i, p: S.puppet(pl.add(person(c, townsfolk(c, { man: i % 2 === 0 })))), seed: c.rr(0, 9), ch: [2, 0, 1, 2][i], t0: 0.12 + i * 0.2 }));
     const richP = [0, 1, 2].map((i) => ({ i, p: S.puppet(pl.add(person(c, { ...rich(i), holdF: `<g transform="translate(0 -2)">${purse(c)}</g>` }))), seed: c.rr(0, 9), ch: [0, 2, 1][i] }));
+    // her glow: behind her
+    const widowGlow = pl.add(`<g opacity="0"><circle r="170" fill="url(#warm-glow)"/></g>`);
     const widow = S.puppet(pl.add(person(c, { ...LOOK.widow })));
     const widowPurse = pl.add(`<g>${purse(c, { full: false, col: mix(C.leather, C.stone2, 0.4) })}</g>`);
-    const widowGlow = pl.add(`<g opacity="0"><circle r="170" fill="url(#warm-glow)"/></g>`);
     const dis = [CAST.peter, CAST.john, CAST.james, CAST.andrew].map((o, i) => ({ i, p: S.puppet(pl.add(person(c, o))), to: [410, 660, 350, 706][i] }));
     const jesusStand = S.puppet(pl.add(person(c, { ...CAST.jesus })));
     const jesus = S.puppet(pl.add(person(c, { ...CAST.jesus, pose: 'sit' })));
@@ -117,7 +119,7 @@ export default {
         const pour = bump(k, 0.33, 0.67);
         // v44a — they come back into view, purses still fat, strolling off
         const again = es(t, 5.05 + r.i * 0.08, 5.5 + r.i * 0.08), away = es(t, 5.95, 6.4, ease.in);
-        const x2 = lerp(lerp(1500 + r.i * 60, 1010 + r.i * 74, again), 1560 + r.i * 60, away);
+        const x2 = lerp(lerp(1500 + r.i * 60, (P ? 950 : 1010) + r.i * (P ? 54 : 74), again), 1560 + r.i * 60, away);   // phone: clear of the thread
         const show = again > 0 && away < 1;
         r.p.set({
           x: show ? x2 : x, y: F + 8 + (r.i % 2) * 8, s: 0.96, flip: show ? away <= 0 : k > 0.65 ? false : true,

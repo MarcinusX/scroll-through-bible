@@ -94,7 +94,7 @@ export default {
         pose(qs[d.i], { x: hx + (d.flip ? -8 : 8), y: hy - 40 - qk * 6 + Math.sin(T * 3 + d.i) * 2, s: qk * 1.3, r: Math.sin(T * 2 + d.i) * 8, o: qk > 0.02 ? 1 : 0 });
       });
       matthew.set({ x: 540, y: FLOOR + 4, s: 0.86, armB: es(t, 1.15, 1.35) * (1 - es(t, 2.0, 2.2)) * 160, head: -es(t, 2.2, 2.5) * 10, blink: blinkAt(T, 6) });
-      thomas.set({ x: 1068, y: FLOOR + 4, s: 0.86, flip: true, armF: es(t, 4.2, 4.5) * 60, head: -es(t, 2.2, 2.5) * 10, blink: blinkAt(T, 8) });
+      thomas.set({ x: S.portrait ? 1036 : 1068, y: FLOOR + 4, s: 0.86, flip: true, armF: es(t, 4.2, 4.5) * 60, head: -es(t, 2.2, 2.5) * 10, blink: blinkAt(T, 8) });
       const [px, py] = headAt(676, SEAT, 0.9, false, 62);
       const askK = es(t, 0.62, 0.8, ease.back) * (1 - es(t, 1.0, 1.12));
       pose(ask, { x: px + 20, y: py - 22, s: askK, o: askK > 0.02 ? 1 : 0 });

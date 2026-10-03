@@ -23,11 +23,16 @@ export default {
   cam: { x: [-30, 30], y: [-80, 30], z: [1, 1.08] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;
+    // phone: the sun, the cheers and the two plates (ear, mouth) inside the frame, clear of the thread
+    const SUNX = P ? 990 : 1180;
+    const PLX = P ? [550, 1030] : [450, 1150];
+    const SKX = (x) => (P ? 480 + (x - 420) * 0.82 : x);
     const DAY = ['#cde1e2', '#eee7cf', '#f7ebd4'];
     const EVE = ['#e3b9a6', '#f2cfa7', '#f8e3c2'];
     const sk = sky(S, DAY);
     const hangL = S.layer({ par: 0.05, sh: 4 });
-    const sunEl = hanging(hangL, sun(c, 46), { x: 1180, y: 170, len: 700 });
+    const sunEl = hanging(hangL, sun(c, 46), { x: SUNX, y: 170, len: 700 });
     const glow = hangL.add(`<g>${rays(c, { n: 14, r0: 60, r1: 800, color: '#fff0c8' })}</g>`);
     const cl1 = hanging(hangL, cloud(c, 170, C.blushVeil, '#e6c7c2'), { x: 470, y: 150, len: 700 });
     const birds = flock(S, hangL, 6, (cc) => bird(cc, { color: C.bird }), { y: 200, speed: 50, scale: 0.45 });
@@ -70,8 +75,8 @@ export default {
     const banner = fx.add(`<g>${hang2(bannerMarkup(c, tr('Dobrze uczynił wszystko', 'He has done all things well')), 250, 400)}</g>`);
     const pf = profileFace(c, 0.45);
     const plates = [
-      { m: `<g transform="scale(1.1)">${ear(c, C.skin)}</g>`, x: 450 },
-      { m: `<g transform="translate(-10 12)">${pf.face}${pf.lipU}<g transform="translate(0 4)">${pf.lipL}</g></g>`, x: 1150 },
+      { m: `<g transform="scale(1.1)">${ear(c, C.skin)}</g>`, x: PLX[0] },
+      { m: `<g transform="translate(-10 12)">${pf.face}${pf.lipU}<g transform="translate(0 4)">${pf.lipL}</g></g>`, x: PLX[1] },
     ].map((p, i) => ({ ...p, i, el: hanging(fx, plate(c, p.m, { r: 60 }), { x: p.x, y: 330, len: 700 }) }));
     const earRing = soundRings(fx, c, { n: 3, r: 30, w: 5, color: shade(C.ochre, 0.2) });
     const mouthWords = Array.from({ length: 3 }, (_, i) => ({ i, el: fx.add(`<g>${speech(c, flowerWord(c, i + 1), { w: 36, h: 30 })}</g>`) }));
@@ -84,8 +89,8 @@ export default {
       const T = time;
       const eve = es(t, 1.8, 3.6);
       sk.blend(DAY, EVE, eve);
-      swing(sunEl, 1180, 170 + eve * 90, T, 1, 0.6);
-      pose(glow, { x: 1180, y: 170 + eve * 90, r: t * 3, o: eve * 0.45 });
+      swing(sunEl, SUNX, 170 + eve * 90, T, 1, 0.6);
+      pose(glow, { x: SUNX, y: 170 + eve * 90, r: t * 3, o: eve * 0.45 });
       swing(cl1, 470 + Math.sin(T * 0.1) * 20, 150, T, 1.2, 0.7, 1);
       birds(T, 1);
 
@@ -129,7 +134,7 @@ export default {
       pose(banner, { x: JX, y: 230 - (1 - bK) * 1150 + Math.sin(T * 0.8) * 2, r: Math.sin(T * 0.6) * 0.6 });
       cheers.forEach((ch) => {
         const k = es(t, 2.2 + ch.i * 0.05, 2.4 + ch.i * 0.05, ease.back) * (1 - es(t, 3.0, 3.2));
-        pose(ch.el, { x: ch.x, y: ch.y - k * 10 + Math.sin(T * 2.4 + ch.i) * 3, s: k, r: Math.sin(T * 2 + ch.i) * 6, o: k > 0.02 ? 1 : 0 });
+        pose(ch.el, { x: SKX(ch.x), y: ch.y - k * 10 + Math.sin(T * 2.4 + ch.i) * 3, s: k, r: Math.sin(T * 2 + ch.i) * 6, o: k > 0.02 ? 1 : 0 });
       });
 
       /* v37b — even the deaf hear, and the mute speak */
@@ -138,15 +143,15 @@ export default {
         swing(p.el, p.x, 400 - (1 - k) * 1150, T, 1.4, 0.8, p.i);
       });
       const on = es(t, 3.25, 3.4);
-      earRing(450, 400, on, T);
+      earRing(PLX[0], 400, on, T);
       mouthWords.forEach((w) => {
         const k = ((T * 0.45 + w.i / 3) % 1);
-        pose(w.el, { x: 1190 + k * 60, y: 380 - k * 60, s: 0.5 + k * 0.5, o: on * Math.min(1, k * 5) * (1 - k) });
+        pose(w.el, P ? { x: PLX[1] + 30 + k * 30, y: 340 - k * 70, s: 0.5 + k * 0.5, o: on * Math.min(1, k * 5) * (1 - k) } : { x: 1190 + k * 60, y: 380 - k * 60, s: 0.5 + k * 0.5, o: on * Math.min(1, k * 5) * (1 - k) });
       });
       const [hx, hy] = headAt(900, FLOOR, 0.94, false);
       healedWords.forEach((w) => {
         const k = es(t, 3.3 + w.i * 0.12, 3.5 + w.i * 0.12, ease.back);
-        pose(w.el, { x: hx + 40 + w.i * 44, y: hy - 30 - w.i * 36 + Math.sin(T * 2 + w.i) * 3, s: k * 0.9, o: k > 0.02 ? 1 : 0 });
+        pose(w.el, { x: hx + (P ? 24 + w.i * 14 : 40 + w.i * 44), y: hy - (P ? 44 + w.i * 50 : 30 + w.i * 36) + Math.sin(T * 2 + w.i) * 3, s: k * 0.9, o: k > 0.02 ? 1 : 0 });
       });
 
       S.cam.y = -es(t, 1.2, 1.9) * 50 * (1 - es(t, 2.0, 2.5)) - es(t, 2.0, 2.5) * 40;

@@ -20,9 +20,10 @@ export default {
     { v: 22, text: 'Lecz on spochmurniał na te słowa i odszedł zasmucony,' },
     { v: 22, cont: true, text: 'miał bowiem wiele posiadłości.' },
   ],
-  cam: { x: [-40, 180], y: [-40, 30], z: [1, 1.14] },
+  cam: { x: [-40, 510], y: [-40, 30], z: [1, 1.14] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;   // phone: the poor sit inside the screen; the camera follows the man and his cart further
     const R = roadSet(S, { jer: 0.24, jerX: 1170, roadX: 820, trees: 18, clouds: [[480, 150, 170], [1000, 120, 120]] });
     const grey = hanging(R.hangL, cloud(c, 150, mix(C.stone2, C.storm, 0.35), mix(C.storm, C.stone2, 0.3)), { x: 900, y: 150, len: 600 });
     const side = S.layer({ par: 0.3, sh: 3 });
@@ -40,9 +41,9 @@ export default {
     const cartL = S.layer({ par: 0.5, sh: 4 });
     const pL = S.layer({ par: 0.5, sh: 5 });
     const POOR = [
-      { o: { robe: mix(C.stone2, C.rock2, 0.4), hairStyle: 'wrap', veil: C.stone2, beard: 'full', beardColor: C.greyHair, hair: C.greyHair, skin: C.skin3 }, x: 430 },
-      { o: { robe: mix(C.sand2, C.rock2, 0.4), hairStyle: 'veil', veil: C.stone, beard: 'none', skin: C.skin2, hair: C.hair }, x: 520 },
-      { o: { robe: mix(C.wood3, C.rock2, 0.5), hairStyle: 'short', beard: 'short', hair: C.hair3, skin: C.skin4 }, x: 610 },
+      { o: { robe: mix(C.stone2, C.rock2, 0.4), hairStyle: 'wrap', veil: C.stone2, beard: 'full', beardColor: C.greyHair, hair: C.greyHair, skin: C.skin3 }, x: P ? 505 : 430 },
+      { o: { robe: mix(C.sand2, C.rock2, 0.4), hairStyle: 'veil', veil: C.stone, beard: 'none', skin: C.skin2, hair: C.hair }, x: P ? 575 : 520 },
+      { o: { robe: mix(C.wood3, C.rock2, 0.5), hairStyle: 'short', beard: 'short', hair: C.hair3, skin: C.skin4 }, x: P ? 645 : 610 },
     ].map((m, i) => ({ ...m, i, seed: c.rr(0, 9), y: GY + 40, p: S.puppet(pL.add(person(c, { ...m.o, pose: 'sit' }))), bowl: pL.add(`<g>${beggarBowl(c)}</g>`) }));
     const DIS = [TWELVE[0], TWELVE[3], TWELVE[2], TWELVE[1], TWELVE[6]].map((d, i) => ({ ...d, i, seed: c.rr(0, 9), p: S.puppet(pL.add(person(c, d.o))) }));
     const jesus = S.puppet(pL.add(person(c, { ...CAST.jesus })));
@@ -65,7 +66,7 @@ export default {
       R.update(t, T, { sunY: es(t, 0, 5) * 30 });
       const gloom = es(t, 3.0, 3.6);
       R.sk.blend(['#cfe0da', '#efe6cd', '#f6e8cf'], ['#c3ccca', '#e0dccb', '#ecdfc9'], gloom * 0.8);
-      swing(grey, 1000 + t * 40, 150 + (1 - gloom) * -500, T, 1.2, 0.7, 3);
+      swing(grey, (P ? 860 : 1000) + t * 40, 150 + (1 - gloom) * -500, T, 1.2, 0.7, 3);
 
       /* beat 0: he looks at him with love — one thing you lack */
       const lv = es(t, 0.05, 0.4) * (1 - es(t, 3.0, 3.3));
@@ -108,7 +109,7 @@ export default {
       const toCart = es(t, 3.4, 3.95);
       const shaftX = CARTX + 174 * CS + 6;
       const pull = seg(t, 4.02, 5.6);
-      const cx = CARTX + pull * 330;
+      const cx = CARTX + pull * (P ? 50 : 330);
       const mx = lerp(lerp(MX, shaftX, toCart), cx + 174 * CS + 6, pull > 0 ? 1 : 0);
       kneeler.set({ x: MX, y: GY, s: 0.96, flip: true, o: 1 - up, armF: 44 - sad * 20, armB: 10, head: -6 + sad * 14, blink: blinkAt(T, 4) });
       face(kneelEl, 'sad', sad); face(kneelEl, 'frown', sad);
@@ -121,7 +122,7 @@ export default {
 
       S.cam.z = 1 + es(t, -0.4, 0.4) * 0.08 - es(t, 0.9, 1.3) * 0.08 + es(t, 3.9, 4.6) * 0.04;
       S.cam.y = -es(t, -0.4, 0.4) * 20 + es(t, 0.9, 1.3) * 20;
-      S.cam.x = 20 - es(t, 0.9, 1.3) * 50 + es(t, 3.2, 3.9) * 60 + es(t, 4.1, 4.9) * 80;
+      S.cam.x = 20 - es(t, 0.9, 1.3) * 50 + es(t, 3.2, 3.9) * (P ? 200 : 60) + es(t, 4.1, 4.9) * (P ? 290 : 80);
     };
   },
 };

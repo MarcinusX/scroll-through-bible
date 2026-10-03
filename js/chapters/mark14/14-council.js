@@ -31,6 +31,7 @@ export default {
 
     /* the council upstairs */
     const hallL = S.layer({ par: R.P, sh: 5 });
+    // (phone: the two beyond the high priest's seat would only show as slivers under the thread, so they are left out)
     const COUNCIL = [
       { m: () => scribe(c, 0), x: 680 }, { m: () => priest(c, 1), x: 738 }, { m: () => scribe(c, 3), x: 796 },
       { m: () => priest(c, 3), x: 1300, flip: true }, { m: () => scribe(c, 2), x: 1370, flip: true },
@@ -77,7 +78,7 @@ export default {
       const search = es(t, 3.05, 3.3) * (1 - es(t, 3.9, 4.1));
       COUNCIL.forEach((m) => {
         const turn = es(t, 0.3 + m.i * 0.04, 0.6 + m.i * 0.04);
-        m.p.set({ x: m.x, y: HALL, s: m.s, flip: !!m.flip, armF: 16 + turn * 20 + search * (40 + Math.sin(T * 3 + m.seed) * 10), armB: search * 30, head: 4 - turn * 4 + search * 10, blink: blinkAt(T, m.seed) });
+        m.p.set({ x: m.x, y: HALL, s: m.s, flip: !!m.flip, o: S.portrait && m.x > 1250 ? 0 : 1, armF: 16 + turn * 20 + search * (40 + Math.sin(T * 3 + m.seed) * 10), armB: search * 30, head: 4 - turn * 4 + search * 10, blink: blinkAt(T, m.seed) });
       });
       hpSit.set({ x: SEATX, y: HALL - 16, s: 0.74, flip: true, armF: 30 + search * 30, armB: 12, head: -4 + search * 6, blink: blinkAt(T, 3) });
 
@@ -92,7 +93,7 @@ export default {
       /* v55 — they search the scrolls and find nothing */
       scrolls.forEach((el, i) => {
         const k = es(t, 3.1 + i * 0.08, 3.35 + i * 0.08, ease.back) * (1 - es(t, 3.9, 4.05));
-        const x = [700, 790, 1320][i];
+        const x = (S.portrait ? [770, 860, 1120] : [700, 790, 1320])[i];   // phone: the scrolls over the visible part of the hall
         vis(el, { x, y: 200 + Math.sin(T * 2 + i) * 3, s: k * 0.9, r: (i - 1) * 8, o: k > 0.01 ? 1 : 0 });
         const q = es(t, 3.45 + i * 0.08, 3.6 + i * 0.08, ease.back) * (1 - es(t, 3.9, 4.05));
         vis(qs[i], { x: x + 20, y: 160, s: q * 0.7, o: q > 0.01 ? 1 : 0 });
@@ -124,9 +125,11 @@ export default {
       });
 
       /* camera: hall — overview — courtyard — hall */
-      S.cam.x = kf(t, [[-0.5, 380], [0.8, 360], [1.05, 0], [1.4, -420], [2.9, -440], [3.2, 360], [8, 360]]);
+      // phone: in the hall the camera stands a little further right and less close (the high priest's seat clear of the thread)
+      const PT = S.portrait;
+      S.cam.x = kf(t, [[-0.5, PT ? 420 : 380], [0.8, PT ? 410 : 360], [1.05, 0], [1.4, PT ? -385 : -420], [2.9, PT ? -405 : -440], [3.2, PT ? 410 : 360], [8, PT ? 410 : 360]]);
       S.cam.y = kf(t, [[-0.5, -380], [0.8, -380], [1.05, 0], [1.4, 300], [2.9, 300], [3.2, -380], [8, -390]]);
-      S.cam.z = kf(t, [[-0.5, 1.5], [0.8, 1.55], [1.05, 1.0], [1.4, 1.5], [2.9, 1.6], [3.2, 1.55], [8, 1.6]]);
+      S.cam.z = kf(t, [[-0.5, PT ? 1.36 : 1.5], [0.8, PT ? 1.4 : 1.55], [1.05, 1.0], [1.4, 1.5], [2.9, 1.6], [3.2, PT ? 1.4 : 1.55], [8, PT ? 1.44 : 1.6]]);
     };
   },
 };

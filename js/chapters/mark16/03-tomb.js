@@ -11,7 +11,7 @@ import { CAST } from '../kit.js';
 const FLOOR = 700;
 const DOOR_X = 470;
 const LEDGE = { x0: 790, x1: 1290, top: 610 };
-const YX = 1150;           // the young man sits on the right
+const YX0 = 1150;          // the young man sits on the right
 const PLACE = 930;         // where they laid him
 
 export default {
@@ -29,6 +29,9 @@ export default {
   cam: { x: [-40, 120], y: [-30, 60], z: [0.84, 1.18] },
   build(S) {
     const c = S.c;
+    // phone: the young man sits further in from the right edge (under the progress thread at 1150),
+    // the women stand a little further from the doorway's edge
+    const YX = S.portrait ? 1050 : YX0;
     /* the cave: back wall, floor, doorway with the morning outside */
     const back = S.layer({ par: 0, sky: true });
     const wall = mix(C.rock2, C.soilDark, 0.3);
@@ -74,7 +77,7 @@ export default {
     const PL = S.layer({ par: 0.55, sh: 5 });
     const W = WOMEN.map((w, i) => {
       const holdF = `<g transform="translate(2 8)">${spiceJar(c, [C.cream, C.blushVeil, C.linen2][i], [C.clay, C.plumRobe, C.teal2][i])}</g>`;
-      return { ...w, i, x: [720, 620, 520][i], seed: c.rr(0, 9), p: S.puppet(PL.add(person(c, { ...w.o, holdF }))) };
+      return { ...w, i, x: (S.portrait ? [750, 655, 560] : [720, 620, 520])[i], seed: c.rr(0, 9), p: S.puppet(PL.add(person(c, { ...w.o, holdF }))) };
     });
     const fear = W.map(() => PL.add(`<g>${[-1, 1].map((d) => `<path d="${c.ribbon([[d * 16, -4], [d * 22, -12], [d * 18, -18], [d * 24, -26]], 2.2)}" fill="${C.cream}"/>`).join('')}</g>`));
 
@@ -156,7 +159,7 @@ export default {
       /* v7a: go, tell his disciples — and Peter */
       MED.forEach((m) => {
         const k = es(t, 6.1 + m.i * 0.04, 6.4 + m.i * 0.04, ease.back) * (1 - es(t, 7.0, 7.2));
-        const x = m.i === 0 ? 800 : 800 + (m.i % 2 ? -1 : 1) * (40 + Math.ceil(m.i / 2) * 58);
+        const x = m.i === 0 ? 800 : 800 + (m.i % 2 ? -1 : 1) * (40 + Math.ceil(m.i / 2) * (S.portrait ? 46 : 58));   // phone: the row fits the screen
         const y = m.i === 0 ? 230 : 250 + Math.ceil(m.i / 2) * 6;
         swing(m.el, x, lerp(-1000, y, k), time, 1.4, 0.8, m.i);
         const pk = m.i === 0 ? 1 + bump(t, 6.5, 6.95) * 0.25 : 1;
@@ -167,20 +170,21 @@ export default {
 
       /* v7b: the map comes down: a road of light, He goes before them into Galilee */
       const mIn = es(t, 7.0, 7.3, ease.out);
+      const MK = S.portrait ? 0.8 : 1;   // phone: a smaller map, all of it on the screen
       mapL.shift(0, (1 - mIn) * -900);
       mapL.fade(mIn > 0.001 ? 1 : 0);
-      pose(mapEl, { x: MX, y: MY, r: -1.2 });
+      pose(mapEl, { x: MX, y: MY, r: -1.2, s: MK });
       const road = es(t, 7.25, 7.75);
-      pose(roadEl, { x: MX, y: MY, r: -1.2 });
+      pose(roadEl, { x: MX, y: MY, r: -1.2, s: MK });
       attr(roadEl, 'stroke-dashoffset', (1 - road).toFixed(3));
       const [lx, ly] = along(roadPts, es(t, 7.25, 7.8));
-      pose(leader, { x: MX + lx, y: MY + ly, s: 1 + Math.sin(time * 3) * 0.06, o: seg(t, 7.2, 7.3) });
+      pose(leader, { x: MX + lx * MK, y: MY + ly * MK, s: 1 + Math.sin(time * 3) * 0.06, o: seg(t, 7.2, 7.3) });
       followers.forEach((f, i) => {
         const [fx2, fy] = along(roadPts, Math.max(0, es(t, 7.35, 7.95) - 0.1 - i * 0.012));
-        pose(f, { x: MX + fx2 + ((i % 3) - 1) * 6, y: MY + fy + ((i % 2) * 6 - 3), o: seg(t, 7.35, 7.45) });
+        pose(f, { x: MX + fx2 * MK + ((i % 3) - 1) * 6, y: MY + fy * MK + ((i % 2) * 6 - 3), o: seg(t, 7.35, 7.45) });
       });
       const see = es(t, 7.75, 7.95, ease.back);
-      pose(seeYou, { x: MX + MAP.lake[0] + 60, y: MY + MAP.lake[1] - 50, s: see * 1.3, r: time * 25, o: see });
+      pose(seeYou, { x: MX + (MAP.lake[0] + 60) * MK, y: MY + (MAP.lake[1] - 50) * MK, s: see * 1.3, r: time * 25, o: see });
 
       S.cam.x = es(t, 0, 0.8) * 60 + es(t, 4.4, 5.0) * 60 * (1 - es(t, 5.9, 6.3)) - es(t, 5.9, 6.3) * 60 * (1 - es(t, 6.9, 7.2));
       S.cam.y = 20 + es(t, 4.4, 5.0) * 30 * (1 - es(t, 5.9, 6.3)) - es(t, 5.9, 6.3) * 40;

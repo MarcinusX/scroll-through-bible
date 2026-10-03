@@ -21,7 +21,7 @@ export default {
     { v: 13, text: 'Oni powrócili i oznajmili pozostałym.' },
     { v: 13, cont: true, text: 'Lecz im też nie uwierzyli.' },
   ],
-  cam: { x: [-420, 280], y: [0, 40], z: [1, 1.1] },
+  cam: { x: [-500, 280], y: [0, 40], z: [1, 1.1] },
   build(S) {
     const c = S.c;
     const sk = sky(S, DAYP);
@@ -123,7 +123,7 @@ export default {
         pose(el, { x: hx + 6, y: hy - 20, s: b * 0.9, o: b > 0.01 ? 1 : 0 });
       });
 
-      S.cam.x = kf(t, [[0, -240], [1.0, -120], [1.9, 260], [2.1, 260], [2.85, -400]]);
+      S.cam.x = kf(t, [[0, -240], [1.0, -120], [1.9, 260], [2.1, 260], [2.85, S.portrait ? -480 : -400]]);   // phone: the others by the house are all on the screen
       S.cam.y = 20;
       S.cam.z = 1.03 + es(t, 2.9, 3.4) * 0.05;
     };

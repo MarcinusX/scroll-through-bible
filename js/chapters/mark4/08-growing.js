@@ -110,9 +110,12 @@ export default {
     { v: 28, cont: true, text: 'najpierw źdźbło, potem kłos, a potem pełne ziarnko w kłosie.' },
     { v: 29 },
   ],
-  cam: { x: [-40, 115], y: [-100, 75], z: [0.95, 2.05] },
+  cam: { x: [-40, 270], y: [-100, 75], z: [0.95, 2.05] },
   build(S) {
     const c = S.c;
+    // phone: the sower turns before the thread, the sun and moon swing a narrower arc, the reaper is
+    // followed by the camera, and the tags and the rain cloud wait far above the tall screen
+    const PH = S.portrait;
     const DAY = [C.skyBlue, mix(C.skyBlue, C.cream, 0.6), C.cream];
     const DUSK = [C.duskViolet, C.dusk, C.peach];
     const NIGHT = [C.night2, C.night, C.indigo];
@@ -190,7 +193,7 @@ export default {
       seeds.push({ x, y: furrow(x) + (hero ? 36 : 26), hero, i: seeds.length });
     }
     // release time of each seed: the farmer walks 530 → 1130 during 0.04–0.86
-    const fx0 = 530, fx1 = 1130;
+    const fx0 = 530, fx1 = PH ? 1050 : 1130;
     seeds.forEach((sd) => { sd.r = 0.04 + 0.82 * clamp((sd.x - 120 - fx0) / (fx1 - fx0)); });
 
     const HS = heroSeed(c);
@@ -311,14 +314,14 @@ export default {
 
       const sunA = p < 0.5 ? -0.8 * Math.cos(PI * (p / 0.5)) : 0.85;
       const moonA = p >= 0.5 ? -0.8 * Math.cos(PI * ((p - 0.5) / 0.5)) : -0.85;
-      swingAt(sunEl, sunA + Math.sin(time * 0.7) * 0.004);
-      swingAt(moonEl, moonA + Math.sin(time * 0.7 + 1) * 0.004);
+      swingAt(sunEl, (PH ? sunA * 0.68 * (1 - 0.5 * es(t, 1.95, 2.3) * (1 - es(t, 2.9, 3.2))) + es(t, 3.0, 3.25) * 0.35 : sunA) + Math.sin(time * 0.7) * 0.004);
+      swingAt(moonEl, moonA * (PH ? 0.68 : 1) + Math.sin(time * 0.7 + 1) * 0.004);
       const cloudO = 1 - night * 0.8;
       pose(cl1, { x: 520 + seg(t, 0, 6) * 160 + Math.sin(time * 0.12) * 20, y: 170, r: Math.sin(time * 0.6) * 1.5, o: cloudO });
       pose(cl2, { x: 1120 - seg(t, 0, 6) * 120 + Math.sin(time * 0.1 + 2) * 20, y: 230, r: Math.sin(time * 0.7 + 1) * 1.5, o: cloudO });
       // "ziemia sama z siebie" — a rain cloud is lowered, waters the field, is lifted away
       const rc = es(t, 3.0, 3.25) * (1 - es(t, 3.6, 3.85));
-      pose(rainCl, { x: 900 + Math.sin(time * 0.5) * 6, y: -200 + rc * 380, r: Math.sin(time * 0.6) * 1.2 });
+      pose(rainCl, { x: 900 + Math.sin(time * 0.5) * 6, y: PH ? -620 + rc * 800 : -200 + rc * 380, r: Math.sin(time * 0.6) * 1.2 });
       pose(rainEl, { x: 900, y: 190 + ((time * 160) % 60) * (S.reduced ? 0 : 1), o: bump(t, 3.15, 3.7) * 0.85 });
 
       /* --- sowing --- */
@@ -397,7 +400,7 @@ export default {
       // stage tags, lowered on strings as each stage arrives
       const tagIn = [es(t, 4.03, 4.2, ease.back), es(t, 4.24, 4.4, ease.back), es(t, 4.44, 4.62, ease.back)];
       const tagOut = es(t, 4.95, 5.15);
-      tags.forEach((tg, i) => pose(tg.el, { x: tg.x, y: tg.y - (1 - tagIn[i]) * 420 - tagOut * 460, r: Math.sin(time * 0.9 + i * 2) * 2.5 }));
+      tags.forEach((tg, i) => pose(tg.el, { x: tg.x, y: tg.y - (1 - tagIn[i]) * (PH ? 1000 : 420) - tagOut * (PH ? 1040 : 460), r: Math.sin(time * 0.9 + i * 2) * 2.5 }));
 
       /* --- the farmer: sows, sleeps & wakes, wonders, rests, reaps --- */
       const asleep = t >= 1 && t < 2.05 ? clamp((night - 0.35) / 0.3) : 0;
@@ -411,7 +414,7 @@ export default {
         fx = fxS; walk = t > 0.04 && t < 0.86 ? fxS * 0.055 : undefined;
         armF = 34; armB = 10 + throwArm * 120; head = -4;
       } else if (t < 2) {
-        fx = [1130, 1010, 700, 740][Math.min(3, day)];
+        fx = [PH ? 1050 : 1130, 1010, 700, 740][Math.min(3, day)];
         flip = day === 1;
         const chop = Math.sin(time * 3.2 + t * 40);
         armF = 42 + chop * 22; lean = 7 + chop * 3; head = 8;
@@ -464,7 +467,7 @@ export default {
       /* --- camera --- */
       const zIn = es(t, 1.95, 2.3) * (1 - es(t, 2.9, 3.2));
       S.cam.z = 1.03 + es(t, 0, 0.9) * 0.03 - es(t, 1, 1.2) * 0.06 * (1 - zIn) + zIn * 0.4 + zHero * 0.98 - es(t, 5, 5.4) * 0.06;
-      S.cam.x = lerp(-10 + seg(t, 0, 1) * 30, 0, es(t, 1, 1.2)) + zIn * 40 + zHero * 105;
+      S.cam.x = lerp(-10 + seg(t, 0, 1) * 30, 0, es(t, 1, 1.2)) + zIn * 40 + zHero * 105 + (PH ? es(t, 5.12, 5.88) * 260 : 0);
       S.cam.y = zIn * 70 - zHero * 95;
     };
   },

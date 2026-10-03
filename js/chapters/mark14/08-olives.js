@@ -28,7 +28,9 @@ export default {
   cam: { x: [-80, 80], y: [-40, 200], z: [1, 1.5] },
   build(S) {
     const c = S.c;
-    const G = garden(S, { moonAt: [1180, 170], rockX: 1320 });
+    const MX = S.portrait ? 990 : 1180;   // phone: the moon clear of the progress thread
+    const MY = S.portrait ? 40 : 170;      // phone: the moon above the hanging panel and the rooster, not behind them
+    const G = garden(S, { moonAt: [MX, MY], rockX: 1320 });
 
     // the upper room far off on the left: a lit window, notes rising
     const noteL = S.layer({ par: 0.12, sh: 1 });
@@ -57,7 +59,7 @@ export default {
 
     // the rooster and three dark marks
     const rL = S.layer({ par: 0.3, sh: 5 });
-    const RX = 950;
+    const RX = S.portrait ? 915 : 950;   // phone: the rooster and its cry clear of the thread
     const roost = hanging(rL, discPlate(c, `<g transform="translate(-4 36) scale(.9)">${rooster(c)}</g>`, { r: 58, fill: mix(C.dawn, C.peach, 0.3), rim: C.ochre }), { x: 1030, y: 250, len: 700 });
     const cry = voiceRings(rL, c, { n: 3, color: C.cream, r: 28, w: 4, both: false });
     const marks = hanging(rL, `${sheet().p(c.cut(c.rect(-44, 0, 88, 50), 0.5, 6), C.cream).out()}<g transform="translate(-12 40)">${tally(c, 3, C.ink, 28)}</g>`, { x: 1030, y: 350, len: 700 });
@@ -68,7 +70,8 @@ export default {
       { k: 'andrew', x: 450, y: GY - 16 }, { k: 'james', x: 525, y: GY - 10 }, { k: 'thomas', x: 590, y: GY - 22 }, { k: 'john', x: 650, y: GY },
       { k: 'peter', x: 690, y: GY + 6 }, { k: 'matthew', x: 890, y: GY - 20 }, { k: 'philip', x: 945, y: GY }, { k: 'bartholomew', x: 1010, y: GY - 14 },
       { k: 'jamesA', x: 1070, y: GY - 4 }, { k: 'thaddaeus', x: 1125, y: GY - 18 }, { k: 'simonZ', x: 1180, y: GY - 2 },
-    ].sort((a, b) => a.y - b.y).map((d, i) => {
+    ].map((d) => (S.portrait ? { ...d, x: JX + (d.x - JX) * 0.66 } : d))   // phone: the eleven closed up round Him, none cut by the frame or under the thread
+      .sort((a, b) => a.y - b.y).map((d, i) => {
       const el = P.add(withFace(person(c, TW[d.k]), faceBits(c)));
       return { ...d, i, seed: c.rr(0, 9), p: S.puppet(el), sad: el.querySelector('[data-part="sad"]'), from: c.rr(-420, -80) };
     });
@@ -81,7 +84,7 @@ export default {
 
     return (t, time) => {
       const T = time;
-      swing(G.moon, 1180, 170, T, 1, 0.6);
+      swing(G.moon, MX, MY, T, 1, 0.6);
 
       /* v26 — the hymn, then out to the Mount of Olives */
       notes.forEach((n) => {

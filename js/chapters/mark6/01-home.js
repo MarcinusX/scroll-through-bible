@@ -157,7 +157,7 @@ export default {
       pose(memo, { x: 905, y: 600, s: 0.6 + touch * 0.6, o: touch * 0.8 });
       // the town sign comes down as he arrives
       const sg = es(t, 1.0, 1.35, ease.back);
-      pose(sign, { x: 1150, y: lerp(-300, 205, sg), r: Math.sin(T * 1.1) * 2.5, o: sg > 0.01 ? 1 : 0 });
+      pose(sign, { x: S.portrait ? 1020 : 1150, y: lerp(S.portrait ? -600 : -300, 205, sg), r: Math.sin(T * 1.1) * 2.5, o: sg > 0.01 ? 1 : 0 });
 
       // neighbours come out of their doors and look
       far.forEach((f) => {

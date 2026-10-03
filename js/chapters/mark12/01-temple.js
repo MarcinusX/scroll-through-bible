@@ -14,6 +14,7 @@ export default {
   cam: { x: [-30, 30], y: [-40, 40], z: [1, 1.12] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;
     const set = templeCourt(S);
     const F = set.FLOOR;
 
@@ -27,8 +28,8 @@ export default {
 
     /* Jesus, his disciples, the leaders */
     const people = S.layer({ par: 0.5, sh: 5 });
-    const leaders = [LOOK.elder, LOOK.priest, LOOK.lscribe].map((o, i) => ({ p: S.puppet(people.add(person(c, o))), x: 1000 + i * 70, y: F + 6 + (i % 2) * 8, i }));
-    const dis = [CAST.john, CAST.peter, CAST.james, CAST.andrew].map((o, i) => ({ p: S.puppet(people.add(person(c, o))), x: 610 - i * 62, y: F + 10 + (i % 2) * 8, i }));
+    const leaders = [LOOK.elder, LOOK.priest, LOOK.lscribe].map((o, i) => ({ p: S.puppet(people.add(person(c, o))), x: (P ? 935 : 1000) + i * (P ? 55 : 70), y: F + 6 + (i % 2) * 8, i }));
+    const dis = [CAST.john, CAST.peter, CAST.james, CAST.andrew].map((o, i) => ({ p: S.puppet(people.add(person(c, o))), x: 610 - i * (P ? 52 : 62), y: F + 10 + (i % 2) * 8, i }));
     const jesus = S.puppet(people.add(person(c, { ...CAST.jesus })));
     const voice = voiceRings(people, c, { n: 3, r: 26, w: 4 });
 
@@ -55,7 +56,7 @@ export default {
       });
       voice(jx + 26, F - 176, speak * (1 - es(t, 1.85, 2.1)), T, { dir: 1 });
       dis.forEach((d) => {
-        const x = Math.min(d.x, jx - 150 - d.i * 62);
+        const x = Math.min(d.x, jx - 150 - d.i * (P ? 52 : 62));
         d.p.set({ x, y: d.y, s: 0.92, walk: moving(t, jKeys) && x < d.x ? x * 0.05 + d.i : undefined, blink: blinkAt(T, d.i + 2), head: -speak * 4 });
       });
       leaders.forEach((l) => {

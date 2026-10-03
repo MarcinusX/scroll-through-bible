@@ -16,7 +16,7 @@ export default {
     { v: 12, cont: true, text: 'zapytali Jezusa Jego uczniowie: «Gdzie chcesz, abyśmy poszli poczynić przygotowania, żebyś mógł spożyć Paschę?»' },
     { v: 13, text: 'I posłał dwóch spośród swoich uczniów z tym poleceniem:' },
   ],
-  cam: { x: [-80, 60], y: [-40, 120], z: [1, 1.3] },
+  cam: { x: [-200, 60], y: [-40, 120], z: [1, 1.3] },
   build(S) {
     const c = S.c;
     const SKY = ['#bcd3d6', '#eee3c8', '#f6e3c4'];
@@ -44,6 +44,7 @@ export default {
 
     // the feast: a plate with the lamb and the unleavened bread
     const plL = S.layer({ par: 0.4, sh: 5 });
+    const PLX = S.portrait ? 950 : 1010;   // phone: the plate clear of the thread
     const plate = hanging(plL, discPlate(c, `<g transform="translate(-30 22) scale(.8)">${lamb(c)}</g><g transform="translate(26 4) scale(.62)">${matzahRound(c, 30)}</g>`, { r: 58, rim: C.ochre }), { x: 1010, y: 300, len: 600 });
     const tagEl = hanging(plL, wordTag(c, tr('Pascha', 'Passover'), { size: 20 }), { x: 1010, y: 380, len: 600 });
 
@@ -53,7 +54,8 @@ export default {
       { k: 'thomas', o: TW.thomas, x: 470 }, { k: 'andrew', o: TW.andrew, x: 548 }, { k: 'john', o: TW.john, x: 640, go: 1 },
       { k: 'peter', o: TW.peter, x: 710, go: 0 }, { k: 'james', o: TW.james, x: 900 }, { k: 'matthew', o: TW.matthew, x: 975 },
       { k: 'philip', o: TW.philip, x: 1050 }, { k: 'judas', o: TW.judas, x: 1125 },
-    ].map((d, i) => ({ ...d, i, seed: c.rr(0, 9), y: GY + (i % 2) * 8, p: S.puppet(P.add(person(c, d.o))) }));
+    ].map((d0) => ({ ...d0, x: S.portrait ? JX + (d0.x - JX) * 0.78 : d0.x }))   // phone: the group closed up round Him, none cut by the frame or under the thread
+      .map((d, i) => ({ ...d, i, seed: c.rr(0, 9), y: GY + (i % 2) * 8, p: S.puppet(P.add(person(c, d.o))) }));
     const jesus = S.puppet(P.add(person(c, CAST.jesus)));
     const fx = S.layer({ par: 0.58, sh: 4 });
     const ask = fx.add(`<g>${speech(c, `<g transform="translate(-16 6) scale(.62)">${sheet().p(c.cut([[-24, 18], [-24, -6], [0, -26], [24, -6], [24, 18]], 0.4, 4), C.plaster).p(c.cut(c.rect(-6, 2, 12, 16), 0.2, 3), C.wood2).out()}</g><g transform="translate(18 0)">${GLYPH.q(c)}</g>`, { w: 80, h: 56, flip: true })}</g>`);
@@ -72,8 +74,8 @@ export default {
         vis(p.el, { x: tx + Math.sin(k * 5 + p.i) * 10 + k * 40, y: ty - k * 180, s: 0.6 + k * 1.6, o: on * (1 - k) * 0.9 });
       });
       const pin = es(t, 0.1, 0.5, ease.out) * (1 - es(t, 0.95, 1.25, ease.in));
-      vis(plate, { x: 1010, y: 300 - (1 - pin) * 600, r: Math.sin(T * 0.9) * 2, o: pin > 0.01 ? 1 : 0 });
-      vis(tagEl, { x: 1010, y: 380 - (1 - pin) * 600, r: Math.sin(T * 1.2 + 1) * 3, o: pin > 0.01 ? 1 : 0 });
+      vis(plate, { x: PLX, y: 300 - (1 - pin) * 600, r: Math.sin(T * 0.9) * 2, o: pin > 0.01 ? 1 : 0 });
+      vis(tagEl, { x: PLX, y: 380 - (1 - pin) * 600, r: Math.sin(T * 1.2 + 1) * 3, o: pin > 0.01 ? 1 : 0 });
 
       // v12b — they ask
       const asking = es(t, 1.05, 1.3) * (1 - es(t, 1.9, 2.1));
@@ -97,10 +99,11 @@ export default {
         }
         d.p.set({ x, y: d.y, s: 0.98, flip, walk, armF, armB, head, blink: blinkAt(T, d.seed) });
       });
-      const [ax, ay] = headAt(900, GY, 0.98, true);
+      const [ax, ay] = headAt(DIS[4].x, GY, 0.98, true);
       vis(ask, { x: ax - 16, y: ay - 26, s: a, o: a > 0.01 ? 1 : 0 });
 
-      S.cam.x = kf(t, [[-0.5, -40], [0.8, -40], [1.2, 20], [2.1, 0], [2.9, -60]]);
+      // phone: follow the two who are sent off to the left, so they stay inside the screen
+      S.cam.x = kf(t, S.portrait ? [[-0.5, -40], [0.8, -40], [1.2, 45], [2.1, 25], [2.7, -170], [2.9, -180]] : [[-0.5, -40], [0.8, -40], [1.2, 20], [2.1, 0], [2.9, -60]]);
       S.cam.z = kf(t, [[-0.5, 1.04], [0.8, 1.02], [1.2, 1.14], [2.1, 1.12], [2.9, 1.08]]);
       S.cam.y = kf(t, [[-0.5, -20], [0.8, -30], [1.2, 60], [2.9, 40]]);
     };

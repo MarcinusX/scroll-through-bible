@@ -26,6 +26,9 @@ export default {
   cam: { x: [-40, 90], y: [-50, 50], z: [1, 1.18] },
   build(S) {
     const c = S.c;
+    // phone: Bethphage, its name tag and the dotted way to it stand inside the narrow screen
+    const P = S.portrait;
+    const VX = P ? 1000 : VIL[0];
     const SKY = ['#e3d9c2', '#f3e3c4', '#f8ead3'];
     const sk = sky(S, SKY);
 
@@ -54,7 +57,7 @@ export default {
     const hb = hillsWith(c, { y: 548, amps: [16, 7, 3], lens: [1000, 360, 130], color: C.hillMid, x0: -1400, x1: 3000 });
     hillL.add(hb.markup);
     hillL.add(grove(c, hb.fn, -500, 560, 9, 0.62) + grove(c, hb.fn, 1380, 2200, 6, 0.6));
-    hillL.add(town(c, { x: VIL[0], y: hb.fn(VIL[0]) + 8, n: 7, spread: 220, sc: 0.62 }));
+    hillL.add(town(c, { x: VX, y: hb.fn(VX) + 8, n: 7, spread: 220, sc: 0.62 }));
     hillL.add(cypress(c, 980, hb.fn(980) + 6, 110) + cypress(c, 1290, hb.fn(1290) + 6, 96));
     hillL.add(olive(c, 640, hb.fn(640) + 8, 0.7) + olive(c, 760, hb.fn(760) + 10, 0.55) + olive(c, 880, hb.fn(880) + 8, 0.62));
     let terr = '';
@@ -63,7 +66,7 @@ export default {
     const vilGlow = hillL.add(`<g><circle r="120" fill="url(#warm-glow)"/></g>`);
     // the way to the village: a dotted path that draws itself
     const dots = [];
-    const path = c.qbez([880, 640], [1010, 600], [VIL[0] - 20, hb.fn(VIL[0]) + 6], 16);
+    const path = c.qbez([880, 640], [P ? 950 : 1010, 600], [VX - 20, hb.fn(VX) + 6], 16);
     path.forEach(([x, y], i) => { if (i % 1 === 0) dots.push(hillL.add(`<path d="${c.poly(c.ell(x, y, 5, 2.6, 8))}" fill="${C.cream}" opacity="0"/>`)); });
 
     /* ---------- the road over the Mount ---------- */
@@ -84,7 +87,7 @@ export default {
     const tagL = S.layer({ par: 0.2, sh: 4 });
     const tags = [
       { el: tagL.add(`<g>${tagOnString(tr('Betania', 'Bethany'), { size: 19, len: 500, dx: 0, dy: 60 })}</g>`), x: 440, y: 320, t0: 1.05 },
-      { el: tagL.add(`<g>${tagOnString(tr('Betfage', 'Bethphage'), { size: 19, len: 500, dx: 0, dy: 70 })}</g>`), x: VIL[0], y: 400, t0: 1.2 },
+      { el: tagL.add(`<g>${tagOnString(tr('Betfage', 'Bethphage'), { size: 19, len: 500, dx: 0, dy: 70 })}</g>`), x: VX, y: 400, t0: 1.2 },
       { el: tagL.add(`<g>${tagOnString(tr('Jerozolima', 'Jerusalem'), { size: 22, len: 500, dx: 0, dy: 0 })}</g>`), x: 640, y: 200, t0: 1.35 },
     ];
 
@@ -135,7 +138,7 @@ export default {
 
       tags.forEach((g, i) => {
         const d = es(t, g.t0, g.t0 + 0.35, ease.back) * (1 - es(t, 2.6, 3.0));
-        swing(g.el, g.x, g.y - (1 - d) * 520, T, 1.2, 0.8, i);
+        swing(g.el, g.x, g.y - (1 - d) * (P ? 1100 : 520), T, 1.2, 0.8, i);
       });
 
       /* v1 — they come along the road; two are called forward */
@@ -175,7 +178,7 @@ export default {
       /* v2a — "the village opposite you": the path draws itself, the village glows */
       const drawn = es(t, 2.2, 2.75);
       dots.forEach((d, i) => fade(d, drawn * dots.length > i ? 0.9 * (1 - es(t, 6.8, 7)) : 0));
-      pose(vilGlow, { x: VIL[0], y: VIL[1] - 20, s: 1, o: es(t, 2.3, 2.6) * (1 - es(t, 3.3, 3.8)) * 0.9 });
+      pose(vilGlow, { x: VX, y: VIL[1] - 20, s: 1, o: es(t, 2.3, 2.6) * (1 - es(t, 3.3, 3.8)) * 0.9 });
 
       /* v2b — the plate: a colt tied at the door, that no one has ever sat on */
       const down = es(t, 3.0, 3.5, ease.back) * (1 - es(t, 6.6, 7.0));

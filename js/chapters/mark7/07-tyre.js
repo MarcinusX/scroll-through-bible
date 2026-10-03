@@ -32,6 +32,7 @@ export default {
   cam: { x: [camFor(120), 40], y: [-60, 40], z: [1, 1.14] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;
     const SKY = ['#c4bfdc', '#efd8c9', '#f6e4d0'];
     const sk = sky(S, SKY);
     const hangL = S.layer({ par: 0.04, sh: 4 });
@@ -78,8 +79,11 @@ export default {
     const jSit = S.puppet(street.add(person(c, { ...CAST.jesus, pose: 'sit' })));
     const inPeter = S.puppet(street.add(person(c, CAST.peter)));
     const inJohn = S.puppet(street.add(person(c, CAST.john)));
-    const stool = street.add(sheet().p(c.cut(c.rect(-30, -34, 60, 8), 0.3, 5), C.wood).p(c.cut(c.rect(-24, -26, 6, 26), 0.2, 3) + c.cut(c.rect(18, -26, 6, 26), 0.2, 3), C.wood2).out());
-    pose(stool, { x: 904, y: ST });
+    const stoolM = sheet().p(c.cut(c.rect(-30, -34, 60, 8), 0.3, 5), C.wood).p(c.cut(c.rect(-24, -26, 6, 26), 0.2, 3) + c.cut(c.rect(18, -26, 6, 26), 0.2, 3), C.wood2).out();
+    // phone: the stool is drawn in place under Jesus (a pose() of a never-moving cut-out is undone by the engine's dry run,
+    // which leaves it at (0, 0), where the phone's taller view shows it in the sky)
+    const stool = street.add(P ? `<g><g transform="translate(904 ${ST})">${stoolM}</g></g>` : stoolM);
+    if (!P) pose(stool, { x: 904, y: ST });
 
     /* ---------- house fronts ---------- */
     const fronts = S.layer({ par: PAR, sh: 5 });
@@ -104,6 +108,8 @@ export default {
       { x: 1178, flip: true, o: townsfolk(c, { man: true, robe: C.ochreRobe, mantle: PURPLE }) },
       { x: 420, flip: true, o: townsfolk(c, { hairStyle: 'veil', veil: C.skyVeil, robe: C.roseRobe, beard: 'none' }) },
     ].map((n, i) => ({ ...n, i, seed: c.rr(0, 9), p: S.puppet(ppl.add(person(c, n.o))) }));
+    // phone: the two neighbours on the right stand inside the frame (and slip away while the camera is with the mother)
+    if (P) { NB[1].x = 1000; NB[2].x = 1046; }
     const wSit = S.puppet(ppl.add(woman(c, { pose: 'sit' })));
     const wStand = S.puppet(ppl.add(woman(c)));
     const wKneel = S.puppet(ppl.add(woman(c, { pose: 'kneel' })));
@@ -149,10 +155,11 @@ export default {
       NB.forEach((n) => {
         const come = es(t, 2.05 + n.i * 0.08, 2.4 + n.i * 0.08);
         const peek = bump(t, 2.3 + n.i * 0.1, 3.0) * 1;
-        n.p.set({ x: n.x + (n.flip ? -1 : 1) * come * 18, y: ST + 4, s: 0.84, flip: n.flip, armF: peek * 60 + (n.i === 0 ? bump(t, 2.5, 3.1) * 50 : 0), armB: n.i === 1 ? peek * 150 : 0, head: -peek * 6, lean: (n.flip ? -1 : 1) * peek * 4, blink: blinkAt(T, n.seed) });
+        const gone = P && (n.i === 1 || n.i === 2) ? es(t, 3.3, 3.45) : 0;
+        n.p.set({ x: n.x + (n.flip ? -1 : 1) * come * 18, y: ST + 4, s: 0.84, flip: n.flip, o: 1 - gone, armF: peek * 60 + (n.i === 0 ? bump(t, 2.5, 3.1) * 50 : 0), armB: n.i === 1 ? peek * 150 : 0, head: -peek * 6, lean: (n.flip ? -1 : 1) * peek * 4, blink: blinkAt(T, n.seed) });
       });
       // whispers pass from mouth to mouth, then away to the woman's window
-      const chain = [[1150, 470], [1090, 460], [620, 470], [440, 470], [270, 520]];
+      const chain = P ? [[1030, 470], [980, 460], [620, 470], [440, 470], [270, 520]] : [[1150, 470], [1090, 460], [620, 470], [440, 470], [270, 520]];
       whispers.forEach((w) => {
         const t0 = 2.35 + w.i * 0.22 - (w.i > 2 ? 0.1 : 0);
         const k = es(t, t0, t0 + 0.2, ease.back) * (1 - es(t, t0 + 0.45, t0 + 0.6));

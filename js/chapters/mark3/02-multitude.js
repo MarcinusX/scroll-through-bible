@@ -108,7 +108,7 @@ export default {
     mapL.add(sheet().x(dots, C.dune).out() + palmsSmall(c, 800, 500) + palmsSmall(c, 870, 330));
     // towns
     mapL.add(mapTown(c, 572, 150, 0.9) + mapTown(c, 588, 80, 0.8) + mapTown(c, 745, 508, 1.1, true) + mapTown(c, 690, 258, 0.8) + mapTown(c, 790, 244, 0.7) + mapTown(c, 1040, 380, 0.7) + mapTown(c, 700, 640, 0.7));
-    mapL.add(`<g transform="translate(1110 660)">${compass(c)}</g><g transform="translate(430 300)">${ship(c)}</g>`);
+    mapL.add(`<g transform="translate(${S.portrait ? 1050 : 1110} 660)">${compass(c)}</g><g transform="translate(430 300)">${ship(c)}</g>`);
     // two strings from the flies
     mapL.add(`<path d="M${X0 + 60} ${Y0}V-1400M${X1 - 60} ${Y0}V-1400" stroke="rgba(74,54,34,.55)" stroke-width="1.4"/>`);
 

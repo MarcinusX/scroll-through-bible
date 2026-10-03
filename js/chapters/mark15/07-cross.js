@@ -104,14 +104,14 @@ export default {
       const ik = es(t, 5.05, 5.4);
       const topY = GOL.top - GOL.H - 10;
       pose(small, { x: GOL.x, y: topY, o: ik });
-      const bx = 1110, by = 118 - (1 - ik) * 700;
+      const bx = S.portrait ? 990 : 1110, by = 118 - (1 - ik) * 700;   // phone: the board hangs inside the frame
       pose(big, { x: bx, y: by, r: Math.sin(T * 0.8) * 1.2 * ik, o: ik > 0.01 ? 1 : 0 });
       const d = Math.hypot(bx - 60 - GOL.x, by + 40 - topY);
       pose(ptr, { x: GOL.x + 20, y: topY + 6, r: (Math.atan2(by + 40 - topY - 6, bx - 70 - GOL.x - 20) * 180) / PI, sx: Math.max(0.01, (d - 60) / 100), o: es(t, 5.35, 5.5) });
 
       /* v28 — the scroll */
       const sk2 = es(t, 7.05, 7.45);
-      swing(scroll, 800, 150 - (1 - sk2) * 700, T, 1, 0.7, 2);
+      swing(scroll, S.portrait ? 765 : 800, 150 - (1 - sk2) * 700, T, 1, 0.7, 2);   // phone: clear of the inscription board
 
       S.cam.z = lerp(1.2, 1.0, es(t, 1.9, 2.8)) - es(t, 5.0, 5.4) * 0.03;
       S.cam.y = lerp(110, -10, es(t, 1.9, 2.8)) + es(t, 2.9, 3.3) * 40 * (1 - es(t, 3.9, 4.2)) - es(t, 3.9, 4.2) * 20;

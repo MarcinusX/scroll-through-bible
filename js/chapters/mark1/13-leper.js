@@ -39,7 +39,7 @@ export default {
 
     /* ---------- people ---------- */
     const L = S.layer({ par: P, sh: 5 });
-    const DIS = [CAST.john, CAST.james, CAST.andrew, CAST.peter].map((cast, i) => ({ p: S.puppet(L.add(person(c, cast))), x: 350 + i * 85, i }));
+    const DIS = [CAST.john, CAST.james, CAST.andrew, CAST.peter].map((cast, i) => ({ p: S.puppet(L.add(person(c, cast))), x: S.portrait ? 545 + i * 47 : 350 + i * 85, i }));   // phone: the four stand closer, on screen
     const heart = L.add(`<g opacity="0"><circle r="70" fill="url(#warm-glow)"/><path d="M0 8C-14 -2 -16 -12 -8 -16C-4 -18 -1 -15 0 -12C1 -15 4 -18 8 -16C16 -12 14 -2 0 8Z" fill="${C.jesusMantle}"/></g>`);
     const glow = L.add(`<circle r="170" fill="url(#halo-glow)" opacity="0"/>`);
     const jesus = S.puppet(L.add(person(c, { ...CAST.jesus })));
@@ -74,7 +74,7 @@ export default {
       const rise = es(t, 4.5, 4.56);
       leperK.set({ x: KX, y: FEET, s: 1.0, flip: true, o: kneel * (1 - healed), armF: 30 + beg * 70 - es(t, 2.4, 2.6) * 30, armB: 20 + beg * 100 - es(t, 2.4, 2.6) * 60, head: -beg * 12 + es(t, 2.4, 2.6) * 16, blink: blinkAt(time, 3) });
       const pb = es(t, 1.35, 1.55, ease.back) * (1 - es(t, 1.95, 2.05));
-      pose(plea, { x: KX + 80, y: 470, s: pb, o: pb > 0 ? 1 : 0 });
+      pose(plea, { x: KX + (S.portrait ? -10 : 80), y: 470, s: pb, o: pb > 0 ? 1 : 0 });   // phone: clear of the right edge
 
       /* v41: compassion — He stretches out His hand and touches him */
       const pity = bump(t, 2.0, 2.9);
@@ -105,8 +105,8 @@ export default {
       const marvel = es(t, 4.2, 4.6);
       DIS.forEach((d) => d.p.set({ x: d.x - recoil * 25, y: FEET + (d.i % 2) * 6, s: 0.98, armF: 14 + recoil * 40 + marvel * 30, armB: recoil * (d.i % 2 ? 80 : 20) + marvel * (d.i % 2 ? 120 : 40), lean: -recoil * 8, head: -marvel * 6, blink: blinkAt(time, d.i + 1) }));
 
-      S.cam.z = 1.12 + es(t, 1.0, 1.5) * 0.08 + es(t, 2.2, 2.8) * 0.06 - es(t, 4.4, 4.9) * 0.06;
-      S.cam.x = 20 + es(t, 0.8, 1.4) * 40;
+      S.cam.z = (S.portrait ? 1.0 : 1.12) + es(t, 1.0, 1.5) * 0.08 + es(t, 2.2, 2.8) * 0.06 - es(t, 4.4, 4.9) * 0.06;
+      S.cam.x = 20 + es(t, 0.8, 1.4) * (S.portrait ? 0 : 40);
       S.cam.y = 60 + es(t, 1.0, 1.5) * 20;
     };
   },

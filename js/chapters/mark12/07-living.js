@@ -26,6 +26,8 @@ export default {
   cam: { x: [-30, 30], y: [-40, 30], z: [1, 1.1] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;
+    const PLX = P ? [580, 1010] : [540, 1060];   // phone: the two plates clear of the frame and the thread
     const set = templeCourt(S);
     const F = set.FLOOR;
     const stepL = S.layer({ par: 0.45, sh: 4 });
@@ -74,7 +76,7 @@ export default {
 
     /* people */
     const pl = S.layer({ par: 0.5, sh: 5 });
-    const dis = [CAST.peter, CAST.john].map((o, i) => ({ p: S.puppet(pl.add(person(c, o))), x: 500 - i * 60, i }));
+    const dis = [CAST.peter, CAST.john].map((o, i) => ({ p: S.puppet(pl.add(person(c, o))), x: (P ? 530 : 500) - i * (P ? 58 : 60), i }));
     const jesus = S.puppet(pl.add(person(c, { ...CAST.jesus })));
     const voice = voiceRings(pl, c, { n: 3, r: 26, w: 4 });
     const sad = [0, 1, 2].map((i) => ({ i, p: moodPuppet(S, pl, c, sadducee(i)), seed: c.rr(0, 9) }));
@@ -89,8 +91,8 @@ export default {
 
       /* v24 — the two plates */
       const pk = es(t, 0.15, 0.55, ease.out) * (1 - es(t, 0.95, 1.2, ease.in));
-      pose(plA, { x: 540, y: lerp(-800, 250, pk), r: Math.sin(T * 0.9) * 1.5 });
-      pose(plB, { x: 1060, y: lerp(-800, 250, es(t, 0.3, 0.7, ease.out) * (1 - es(t, 0.95, 1.2, ease.in))), r: Math.sin(T * 0.8 + 1) * 1.5 });
+      pose(plA, { x: PLX[0], y: lerp(-800, 250, pk), r: Math.sin(T * 0.9) * 1.5 });
+      pose(plB, { x: PLX[1], y: lerp(-800, 250, es(t, 0.3, 0.7, ease.out) * (1 - es(t, 0.95, 1.2, ease.in))), r: Math.sin(T * 0.8 + 1) * 1.5 });
 
       /* v25 — angels, the light of heaven; rings float away */
       const hv = es(t, 1.05, 1.45) * (1 - es(t, 1.9, 2.15));

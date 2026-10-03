@@ -10,6 +10,8 @@ import { TWELVE, LOOK, saltBowl, saltGrains, flame, dove, flapWings, question, s
 const PI = Math.PI;
 const P = 0.45;
 const FIRE = [800, 700];
+// phone: the circle drawn in, so the outermost are not sliced by the frame and the thread
+const RING_P = [[594, 0.84, false, 'sit'], [650, 0.86, false, 'sit'], [702, 0.9, false, 'kneel'], [898, 0.9, true, 'kneel'], [948, 0.86, true, 'sit'], [998, 0.84, true, 'sit'], [1048, 0.8, true, 'sit'], [546, 0.8, false, 'sit']];
 const RING = [[560, 0.84, false, 'sit'], [630, 0.86, false, 'sit'], [690, 0.9, false, 'kneel'], [910, 0.9, true, 'kneel'], [970, 0.86, true, 'sit'], [1040, 0.84, true, 'sit'], [1110, 0.8, true, 'sit'], [490, 0.8, false, 'sit']];
 
 export default {
@@ -40,7 +42,7 @@ export default {
 
     /* ---------- the circle: Jesus and the disciples ---------- */
     const mainL = S.layer({ par: P, sh: 5 });
-    const DIS = RING.map(([x, s, flip, pose_], i) => ({ x, s, flip, pose_, i, o: TWELVE[i].o, seed: c.rr(0, 9) }));
+    const DIS = (S.portrait ? RING_P : RING).map(([x, s, flip, pose_], i) => ({ x, s, flip, pose_, i, o: TWELVE[i].o, seed: c.rr(0, 9) }));
     DIS.forEach((d) => { d.p = S.puppet(mainL.add(person(c, { ...d.o, pose: d.pose_ }))); });
     const jesus = S.puppet(mainL.add(person(c, { ...CAST.jesus, pose: 'sit' })));
     const child = S.puppet(mainL.add(person(c, { ...LOOK.child, pose: 'sit' })));

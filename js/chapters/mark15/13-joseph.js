@@ -21,11 +21,19 @@ export default {
     { v: 44, cont: true, text: 'Kazał przywołać setnika i pytał go, czy już dawno umarł.' },
     { v: 45 },
   ],
-  cam: { x: [-60, 200], y: [-20, 60], z: [1, 1.14] },
+  cam: { x: [-60, 360], y: [-20, 60], z: [1, 1.14] },
   build(S) {
     const c = S.c;
     const H = hallSet(S, { evening: true });
     const P = H.charL;
+    // phone: the judgement seat, dais and standards (and Pilate with them) stand 60 further left, clear of the thread;
+    // the eagle standard goes out past the edge instead of standing under the thread beside the centurion
+    const PX = S.portrait ? -60 : 0;
+    if (PX) {
+      H.props.shift(PX, 0);
+      const eagle = H.props.el.querySelector('g[transform="translate(1236 612)"]');
+      if (eagle) eagle.setAttribute('transform', `translate(${1300 - PX} 612)`);
+    }
     const pil = S.puppet(P.add(pilate(c, { pose: 'sit' })));
     const jos = S.puppet(P.add(person(c, LOOK.joseph)));
     const cen = S.puppet(P.add(centurion(c)));
@@ -71,12 +79,12 @@ export default {
       const marvel = es(t, 4.05, 4.3) * (1 - es(t, 4.9, 5.1));
       const call = es(t, 5.05, 5.3) * (1 - es(t, 5.9, 6.1));
       const give = es(t, 6.05, 6.3);
-      pil.set({ x: 1116, y: 566, s: 1, flip: true, armF: 30 + marvel * 30 + call * 60 + give * 50, armB: 10 + marvel * 110 + call * 20, lean: marvel * 6, head: -4 - marvel * 6 + call * 4, blink: blinkAt(T, 1) });
-      const [phx, phy] = headAt(1116, 566, 1, true, 62);
+      pil.set({ x: 1116 + PX, y: 566, s: 1, flip: true, armF: 30 + marvel * 30 + call * 60 + give * 50, armB: 10 + marvel * 110 + call * 20, lean: marvel * 6, head: -4 - marvel * 6 + call * 4, blink: blinkAt(T, 1) });
+      const [phx, phy] = headAt(1116 + PX, 566, 1, true, 62);
       const wk = es(t, 4.1, 4.35, ease.back) * (1 - es(t, 4.9, 5.05));
       pose(wow, { x: phx - 22, y: phy - 24, s: wk, o: wk > 0.02 ? 1 : 0 });
       /* the centurion is called */
-      const cK = [[5.0, [1480, GY - 6]], [5.5, [1290, GY - 6]]];
+      const cK = [[5.0, [1480, GY - 6]], [5.5, [S.portrait ? 1150 : 1290, GY - 6]]];
       const [cx, cy] = kf(t, cK);
       const nod = bump(t, 6.05, 6.35);
       cen.set({ x: cx, y: cy, s: 1, flip: true, walk: moving(t, cK) ? cx * 0.06 : undefined, armF: 30, armB: 10 + nod * 20, head: nod * 14, o: es(t, 5.0, 5.1), blink: blinkAt(T, 5) });
@@ -86,7 +94,7 @@ export default {
       const yk = es(t, 6.05, 6.25, ease.back) * (1 - es(t, 6.8, 6.95));
       pose(yes, { x: chx - 16, y: chy - 24, s: yk, o: yk > 0.02 ? 1 : 0 });
       /* the permission passes from Pilate's hand to Joseph's */
-      const [pax, pay] = hand(1116, 566, 1, true, 30 + give * 50, 0, 62);
+      const [pax, pay] = hand(1116 + PX, 566, 1, true, 30 + give * 50, 0, 62);
       const [jax, jay] = hand(jx, jy, 1.04, false, 14 + receive * 40);
       const pass = es(t, 6.35, 6.7);
       pose(perm, { x: lerp(pax, jax, pass), y: lerp(pay, jay, pass) - Math.sin(pass * PI) * 40, r: -10, o: give > 0.02 ? 1 : 0 });
@@ -94,7 +102,7 @@ export default {
       S.cam.x = es(t, 0.8, 1.5) * -30 + es(t, 3.0, 3.6) * 100;
       S.cam.y = 10 + es(t, 3.0, 3.6) * 20;
       S.cam.z = 1.02 + es(t, 3.0, 3.6) * 0.06;
-      if (S.portrait) S.cam.x += 70;
+      if (S.portrait) S.cam.x += 70 + es(t, 4.9, 5.4) * 60;   // phone: the called centurion comes into the frame
     };
   },
 };

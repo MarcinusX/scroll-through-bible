@@ -117,7 +117,8 @@ export default {
         fade(l.glow, lit);
         swing(l.el, l.x, FLOOR - 270, T, 1.4, 0.9, i);
       });
-      pose(sign, { x: 470, y: FLOOR + 30, o: es(t, 2.3, 2.5), s: 1 });
+      pose(sign, { x: S.portrait ? 590 : 470, y: FLOOR + 30,   // phone: the signpost stands inside the screen
+      o: es(t, 2.3, 2.5), s: 1 });
 
       S.cam.x = -20 + es(t, 0, 0.7) * 20 + lookR * 60 * (1 - lookUp) + lookFar * 60 - es(t, 2.45, 2.98) * 60;
       S.cam.y = 10 - lookUp * 50 + es(t, 2.45, 2.98) * 20;

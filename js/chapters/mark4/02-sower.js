@@ -27,13 +27,15 @@ export default {
   cam: { x: [camFor(PATCH.path) - 20, camFor(PATCH.good) + 20], y: [0, 110], z: [0.8, 1.3] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;
+    const SUNX = P ? 1010 : 1180, HEATX = P ? 180 : 330;   // phone: the sun clear of the progress thread
     const MORNING = ['#e6dcc4', '#f5e9d0', '#f8eedc'];
     const NOON = ['#f0cf9f', '#f7dcb0', '#f9e9cc'];
     const sk = sky(S, MORNING);
 
     const hangL = S.layer({ par: 0.04, sh: 5 });
     const sunGlow = hangL.add(`<circle r="170" fill="url(#warm-glow)" opacity="0"/>`);
-    const sunEl = hanging(hangL, sun(c, 50), { x: 1180, y: 190, len: 700 });
+    const sunEl = hanging(hangL, sun(c, 50), { x: SUNX, y: 190, len: 700 });
     const cl1 = hanging(hangL, cloud(c, 190), { x: 420, y: 170, len: 700 });
     const cl2 = hanging(hangL, cloud(c, 130), { x: 820, y: 120, len: 700 });
 
@@ -162,7 +164,7 @@ export default {
       return stops[0][1];
     };
     const camX = (t) => {
-      const keys = [[0, PATCH.path], [3.0, PATCH.path], [3.35, PATCH.rocky], [5.0, PATCH.rocky], [5.32, PATCH.thorns], [7.0, PATCH.thorns], [7.3, PATCH.good], [8.45, PATCH.good], [8.95, 800]];
+      const keys = [[0, PATCH.path], [3.0, PATCH.path], [3.35, PATCH.rocky], [5.0, PATCH.rocky], [5.32, PATCH.thorns], [7.0, PATCH.thorns], [7.3, PATCH.good], [8.45, PATCH.good], [8.95, P ? PATCH.good - 120 : 800]];   // phone: the harvest stays in view
       for (let i = keys.length - 1; i >= 0; i--) if (t >= keys[i][0]) { const nx = keys[i + 1]; return nx ? lerp(camFor(keys[i][1]), camFor(nx[1]), ease.io(seg(t, keys[i][0], nx[0]))) : camFor(keys[i][1]); }
       return camFor(keys[0][1]);
     };
@@ -172,9 +174,9 @@ export default {
       const hot = es(t, 4, 4.5) * (1 - es(t, 5, 5.6) * 0.7);
       sk.blend(MORNING, NOON, Math.max(hot, es(t, 7.5, 8.5) * 0.4));
       const sunY = 190 - es(t, 4, 4.5) * 40, sunS = 1 + hot * 0.7;
-      swing(sunEl, 1180 - hot * 330, sunY, time, 1.2, 0.7);
+      swing(sunEl, SUNX - hot * HEATX, sunY, time, 1.2, 0.7);
       pose(sunEl.querySelector('.obj'), { s: sunS });
-      pose(sunGlow, { x: 1180 - hot * 330, y: sunY, s: 1 + hot * 1.6, o: hot * 0.9 });
+      pose(sunGlow, { x: SUNX - hot * HEATX, y: sunY, s: 1 + hot * 1.6, o: hot * 0.9 });
       swing(cl1, 420 + Math.sin(time * 0.12) * 30, 170, time, 1.4, 0.6, 1);
       swing(cl2, 820 + Math.sin(time * 0.1 + 1) * 30, 120 - hot * 200, time, 1.4, 0.8, 2);
 

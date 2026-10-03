@@ -51,6 +51,10 @@ export default {
   cam: { x: [-20, 20], y: [-40, 40], z: [1, 1.08] },
   build(S) {
     const c = S.c;
+    // phone: the sun clear of the thread; this generation and the four closed up round Jesus; the angels
+    // inside the screen, above the scroll
+    const PH = S.portrait;
+    const SUNX = PH ? 1040 : 1180;
     const DAY = ['#bcd8d8', '#eaeccd', '#f7ecd0'];
     const STAGE = ['#1f1a1c', '#2a2226', '#3a2e2c'];
     const sk = sky(S, DAY);
@@ -73,7 +77,7 @@ export default {
     clothL.add(cloth.out());
     clothL.add(sheet().p(c.cut(c.rect(-1400, 506, 4400, 26), 0.3, 20), C.wood2).p(c.cut(c.rect(-1400, 510, 4400, 8), 0.2, 20), C.wood3).out());
     const hangL = S.layer({ par: 0.05, sh: 4 });
-    const sunEl = hanging(hangL, sun(c, 46), { x: 1180, y: 170, len: 700 });
+    const sunEl = hanging(hangL, sun(c, 46), { x: SUNX, y: 170, len: 700 });
     const cls = [[560, 150, 180], [900, 110, 140]].map(([x, y, w], i) => ({ x, y, i, el: hanging(hangL, cloud(c, w), { x, y, len: 700 }) }));
 
     /* the earth: ground rows that sink away */
@@ -97,8 +101,8 @@ export default {
       { o: woman(c, { hair: C.greyHair }), x: 1070, s: 0.88 },
       { o: man(c), x: 1130, s: 0.92 },
       { o: crowdPerson(c, { hairStyle: 'curly', beard: 'none' }), x: 1180, s: 0.6 },
-    ].map((g, i) => ({ ...g, i, seed: c.rr(0, 9), p: S.puppet(P.add(person(c, g.o))) }));
-    const pos = [600, 670, 930, 1000];
+    ].map((g, i) => ({ ...g, x: PH ? [500, 548, 588, 1008, 1052, 1084][i] : g.x, i, seed: c.rr(0, 9), p: S.puppet(P.add(person(c, g.o))) }));
+    const pos = PH ? [628, 692, 908, 972] : [600, 670, 930, 1000];
     const four = FOUR.map((f, i) => ({ ...f, i, x: pos[i], flip: pos[i] > 800, seed: c.rr(0, 9), p: S.puppet(P.add(person(c, f.o))) }));
     const J = S.puppet(P.add(person(c, { ...CAST.jesus })));
     const voice = voiceRings(P, c, { n: 3, r: 26, w: 4 });
@@ -111,7 +115,7 @@ export default {
     const scrollEl = fx.add(`<g>${wordsScroll(c, SW, SH)}</g>`);
     const rodL = fx.add(`<g>${rod(c, SH)}</g>`), rodR = fx.add(`<g>${rod(c, SH)}</g>`);
     const day = fx.add(`<g><path d="M0 -1500V-52" stroke="rgba(240,220,190,.5)" stroke-width="1.2"/><circle r="120" fill="url(#halo-glow)"/>${sealedDay(c)}</g>`);
-    const angels = [[470, 380, false], [1130, 360, true]].map(([x, y, flip], i) => ({ x, y, flip, i, p: S.puppet(fx.add(angel(c))), q: fx.add(`<g>${question(c)}</g>`) }));
+    const angels = (PH ? [[560, 200, false], [1040, 190, true]] : [[470, 380, false], [1130, 360, true]]).map(([x, y, flip], i) => ({ x, y, flip, i, p: S.puppet(fx.add(angel(c))), q: fx.add(`<g>${question(c)}</g>`) }));
     const sonQ = fx.add(`<g>${question(c)}</g>`);
 
     return (t, time) => {
@@ -123,14 +127,14 @@ export default {
       clothL.shift(0, -roll * 1500);
       [farL, midL, nearL].forEach((L, i) => { L.shift(0, sink[i] * 900); });
       stageFloor.shift(0, (1 - es(t, 1.5, 1.95)) * 700);
-      pose(sunEl, { x: 1180, y: 170 - roll * 700, r: Math.sin(T * 0.7) });
+      pose(sunEl, { x: SUNX, y: 170 - roll * 700, r: Math.sin(T * 0.7) });
       cls.forEach((cl) => pose(cl.el, { x: cl.x, y: cl.y - es(t, 1.0, 1.5, ease.in) * 700, r: Math.sin(T * 0.6 + cl.i) * 1.3 }));
       fatherL.fade(es(t, 3.05, 3.45));
 
       /* this generation: stands round him (beat 0), fades with the world (beat 1) */
       GEN.forEach((g) => {
         const k = es(t, -0.3 + g.i * 0.05, 0.3 + g.i * 0.05);
-        const gone = es(t, 1.3 + g.i * 0.04, 1.7 + g.i * 0.04);
+        const gone = PH ? es(t, 1.3, 1.6) : es(t, 1.3 + g.i * 0.04, 1.7 + g.i * 0.04);   // phone: all gone by the rest point (no ghosts at the edge)
         g.p.set({ x: g.x, y: GY + (g.i % 2) * 5 + gone * 60, s: g.s, flip: g.x > 800, o: k * (1 - gone), head: -4, blink: blinkAt(T, g.seed) });
       });
       const dim = es(t, 1.3, 1.8);

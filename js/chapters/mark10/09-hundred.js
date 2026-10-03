@@ -41,6 +41,9 @@ export default {
   cam: { x: [-30, 30], y: [-60, 30], z: [1, 1.1] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;
+    // phone: the card of the lake, the row of cards, the storms, the disciples, the gate and the queue close in
+    const MEMX = P ? 960 : 1080, PX = P ? 905 : 940, GATEX = P ? 1045 : 1165;
     const R = roadSet(S, { jer: 0.32, jerX: 1190, roadX: 820, trees: 16, clouds: [[470, 140, 160], [1080, 110, 110]] });
     // the dawn of the age to come, behind the far hills
     const dawnL = S.layer({ par: 0.06, sh: 1, flat: true });
@@ -53,7 +56,7 @@ export default {
     const hangL = S.layer({ par: 0.3, sh: 5 });
     const b = boat(c, { mast: true });
     const memInner = sheet().p(c.cut(c.rect(-110, 0, 220, 140), 0.6, 7), C.cream).p(c.cut(c.rect(-102, 8, 204, 124), 0.4, 7), mix(C.parchment, C.dune, 0.35)).p(c.cut([[-102, 84], [102, 80], [102, 132], [-102, 132]], 0.4, 7), mix(C.lake, C.parchment, 0.45)).out();
-    const memory = hanging(hangL, `<g>${memInner}<g transform="translate(-20 104) scale(.34)">${b.back}${b.front}</g><g transform="translate(30 80)">${house(c, 26, 0, 40, 30, { stairs: false })}</g></g>`, { x: 1080, y: 150, len: 800 });
+    const memory = hanging(hangL, `<g>${memInner}<g transform="translate(-20 104) scale(.34)">${b.back}${b.front}</g><g transform="translate(30 80)">${house(c, 26, 0, 40, 30, { stairs: false })}</g></g>`, { x: MEMX, y: 150, len: 800 });
     const ICONS = [
       `<g transform="translate(-20 0)">${house(c, 0, 0, 40, 32, { stairs: false })}</g>`,
       `<g transform="translate(-12 0) scale(.62)">${doll(c, C.dustyBlue)}</g><g transform="translate(12 0) scale(.62)">${doll(c, C.sageRobe)}</g>`,
@@ -63,7 +66,7 @@ export default {
       `<g transform="translate(-12 0) scale(.45)">${doll(c, C.wheatRobe)}</g><g transform="translate(12 0) scale(.45)">${doll(c, C.peach, { woman: true, skin: C.skin })}</g>`,
       field(c),
     ];
-    const XS = [500, 605, 710, 815, 920, 1025, 1130];
+    const XS = P ? [505, 597, 689, 781, 873, 965, 1057] : [500, 605, 710, 815, 920, 1025, 1130];
     const CARDS = ICONS.map((icon, i) => {
       const one = card(c, icon);
       let fan = '';
@@ -72,18 +75,18 @@ export default {
       return { el, fan: el.querySelector('.fan'), i, x: XS[i] };
     });
     const times = hangL.add(`<g opacity="0">${slip(c, tr('× 100', '× 100'), { size: 30 })}</g>`);
-    const storms = [[470, 170], [1180, 190]].map(([x, y], i) => ({ el: hanging(hangL, `<g transform="scale(.5)">${stormCloud(c, 220)}</g><g transform="translate(0 40) scale(.55)">${thornCrown(c, 40, C.storm2)}</g>`, { x, y, len: 800 }), x, y, i }));
+    const storms = (P ? [[530, 150], [1035, 160]] : [[470, 170], [1180, 190]]).map(([x, y], i) => ({ el: hanging(hangL, `<g transform="scale(.5)">${stormCloud(c, 220)}</g><g transform="translate(0 40) scale(.55)">${thornCrown(c, 40, C.storm2)}</g>`, { x, y, len: 800 }), x, y, i }));
 
     /* verse 31: a line of paper dolls walks to a gate of light — then the line turns round */
     const qL = S.layer({ par: 0.3, sh: 4 });
-    const gateEl = hanging(qL, `<g><circle cy="-60" r="90" fill="url(#halo-glow)"/>${sheet().p(c.cut([[-30, 0], [-30, -90], ...c.arc(0, -90, 30, 26, Math.PI, 2 * Math.PI, 10), [30, 0]], 0.4, 5), C.sun).x(c.cut([[-20, 0], [-20, -88], ...c.arc(0, -88, 20, 18, Math.PI, 2 * Math.PI, 10), [20, 0]], 0.3, 4), '#fff6d6').out()}</g>`, { x: 1165, y: 360, len: 800 });
+    const gateEl = hanging(qL, `<g><circle cy="-60" r="90" fill="url(#halo-glow)"/>${sheet().p(c.cut([[-30, 0], [-30, -90], ...c.arc(0, -90, 30, 26, Math.PI, 2 * Math.PI, 10), [30, 0]], 0.4, 5), C.sun).x(c.cut([[-20, 0], [-20, -88], ...c.arc(0, -88, 20, 18, Math.PI, 2 * Math.PI, 10), [20, 0]], 0.3, 4), '#fff6d6').out()}</g>`, { x: GATEX, y: 360, len: 800 });
     const DOLLC = [C.dustyBlue, C.roseRobe, C.sageRobe, C.ochreRobe, C.lavender, C.tealRobe, C.wheatRobe, C.mauve];
     const QUEUE = DOLLC.map((col, i) => ({ i, el: hanging(qL, `<g class="d">${doll(c, col, { woman: i % 2 === 1, h: 74, skin: [C.skin, C.skin2, C.skin3][i % 3] })}</g><g transform="translate(0 -104)">${slip(c, String(i + 1), { size: 17, w: 28 })}</g>`, { x: 0, y: 0, len: 800 }) }));
-    QUEUE.forEach((m) => { m.d = m.el.querySelector('.d'); m.x = 1080 - m.i * 70; });
+    QUEUE.forEach((m) => { m.d = m.el.querySelector('.d'); m.x = P ? 965 - m.i * 63 : 1080 - m.i * 70; });
 
     /* people */
     const pL = S.layer({ par: 0.5, sh: 5 });
-    const DIS = [3, 1, 2, 6].map((k, i) => ({ i, p: S.puppet(pL.add(person(c, TWELVE[k].o))), seed: c.rr(0, 9), x: 1020 + i * 58, y: GY - 36 + (i % 2) * 14 }));
+    const DIS = [3, 1, 2, 6].map((k, i) => ({ i, p: S.puppet(pL.add(person(c, TWELVE[k].o))), seed: c.rr(0, 9), x: P ? 952 + i * 36 : 1020 + i * 58, y: GY - 36 + (i % 2) * 14 }));
     const peter = S.puppet(pL.add(person(c, TWELVE[0].o)));
     const jesus = S.puppet(pL.add(person(c, { ...CAST.jesus })));
     const wordL = S.layer({ par: 0.5, sh: 6 });
@@ -100,10 +103,10 @@ export default {
 
       /* beat 0: Peter — we have left everything (the boat, the nets, the house) */
       const pk = es(t, 0.02, 0.3) * (1 - es(t, 0.9, 1.1));
-      peter.set({ x: 940, y: GY, s: 0.98, flip: true, armF: 18 + pk * 60, armB: pk * 110, head: -pk * 4, blink: blinkAt(T, 3) });
-      pose(left, { x: 920, y: GY - 212, s: es(t, 0.05, 0.3, ease.back), o: t > 0.05 && t < 1.1 ? 1 - es(t, 0.95, 1.1) : 0 });
+      peter.set({ x: PX, y: GY, s: 0.98, flip: true, armF: 18 + pk * 60, armB: pk * 110, head: -pk * 4, blink: blinkAt(T, 3) });
+      pose(left, { x: PX - 20, y: GY - 212, s: es(t, 0.05, 0.3, ease.back), o: t > 0.05 && t < 1.1 ? 1 - es(t, 0.95, 1.1) : 0 });
       const mem = es(t, 0.15, 0.5, ease.back) * (1 - es(t, 0.95, 1.2));
-      swing(memory, 1080, 150 - (1 - mem) * 1100, T, 1, 0.7, 1);
+      swing(memory, MEMX, 150 - (1 - mem) * 1100, T, 1, 0.7, 1);
       DIS.forEach((d) => d.p.set({ x: d.x, y: d.y, s: 0.86, flip: true, head: -3 - eternal * 6, armF: 10 + eternal * 30, blink: blinkAt(T, d.seed) }));
 
       /* Jesus answers */
@@ -122,18 +125,18 @@ export default {
       storms.forEach((st) => swing(st.el, st.x, st.y - (1 - es(t, 2.4, 2.7)) * 1100 - rise * 1100, T, 2, 1, st.i));
 
       /* beat 3: eternal life in the age to come — a great dawn */
-      pose(dawn, { x: 1000, y: 470, s: 0.5 + eternal * 0.6, r: t * 6, o: eternal * (1 - es(t, 3.9, 4.3) * 0.75) });
+      pose(dawn, { x: P ? 930 : 1000, y: 470, s: 0.5 + eternal * 0.6, r: t * 6, o: eternal * (1 - es(t, 3.9, 4.3) * 0.75) });
 
       /* beat 4: the line of dolls: No. 1 is nearest the gate… then the whole line turns round */
       const q = es(t, 3.9, 4.25, ease.back);
       const turn = es(t, 4.4, 4.75);
-      swing(gateEl, 1165, 360 - (1 - q) * 1100, T, 0.8, 0.6, 5);
+      swing(gateEl, GATEX, 360 - (1 - q) * 1100, T, 0.8, 0.6, 5);
       QUEUE.forEach((m) => {
-        const x = lerp(m.x, 1600 - m.x + 110, turn) + 10;
+        const x = lerp(m.x, (P ? 1488 : 1710) - m.x, turn) + 10;
         swing(m.el, x, 372 - (1 - q) * 1100 - Math.sin(turn * Math.PI) * 26, T, 1.6, 0.9, m.i);
         pose(m.d, { sx: Math.cos(turn * Math.PI) >= 0 ? Math.max(0.15, Math.abs(Math.cos(turn * Math.PI))) : -Math.max(0.15, Math.abs(Math.cos(turn * Math.PI))) });
       });
-      pose(dawnSun, { x: 1000, y: 470 - eternal * 60 + es(t, 3.9, 4.4) * 140, o: eternal });
+      pose(dawnSun, { x: P ? 930 : 1000, y: 470 - eternal * 60 + es(t, 3.9, 4.4) * 140, o: eternal });
 
       S.cam.y = -es(t, 0.9, 1.3) * 30 + es(t, 3.8, 4.2) * 20;
       S.cam.z = 1 + es(t, 1.9, 2.3) * 0.02 + es(t, 3.8, 4.2) * 0.02;

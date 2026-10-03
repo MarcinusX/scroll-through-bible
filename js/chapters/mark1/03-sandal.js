@@ -23,6 +23,7 @@ export default {
   cam: { x: [-40, 60], y: [0, 80], z: [1, 1.22] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;   // phone: the listeners sit closer together, inside the screen
     const SKY = ['#d4dfd6', '#f3e2c2', '#f6e3c4'];
     sky(S, SKY);
     const goldSky = sky(S, ['#f3cf8f', '#f8dfae', '#fbecc9'], { name: 'gold' }).layer;
@@ -67,13 +68,13 @@ export default {
       { robe: C.sageRobe, hairStyle: 'curly', hair: C.hair3, beard: 'full', skin: C.skin4, pose: 'sit', x: 492, y: GY + 10 },
       { robe: C.ochreRobe, hairStyle: 'short', hair: C.hair, beard: 'short', skin: C.skin2, pose: 'sit', x: 580, y: GY + 2 },
       { robe: C.tealRobe, mantle: C.stone, hairStyle: 'wrap', veil: C.linen2, beard: 'full', beardColor: C.greyHair, skin: C.skin3, pose: 'stand', x: 318, y: GY - 6, s: 0.92 },
-    ].map((o, i) => ({ ...o, p: S.puppet(P.add(person(c, o))), i, seed: c.rr(0, 9) }));
+    ].map((o, i) => (PH ? { ...o, x: [566, 624, 682, 512][i] } : o)).map((o, i) => ({ ...o, p: S.puppet(P.add(person(c, o))), i, seed: c.rr(0, 9) }));
     const shellM = `<g data-k="shell" transform="rotate(-20)">${shell(c, 15)}</g>`;
     const john = S.puppet(P.add(person(c, { ...JOHN_B, holdF: shellM })));
     const shellEl = S.$('shell');
     const johnK = S.puppet(P.add(person(c, { ...JOHN_B, pose: 'kneel' })));
     const voice = voiceRings(P, c, { n: 3, color: C.clay, r: 38, w: 5 });
-    const water = Array.from({ length: 9 }, (_, i) => ({ el: P.add(`<g>${drops(c, 1, i % 2 ? C.lake2 : C.lake)}</g>`), i, tx: 390 + (i % 4) * 70 + c.rr(-20, 20), ty: GY - 110 + c.rr(-10, 10) }));
+    const water = Array.from({ length: 9 }, (_, i) => ({ el: P.add(`<g>${drops(c, 1, i % 2 ? C.lake2 : C.lake)}</g>`), i, tx: (PH ? 520 : 390) + (i % 4) * (PH ? 50 : 70) + c.rr(-20, 20), ty: GY - 110 + c.rr(-10, 10) }));
     const flames = LIS.map((l) => ({ el: P.add(`<g>${flame(c, 28)}</g>`), l }));
     const jFlame = P.add(`<g>${flame(c, 30)}</g>`);
 
@@ -115,7 +116,7 @@ export default {
 
       const toSandal = es(t, 1.08, 1.34), back = es(t, 2.02, 2.3);
       const kneel = es(t, 1.36, 1.42) * (1 - es(t, 2.0, 2.06));
-      const jx = lerp(JX, KX, toSandal) - back * 20;
+      const jx = lerp(PH ? 748 : JX, KX, toSandal) - back * 20;
       const preach = es(t, -0.2, 0.15) * (1 - es(t, 0.3, 0.45));
       const point = es(t, 0.35, 0.6) * (1 - es(t, 1.05, 1.2));
       const pour = es(t, 2.15, 2.4) * (1 - es(t, 2.95, 3.1));
@@ -173,8 +174,8 @@ export default {
         });
       });
 
-      S.cam.z = 1.12 + es(t, 1.0, 1.4) * 0.08 - es(t, 1.95, 2.3) * 0.08 + spirit * 0.02;
-      S.cam.x = es(t, 1.0, 1.4) * 50 * (1 - es(t, 1.95, 2.3));
+      S.cam.z = (PH ? 1.02 : 1.12) + es(t, 1.0, 1.4) * 0.08 - es(t, 1.95, 2.3) * 0.08 + spirit * 0.02;
+      S.cam.x = es(t, 1.0, 1.4) * (PH ? 0 : 50) * (1 - es(t, 1.95, 2.3));
       S.cam.y = 70 - es(t, 1.0, 1.4) * 30 * (1 - es(t, 1.95, 2.3)) - spirit * 20;
     };
   },

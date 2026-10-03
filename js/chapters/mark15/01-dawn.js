@@ -32,7 +32,7 @@ export default {
     { v: 1, text: 'Zaraz wczesnym rankiem arcykapłani wraz ze starszymi i uczonymi w Piśmie i cała Wysoka Rada powzięli uchwałę.' },
     { v: 1, cont: true, text: 'Kazali Jezusa związanego odprowadzić' },
   ],
-  cam: { x: [0, 170], y: [-30, 60], z: [1, 1.12] },
+  cam: { x: [0, 400], y: [-30, 60], z: [1, 1.12] },
   build(S) {
     const c = S.c;
     const DAWN = SKIES.dawn;
@@ -129,7 +129,7 @@ export default {
         m.p.set({ x: m.x, y: m.y, s: m.s, flip: m.flip, armB: 20 + up * 80, armF: 20 + up * 88 + turn * 10, head: -4 + up * -6 + bump(t, 2.3, 3) * 6, blink: blinkAt(T, m.seed) });
       });
       const speak = bump(t, 1.0, 1.6);
-      const hpK = [[1.0, [620, 672]], [1.3, [640, 668]], [2.2, [640, 668]], [2.6, [600, 672]]];
+      const hpK = [[1.0, [620, 672]], [1.3, [640, 668]], [2.2, [640, 668]], [2.6, [S.portrait ? 560 : 600, 672]]];   // phone: he steps out of the frame rather than being sliced by it as the camera follows the guards
       const [hx, hy] = kf(t, hpK);
       hp.set({ x: hx, y: hy, s: 0.98, flip: false, walk: moving(t, hpK) ? hx * 0.06 : undefined, armF: 30 + speak * 50 + es(t, 1.45, 1.7) * 30 * (1 - es(t, 2.1, 2.4)), armB: 10 + es(t, 1.35, 1.6) * 90 * (1 - es(t, 2.05, 2.3)), head: -4, blink: blinkAt(T, 2) });
       // the decree is sealed above them
@@ -155,7 +155,7 @@ export default {
       const d = Math.hypot(bx - ax, by - ay);
       pose(rope, { x: ax, y: ay, r: (Math.atan2(by - ay, bx - ax) * 180) / PI, sx: d / 100, o: bind * (d > 12 ? 1 : 0) });
 
-      S.cam.x = es(t, 2.3, 2.95) * 160;
+      S.cam.x = es(t, 2.3, 2.95) * (S.portrait ? 380 : 160);   // phone: follow far enough to keep the guard who leads Him off the thread
       S.cam.z = 1 + es(t, 0.6, 1.4) * 0.04 + es(t, 2.2, 2.9) * 0.06;
       S.cam.y = es(t, 0.6, 1.4) * 20 + es(t, 2.2, 2.9) * 30;
     };

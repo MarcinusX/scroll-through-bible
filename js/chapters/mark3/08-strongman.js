@@ -54,7 +54,8 @@ export default {
     const sk = sky(S, DUSK);
     const hangL = S.layer({ par: 0.04, sh: 3 });
     const starsEl = hangL.add(`<g>${stars(c, { x0: -500, x1: 2100, y0: -200, y1: 330, n: 50 })}</g>`);
-    const moonEl = hanging(hangL, moon(c, 28), { x: 470, y: 170, len: 600 });
+    const MOONX = S.portrait ? 540 : 470;   // phone: the moon clear of the frame
+    const moonEl = hanging(hangL, moon(c, 28), { x: MOONX, y: 170, len: 600 });
 
     S.layer({ par: 0.1, sh: 2 }).add(band(c, { y: 470, amps: [24, 9, 3], lens: [900, 300, 120], color: mix(C.hillFar, C.duskViolet, 0.4) }).markup);
     const mid = S.layer({ par: 0.2, sh: 3 });
@@ -117,7 +118,7 @@ export default {
       const dawn = es(t, 2.1, 2.9);
       sk.blend(DUSK, DAWN, dawn);
       fade(starsEl, 1 - dawn);
-      swing(moonEl, 470, 170 - dawn * 300, T, 1, 0.5);
+      swing(moonEl, MOONX, 170 - dawn * (S.portrait ? 750 : 300), T, 1, 0.5);
 
       /* beat 0: the stronger one comes — the giant blocks the door */
       const walkIn = es(t, 0.05, 0.45);

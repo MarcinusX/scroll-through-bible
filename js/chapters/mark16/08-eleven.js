@@ -30,11 +30,12 @@ export default {
     const PL = S.layer({ par: 0.5, sh: 5 });
     const gl = PL.add(`<g opacity="0">${glory(c, 160, 18)}</g>`);
     const jesus = S.puppet(PL.add(person(c, { ...CAST.jesus })));
-    const XS = [420, 490, 560, 630, 700, 900, 970, 1040, 1110, 1180, 1250];
+    // phone: the table row drawn closer (and a touch smaller), so all eleven are on the screen
+    const XS = S.portrait ? [498, 544, 590, 636, 682, 728, 892, 938, 984, 1030, 1076] : [420, 490, 560, 630, 700, 900, 970, 1040, 1110, 1180, 1250];
     const order = [4, 5, 3, 6, 2, 7, 1, 8, 0, 9, 10]; // Peter nearest the middle
     const M = ELEVEN.map((m, i) => {
       const x = XS[order[i]];
-      return { ...m, i, x, flip: x > JX, s: 0.9, y: SEAT - (order[i] % 2) * 6, seed: c.rr(0, 9), p: S.puppet(PL.add(person(c, { ...m.o, pose: 'sit' }))) };
+      return { ...m, i, x, flip: x > JX, s: S.portrait ? 0.84 : 0.9, y: SEAT - (order[i] % 2) * 6, seed: c.rr(0, 9), p: S.puppet(PL.add(person(c, { ...m.o, pose: 'sit' }))) };
     }).sort((a, b) => a.y - b.y);
     const tabL = S.layer({ par: 0.52, sh: 5 });
     tabL.add(`<g transform="translate(${JX} ${TABLE_Y})">${lowTable(c, 920, 50)}</g>`);

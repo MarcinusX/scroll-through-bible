@@ -25,6 +25,7 @@ export default {
   cam: { x: [CAM0, CAM1], y: [0, 60], z: [1, 1.12] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;
     const R = roadSet(S, { road: false, jer: 0.05, jerX: 1190, trees: 26, hillCol: mix(C.hillMid, C.sage2, 0.3), clouds: [[330, 150, 200], [900, 110, 150], [1450, 200, 170]], sunAt: [1300, 160] });
     const birds = flock(S, R.hangL, 4, (cc) => bird(cc, { color: C.bird }), { y: 240, speed: 50, scale: 0.5 });
 
@@ -63,7 +64,7 @@ export default {
     const TAGS = [
       { text: tr('Galilea', 'Galilee'), x: 640, y: 250, on: [-1, -0.5], off: [1.1, 1.4] },
       { text: tr('Judea', 'Judea'), x: 800, y: 265, on: [1.15, 1.45], off: [9, 9] },
-      { text: tr('Zajordanie', 'Beyond the Jordan'), x: 1085, y: 240, on: [1.35, 1.65], off: [9, 9] },
+      { text: tr('Zajordanie', 'Beyond the Jordan'), x: P ? 1030 : 1085, y: 240, on: [1.35, 1.65], off: [9, 9] },
     ].map((g) => ({ ...g, el: hanging(tagL, slip(c, g.text, { size: 26 }), { x: g.x, y: g.y, len: 700 }) }));
 
     // the crowd that gathers
@@ -73,6 +74,9 @@ export default {
       { y: 634, s: 0.56, n: 7, x0: WALK1 + 110, x1: WALK1 + 440 },
       { y: 624, s: 0.52, n: 5, x0: WALK1 - 470, x1: WALK1 - 300 },
     ]);
+    // phone: the listeners on the right close in, clear of the progress thread
+    const squeeze = (m) => { if (P && m.x > WALK1) m.x = WALK1 + (m.x - WALK1) * 0.72; };
+    people.forEach(squeeze);
     people.forEach((m) => { m.from = m.x < WALK1 ? m.x - c.rr(420, 700) : m.x + c.rr(420, 700); });
 
     // Jesus and the disciples
@@ -82,6 +86,7 @@ export default {
     const jesus = S.puppet(walkL.add(person(c, { ...CAST.jesus })));
     const frontL = S.layer({ par: PAR, sh: 4 });
     const front = crowd(S, frontL, [{ y: 706, s: 0.7, n: 3, x0: WALK1 + 150, x1: WALK1 + 420 }, { y: 712, s: 0.72, n: 3, x0: WALK1 - 440, x1: WALK1 - 240 }]);
+    front.forEach(squeeze);
     front.forEach((m) => { m.from = m.x < WALK1 ? m.x - c.rr(500, 800) : m.x + c.rr(500, 800); });
     const prints = [];
     for (let i = 0; i < 14; i++) prints.push({ el: walkL.add(`<g opacity="0">${footprint(c, i % 2 === 0)}</g>`), x: WALK0 - 40 + i * 36, y: GY + 4 + (i % 2) * 8 });
@@ -159,7 +164,7 @@ export default {
       words.forEach((wd) => {
         const k = T ? ((T * 0.28 + wd.i / words.length) % 1) : 0.3 + wd.i * 0.12;
         const on = teach * (1 - es(t, 4.2, 4.5));
-        const x = WALK1 + 40 + Math.cos(wd.a) * (30 + k * 260), y = GY - 190 - k * 60 + Math.sin(wd.a) * 40 * k;
+        const x = WALK1 + 40 + Math.cos(wd.a) * (30 + k * (P ? 190 : 260)), y = GY - 190 - k * 60 + Math.sin(wd.a) * 40 * k;
         pose(wd.el, { x, y, s: 0.8 + k * 0.5, r: Math.sin(T * 1.2 + wd.i) * 8, o: on * Math.sin(k * Math.PI) });
       });
     };

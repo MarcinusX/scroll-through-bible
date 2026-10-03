@@ -26,7 +26,8 @@ export default {
     far.add(`<g transform="translate(1250 526)">${farCity(c, 0.7)}</g>`);
     const hillL = S.layer({ par: 0.18, sh: 3 });
     hillL.add(`<g transform="translate(${CX} ${CT})">${skullHill(c, { w: 1100, h: 300, col: mix(C.rock2, C.duskViolet, 0.3) })}</g>`);
-    hillL.add(`<g transform="translate(${CX - 250} ${CT + 36}) rotate(0)">${crossSil(c, { h: 270 })}</g><g transform="translate(${CX + 250} ${CT + 36})">${crossSil(c, { h: 270 })}</g>`);
+    hillL.add(`<g transform="translate(${CX - (S.portrait ? 195 : 250)} ${CT + 36}) rotate(0)">${crossSil(c, { h: 270 })}</g><g transform="translate(${CX + 250} ${CT + 36})">${crossSil(c, { h: 270 })}</g>`);
+    // phone: the left thief's cross stands 55 nearer, so it isn't sliced by the frame
     const cross = hillL.add(`<g transform="translate(${CX} ${CT})">${crossSil(c, { h: CH, halo: true })}</g>`);
     const hd = cross.querySelector('.hd'), hl = cross.querySelector('.hl');
     const u = CH / 240;
@@ -52,7 +53,7 @@ export default {
       fade(hl, 0.35 + es(t, 1.05, 1.6) * 0.45);
       const bare = es(t, 1.05, 1.13);
       const heart = es(t, 1.1, 1.4);
-      const x = 1070, y = 704, s = 1.12;
+      const x = S.portrait ? 985 : 1070, y = 704, s = 1.12;   // phone: off the thread
       cHelm.set({ x, y, s, flip: true, o: 1 - bare, armF: 24, armB: 10, head: -14 + Math.sin(T * 0.6) * 1.5, blink: blinkAt(T) });
       cBare.set({ x, y, s, flip: true, o: bare, armF: 16 + heart * 20, armB: 10 + heart * 62, head: -18, lean: -heart * 3, blink: blinkAt(T) });
       const [hx, hy] = headAt(x, y, s, true);

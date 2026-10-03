@@ -25,7 +25,7 @@ export default {
     { v: 22, cont: true, text: 'W przeciwnym razie wino rozerwie bukłaki; i wino przepadnie, i bukłaki.' },
     { v: 22, cont: true, text: 'Lecz młode wino [należy wlewać] do nowych bukłaków».' },
   ],
-  cam: { x: [camFor(620), camFor(1030)], y: [-20, 50], z: [1, 1.18] },
+  cam: { x: [camFor(550), camFor(1030)], y: [-20, 50], z: [1, 1.18] },
   build(S) {
     const c = S.c;
     sky(S, ['#d2e3dc', '#f1e8cf', '#f8eed8']);
@@ -189,7 +189,8 @@ export default {
         pose(spk, { x: sk.x + (i < 2 ? -30 : 30), y: sk.y + 10 - i * 12, s: k * 0.9, r: T * 30, o: k > 0.01 ? 1 : 0 });
       });
 
-      S.cam.x = kf(t, [[-0.5, camFor(600)], [1.9, camFor(600)], [2.3, camFor(1000)]]);
+      const TX = camFor(S.portrait ? 555 : 600);   // phone: the tailor and her bolt of cloth clear of the left edge
+      S.cam.x = kf(t, [[-0.5, TX], [1.9, TX], [2.3, camFor(1000)]]);
       S.cam.z = kf(t, [[-0.5, 1.12], [0.9, 1.16], [1.9, 1.16], [2.3, 1.14], [3.3, 1.14], [3.5, 1.06], [4.0, 1.12]]);
       S.cam.y = kf(t, [[-0.5, 10], [1.9, 20], [2.3, 30]]);
     };

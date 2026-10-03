@@ -28,9 +28,10 @@ export default {
     { v: 8, cont: true, text: 'już naprzód namaściła moje ciało na pogrzeb.' },
     { v: 9 },
   ],
-  cam: { x: [-60, 260], y: [-80, 260], z: [1, 1.6] },
+  cam: { x: [-60, 520], y: [-80, 260], z: [1, 1.6] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;
     const EVE = ['#9c8fb4', '#e2b59a', '#f3d2b0'];
     const R = room(S, { sky: EVE });
 
@@ -52,7 +53,8 @@ export default {
     const G = [
       { k: 'john', o: TW.john, x: 540 }, { k: 'peter', o: TW.peter, x: 620 }, { k: 'simon', o: LOOK.simon, x: 700 },
       { k: 'judas', o: TW.judas, x: 955, cross: true }, { k: 'thomas', o: TW.thomas, x: 1035, cross: true }, { k: 'philip', o: TW.philip, x: 1112, cross: true },
-    ].map((g, i) => {
+    ].map((g0, i) => {
+      const g = { ...g0, x: PH ? JX + (g0.x - JX) * 0.85 : g0.x };   // phone: the guests sit a little closer, so the ends of the table are not cut
       const el = tabL.add(withFace(person(c, { ...g.o, pose: 'sit' }), faceBits(c)));
       return { ...g, i, s: 0.9, flip: g.x > JX, seed: c.rr(0, 9), p: S.puppet(el), angry: el.querySelector('[data-part="angry"]'), sadF: el.querySelector('[data-part="sad"]') };
     });
@@ -180,10 +182,10 @@ export default {
         head -= world * 10;
         g.p.set({ x: g.x, y: SEAT + (g.i % 2) * 4, s: g.s, flip, armF, armB, head, lean, blink: blinkAt(T, g.seed) });
       });
-      const [jdx, jdy] = headAt(955, SEAT, 0.9, true, 62);
+      const [jdx, jdy] = headAt(G[3].x, SEAT, 0.9, true, 62);
       const bw = es(t, 3.25, 3.5, ease.back) * (1 - es(t, 3.9, 4.05));
       vis(bWaste, { x: jdx - 6, y: jdy - 30, s: bw, o: bw > 0.01 ? 1 : 0 });
-      const [thx, thy] = headAt(1035, SEAT, 0.9, true, 62);
+      const [thx, thy] = headAt(G[4].x, SEAT, 0.9, true, 62);
       const ct = es(t, 4.05, 4.3, ease.back) * (1 - es(t, 4.9, 5.05));
       vis(coinsTh, { x: thx - 4, y: thy - 20, s: ct, o: ct > 0.01 ? 1 : 0 });
       const pt = es(t, 4.2, 4.4, ease.back) * (1 - es(t, 4.9, 5.05));
@@ -205,10 +207,11 @@ export default {
       /* v7 — the poor at the door, bread offered; the hourglass above Him */
       poor.forEach((m) => {
         const on = es(t, 4.4 + m.i * 0.1, 4.7 + m.i * 0.1) * (1 - es(t, 9.9, 10.2));
-        m.p.set({ x: m.x + (1 - on) * 80, y: m.y, s: m.s, flip: true, o: on, armF: 40 + bump(t, 8.2, 8.9) * 40, head: 6, blink: blinkAt(T, m.seed) });
+        m.p.set({ x: m.x - (PH ? 30 : 0) + (1 - on) * 80, y: m.y,   // phone: inside the doorway, clear of the thread
+        s: m.s, flip: true, o: on, armF: 40 + bump(t, 8.2, 8.9) * 40, head: 6, blink: blinkAt(T, m.seed) });
       });
       const hIn = es(t, 8.35, 8.65, ease.out) * (1 - es(t, 8.95, 9.1));
-      vis(hour, { x: JX, y: 420 - (1 - hIn) * 600, r: Math.sin(T * 0.9) * 2, o: hIn > 0.01 ? 1 : 0 });
+      vis(hour, { x: PH ? JX + 90 : JX, y: 420 - (1 - hIn) * 600, r: Math.sin(T * 0.9) * 2, o: hIn > 0.01 ? 1 : 0 });
       const sand = seg(t, 8.4, 9.0);
       pose(hTop, { x: 0, y: -4, sy: 1 - sand * 0.8, oy: -4 });
       pose(hBot, { x: 0, y: hg.h / 2 - 12, sy: 0.2 + sand * 0.8 });
@@ -227,8 +230,13 @@ export default {
       });
 
       /* camera */
-      S.cam.x = kf(t, [[0, 0], [0.9, 0], [1.4, 160], [1.9, 40], [2.3, 0], [3.0, 0], [3.3, 200], [5.8, 200], [6.2, 60], [7.8, 60], [8.2, 240], [8.9, 240], [9.2, 40], [10.8, 0]]);
-      S.cam.z = kf(t, [[-0.5, 1.26], [1.0, 1.32], [2.0, 1.38], [2.4, 1.52], [3.0, 1.46], [3.3, 1.4], [6.0, 1.4], [6.4, 1.46], [8.0, 1.36], [9.2, 1.5], [10.0, 1.34], [10.8, 1.14]]);
+      // phone: for the poor at the door (v5, v7) the camera goes further right and a little wider, so the doorway is on screen
+      S.cam.x = PH
+        ? kf(t, [[0, 0], [0.9, 0], [1.4, 160], [1.9, 40], [2.3, 0], [3.0, 0], [3.3, 200], [4.0, 200], [4.3, 470], [4.95, 470], [5.25, 200], [5.8, 200], [6.2, 60], [7.8, 60], [8.2, 470], [8.9, 470], [9.2, 40], [10.8, 0]])
+        : kf(t, [[0, 0], [0.9, 0], [1.4, 160], [1.9, 40], [2.3, 0], [3.0, 0], [3.3, 200], [5.8, 200], [6.2, 60], [7.8, 60], [8.2, 240], [8.9, 240], [9.2, 40], [10.8, 0]]);
+      S.cam.z = PH
+        ? kf(t, [[-0.5, 1.26], [1.0, 1.32], [2.0, 1.38], [2.4, 1.52], [3.0, 1.46], [3.3, 1.4], [4.0, 1.4], [4.3, 1.0], [4.95, 1.0], [5.25, 1.4], [6.0, 1.4], [6.4, 1.46], [7.8, 1.38], [8.2, 1.0], [8.9, 1.0], [9.2, 1.5], [10.0, 1.34], [10.8, 1.14]])
+        : kf(t, [[-0.5, 1.26], [1.0, 1.32], [2.0, 1.38], [2.4, 1.52], [3.0, 1.46], [3.3, 1.4], [6.0, 1.4], [6.4, 1.46], [8.0, 1.36], [9.2, 1.5], [10.0, 1.34], [10.8, 1.14]]);
       S.cam.y = kf(t, [[-0.5, 170], [2.0, 200], [2.4, 210], [3.2, 200], [9.2, 210], [10.0, 90], [10.8, -20]]);
     };
   },
