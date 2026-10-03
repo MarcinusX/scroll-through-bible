@@ -9,7 +9,7 @@ import {
 } from './lib.js';
 
 const JK = [[0, 1560], [0.85, 760]];
-const JJ = [[0, 1430], [0.85, 630], [1.0, 630], [1.4, 1100]];
+const JJ0 = [[0, 1430], [0.85, 630], [1.0, 630], [1.4, 1100]];
 const KX = 525;                                   // where the Child stands by the doorpost
 const SIZES = [{ s: 0.48, k: 1.42 }, { s: 0.6, k: 1.28 }, { s: 0.74, k: 1.14 }];
 
@@ -22,8 +22,11 @@ export default {
   cam: { x: [-60, 80], y: [-30, 50], z: [1, 1.12] },
   build(S) {
     const c = S.c;
+    // phone: Joseph's workbench (and Joseph at it) inside the screen
+    const BX = S.portrait ? 1000 : NAZ.BENCH;
+    const JJ = S.portrait ? [[0, 1430], [0.85, 630], [1.0, 630], [1.4, 920]] : JJ0;
     const N = nazSet(S);
-    N.G.add(`<g transform="translate(${NAZ.BENCH} ${NY + 2})">${workbench(c, 170)}</g>`);
+    N.G.add(`<g transform="translate(${BX} ${NY + 2})">${workbench(c, 170)}</g>`);
     const grace = N.lightL.add(`<g>${glowDisc(200, 'halo-glow', 1)}${rayBurst(c, { n: 16, r0: 30, r1: 200, spread: 0.03, color: '#fff3cf', o: 0.3 })}</g>`);
     const notches = SIZES.map(() => N.markL.add(`<g>${notch(c)}</g>`));
     const P = N.P;

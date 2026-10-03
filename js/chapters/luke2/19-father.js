@@ -62,8 +62,8 @@ export default {
       const point = es(t, 4.05, 4.35) * (1 - es(t, 5.1, 5.4));
       const turn = point > 0.5;
       boy.set({ x: BX + 10, y: FL, s: 0.8, flip: !turn, o: up, armF: 20 + bump(t, 3.1, 3.9) * 30 + point * 100, armB: 20 + bump(t, 3.1, 3.9) * 20, head: -point * 16, blink: blinkAt(T, 4) });
-      t1.set({ x: 1010, y: FL, s: 0.9, flip: true, armF: 40, armB: 20 + point * 60, head: 4 - point * 10, blink: blinkAt(T, 6) });
-      t2.set({ x: 1090, y: FL, s: 0.9, flip: true, armF: 30, armB: 20, head: 6, blink: blinkAt(T, 7) });
+      t1.set({ x: S.portrait ? 960 : 1010, y: FL, s: 0.9, flip: true, armF: 40, armB: 20 + point * 60, head: 4 - point * 10, blink: blinkAt(T, 6) });   // phone: the teachers clear of the thread
+      t2.set({ x: S.portrait ? 1040 : 1090, y: FL, s: 0.9, flip: true, armF: 30, armB: 20, head: 6, blink: blinkAt(T, 7) });
 
       /* v48b, v48c — "why have you done this to us? we have been looking for you in sorrow" */
       const k1 = es(t, 1.1, 1.25, ease.back) * (1 - es(t, 1.95, 2.05));

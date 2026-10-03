@@ -9,7 +9,7 @@ import {
   manger, baby, bigStar, heart, hangAt, vpose, sparkle, tr, es, ease, bump, seg, PI,
 } from './lib.js';
 
-const AX = 1070;
+const AX0 = 1070;
 
 /** the whole people on the far ridge: a long row of small figures, arms raised (one still cut-out) */
 function people(c, n = 26) {
@@ -33,6 +33,7 @@ export default {
   cam: { x: [-40, 60], y: [-40, 40], z: [1, 1.1] },
   build(S) {
     const c = S.c;
+    const AX = S.portrait ? 980 : AX0;   // phone: the angel clear of the thread
     const F = fieldSet(S);
     const { P, gloryL } = F;
     F.gsk.layer.fade(0.9);

@@ -9,7 +9,9 @@ import {
 } from './lib.js';
 import { crossX } from '../mark6/lib.js';
 
-const JK = [[0, 1260], [0.9, 980], [1.05, 980], [1.3, 760], [1.6, 760], [1.8, 540], [2.05, 540], [2.95, 1380]];
+const JK0 = [[0, 1260], [0.9, 980], [1.05, 980], [1.3, 760], [1.6, 760], [1.8, 540], [2.05, 540], [2.95, 1380]];
+// phone: the parents stay inside the screen — Joseph in from the right, Mary in from the left, and still on the road back at 2.75
+const JKP = [[0, 1160], [0.9, 920], [1.05, 920], [1.3, 760], [1.6, 760], [1.8, 590], [2.05, 590], [2.95, 1000]];
 
 /** a family of relatives sitting by their tent (one still cut-out, for a sprite) */
 function sitters(c, n = 3) {
@@ -32,10 +34,12 @@ export default {
   cam: { x: [-60, 120], y: [-30, 40], z: [1, 1.1] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;
+    const JK = PH ? JKP : JK0, CTX = PH ? 1060 : 1500;   // (and Jerusalem on the horizon, where they go back)
     const R = roadSet(S, { sky2: [DUSK, NIGHT], sunAt: [1300, 140], clouds: false });
     const cityL = S.layer({ par: 0.1, sh: 3 });
     const tglow = cityL.add(`<g>${glowDisc(140, 'halo-glow', 1)}</g>`);
-    cityL.add(`<g transform="translate(1500 540) scale(.3)">${jerusalem(c, 1)}</g>`);
+    cityL.add(`<g transform="translate(${CTX} 540) scale(.3)">${jerusalem(c, 1)}</g>`);
     // the camp
     const camp = S.layer({ par: 0.36, sh: 4 });
     const tents = [[440, 1], [690, 0.85]].map(([x, s], i) => camp.add(`<g transform="translate(${x} ${RY - 30}) scale(${s})">${tent(c, { col: [C.wheatRobe, C.sageRobe][i], stripe: [C.terracotta, C.tealRobe][i] })}</g>`));
@@ -61,9 +65,9 @@ export default {
       R.skies[0].layer.fade(dusk);
       R.skies[1].layer.fade(night);
       R.starL.fade(es(t, 1.2, 2.3));
-      pose(R.sunEl, { x: lerp(1300, 380, day), y: 140 + Math.sin(day * PI) * -30 + es(t, 0.6, 1.3) * 520, r: 0 });
+      pose(R.sunEl, { x: PH ? lerp(1000, 600, day) : lerp(1300, 380, day), y: 140 + Math.sin(day * PI) * -30 + es(t, 0.6, 1.3) * 520, r: 0 });   // phone: the sun crosses and sets inside the screen
       hangAt(R.moonEl, 1200, 150, T, es(t, 2.0, 2.4), 1, 0.5, 1);
-      pose(tglow, { x: 1500 + 84, y: 540 - 60, o: 0.4 + night * 0.5 });
+      pose(tglow, { x: CTX + 84, y: 540 - 60, o: 0.4 + night * 0.5 });
       walkers.forEach((w) => {
         const x = lerp(1400 + w.i * 380, 180 + w.i * 380, es(t, -0.3, 1.2, (u) => u));
         w.sp.set({ x, y: RY + 2, o: 1 - es(t, 1.1, 1.3) });

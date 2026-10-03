@@ -9,7 +9,7 @@ import {
   hangAt, vpose, sparkle, tr, es, ease, bump, seg, PI,
 } from './lib.js';
 
-const AX = 1070;          // where the angel stands
+const AX0 = 1070;          // where the angel stands
 
 export default {
   id: 'lk2-shepherds',
@@ -21,6 +21,7 @@ export default {
   cam: { x: [-40, 40], y: [-40, 40], z: [1, 1.12] },
   build(S) {
     const c = S.c;
+    const AX = S.portrait ? 980 : AX0;   // phone: the angel clear of the thread
     const F = fieldSet(S);
     const { P, gloryL } = F;
 
@@ -55,7 +56,7 @@ export default {
       // the boy dozes, wakes, and hides behind the old man
       const hide = es(t, 2.05, 2.35);
       setShep(SH[3], { sit: 1 - fear, stand: fear }, { x: lerp(SH_AT[3].x, 600, hide) + tremble(3), y: FY + 4, flip: hide > 0.5 ? false : true, walk: hide > 0.02 && hide < 0.98 ? t * 30 : undefined, armF: 30 + glow * 30 + fear * 40, armB: 20 + fear * 60, head: -glow * 12 + fear * 10, blink: blinkAt(T, 7) });
-      e1.set({ x: 980, y: FY + 16, s: 0.8, flip: true, head: -glow * 20 + Math.sin(T * 0.6) * 2 });
+      e1.set({ x: S.portrait ? 1050 : 980, y: FY + 16, s: 0.8, flip: true, head: -glow * 20 + Math.sin(T * 0.6) * 2 });
       e2.set({ y: FY + 18, s: 0.8, flip: fear > 0.5 ? false : true, head: -glow * 24, hop: bump(t, 2.05, 2.3) * 14, x: lerp(1000, 960, fear) });
       pose(flock, { x: 420 - fear * 24, y: 0, sx: 1 - fear * 0.08, ox: 420 });
 

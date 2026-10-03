@@ -24,7 +24,8 @@ export default {
   cam: { x: [-40, 40], y: [-40, 40], z: [1, 1.14] },
   build(S) {
     const c = S.c;
-    const TS = templeSet(S, { sky2: EVENING, sunAt: [1160, 170] });
+    const SUNX = S.portrait ? 1000 : 1160;   // phone: the sun clear of the thread
+    const TS = templeSet(S, { sky2: EVENING, sunAt: [SUNX, 170] });
     const holy = TS.holyL.add(`<g>${glowDisc(260, 'halo-glow', 1)}</g>`);
     const glowL = S.layer({ par: 0.45, sh: 0, flat: true });
     const light = glowL.add(`<g>${glowDisc(230, 'halo-glow', 1)}${rayBurst(c, { n: 16, r0: 30, r1: 220, spread: 0.03, color: '#fff3cf', o: 0.3 })}</g>`);
@@ -68,7 +69,7 @@ export default {
       /* v29 — "Now you let your servant go in peace": evening light, the sun goes down */
       const eve = es(t, 2.0, 2.7) * 0.85;
       TS.sk2.layer.fade(eve);
-      hangAt(TS.sunEl, 1160, 170 + eve * 200, T, 1, 1, 0.5, 1);
+      hangAt(TS.sunEl, SUNX, 170 + eve * 200, T, 1, 1, 0.5, 1);
       pose(holy, { x: TS.sanctX, y: TS.IW - 180, s: 1 + eve * 0.4, o: 0.4 + eve * 0.6 });
       const pk = es(t, 2.1, 2.4, ease.out);
       hangAt(peace, 800, lerp(-500, 190, pk), T, pk > 0.001 ? 1 : 0, 1, 0.7, 2);

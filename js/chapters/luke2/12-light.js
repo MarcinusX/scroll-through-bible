@@ -38,6 +38,10 @@ export default {
   cam: { x: [-20, 20], y: [-40, 30], z: [1, 1.08] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;
+    // phone: the Temple on its hill inside the screen; the peoples on a taller, narrower arc
+    const TX = PH ? 1030 : 1150;
+    const [AXR, AYR] = PH ? [280, RAD * 1.13] : [RAD * 1.15, RAD * 0.88];
     sky(S, ['#1a2048', '#2e3670', '#5a5b92']);
     const raysL = S.layer({ par: 0.1, sh: 0, flat: true });
     const rays = raysL.add(`<g>${rayBurst(c, { n: 30, r0: 60, r1: 900, spread: 0.026, color: "#fff3cf", o: 0.34 })}</g>`);
@@ -46,13 +50,14 @@ export default {
     const tglow = raysL.add(`<g>${glowDisc(200, 'halo-glow', 1)}</g>`);
     // the hill with the Temple, and Simeon's ground
     const G = S.layer({ par: 0.2, sh: 3 });
-    const tEl = G.add(`<g transform="translate(1150 ${Y - 30})">${sanctuary(c, 0.55, { glow: false })}</g>`);
+    const tEl = G.add(`<g transform="translate(${TX} ${Y - 30})">${sanctuary(c, 0.55, { glow: false })}</g>`);
     G.add(sheet().p(c.cut([[-1400, 1900], [-1400, Y + 30], ...c.qbez([-400, Y + 40], [800, Y - 60], [2000, Y + 40], 30).map(([x, y]) => [x, y]), [3000, Y + 30], [3000, 1900]], 1, 12), mix(C.indigo, C.sage, 0.35)).out());
-    G.add(sheet().p(c.cut([[1000, Y - 20], [1030, Y - 36], [1290, Y - 36], [1320, Y - 20], [1320, Y + 30], [1000, Y + 30]], 0.6, 8), mix(C.stone, C.indigo, 0.25)).out());
+    G.add(sheet().p(c.cut([[1000, Y - 20], [1030, Y - 36], [1290, Y - 36], [1320, Y - 20], [1320, Y + 30], [1000, Y + 30]].map(([x, y]) => [x + TX - 1150, y]), 0.6, 8), mix(C.stone, C.indigo, 0.25)).out());
     const N = S.layer({ par: 0.15, sh: 4 });
-    const groups = ANG.map((a, i) => {
+    const groups = (PH ? [172, 200, 230, 256, 288, 314] : ANG).map((a, i) => {
       const r = (a * PI) / 180;
-      return { i, x: CX + Math.cos(r) * RAD * 1.15, y: CY + Math.sin(r) * RAD * 0.88, sp: N.sprite(nation(c, i), CX + Math.cos(r) * RAD * 1.15, CY + Math.sin(r) * RAD * 0.88) };
+      const gx = CX + (PH ? 25 : 0) + Math.cos(r) * AXR, gy = CY + Math.sin(r) * AYR;
+      return { i, x: gx, y: gy, sp: N.sprite(nation(c, i), gx, gy) };
     });
     const P = S.layer({ par: 0.3, sh: 6 });
     const sim = S.puppet(P.add(person(c, { ...SIMEON, holdF: inArms(c) })));
@@ -85,12 +90,12 @@ export default {
 
       /* v32 — a light to the nations, the glory of Israel */
       const tk = es(t, 2.3, 2.6);
-      pose(tglow, { x: 1150, y: Y - 110, s: 0.6 + tk * 0.6, o: tk });
-      pose(tEl, { x: 1150, y: Y - 30 - tk * 6 });
+      pose(tglow, { x: TX, y: Y - 110, s: 0.6 + tk * 0.6, o: tk });
+      pose(tEl, { x: TX, y: Y - 30 - tk * 6 });
       const nk = es(t, 2.2, 2.4, ease.back);
-      vpose(tagN, { x: 520, y: 640, s: Math.max(0.001, nk), o: nk > 0.01 ? 1 : 0 });
+      vpose(tagN, { x: PH ? 615 : 520, y: PH ? 668 : 640, s: Math.max(0.001, nk), o: nk > 0.01 ? 1 : 0 });
       const ik = es(t, 2.4, 2.6, ease.back);
-      vpose(tagI, { x: 1170, y: 470, s: Math.max(0.001, ik), o: ik > 0.01 ? 1 : 0 });
+      vpose(tagI, { x: PH ? TX - 10 : TX + 20, y: PH ? 410 : 470, s: Math.max(0.001, ik), o: ik > 0.01 ? 1 : 0 });
       sparks.forEach((sp, i) => {
         const g = groups[i], k = es(t, 2.2 + i * 0.05, 2.4 + i * 0.05);
         vpose(sp, { x: g.x + Math.cos(T + i) * 50, y: g.y - 70 + Math.sin(T * 1.3 + i) * 12, s: k * 0.7, r: T * 40, o: k });

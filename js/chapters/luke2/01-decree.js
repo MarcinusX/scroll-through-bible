@@ -44,7 +44,7 @@ export default {
     const mess = [0, 1].map((i) => ({ i, p: S.puppet(P.add(person(c, { ...MESSENGER, robe: i ? mix(C.dustyBlue, C.stone, 0.3) : MESSENGER.robe, hair: i ? C.hair3 : C.hair2, holdF: `<g transform="translate(0 8) rotate(-60)">${sealedScroll(c, 40)}</g>` }))) }));
 
     /* the decree on its rod, the seal */
-    const SX = 560, SY = 226;
+    const SX = S.portrait ? 610 : 560, SY = 226;   // phone: the decree clear of the left edge
     const sp = scrollParts(c, { w: 270, h: 180, title: tr('Spis ludności', 'Enrollment'), lines: 5 });
     const rod = hanging(X, sp.rod, { x: 0, y: 0, len: 600 });
     const sheetEl = X.add(`<g>${sp.sheet}</g>`);
@@ -52,7 +52,7 @@ export default {
     const sealEl = X.add(`<g>${seal(c, 16)}</g>`);
 
     /* the map of the world, its seals; the copy that travels to Syria */
-    const MX = 1060, MY = 300;
+    const MX = S.portrait ? 965 : 1060, MY = 300;   // phone: the map clear of the thread
     const map = hanging(X, orbis(c, 112), { x: 0, y: 0, len: 700 });
     const dots = CITIES.map(([x, y], i) => ({ i, x, y, el: X.add(`<g>${seal(c, i === 0 ? 8 : 6.5)}</g>`) }));
     const copy = X.add(`<g transform="scale(.5)">${sealedScroll(c, 40)}</g>`);
@@ -109,7 +109,7 @@ export default {
       vpose(copy, { x: MX + lerp(ax, bx, trav), y: MY + 12 + lerp(ay, by, trav) - Math.sin(trav * PI) * 30, r: -10, o: trav > 0.01 && trav < 0.99 ? 1 : 0 });
       vpose(syr, { x: MX + bx, y: MY + by + 12, s: 0.6 + es(t, 2.4, 2.6) * 0.8, o: es(t, 2.4, 2.6) });
       const qk = es(t, 2.2, 2.5, ease.out);
-      hangAt(quir, 560, lerp(-540, 290, qk), T, qk > 0.001 ? 1 : 0, 1, 0.8, 3);
+      hangAt(quir, S.portrait ? 640 : 560, lerp(-540, 290, qk), T, qk > 0.001 ? 1 : 0, 1, 0.8, 3);
       const fk = es(t, 2.3, 2.6, ease.out);
       hangAt(first, 800, lerp(-520, 200, fk), T, fk > 0.001 ? 1 : 0, 1, 0.8, 5);
       const sn = es(t, 2.45, 2.6, ease.back);

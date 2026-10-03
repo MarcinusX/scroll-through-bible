@@ -10,7 +10,7 @@ import {
 } from './lib.js';
 import { matzahRound } from '../mark14/lib.js';
 
-const FK = [[0, 300], [1.9, 860], [2.12, 860], [3.9, 330]];       // the family along the road (and back)
+const FK0 = [[0, 300], [1.9, 860], [2.12, 860], [3.9, 330]];      // the family along the road (and back)
 const YEARS = [{ s: 0.48, k: 1.4 }, { s: 0.6, k: 1.28 }, { s: 0.7, k: 1.18 }];
 
 export default {
@@ -24,6 +24,9 @@ export default {
   cam: { x: [-90, 90], y: [-30, 40], z: [1, 1.1] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;
+    // phone: the family starts and ends inside the screen (the parents are the subject of v43b), the boy and the tag clear of the thread
+    const FK = PH ? [[0, 470], [1.9, 860], [2.12, 860], [3.9, 540]] : FK0;
     const R = roadSet(S, { sunAt: [880, 130] });
     const cityL = S.layer({ par: 0.12, sh: 3 });
     const tglow = cityL.add(`<g>${glowDisc(200, 'halo-glow', 1)}</g>`);
@@ -68,14 +71,14 @@ export default {
         kd.p.set({ x: fx + 70, y: RY + 8, s: kd.s, o: on, walk: walking ? fx * 0.08 : undefined, armF: 20, blink: blinkAt(T, 4) });
       });
       const stay = es(t, 2.05, 2.4);
-      const bx = back ? lerp(fx + 70, 1010, stay) : fx + 70;
+      const bx = back ? lerp(fx + 70, PH ? 950 : 1010, stay) : fx + 70;
       boy.set({ x: bx, y: RY + 8, s: 0.8, o: twelve, flip: false, walk: (walking && !back) || (stay > 0.01 && stay < 0.99) ? bx * 0.07 : undefined, armF: 20 + es(t, 2.4, 2.7) * 30, armB: 20, head: -es(t, 2.4, 2.7) * 14, blink: blinkAt(T, 4) });
       const pk = es(t, 0.1, 0.4, ease.out) * (1 - es(t, 0.9, 1.1, ease.in));
       hangAt(plate, 640, lerp(-520, 250, pk), T, pk > 0.001 ? 1 : 0, 1.2, 0.8, 1);
       const k12 = es(t, 1.08, 1.35, ease.out) * (1 - es(t, 1.9, 2.1, ease.in));
       hangAt(n12, 700, lerp(-520, 260, k12), T, k12 > 0.001 ? 1 : 0, 1.2, 0.8, 2);
       const tk = es(t, 1.25, 1.5, ease.out) * (1 - es(t, 2.9, 3.1, ease.in));
-      hangAt(tag, 1140, lerp(-520, 250, tk), T, tk > 0.001 ? 1 : 0, 1.2, 0.8, 3);
+      hangAt(tag, PH ? 1010 : 1140, lerp(-520, 250, tk), T, tk > 0.001 ? 1 : 0, 1.2, 0.8, 3);
       /* v43b — the parents walk on, talking with the others, and do not notice */
       const ck = es(t, 3.1, 3.25, ease.back) * (1 - es(t, 3.9, 4.0));
       vpose(chat, { x: fx - 30, y: RY - 230, s: Math.max(0.001, ck), o: ck > 0.01 ? 1 : 0 });

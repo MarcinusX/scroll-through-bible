@@ -12,7 +12,7 @@ import {
 const F = ST.FLOOR;
 const MX = 830;
 const LX = 870, LY = 440;
-const KN = [930, 1010, 1090, 1170];          // where the shepherds kneel
+const KN0 = [930, 1010, 1090, 1170];          // where the shepherds kneel
 const HEART = [748, 630];                    // Mary's heart (kneeling at 736)
 
 export default {
@@ -24,9 +24,11 @@ export default {
     { v: 19 },
     { v: 20 },
   ],
-  cam: { x: [-90, 130], y: [-40, 60], z: [1, 1.2] },
+  cam: { x: [-90, 370], y: [-40, 60], z: [1, 1.2] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;
+    const KN = PH ? [905, 965, 1025, 1085] : KN0;   // phone: the last one clear of the thread
     const B = stableSet(S, { dusk: DAWN });
     const { A, P, glowL } = B;
     B.R.add(`<g transform="translate(${LX} ${LY - 28})"><path d="M0 -16V0" stroke="${C.wood2}" stroke-width="2"/>${lantern(c, { col: C.apricot })}</g>`);
@@ -38,7 +40,7 @@ export default {
 
     /* townsfolk who come to look (a sprite) */
     const folkL = S.layer({ par: 0.32, sh: 5 });
-    const town = folkL.sprite(pilgrims(c, 5, { s: 0.84, flip: true, dx: 50 }), 1280, F + 6);
+    const town = folkL.sprite(pilgrims(c, 5, { s: 0.84, flip: true, dx: PH ? 36 : 50 }), 1280, F + 6);
     const wows = [0, 1, 2].map((i) => folkL.add(`<g>${thought(c, GLYPH.bang(c), { w: 44, h: 36 })}</g>`));
 
     const mary = S.puppet(P.add(person(c, { ...MARY, pose: 'kneel' })));
@@ -87,10 +89,10 @@ export default {
 
       /* v18 — all who heard wondered */
       const fk = es(t, 2.0, 2.5, ease.out) * (1 - es(t, 4.2, 4.8));
-      town.set({ x: lerp(1600, 1220, fk), y: F + 6, o: fk > 0.01 ? 1 : 0 });
+      town.set({ x: lerp(1600, PH ? 1050 : 1220, fk), y: F + 6, o: fk > 0.01 ? 1 : 0 });
       wows.forEach((w, i) => {
         const k = es(t, 2.4 + i * 0.08, 2.55 + i * 0.08, ease.back) * (1 - es(t, 2.95, 3.05));
-        vpose(w, { x: 1240 + i * 60, y: F - 190 + (i % 2) * 14, s: Math.max(0.001, k), o: k > 0.01 ? 1 : 0 });
+        vpose(w, { x: (PH ? 975 : 1240) + i * 60, y: F - 190 + (i % 2) * 14, s: Math.max(0.001, k), o: k > 0.01 ? 1 : 0 });
       });
 
       /* v19 — Mary keeps all these things, pondering them in her heart */
@@ -108,7 +110,9 @@ export default {
         vpose(sp, { x: HEART[0] + Math.cos(a) * (18 + k * 50), y: HEART[1] + Math.sin(a) * (18 + k * 40), s: 0.7 - k * 0.4, r: t * 90, o: bump(t, 4.0 + i * 0.04, 4.4 + i * 0.04) });
       });
 
-      S.cam.x = kf(t, [[0, 90], [0.6, 60], [2.0, 60], [2.5, 100], [3.0, 60], [3.3, -80], [4.1, -80], [4.5, 90]], ease.sine);
+      S.cam.x = PH   // phone: the camera holds on the townsfolk through their beat
+        ? kf(t, [[0, 90], [0.6, 85], [2.0, 85], [2.45, 370], [2.95, 370], [3.3, -80], [4.1, -80], [4.5, 90]], ease.sine)
+        : kf(t, [[0, 90], [0.6, 60], [2.0, 60], [2.5, 100], [3.0, 60], [3.3, -80], [4.1, -80], [4.5, 90]], ease.sine);
       S.cam.z = kf(t, [[0, 1.02], [1.0, 1.06], [3.0, 1.06], [3.3, 1.2], [4.1, 1.2], [4.5, 1.0]], ease.sine);
       S.cam.y = kf(t, [[0, 20], [3.0, 20], [3.3, 60], [4.1, 60], [4.5, 0]], ease.sine);
     };

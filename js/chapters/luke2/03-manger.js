@@ -23,7 +23,7 @@ export default {
     { v: 7, cont: true, text: 'owinęła Go w pieluszki i położyła w żłobie,' },
     { v: 7, cont: true, text: 'gdyż nie było dla nich miejsca w gospodzie.' },
   ],
-  cam: { x: [-30, 130], y: [-40, 40], z: [1, 1.14] },
+  cam: { x: [-30, 500], y: [-40, 40], z: [1, 1.14] },
   build(S) {
     const c = S.c;
     const B = stableSet(S, { dusk: true });
@@ -104,7 +104,7 @@ export default {
       pose(B.sign, { x: B.DX, y: F - 200, r: Math.sin(T * 0.9) * 2 + bump(t, 3.3, 3.8) * 6 });
       pose(B.innLit, { o: 0.7 + es(t, 3.0, 3.3) * 0.3 });
 
-      S.cam.x = kf(t, [[0, 110], [0.6, 60], [1.0, 0], [3.0, 0], [3.5, 120]], ease.sine);
+      S.cam.x = kf(t, [[0, 110], [0.6, 60], [1.0, 0], [3.0, 0], [3.5, S.portrait ? 500 : 120]], ease.sine);   // phone: far enough to show the full inn and its door
       S.cam.z = kf(t, [[0, 1.02], [1.0, 1.1], [3.0, 1.12], [3.5, 1.0]], ease.sine);
       S.cam.y = kf(t, [[0, 0], [1.0, 30], [3.0, 36], [3.5, -30]], ease.sine);
     };

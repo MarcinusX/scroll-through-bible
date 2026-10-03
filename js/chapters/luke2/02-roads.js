@@ -23,7 +23,7 @@ export default {
     { v: 4 },
     { v: 5 },
   ],
-  cam: { x: [-140, 120], y: [-30, 50], z: [1, 1.12] },
+  cam: { x: [-140, 270], y: [-30, 50], z: [1, 1.12] },
   build(S) {
     const c = S.c;
     const R = roadSet(S, { sunAt: [860, 130] });
@@ -72,6 +72,7 @@ export default {
 
     return (t, time) => {
       const T_ = time;
+      const PH = S.portrait;
       R.update(T_);
 
       /* v3 — all go to be enrolled, each to his own town */
@@ -95,9 +96,9 @@ export default {
       donkey.set({ x: jx - 60, y: RY + 12, s: 0.9, o: on, walk: walking ? jx * 0.05 : undefined, nod: walking ? 0 : Math.sin(T_ * 0.8) * 3 });
       pose(mGlow, { x: jx - 30, y: RY - 150, s: 0.6 + es(t, 2.1, 2.4) * 0.5, o: es(t, 2.1, 2.4) * 0.8 });
       const nk = es(t, 1.0, 1.25, ease.out) * (1 - es(t, 1.9, 2.1, ease.in));
-      hangAt(tagN, 440, lerp(-500, 280, nk), T_, nk > 0.001 ? 1 : 0, 1.2, 0.9, 1);
+      hangAt(tagN, PH ? 640 : 440, lerp(-500, 280, nk), T_, nk > 0.001 ? 1 : 0, 1.2, 0.9, 1);
       const bk = es(t, 1.2, 1.45, ease.out);
-      hangAt(tagB, 1110, lerp(-500, 380, bk), T_, bk > 0.001 ? 1 : 0, 1.2, 0.9, 2);
+      hangAt(tagB, PH ? 920 : 1110, lerp(-500, 380, bk), T_, bk > 0.001 ? 1 : 0, 1.2, 0.9, 2);
       const dk = es(t, 1.4, 1.7, ease.out) * (1 - es(t, 2.0, 2.2, ease.in));
       hangAt(dav, 1000, lerp(-500, 200, dk), T_, dk > 0.001 ? 1 : 0, 1, 0.8, 3);
       sparks.forEach((sp, i) => {
@@ -110,9 +111,9 @@ export default {
       clerk.set({ x: TX + 20, y: RY - 4, s: 0.86, flip: true, armF: 50 + write + es(t, 2.2, 2.3) * 10, armB: 20, head: 8, blink: blinkAt(T_, 3) });
       sold.set({ x: TX + 150, y: RY + 10, s: 0.88, flip: true, armF: 20, blink: blinkAt(T_, 5) });
       const wk = es(t, 2.35, 2.55, ease.back);
-      vpose(names, { x: TX + 40, y: RY - 200, s: Math.max(0.001, wk), r: -4, o: wk > 0.01 ? 1 : 0 });
+      vpose(names, { x: PH ? TX - 20 : TX + 40, y: RY - (PH ? 280 : 200), s: Math.max(0.001, wk), r: -4, o: wk > 0.01 ? 1 : 0 });
 
-      S.cam.x = kf(t, [[0, 0], [0.9, 0], [1.15, -120], [2.05, 90], [3, 110]], ease.sine);
+      S.cam.x = kf(t, [[0, 0], [0.9, 0], [1.15, -120], [2.05, PH ? 220 : 90], [3, PH ? 260 : 110]], ease.sine);   // phone: further right, to the census table
       S.cam.y = 20;
       S.cam.z = 1.02 + es(t, 2.05, 2.4) * 0.06;
     };

@@ -10,7 +10,7 @@ import {
   hangAt, vpose, kf, moving, sparkle, tr, es, ease, bump, seg, PI,
 } from './lib.js';
 
-const AX = 1070;
+const AX0 = 1070;
 const ROWS = [{ y: 150, s: 0.5, n: 16 }, { y: 250, s: 0.62, n: 14 }, { y: 350, s: 0.76, n: 12 }, { y: 440, s: 0.9, n: 10 }];
 
 export default {
@@ -25,6 +25,7 @@ export default {
   cam: { x: [-40, 80], y: [-60, 40], z: [1, 1.1] },
   build(S) {
     const c = S.c;
+    const AX = S.portrait ? 980 : AX0;   // phone: the angel clear of the thread
     const F = fieldSet(S, { heaven: true, host: true });
     const { P, gloryL } = F;
 

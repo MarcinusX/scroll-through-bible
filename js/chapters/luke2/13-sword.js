@@ -108,7 +108,7 @@ export default {
       /* v35b — the thoughts of many hearts revealed */
       hearts.forEach((h) => {
         const k = es(t, 5.05 + h.i * 0.05, 5.25 + h.i * 0.05, ease.back);
-        const x = 500 + h.i * 100, y = 250 + (h.i % 2) * 40;
+        const x = S.portrait ? 520 + h.i * 88 : 500 + h.i * 100, y = 250 + (h.i % 2) * 40;   // phone: the row inside the screen
         vpose(h.el, { x, y, s: Math.max(0.001, k), o: k > 0.01 ? 1 : 0 });
         if (k > 0.01) openWindow(h.el, es(t, 5.3 + h.i * 0.05, 5.5 + h.i * 0.05), 24);
       });

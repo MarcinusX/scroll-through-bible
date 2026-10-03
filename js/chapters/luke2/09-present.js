@@ -9,9 +9,9 @@ import {
   hangAt, vpose, kf, moving, sparkle, tr, es, ease, bump, seg, PI,
 } from './lib.js';
 
-const SX = 1110;            // the dove seller
+const SX0 = 1110;           // the dove seller
 const MK = [[0, 280], [0.9, 640]];
-const JK = [[0, 170], [0.9, 520], [2.05, 520], [2.42, 960]];
+const JK0 = [[0, 170], [0.9, 520], [2.05, 520], [2.42, 960]];
 
 export default {
   id: 'lk2-present',
@@ -23,6 +23,9 @@ export default {
   cam: { x: [-40, 80], y: [-40, 40], z: [1, 1.1] },
   build(S) {
     const c = S.c;
+    // phone: the seller and his doves, and the scroll of the Law, inside the screen
+    const SX = S.portrait ? 1030 : SX0, LX = S.portrait ? 900 : 1000;
+    const JK = S.portrait ? [[0, 170], [0.9, 520], [2.05, 520], [2.42, 900]] : JK0;
     const R = roadSet(S, { sunAt: [1240, 140] });
     // Jerusalem on its hill, the Temple with its glow
     const cityL = S.layer({ par: 0.12, sh: 3 });
@@ -67,9 +70,9 @@ export default {
       const lk = es(t, 1.05, 1.3, ease.out) * (1 - es(t, 1.95, 2.15, ease.in));
       const un = es(t, 1.2, 1.45) * (1 - es(t, 1.9, 2.0));
       const ly = lerp(-560, 150, lk);
-      hangAt(lawRod, 1000, ly, T, lk > 0.001 ? 1 : 0, 0.6, 0.7, 2);
-      vpose(lawSheet, { x: 1000, y: ly, sy: Math.max(0.01, un), o: lk > 0.001 && un > 0.01 ? 1 : 0 });
-      vpose(lawRod2, { x: 1000, y: ly + vs.h * un, o: lk > 0.001 && un > 0.01 ? 1 : 0 });
+      hangAt(lawRod, LX, ly, T, lk > 0.001 ? 1 : 0, 0.6, 0.7, 2);
+      vpose(lawSheet, { x: LX, y: ly, sy: Math.max(0.01, un), o: lk > 0.001 && un > 0.01 ? 1 : 0 });
+      vpose(lawRod2, { x: LX, y: ly + vs.h * un, o: lk > 0.001 && un > 0.01 ? 1 : 0 });
       const [hx, hy] = [mx + 60, RY - 150 - offer * 40];
       vpose(holy, { x: hx, y: hy, s: 0.5 + offer * 0.5, r: T * 10, o: offer * 0.8 });
 

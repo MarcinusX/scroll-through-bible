@@ -12,9 +12,8 @@ import {
 } from './lib.js';
 
 const Y = 706;
-const HX = 420;                      // Simeon's house (door)
-const TX = 1190;                     // the Temple at the end of the street
-const WK = [[3.1, 560], [3.95, 1010]];
+const HX0 = 420;                     // Simeon's house (door)
+const TX0 = 1190;                    // the Temple at the end of the street
 
 export default {
   id: 'lk2-simeon',
@@ -27,6 +26,9 @@ export default {
   cam: { x: [-30, 130], y: [-40, 40], z: [1, 1.12] },
   build(S) {
     const c = S.c;
+    // phone: Simeon's house and door further in from the left edge, the hourglass clear of the thread
+    const HX = S.portrait ? 520 : HX0, GX = S.portrait ? 960 : 1060, TX = S.portrait ? 1010 : TX0;
+    const WK = [[3.1, HX + 140], [3.95, 1010]];
     const sk = sky(S, DAWN);
     const hangL = S.layer({ par: 0.04, sh: 4 });
     const sunEl = hanging(hangL, sun(c, 40, { disc: C.peach, inner: C.dawn, rays: C.apricot }), { x: 0, y: 0, len: 900 });
@@ -104,9 +106,9 @@ export default {
       const wk = es(t, 2.05, 2.35, ease.out) * (1 - es(t, 2.95, 3.15, ease.in));
       hangAt(word, 830, lerp(-500, 230, wk), T, wk > 0.001 ? 1 : 0, 1, 0.8, 2);
       const gk = es(t, 2.15, 2.45, ease.out) * (1 - es(t, 2.95, 3.15, ease.in));
-      hangAt(glass, 1060, lerp(-500, 360, gk), T, gk > 0.001 ? 1 : 0, 1, 0.8, 3);
+      hangAt(glass, GX, lerp(-500, 360, gk), T, gk > 0.001 ? 1 : 0, 1, 0.8, 3);
       const sl = es(t, 2.4, 2.55, ease.back) * (gk > 0.95 ? 1 : 0);
-      vpose(seal, { x: 1060, y: 360, s: Math.max(0.001, sl), r: -18, o: sl > 0.01 ? 1 : 0 });
+      vpose(seal, { x: GX, y: 360, s: Math.max(0.001, sl), r: -18, o: sl > 0.01 ? 1 : 0 });
       sparks.forEach((sp, i) => {
         const k = es(t, 2.3 + i * 0.05, 2.5 + i * 0.05) * (1 - es(t, 2.95, 3.1)), a = T * 0.8 + i * 1.6;
         vpose(sp, { x: 830 + Math.cos(a) * 200, y: 230 + Math.sin(a) * 40, s: k * 0.8, r: T * 30, o: k });

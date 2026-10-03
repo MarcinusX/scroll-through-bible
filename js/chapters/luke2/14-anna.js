@@ -13,8 +13,7 @@ import {
 } from './lib.js';
 
 const FL = TFLOOR;
-const AX = 980;                // Anna's place by the column
-const AK = [[4.05, AX], [4.5, 800]];
+const AX0 = 980;               // Anna's place by the column
 const CX = 880, CY = 280;      // the picture of her youth
 
 export default {
@@ -29,7 +28,11 @@ export default {
   cam: { x: [-30, 60], y: [-40, 40], z: [1, 1.12] },
   build(S) {
     const c = S.c;
-    const TS = templeSet(S, { sky2: NIGHT, sunAt: [1180, 160] });
+    const PH = S.portrait;
+    // phone: Anna, her lamp, the sun and the listeners clear of the thread; Mary and Joseph in from the left edge
+    const AX = PH ? 940 : AX0, SUNX = PH ? 1000 : 1180;
+    const AK = [[4.05, AX], [4.5, 800]];
+    const TS = templeSet(S, { sky2: NIGHT, sunAt: [SUNX, 160] });
     const glowL = S.layer({ par: 0.45, sh: 0, flat: true });
     const lampG = glowL.add(`<g>${glowDisc(170, 'warm-glow', 1)}</g>`);
     const childG = glowL.add(`<g>${glowDisc(200, 'halo-glow', 1)}</g>`);
@@ -58,8 +61,8 @@ export default {
     return (t, time) => {
       const T = time;
       /* v36a — Anna the prophetess, very old */
-      mary.set({ x: 560, y: FL, s: 0.95, armF: 70, armB: 30, head: 8 - es(t, 4.4, 4.7) * 6, blink: blinkAt(T, 1) });
-      jos.set({ x: 440, y: FL + 4, s: 0.95, armF: 60, armB: 20, head: 4, blink: blinkAt(T, 2) });
+      mary.set({ x: PH ? 640 : 560, y: FL, s: 0.95, armF: 70, armB: 30, head: 8 - es(t, 4.4, 4.7) * 6, blink: blinkAt(T, 1) });
+      jos.set({ x: PH ? 545 : 440, y: FL + 4, s: 0.95, armF: 60, armB: 20, head: 4, blink: blinkAt(T, 2) });
       const nk = es(t, 0.1, 0.4, ease.out) * (1 - es(t, 0.95, 1.15, ease.in));
       hangAt(tag, AX - 40, lerp(-500, 300, nk), T, nk > 0.001 ? 1 : 0, 1.1, 0.9, 1);
       const nk2 = es(t, 0.25, 0.55, ease.out) * (1 - es(t, 0.95, 1.15, ease.in));
@@ -84,8 +87,8 @@ export default {
       const night = bump(t, 3.0, 3.45) + bump(t, 3.5, 3.95);
       TS.sk2.layer.fade(night * 0.95);
       TS.starL.fade(night);
-      hangAt(TS.sunEl, 1180, 160 + night * 400, T, 1 - night, 1, 0.5, 1);
-      hangAt(TS.moonEl, 1180, 560 - night * 400, T, night, 1, 0.5, 2);
+      hangAt(TS.sunEl, SUNX, 160 + night * 400, T, 1 - night, 1, 0.5, 1);
+      hangAt(TS.moonEl, SUNX, 560 - night * 400, T, night, 1, 0.5, 2);
       pose(flame, { x: 0, y: -160, s: night > 0.05 ? 1 + Math.sin(T * 9) * 0.05 : 0.001, o: night > 0.05 ? 1 : 0 });
       pose(lampG, { x: AX + 110, y: FL - 180, o: night * 0.9 });
       const kn = es(t, 3.0, 3.08) * (1 - es(t, 4.0, 4.08));
@@ -99,7 +102,7 @@ export default {
       stA.set({ x: ax, y: FL, s: 0.9, flip: true, o: stand, walk: moving(t, AK, 0.3) ? ax * 0.05 : undefined, amt: 0.6, armF: 30 + thank * 100, armB: 24 + thank * 10, head: -thank * 12, blink: blinkAt(T, 5) });
       pose(childG, { x: 600, y: FL - 170, s: 0.6 + thank * 0.5, o: 0.3 + thank * 0.6 });
       const lk = es(t, 4.3, 4.7, ease.out);
-      listen.set({ x: lerp(1500, 1010, lk), y: FL + 6, o: lk > 0.01 ? 1 : 0 });
+      listen.set({ x: lerp(1500, PH ? 890 : 1010, lk), y: FL + 6, o: lk > 0.01 ? 1 : 0 });
       const tk = es(t, 4.6, 4.75, ease.back);
       vpose(tell, { x: ax + 40, y: FL - 200, s: Math.max(0.001, tk), o: tk > 0.01 ? 1 : 0 });
       sparks.forEach((sp, i) => {

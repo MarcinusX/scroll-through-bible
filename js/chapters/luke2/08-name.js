@@ -11,8 +11,8 @@ import {
 } from './lib.js';
 
 const FL = ROOM_FLOOR;
-const CX = 1080, CY = 300;        // the picture of the Annunciation
-const NX = 800, NY = 240;         // the name
+const CX0 = 1080, CY0 = 300;      // the picture of the Annunciation
+const NX0 = 800, NY = 240;        // the name
 
 export default {
   id: 'lk2-name',
@@ -23,6 +23,8 @@ export default {
   cam: { x: [-20, 40], y: [-40, 40], z: [1, 1.1] },
   build(S) {
     const c = S.c;
+    // phone: the picture clear of the thread, the name moved left to keep the thread of light between them
+    const [CX, CY, NX] = S.portrait ? [990, 320, 660] : [CX0, CY0, NX0];
     const R = roomSet(S, { night: false });
     const P = S.layer({ par: 0.4, sh: 5 });
     const mary = S.puppet(P.add(person(c, { ...MARY, pose: 'sit' })));
@@ -42,7 +44,7 @@ export default {
       const T = time;
       /* v21a — the eighth day: the day-discs light one by one */
       const dk = es(t, 0.0, 0.2, ease.out) * (1 - es(t, 1.05, 1.3, ease.in));
-      pose(days, { x: NX - 231, y: lerp(-400, 200, dk), o: dk > 0.001 ? 1 : 0 });
+      pose(days, { x: NX0 - 231, y: lerp(-400, 200, dk), o: dk > 0.001 ? 1 : 0 });
       dayEls.forEach((d, i) => {
         const k = es(t, 0.1 + i * 0.07, 0.17 + i * 0.07);
         fade(d.lit, i === 7 ? k : k);

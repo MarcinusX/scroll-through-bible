@@ -10,8 +10,8 @@ import {
 } from './lib.js';
 
 const WK = [[0, 1500], [0.55, 900]];              // they come down the road
-const BENCH = 1060;
-const KX = 520;                                   // the young man by the doorpost
+const BENCH0 = 1060;
+const KX0 = 520;                                  // the young man by the doorpost
 const HEART = [608, NY - 116];
 const YOUTH = { ...BOY, robe: C.linen, mantle: mix(C.jesusMantle, C.roseRobe, 0.3), hairStyle: 'long', hair: C.hairJesus };
 
@@ -28,6 +28,9 @@ export default {
   cam: { x: [-80, 80], y: [-40, 40], z: [1, 1.14] },
   build(S) {
     const c = S.c;
+    // phone: Joseph's bench, the neighbours and the pictures of memory inside the screen
+    const BENCH = S.portrait ? 935 : BENCH0, NBX = S.portrait ? 800 : 1260;
+    const KX = S.portrait ? 545 : KX0;   // phone: the young Jesus off the left edge
     const N = nazSet(S);
     N.G.add(`<g transform="translate(${BENCH} ${NY + 2})">${workbench(c, 170)}</g>`);
     const grace = N.lightL.add(`<g>${glowDisc(230, 'halo-glow', 1)}${rayBurst(c, { n: 18, r0: 30, r1: 240, spread: 0.03, color: '#fff3cf', o: 0.3 })}</g>`);
@@ -74,7 +77,7 @@ export default {
         const show = es(t, 1.08 + m.i * 0.08, 1.3 + m.i * 0.08, ease.back);
         const k = es(t, 1.82 + m.i * 0.04, 2.05 + m.i * 0.04);
         const a = PI * (1.2 + m.i * 0.2);
-        const x0 = HEART[0] + 40 + Math.cos(a) * 170, y0 = HEART[1] - 160 + Math.sin(a) * 90 + Math.sin(T * 1.2 + m.i) * 4;
+        const x0 = HEART[0] + (S.portrait ? 80 : 40) + Math.cos(a) * 170, y0 = HEART[1] - 160 + Math.sin(a) * 90 + Math.sin(T * 1.2 + m.i) * 4;
         vpose(m.el, { x: lerp(x0, HEART[0], k), y: lerp(y0, HEART[1], k), s: Math.max(0.001, show * (1 - k * 0.8)), o: show > 0.01 && k < 0.98 ? 1 : 0 });
       });
       const hk = es(t, 1.3, 1.5, ease.back) * (1 - es(t, 2.2, 2.4));
@@ -89,13 +92,13 @@ export default {
       const gk = es(t, 2.1, 2.5);
       pose(grace, { x: KX + 10, y: NY - 170, s: 0.5 + gk * 0.6, r: T * 2, o: gk });
       const nb = es(t, 2.3, 2.6, ease.out);
-      neigh.set({ x: lerp(1600, 1260, nb), y: NY + 6, o: nb > 0.01 ? 1 : 0 });
+      neigh.set({ x: lerp(1600, NBX, nb), y: NY + 6, o: nb > 0.01 ? 1 : 0 });
       sparks.forEach((sp, i) => {
         const k = seg(t, 2.35 + i * 0.05, 2.9 + i * 0.05), a = PI * (1.05 + i * 0.18);
         vpose(sp, { x: KX + 10 + Math.cos(a) * (80 + k * 80), y: NY - 250 + Math.sin(a) * (50 + k * 40), s: 0.9 - k * 0.5, r: t * 90, o: bump(t, 2.35 + i * 0.05, 2.9 + i * 0.05) });
       });
 
-      S.cam.x = kf(t, [[0, 60], [0.9, 40], [1.1, -20], [2.0, -20], [2.3, 0]], ease.sine);
+      S.cam.x = kf(t, [[0, 60], [0.9, 40], [1.1, -20], [2.0, -20], [2.3, S.portrait ? -40 : 0]], ease.sine);
       S.cam.y = kf(t, [[0, 10], [1.1, 30], [2.0, 30], [2.3, -20]], ease.sine);
       S.cam.z = kf(t, [[0, 1.02], [1.1, 1.12], [2.0, 1.12], [2.3, 1.0]], ease.sine);
     };
