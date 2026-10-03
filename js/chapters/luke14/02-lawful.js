@@ -5,7 +5,7 @@
 // throws up his hands, and Jesus sends him away; he goes off through the gateway, light on his feet.
 import { C, person, CAST, blinkAt, pose, lerp } from '../kit.js';
 import { seg, es, ease, bump } from '../../core/anim.js';
-import { rulerHouse, rulerTable, RH, DROPSY, dropsyMan, bubble, hush, question, sparkle, voiceRings, headAt, hand, kf, moving, popAt, tr, sheet } from './lib.js';
+import { rulerHouse, rulerTable, RH, rhHX, DROPSY, dropsyMan, bubble, hush, question, sparkle, voiceRings, headAt, hand, kf, moving, popAt, tr, sheet } from './lib.js';
 
 const MX = 700;          // where the sick man stands, before Him
 
@@ -55,7 +55,7 @@ export default {
         arms: { 0: [20 + bow * 40, 10 + bow * 50], 1: [60 - bow * 20, 10], 2: [20 + bow * 30, 10], 3: [40 + bow * 20, 10 + bow * 40] },
         hostArmF: 30 + bow * 40, hostArmB: 10 + bow * 60, hostHead: 6 + bow * 14,
       });
-      const HP = [[RH.SEATS[0], RH.SEAT, 0.98, false], [RH.SEATS[1], RH.SEAT, 0.98, false], [RH.SEATS[2], RH.SEAT, 0.98, false], [RH.SEATS[3], RH.SEAT, 0.98, true], [RH.HX, RH.HY, 1.02, true]];
+      const HP = [[RH.SEATS[0], RH.SEAT, 0.98, false], [RH.SEATS[1], RH.SEAT, 0.98, false], [RH.SEATS[2], RH.SEAT, 0.98, false], [RH.SEATS[3], RH.SEAT, 0.98, true], [rhHX(S), RH.HY, 1.02, true]];
       hushes.forEach((e, i) => {
         const [x, y, s, fl] = HP[i];
         const [hx, hy] = headAt(x, y, s, fl, 62);
@@ -80,7 +80,7 @@ export default {
       S.cam.x = kf(t, [[0, -10], [1.0, -10], [1.9, -40], [2.3, -50], [2.9, -80]]);
       S.cam.y = kf(t, [[0, 120], [1.0, 110], [2.0, 150]]);
       S.cam.z = kf(t, [[0, 1.2], [1.0, 1.16], [2.0, 1.26], [2.9, 1.22]]);
-      if (S.portrait) { S.cam.x = kf(t, [[0, -40], [2.5, -60], [2.9, -90]]); S.cam.z = 1.0; }
+      if (S.portrait) { S.cam.x = kf(t, [[0, 0], [2.0, 0], [2.6, -40], [2.9, -90]]); S.cam.z = 1.0; }
     };
   },
 };

@@ -29,7 +29,7 @@ export default {
     { v: 26 },
     { v: 27 },
   ],
-  cam: { x: [-90, 20], y: [0, 160], z: [1, 1.24] },
+  cam: { x: [-130, 20], y: [0, 160], z: [1, 1.24] },
   build(S) {
     const R = roadSet(S, { skyCols: MORNING });
     const c = R.c;
@@ -68,17 +68,18 @@ export default {
       /* v26 — father and mother, wife and children, brothers and sisters, and even his own life */
       const out = es(t, 2.02, 2.2);
       const step = es(t, 2.48, 2.64);
-      const dx = lerp(DX0 - 60, DX0, out) + step * (DX1 - DX0);
+      const D0 = S.portrait ? 660 : DX0, FAMX = S.portrait ? 570 : 470;   // phone: the family stays inside the screen
+      const dx = lerp(D0 - 60, D0, out) + step * (DX1 - D0);
       const on = seg(t, 2.0, 2.06);
       const offer = es(t, 2.62, 2.74);
       disc.set({ x: dx, y: FEET + 4, s: 1.0, flip: false, o: on, walk: (out > 0 && out < 1) || (step > 0 && step < 1) ? dx * 0.06 : undefined, amt: 0.7, armF: 20 + step * 20 + offer * 50, armB: -30 + step * 40 + offer * 60, head: -2 + es(t, 2.3, 2.45) * 10 - offer * 14, lean: offer * 6, blink: blinkAt(T, 3) });
       const draw = es(t, 2.3, 2.5);
-      fam.set({ x: 470 - draw * 50, y: FEET + 4 - draw * 6, s: 1 - draw * 0.1, o: on * (1 - es(t, 3.2, 3.4)) });
-      const [bx, by] = hand(DX0, FEET + 4, 1.0, false, -30);
+      fam.set({ x: FAMX - draw * 50, y: FEET + 4 - draw * 6, s: 1 - draw * 0.1, o: on * (1 - es(t, 3.2, 3.4)) });
+      const [bx, by] = hand(D0, FEET + 4, 1.0, false, -30);
       const TG = [[-70, 0.9], [-30, 0.86], [14, 0.86], [44, 0.6], [70, 0.52], [-110, 0.9]];
       ribs.forEach((r, i) => {
         const [fx, fs] = TG[i];
-        const tx = 470 - draw * 50 + fx * (1 - draw * 0.1), ty = FEET + 4 - 80 * fs;
+        const tx = FAMX - draw * 50 + fx * (1 - draw * 0.1), ty = FEET + 4 - 80 * fs;
         ropeBetween(r, [bx - 8, by - 2], [tx + 26 * fs, ty], on * (1 - es(t, 2.3, 2.44)));
       });
       const [lx, ly] = hand(DX1, FEET + 4, 1.0, false, 70, 6);
@@ -100,7 +101,7 @@ export default {
       S.cam.x = kf(t, [[0, 0], [2.0, 0], [2.3, -60], [3.0, -40], [3.5, -10]]);
       S.cam.y = kf(t, [[0, 120], [2.0, 130], [2.3, 150], [3.0, 130]]);
       S.cam.z = kf(t, [[0, 1.14], [2.0, 1.14], [2.3, 1.22], [3.0, 1.16]]);
-      if (S.portrait) { S.cam.x = kf(t, [[0, 0], [2.0, 0], [2.3, -90], [3.0, -60], [3.5, -40]]); S.cam.z = 1.0; }
+      if (S.portrait) { S.cam.x = kf(t, [[0, 0], [2.0, 0], [2.3, -130], [3.0, -110], [3.5, -40]]); S.cam.z = 1.0; }
       void shade; void moving;
     };
   },

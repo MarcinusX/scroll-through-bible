@@ -6,6 +6,7 @@
 import { C, person, blinkAt, pose, lerp } from '../kit.js';
 import { seg, es, ease, bump } from '../../core/anim.js';
 import { weddingHall, weddingTable, WH, HUMBLE, HOST, bubble, sparkle, wreath, headAt, hand, kf, moving, popAt, makeCutter, tr } from './lib.js';
+import { whFirst, whLast } from './lib.js';
 
 export default {
   id: 'lk14-higher',
@@ -16,7 +17,7 @@ export default {
     { v: 10, cont: true, text: 'Wtedy przyjdzie gospodarz i powie ci: "Przyjacielu, przesiądź się wyżej!";' },
     { v: 10, cont: true, text: 'i spotka cię zaszczyt wobec wszystkich współbiesiadników.' },
   ],
-  cam: { x: [-80, 60], y: [0, 120], z: [1, 1.16] },
+  cam: { x: [-140, 180], y: [0, 120], z: [1, 1.16] },
   build(S) {
     const c = S.c;
     const H = weddingHall(S);
@@ -35,7 +36,7 @@ export default {
     return (t, time) => {
       const T = time;
       H.update(t, T);
-      const [FX, FY] = WH.FIRST, [LX, LY] = WH.LAST;
+      const [FX, FY] = whFirst(S), [LX, LY] = whLast(S);
       /* v10a — he goes and sits in the last place */
       const K1 = [[0.04, 300], [0.2, 360], [0.34, 360], [0.48, LX - 6]];
       const x1 = kf(t, K1);
@@ -50,7 +51,7 @@ export default {
       hLow.set({ x: LX, y: LY, s: 1.0, o: sit1 * (1 - rise), armF: 20 + look * 20, armB: 10 + look * 40, head: 10 - look * 16, blink: blinkAt(T, 3) });
       const honour = es(t, 2.5, 2.7);
       hUp.set({ x: FX, y: FY, s: 1.0, flip: true, o: sit2, armF: 30 + honour * 40, armB: 10 + honour * 30, head: 6 - honour * 4, blink: blinkAt(T, 3) });
-      const HK = [[1.02, 1290], [1.42, LX + 90], [1.88, LX + 90], [2.4, FX + 70]];
+      const HK = [[1.02, 1290], [1.42, LX + 90], [1.88, LX + 90], [2.4, FX + (S.portrait ? 50 : 70)]];
       const hx = kf(t, HK);
       const arms = es(t, 1.44, 1.56) * (1 - es(t, 1.82, 1.9));
       const lead = t > 1.86 && t < 2.44 ? 1 : 0;
@@ -75,7 +76,7 @@ export default {
       S.cam.x = kf(t, [[-0.5, -40], [0.5, -60], [1.0, -20], [1.4, -40], [1.9, -30], [2.4, 50]]);
       S.cam.y = kf(t, [[-0.5, 60], [0.4, 80]]);
       S.cam.z = kf(t, [[-0.5, 1.02], [0.4, 1.1], [1.0, 1.04], [1.4, 1.1], [2.4, 1.08]]);
-      if (S.portrait) { S.cam.x = kf(t, [[0, -140], [1.0, -60], [1.4, -120], [1.9, -100], [2.4, 90]]); S.cam.z = 1.0; }
+      if (S.portrait) { S.cam.x = kf(t, [[0, -140], [1.0, -60], [1.4, -120], [1.9, -100], [2.4, 180]]); S.cam.z = 1.0; }
       void hand; void bump;
     };
   },

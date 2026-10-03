@@ -234,9 +234,10 @@ export function longTable(c, w = 600, h = 50, { cloth = C.linen, band: bandCol =
   return s.out();
 }
 /** a vine pergola seen from below: beams, leaves and hanging grapes (origin world; y0 = beam line) */
-export function pergola(c, { x0 = -900, x1 = 2500, y0 = 150 } = {}) {
+export function pergola(c, { x0 = -900, x1 = 2500, y0 = 150, top = y0 - 1600 } = {}) {
   const s = sheet();
-  s.p(c.cut([[x0, y0 - 1600], [x1, y0 - 1600], [x1, y0 - 16], [x0, y0 - 14]], 0.6, 30), mix(C.wood3, C.plaster2, 0.3));
+  s.p(c.cut([[x0, top], [x1, top], [x1, y0 - 16], [x0, y0 - 14]], 0.6, 30), mix(C.wood3, C.plaster2, 0.3));
+  if (top > y0 - 1600) s.p(c.cut([[x0, top - 4], [x1, top - 4], [x1, top + 10], [x0, top + 10]], 0.4, 20), C.wood2);   // the band's top edge (phone)
   let beams = '';
   for (let x = x0 + 40; x < x1; x += 150) beams += c.cut([[x, y0 - 30], [x + 22, y0 - 30], [x + 22, y0 + 6], [x, y0 + 6]], 0.3, 5);
   s.p(beams, C.wood2);
@@ -259,6 +260,9 @@ export function pergola(c, { x0 = -900, x1 = 2500, y0 = 150 } = {}) {
 
 /* ================================================================== the house of the ruler of the Pharisees */
 export const RH = { FL: 736, SEAT: 662, TOP: 612, TX0: 500, TX1: 1110, JX: 800, SEATS: [560, 640, 720, 880, 960, 1040], HX: 1176, HY: 718, GATE: [236, 372], HONOUR: [960, 1040] };
+/** phone (portrait): the host's couch and the sabbath tag come in from the right edge, clear of the progress thread */
+export const rhHX = (S) => (S.portrait ? 1045 : RH.HX);
+export const rhSabX = (S) => (S.portrait ? 985 : 1080);
 /**
  * The court of the ruler's house at noon on the sabbath: sky and a far garden with the town; a row of columns and a
  * low parapet (the gateway to the street on the left); the vine pergola overhead; a stone floor; the long table with
@@ -297,7 +301,8 @@ export function rulerHouse(S, { skyCols = NOON, honour = true } = {}) {
   colL.add(sheet().p(c.cut(c.rect(GATE[0] - 4, 380, GATE[1] - GATE[0] + 8, 232), 0.3, 6), mix(C.sand, C.dawn, 0.4)).p(c.cut([[GATE[0], 520], [GATE[0] + 40, 470], [GATE[0] + 90, 480], [GATE[1], 440], [GATE[1], 612], [GATE[0], 612]], 0.4, 6), mix(C.plaster2, C.skyBlue, 0.25)).out());
   // the pergola
   const vineL = S.layer({ par: 0.34, sh: 5 });
-  vineL.add(pergola(c, { y0: 236 }));
+  // on a tall screen the pergola is only a band of roof over the court, with the sky above it
+  vineL.add(pergola(c, { y0: 236, top: S.portrait ? 236 - 150 : undefined }));
   // the floor
   const floorL = S.layer({ par: 0.4, sh: 3 });
   const f = sheet();
@@ -321,16 +326,17 @@ export function rulerHouse(S, { skyCols = NOON, honour = true } = {}) {
   const dishes = [[540, bowl(c, { food: 'bread', color: C.stone2 })], [598, cup(c)], [676, loaf(c, 14)], [742, bowl(c, { food: 'fruit', color: C.skyVeil })], [830, cup(c, C.clay)], [868, loaf(c, 12)], [930, `<g transform="scale(.8)">${grapes(c)}</g>`], [1000, bowl(c, { food: 'bread', color: C.stone2 })], [1070, `<g transform="scale(.5)">${jug(c)}</g>`]];
   tableL.add(dishes.map(([x, m]) => `<g transform="translate(${x} ${TOP - 2})">${m}</g>`).join(''));
   const couchL = S.layer({ par: 0.48, sh: 4 });
-  couchL.add(`<g transform="translate(${RH.HX} ${RH.HY + 2})">${headCouch(c, 150)}</g>`);
+  couchL.add(`<g transform="translate(${rhHX(S)} ${RH.HY + 2})">${headCouch(c, 150)}</g>`);
   const frontL = S.layer({ par: 0.5, sh: 5 });
   const fx = S.layer({ par: 0.52, sh: 3 });
   // the sabbath tag hanging from the pergola (right)
   const sabL = S.layer({ par: 0.36, sh: 4 });
-  const sab = hanging(sabL, sabbathTag(c, tr("szabat", "Sabbath")), { x: 1080, y: 300, len: 900 });
+  const SABX = rhSabX(S);
+  const sab = hanging(sabL, sabbathTag(c, tr("szabat", "Sabbath")), { x: SABX, y: 300, len: 900 });
   return {
     c, sk, view, colL, vineL, floorL, bolL, bolsters, backL, tableL, couchL, frontL, fx, sab,
     update(T) {
-      swing(sab, 1080, 300, T, 1.2, 0.7, 1);
+      swing(sab, SABX, 300, T, 1.2, 0.7, 1);
     },
   };
 }
@@ -347,7 +353,7 @@ export function rulerTable(S, R, { seats = [0, 1, 2, 3], hostPose = 'sit' } = {}
         const toJ = g.x < RH.JX ? 1 : -1; // facing Jesus
         g.p.set({ x: g.x, y: RH.SEAT, s: 0.98, flip: toJ < 0, armF: (arms[g.i] ?? [20])[0], armB: (arms[g.i] ?? [20, 10])[1] ?? 10, head: heads[g.i] ?? -2 + look * 4, blink: blinkAt(T, g.seed) });
       });
-      host.set({ x: RH.HX, y: RH.HY, s: 1.02, flip: true, armF: hostArmF, armB: hostArmB, head: hostHead, lean: hostLean, blink: blinkAt(T, 3) });
+      host.set({ x: rhHX(S), y: RH.HY, s: 1.02, flip: true, armF: hostArmF, armB: hostArmB, head: hostHead, lean: hostLean, blink: blinkAt(T, 3) });
     },
   };
 }
@@ -395,6 +401,9 @@ export function ropeBetween(el, [x0, y0], [x1, y1], o = 1) {
 
 /* ================================================================== the wedding hall (the parable of the places) */
 export const WH = { FL: 742, SEAT: 668, TOP: 616, TX0: 500, TX1: 1060, SEATS: [548, 626, 704, 782, 860, 938, 1016], COUPLE: [782, 860], FIRST: [1128, 724], LAST: [446, 742], DOOR: [262, 392] };
+/** phone (portrait): the first place and the last come in from the edges of the screen */
+export const whFirst = (S) => (S.portrait ? [1075, WH.FIRST[1]] : WH.FIRST);
+export const whLast = (S) => (S.portrait ? [500, WH.LAST[1]] : WH.LAST);
 /** the wedding guests at the table (not the couple): seat indices */
 export const WG = [0, 1, 2, 5, 6];
 export function weddingLook(c, i) {
@@ -424,7 +433,9 @@ export function weddingHall(S) {
   const WINS = [600, 800, 1000, 1200];
   let holes = WINS.map((x) => c.hole(arch(x, 116, 560, 380), 0.3, 6)).join('');
   holes += c.hole([[DOOR[0], FL - 130], [DOOR[0], 450], ...c.arc((DOOR[0] + DOOR[1]) / 2, 450, (DOOR[1] - DOOR[0]) / 2, 56, PI, 2 * PI, 12), [DOOR[1], 450], [DOOR[1], FL - 130]], 0.3, 6);
-  s.p(c.cut([[-900, -1400], [2500, -1400], [2500, FL - 126], [-900, FL - 126]], 0.6, 20) + holes, plaster);
+  // on a tall screen the hall's wall stops at the roof (a band of ceiling), with the sky above it
+  const WTOP = S.portrait ? 40 : -1400;
+  s.p(c.cut([[-900, WTOP], [2500, WTOP], [2500, FL - 126], [-900, FL - 126]], 0.6, 20) + holes, plaster);
   s.p(c.cut([[-900, 560], [2500, 560], [2500, FL - 126], [-900, FL - 126]], 0.5, 16) + c.hole([[DOOR[0], FL - 120], [DOOR[0], 556], [DOOR[1], 556], [DOOR[1], FL - 120]], 0.3, 6), plaster2);
   let rims = WINS.map((x) => c.ribbon(arch(x, 116, 560, 380).slice(1, -1), 7)).join('');
   rims += c.ribbon([[DOOR[0], 612], [DOOR[0], 450], ...c.arc((DOOR[0] + DOOR[1]) / 2, 450, (DOOR[1] - DOOR[0]) / 2, 56, PI, 2 * PI, 12), [DOOR[1], 450], [DOOR[1], 612]], 10);
@@ -434,7 +445,8 @@ export function weddingHall(S) {
   let vine = '';
   for (let x = -880; x < 2500; x += 40) vine += c.cut(c.ell(x, 277 + (Math.floor(x / 40) % 2 ? -3 : 3), 8, 4, 8, 0.5), 0.2, 3);
   s.x(vine, C.cream, 'opacity=".8"');
-  s.p(c.cut([[-900, -1400], [2500, -1400], [2500, 200], [-900, 200]], 0.5, 20), mix(C.wood3, C.plaster2, 0.4));
+  s.p(c.cut([[-900, WTOP], [2500, WTOP], [2500, 200], [-900, 200]], 0.5, 20), mix(C.wood3, C.plaster2, 0.4));
+  if (S.portrait) s.p(c.cut([[-900, WTOP - 4], [2500, WTOP - 4], [2500, WTOP + 10], [-900, WTOP + 10]], 0.4, 20), C.wood2);
   let beams = '';
   for (let x = -880; x < 2500; x += 130) beams += c.cut(c.rect(x, 188, 30, 26), 0.3, 5);
   s.p(beams, C.wood);
@@ -462,9 +474,10 @@ export function weddingHall(S) {
   tableL.add(dishes.map(([x, m]) => `<g transform="translate(${x} ${TOP - 2})">${m}</g>`).join(''));
   // the first place and the last
   const placeL = S.layer({ par: 0.48, sh: 4 });
-  placeL.add(`<g transform="translate(${WH.FIRST[0]} ${WH.FIRST[1] + 4})">${headCouch(c, 130, mix(C.sun, C.ochre, 0.3))}</g>`);
-  placeL.add(`<g transform="translate(${WH.FIRST[0] + 8} ${WH.FIRST[1] - 60})">${sheet().p(c.cut(c.star(0, 0, 12, 5, 5), 0.3, 3), C.sun).out()}</g>`);
-  placeL.add(`<g transform="translate(${WH.LAST[0]} ${WH.LAST[1] + 2})">${strawMat(c, 96)}</g>`);
+  const [F0, F1] = whFirst(S), [L0, L1] = whLast(S);
+  placeL.add(`<g transform="translate(${F0} ${F1 + 4})">${headCouch(c, 130, mix(C.sun, C.ochre, 0.3))}</g>`);
+  placeL.add(`<g transform="translate(${F0 + 8} ${F1 - 60})">${sheet().p(c.cut(c.star(0, 0, 12, 5, 5), 0.3, 3), C.sun).out()}</g>`);
+  placeL.add(`<g transform="translate(${L0} ${L1 + 2})">${strawMat(c, 96)}</g>`);
   const frontL = S.layer({ par: 0.5, sh: 5 });
   const fx = S.layer({ par: 0.52, sh: 3 });
   // lanterns and garlands on the flies
@@ -657,7 +670,9 @@ export function supperHall(S) {
   const arch = (x, w, y0, ys) => [[x - w / 2, y0], [x - w / 2, ys], ...c.arc(x, ys, w / 2, w * 0.5, PI, 2 * PI, 12), [x + w / 2, ys], [x + w / 2, y0]];
   let holes = WINS.map((x) => c.hole(arch(x, 104, 540, 400), 0.3, 6)).join('');
   holes += c.hole([[DOOR[0], FL - 120], [DOOR[0], 450], ...c.arc((DOOR[0] + DOOR[1]) / 2, 450, (DOOR[1] - DOOR[0]) / 2, 60, PI, 2 * PI, 12), [DOOR[1], 450], [DOOR[1], FL - 120]], 0.3, 6);
-  s.p(c.cut([[-900, -1400], [2500, -1400], [2500, FL - 118], [-900, FL - 118]], 0.6, 20) + holes, wc);
+  // on a tall screen the room's wall stops at the roof (a band of ceiling), with the sky above it
+  const WTOP = S.portrait ? 80 : -1400;
+  s.p(c.cut([[-900, WTOP], [2500, WTOP], [2500, FL - 118], [-900, FL - 118]], 0.6, 20) + holes, wc);
   s.p(c.cut([[-900, 560], [2500, 560], [2500, FL - 118], [-900, FL - 118]], 0.5, 16) + c.hole([[DOOR[0], FL - 116], [DOOR[0], 556], [DOOR[1], 556], [DOOR[1], FL - 116]], 0.3, 6), wc2);
   let rims = WINS.map((x) => c.ribbon(arch(x, 104, 540, 400).slice(1, -1), 7)).join('');
   rims += c.ribbon([[DOOR[0], FL - 120], [DOOR[0], 450], ...c.arc((DOOR[0] + DOOR[1]) / 2, 450, (DOOR[1] - DOOR[0]) / 2, 60, PI, 2 * PI, 12), [DOOR[1], 450], [DOOR[1], FL - 120]], 12);
@@ -666,7 +681,8 @@ export function supperHall(S) {
   let mz = '';
   for (let x = -880; x < 2500; x += 34) mz += c.poly([[x, 306], [x + 17, 306], [x + 17, 318], [x + 8, 318], [x + 8, 312], [x, 312]]);
   s.x(mz, C.cream, 'opacity=".75"');
-  s.p(c.cut([[-900, -1400], [2500, -1400], [2500, 240], [-900, 240]], 0.5, 20), mix(C.wood3, C.plaster2, 0.3));
+  s.p(c.cut([[-900, WTOP], [2500, WTOP], [2500, 240], [-900, 240]], 0.5, 20), mix(C.wood3, C.plaster2, 0.3));
+  if (S.portrait) s.p(c.cut([[-900, WTOP - 4], [2500, WTOP - 4], [2500, WTOP + 10], [-900, WTOP + 10]], 0.4, 20), C.wood2);
   let beams = '';
   for (let x = -880; x < 2500; x += 120) beams += c.cut(c.rect(x, 228, 28, 26), 0.3, 5);
   s.p(beams, C.wood);
@@ -745,7 +761,7 @@ export function excuseFlat(S) {
   const { FL, FIELD, YARD, HOUSE, DOOR } = EX;
   sky(S, EVE);
   const hangL = S.layer({ par: 0.04, sh: 4 });
-  const sunEl = hanging(hangL, sun(c, 36, { disc: C.sunDeep, inner: C.sun }), { x: 1180, y: 300, len: 900 });
+  const sunEl = hanging(hangL, sun(c, 36, { disc: C.sunDeep, inner: C.sun }), { x: S.portrait ? 1040 : 1180, y: 300, len: 900 });   // phone: the sun clear of the progress thread
   const far = S.layer({ par: 0.14, sh: 2 });
   const h1 = hillsWith(c, { y: 470, amps: [16, 7, 3], lens: [900, 330, 120], color: mix(C.hillMid, C.duskViolet, 0.2), trees: 14, treeColor: mix(C.sage, C.duskViolet, 0.15), treeH: 18 });
   far.add(h1.markup + town(c, { x: 820, y: h1.fn(1150) + 14, n: 8, spread: 360, sc: 0.5, wall: mix(C.plaster, C.dusk, 0.2) }));
@@ -790,7 +806,7 @@ export function excuseFlat(S) {
   const frontL = S.layer({ par: 0.62, sh: 5 });
   const fx = S.layer({ par: 0.64, sh: 3 });
   storyFrame(S);
-  return { c, sunEl, far, G, doorDark, yardL, doorL, road, frontL, fx, update(T) { swing(sunEl, 1180, 300, T, 0.8, 0.5); } };
+  return { c, sunEl, far, G, doorDark, yardL, doorL, road, frontL, fx, update(T) { swing(sunEl, S.portrait ? 1040 : 1180, 300, T, 0.8, 0.5); } };
 }
 
 /** little pictures for the servant's report: a field, an ox's head, a bride's veil (origin centre, ~40 wide each) */

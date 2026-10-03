@@ -23,7 +23,7 @@ export default {
   ],
   cam: { x: [-60, 20], y: [0, 160], z: [1, 1.24] },
   build(S) {
-    const R = roadSet(S, { skyCols: GOLDEN, sunAt: [1180, 200] });
+    const R = roadSet(S, { skyCols: GOLDEN, sunAt: S.portrait ? [1010, 200] : [1180, 200] });   // phone: the sun clear of the progress thread
     const c = R.c;
     const cL = S.layer({ par: 0.5, sh: 4 });
     const crowds = [[240, 'lk14-cr1', 6], [430, 'lk14-cr2', 6]].map(([x, seed, n]) => cL.sprite(knot(seed, n, { s: 0.8, spread: 40, flip: false, arms: [0, 24] }), x, FEET - 6));

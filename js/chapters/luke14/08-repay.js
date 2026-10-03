@@ -27,7 +27,7 @@ export default {
     { v: 14, text: 'A będziesz szczęśliwy, ponieważ nie mają czym tobie się odwdzięczyć;' },
     { v: 14, cont: true, text: 'odpłatę bowiem otrzymasz przy zmartwychwstaniu sprawiedliwych».' },
   ],
-  cam: { x: [-60, 60], y: [-40, 120], z: [1, 1.16] },
+  cam: { x: [-60, 100], y: [-40, 120], z: [1, 1.16] },
   build(S) {
     const c = S.c;
     const F = courtFlat(S);
@@ -58,7 +58,7 @@ export default {
 
     return (t, time) => {
       const T = time;
-      const HX = CF.HX, FL = CF.FL;
+      const HX = S.portrait ? 1060 : CF.HX, FL = CF.FL;   // phone: the host stands inside the screen
       /* v12b — friends, brothers, relatives, rich neighbours */
       const gone = es(t, 2.0, 2.12);
       const lift = es(t, 1.06, 1.16) * (1 - es(t, 1.5, 1.56));
@@ -106,7 +106,7 @@ export default {
       pose(glow, { x: HX, y: FL - 110, o: joy * 0.9 });
       const [hdx, hdy] = headAt(HX, FL, 1.02, true);
       popAt(hrt, t, 3.3, undefined, hdx - 4, hdy - 62 + (T ? Math.sin(T * 2) * 3 : 0), { d: 0.12 });
-      popAt(happy, t, 3.4, 4.2, hdx - 20, hdy - 110, { d: 0.12 });
+      popAt(happy, t, 3.4, 4.2, hdx + (S.portrait ? 6 : -20), hdy - (S.portrait ? 150 : 110), { d: 0.12 });   // phone: clear of the tags
       /* v14b — the resurrection of the just */
       const dawn = es(t, 4.02, 4.4);
       F.dawnL.fade(dawn);

@@ -21,7 +21,7 @@ export default {
     const voice = voiceRings(R.fx, c, { n: 3, color: C.sun, r: 26, w: 4 });
     const gv = voiceRings(R.fx, c, { n: 2, color: C.clay, r: 22, w: 4 });
     const kf_ = R.fx.add(`<g opacity="0">${kingdomFeast(c, 62)}</g>`);
-    const say = R.fx.add(`<g opacity="0">${bubble(c, [tr('Szczęśliwy ten, kto będzie', 'Blessed is he who will'), tr('ucztował w królestwie Bożym!', 'feast in God’s Kingdom!')], { size: 19, dir: -1 })}</g>`);
+    const say = R.fx.add(`<g opacity="0">${bubble(c, [tr('Szczęśliwy ten, kto będzie', 'Blessed is he who will'), tr('ucztował w królestwie Bożym!', 'feast in God’s Kingdom!')], { size: 19, dir: S.portrait ? 1 : -1 })}</g>`);
 
     return (t, time) => {
       const T = time;
@@ -33,7 +33,7 @@ export default {
       gv(ghx, ghy, bump(t, 0.1, 0.95), T, { spread: 1.6 });
       popAt(say, t, 0.14, 1.0, ghx + 10, ghy - 30, { d: 0.12 });
       const kk = es(t, 0.3, 0.6, ease.out) * (1 - es(t, 1.6, 1.9, ease.in));
-      pose(kf_, { x: 920, y: lerp(-700, 330, kk) + (T ? Math.sin(T * 1.1) * 3 : 0), o: kk > 0.01 ? 1 : 0 });
+      pose(kf_, { x: S.portrait ? 770 : 920, y: lerp(-700, 330, kk) + (T ? Math.sin(T * 1.1) * 3 : 0), o: kk > 0.01 ? 1 : 0 });
       /* v16a — He answers him */
       const speak = es(t, 1.06, 1.18);
       jSit.set({ x: RH.JX, y: RH.SEAT, s: 1.02, flip: false, armF: 30 + speak * 40, armB: 10 + speak * 60, head: -2 + es(t, 0.2, 0.4) * -4, blink: blinkAt(T) });

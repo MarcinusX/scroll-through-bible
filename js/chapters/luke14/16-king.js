@@ -18,12 +18,13 @@ export default {
     { v: 31 },
     { v: 32 },
   ],
-  cam: { x: [-40, 80], y: [0, 120], z: [1, 1.16] },
+  cam: { x: [-60, 80], y: [0, 120], z: [1, 1.16] },
   build(S) {
     const c = S.c;
     sky(S, WAR);
     const hangL = S.layer({ par: 0.04, sh: 4 });
-    const sunEl = hanging(hangL, sun(c, 38), { x: 1160, y: 190, len: 800 });
+    const SUNX = S.portrait ? 1050 : 1160;   // phone: the sun clear of the progress thread
+    const sunEl = hanging(hangL, sun(c, 38), { x: SUNX, y: 190, len: 800 });
     const cls = [[560, 170, 170], [900, 120, 130]].map(([x, y, w], i) => ({ x, y, i, el: hanging(hangL, cloud(c, w), { x, y, len: 800 }) }));
     const far = S.layer({ par: 0.08, sh: 2 });
     far.add(band(c, { y: 430, amps: [18, 8, 3], lens: [1000, 360, 120], color: mix(C.hillFar, C.duskViolet, 0.15) }).markup);
@@ -56,13 +57,14 @@ export default {
 
     return (t, time) => {
       const T = time;
-      swing(sunEl, 1160, 190, T, 1, 0.6);
+      swing(sunEl, SUNX, 190, T, 1, 0.6);
       cls.forEach((k) => swing(k.el, k.x + (T ? Math.sin(T * 0.1 + k.i) * 16 : 0), k.y, T, 1.2, 0.6, k.i));
       /* the other king comes against him — and halts while still far off */
       const adv = es(t, -0.3, 1.2, (x) => x) ;
       const halt = es(t, 1.5, 1.8);
-      farArmy.set({ x: 1060 - adv * 70, y: FARY, o: 1 });
-      dusts.forEach((d, i) => pose(d, { x: 1000 - adv * 70 + i * 140, y: FARY + 4, s: 0.9 + (T ? Math.sin(T * 2 + i) * 0.1 : 0), o: 0.6 * (1 - halt) }));
+      const FA = S.portrait ? -130 : 0;   // phone: the twenty thousand come on inside the screen
+      farArmy.set({ x: 1060 + FA - adv * 70, y: FARY, o: 1 });
+      dusts.forEach((d, i) => pose(d, { x: 1000 + FA - adv * 70 + i * 140, y: FARY + 4, s: 0.9 + (T ? Math.sin(T * 2 + i) * 0.1 : 0), o: 0.6 * (1 - halt) }));
       near.set({ x: 470, y: GY - 26 });
       /* v31 — he sits down first and considers: ten thousand against twenty */
       pose(table, { x: MAPX, y: GY - 60 });
@@ -72,8 +74,9 @@ export default {
       const send = es(t, 1.04, 1.16) * (1 - es(t, 1.6, 1.8));
       king.set({ x: KX, y: GY, s: 1.02, flip: false, armF: 40 + think * 80 + send * 60, armB: 20 + send * 30, head: 10 - think * 4 - send * 8, blink: blinkAt(T, 2) });
       counsel.set({ x: MAPX + 130, y: GY, s: 0.98, flip: true, armF: 40 + bump(t, 0.2, 0.6) * 40, armB: 10, head: 10, blink: blinkAt(T, 4) });
-      popAt(t10, t, 0.08, undefined, 480, 510, { d: 0.12 });
-      popAt(t20, t, 0.16, undefined, 1150, 470, { d: 0.12 });
+      const P = S.portrait;   // phone: both numbers inside the screen
+      popAt(t10, t, 0.08, undefined, P ? 560 : 480, 510, { d: 0.12 });
+      popAt(t20, t, 0.16, undefined, P ? 1040 : 1150, 470, { d: 0.12 });
       popAt(q, t, 0.5, 1.05, MAPX, 520 + (T ? Math.sin(T * 1.6) * 4 : 0), { d: 0.12 });
       /* v32 — while the other is yet far off, he sends an embassy for terms of peace */
       envoys.forEach((p, i) => {

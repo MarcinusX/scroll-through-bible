@@ -18,7 +18,7 @@ export default {
     { v: 34, cont: true, text: 'lecz jeśli nawet sól smak swój utraci, to czymże ją zaprawić?' },
     { v: 35, text: 'Nie nadaje się ani do ziemi, ani do nawozu; precz się ją wyrzuca.' },
   ],
-  cam: { x: [-40, 120], y: [0, 140], z: [1, 1.2] },
+  cam: { x: [-120, 120], y: [0, 140], z: [1, 1.2] },
   build(S) {
     const c = S.c;
     sky(S, DAY);

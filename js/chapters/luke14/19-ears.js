@@ -15,7 +15,7 @@ export default {
   ],
   cam: { x: [-20, 20], y: [0, 160], z: [1, 1.2] },
   build(S) {
-    const R = roadSet(S, { skyCols: EVENING, sunAt: [1150, 300] });
+    const R = roadSet(S, { skyCols: EVENING, sunAt: S.portrait ? [1030, 330] : [1150, 300] });   // phone: the sun clear of the progress thread
     const c = R.c;
     const cL = S.layer({ par: 0.5, sh: 4 });
     const left = cL.sprite(knot('lk14-e1', 7, { s: 0.84, spread: 44, flip: false, arms: [0, 20], head: [-10, -2] }), 450, FEET - 4);

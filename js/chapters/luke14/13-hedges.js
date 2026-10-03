@@ -71,7 +71,7 @@ export default {
       /* v24 — the house full, the door shut; the invited left outside */
       pose(H.lit, { o: es(t, 1.1, 1.4) });
       pose(H.doorLeaf, { x: HG.DOOR[0], y: HG.HOUSE[1], sx: Math.max(0.05, es(t, 1.3, 1.42)), sy: 1 });
-      three.set({ x: 600, y: 796, o: es(t, 1.36, 1.5) });
+      three.set({ x: S.portrait ? 670 : 600, y: 796, o: es(t, 1.36, 1.5) });   // phone: the four left outside stand inside the screen
       popAt(none, t, 1.5, undefined, HG.HOUSE[0] - 40, HG.HOUSE[1] - 190, { d: 0.12 });
 
       S.cam.x = kf(t, [[-0.5, 0], [0.4, -30], [1.0, 20], [1.4, 0]]);

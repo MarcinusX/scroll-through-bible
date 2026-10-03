@@ -24,7 +24,7 @@ export default {
     const master = S.puppet(H.frontL.add(person(c, MASTER)));
     const servant = S.puppet(H.frontL.add(person(c, { ...SERVANT, holdF: `<g transform="translate(0 4)">${handLantern(c, 14, C.apricot)}</g>` })));
     const INV = [0, 1, 2, 3, 4, 5, 6, 7].map((i) => ({ i, el: H.fx.add(`<g opacity="0">${invitation(c, 32)}</g>`), sp: H.fx.add(`<g opacity="0">${sparkle(c, 10)}</g>`), target: H.HOUSES[(i * 5 + 1) % H.HOUSES.length] }));
-    const call = H.fx.add(`<g opacity="0">${bubble(c, [tr('Przyjdźcie, bo już', 'Come, for everything'), tr('wszystko jest gotowe!', 'is ready now!')], { size: 20, dir: -1, fill: C.halo })}</g>`);
+    const call = H.fx.add(`<g opacity="0">${bubble(c, [tr('Przyjdźcie, bo już', 'Come, for everything'), tr('wszystko jest gotowe!', 'is ready now!')], { size: 20, dir: S.portrait ? 1 : -1, fill: C.halo })}</g>`);
 
     return (t, time) => {
       const T = time;
@@ -35,8 +35,9 @@ export default {
       const spread = bump(t, 0.02, 0.5);
       const send = es(t, 0.4, 0.5) * (1 - es(t, 0.95, 1.05));
       const sendSvt = es(t, 1.05, 1.2) * (1 - es(t, 1.6, 1.8));
-      master.set({ x: SU.MX, y: SU.FL, s: 1.04, flip: false, armF: 30 + spread * 60 + send * 80 + sendSvt * 70, armB: 10 + spread * 120 + send * 30, head: -2 - spread * 6, blink: blinkAt(T, 2) });
-      const [mhx, mhy] = hand(SU.MX, SU.FL, 1.04, false, 110);
+      const MX = S.portrait ? 540 : SU.MX;   // phone: the master stands inside the screen
+      master.set({ x: MX, y: SU.FL, s: 1.04, flip: false, armF: 30 + spread * 60 + send * 80 + sendSvt * 70, armB: 10 + spread * 120 + send * 30, head: -2 - spread * 6, blink: blinkAt(T, 2) });
+      const [mhx, mhy] = hand(MX, SU.FL, 1.04, false, 110);
       INV.forEach(({ i, el, sp, target }) => {
         const u = es(t, 0.42 + i * 0.05, 0.66 + i * 0.05);
         pose(el, { x: lerp(mhx, target[0], u), y: lerp(mhy, target[1], u) - Math.sin(u * Math.PI) * 120, r: u * 300, s: 1 - u * 0.5, o: u > 0 && u < 1 ? 1 : 0 });

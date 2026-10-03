@@ -35,7 +35,7 @@ export default {
     { v: 29 },
     { v: 30 },
   ],
-  cam: { x: [-40, 60], y: [0, 140], z: [1, 1.2] },
+  cam: { x: [-60, 90], y: [0, 140], z: [1, 1.2] },
   build(S) {
     const c = S.c;
     sky(S, DAY);
@@ -102,8 +102,9 @@ export default {
       pose(mothEl, { x: phx + mu * 80 + Math.sin(mu * 20) * 10, y: phy - 10 - mu * 180, r: Math.sin(mu * 30) * 20, s: 1 + Math.sin(mu * 40) * 0.2, o: mu > 0 && mu < 1 ? 1 : 0 });
       /* the neighbours laugh */
       const come = es(t, 1.55, 1.8);
-      mockers.set({ x: lerp(1300, 1110, come), y: GY + 4, o: seg(t, 1.5, 1.56) });
-      ha.forEach((e, i) => popAt(e, t, 1.62 + i * 0.08, 2.08 + i * 0.1, 1080 + i * 70, 470 - i * 30 + (T ? Math.sin(T * 5 + i) * 4 : 0), { d: 0.08 }));
+      const MX = S.portrait ? 1060 : 1110, HAX = S.portrait ? 1000 : 1080;   // phone: the mockers and their laughter inside the screen
+      mockers.set({ x: lerp(1300, MX, come), y: GY + 4, o: seg(t, 1.5, 1.56) });
+      ha.forEach((e, i) => popAt(e, t, 1.62 + i * 0.08, 2.08 + i * 0.1, HAX + i * 70, 470 - i * 30 + (T ? Math.sin(T * 5 + i) * 4 : 0), { d: 0.08 }));
       /* v30 — "This man began to build…" */
       popAt(say, t, 2.08, undefined, 1050, 500, { d: 0.12 });
       const ck = es(t, 2.2, 2.5, ease.out);
@@ -112,7 +113,7 @@ export default {
       S.cam.x = kf(t, [[-0.5, -30], [0.6, -40], [1.2, 0], [1.8, 20], [2.2, 20]]);
       S.cam.y = kf(t, [[-0.5, 80], [0.4, 120], [1.2, 80]]);
       S.cam.z = kf(t, [[-0.5, 1.06], [0.4, 1.16], [1.2, 1.06]]);
-      if (S.portrait) { S.cam.x = kf(t, [[0, -60], [0.8, -60], [1.2, 0], [1.8, 60], [2.2, 40]]); S.cam.z = 1.0; }
+      if (S.portrait) { S.cam.x = kf(t, [[0, -60], [0.8, -60], [1.2, 0], [1.55, 90], [2.2, 90]]); S.cam.z = 1.0; }
       void headAt;
     };
   },

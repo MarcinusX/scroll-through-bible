@@ -8,6 +8,7 @@
 import { C, person, blinkAt, pose, lerp } from '../kit.js';
 import { seg, es, ease, bump } from '../../core/anim.js';
 import { weddingHall, weddingTable, WH, PROUD, NOBLE, HOST, shameCheeks, drops, bubble, nameTag, headAt, hand, kf, moving, popAt, addToHead, makeCutter, tr } from './lib.js';
+import { whFirst, whLast } from './lib.js';
 
 export default {
   id: 'lk14-wedding',
@@ -18,7 +19,7 @@ export default {
     { v: 9, text: 'Wówczas przyjdzie ten, kto was obu zaprosił, i powie ci: "Ustąp temu miejsca!";' },
     { v: 9, cont: true, text: 'i musiałbyś ze wstydem zająć ostatnie miejsce.' },
   ],
-  cam: { x: [-80, 60], y: [0, 120], z: [1, 1.16] },
+  cam: { x: [-140, 230], y: [0, 120], z: [1, 1.16] },
   build(S) {
     const c = S.c;
     const H = weddingHall(S);
@@ -39,7 +40,7 @@ export default {
     return (t, time) => {
       const T = time;
       H.update(t, T);
-      const [FX, FY] = WH.FIRST, [LX, LY] = WH.LAST;
+      const [FX, FY] = whFirst(S), [LX, LY] = whLast(S);
       /* v8 — the proud guest takes the first place; someone more honourable appears at the door */
       const PK = [[0.02, 320], [0.44, 1080]];
       const px = kf(t, PK);
@@ -57,7 +58,8 @@ export default {
       const [shx, shy] = t < 2.6 ? headAt(sx, WH.FL, 1.0, true) : headAt(LX, LY, 1.0, false, 62);
       pose(sweat, { x: shx + (t < 2.6 ? -26 : 20), y: shy - 22, o: es(t, 2.12, 2.2) });
       /* the honoured guest */
-      const NK = [[0.56, 330], [0.72, 420], [1.1, 420], [1.6, 990], [2.2, 990], [2.4, FX - 30]];
+      const NX = S.portrait ? 580 : 420;
+      const NK = [[0.56, 330], [0.72, NX], [1.1, NX], [1.6, 990], [2.2, 990], [2.4, FX - 30]];
       const nx = kf(t, NK);
       const nsat = es(t, 2.42, 2.46);
       nWalk.set({ x: nx, y: WH.FL, s: 1.0, o: seg(t, 0.56, 0.62) * (1 - nsat), walk: moving(t, NK) ? nx * 0.04 : undefined, amt: 0.7, armF: 16, armB: 8, head: 2, blink: blinkAt(T, 4) });
@@ -80,7 +82,7 @@ export default {
       S.cam.x = kf(t, [[-0.5, -40], [0, -40], [0.44, 30], [0.7, -10], [1.1, 40], [2.0, 50], [2.6, -40]]);
       S.cam.y = kf(t, [[-0.5, 60], [0.4, 80], [2.0, 80]]);
       S.cam.z = kf(t, [[-0.5, 1.02], [0.4, 1.08], [2.0, 1.1], [2.5, 1.04]]);
-      if (S.portrait) { S.cam.x = kf(t, [[0, -120], [0.44, 80], [0.7, -120], [1.1, 60], [2.0, 80], [2.6, -100]]); S.cam.z = 1.0; }
+      if (S.portrait) { S.cam.x = kf(t, [[0, -120], [0.44, 80], [0.7, 30], [1.0, 30], [1.3, 220], [2.0, 200], [2.6, -30]]); S.cam.z = 1.0; }
       void hand; void lerp; void bump;
     };
   },

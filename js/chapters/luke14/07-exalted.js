@@ -7,7 +7,7 @@
 // down beside him.
 import { C, person, CAST, blinkAt, pose, lerp } from '../kit.js';
 import { seg, es, ease, bump } from '../../core/anim.js';
-import { rulerHouse, rulerTable, RH, LATE, PROUD, HUMBLE, EMB, emblemParts, fig, label, voiceRings, headAt, kf, popAt, shameCheeks, addToHead, tr, sheet, mix } from './lib.js';
+import { rulerHouse, rulerTable, RH, rhHX, LATE, PROUD, HUMBLE, EMB, emblemParts, fig, label, voiceRings, headAt, kf, popAt, shameCheeks, addToHead, tr, sheet, mix } from './lib.js';
 import { sun, moon } from '../../assets/nature.js';
 
 const BX = 800, BY = 190;           // the board's top centre, when hung
@@ -72,7 +72,7 @@ export default {
       const [jhx, jhy] = headAt(RH.JX, RH.SEAT, 1.02, false, 62);
       voice(jhx, jhy, Math.max(bump(t, 0.05, 0.95) * 0.8, speak), T, { spread: 1.8, dir: t > 1.05 ? 1 : 0 });
       T0.set(t, T, { heads: { 0: -4, 1: 2 - es(t, 0.3, 0.5) * 10, 2: -2, 3: 2 }, hostArmF: 30 + es(t, 1.3, 1.5) * 20, hostArmB: 10, hostHead: 4 + es(t, 1.2, 1.4) * 6 });
-      const [hhx, hhy] = headAt(RH.HX, RH.HY, 1.02, true, 62);
+      const [hhx, hhy] = headAt(rhHX(S), RH.HY, 1.02, true, 62);
       popAt(dn, t, 1.4, undefined, hhx - 70, hhy - 150 + (T ? Math.sin(T * 1.3) * 3 : 0), { d: 0.12 });
       popAt(sp, t, 1.55, undefined, hhx + 30, hhy - 190 + (T ? Math.sin(T * 1.3 + 1) * 3 : 0), { d: 0.12 });
 

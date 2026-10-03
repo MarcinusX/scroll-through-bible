@@ -6,7 +6,7 @@
 // swollen with dropsy, leaning on a stick, shuffles in and stands before Him.
 import { C, person, CAST, blinkAt, pose, lerp } from '../kit.js';
 import { seg, es, ease, bump } from '../../core/anim.js';
-import { rulerHouse, rulerTable, RH, dropsyMan, eyeGlyph, headAt, kf, moving, popAt } from './lib.js';
+import { rulerHouse, rulerTable, RH, rhHX, dropsyMan, eyeGlyph, headAt, kf, moving, popAt } from './lib.js';
 
 export default {
   id: 'lk14-sabbath',
@@ -46,7 +46,7 @@ export default {
         hostArmF: 30 + bump(t, 1.2, 1.9) * 30, hostArmB: 10 + bump(t, 1.2, 1.9) * 110, hostHead: 4 + watch * 4,
       });
       // little eyes open over the watchers
-      const W = [[RH.SEATS[0], RH.SEAT, 0.98, false], [RH.SEATS[1], RH.SEAT, 0.98, false], [RH.SEATS[2], RH.SEAT, 0.98, false], [RH.SEATS[3], RH.SEAT, 0.98, true], [RH.HX, RH.HY, 1.02, true]];
+      const W = [[RH.SEATS[0], RH.SEAT, 0.98, false], [RH.SEATS[1], RH.SEAT, 0.98, false], [RH.SEATS[2], RH.SEAT, 0.98, false], [RH.SEATS[3], RH.SEAT, 0.98, true], [rhHX(S), RH.HY, 1.02, true]];
       eyes.forEach((e, i) => {
         const [x, y, s, fl] = W[i];
         const [hx, hy] = headAt(x, y, s, fl, 62);
@@ -60,7 +60,7 @@ export default {
       S.cam.x = kf(t, [[0, -10], [1.0, -30], [1.4, 0], [2.0, 0], [2.5, -30]]);
       S.cam.y = kf(t, [[0, 60], [1.0, 80], [1.5, 120], [2.5, 140]]);
       S.cam.z = kf(t, [[0, 1.08], [1.0, 1.12], [1.5, 1.2], [2.5, 1.24]]);
-      if (S.portrait) { S.cam.x = kf(t, [[0, 0], [1.0, -60], [1.5, 0], [2.0, 0], [2.5, -60]]); S.cam.z = 1.0; }
+      if (S.portrait) { S.cam.x = kf(t, [[0, 0], [1.0, -60], [1.5, 0], [2.0, 0], [2.5, -10]]); S.cam.z = 1.0; }
     };
   },
 };

@@ -45,7 +45,8 @@ export default {
       const T = time;
       H.update(t, T, { lit: 1, night: 0.75 });
       /* v21a — the servant comes back and tells his master */
-      const SK = [[0, DX], [0.4, SU.MX + 180], [1.3, SU.MX + 180], [1.62, DX + 60], [2.0, DX + 60], [2.3, 1090], [2.45, 1090]];
+      const MX = S.portrait ? 540 : SU.MX, SX = S.portrait ? MX + 200 : SU.MX + 180, BX = S.portrait ? 1050 : 1090;   // phone: inside the screen
+      const SK = [[0, DX], [0.4, SX], [1.3, SX], [1.62, DX + 60], [2.0, DX + 60], [2.3, BX], [2.45, BX]];
       const sx = kf(t, SK);
       const back = t > 1.28 && t < 1.66;
       const bow = es(t, 2.46, 2.56);
@@ -55,9 +56,9 @@ export default {
       /* v21b — the master, angry: "Go out quickly…" */
       const mad = es(t, 0.8, 0.9) * (1 - es(t, 2.1, 2.2));
       const point = es(t, 1.14, 1.26) * (1 - es(t, 2.0, 2.2));
-      master.set({ x: SU.MX, y: SU.FL, s: 1.04, flip: false, o: 1 - mad, armF: 30, armB: 10, head: 2, blink: blinkAt(T, 2) });
-      angry.set({ x: SU.MX, y: SU.FL, s: 1.04, flip: false, o: mad, armF: 30 + point * 64 + bump(t, 0.9, 1.15) * 40, armB: 10 + bump(t, 0.9, 1.15) * 120, head: -4 - point * 4, lean: point * 4, blink: blinkAt(T, 2) });
-      const [mhx, mhy] = headAt(SU.MX, SU.FL, 1.04, false);
+      master.set({ x: MX, y: SU.FL, s: 1.04, flip: false, o: 1 - mad, armF: 30, armB: 10, head: 2, blink: blinkAt(T, 2) });
+      angry.set({ x: MX, y: SU.FL, s: 1.04, flip: false, o: mad, armF: 30 + point * 64 + bump(t, 0.9, 1.15) * 40, armB: 10 + bump(t, 0.9, 1.15) * 120, head: -4 - point * 4, lean: point * 4, blink: blinkAt(T, 2) });
+      const [mhx, mhy] = headAt(MX, SU.FL, 1.04, false);
       puffs.forEach((e, i) => { const u = seg(t, 0.9 + i * 0.1, 1.4 + i * 0.1); pose(e, { x: mhx - 10 + i * 14, y: mhy - 30 - u * 60, s: Math.sin(u * Math.PI), r: u * 120, o: u > 0 && u < 1 && t < 2 ? 1 : 0 }); });
       popAt(order, t, 1.18, 2.02, mhx + 12, mhy - 36, { d: 0.12 });
       /* v22 — in they come; still room */
@@ -71,13 +72,13 @@ export default {
       const room = es(t, 2.5, 2.7);
       glows.forEach((g) => pose(g, { o: room }));
       sps.forEach((e, i) => { const x = SU.SEATS[[4, 6][i]]; pose(e, { x, y: SU.TOP - 40, s: room * (0.8 + (T ? Math.sin(T * 3 + i) * 0.15 : 0)), r: T * 30, o: room > 0.02 ? 1 : 0 }); });
-      const [dvx, dvy] = headAt(1090, SU.FL + 4, 0.98, true);
+      const [dvx, dvy] = headAt(BX, SU.FL + 4, 0.98, true);
       popAt(done, t, 2.52, undefined, dvx - 14, dvy - 34, { d: 0.12 });
 
       S.cam.x = kf(t, [[-0.5, 80], [0, 80], [0.4, 0], [1.3, 0], [1.6, 60], [2.0, 60], [2.4, 40]]);
       S.cam.y = kf(t, [[-0.5, 40], [0.4, 60]]);
       S.cam.z = kf(t, [[-0.5, 1.02], [0.4, 1.1], [2.0, 1.1], [2.4, 1.04]]);
-      if (S.portrait) { S.cam.x = kf(t, [[0, 140], [0.4, 0], [1.3, 0], [1.6, 140], [2.0, 140], [2.4, 80]]); S.cam.z = 1.0; }
+      if (S.portrait) { S.cam.x = kf(t, [[0, 140], [0.4, 0], [1.95, 0], [2.4, 80]]); S.cam.z = 1.0; }   // phone: hold on the angry master while he speaks
       void hand; void lerp; void ease;
     };
   },

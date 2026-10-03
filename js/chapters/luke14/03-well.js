@@ -9,8 +9,8 @@ import { seg, es, ease, bump } from '../../core/anim.js';
 import { wellParts, pitParts, ropeUnit, ropeBetween, ox, childPerson, sabbathTag, storyFrame, hand, headAt, kf, tr, mix, sheet, shade, NOON, PI } from './lib.js';
 
 const GY = 716;
-const WX = 560, PX = 950;            // the well, the cistern
-const FX = 450, OX = 1168;            // the father, the ox's owner
+const WX0 = 560, PX0 = 950;          // the well, the cistern
+const FX0 = 450, OX0 = 1168;         // the father, the ox's owner
 const FATHER = { robe: C.dustyBlue, mantle: null, hair: C.hair3, hairStyle: 'short', beard: 'full', skin: C.skin3, belt: C.leather };
 const OWNER = { robe: C.wheatRobe, mantle: C.clayMantle, hair: C.hair, hairStyle: 'curly', beard: 'full', skin: C.skin2, belt: C.rope };
 const BOY = { robe: C.roseRobe, hair: C.hair2, hairStyle: 'curly', skin: C.skin2, belt: C.ochre };
@@ -24,6 +24,9 @@ export default {
   cam: { x: [-40, 40], y: [0, 180], z: [1, 1.26] },
   build(S) {
     const c = S.c;
+    // phone: the well and the cistern, the father and the owner closer together, inside the screen
+    const P_ = S.portrait;
+    const WX = P_ ? 650 : WX0, PX = P_ ? 925 : PX0, FX = P_ ? 555 : FX0, OX = P_ ? 1055 : OX0;
     sky(S, NOON);
     const hangL = S.layer({ par: 0.04, sh: 4 });
     const sunEl = hanging(hangL, sun(c, 40), { x: 1230, y: 150, len: 800 });
@@ -86,7 +89,7 @@ export default {
       boyOut.set({ x: FX + 44, y: GY + 8, s: 0.62, o: out, flip: true, armF: 120, armB: 110, head: -6, blink: blinkAt(T, 5) });
       /* the ox: only the horns in the cistern, pulled up the bank by a rope round its horns */
       const rise = es(t, 0.2, 0.62);
-      const ox_x = lerp(PX - 30, PX + 30, rise) + es(t, 0.62, 0.8) * 50, ox_y = lerp(GY + 92, GY - 2, rise);
+      const ox_x = lerp(PX - 30, PX + 30, rise) + es(t, 0.62, 0.8) * (P_ ? 10 : 50), ox_y = lerp(GY + 92, GY - 2, rise);
       pose(oxEl, { x: ox_x, y: ox_y, s: 0.8, r: -rise * (1 - es(t, 0.6, 0.7)) * 14 });
       const tug = Math.sin(t * 36) * 5 * (rise > 0 && rise < 1 ? 1 : 0);
       owner.set({ x: OX, y: GY + 6, s: 1.0, flip: true, lean: -14 * (1 - es(t, 0.66, 0.76)) + tug * 0.3, armF: 100 + tug, armB: 90 - tug, head: 6, blink: blinkAt(T, 7) });
@@ -97,6 +100,7 @@ export default {
       S.cam.x = kf(t, [[-0.5, 0], [1, 0]]);
       S.cam.y = kf(t, [[-0.5, 120], [0.3, 170], [1, 170]]);
       S.cam.z = kf(t, [[-0.5, 1.12], [0.3, 1.24], [1, 1.24]]);
+      if (S.portrait) { S.cam.x = 0; S.cam.z = 1.0; }
       void headAt; void bump; void seg; void shade; void PI;
     };
   },
