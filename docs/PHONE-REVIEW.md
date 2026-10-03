@@ -3,7 +3,8 @@
 How the Gospel of John was audited and repaired for phones (portrait, 390×844) on 2026-09-29/30,
 written down so the other books can get the same pass. John had 316 findings in 286 scenes; the
 other books were drawn the same way, so expect the same amount. Matthew followed on 2026-10-02
-(559 repairs in 28 chapters, 1765 beats).
+(559 repairs in 28 chapters, 1765 beats), Luke on 2026-10-03 (516 repairs in 24 chapters, 1731 beats).
+Mark has had a first pass only; it is kept on the branch `mark-phone-review-wip`, unreviewed.
 
 ## What goes wrong on a phone
 
