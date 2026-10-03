@@ -18,7 +18,7 @@ export default {
     { v: 8, text: 'Bo i ja, choć podlegam władzy, mam pod sobą żołnierzy.' },
     { v: 8, cont: true, text: 'Mówię temu: "Idź!" - a idzie; drugiemu: "Chodź!" - a przychodzi; a mojemu słudze: "Zrób to!" - a robi».' },
   ],
-  cam: { x: [-30, 30], y: [-40, 30], z: [1, 1.1] },
+  cam: { x: [-30, 80], y: [-40, 30], z: [1, 1.1] },
   build(S) {
     const c = S.c;
     sky(S, ['#c9dcd6', '#f0e6cc', '#f7e6c6']);
@@ -73,6 +73,14 @@ export default {
     const W = S.layer({ par: 0.42, sh: 3 });
     const say = [[tr('Idź!', 'Go!'), -1], [tr('Chodź!', 'Come!'), 1], [tr('Zrób to!', 'Do this!'), -1]].map(([s, d]) => W.add(`<g opacity="0">${bubble(c, s, { size: 22, dir: d })}</g>`));
 
+    // phone: the line of soldiers closes up, and the servant comes in only once the third man has gone out of the gate,
+    // so he lifts the jar inside the screen and carries it off slowly (on a wide screen he stands on the right all along)
+    const PH = S.portrait;
+    const LINE = PH ? [860, 940, 1020] : [900, 990, 1080];
+    const JAR = PH ? 995 : 1200;
+    const BOYK = PH ? [[1.38, 1300], [1.53, 1040]] : null;
+    const CARRY = PH ? [[1.64, 1040], [1.9, 1075], [2.1, 1360]] : [[1.64, 1250], [2.1, 1560]];
+
     return (t, time) => {
       const T = time;
       pose(sunEl, { x: 1250, y: 140, r: T ? Math.sin(T * 0.6) : 0 });
@@ -86,7 +94,6 @@ export default {
       const order = bump(t, 1.02, 1.28) + bump(t, 1.28, 1.5) + bump(t, 1.5, 1.8);
       cen.set({ x: CX, y: FEET, s: 1.06, flip: turn, armF: 16 + order * 70, armB: 10 + salute * 150, head: -salute * 22 + order * 2, blink: blinkAt(T, 1) });
       // three soldiers march in from the left and line up facing him
-      const LINE = [900, 990, 1080];
       men.forEach((m) => {
         let K;
         if (m.i === 2) K = [[0.34, -200], [0.66, LINE[2]], [1.08, LINE[2]], [1.4, 1450]];           // "Go!" — out through the gate
@@ -103,11 +110,12 @@ export default {
       comer.set({ x: x4, y: FEET + 4, s: 1.0, o: seg(t, 1.28, 1.34), walk: moving(t, K4) ? x4 * 0.05 : undefined, amt: 1.1, armF: 30, armB: bump(t, 1.52, 1.7) * 120, blink: blinkAt(T, 8) });
       /* the servant: "Do this!" — he lifts the jar and carries it */
       const lift = es(t, 1.55, 1.64);
-      const carry = [[1.64, 1250], [2.1, 1560]];
-      const bx = t < 1.64 ? 1250 : kf(t, carry);
-      boy.set({ x: bx, y: FEET + 6, s: 0.84, flip: t < 1.64, walk: moving(t, carry) ? bx * 0.07 : undefined, armF: 20 + lift * 140, armB: lift * 40, head: -lift * 6, blink: blinkAt(T, 5) });
+      const carry = CARRY;
+      const bx = t < 1.64 ? (BOYK ? kf(t, BOYK) : 1250) : kf(t, carry);
+      const bWalk = moving(t, carry) || (BOYK && moving(t, BOYK));
+      boy.set({ x: bx, y: FEET + 6, s: 0.84, o: BOYK ? seg(t, 1.36, 1.4) : 1, flip: t < 1.64, walk: bWalk ? bx * 0.07 : undefined, armF: 20 + lift * 140, armB: lift * 40, head: -lift * 6, blink: blinkAt(T, 5) });
       const [hx, hy] = hand(bx, FEET + 6, 0.84, t < 1.64, 20 + lift * 140);
-      pose(jar, { x: lerp(1200, hx, lift), y: lerp(FEET + 6, hy + 30, lift), r: lift * 16 });
+      pose(jar, { x: lerp(JAR, hx, lift), y: lerp(FEET + 6, hy + 30, lift), r: lift * 16 });
       const [chx, chy] = headAt(CX, FEET, 1.06, turn);
       say.forEach((b, i) => {
         const a = [1.02, 1.28, 1.5][i];
@@ -117,6 +125,7 @@ export default {
 
       S.cam.y = -es(t, 0.05, 0.4) * 30 + es(t, 0.6, 0.9) * 30;
       S.cam.z = 1.02 + es(t, 1.0, 1.3) * 0.04;
+      if (PH) S.cam.x = 80;   // phone: the yard sits a little left of the thread
     };
   },
 };

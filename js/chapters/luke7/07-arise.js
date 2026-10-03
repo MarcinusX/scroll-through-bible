@@ -24,13 +24,16 @@ export default {
   cam: { x: [0, 160], y: [0, 60], z: [1, 1.24] },
   build(S) {
     const N = nainSet(S);
+    // phone: the widow and the town crowd stand further in (as at the end of the scene before)
+    const WX0 = S.portrait ? 1030 : NP.WX;
+    const TOWN = S.portrait ? [1170, 1370] : [1260, 1470];
     const c = S.c;
     /* light behind the bier (behind every person) */
     const LL = S.layer({ par: 0.4, sh: 0, flat: true });
     const burst = LL.add(`<g opacity="0">${rayBurst(c, { n: 16, r0: 40, r1: 260, spread: 0.04, o: 0.3 })}</g>`);
     const glow = LL.add(`<circle r="130" fill="url(#halo-glow)" opacity="0"/>`);
     const TL = S.layer({ par: 0.4, sh: 4 });
-    const town = [0, 1].map((i) => TL.sprite(mournerGroup(makeCutter('lk7-mourn' + i), 6, { s: 0.86, seed: i * 2 }), [1260, 1470][i], FEET - 4 - i * 6));
+    const town = [0, 1].map((i) => TL.sprite(mournerGroup(makeCutter('lk7-mourn' + i), 6, { s: 0.86, seed: i * 2 }), TOWN[i], FEET - 4 - i * 6));
     const P = S.layer({ par: 0.4, sh: 5 });
     const bear = BEARERS.map((o, i) => ({ i, far: i < 2, o, p: null }));
     bear.filter((b) => b.far).forEach((b) => { b.p = S.puppet(P.add(person(c, b.o))); });
@@ -57,7 +60,7 @@ export default {
     return (t, time) => {
       const T = time;
       N.update(T);
-      town.forEach((g, i) => g.set({ x: [1260, 1470][i], y: FEET - 4 - i * 6, s: 1 - i * 0.06 }));
+      town.forEach((g, i) => g.set({ x: TOWN[i], y: FEET - 4 - i * 6, s: 1 - i * 0.06 }));
       follow.forEach((g, i) => g.set({ x: 170 - i * 250, y: FEET - 6 - i * 8, s: 1 - i * 0.08 }));
       DIS.forEach((d) => d.p.set({ x: NP.DIS[Math.min(2, d.i)] - (d.i === 3 ? 80 : 0), y: FEET + (d.i % 2 ? 8 : -3), s: 0.98, armF: 12 + es(t, 2.1, 2.4) * 40, armB: es(t, 2.1, 2.4) * (d.i % 2 ? 90 : 20), head: 5 - es(t, 2.1, 2.4) * 10, blink: blinkAt(T, d.seed) }));
 
@@ -105,7 +108,7 @@ export default {
 
       /* the widow: her hands come down, the tears stop; at the end she holds her son */
       const calm = es(t, 0.55, 0.75);
-      const come = [[2.6, NP.WX], [2.82, 930]];
+      const come = [[2.6, WX0], [2.82, 930]];
       const wx = kf(t, come);
       const hug = es(t, 2.72, 2.86);
       widow.set({ x: wx, y: FEET + 2, s: 1.0, flip: true, walk: moving(t, come) ? wx * 0.05 : undefined, amt: 0.6, armF: 146 - calm * 110 + hug * 60, armB: 60 - calm * 40 + hug * 70, head: 18 - calm * 26 + hug * 6, lean: 6 - calm * 6, blink: calm < 0.5 ? 1 : blinkAt(T, 5) });

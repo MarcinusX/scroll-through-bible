@@ -27,9 +27,10 @@ export default {
     { v: 45 },
     { v: 46 },
   ],
-  cam: { x: [-60, 110], y: [0, 200], z: [0.8, 1.3] },
+  cam: { x: [-60, 140], y: [0, 200], z: [0.8, 1.3] },
   build(S) {
-    const M = simonRoom(S);
+    // phone: Simon sits a little in from the right edge, and the ceiling is a short eave with the evening sky above
+    const M = simonRoom(S, S.portrait ? { sx: 1130, ceilTop: 0 } : {});
     const { R, c } = M;
     const herGlow = R.glowL.add(`<g opacity="0"><circle r="150" fill="url(#halo-glow)"/></g>`);
     const tears = [0, 1, 2, 3].map(() => R.fx.add(`<g opacity="0">${tear(c, 4.4)}</g>`));
@@ -55,7 +56,7 @@ export default {
       /* v43a — Simon answers */
       const ans = es(t, 0.08, 0.22) * (1 - es(t, 0.9, 1.0));
       M.table(t, T, { look: es(t, 2.1, 2.3), simonArmF: 30 + ans * 60, simonArmB: 10 + ans * 30, simonHead: 4 + bump(t, 1.1, 1.9) * 10 - es(t, 3.1, 3.3) * 8, simonLean: -es(t, 3.1, 3.3) * 4 });
-      const [shx, shy] = headAt(SR7.SX, FLOOR, 0.96, true, 62);
+      const [shx, shy] = headAt(M.sx, FLOOR, 0.96, true, 62);
       sv(shx, shy, ans, T, { dir: -1, spread: 1.6 });
       const k0 = es(t, 0.1, 0.22, ease.back) * (1 - es(t, 0.92, 0.98));
       pose(bS, { x: shx - 30, y: shy - 36, s: k0, o: k0 > 0.02 ? 1 : 0 });
@@ -107,7 +108,7 @@ export default {
       S.cam.x = kf(t, [[0, 40], [1.9, 20], [2.2, -30], [6, -20]]);
       S.cam.z = kf(t, [[0, 1.18], [2.2, 1.24]]);
       S.cam.y = kf(t, [[0, 150], [2.2, 170]]);
-      if (S.portrait) { S.cam.x = 100; S.cam.z = 0.82; }
+      if (S.portrait) { S.cam.x = 130; S.cam.z = 0.82; }
     };
   },
 };

@@ -12,7 +12,6 @@ import {
 
 const { FLOOR, JX, SEAT, TOP } = SH;
 const GX = (SH.GATE[0] + SH.GATE[1]) / 2;
-const SX = 1172;
 
 export default {
   id: 'lk7-invite',
@@ -21,13 +20,14 @@ export default {
     { v: 36, cont: true, text: 'Wszedł więc do domu faryzeusza i zajął miejsce za stołem.' },
     { v: 37 },
   ],
-  cam: { x: [-160, 120], y: [0, 200], z: [0.8, 1.2] },
+  cam: { x: [-160, 140], y: [0, 200], z: [0.8, 1.2] },
   build(S) {
     const c = S.c;
+    const SX = S.portrait ? 1130 : 1172;   // phone: Simon a little in from the right edge (as in the scenes that follow)
     const roomLs = [];
     const mkLayer = S.layer;
     S.layer = (o) => { const Ly = mkLayer(o); roomLs.push(Ly); return Ly; };
-    const R = simonHouse(S);
+    const R = simonHouse(S, S.portrait ? { ceilTop: 0 } : {});
     /* the guests behind the table, the dishes */
     const guests = GUESTS.map((o, i) => ({ i, x: SH.GUESTS[i], p: S.puppet(R.backL.add(person(c, { ...o, pose: 'sit' }))), seed: c.rr(0, 9) }));
     [[884, bowl(c, { food: 'bread', color: C.stone2 })], [930, cup(c)], [968, loaf(c, 15)], [1016, bowl(c, { food: 'fruit', color: C.skyVeil })], [1056, cup(c, C.clay)], [1090, loaf(c, 12)], [1118, `<g transform="scale(.5)">${jug(c)}</g>`]]
@@ -102,7 +102,7 @@ export default {
       S.cam.x = kf(t, [[0, 0], [1.0, 0], [1.2, 20], [2.0, 20], [2.3, -40]]);
       S.cam.z = kf(t, [[0, 1.04], [1.0, 1.06], [1.3, 1.16], [2.3, 1.18]]);
       S.cam.y = kf(t, [[0, 20], [1.0, 20], [1.3, 150]]);
-      if (S.portrait && t > 1.1) { S.cam.x = kf(t, [[2.0, 110], [2.3, -150]]); S.cam.z = 0.82; }
+      if (S.portrait && t > 1.1) { S.cam.x = kf(t, [[2.0, 130], [2.3, -150]]); S.cam.z = 0.82; }
     };
   },
 };

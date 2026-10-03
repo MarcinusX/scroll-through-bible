@@ -90,7 +90,7 @@ export default {
       pose(shaft, { o: 0.7 + hear * 0.3 });
       dis.forEach((d) => {
         const base = [640, 740, 540][d.i];
-        const K = d.i < 2 ? [[0, base], [0.7, base], [0.82, base + 60], [1.5, base + 60], [1.98, DOOR + 10 - d.i * 50]] : [[0, base]];
+        const K = d.i < 2 ? [[0, base], [0.7, base], [0.82, base + 60], [1.5, base + 60], [1.98, DOOR + 10 + d.i * (S.portrait ? 70 : -50)]] : S.portrait ? [[0, base], [1.45, base], [1.62, 770]] : [[0, base]];   // phone: the one who stays steps over to John, so the two who leave do not pass over him at x.75
         const x = kf(t, K);
         const leaving = d.i < 2 && t > 1.5;
         d.p.set({ x, y: FLOOR + 4 + (d.i % 2) * 6, s: 1.02, flip: leaving, o: d.i < 2 ? 1 - seg(t, 1.93 + d.i * 0.02, 1.99) : 1, walk: moving(t, K) ? x * 0.05 + d.i : undefined, armF: 14 + tell * (d.i === 0 ? 70 : 30), armB: 10 + tell * (d.i === 0 ? 100 : 20) + bump(t, 1.3, 1.5) * 40, head: bump(t, 1.28, 1.48) * 18, lean: bump(t, 1.28, 1.48) * 10, blink: blinkAt(T, d.seed) });

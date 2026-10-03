@@ -21,9 +21,11 @@ export default {
     { v: 20 },
     { v: 21 },
   ],
-  cam: { x: [-20, 120], y: [0, 50], z: [1, 1.18] },
+  cam: { x: [-20, 170], y: [0, 50], z: [1, 1.18] },
   build(S) {
     const H = hillsSet(S, { gy: 700 });
+    // phone: the two messengers stop a little further in, and the camera looks a little further right while they speak
+    const MX = S.portrait ? [1030, 1092] : [M1, M2];
     const c = S.c;
     const backL = S.layer({ par: 0.5, sh: 4 });
     backL.sprite(folkGroup(makeCutter('lk7-hr-a'), 6, { s: 0.62 }), 300, 680);
@@ -62,13 +64,13 @@ export default {
       H.update(T);
       /* v20 — John's messengers come and ask */
       dis.forEach((d) => {
-        const K = [[0, 1500 + d.i * 110], [0.34 + d.i * 0.03, [M1, M2][d.i]]];
+        const K = [[0, 1500 + d.i * 110], [0.34 + d.i * 0.03, MX[d.i]]];
         const x = kf(t, K);
         const bow = bump(t, 0.32, 0.5);
         const wonder = es(t, 1.2, 1.4);
         d.p.set({ x, y: GY + d.i * 6, s: 1.0, flip: true, walk: moving(t, K) ? x * 0.05 + d.i : undefined, armF: 16 + (d.i === 0 ? bump(t, 0.45, 1.0) * 60 : 0) + wonder * 40, armB: 10 + (d.i === 0 ? bump(t, 0.45, 1.0) * 90 : 0) + wonder * (d.i ? 110 : 60), head: bow * 18 - wonder * 6, lean: bow * 8, blink: blinkAt(T, d.seed) });
       });
-      const [mhx, mhy] = headAt(M1, GY, 1.0, true);
+      const [mhx, mhy] = headAt(MX[0], GY, 1.0, true);
       voice(mhx, mhy, bump(t, 0.4, 1.0) > 0.05 ? 0.8 : 0, T, { dir: -1, spread: 1.6 });
       const mb = es(t, 0.42, 0.55, ease.back) * (1 - es(t, 0.96, 1.02));
       pose(msg, { x: mhx - 30, y: mhy - 40, s: mb, o: mb > 0.02 ? 1 : 0 });
@@ -107,7 +109,7 @@ export default {
       halos.forEach((h, i) => { const [x, , a] = SP[i]; const k = es(t, a, a + 0.15); pose(h, { x, y: GY - 110, s: 0.8 + k * 0.4, o: k * 0.7 }); });
       sparks.forEach((sp, i) => { const [x, y, a] = SP[i]; const k = bump(t, a, a + 0.4); pose(sp, { x, y, s: k, r: T * 40 + i * 30, o: k }); });
 
-      S.cam.x = kf(t, [[0, 90], [0.9, 100], [1.2, 30], [2, 10]]);
+      S.cam.x = kf(t, S.portrait ? [[0, 160], [0.9, 170], [1.2, 70], [2, 55]] : [[0, 90], [0.9, 100], [1.2, 30], [2, 10]]);
       S.cam.z = kf(t, [[0, 1.12], [1.0, 1.12], [1.3, 1.06]]);
       S.cam.y = 30;
     };

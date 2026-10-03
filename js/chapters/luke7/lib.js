@@ -459,7 +459,7 @@ export const SH = { FLOOR: 700, CEIL: 200, JX: 780, TOP: 628, SEAT: 652, TX0: 86
  * Layers returned so a scene can put people between them: { sk, sk2, backL, tableL, frontL, fx, glowL }.
  * update(t, T, { lit }) flickers the lamps.
  */
-export function simonHouse(S, { skyCols = SUPPER, sky2 = SUPPER2 } = {}) {
+export function simonHouse(S, { skyCols = SUPPER, sky2 = SUPPER2, ceilTop = -1400 } = {}) {
   const c = makeCutter('lk7-simon-house');
   const { FLOOR, CEIL, TOP } = SH;
   const [G0, G1, GT] = SH.GATE;
@@ -496,12 +496,13 @@ export function simonHouse(S, { skyCols = SUPPER, sky2 = SUPPER2 } = {}) {
   let mz = '';
   for (let x = -880; x < 2500; x += 36) mz += c.poly([[x, CEIL - 6], [x + 18, CEIL - 6], [x + 18, CEIL + 4], [x + 8, CEIL + 4], [x + 8, CEIL], [x, CEIL]]);
   w.x(mz, C.sun, 'opacity=".8"');
-  w.p(c.cut([[-900, -1400], [2500, -1400], [2500, CEIL - 20], [-900, CEIL - 20]], 0.8, 30), mix(C.wood3, C.plaster2, 0.45));
+  // the ceiling (ceilTop: where its sheet ends above; a phone passes a short eave band so the top of a tall screen is sky)
+  w.p(c.cut([[-900, ceilTop], [2500, ceilTop], [2500, CEIL - 20], [-900, CEIL - 20]], 0.8, 30), mix(C.wood3, C.plaster2, 0.45));
   let beams = '';
   for (let x = -300; x < 1900; x += 120) beams += c.cut(c.rect(x, CEIL - 30, 26, 24), 0.3, 5);
   w.p(beams, mix(C.wood, C.wood3, 0.3));
   let planks = '';
-  for (let y = CEIL - 60; y > -1400; y -= 46) planks += c.ribbon([[-900, y], [2500, y + c.rr(-3, 3)]], 2);
+  for (let y = CEIL - 60; y > ceilTop + 10; y -= 46) planks += c.ribbon([[-900, y], [2500, y + c.rr(-3, 3)]], 2);
   w.x(planks, mix(C.wood2, C.wood3, 0.5), 'opacity=".45"');
   // a niche with jars on the right
   w.p(c.cut([[1420, 640], [1420, 560], ...c.arc(1460, 560, 40, 30, PI, 2 * PI, 8), [1500, 640]], 0.4, 5), shade(wcol, -0.14));
@@ -569,13 +570,14 @@ export function couch(c, w = 260) {
 export const SR7 = { SX: 1172, FEETX: SH.JX - 142, FEETY: SH.FLOOR - 12, WX: 560 };
 export function simonRoom(S, opts = {}) {
   const c = S.c;
+  const SX = opts.sx ?? SR7.SX;           // where Simon sits (optional; a phone brings him in from the edge)
   const R = simonHouse(S, opts);
   const { FLOOR, JX, SEAT, TOP } = SH;
   const guests = GUESTS.map((o, i) => ({ i, x: SH.GUESTS[i], p: S.puppet(R.backL.add(person(c, { ...o, pose: 'sit' }))), seed: c.rr(0, 9) }));
   [[884, bowlM(c, { food: 'bread', color: C.stone2 })], [930, cupM(c)], [968, loafM(c, 15)], [1016, bowlM(c, { food: 'fruit', color: C.skyVeil })], [1056, cupM(c, C.clay)], [1090, loafM(c, 12)], [1118, `<g transform="scale(.5)">${jugM(c)}</g>`]]
     .forEach(([x, m]) => R.tableL.add(`<g transform="translate(${x} ${TOP - 4})">${m}</g>`));
   R.frontL.add(`<g transform="translate(${JX + 44} ${FLOOR + 2})">${couch(c, 270)}</g>`);
-  R.frontL.add(`<g transform="translate(${SR7.SX} ${FLOOR + 2})">${cushionJ(c, 130, C.teal2)}</g>`);
+  R.frontL.add(`<g transform="translate(${SX} ${FLOOR + 2})">${cushionJ(c, 130, C.teal2)}</g>`);
   const legs = R.frontL.add(`<g>${outLegsJ(c, { robe: C.linen, skin: C.skin })}</g>`);
   const sheen = legs.querySelector('.sheen');
   const jesus = S.puppet(R.frontL.add(person(c, { ...CAST.jesus, pose: 'sit' })));
@@ -588,11 +590,11 @@ export function simonRoom(S, opts = {}) {
   const hairEl = wHair.el.querySelector('.lhair');
   const flask = R.frontL.add(`<g>${flaskM}</g>`);
   return {
-    R, c, guests, jesus, legs, sheen, simon, wStand, wKneel, wHair, hairEl, flask, AB,
+    R, c, guests, jesus, legs, sheen, simon, wStand, wKneel, wHair, hairEl, flask, AB, sx: SX,
     /** the everyday pose of the table (guests and Simon) */
     table(t, T, { look = 0, simonArmF = 30, simonArmB = 10, simonHead = 4, simonLean = 0 } = {}) {
       guests.forEach((g) => g.p.set({ x: g.x, y: SEAT, s: 0.9, flip: true, armF: 20, armB: 10, head: -4 + look * (g.i === 1 ? -8 : 6), blink: blinkAt(T, g.seed) }));
-      simon.set({ x: SR7.SX, y: FLOOR, s: 0.96, flip: true, armF: simonArmF, armB: simonArmB, head: simonHead, lean: simonLean, blink: blinkAt(T, 3) });
+      simon.set({ x: SX, y: FLOOR, s: 0.96, flip: true, armF: simonArmF, armB: simonArmB, head: simonHead, lean: simonLean, blink: blinkAt(T, 3) });
     },
   };
 }

@@ -21,9 +21,10 @@ export default {
     { v: 49 },
     { v: 50 },
   ],
-  cam: { x: [-130, 110], y: [0, 200], z: [0.8, 1.3] },
+  cam: { x: [-200, 140], y: [0, 200], z: [0.8, 1.3] },
   build(S) {
-    const M = simonRoom(S);
+    // phone: Simon sits a little in from the right edge, and the ceiling is a short eave with the evening sky above
+    const M = simonRoom(S, S.portrait ? { sx: 1130, ceilTop: 0 } : {});
     const { R, c } = M;
     const herGlow = R.glowL.add(`<g opacity="0"><circle r="170" fill="url(#halo-glow)"/></g>`);
     const gateGlow = R.glowL.add(`<g opacity="0"><ellipse rx="120" ry="200" fill="url(#warm-glow)"/></g>`);
@@ -74,18 +75,19 @@ export default {
       pose(herGlow, { x: WX, y: FLOOR - 80, s: 1, o: es(t, 0.4, 0.8) * 0.8 * (1 - es(t, 4.2, 4.5)) + face * 0.2 });
 
       /* v47b — the one forgiven little loves little */
-      const [shx, shy] = headAt(SR7.SX, FLOOR, 0.96, true, 62);
+      const [shx, shy] = headAt(M.sx, FLOOR, 0.96, true, 62);
       const sk = es(t, 1.15, 1.35, ease.back) * (1 - es(t, 2.9, 3.1));
       pose(small, { x: shx - 30, y: shy - 64, s: sk, o: sk > 0.02 ? 1 : 0 });
 
       /* v48 — "Your sins are forgiven" */
       const k1 = es(t, 2.08, 2.2, ease.back) * (1 - es(t, 2.92, 2.98));
-      pose(bF, { x: jhx - 40, y: jhy - 44, s: k1, o: k1 > 0.02 ? 1 : 0 });
+      pose(bF, { x: jhx - 40 + (S.portrait ? 55 : 0), y: jhy - 44 - (S.portrait ? 16 : 0),   // phone: the bubble starts inside the left edge
+ s: k1, o: k1 > 0.02 ? 1 : 0 });
 
       /* v49 — the guests whisper: who is this? */
       const whisper = es(t, 3.05, 3.2) * (1 - es(t, 3.9, 4.1));
       M.guests.forEach((g) => g.p.set({ x: g.x + (g.i === 1 ? -6 : g.i === 0 ? 8 : -8) * whisper, y: SEAT, s: 0.9, flip: g.i !== 0 || whisper < 0.5, armF: 20 + whisper * (g.i === 1 ? 60 : 30), armB: 10 + whisper * (g.i === 2 ? 90 : 20), head: 6 + whisper * 8, lean: whisper * (g.i === 0 ? -8 : 8), blink: blinkAt(T, g.seed) }));
-      M.simon.set({ x: SR7.SX, y: FLOOR, s: 0.96, flip: true, armF: 30 + whisper * 50, armB: 10 + bump(t, 1.1, 1.9) * 40, head: 4 + bump(t, 1.1, 1.9) * 10, lean: -whisper * 4, blink: blinkAt(T, 3) });
+      M.simon.set({ x: M.sx, y: FLOOR, s: 0.96, flip: true, armF: 30 + whisper * 50, armB: 10 + bump(t, 1.1, 1.9) * 40, head: 4 + bump(t, 1.1, 1.9) * 10, lean: -whisper * 4, blink: blinkAt(T, 3) });
       qs.forEach((q, i) => {
         const k = es(t, 3.12 + i * 0.06, 3.26 + i * 0.06, ease.back) * (1 - es(t, 3.92, 4.0));
         const x = SH.GUESTS[i] + 4, y = SEAT - 170 * 0.9 + 62 * 0.9 - 70;
@@ -107,7 +109,7 @@ export default {
       S.cam.x = kf(t, [[0, -60], [0.9, -60], [1.2, 30], [1.9, 30], [2.2, -40], [2.9, -40], [3.1, 30], [3.95, 30], [4.2, -50]]);
       S.cam.z = kf(t, [[0, 1.24], [1.2, 1.2], [2.2, 1.26], [3.1, 1.18], [4.2, 1.14]]);
       S.cam.y = kf(t, [[0, 170], [4.2, 150]]);
-      if (S.portrait) { S.cam.x = kf(t, [[0, 100], [4.1, 100], [4.4, -120]]); S.cam.z = 0.82; }
+      if (S.portrait) { S.cam.x = kf(t, [[0, 130], [4.1, 130], [4.4, -200]]); S.cam.z = 0.82; }
     };
   },
 };

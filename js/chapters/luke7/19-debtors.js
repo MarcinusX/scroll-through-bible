@@ -109,7 +109,8 @@ export default {
       /* v42a — they cannot pay; he forgives both: the tablets torn in two */
       const fall = seg(t, 2.42, 2.7);
       const halves = [[t1a, h1x, Y1, -1, 1], [t1b, h1x, Y1, 1, 1], [t2a, h2x + 20, Y2, -1, 0.7], [t2b, h2x + 20, Y2, 1, 0.7]];
-      halves.forEach(([el, x, y, d, k]) => pose(el, { x: x + d * (10 + fall * 110 * k), y: y + fall * fall * (FL - y - 40), r: d * fall * 80, s: 1 - fall * 0.3, o: torn ? 1 - seg(t, 2.92, 3.0) : 0 }));
+      halves.forEach(([el, x, y, d, k]) => pose(el, { x: x + d * (10 + fall * (S.portrait ? 30 : 110) * k),   // phone: the halves fall closer, inside the screen
+ y: y + fall * fall * (FL - y - 40), r: d * fall * 80, s: 1 - fall * 0.3, o: torn ? 1 - seg(t, 2.92, 3.0) : 0 }));
       /* v42b — which will love him more? */
       const hk1 = es(t, 3.08, 3.3, ease.back), hk2 = es(t, 3.18, 3.36, ease.back);
       pose(h1, { x: h1x + 10, y: h1y - 80 - hk1 * 20 + (Tm ? Math.sin(Tm * 2) * 3 : 0), s: hk1 * (1 + (Tm ? Math.sin(Tm * 3) * 0.05 : 0)), o: hk1 > 0.02 ? 1 : 0 });

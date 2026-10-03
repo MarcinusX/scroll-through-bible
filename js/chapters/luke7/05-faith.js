@@ -59,7 +59,7 @@ export default {
       pose(said, { x: hx + 10, y: hy - 44, s: sb, o: sb > 0.02 ? 1 : 0 });
       DIS.forEach((d) => d.p.set({ x: 560 - d.i * 84, y: FEET + (d.i % 2 ? 8 : -2), s: 0.98, armF: 12 + speak * 10, head: -speak * 4, blink: blinkAt(T, d.seed) }));
       crowd.forEach((g, i) => g.set({ x: 170 - i * 230, y: 720 - i * 10, s: 1 - i * 0.1 }));
-      eld.forEach((e) => e.p.set({ x: 1175 + e.i * 76, y: FEET - 14 - e.i * 4, s: 0.92, flip: true, armF: 12 + speak * 30, head: speak * 6, blink: blinkAt(T, e.seed) }));
+      eld.forEach((e) => e.p.set({ x: (S.portrait ? 1300 : 1175) + e.i * 76, y: FEET - 14 - e.i * 4, s: 0.92, flip: true, armF: 12 + speak * 30, head: speak * 6, blink: blinkAt(T, e.seed) }));
       // the flame of faith over the centurion in his doorway
       const fk = es(t, 0.5, 0.8, ease.back) * (1 - es(t, 1.2, 1.35));
       pose(flameEl, { x: D, y: HOUSE.TOP + 30 + (T ? Math.sin(T * 2) * 3 : 0), s: fk * (1 + (T ? Math.sin(T * 7) * 0.04 : 0)), o: fk > 0.02 ? 1 : 0 });
@@ -81,7 +81,8 @@ export default {
       master.set({ x: B + 110, y: HOUSE.BASE, s: 0.8, flip: true, o: inside, armF: 50 + cheer * 30, armB: 30, head: 6, blink: blinkAt(T, 4) });
       joy.forEach((j, i) => { const k = bump(t, 1.55 + i * 0.06, 2.0 + i * 0.03); pose(j, { x: B - 30 + i * 50, y: HOUSE.TOP + 40 + (i % 2) * 30 - seg(t, 1.55, 2.0) * 20, s: k, r: T * 40 + i * 30, o: k }); });
 
-      S.cam.x = kf(t, [[0, 20], [0.4, -20], [1.0, -10], [1.35, 120], [2, 130]]);
+      // phone: the flame over the centurion's doorway stays clear of the thread
+      S.cam.x = kf(t, S.portrait ? [[0, 30], [0.4, 50], [1.0, 60], [1.35, 120], [2, 130]] : [[0, 20], [0.4, -20], [1.0, -10], [1.35, 120], [2, 130]]);
       S.cam.z = kf(t, [[0, 1.06], [0.4, 1.1], [1.0, 1.08], [1.35, 1.22], [2, 1.22]]);
       S.cam.y = kf(t, [[0, 20], [1.0, 20], [1.35, 50]]);
     };

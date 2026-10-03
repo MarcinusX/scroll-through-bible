@@ -25,6 +25,10 @@ export default {
   cam: { x: [-60, 160], y: [-20, 50], z: [1, 1.16] },
   build(S) {
     const N = nainSet(S);
+    // phone: the widow stops further in and arrives sooner, and the town crowd comes up closer behind her (clear of the thread)
+    const PH = S.portrait;
+    const WKp = PH ? [[1.25, GATE + 180], [1.7, 1030]] : WK;
+    const TOWN = PH ? [1170, 1370] : [1260, 1470];
     const c = S.c;
 
     /* the town crowd (behind the gate's front wall, so it comes out of the archway) */
@@ -86,8 +90,8 @@ export default {
       });
       pose(bierEl, { x: bx, y: by });
       pose(body, { x: bx + 4, y: by - 2 });
-      const wx = kf(t, WK);
-      widow.set({ x: wx, y: FEET + 2, s: 1.0, flip: true, o: seg(t, 1.2, 1.3), walk: moving(t, WK) ? wx * 0.05 : undefined, amt: 0.6, armF: 146, armB: 60, head: 18, lean: 6, blink: 1 });
+      const wx = kf(t, WKp);
+      widow.set({ x: wx, y: FEET + 2, s: 1.0, flip: true, o: seg(t, 1.2, 1.3), walk: moving(t, WKp) ? wx * 0.05 : undefined, amt: 0.6, armF: 146, armB: 60, head: 18, lean: 6, blink: 1 });
       const [whx, why] = headAt(wx, FEET + 2, 1.0, true);
       tears.forEach((e, i) => {
         const k = T ? ((T * 0.8 + i / 3) % 1) : (i + 0.5) / 3;
@@ -100,7 +104,7 @@ export default {
 
       /* v12b — a large crowd from the town with her */
       town.forEach((g, i) => {
-        const x = kf(t, [[2.0 + i * 0.12, GATE + 330 + i * 120], [2.7 + i * 0.1, [1260, 1470][i]]]);
+        const x = kf(t, [[2.0 + i * 0.12, GATE + 330 + i * 120], [2.7 + i * 0.1, TOWN[i]]]);
         g.set({ x, y: FEET - 4 - i * 6 - (t > 2 && t < 2.8 ? Math.abs(Math.sin(x * 0.04 + i)) * 3 : 0), s: 1 - i * 0.06 });
       });
 

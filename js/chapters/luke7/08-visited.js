@@ -35,7 +35,7 @@ export default {
     const beamGlow = LL.add(`<ellipse rx="700" ry="300" fill="url(#halo-glow)" opacity="0"/>`);
     /* the town crowd in three states: wailing, afraid, praising */
     const TL = S.layer({ par: 0.4, sh: 4 });
-    const townX = [1260, 1470];
+    const townX = S.portrait ? [1170, 1370] : [1260, 1470];   // phone: the town crowd closer in (as in the scenes before)
     const town = ['wail', 'fear', 'praise'].map((a) => [0, 1].map((i) => TL.sprite(mournerGroup(makeCutter('lk7-mourn' + i), 6, { s: 0.86, seed: i * 2, arms: a, pose: a === 'fear' ? 'kneel' : 'stand' }), townX[i], FEET - 4 - i * 6)));
     const P = S.layer({ par: 0.4, sh: 5 });
     const bear = BEARERS.map((o, i) => ({ i, far: i < 2, o, p: null }));
@@ -110,12 +110,13 @@ export default {
         const x = kf(t, K);
         r.set({ x, y: FEET + 30, s: 0.9, flip: !i, o: seg(t, 1.0, 1.06), walk: moving(t, K) ? x * 0.08 : undefined, amt: 1.6, armF: 40, armB: 30, lean: 8, blink: blinkAt(T, i) });
       });
+      const MS = S.portrait ? 0.86 : 1;   // phone: the map a little smaller, so its right edge and labels clear the thread
       const mk = es(t, 1.0, 1.28, ease.out);
       const my = lerp(-900, MY, mk);
-      pose(map, { x: MX, y: my, r: T ? Math.sin(T * 0.6) * 0.5 * mk : 0, o: my < -150 ? 0 : 1 });
+      pose(map, { x: MX, y: my, s: MS, r: T ? Math.sin(T * 0.6) * 0.5 * mk : 0, o: my < -150 ? 0 : 1 });
       lights.forEach((l) => {
         const k = es(t, 1.3 + l.d, 1.42 + l.d, ease.back);
-        pose(l.el, { x: MX + l.x, y: my + l.y - 8, s: k * (1 + (T ? Math.sin(T * 3 + l.i) * 0.08 : 0)), o: k > 0.02 && my > -150 ? 1 : 0 });
+        pose(l.el, { x: MX + l.x * MS, y: my + (l.y - 8) * MS, s: k * (1 + (T ? Math.sin(T * 3 + l.i) * 0.08 : 0)), o: k > 0.02 && my > -150 ? 1 : 0 });
       });
 
       S.cam.z = kf(t, [[0, 1.08], [0.9, 1.04], [1.3, 1.0]]);

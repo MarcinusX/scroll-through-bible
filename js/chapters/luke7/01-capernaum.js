@@ -22,7 +22,7 @@ export default {
     { v: 2 },
     { v: 3 },
   ],
-  cam: { x: [-80, 170], y: [0, 70], z: [1, 1.3] },
+  cam: { x: [-150, 210], y: [0, 70], z: [1, 1.3] },
   build(S) {
     const st = capStreet(S);
     const c = st.c;
@@ -110,7 +110,8 @@ export default {
       pose(ask, { x: ehx + 10, y: ehy - 36, s: ak * 0.95, o: ak > 0.02 ? 1 : 0 });
 
       /* camera */
-      S.cam.x = kf(t, [[0, 20], [1.0, -60], [1.8, -40], [2.2, 110], [2.9, 120], [3.25, 60], [4.0, 20]]);
+      // phone: further left while He comes in (He is not left on the edge), further right on the room (the centurion clear of the thread)
+      S.cam.x = S.portrait ? kf(t, [[0, 20], [1.0, -150], [1.8, -130], [2.2, 200], [2.9, 210], [3.25, 60], [4.0, 20]]) : kf(t, [[0, 20], [1.0, -60], [1.8, -40], [2.2, 110], [2.9, 120], [3.25, 60], [4.0, 20]]);
       S.cam.z = kf(t, [[0, 1.06], [1.0, 1.1], [1.8, 1.06], [2.2, 1.26], [2.9, 1.26], [3.3, 1.1], [4.0, 1.06]]);
       S.cam.y = kf(t, [[0, 20], [2.2, 60], [2.9, 60], [3.3, 30]]);
     };

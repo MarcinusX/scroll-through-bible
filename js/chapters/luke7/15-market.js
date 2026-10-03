@@ -44,6 +44,11 @@ export default {
   cam: { x: [-40, 40], y: [0, 150], z: [1, 1.5] },
   build(S) {
     const T0 = townSet(S, { gy: 650, market: true, gap: [600, 1000] });
+    // phone: the two groups of children sit closer in (the outer ones were cut by the edge and the thread), the camera
+    // zooms a little less, and the notes fly a little higher so they pass over His head, not across His face
+    const PH = S.portrait;
+    const AX = PH ? [535, 600, 665] : A.map((a) => a[0]);
+    const BX = PH ? [900, 960, 1020] : B.map((b) => b[0]);
     const c = T0.c;
     /* this generation: grown-ups standing about, arms folded, faces turned away */
     const back = S.layer({ par: 0.45, sh: 4 });
@@ -57,8 +62,8 @@ export default {
     /* the children */
     const kidsL = S.layer({ par: 0.5, sh: 5 });
     const hold = [`<g transform="rotate(-30) scale(1.1)">${flute(c)}</g>`, `<g transform="translate(4 6) scale(1.2)">${tambourine(c)}</g>`, `<g transform="translate(6 -4)">${garland(c)}</g>`];
-    const callers = A.map(([x, look], i) => ({ i, x, p: S.puppet(kidsL.add(kid(c, look, { pose: 'sit', holdF: hold[i] }))) }));
-    const others = B.map(([x, look], i) => ({ i, x, p: S.puppet(kidsL.add(kid(c, look, { pose: 'sit' }))) }));
+    const callers = A.map(([x0, look], i) => ({ i, x: AX[i], p: S.puppet(kidsL.add(kid(c, look, { pose: 'sit', holdF: hold[i] }))) }));
+    const others = B.map(([x0, look], i) => ({ i, x: BX[i], p: S.puppet(kidsL.add(kid(c, look, { pose: 'sit' }))) }));
     const fx = S.layer({ par: 0.5, sh: 3 });
     const board = fx.add(`<g opacity="0">${doll(c)}</g>`);
     const callA = callers.map(() => voiceRings(fx, c, { n: 2, color: C.ochre, r: 22, w: 4, both: false }));
@@ -101,7 +106,7 @@ export default {
       });
       notes.forEach((n) => {
         const k = T ? (T * 0.35 + n.i / 7) % 1 : n.i / 7;
-        const x = lerp(600, 1080, k), y = KY - 150 - Math.sin(k * PI) * 90 + (n.i % 3) * 16 + k * k * 60;
+        const x = PH ? lerp(620, 1040, k) : lerp(600, 1080, k), y = KY - 150 - Math.sin(k * PI) * (PH ? 170 : 90) + (n.i % 3) * 16 + k * k * 60;
         pose(n.el, { x, y, r: Math.sin(k * 8) * 16, s: 1.2, o: play * Math.sin(k * PI) });
       });
       pose(board, { x: 610, y: KY + 10, o: es(t, 2.98, 3.1) });
@@ -113,7 +118,7 @@ export default {
       });
 
       const down = es(t, 0.95, 1.3);
-      S.cam.z = lerp(1.1, 1.26, down);
+      S.cam.z = PH ? lerp(1.06, 1.14, down) : lerp(1.1, 1.26, down);
       S.cam.y = lerp(10, 60, down);
       S.cam.x = 0;
       void folkGroup; void seg; void kf;

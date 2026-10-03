@@ -21,9 +21,10 @@ export default {
     { v: 40, text: 'Na to Jezus rzekł do niego: «Szymonie, mam ci coś powiedzieć».' },
     { v: 40, cont: true, text: 'On rzekł: «Powiedz, Nauczycielu!»' },
   ],
-  cam: { x: [-90, 120], y: [0, 200], z: [0.8, 1.34] },
+  cam: { x: [-90, 140], y: [0, 200], z: [0.8, 1.34] },
   build(S) {
-    const M = simonRoom(S);
+    // phone: Simon sits a little in from the right edge, and the ceiling is a short eave with the evening sky above
+    const M = simonRoom(S, S.portrait ? { sx: 1130, ceilTop: 0 } : {});
     const { R, c } = M;
     const tears = [0, 1, 2, 3].map(() => R.fx.add(`<g opacity="0">${tear(c, 4.4)}</g>`));
     const kisses = [0, 1, 2, 3].map(() => R.fx.add(`<g opacity="0">${kiss(c, 8)}</g>`));
@@ -89,7 +90,7 @@ export default {
       const frown = es(t, 2.05, 2.25) * (1 - es(t, 3.9, 4.1));
       const reply = es(t, 4.05, 4.2);
       M.table(t, T, { look: bump(t, 0.1, 2.9), simonArmF: 30 + frown * 100 + reply * 40, simonArmB: 10 + reply * 60, simonHead: 4 - frown * 6 + reply * 4, simonLean: -frown * 6 });
-      const [shx, shy] = headAt(SR7.SX, FLOOR, 0.96, true, 62);
+      const [shx, shy] = headAt(M.sx, FLOOR, 0.96, true, 62);
       const tk = es(t, 2.1, 2.3, ease.back) * (1 - es(t, 2.95, 3.05));
       pose(thinkEl, { x: shx - 20, y: shy - 36, s: tk, o: tk > 0.02 ? 1 : 0 });
       sv(shx, shy, reply * (1 - es(t, 4.9, 5.0)), T, { dir: -1, spread: 1.6 });
@@ -99,7 +100,7 @@ export default {
       S.cam.x = kf(t, [[0, -70], [1.9, -70], [2.2, 40], [3.0, 40], [3.3, 0]]);
       S.cam.z = kf(t, [[0, 1.26], [1.9, 1.28], [2.2, 1.2], [3.3, 1.18]]);
       S.cam.y = kf(t, [[0, 180], [2.2, 150]]);
-      if (S.portrait) { S.cam.x = kf(t, [[0, 40], [1.9, 40], [2.2, 100]]); S.cam.z = 0.82; }
+      if (S.portrait) { S.cam.x = kf(t, [[0, 60], [1.9, 60], [2.2, 130]]); S.cam.z = 0.82; }
     };
   },
 };

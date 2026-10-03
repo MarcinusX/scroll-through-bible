@@ -25,6 +25,10 @@ export default {
   cam: { x: [-20, 60], y: [-80, 40], z: [1, 1.12] },
   build(S) {
     const H = hillsSet(S, { gy: 700 });
+    // phone: the row of medallions closes up and the two messengers stand a little further in, all clear of the thread
+    const PH = S.portrait;
+    const RXp = PH ? RX.map((x, i) => 545 + i * 95) : RX;
+    const MX = PH ? [985, 1065] : [M1, M2];
     const c = S.c;
     const backL = S.layer({ par: 0.5, sh: 4 });
     backL.sprite(folkGroup(makeCutter('lk7-hr-a'), 6, { s: 0.62 }), 300, 680);
@@ -72,20 +76,20 @@ export default {
       pose(earB, { x: hx - 40, y: hy - 110 + (T ? Math.sin(T * 2 + 1) * 3 : 0), s: rb, r: -8, o: rb > 0.02 ? 1 : 0 });
 
       /* v22b–c — the medallions come down one by one and light up; v23 — into the satchel */
-      const [bgx, bgy] = hand(M1, GY, 1.0, true, 16, 0);
+      const [bgx, bgy] = hand(MX[0], GY, 1.0, true, 16, 0);
       meds.forEach((m) => {
         const a = m.i < 4 ? 1.04 + m.i * 0.15 : 2.05 + (m.i - 4) * 0.25;
         const k = es(t, a, a + 0.22, ease.out);
         const pack = es(t, 3.08 + m.i * 0.04, 3.34 + m.i * 0.04, ease.in);
-        const x = lerp(RX[m.i], bgx - 6, pack), y = lerp(lerp(-1500, RY[m.i], k), bgy - 40, pack);
+        const x = lerp(RXp[m.i], bgx - 6, pack), y = lerp(lerp(-1500, RY[m.i], k), bgy - 40, pack);
         pose(m.el, { x, y, s: 1 - pack * 0.85, r: T ? Math.sin(T * 0.7 + m.i * 1.3) * 1.2 * k : 0, o: k > 0.002 && pack < 0.98 ? 1 : 0 });
         const lit = bump(t, a + 0.15, a + 0.75);
-        pose(m.glow, { x: RX[m.i], y: RY[m.i] + R + 12, s: 0.6 + lit * 0.6, o: lit * 0.9 * (1 - pack) });
+        pose(m.glow, { x: RXp[m.i], y: RY[m.i] + R + 12, s: 0.6 + lit * 0.6, o: lit * 0.9 * (1 - pack) });
       });
 
       /* the two messengers: listening, watching, then blessed and on their way */
       dis.forEach((d) => {
-        const K = [[0, [M1, M2][d.i]], [3.62, [M1, M2][d.i]], [4.0, [M1, M2][d.i] + 380]];
+        const K = [[0, MX[d.i]], [3.62, MX[d.i]], [4.0, MX[d.i] + 380]];
         const x = kf(t, K);
         const look = es(t, 1.0, 1.2) * (1 - es(t, 3.0, 3.1));
         const bow = bump(t, 3.45, 3.65);
@@ -93,7 +97,7 @@ export default {
       });
       const bb = es(t, 3.42, 3.54, ease.back) * (1 - es(t, 3.94, 4.0));
       pose(bless, { x: hx + 36, y: hy - 40, s: bb, o: bb > 0.02 ? 1 : 0 });
-      pose(shine, { x: M1 + 45, y: GY - 120, s: 1 + blessK * 0.3, o: blessK * 0.6 });
+      pose(shine, { x: MX[0] + 45, y: GY - 120, s: 1 + blessK * 0.3, o: blessK * 0.6 });
 
       S.cam.y = kf(t, [[0, 20], [0.9, 20], [1.2, 0], [3.0, 0], [3.3, 10]]);
       S.cam.z = kf(t, [[0, 1.08], [0.9, 1.08], [1.2, 1.0], [3.0, 1.0], [3.3, 1.08]]);

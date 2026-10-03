@@ -16,8 +16,7 @@ import {
 } from './lib.js';
 
 const { GY, JX } = TS;
-const FW = 300, FH = 200, KF = 1.0;
-const LX = 640, RX = 980, FY = 330;
+const FW = 300, FH = 200, FY = 330;
 
 export default {
   id: 'lk7-wisdom',
@@ -30,6 +29,12 @@ export default {
   ],
   cam: { x: [-30, 30], y: [-40, 30], z: [1, 1.1] },
   build(S) {
+    // phone: the two flats a little smaller and closer together, the critics and the people who welcome wisdom further
+    // in (the right flat, the third critic and the first of the welcomers were under the thread or off the edge)
+    const PH = S.portrait;
+    const KF = PH ? 0.86 : 1.0, LX = PH ? 650 : 640, RX = PH ? 935 : 980;
+    const CX = PH ? [915, 980, 1045] : [990, 1080, 1170];
+    const KX = PH ? [490, 565, 640, 705] : [420, 500, 580, 650];
     const T0 = teachSet(S, { crowds: false });
     const c = T0.c;
     const B = T0.bits;
@@ -60,9 +65,9 @@ export default {
     /* the critics, in the crowd on the right; the people who welcomed John and Jesus on the left */
     const crit = [pharisee(c, 0), LAWYER, pharisee(c, 2)].map((o, i) => ({ i, p: S.puppet(T0.P.add(person(c, o))), seed: c.rr(0, 9) }));
     const kids = [
-      { o: TAXMAN, x: 420 }, { o: { robe: C.dustyBlue, hair: C.hair2, hairStyle: 'short', beard: 'short', skin: C.skin2 }, x: 500 },
-      { o: SINNER, x: 580 }, { o: KID_LOOKS[3], x: 650, kid: true },
-    ].map((k, i) => ({ ...k, i, p: S.puppet(T0.P.add(k.kid ? childPerson(c, k.o) : person(c, k.o))) }));
+      { o: TAXMAN }, { o: { robe: C.dustyBlue, hair: C.hair2, hairStyle: 'short', beard: 'short', skin: C.skin2 } },
+      { o: SINNER }, { o: KID_LOOKS[3], kid: true },
+    ].map((k, i) => ({ ...k, x: KX[i], i, p: S.puppet(T0.P.add(k.kid ? childPerson(c, k.o) : person(c, k.o))) }));
     const leftCrowd = T0.crowdL.sprite(folkGroup(makeCutter('lk7-ts-l'), 6, { s: 0.8 }), 290, GY - 8);
     const glowL = T0.crowdL.add(`<g opacity="0"><ellipse rx="300" ry="170" fill="url(#halo-glow)"/></g>`);
     const W = T0.W;
@@ -99,10 +104,10 @@ export default {
       const p2 = es(t, 3.08, 3.22) * (1 - es(t, 3.95, 4.05));
       const shrink = es(t, 4.25, 4.5);
       crit.forEach((k) => {
-        const x = [990, 1080, 1170][k.i];
+        const x = CX[k.i];
         k.p.set({ x, y: GY - 2 + (k.i % 2) * 8, s: 1.0, flip: !turnR, armF: 20 + p1 * 70 + p2 * 70, armB: 10 + p1 * (k.i === 1 ? 110 : 30) + p2 * (k.i === 0 ? 120 : 30), head: -p1 * 10 - p2 * 14 + shrink * 12, lean: shrink * 6, blink: blinkAt(T, k.seed) });
       });
-      const [chx, chy] = headAt(1080, GY + 6, 1.0, true);
+      const [chx, chy] = headAt(CX[1], GY + 6, 1.0, true);
       const b1 = es(t, 1.12, 1.24, ease.back) * (1 - es(t, 1.92, 2.0));
       pose(cry1, { x: chx - 40, y: chy - 50, s: b1, o: b1 > 0.02 ? 1 : 0 });
       const b2 = es(t, 3.12, 3.24, ease.back);

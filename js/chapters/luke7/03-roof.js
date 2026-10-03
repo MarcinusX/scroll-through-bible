@@ -19,7 +19,7 @@ export default {
     { v: 7, text: 'I dlatego ja sam nie uważałem się za godnego przyjść do Ciebie.' },
     { v: 7, cont: true, text: 'Lecz powiedz słowo, a mój sługa będzie uzdrowiony.' },
   ],
-  cam: { x: [-40, 110], y: [0, 60], z: [1, 1.2] },
+  cam: { x: [-40, 160], y: [0, 60], z: [1, 1.2] },
   build(S) {
     const st = capStreet(S);
     const c = st.c;
@@ -57,7 +57,7 @@ export default {
         d.p.set({ x, y: FEET + (d.i % 2 ? 8 : -2), s: 0.98, walk: moving(t, K) ? x * 0.05 + d.i : undefined, amt: 0.8, armF: 12, head: -hear * 4, blink: blinkAt(T, d.seed) });
       });
       eld.forEach((e) => {
-        const K = [[0.0, 560 + e.i * 76], [0.95, 1175 + e.i * 76]];
+        const K = [[0.0, 560 + e.i * 76], [0.95, (S.portrait ? 1300 : 1175) + e.i * 76]];   // phone: the elders walk on out of the picture, not stopping half under the thread
         const x = kf(t, K);
         const back = t > 0.95;
         e.p.set({ x, y: FEET - 14 - e.i * 4, s: 0.92, flip: back, walk: moving(t, K) ? x * 0.05 + e.i : undefined, amt: 0.8, armF: 12 + (e.i === 0 ? bump(t, 0.1, 0.8) * 40 : 0), head: -4, blink: blinkAt(T, e.seed) });
@@ -97,7 +97,8 @@ export default {
       const sk = bump(t, 3.6, 4.0);
       pose(sp, { x: HOUSE.X0 + 130, y: HOUSE.TOP + 60, s: sk, r: T * 40, o: sk });
 
-      S.cam.x = kf(t, [[0, 0], [0.9, 60], [1.2, 90], [2.0, 90], [2.3, 100], [3.1, 80], [3.4, 60]]);
+      // phone: a little further right, so the centurion in his doorway and his tag stay clear of the thread
+      S.cam.x = kf(t, S.portrait ? [[0, 0], [0.9, 90], [1.2, 150], [2.0, 150], [2.3, 160], [3.1, 130], [3.4, 100]] : [[0, 0], [0.9, 60], [1.2, 90], [2.0, 90], [2.3, 100], [3.1, 80], [3.4, 60]]);
       S.cam.z = kf(t, [[0, 1.04], [1.2, 1.1], [2.3, 1.16], [3.1, 1.12], [3.4, 1.08]]);
       S.cam.y = kf(t, [[0, 20], [1.2, 30], [2.3, 50], [3.4, 30]]);
     };
