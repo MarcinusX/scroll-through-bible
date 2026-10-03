@@ -72,12 +72,13 @@ export default {
       });
       faces.forEach((f) => {
         const k = es(t, 1.35 + f.i * 0.03, 1.6 + f.i * 0.03, ease.back);
-        const x = 470 + f.i * 58, y = 206 + (f.i % 2) * 22;
+        // phone: the camera has gone with the women towards the city, so the row hangs further left to stay on screen
+        const x = S.portrait ? 404 + f.i * 54 : 470 + f.i * 58, y = 206 + (f.i % 2) * 22;
         hangK(f.el, k, x, y, T, f.i);
       });
       rest.forEach((f) => {
         const k = es(t, 1.62 + f.i * 0.04, 1.85 + f.i * 0.04, ease.back);
-        hangK(f.el, k, 520 + f.i * 100, 290 + (f.i % 2) * 14, T, f.i + 11);
+        hangK(f.el, k, (S.portrait ? 450 : 520) + f.i * 100, 290 + (f.i % 2) * 14, T, f.i + 11);
       });
 
       S.cam.x = lerp(S.portrait ? 60 : 90, S.portrait ? -440 : -440, es(t, 1.1, 1.95));

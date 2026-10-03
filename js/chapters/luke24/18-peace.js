@@ -59,7 +59,7 @@ export default {
         const flip = come > 0.5 ? m.x > MID.x : m.flip;
         const tremble = fear * (T ? Math.sin(T * 30 + m.i) * 1.5 : 0);
         if (m.k === 'peter') {
-          const px = m.x + reach * 60;
+          const px = m.x + reach * (S.portrait ? 24 : 60);   // phone: he stands nearer already (the room is drawn closer)
           m.p.set({ x: px, y: m.y, s: m.s, flip, lean: -fear * 10 + reach * 8 + lean * 4, armF: 26 + fear * 50 * (1 - reach) + reach * 60, armB: 12 + fear * 90 * (1 - reach), head: -fear * 8 + reach * 4 + lean * 8, blink: blinkAt(T, m.seed) });
         } else {
           m.p.set({ x: m.x + tremble, y: m.y, s: m.s, flip, lean: -fear * 12 + lean * 6, armF: 22 + fear * 60 + lean * 20, armB: 10 + fear * (m.i % 2 ? 110 : 50), head: -fear * 10 + lean * 8, blink: fear > 0.5 ? 0 : blinkAt(T, m.seed) });

@@ -75,7 +75,7 @@ export default {
       const k2 = es(t, 2.5, 2.7, ease.back);
       pose(b2, { x: chx - 150, y: chy - 70, s: k2, o: k2 > 0.01 ? 1 : 0 });
 
-      S.cam.x = S.portrait ? lerp(80, 20, es(t, 0.9, 1.3)) : 20;
+      S.cam.x = S.portrait ? lerp(40, 20, es(t, 0.9, 1.3)) : 20;
       S.cam.y = 40;
       S.cam.z = S.portrait ? 0.92 : 1.04;
       void sheet; void seg;

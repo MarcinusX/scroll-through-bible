@@ -25,7 +25,8 @@ export default {
     const birdL = S.layer({ par: 0.2, sh: 4 });
     const doves = flock(S, birdL, 6, (cc) => dove(cc), { y: 230, spread: 160, speed: 45, scale: 0.42 });
     const PL = S.layer({ par: 0.45, sh: 5 });
-    const M = ROW.map(([k, x, r], i) => ({ k, x, i, y: TFLOOR + (r ? 56 : 0) + (i % 2) * 4, s: r ? 1.0 : 0.9, seed: c.rr(0, 9) })).sort((a, b) => a.y - b.y);
+    // phone: they stand closer before the sanctuary, so the outer ones are not sliced by the frame and the thread
+    const M = ROW.map(([k, x, r], i) => ({ k, x: S.portrait ? Math.round(792 + (x - 800) * 0.66) : x, i, y: TFLOOR + (r ? 56 : 0) + (i % 2) * 4, s: r ? 1.0 : 0.9, seed: c.rr(0, 9) })).sort((a, b) => a.y - b.y);
     M.forEach((m) => { m.p = S.puppet(PL.add(person(c, { ...LOOK[m.k] }))); });
     const fx = S.layer({ par: 0.47, sh: 5 });
     const praise = M.map((m, i) => fx.add(`<g>${i % 3 === 0 ? heart(c, 9) : i % 3 === 1 ? spark(c, 8) : sparkle(c, 11)}</g>`));

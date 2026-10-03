@@ -26,10 +26,12 @@ export default {
     const RR = room20(S, { night: false });
     const { door } = RR;
     const PL = S.layer({ par: 0.52, sh: 5 });
-    const crew = roomCrew(S, PL, APOSTLES);
+    // phone: the room is too wide for the screen, so the apostles and the women stand closer together
+    const PX = (x) => S.portrait ? Math.round(790 + (x - 800) * 0.64) : x;
+    const crew = roomCrew(S, PL, APOSTLES.map(([k, x, y]) => [k, PX(x), y]));
     const W = WOMEN.map((w, i) => {
       const holdF = `<g transform="translate(2 8)">${spiceJar(c, JARS[i][0], JARS[i][1])}</g>`;
-      return { ...w, i, x: WX[i], y: 744 + (i % 2) * 6, seed: c.rr(0, 9), p: S.puppet(PL.add(person(c, { ...w.o, holdF }))) };
+      return { ...w, i, x: PX(WX[i]), y: 744 + (i % 2) * 6, seed: c.rr(0, 9), p: S.puppet(PL.add(person(c, { ...w.o, holdF }))) };
     });
 
     /* the names on tags */
@@ -62,7 +64,7 @@ export default {
       tags.forEach(({ w, el }, i) => {
         const k = es(t, 0.3 + i * 0.16, 0.6 + i * 0.16, ease.back) * (1 - es(t, 1.1, 1.35, ease.in));
         const [hx, hy] = headAt(w.x, w.y, 0.97, true);
-        hangK(el, k, hx, hy - 150 + (i % 2) * 20, T, i);
+        hangK(el, k, hx, S.portrait ? hy - 262 + i * 38 : hy - 150 + (i % 2) * 20, T, i);   // phone: the women stand closer, so the tags step down
       });
 
       /* v10b: they tell it — the bubbles fly over to the apostles */
@@ -89,7 +91,7 @@ export default {
         fade(m.sad, 0.8 - listen * 0.6 + doubt * 0.7);
       });
 
-      S.cam.x = S.portrait ? lerp(60, 0, es(t, 1.0, 2.0)) : lerp(40, 10, es(t, 1.0, 2.0));
+      S.cam.x = S.portrait ? lerp(20, 0, es(t, 1.0, 2.0)) : lerp(40, 10, es(t, 1.0, 2.0));
       S.cam.y = 40;
       S.cam.z = S.portrait ? 0.92 : 1.08;
     };

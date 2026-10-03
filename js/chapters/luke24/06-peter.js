@@ -26,7 +26,8 @@ export default {
     const c = S.c;
     sky(S, GOLD);
     const hangL = S.layer({ par: 0.04, sh: 4 });
-    const sunEl = hanging(hangL, sun(c, 50, { rays: C.sunDeep }), { x: 1120, y: 170, len: 900 });
+    const SUNX = S.portrait ? 990 : 1120;   // phone: the sun hangs clear of the progress thread
+    const sunEl = hanging(hangL, sun(c, 50, { rays: C.sunDeep }), { x: SUNX, y: 170, len: 900 });
     const cl = hanging(hangL, cloud(c, 150), { x: 700, y: 150, len: 700 });
     const G = gardenSet(S);
     const L = G.walkL;
@@ -47,7 +48,7 @@ export default {
     const spk = [0, 1, 2].map(() => fx.add(`<g>${sparkle(c, 10)}</g>`));
 
     return (t, T) => {
-      swing(sunEl, 1120, 170, T, 0.8, 0.5);
+      swing(sunEl, SUNX, 170, T, 0.8, 0.5);
       swing(cl, 700 + (T ? Math.sin(T * 0.1) * 30 : 0), 150, T, 1.2, 0.6, 1);
       pose(G.stone, { x: STONE.x, y: DOOR.y - STONE.r + 2 });
       pose(G.doorRays, { x: DOOR.x, y: DOOR.y, o: 0 });

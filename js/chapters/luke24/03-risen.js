@@ -12,8 +12,8 @@ import {
 } from './lib.js';
 
 const { FLOOR, LEDGE } = IN;
-const WX = [790, 690, 590, 500];
-const A1 = 1010, A2 = 1150;
+const WX0 = [790, 690, 590, 500];
+const A10 = 1010, A20 = 1150;
 const FW = 440, FH = 240;
 
 export default {
@@ -26,6 +26,9 @@ export default {
   cam: { x: [-40, 120], y: [-40, 50], z: [0.9, 1.18] },
   build(S) {
     const c = S.c;
+    // phone: the four women and the two in white close in, so neither the last woman nor the second angel is sliced
+    const WX = S.portrait ? [800, 728, 656, 584] : WX0;
+    const [A1, A2] = S.portrait ? [965, 1050] : [A10, A20];
     const T0 = tombInside(S, { out: [mix(C.skyBlue, C.dawn, 0.35), C.sage] });
     const lightL = S.layer({ par: 0.5, sh: 0, flat: true });
     const white = lightL.add(`<g><ellipse rx="230" ry="260" fill="url(#halo-glow)"/></g>`);
@@ -115,7 +118,7 @@ export default {
       const ds = bump(t, 2.66, 3.0);
       pose(dawnSpark, { x: 1030, y: 230, s: ds * 1.3, r: T * 30, o: ds });
 
-      S.cam.x = S.portrait ? 60 : 60;
+      S.cam.x = S.portrait ? 90 : 60;
       S.cam.y = 38 - es(t, 1.0, 1.3) * 30;
       S.cam.z = S.portrait ? 0.94 : 1.16 - es(t, 1.0, 1.3) * 0.06;
       void lerp; void shade;

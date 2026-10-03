@@ -9,6 +9,7 @@ import { es, ease, bump, seg, fade } from './lib.js';
 import { WOMEN, NIGHT, PRE, ROSE, tombGarden, OPEN, SR, STONE_Y, DX, DYD, PATH, pathS, along, headAt, sparkle, spiceJar, lantern, GLYPH, upright, JARS as JAR, PI } from './lib.js';
 
 const WALK = [...PATH, [720, 727]];   // on round the olive, nearer the doorway
+const WALK_P = [...WALK, [840, 722]];  // phone: a step nearer still, so the women and the stone share the screen
 
 export default {
   id: 'lk24-dawn',
@@ -17,7 +18,7 @@ export default {
     { v: 1 },
     { v: 2 },
   ],
-  cam: { x: [-60, 160], y: [-20, 40], z: [0.9, 1.08] },
+  cam: { x: [-60, 380], y: [-20, 40], z: [0.86, 1.08] },
   build(S) {
     const c = S.c;
     sky(S, NIGHT);
@@ -60,8 +61,9 @@ export default {
       const go = es(t, 1.02, 2.2, ease.out);
       const stop = es(t, 2.05, 2.3);
       const heads = [];
+      const P = S.portrait;
       W.forEach((w) => {
-        const [x, y] = along(WALK, Math.max(0, go - w.i * 0.07));
+        const [x, y] = along(P ? WALK_P : WALK, Math.max(0, go - w.i * (P ? 0.045 : 0.07)));
         const s = pathS(y) * 1.02;
         const walking = go > 0.001 && go < 0.999 - w.i * 0.02;
         const see = es(t, 2.08 + w.i * 0.04, 2.3 + w.i * 0.04);
@@ -83,9 +85,9 @@ export default {
         pose(q, { x: hx + 16, y: hy - 44, s: b, o: b > 0.01 ? 1 : 0 });
       });
 
-      S.cam.x = S.portrait ? lerp(140, 20, es(t, 1.4, 2.4)) : lerp(120, 70, es(t, 1.3, 2.4));
+      S.cam.x = S.portrait ? lerp(140, 20, es(t, 1.4, 2.0)) + es(t, 2.0, 2.4) * 280 + (1 - es(t, 0.85, 1.25)) * 230 : lerp(120, 70, es(t, 1.3, 2.4));
       S.cam.y = 20 - es(t, 0.8, 2) * 20;
-      S.cam.z = S.portrait ? 0.92 : 1.02 + es(t, 1.9, 2.8) * 0.03;
+      S.cam.z = S.portrait ? 0.92 - es(t, 2.0, 2.4) * 0.04 : 1.02 + es(t, 1.9, 2.8) * 0.03;
       void PI; void stop;
     };
   },

@@ -337,9 +337,11 @@ export function emmausRoom(S, { skyCols = SUNSET, eveCols = EVENING } = {}) {
   w.p(c.ribbon(winPts.slice(0, -1), 10), C.wood2);
   w.p(c.cut(c.rect(wx0 - 16, wy1 - 4, wx1 - wx0 + 32, 12), 0.3, 6), C.wood);
   // beams, a niche with jars and a folded cloth on the right
-  w.p(c.cut([[-900, -1200], [2500, -1200], [2500, 190], [-900, 190]], 0.8, 30), shade(C.wood2, -0.15));
+  // phone: the ceiling sits higher, so the tall screen is not a third wood
+  const CEIL = S.portrait ? -90 : 190;
+  w.p(c.cut([[-900, -1200], [2500, -1200], [2500, CEIL], [-900, CEIL]], 0.8, 30), shade(C.wood2, -0.15));
   let beams = '';
-  for (let x = -300; x < 1900; x += 110) beams += c.cut(c.rect(x, 184, 24, 26), 0.3, 5);
+  for (let x = -300; x < 1900; x += 110) beams += c.cut(c.rect(x, CEIL - 6, 24, 26), 0.3, 5);
   w.p(beams, C.wood);
   const nx = 1180, ny = 400;
   w.p(c.cut([[nx - 70, ny + 80], [nx - 70, ny], ...c.arc(nx, ny, 70, 50, PI, 2 * PI, 12), [nx + 70, ny], [nx + 70, ny + 80]], 0.5, 6), shade(wcol, -0.16));
@@ -421,7 +423,8 @@ export function gatherRoom(S, { night = true, jesus = true, skip = [] } = {}) {
   const gl = S.layer({ par: 0.5, sh: 0, flat: true });
   const glow = gl.add(`<g opacity="0"><ellipse cx="0" cy="-110" rx="150" ry="190" fill="url(#halo-glow)"/></g>`);
   const PL = S.layer({ par: 0.52, sh: 5 });
-  const list = GATHER.filter((m) => !skip.includes(m[0]));
+  // phone: the room is wider than the screen, so the gathered stand closer round the middle (none sliced by the frame or the thread)
+  const list = GATHER.filter((m) => !skip.includes(m[0])).map((m) => S.portrait ? [m[0], Math.round(795 + (m[1] - 825) * 0.6), ...m.slice(2)] : m);
   const crew = roomCrew(S, PL, list.filter((m) => m[2] < 720));
   const J = jesus ? S.puppet(PL.add(person(S.c, { ...CAST.jesus }))) : null;
   roomCrew(S, PL, list.filter((m) => m[2] >= 720)).forEach((m) => crew.push({ ...m, i: crew.length }));

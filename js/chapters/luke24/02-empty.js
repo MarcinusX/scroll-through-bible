@@ -8,8 +8,8 @@ import { es, ease, bump, seg, fade } from './lib.js';
 import { WOMEN, JARS, IN, tombInside, angelPerson, ANGEL_A, ANGEL_B, headAt, voiceRings, speech, risenIcon, spiceJar, question, sparkle, withFace, faceBits, upright, tr } from './lib.js';
 
 const { FLOOR, DOOR_X, LEDGE } = IN;
-const WX = [790, 690, 590, 500];     // where the women stand (Mary Magdalene nearest the ledge)
-const A1 = 1010, A2 = 1150;          // the two in white
+const WX0 = [790, 690, 590, 500];     // where the women stand (Mary Magdalene nearest the ledge)
+const A10 = 1010, A20 = 1150;          // the two in white
 
 export default {
   id: 'lk24-empty',
@@ -22,6 +22,9 @@ export default {
   cam: { x: [-60, 160], y: [-20, 60], z: [0.9, 1.22] },
   build(S) {
     const c = S.c;
+    // phone: the four women and the two in white close in, so neither the last woman nor the second angel is sliced
+    const WX = S.portrait ? [800, 728, 656, 584] : WX0;
+    const [A1, A2] = S.portrait ? [965, 1050] : [A10, A20];
     const T0 = tombInside(S, { out: [mix(C.skyBlue, C.dawn, 0.5), C.sage] });
 
     /* the light of the two in white (behind them only) */
@@ -90,7 +93,7 @@ export default {
       const sk = es(t, 3.15, 3.35, ease.back);
       pose(say, { x: ahx - 30, y: ahy - 40, s: sk, o: sk > 0.01 ? 1 : 0 });
 
-      S.cam.x = S.portrait ? lerp(-40, 120, es(t, 0.6, 1.6)) : lerp(10, 70, es(t, 0.4, 1.6));
+      S.cam.x = S.portrait ? lerp(-40, 90, es(t, 0.6, 1.6)) : lerp(10, 70, es(t, 0.4, 1.6));
       S.cam.y = 46 - es(t, 1.4, 1.8) * 8;
       S.cam.z = S.portrait ? 0.96 : 1.2 - es(t, 1.4, 1.8) * 0.04;
     };

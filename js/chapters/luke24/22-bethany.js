@@ -28,7 +28,8 @@ export default {
     const O = olivetSet(S);
     const glowEl = O.heaven.add(`<g opacity="0"><circle r="300" fill="url(#halo-glow)"/>${glory(c, 330, 26)}</g>`);
     const PL = O.PL;
-    const M = SPOTS.map(([k, x, y], i) => ({ k, x, y, i, s: 0.9 + (y - 712) / 300, seed: c.rr(0, 9) })).sort((a, b) => a.y - b.y);
+    // phone: the Eleven stand closer round Him, so the outer ones are not sliced by the frame and the thread
+    const M = SPOTS.map(([k, x, y], i) => ({ k, x: S.portrait ? Math.round(792 + (x - 800) * 0.66) : x, y, i, s: 0.9 + (y - 712) / 300, seed: c.rr(0, 9) })).sort((a, b) => a.y - b.y);
     const back = M.filter((m) => m.y < 740), front = M.filter((m) => m.y >= 740);
     back.forEach((m) => { m.st = S.puppet(PL.add(person(c, { ...TW[m.k] }))); m.kn = S.puppet(PL.add(person(c, { ...TW[m.k], pose: 'kneel' }))); });
     const strings = PL.add(`<g><path d="M-9 -1800V-150M11 -1800V-150" stroke="rgba(74,54,34,.55)" stroke-width="1.3" fill="none"/></g>`);

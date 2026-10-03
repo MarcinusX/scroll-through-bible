@@ -74,22 +74,24 @@ export default {
       });
 
       /* the scroll, following the walkers (it hangs in the flies, its own parallax) */
-      const SX = 830 + 0.3 * camx, SY = 292;
+      // phone: the open scroll is wider than the screen, so it hangs a little smaller and centred
+      const K = S.portrait ? 0.86 : 1;
+      const SX = (S.portrait ? 800 : 830) + 0.3 * camx, SY = 292;
       const down = es(t, 0.02, 0.2, ease.out) * (1 - es(t, 1.2, 1.45, ease.in));
       const open = es(t, 0.12, 0.4) * (1 - es(t, 1.02, 1.2));
       const yy = lerp(-600, SY, down) + (T ? Math.sin(T * 0.8) * 2 : 0);
       const vis = down > 0.01 ? 1 : 0;
-      pose(parch, { x: SX, y: yy, sx: 0.02 + open * 0.98, o: vis && open > 0.01 ? 1 : 0 });
-      pose(rollL, { x: SX - (8 + open * sc.w / 2), y: yy, o: vis });
-      pose(rollR, { x: SX + (8 + open * sc.w / 2), y: yy, o: vis });
+      pose(parch, { x: SX, y: yy, s: K, sx: 0.02 + open * 0.98, o: vis && open > 0.01 ? 1 : 0 });
+      pose(rollL, { x: SX - (8 + open * sc.w / 2) * K, y: yy, s: K, o: vis });
+      pose(rollR, { x: SX + (8 + open * sc.w / 2) * K, y: yy, s: K, o: vis });
       pics.forEach((p) => {
         const a = 0.22 + p.k * 0.1;
         const inK = es(t, a, a + 0.12, ease.out) * (open > 0.97 ? 1 : 0);
-        const x = SX + sc.colX(p.k), y = yy + sc.winY;
-        pose(p.w, { x, y, o: inK });
-        pose(p.p, { x, y, s: 0.8 + inK * 0.2, o: inK });
+        const x = SX + sc.colX(p.k) * K, y = yy + sc.winY * K;
+        pose(p.w, { x, y, s: K, o: inK });
+        pose(p.p, { x, y, s: (0.8 + inK * 0.2) * K, o: inK });
         const b = bump(t, a + 0.05, a + 0.3);
-        pose(p.sp, { x: x + 30, y: y - 60, s: b, r: T * 30, o: b * (open > 0.97 ? 1 : 0) });
+        pose(p.sp, { x: x + 30 * K, y: y - 60 * K, s: b, r: T * 30, o: b * (open > 0.97 ? 1 : 0) });
       });
 
       S.cam.y = 18;
