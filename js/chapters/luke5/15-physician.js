@@ -39,6 +39,7 @@ export default {
   build(S) {
     const c = S.c;
     const F = levisFeast(S);
+    const FXp = S.portrait ? 790 : FX;                   // phone: the flat clear of the thread
     // T1 and S0 come alive for v32 (puppets over their still places)
     const t1 = F.places.find((p) => p.who === 'T1'), s0 = F.places.find((p) => p.who === 'S0');
     const t1p = S.puppet(F.L.add(person(c, { ...lookOf('T1'), pose: 'sit' })));
@@ -76,9 +77,9 @@ export default {
       /* v31b — the painted flat: the physician goes past the well man to the sick one */
       const fl = es(t, 0.85, 1.25, ease.out) * (1 - es(t, 2.0, 2.3, ease.in));
       const oy = lerp(-700, FY, fl) + (T ? Math.sin(T * 0.7) * 2 : 0);
-      pose(board, { x: FX, y: oy, o: fl > 0.01 ? 1 : 0 });
+      pose(board, { x: FXp, y: oy, o: fl > 0.01 ? 1 : 0 });
       const G = oy + FH * 0.84;
-      const at = (lx) => FX + lx;
+      const at = (lx) => FXp + lx;
       well.set({ x: at(-150), y: G, s: 0.52, flip: false, o: fl > 0.01 ? 1 : 0, armF: 60 + (T ? Math.sin(T * 3) * 10 : 0) * (1 - bump(t, 1.35, 1.6)), armB: 20 + bump(t, 1.35, 1.65) * 120, head: -bump(t, 1.35, 1.6) * 6, blink: blinkAt(T, 5) });
       pose(sick, { x: at(180), y: G - 14, s: 0.6, o: fl > 0.01 ? 1 : 0 });
       const dk = [[1.15, -260], [1.7, 110]];
@@ -97,7 +98,7 @@ export default {
       pose(purseEl, { x: lerp(t1.x - 20, t1.x - 80, pp), y: FT.FLOOR - 70 + pp * 26, r: pp * -20, o: 1 });
       hearts.forEach((h, i) => { const k = es(t, 2.45 + i * 0.1, 2.7 + i * 0.1, ease.back); pose(h, { x: (i ? s0.x : t1.x) + (i ? 8 : -8), y: FT.SEAT - 110, s: k, o: k > 0.01 ? 1 : 0 }); });
 
-      S.cam.x = kf(t, [[0, camFor(760)], [0.4, camFor(700)], [0.9, camFor(820)], [2.0, camFor(840)], [2.3, camFor(900)], [3, camFor(910)]]);
+      S.cam.x = kf(t, [[0, camFor(760)], [0.4, camFor(700)], [0.9, camFor(S.portrait ? 790 : 820)], [2.0, camFor(S.portrait ? 790 : 840)], [2.3, camFor(900)], [3, camFor(910)]]);
       S.cam.y = kf(t, [[0, 110], [0.9, 30], [2.0, 30], [2.3, 110], [3, 120]]);
       S.cam.z = kf(t, [[0, 1.1], [0.4, 1.14], [0.9, 1.02], [2.0, 1.02], [2.3, 1.12], [3, 1.16]]);
     };

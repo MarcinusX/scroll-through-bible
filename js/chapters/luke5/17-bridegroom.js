@@ -13,7 +13,8 @@ import {
 
 const FLOOR = 704, CX = 800;
 const GROOM = { robe: C.linen, mantle: C.ochre, hair: C.hair2, hairStyle: 'short', beard: 'short', skin: C.skin2, belt: C.sun };
-const RING = [[600, 0], [680, 1], [920, 2], [1000, 3], [1080, 4]];
+const RING_L = [[600, 0], [680, 1], [920, 2], [1000, 3], [1080, 4]];
+const RING_P = [[615, 0], [690, 1], [910, 2], [975, 3], [1040, 4]];   // phone: the last dancer clear of the thread
 
 /** an upturned empty bowl (fasting); origin: its rim */
 function upBowl(c, w = 30) {
@@ -30,6 +31,8 @@ export default {
   cam: { x: [-80, 80], y: [0, 60], z: [1, 1.12] },
   build(S) {
     const c = S.c;
+    const RING = S.portrait ? RING_P : RING_L;
+    const MX = S.portrait ? 1020 : 1180;   // phone: the moon (and the cloud that covers it) inside the screen, not under the thread
     sky(S, ['#2b2f5c', '#5c5487', '#a2789a']);
     const starL = S.layer({ par: 0.02, sh: 1, flat: true });
     starL.add(stars(c, { x0: -900, x1: 2500, y0: -500, y1: 360, n: 110 }));
@@ -66,8 +69,8 @@ export default {
       const T = time;
       /* v35 — a cloud covers the moon, the lanterns go out */
       const dark = es(t, 1.15, 1.6);
-      pose(moonEl, { x: 1180, y: 150, r: T ? Math.sin(T * 0.6) * 0.8 : 0 });
-      pose(cl, { x: lerp(1560, 1190, es(t, 1.02, 1.4)), y: 150, r: T ? Math.sin(T * 0.6 + 1) : 0 });
+      pose(moonEl, { x: MX, y: 150, r: T ? Math.sin(T * 0.6) * 0.8 : 0 });
+      pose(cl, { x: lerp(MX + 380, MX + 10, es(t, 1.02, 1.4)), y: 150, r: T ? Math.sin(T * 0.6 + 1) : 0 });
       starL.fade(1 - dark * 0.6);
       lamps.forEach((l) => {
         const off = es(t, 1.4 + l.i * 0.07, 1.5 + l.i * 0.07);
@@ -100,7 +103,8 @@ export default {
       sitters.forEach((s) => {
         s.p.set({ x: s.x + (s.x < CX ? -20 : 20), y: FLOOR + 10, s: 0.98, flip: s.x > CX, o: sitK, armF: 60 - bowK * 10, armB: 20, head: bowK * 22, lean: bowK * 8, blink: 0 });
       });
-      const sk = [[0.05, -200], [0.5, 470], [1.0, 470], [1.25, -200]];
+      const SX = S.portrait ? 520 : 470;
+      const sk = [[0.05, -200], [0.5, SX], [1.0, SX], [1.25, -200]];
       const sx = kf(t, sk, ease.sine);
       sour.set({ x: sx, y: FLOOR + 8, s: 1.0, flip: t > 1.0, walk: moving(t, sk) ? sx * 0.05 : undefined, armF: 30 + es(t, 0.45, 0.6) * 60 * (1 - es(t, 0.95, 1.05)), armB: 10, head: 6, blink: blinkAt(T, 9) });
       sparks.forEach((sp, i) => { const k = ((T * 0.8 + i / 4) % 1); pose(sp, { x: CX - 120 + i * 80, y: 520 - k * 60, s: bump(k, 0, 1), r: T * 50, o: dance * bump(k, 0, 1) * (1 - takenK) }); });

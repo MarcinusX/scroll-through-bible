@@ -36,13 +36,14 @@ export default {
   cam: { x: [-80, 120], y: [0, 100], z: [1, 1.24] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;
     const K = streetSet(S, { skyCols: DAY });
 
     /* the people of the street */
     const PL = S.layer({ par: 0.5, sh: 5 });
     const folkAt = [
       { x: 1250, o: { robe: C.roseRobe, hairStyle: 'veil', veil: C.blushVeil, hair: C.hair3, skin: C.skin2, belt: null, holdB: `<g transform="translate(0 -4)">${sheet().p(c.cut([[-12, 0], [-16, -18], [-8, -28], [8, -28], [16, -18], [12, 0]], 0.4, 4), C.pot).out()}</g>` }, flip: true },
-      { x: 1110, o: { robe: C.ochreRobe, hairStyle: 'short', beard: 'full', hair: C.hair, skin: C.skin3, belt: C.leather }, flip: true },
+      { x: PH ? 990 : 1110, o: { robe: C.ochreRobe, hairStyle: 'short', beard: 'full', hair: C.hair, skin: C.skin3, belt: C.leather }, flip: true },
       { x: 470, o: { robe: C.sageRobe, mantle: C.stone, hairStyle: 'wrap', veil: C.linen2, beard: 'short', hair: C.hair2, skin: C.skin4 }, flip: false },
     ].map((f, i) => ({ ...f, i, p: S.puppet(PL.add(person(c, f.o))), seed: c.rr(0, 9) }));
     const DIS = [CAST.john, CAST.james, CAST.andrew, CAST.peter].map((o, i) => ({ i, o, p: S.puppet(PL.add(person(c, o))), seed: c.rr(0, 9) }));
@@ -115,7 +116,7 @@ export default {
       pose(heart, { x: jx + 8, y: FEET - 118, s: 0.6 + hk * 0.6, o: hk });
       DIS.forEach((d) => {
         const start = es(t, 2.35, 2.6) * (1 - es(t, 3.4, 3.8));
-        const x = lerp(lerp(300, 380, jIn), 420, step) + d.i * 62 - start * 20;
+        const x = PH ? lerp(lerp(370, 450, jIn), 490, step) + d.i * 56 - start * 20 : lerp(lerp(300, 380, jIn), 420, step) + d.i * 62 - start * 20;   // phone: the four inside the screen
         d.p.set({ x, y: FEET - 12 + (d.i % 2) * 6, s: 0.94, walk: (jIn > 0 && jIn < 1) || (step > 0 && step < 1) ? x * 0.05 + d.i : undefined, armF: 14 + start * 50 + es(t, 3.2, 3.5) * 20, armB: start * (d.i % 2 ? 90 : 30) + es(t, 3.2, 3.5) * (d.i % 2 ? 120 : 40), lean: -start * 8, head: -es(t, 3.2, 3.5) * 6, blink: blinkAt(T, d.seed) });
       });
 

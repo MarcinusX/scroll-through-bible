@@ -12,8 +12,8 @@ import {
 } from './lib.js';
 
 const NX = DP.NX, NW = DP.NW, NET_L = NX - NW;          // the net spans NET_L … NX under the surface
-const BFAR = { x: 40, y: DP.WL - 28, s: 0.6 };         // the partners' boat, far off
-const BNEAR = { x: DP.BX, y: DP.AY, s: 0.9 };
+const BFAR_L = { x: 40, y: DP.WL - 28, s: 0.6 };       // the partners' boat, far off
+const BNEAR_L = { x: DP.BX, y: DP.AY, s: 0.9 };
 
 export default {
   id: 'lk5-catch',
@@ -23,9 +23,12 @@ export default {
     { v: 7, text: 'Skinęli więc na wspólników w drugiej łodzi, żeby im przyszli z pomocą.' },
     { v: 7, cont: true, text: 'Ci podpłynęli; i napełnili obie łodzie, tak że się prawie zanurzały.' },
   ],
-  cam: { x: [-760, 0], y: [60, 200], z: [1, 1.2] },
+  cam: { x: [-760, 0], y: [60, 200], z: [0.92, 1.2] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;
+    // phone: the partners' boat waits and comes alongside nearer, so both boats share the screen
+    const BFAR = PH ? { ...BFAR_L, x: 330 } : BFAR_L, BNEAR = PH ? { ...BNEAR_L, x: 420 } : BNEAR_L;
     const D = deepSet(S, {
       skyCols: MORNING, deep: 1, heaps: true,
       crewA: [
@@ -153,9 +156,9 @@ export default {
         pose(sp, { x, y, s: 0.5 + k * 0.5, o: fill * (1 - k) });
       });
 
-      S.cam.x = kf(t, [[0, -320], [1.0, -340], [2.0, -420], [2.5, -700], [3.0, -680], [3.5, -500], [4, -470]]);
+      S.cam.x = kf(t, PH ? [[0, -240], [1.0, -260], [2.0, -380], [2.5, -480], [3.0, -470], [3.5, -370], [4, -350]] : [[0, -320], [1.0, -340], [2.0, -420], [2.5, -700], [3.0, -680], [3.5, -500], [4, -470]]);
       S.cam.y = kf(t, [[0, 170], [1.0, 180], [2.0, 150], [3.2, 120], [4, 110]]);
-      S.cam.z = kf(t, [[0, 1.12], [1.0, 1.16], [2.0, 1.1], [3.2, 1.04], [4, 1.06]]);
+      S.cam.z = kf(t, PH ? [[0, 1.12], [1.0, 1.16], [2.0, 1.04], [2.5, 0.93], [3.0, 0.94], [3.4, 1.0], [4, 1.06]] : [[0, 1.12], [1.0, 1.16], [2.0, 1.1], [3.2, 1.04], [4, 1.06]]);   // phone: a little wider while He signals, both boats and Jesus in
     };
   },
 };

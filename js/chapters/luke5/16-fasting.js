@@ -73,7 +73,8 @@ export default {
       johnP.set({ x: john.x, y: FT.SEAT, s: 1, flip: true, armF: 50 + eat * 70, armB: 16, head: -eat * 8, blink: blinkAt(T, 6) });
       glints.forEach((g, i) => { const k = bump(t, 1.3 + i * 0.12, 1.8 + i * 0.12); const [hx, hy] = headAt(i ? john.x : peter.x, FT.SEAT, 1, true, 62); pose(g, { x: hx - 40, y: hy + 10, s: k, r: T * 50, o: k }); });
 
-      S.cam.x = kf(t, [[0, camFor(660)], [0.9, camFor(650)], [1.2, camFor(820)], [2, camFor(840)]]);
+      S.cam.x = kf(t, [[0, camFor(S.portrait ? 610 : 660)], [0.9, camFor(S.portrait ? 600 : 650)],   // phone: the speakers and both pictures on the screen
+        [1.2, camFor(820)], [2, camFor(840)]]);
       S.cam.y = kf(t, [[0, 60], [0.9, 60], [1.2, 110], [2, 110]]);
       S.cam.z = kf(t, [[0, 1.06], [0.9, 1.08], [1.2, 1.14], [2, 1.16]]);
     };

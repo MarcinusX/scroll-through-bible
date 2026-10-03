@@ -26,6 +26,7 @@ export default {
   cam: { x: [-60, 1400], y: [-40, 60], z: [1, 1.14] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;
     sky(S, DAY);
     const dusk = sky(S, DUSK, { name: 'dusk' });
     const starL = S.layer({ par: 0.02, sh: 1, flat: true });
@@ -50,17 +51,17 @@ export default {
     meadow.add(grass(c, { x0: -900, x1: 1200, y: 0, fn: (x) => mfn(x) + 40, n: 50, h: 14, color: C.moss }) + flowers(c, { x0: -300, x1: 1100, y: 0, fn: (x) => mfn(x) + 70, n: 24 }) + bush(c, 120, 700, 80, C.sage, C.moss));
     const desertL = S.layer({ par: P, sh: 3 });
     const dfn = (x) => 640 + Math.sin(x * 0.006) * 16;
-    desertL.add(sheet().p(c.ridge((x) => lerp(900, dfn(x), Math.min(1, Math.max(0, (x - 1080) / 320))), 1000, 3600, 1800, 12, 1.2), mix(C.sand2, C.dune, 0.3)).out());
+    desertL.add(sheet().p(c.ridge((x) => lerp(PH ? 1800 : 900, dfn(x), Math.min(1, Math.max(0, (x - 1080) / 320))), 1000, 3600, 1800, 12, 1.2), mix(C.sand2, C.dune, 0.3)).out());
     desertL.add(rock(c, RX, RY + 4, 190, 60, C.rock2) + rock(c, RX + 260, 700, 150, 70, C.rock) + rock(c, 1340, 710, 90, 40, C.rock2) + acacia(c, 1860, 690, 0.9) + scrub(c, 1420, 700, 40) + scrub(c, 1700, 706, 34));
 
     /* crowds streaming down the paths (sprites, drawn once) */
     const crowdL = S.layer({ par: P, sh: 4 });
     const sick = (o) => ({ ...folk(c, true), ...o });
     const GROUPS = [
-      { from: [-360, 612, 0.4], to: [420, 718, 0.9], d: 0.0, mem: () => [{ x: 0, y: 0, s: 1, o: folk(c) }, { x: -44, y: 4, s: 0.96, o: sick({ holdF: `<g transform="rotate(-8)">${crutch(c, 118)}</g>` }) }, { x: -90, y: -2, s: 0.7, o: { ...folk(c), hairStyle: 'short' } }] },
-      { from: [240, 604, 0.36], to: [580, 730, 0.92], d: 0.12, mem: () => [{ x: 0, y: 0, s: 1, o: sick({ eyes: 'closed', holdF: `<g transform="rotate(-24)">${sheet().p(c.ribbon([[0, -6], [18, 110]], 4), C.wood3).out()}</g>` }) }, { x: -40, y: 6, s: 1, o: folk(c, false) }] },
-      { from: [1080, 606, 0.36], to: [1000, 726, 0.92], d: 0.08, mem: () => [{ x: 0, y: 0, s: 1, o: folk(c, true) }, { x: 44, y: 4, s: 1, o: folk(c, false) }, { x: 88, y: -2, s: 0.96, o: folk(c, true) }], flip: true },
-      { from: [1480, 640, 0.42], to: [1150, 736, 0.94], d: 0.2, mem: () => [{ x: 0, y: 0, s: 1, o: folk(c, true) }, { x: 110, y: 0, s: 1, o: folk(c, true) }], mat: true, flip: true },
+      { from: [-360, 612, 0.4], to: [PH ? 540 : 420, 718, 0.9], d: 0.0, mem: () => [{ x: 0, y: 0, s: 1, o: folk(c) }, { x: -44, y: 4, s: 0.96, o: sick({ holdF: `<g transform="rotate(-8)">${crutch(c, 118)}</g>` }) }, { x: -90, y: -2, s: 0.7, o: { ...folk(c), hairStyle: 'short' } }] },
+      { from: [240, 604, 0.36], to: [PH ? 660 : 580, 730, 0.92], d: 0.12, mem: () => [{ x: 0, y: 0, s: 1, o: sick({ eyes: 'closed', holdF: `<g transform="rotate(-24)">${sheet().p(c.ribbon([[0, -6], [18, 110]], 4), C.wood3).out()}</g>` }) }, { x: -40, y: 6, s: 1, o: folk(c, false) }] },
+      { from: [1080, 606, 0.36], to: [PH ? 1010 : 1000, PH ? 714 : 726, 0.92], d: 0.08, mem: () => [{ x: 0, y: 0, s: 1, o: folk(c, true) }, { x: 44, y: 4, s: 1, o: folk(c, false) }, { x: 88, y: -2, s: 0.96, o: folk(c, true) }], flip: true },
+      { from: [1480, 640, 0.42], to: [PH ? 870 : 1150, 736, 0.94], d: 0.2, mem: () => [{ x: 0, y: 0, s: 1, o: folk(c, true) }, { x: 110, y: 0, s: 1, o: folk(c, true) }], mat: true, flip: true },
       { from: [-600, 700, 0.8], to: [260, 760, 1.0], d: 0.25, mem: () => [{ x: 0, y: 0, s: 1, o: folk(c, false) }, { x: -46, y: 6, s: 1, o: folk(c, true) }, { x: -92, y: 0, s: 0.72, o: folk(c) }] },
     ].map((g, i) => {
       const mem = g.mem().map((m) => ({ ...m, flip: !!g.flip }));

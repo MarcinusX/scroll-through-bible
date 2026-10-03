@@ -9,8 +9,8 @@ import {
 
 const P = 0.5;
 const SH = 704, SAND = 738, WALK = 776;         // the shallows, the beach edge, the path along the beach
-const A0 = { x: 840, y: 600, s: 0.8 }, A1 = { x: 880, y: 706, s: 1 };
-const B0 = { x: 1250, y: 594, s: 0.72 }, B1 = { x: 1330, y: 704, s: 0.94 };
+const A0_L = { x: 840, y: 600, s: 0.8 }, A1_L = { x: 880, y: 706, s: 1 };
+const B0_L = { x: 1250, y: 594, s: 0.72 }, B1_L = { x: 1330, y: 704, s: 0.94 };
 const WHO = [
   { k: 'peter', o: PETER_W, boat: 'A', lx: -24, t0: 1.1, gap: 115 },
   { k: 'andrew', o: CAST.andrew, boat: 'A', lx: -124, t0: 1.16, gap: 225 },
@@ -27,6 +27,10 @@ export default {
   cam: { x: [-300, 300], y: [0, 80], z: [1, 1.1] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;
+    // phone: the two boats ground side by side inside the screen
+    const A0 = PH ? { ...A0_L, x: 720 } : A0_L, A1 = PH ? { ...A1_L, x: 760 } : A1_L;
+    const B0 = PH ? { ...B0_L, x: 1080 } : B0_L, B1 = PH ? { ...B1_L, x: 1130 } : B1_L;
     const K = lakeSet(S, { skyCols: MORNING, sunAt: [1250, 110], lakeY: 420 });
     const boatL = S.layer({ par: P, sh: 4 });
     const rigB = boatRig(S, boatL, { w: 360, col: C.wood3, stripe: C.dustyBlue, heap: true, crew: [{ k: 'john', o: CAST.john, x: -80, dy: -8, s: 0.94 }, { k: 'james', o: JAMES_W, x: 40, dy: -8, s: 0.96 }], extra: `<g transform="translate(-120 -58)">${netDrape(c, 110, 60, C.rope)}</g>` });
@@ -54,7 +58,7 @@ export default {
     const poles = sheet().p(c.ribbon([[-60, 0], [-60, -120]], 5) + c.ribbon([[70, 0], [70, -120]], 5), C.wood2).out();
     beachL.add(`<g transform="translate(-60 760)">${poles}<g transform="translate(5 -118)">${netDrape(c, 140, 70, C.rope)}</g></g>`);
     const footL = S.layer({ par: P, sh: 1 });
-    const prints = Array.from({ length: 16 }, (_, i) => ({ i, x: 960 - i * 40, el: footL.add(`<path d="${c.cut(c.ell(0, 0, 8, 3.2, 10), 0.2, 3)}" fill="${shade(C.sand, -0.14)}" opacity=".8"/>`) }));
+    const prints = Array.from({ length: 16 }, (_, i) => ({ i, x: (PH ? A1.x + 80 : 960) - i * 40, el: footL.add(`<path d="${c.cut(c.ell(0, 0, 8, 3.2, 10), 0.2, 3)}" fill="${shade(C.sand, -0.14)}" opacity=".8"/>`) }));
 
     /* on the beach: Jesus and the four */
     const PL = S.layer({ par: P, sh: 5 });
@@ -65,7 +69,7 @@ export default {
     const fg = S.layer({ par: 0.9, sh: 7 });
     fg.add(reeds(c, -380, 990, 14, 240, C.moss) + rock(c, 1900, 1000, 240, 90, C.rock2) + reeds(c, 2200, 980, 12, 220, C.moss));
 
-    const JKEYS = [[1.04, 984], [1.96, 380]];
+    const JKEYS = [[1.04, PH ? A1.x + 104 : 984], [1.96, 380]];
 
     return (t, time) => {
       const T = time;
@@ -110,7 +114,7 @@ export default {
         pose(g.el, { x, y: y - bump(k, 0, 1) * 8, s: bump(k, 0, 1) * 0.9, r: T * 40, o: es(t, 1.2, 1.5) });
       });
 
-      S.cam.x = kf(t, [[0, 260], [0.9, 240], [1.1, 220], [2, -260]]);
+      S.cam.x = kf(t, PH ? [[0, 200], [0.9, 190], [1.1, 170], [2, -260]] : [[0, 260], [0.9, 240], [1.1, 220], [2, -260]]);
       S.cam.y = kf(t, [[0, 20], [1, 40], [2, 50]]);
       S.cam.z = kf(t, [[0, 1.02], [1, 1.06], [2, 1.08]]);
     };

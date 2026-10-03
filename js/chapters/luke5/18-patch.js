@@ -10,9 +10,7 @@ import {
 } from './lib.js';
 
 const FLOOR = 716, ROD = 380;
-const OLD = { x: 540, y: ROD + 8 }, NEW = { x: 1060, y: ROD + 8 };
-const HOLE = [OLD.x + CLOAK_HOLE[0], OLD.y + CLOAK_HOLE[1]];
-const PIECE = [NEW.x + CUT[0], NEW.y + CUT[1]];
+const OLD_L = { x: 540, y: ROD + 8 }, NEW_L = { x: 1060, y: ROD + 8 };
 const TAILOR = { robe: C.sageRobe, mantle: null, hair: C.hair2, hairStyle: 'wrap', veil: C.linen2, beard: 'short', skin: C.skin3, belt: C.leather };
 
 export default {
@@ -27,6 +25,10 @@ export default {
   cam: { x: [-80, 80], y: [-20, 60], z: [1, 1.16] },
   build(S) {
     const c = S.c;
+    // phone: both cloaks hang inside the screen (the new one was under the thread)
+    const OLD = S.portrait ? { ...OLD_L, x: 580 } : OLD_L, NEW = S.portrait ? { ...NEW_L, x: 1000 } : NEW_L;
+    const HOLE = [OLD.x + CLOAK_HOLE[0], OLD.y + CLOAK_HOLE[1]];
+    const PIECE = [NEW.x + CUT[0], NEW.y + CUT[1]];
     /* the workroom: plastered walls, a window, shelves of cloth rolls, the rod with the cloaks, a work table */
     const wallL = S.layer({ par: 0.3, sh: 2 });
     const w = sheet();

@@ -10,7 +10,7 @@ import {
 } from './lib.js';
 
 const FLOOR = 716, PEG = 520;
-const SKINS = [{ x: 560, old: true }, { x: 460, old: true }, { x: 760, old: false }, { x: 860, old: false }];
+const SKINS_L = [{ x: 560, old: true }, { x: 460, old: true }, { x: 760, old: false }, { x: 860, old: false }];
 const VINT = { robe: C.clayMantle, mantle: null, hair: C.hair3, hairStyle: 'curly', beard: 'full', skin: C.skin3, belt: C.leather };
 const OLDMAN = { robe: C.linen2, mantle: mix(C.plumRobe, C.stone, 0.3), hair: '#ece6da', hairStyle: 'wrap', veil: C.linen, beard: 'full', beardColor: '#ece6da', skin: C.skin2, belt: C.ochre };
 const OX = 1040;
@@ -38,6 +38,8 @@ export default {
   cam: { x: [-160, 240], y: [0, 100], z: [1, 1.22] },
   build(S) {
     const c = S.c;
+    // phone: the two old skins hang nearer the middle, inside the frame
+    const SKINS = S.portrait ? SKINS_L.map((s, i) => (i < 2 ? { ...s, x: [598, 522][i] } : s)) : SKINS_L;
     /* the cellar: stone walls, an arch, a beam with pegs, the bench, jars */
     const wallL = S.layer({ par: 0.3, sh: 2 });
     const w = sheet();
@@ -54,7 +56,7 @@ export default {
     // jars along the wall, the bench and the old dusty jar
     beamL.add(`<g transform="translate(230 ${FLOOR})">${oldJar(c, 110)}</g><g transform="translate(320 ${FLOOR}) scale(.8)">${oldJar(c, 110)}</g>`);
     beamL.add(`<g transform="translate(${OX} ${FLOOR})">${sheet().p(c.cut(c.rect(-90, -48, 180, 12), 0.4, 6), C.wood).p(c.cut(c.rect(-80, -36, 12, 36), 0.3, 4) + c.cut(c.rect(68, -36, 12, 36), 0.3, 4), C.wood2).out()}</g>`);
-    const jar = beamL.add(`<g transform="translate(${OX + 130} ${FLOOR})">${oldJar(c, 130)}</g>`);
+    const jar = beamL.add(`<g transform="translate(${OX + (S.portrait ? 100 : 130)} ${FLOOR})">${oldJar(c, 130)}</g>`);
 
     /* the skins: whole (swelling), the burst halves, the fizz inside */
     const skL = S.layer({ par: 0.5, sh: 4 });
@@ -76,7 +78,8 @@ export default {
     const jarGlow = PL.add(`<g>${sparkle(c, 12)}</g>`);
 
     // where the vintner stands to pour into skin i (he stands on the right of it, facing left)
-    const VK = [[0, 700], [0.25, 640], [1.35, 640], [1.5, 700], [2.05, 850], [2.45, 850], [2.55, 950], [2.9, 950], [3.2, 900]];
+    const V0 = S.portrait ? 38 : 0;
+    const VK = [[0, 700 + V0], [0.25, 640 + V0], [1.35, 640 + V0], [1.5, 700 + V0], [2.05, 850], [2.45, 850], [2.55, 950], [2.9, 950], [3.2, 900]];
 
     return (t, time) => {
       const T = time;
@@ -129,12 +132,12 @@ export default {
       const sk = es(t, 4.1, 4.3, ease.back);
       pose(say, { x: S.portrait ? OX - 60 : OX + 150, y: S.portrait ? FLOOR - 40 : FLOOR - 140, s: sk, o: sk > 0.01 ? 1 : 0 });
       const jg = bump(t, 3.05, 3.9);
-      pose(jarGlow, { x: OX + 120, y: FLOOR - 120, s: jg, r: T * 40, o: jg });
+      pose(jarGlow, { x: OX + (S.portrait ? 90 : 120), y: FLOOR - 120, s: jg, r: T * 40, o: jg });
       void jar;
 
-      S.cam.x = kf(t, [[0, -80], [1.3, -80], [1.9, -60], [2.05, 60], [3.0, 80], [3.2, 200], [3.95, 200], [4.2, S.portrait ? 160 : -60], [5, S.portrait ? 170 : -80]]);
+      S.cam.x = kf(t, [[0, S.portrait ? -10 : -80], [1.3, S.portrait ? -10 : -80], [1.9, S.portrait ? 0 : -60], [2.05, 60], [3.0, 80], [3.2, 200], [3.95, 200], [4.2, S.portrait ? 160 : -60], [5, S.portrait ? 170 : -80]]);
       S.cam.y = kf(t, [[0, 80], [1.3, 90], [2.0, 70], [3.2, 70], [4.2, 40], [5, 40]]);
-      S.cam.z = kf(t, [[0, 1.16], [1.3, 1.2], [2.0, 1.14], [3.2, 1.14], [3.95, 1.12], [4.2, 1.02], [5, 1.02]]);
+      S.cam.z = kf(t, [[0, S.portrait ? 1.1 : 1.16], [1.3, S.portrait ? 1.12 : 1.2], [2.0, 1.14], [3.2, 1.14], [3.95, 1.12], [4.2, 1.02], [5, 1.02]]);
     };
   },
 };

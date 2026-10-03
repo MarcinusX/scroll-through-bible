@@ -14,8 +14,8 @@ import { waveStrip } from '../../assets/nature.js';
 const P = 0.5;
 const WL = (x) => 652 + Math.max(0, x - 690) * 0.24;       // the waterline: beach below it, the lake above
 const JX = 670, JY = 668;                                   // Jesus on the beach
-const B1A = { x: 1080, y: 702, s: 1 }, B1B = { x: 1060, y: 676, s: 0.94 };
-const B2 = { x: 1330, y: 638, s: 0.8, r: 0 };
+const B1A_L = { x: 1080, y: 702, s: 1 }, B1B_L = { x: 1060, y: 676, s: 0.94 };
+const B2_L = { x: 1330, y: 638, s: 0.8, r: 0 };
 const PX = 846, AX = 990;                                   // Simon and Andrew at the water's edge
 
 export default {
@@ -31,13 +31,19 @@ export default {
   cam: { x: [-60, 300], y: [0, 70], z: [1, 1.12] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;
+    // phone: both boats come in from the right edge (the second one further out, behind Simon's) so that the two boats,
+    // Simon pushing off and Andrew all stay on the screen
+    const B1A = PH ? { x: 980, y: 702, s: 1 } : B1A_L, B1B = PH ? { x: 960, y: 676, s: 0.94 } : B1B_L;
+    const B2 = PH ? { x: 1100, y: 614, s: 0.74, r: 0 } : B2_L;
+    const AX2 = PH ? 1090 : 1190;                             // where Andrew wades to
     const K = lakeSet(S, { skyCols: MORNING, sunAt: [1250, 150], lakeY: 420 });
 
     /* the second boat (James and John, sitting, rinsing a net over the side) */
     const b2L = S.layer({ par: P, sh: 4 });
     const netOver = `<g transform="translate(-40 -52)">${netDrape(c, 120, 46, C.rope)}</g>`;
     const R2 = boatRig(S, b2L, { w: 360, col: C.wood3, stripe: C.dustyBlue, crew: [{ k: 'james', o: { ...JAMES_W, pose: 'sit' }, x: 30, dy: 4 }, { k: 'john', o: { ...CAST.john, pose: 'sit' }, x: -60, dy: 4 }], extra: netOver });
-    const w2 = frontWaves(S, { y: 642, par: P, sh: 2, color: mix(C.lake, C.skyBlue, 0.12), amp: 6, len: 180, pad: 200 });
+    const w2 = frontWaves(S, { y: PH ? B2.y + 4 : 642, par: P, sh: 2, color: mix(C.lake, C.skyBlue, 0.12), amp: 6, len: 180, pad: 200 });
 
     /* Simon's boat: Jesus standing / sitting in it, Simon climbing in */
     const b1L = S.layer({ par: P, sh: 4 });
@@ -124,7 +130,7 @@ export default {
       const look = es(t, 2.05, 2.3);
 
       /* v3a — He walks to Simon's boat and steps in; Simon pushes it off */
-      const walkKeys = [[4.02, JX + back], [4.3, 930]];
+      const walkKeys = [[4.02, JX + back], [4.3, B1A.x - 150]];
       const jx = kf(t, walkKeys, ease.sine);
       const inBoat = es(t, 4.3, 4.36);
       const walking = moving(t, walkKeys);
@@ -160,11 +166,11 @@ export default {
       const dip = rinse > 0 && rinse < 1 ? Math.max(0, Math.sin(rinse * PI * 4)) : 0;
       const hold = 1 - es(t, 4.2, 4.3);
       const [ph1x, ph1y] = hand(PX, WL(PX) + 12, 1.0, false, 40 + dip * 30 - (1 - hold) * 30);
-      const axx = lerp(AX, 1190, es(t, 4.3, 4.9));
+      const axx = lerp(AX, AX2, es(t, 4.3, 4.9));
       const [ah1x, ah1y] = hand(axx, WL(axx) + 14, 0.98, true, 40 + dip * 30);
       const nx = t < 4.2 ? (ph1x + ah1x) / 2 : lerp((ph1x + ah1x) / 2, ah1x - 30, es(t, 4.2, 4.35));
       pose(net, { x: nx, y: Math.min(ph1y, ah1y) + dip * 22 - 4, s: 1, r: dip * 4, o: 1 });
-      const ax = lerp(AX, 1190, es(t, 4.3, 4.9)); const aMov = t > 4.3 && t < 4.9;
+      const ax = lerp(AX, AX2, es(t, 4.3, 4.9)); const aMov = t > 4.3 && t < 4.9;
       andrew.set({ x: ax, y: WL(ax) + 14, walk: aMov ? ax * 0.05 : undefined, s: 0.98, flip: !aMov, armF: 40 + dip * 30, armB: 26 + bump(t, 4.2, 4.6) * 20, head: 10 * (1 - es(t, 4.2, 4.4)), blink: blinkAt(T, 3) });
       drips.forEach((d, i) => { const k = ((T * 1.4 + i * 0.25) % 1); pose(d, { x: nx - 30 + i * 20, y: Math.min(ph1y, ah1y) + 44 + k * 30, o: (1 - k) * bump(t, 3.0, 4.2) }); });
       splashes.forEach((sp, i) => { const k = seg(t, 3.02, 3.95) * 4 % 1; pose(sp, { x: nx + (i ? 30 : -30), y: WL(nx) + 6, s: dip * 1.1, o: dip > 0.05 ? dip : 0 }); });
@@ -190,7 +196,7 @@ export default {
       pose(tag, { x: B1A.x + 20, y: lerp(-420, 420, tk), r: Math.sin(T * 0.8) * 1.4, o: tk > 0.01 ? 1 : 0 });
       glints.forEach((g, i) => { const k = bump(t, 2.2 + i * 0.25, 2.7 + i * 0.25); pose(g, { x: [B1A.x - 80, B2.x + 60][i], y: [B1A.y - 70, B2.y - 60][i], s: k, r: T * 40, o: k }); });
 
-      S.cam.x = kf(t, [[0, -60], [1.0, -40], [1.9, -40], [2.3, 220], [3.9, 200], [4.3, 180], [5.0, 170], [6, 180]]);
+      S.cam.x = kf(t, PH ? [[0, -60], [1.0, -40], [1.9, -40], [2.3, 240], [3.9, 230], [4.3, 200], [5.0, 190], [6, 190]] : [[0, -60], [1.0, -40], [1.9, -40], [2.3, 220], [3.9, 200], [4.3, 180], [5.0, 170], [6, 180]]);
       S.cam.y = kf(t, [[0, 30], [1.0, 40], [2.3, 30], [5.0, 50], [6, 50]]);
       S.cam.z = kf(t, [[0, 1.02], [1.0, 1.08], [1.9, 1.1], [2.3, 1.04], [3.9, 1.08], [5.0, 1.08], [6, 1.1]]);
     };

@@ -82,8 +82,8 @@ export default {
         fade(m.angry, 1 - st);
       });
       sparks.forEach((sp) => { const k = ((t - 1) * 0.9 + sp.i / 10 + (T ? T * 0.1 : 0)) % 1; pose(sp.el, { x: sp.x, y: sp.y - k * 40, s: bump(k, 0, 1), r: T * 40, o: es(t, 1.05, 1.3) * bump(k, 0, 1) }); });
-      const sk = es(t, 2.05, 2.25, ease.back);
-      pose(say, { x: 1250, y: HS.STREET - 200, s: sk, o: sk > 0.01 ? 1 : 0 });
+      const sk = es(t, 2.05, 2.25, ease.back);   // phone: the saying stays inside the screen, over the room
+      pose(say, { x: S.portrait ? 980 : 1250, y: S.portrait ? HS.CEIL + 70 : HS.STREET - 200, s: sk, o: sk > 0.01 ? 1 : 0 });
       const sk2 = es(t, 1.2, 1.4, ease.back) * (1 - es(t, 1.95, 2.05));
       pose(say2, { x: 1060, y: HS.FLOOR - 190, s: sk2, o: sk2 > 0.01 ? 1 : 0 });
 

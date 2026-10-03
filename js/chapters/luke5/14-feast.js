@@ -78,7 +78,8 @@ export default {
       const qk = es(t, 3.05, 3.25, ease.back);
       pose(q, { x: 480, y: 468, s: qk, o: qk > 0.02 ? 1 : 0 });
 
-      S.cam.x = kf(t, [[0, camFor(960)], [0.9, camFor(880)], [1.1, camFor(900)], [1.8, camFor(920)], [2.3, camFor(680)], [4, camFor(660)]]);
+      S.cam.x = kf(t, [[0, camFor(960)], [0.9, camFor(880)], [1.1, camFor(900)], [1.8, camFor(920)], [2.3, camFor(S.portrait ? 620 : 680)], [4, camFor(S.portrait ? 610 : 660)]]   // phone: the Pharisees at the gate on the screen
+       );
       S.cam.y = kf(t, [[0, 90], [0.9, 110], [1.8, 80], [2.3, 110], [4, 110]]);
       S.cam.z = kf(t, [[0, 1.06], [0.9, 1.14], [1.1, 1.04], [1.8, 1.02], [2.3, 1.14], [4, 1.16]]);
     };

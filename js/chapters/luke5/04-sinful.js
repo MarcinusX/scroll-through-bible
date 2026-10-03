@@ -12,7 +12,7 @@ import {
 } from './lib.js';
 
 const BA0 = { x: DP.AX, y: DP.AY + 44, s: 1 };
-const BB0 = { x: DP.BX, y: DP.AY + 44, s: 0.9 };
+const BB0_L = { x: DP.BX, y: DP.AY + 44, s: 0.9 };
 const KX = 18;                                   // where Simon kneels in the boat (local)
 
 export default {
@@ -27,6 +27,8 @@ export default {
   cam: { x: [-640, 160], y: [0, 160], z: [1, 1.24] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;
+    const BB0 = PH ? { ...BB0_L, x: 420 } : BB0_L;   // phone: the partners' boat alongside, on the screen
     const D = deepSet(S, {
       skyCols: MORNING, deep: 1, heaps: true,
       crewA: [
@@ -121,7 +123,7 @@ export default {
       const nk = es(t, 4.4, 4.85, ease.out);
       pose(gnet, { x: 480, y: lerp(-500, 230, es(t, 4.3, 4.6, ease.out)), sx: 0.1 + nk * 0.9, sy: 1, r: T ? Math.sin(T * 0.7) * 1 : 0, o: es(t, 4.3, 4.35) });
 
-      S.cam.x = kf(t, [[0, 60], [0.5, 80], [1.9, 90], [2.3, -60], [3.0, -500], [3.9, -480], [4.3, -100], [5, -80]]);
+      S.cam.x = kf(t, PH ? [[0, 60], [0.5, 80], [1.9, 90], [2.3, -60], [2.7, -290], [3.0, -320], [3.9, -310], [4.3, -100], [5, -80]] : [[0, 60], [0.5, 80], [1.9, 90], [2.3, -60], [3.0, -500], [3.9, -480], [4.3, -100], [5, -80]]);
       S.cam.y = kf(t, [[0, 90], [1.0, 70], [2.3, 80], [3.0, 70], [4.3, 40], [5, 20]]);
       S.cam.z = kf(t, [[0, 1.14], [0.6, 1.2], [1.9, 1.22], [2.3, 1.06], [3.0, 1.12], [3.9, 1.12], [4.3, 1.04], [5, 1.02]]);
     };
