@@ -29,7 +29,7 @@ export default {
 
     /* the veil comes down in front of the crowd, painted with the sower */
     const veilL = P.crowdL;
-    const veils = [[470, 520], [1130, 520]].map(([x, w], i) => ({ i, x, el: veilL.add(`<g transform="translate(0 -1500)">${gauze(c, w, 250, C.lavender, 0.62)}<g transform="translate(0 120) scale(.85)">${discPlate(c, sowerPlate(c), { r: 62 })}</g></g>`) }));
+    const veils = [[470, 520], [1130, 520]].map(([x, w], i) => ({ i, x, el: veilL.add(`<g transform="translate(0 -1500)">${gauze(c, w, 250, C.lavender, 0.62)}<g transform="translate(${S.portrait ? (i ? -120 : 110) : 0} 120) scale(.85)">${discPlate(c, sowerPlate(c), { r: 62 })}</g></g>`) }));
     const blind = [[330, 400], [470, 380], [600, 400], [1000, 400], [1130, 380], [1260, 400]].map(([x, y], i) => ({ i, x, y, eye: veilL.add(`<g opacity="0">${eyeIcon(c, true, 18)}</g>`), q: veilL.add(`<g opacity="0">${question(c)}</g>`) }));
 
     /* Jesus, the disciples, the casket */
@@ -77,7 +77,7 @@ export default {
       const [px, py] = headAt(DIS[0][1], RISE + 12, 0.96, true);
       pose(ask, { x: px + 20, y: py - 34, s: ab, o: ab > 0.02 ? 1 : 0 });
       const pk = es(t, 1.2, 1.5, ease.out) * (1 - es(t, 2.0, 2.2));
-      hangAt(plate, 1000, lerp(-1500, 300, pk), T, 1.2, 0.7);
+      hangAt(plate, S.portrait ? 950 : 1000, lerp(-1500, S.portrait ? 270 : 300, pk), T, 1.2, 0.7);
 
       /* v10a — the mysteries of the kingdom, given to you */
       const [bx, by] = hand(JX, RISE, 1.04, false, 20 + casketHold * 26);

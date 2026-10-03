@@ -13,7 +13,7 @@ import {
 } from './lib.js';
 
 const JX = 800, FEET = 724;
-const W_X = [640, 530, 420];          // Magdalene, Joanna, Susanna (left of Him, facing Him)
+const W_X0 = [640, 530, 420];          // Magdalene, Joanna, Susanna (left of Him, facing Him)
 
 export default {
   id: 'lk8-women',
@@ -28,6 +28,8 @@ export default {
   ],
   cam: { x: [-60, 40], y: [-20, 60], z: [1, 1.12] },
   build(S) {
+    const P = S.portrait;
+    const W_X = P ? [680, 595, 510] : W_X0;   // phone: the women stand closer, inside the screen
     const R = roadSet(S);
     const c = R.c;
 
@@ -48,9 +50,10 @@ export default {
     /* the women: the named three are puppets, the many others a still group */
     const wL = S.layer({ par: 0.5, sh: 5 });
     const othersM = still(c, OTHERS.map((o, k) => ({ x: (k - 1) * 44, y: (k % 2) * 10, s: 0.9, flip: false, armF: 16, armB: 6, head: -4, o })));
-    const others = wL.sprite(othersM, 300, FEET - 10);
+    const OX = P ? 420 : 300;
+    const others = wL.sprite(othersM, OX, FEET - 10);
     const offerM = still(c, OTHERS.map((o, k) => ({ x: (k - 1) * 44, y: (k % 2) * 10, s: 0.9, flip: false, armF: 70 + k * 8, armB: 30, head: -6, o })));
-    const othersGive = wL.sprite(offerM, 300, FEET - 10);
+    const othersGive = wL.sprite(offerM, OX, FEET - 10);
     const clouds = [0, 1, 2].map((k) => ({ k, el: wL.add(`<g opacity="0">${sorrowCloud(c, 60)}</g>`) }));
     const wisps = [0, 1, 2, 3].map((k) => ({ k, el: wL.add(`<g opacity="0">${spirit(c, 0.7)}</g>`) }));
     const freeSparks = [0, 1, 2, 3, 4, 5].map(() => wL.add(`<g opacity="0">${sparkle(c, 12)}</g>`));
@@ -132,19 +135,19 @@ export default {
         if (held) fade(held, 1 - es(t, 6.45 + w.i * 0.08, 6.5 + w.i * 0.08));
       });
       const ok = es(t, 3.0, 3.7);
-      others.set({ x: lerp(-700, 300, ok), y: FEET - 10 - (ok > 0 && ok < 1 ? Math.abs(Math.sin(ok * 30)) * 3 : 0), o: seg(t, 3.0, 3.08) * (1 - es(t, 6.3, 6.4)) });
-      othersGive.set({ x: 300, y: FEET - 10, o: es(t, 6.3, 6.4) });
+      others.set({ x: lerp(-700, OX, ok), y: FEET - 10 - (ok > 0 && ok < 1 ? Math.abs(Math.sin(ok * 30)) * 3 : 0), o: seg(t, 3.0, 3.08) * (1 - es(t, 6.3, 6.4)) });
+      othersGive.set({ x: OX, y: FEET - 10, o: es(t, 6.3, 6.4) });
       // their sickness and their spirits break up into sparkles
       const brk = seg(t, 3.55, 4.0);
       clouds.forEach((cl) => {
-        const x = [300, 530, 420][cl.k] - (cl.k === 0 ? 0 : 0), on = seg(t, 3.25, 3.4) * (1 - brk);
+        const x = [300, 530, 420][cl.k] + (P ? 100 : 0), on = seg(t, 3.25, 3.4) * (1 - brk);
         pose(cl.el, { x, y: 470 - brk * 60, s: 1.25 - brk * 0.5, o: on });
       });
       wisps.forEach((w) => {
-        const x = [260, 350, 470, 580][w.k], on = seg(t, 3.25, 3.4) * (1 - brk);
+        const x = [260, 350, 470, 580][w.k] + (P ? 100 : 0), on = seg(t, 3.25, 3.4) * (1 - brk);
         pose(w.el, { x: x + brk * 30, y: 520 - brk * 120 + (T ? Math.sin(T * 2 + w.k) * 6 : 0), s: 1.3, r: T ? Math.sin(T * 3 + w.k) * 8 : 0, o: on * 0.9 });
       });
-      freeSparks.forEach((sp, i) => { const k = bump(t, 3.6 + i * 0.04, 4.0 + i * 0.04); pose(sp, { x: 240 + i * 70, y: 450 - i % 2 * 40, s: k * 1.3, r: T * 50, o: k }); });
+      freeSparks.forEach((sp, i) => { const k = bump(t, 3.6 + i * 0.04, 4.0 + i * 0.04); pose(sp, { x: (P ? 340 : 240) + i * 70, y: 450 - i % 2 * 40, s: k * 1.3, r: T * 50, o: k }); });
 
       /* v2b — Mary Magdalene: seven spirits leave her */
       const mx = W_X[0] + 30, my = FEET - 150;
@@ -161,8 +164,8 @@ export default {
       });
       /* v3a — Joanna, the wife of Chuza, Herod's steward */
       const ck = es(t, 5.2, 5.55, ease.out) * (1 - es(t, 5.95, 6.25));
-      hangAt(cameo, 610, lerp(-1500, 200, ck), T, 1.2, 0.7, 3);
-      hangAt(chuzaTag, 610, lerp(-1500, 200 + 70, ck), T, 1.2, 0.7, 3);
+      hangAt(cameo, P ? 660 : 610, lerp(-1500, 200, ck), T, 1.2, 0.7, 3);
+      hangAt(chuzaTag, P ? 660 : 610, lerp(-1500, 200 + 70, ck), T, 1.2, 0.7, 3);
 
       /* v3b — Susanna and many others, who provided for them out of their means */
       pose(cloth, { x: 820, y: FEET + 16, o: es(t, 6.2, 6.3) });

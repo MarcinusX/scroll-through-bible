@@ -10,7 +10,7 @@ import { seg, es, ease, bump, fade } from '../../core/anim.js';
 import { gerasaShore, HEALED, knot, walledTown, bubble, headAt, hand, still, newsSlip, sparkle, kf, tr, PI } from './lib.js';
 
 const JX = 660, FEET = 704;
-const TX = 1130, TY = 520;
+const TX0 = 1130, TY = 520;
 
 export default {
   id: 'lk8-depart',
@@ -24,10 +24,12 @@ export default {
   cam: { x: [-80, 110], y: [-50, 40], z: [1, 1.16] },
   build(S) {
     const c = S.c;
+    // phone: the town and its people drawn in from the right edge (as in lk8-town), the boat and the man further right
+    const P = S.portrait, TX = P ? 1020 : TX0, HX = P ? 900 : 960, KX = P ? 700 : 650;
     const set = gerasaShore(S, { skyCols: ['#c0cdd6', '#f0dcc0', '#f6dbb4'], sunAt: [1320, 210], sunR: 40 });
     const hillL = S.layer({ par: 0.3, sh: 3 });
-    hillL.add(walledTown(c, TX, TY, 0.62) + house(c, 960, 566, 50, 36, { stairs: false }) + house(c, 1330, 470, 56, 40, { stairs: false }) + cypress(c, 1010, 560, 80));
-    const WIN = [[TX - 60, TY - 30], [TX - 20, TY - 38], [TX + 30, TY - 34], [TX + 70, TY - 28], [960, 552], [1330, 456]].map(([x, y], i) => ({ i, x, y, el: hillL.add(`<g opacity="0"><circle cx="${x}" cy="${y}" r="26" fill="url(#warm-glow)"/><path d="${c.cut(c.rect(x - 4, y - 5, 8, 10), 0.2, 3)}" fill="#f7d58e"/></g>`) }));
+    hillL.add(walledTown(c, TX, TY, 0.62) + house(c, HX, 566, 50, 36, { stairs: false }) + house(c, 1330, 470, 56, 40, { stairs: false }) + cypress(c, HX + 50, 560, 80));
+    const WIN = [[TX - 60, TY - 30], [TX - 20, TY - 38], [TX + 30, TY - 34], [TX + 70, TY - 28], [HX, 552], [1330, 456]].map(([x, y], i) => ({ i, x, y, el: hillL.add(`<g opacity="0"><circle cx="${x}" cy="${y}" r="26" fill="url(#warm-glow)"/><path d="${c.cut(c.rect(x - 4, y - 5, 8, 10), 0.2, 3)}" fill="#f7d58e"/></g>`) }));
 
     /* the boat, with the disciples baked in and Jesus as a puppet */
     const boatL = S.layer({ par: 0.45, sh: 4 });
@@ -38,7 +40,7 @@ export default {
 
     /* the townspeople */
     const crowdL = S.layer({ par: 0.45, sh: 4 });
-    const GROUPS = [[1010, 690, 'a', 4], [1120, 716, 'b', 4], [1200, 676, 'c', 3], [930, 716, 'd', 3]].map(([x, y, k, n], i) => ({
+    const GROUPS = (P ? [[905, 690, 'a', 4], [990, 716, 'b', 4], [1045, 676, 'c', 3], [840, 716, 'd', 3]] : [[1010, 690, 'a', 4], [1120, 716, 'b', 4], [1200, 676, 'c', 3], [930, 716, 'd', 3]]).map(([x, y, k, n], i) => ({
       i, x, y,
       sp: crowdL.sprite(knot('lk8-town-' + k, n, { s: 0.9, spread: 38, rows: 1, flip: true, arms: [70, 96], armB: [20, 60], head: [0, 8] }), x, y),
     }));
@@ -55,15 +57,15 @@ export default {
     const slips = WIN.map((w) => ({ w, el: fx.add(`<g opacity="0">${newsSlip(c, 34)}</g>`) }));
     const sparks = WIN.map(() => fx.add(`<g opacity="0">${sparkle(c, 12)}</g>`));
 
-    const BK = [[1.4, 470], [1.95, 430], [4.02, 430], [4.8, -300]];
+    const BK = P ? [[1.4, 490], [1.95, 475], [4.02, 475], [4.8, -300]] : [[1.4, 470], [1.95, 430], [4.02, 430], [4.8, -300]];
 
     return (t, time) => {
       const T = time;
       set.update(t, T);
       /* v37a — the whole district asks Him to go away */
-      GROUPS.forEach((g) => { const back = es(t, 4.0 + g.i * 0.05, 4.6 + g.i * 0.05); g.sp.set({ x: lerp(g.x + es(t, 1.2, 1.9) * 30, TX + 30, back), y: lerp(g.y, TY + 20, back), s: 1 - back * 0.5, o: 1 - seg(t, 4.5 + g.i * 0.05, 4.6 + g.i * 0.05) }); });
+      GROUPS.forEach((g) => { const back = es(t, 4.0 + g.i * 0.05, 4.6 + g.i * 0.05); g.sp.set({ x: lerp(g.x + es(t, 1.2, 1.9) * (P ? 15 : 30), TX + 30, back), y: lerp(g.y, TY + 20, back), s: 1 - back * 0.5, o: 1 - seg(t, 4.5 + g.i * 0.05, 4.6 + g.i * 0.05) }); });
       const ab = es(t, 0.15, 0.35, ease.back) * (1 - es(t, 0.95, 1.05));
-      pose(away, { x: 1000, y: 470, s: ab, o: ab > 0.02 ? 1 : 0 });
+      pose(away, { x: P ? 900 : 1000, y: 470, s: ab, o: ab > 0.02 ? 1 : 0 });
 
       /* v37b — He gets into the boat and goes back */
       const bx = kf(t, BK);
@@ -84,14 +86,14 @@ export default {
       const up = es(t, 2.02, 2.08);
       const runK = es(t, 2.05, 2.5);
       const kneel = es(t, 2.5, 2.56) * (1 - es(t, 4.02, 4.08));
-      const MK = [[2.05, 740], [2.5, 650]];
+      const MK = [[2.05, 740], [2.5, KX]];
       const mx = kf(t, MK);
       manSit.set({ x: 740, y: FEET + 6, s: 1.0, flip: true, o: 1 - up, armF: 24 + bump(t, 0.1, 1.9) * 20, armB: 14, head: -4, blink: blinkAt(T, 4) });
       /* v39b — he goes and proclaims it through the whole town */
       const go = es(t, 4.05, 4.75, (u) => u);
-      const walkX = t < 4.02 ? mx : lerp(650, 990, go), walkY = t < 4.02 ? FEET + 4 : lerp(FEET + 4, 612, go);
+      const walkX = t < 4.02 ? mx : lerp(KX, P ? 960 : 990, go), walkY = t < 4.02 ? FEET + 4 : lerp(FEET + 4, 612, go);
       manWalk.set({ x: walkX, y: walkY, s: t < 4.02 ? 1 : lerp(1, 0.72, go), flip: t < 4.02, o: up * (1 - kneel), walk: (runK > 0 && runK < 1) || (go > 0 && go < 1) ? walkX * 0.06 : undefined, armF: 30 + (t > 4 ? bump(t, 4.3, 5.0) * 80 : 20), armB: 20 + (t > 4 ? bump(t, 4.3, 5.0) * 90 : 0), head: -4, blink: blinkAt(T, 4) });
-      manKneel.set({ x: 650, y: FEET + 6, s: 1.0, flip: true, o: kneel, armF: 90 + (T ? Math.sin(T * 2) * 4 : 0), armB: 110, head: -10, lean: -6, blink: blinkAt(T, 4) });
+      manKneel.set({ x: KX, y: FEET + 6, s: 1.0, flip: true, o: kneel, armF: 90 + (T ? Math.sin(T * 2) * 4 : 0), armB: 110, head: -10, lean: -6, blink: blinkAt(T, 4) });
       slips.forEach((s, i) => {
         const a = 4.3 + i * 0.08, k = seg(t, a, a + 0.3);
         const x = lerp(walkX, s.w.x, ease.out(k)), y = lerp(walkY - 90, s.w.y, k) - Math.sin(k * PI) * 60;

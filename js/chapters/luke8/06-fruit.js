@@ -33,6 +33,7 @@ export default {
   cam: { x: [camFor(XP.L) - 60, camFor(XP.R) + 20], y: [0, 130], z: [0.96, 1.36] },
   build(S) {
     const St = soilStage(S, { left: 'thorn', right: 'good', sky2: ['#161c42', '#29316a', '#4b5590'] });
+    if (S.portrait) { St.SUN[0] = 1000; St.SUN[1] = 40; }   // phone: the sun hangs clear of the progress thread
     const c = St.c;
     const starL = S.layer({ par: 0.02, sh: 1, flat: true });
     starL.add(stars(c, { x0: -800, x1: 2400, y0: -600, y1: 380, n: 110 }));

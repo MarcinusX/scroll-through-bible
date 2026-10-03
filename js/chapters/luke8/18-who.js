@@ -38,7 +38,8 @@ export default {
     const peaceGlow = St.backL.add(`<g opacity="0"><circle r="130" fill="url(#halo-glow)"/></g>`);
     const fx = S.layer({ par: 0.5, sh: 6 });
     const who = fx.add(`<g opacity="0">${bubble(c, tr('Kto się Mnie dotknął?', 'Who touched me?'), { size: 22, dir: 1 })}</g>`);
-    const nots = [[360, 540], [520, 500], [1250, 560]].map(([x, y], i) => ({ i, x, y, el: fx.add(`<g opacity="0">${bubble(c, tr('Nie ja!', 'Not I!'), { size: 17, dir: x > 800 ? -1 : 1 })}</g>`) }));
+    const nots = (S.portrait ? [[545, 565], [650, 495], [1010, 575]] : [[360, 540], [520, 500], [1250, 560]])   // phone: the denials inside the screen
+     .map(([x, y], i) => ({ i, x, y, el: fx.add(`<g opacity="0">${bubble(c, tr('Nie ja!', 'Not I!'), { size: 17, dir: x > 800 ? -1 : 1 })}</g>`) }));
     const pet = fx.add(`<g opacity="0">${bubble(c, [tr('Mistrzu, to tłumy zewsząd', 'Master, the multitudes'), tr('Cię otaczają i ściskają!', 'press and jostle you!')], { size: 18, dir: -1 })}</g>`);
     const power = fx.add(`<g opacity="0">${bubble(c, [tr('Ktoś się Mnie dotknął,', 'Someone did touch me,'), tr('bo poznałem, że moc', 'for I perceived that power'), tr('wyszła ode Mnie', 'has gone out of me')], { size: 18, dir: 1, fill: C.halo })}</g>`);
     const thread = fx.add(`<g opacity="0"><path d="${c.ribbon(c.qbez([0, 0], [-40, -60], [-80, -40], 12), (u) => 3 - u * 1.4)}" fill="${C.sun}"/><circle cx="-80" cy="-40" r="30" fill="url(#warm-glow)"/></g>`);
@@ -67,7 +68,8 @@ export default {
       P.peter.set({ x: JX + 110, y: FEET - 14, s: 0.96, flip: true, armF: 14 + pk * 70, armB: 10 + pk * 80, head: -4, blink: blinkAt(T, 2) });
       const [phx, phy] = headAt(JX + 110, FEET - 14, 0.96, true);
       const pb = es(t, 1.55, 1.7, ease.back) * (1 - es(t, 1.95, 2.02));
-      pose(pet, { x: phx + 10, y: phy - 30, s: pb, o: pb > 0.02 ? 1 : 0 });
+      pose(pet, { x: phx + (S.portrait ? -90 : 10),   // phone: clear of the progress thread
+        y: phy - 30, s: pb, o: pb > 0.02 ? 1 : 0 });
       /* v46 — power has gone out of me */
       const pwb = es(t, 2.1, 2.25, ease.back) * (1 - es(t, 2.92, 3.0));
       pose(power, { x: jhx - 30, y: jhy - 36, s: pwb, o: pwb > 0.02 ? 1 : 0 });

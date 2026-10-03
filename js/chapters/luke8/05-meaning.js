@@ -29,6 +29,7 @@ export default {
   cam: { x: [camFor(XP.L) - 20, camFor(XP.R) + 20], y: [0, 130], z: [0.96, 1.36] },
   build(S) {
     const St = soilStage(S, { left: 'path', right: 'rock', sky2: ['#9d93b5', '#d9b6a6', '#ecd2b6'] });
+    if (S.portrait) { St.SUN[0] = 1000; St.SUN[1] = 40; }   // phone: the sun hangs clear of the progress thread
     const c = St.c;
 
     /* flaps and roots */
@@ -89,7 +90,8 @@ export default {
       hangAt(label, XP.J + 130, lerp(-1500, 330, lk), T, 1.2, 0.7);
 
       /* v12a — the path: they hear the word */
-      pathMan.set({ x: XP.L + 40, y: FEET, s: 1.06, head: bump(t, 1.3, 1.6) * 10 - 3 + es(t, 2.6, 2.8) * 14, armF: 6 + bump(t, 1.35, 1.6) * 40 + bump(t, 2.55, 2.95) * 30, armB: 4, blink: blinkAt(T, 1) });
+      const inV = S.portrait ? es(t, 0.95, 1.1) : 1;   // phone: the listeners at the plots' edges step in only as the camera turns to them (in v11 they were half cut by the frame)
+      pathMan.set({ x: XP.L + 40, y: FEET, s: 1.06, o: inV, head: bump(t, 1.3, 1.6) * 10 - 3 + es(t, 2.6, 2.8) * 14, armF: 6 + bump(t, 1.35, 1.6) * 40 + bump(t, 2.55, 2.95) * 30, armB: 4, blink: blinkAt(T, 1) });
       const hOpen = es(t, 1.24, 1.34) * (1 - es(t, 2.58, 2.72));
       const inHeart = seg(t, 1.3, 1.34) * (1 - seg(t, 2.47, 2.5));
       pathHeart({ open: hOpen, seed: inHeart, glow: inHeart * 0.9 });
@@ -130,7 +132,7 @@ export default {
       const leave = seg(t, 4.7, 4.98);
       const rwx = XP.R - 50 + leave * 40;
       rockW.set({
-        x: rwx, y: FEET - hop, s: 1.06, flip: turn < 0.5, walk: leave > 0 && leave < 1 ? rwx * 0.08 : undefined,
+        x: rwx, y: FEET - hop, s: 1.06, o: inV, flip: turn < 0.5, walk: leave > 0 && leave < 1 ? rwx * 0.08 : undefined,
         armF: 8 + glad * 150 + Math.sin(t * 40) * 8 * glad + turn * 20, armB: 6 + glad * 140, head: -glad * 10 + bump(t, 4.3, 4.6) * 12, blink: blinkAt(T, 2),
       });
       rockHeart({ open: es(t, 3.34, 3.46), seed: es(t, 3.34, 3.4) * (1 - es(t, 4.6, 4.8) * 0.8), glow: es(t, 3.34, 3.42) * (1 - es(t, 4.5, 4.8)) * (1 + glad * 0.4), pulse: glad * (T ? Math.sin(T * 6) : 0), crack: es(t, 4.65, 4.8) });

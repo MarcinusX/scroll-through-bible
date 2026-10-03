@@ -10,8 +10,8 @@ import { seg, es, ease, bump, fade } from '../../core/anim.js';
 import { L5, WILD, herd, spirit, cry, staff, dust, headAt, hand, still, tr, PI } from './lib.js';
 
 const JX = 690, FEET = 716, MX = 860;
-const EDGE = [1160, 392];            // where the ridge breaks off
-const WATER = [1250, 486];           // where the steep bank meets the lake
+const EDGE0 = [1160, 392];            // where the ridge breaks off
+const WATER0 = [1250, 486];           // where the steep bank meets the lake
 
 export default {
   id: 'lk8-herd',
@@ -25,10 +25,13 @@ export default {
   cam: { x: [-40, 80], y: [-80, 60], z: [0.98, 1.12] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;
+    // phone: the steep bank and the water where the herd drowns come in from the edge, the herd packs closer
+    const EDGE = P ? [985, 392] : EDGE0, WATER = P ? [1055, 486] : WATER0, SUNX = P ? 540 : 420;
     const SKY = ['#c3d8da', '#f0e3c8', '#f6e4c2'];
     sky(S, SKY);
     const hangL = S.layer({ par: 0.05, sh: 5 });
-    const sunEl = hanging(hangL, sun(c, 40), { x: 420, y: 150, len: 700 });
+    const sunEl = hanging(hangL, sun(c, 40), { x: SUNX, y: 150, len: 700 });
     const cl1 = hanging(hangL, cloud(c, 180), { x: 900, y: 120, len: 620 });
 
     /* far hills, the lake, the mountain with its steep bank on the right */
@@ -56,7 +59,7 @@ export default {
     mtL.add(grass(c, { x0: 300, x1: EDGE[0] - 20, y: 380, fn: ridge, n: 40, h: 10, color: C.olive }) + olive(c, 560, 540, 0.6) + olive(c, 820, 536, 0.7) + olive(c, 1060, 540, 0.55) + grass(c, { x0: -600, x1: EDGE[0] - 40, y: 520, fn: (x) => Math.min(660, 520 + Math.sin(x / 150) * 10 + Math.max(0, 560 - x) * 0.5), n: 40, h: 12, color: C.moss }));
     const clusters = [];
     for (let i = 0; i < 20; i++) {
-      const row = i % 2, x = 660 + Math.floor(i / 2) * 48 + row * 24 + c.rr(-8, 8), y = ridge(x) + 16 + row * 30 + c.rr(-4, 4);
+      const row = i % 2, x = (P ? 640 : 660) + Math.floor(i / 2) * (P ? 33 : 48) + row * (P ? 18 : 24) + c.rr(-8, 8), y = ridge(x) + 16 + row * 30 + c.rr(-4, 4);
       clusters.push({ i, x, y, el: mtL.add(`<g opacity="0">${herd(c, 9, 66, 18, { sc: 0.46, face: 1 })}</g>`), d: ((EDGE[0] - x) / 500) * 0.4 + c.rr(0, 0.05), jit: c.rr(0, 6) });
     }
     const HERD = [L5.herdsman, L5.herdsman2].map((o, i) => ({ i, x: [590, 630][i], p: S.puppet(mtL.add(person(c, { ...o, holdF: `<g transform="rotate(-10)">${staff(c, 190)}</g>` }))), seed: c.rr(0, 9) }));
@@ -103,7 +106,7 @@ export default {
 
     return (t, time) => {
       const T = time;
-      swing(sunEl, 420, 150, T, 1.1, 0.7);
+      swing(sunEl, SUNX, 150, T, 1.1, 0.7);
       swing(cl1, 900 + Math.sin(T * 0.1) * 24, 120, T, 1.4, 0.6, 1);
 
       /* v32a — the herd feeding on the mountain */
@@ -131,7 +134,7 @@ export default {
       man.set({ x: MX, y: FEET + 4, s: 1.0, flip: true, o: 1 - freed, armF: 70 + bump(t, 1.0, 2.0) * 20, armB: 60, lean: 12, head: -6, blink: blinkAt(T, 4) });
       manSit.set({ x: MX + 4, y: FEET + 6, s: 1.0, flip: true, o: freed, armF: 26, armB: 18, lean: 6 - es(t, 3.6, 4.4) * 6, head: 10 - es(t, 4.4, 4.9) * 10 });
       const bb = es(t, 1.08, 1.25, ease.back) * (1 - es(t, 1.9, 2.0));
-      pose(beg, { x: 1010, y: 440, s: bb, r: bb > 0.02 && T ? Math.sin(T * 7) * 2 : 0, o: bb > 0.02 ? 1 : 0 });
+      pose(beg, { x: P ? 950 : 1010, y: 440, s: bb, r: bb > 0.02 && T ? Math.sin(T * 7) * 2 : 0, o: bb > 0.02 ? 1 : 0 });
       /* v33a — out of the man and into the pigs */
       imps.forEach((m) => {
         const fly = es(t, 3.05 + m.d, 3.7 + m.d, ease.io);

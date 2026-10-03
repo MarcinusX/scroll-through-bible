@@ -18,9 +18,12 @@ export default {
     { v: 20 },
     { v: 21 },
   ],
-  cam: { x: [-90, 30], y: [-30, 50], z: [1, 1.14] },
+  cam: { x: [-120, 30], y: [-30, 50], z: [1, 1.14] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;
+    // phone: the family a little nearer the gate, the doers of the word inside the screen
+    const FDX = P ? 70 : 0, FXP = [585, 540, 498, 560], GX = P ? 470 : 505, TX = P ? 650 : 600, PO = P ? [510, 590] : [420, 500], GB = P ? [1090, 1010] : [1180, 1100];
     sky(S, ['#cfd9d3', '#f1e2c4', '#f6dfbd']);
     const hangL = S.layer({ par: 0.05, sh: 5 });
     const sunEl = hanging(hangL, sun(c, 42), { x: 1230, y: 170, len: 800 });
@@ -30,7 +33,7 @@ export default {
     /* outside the wall: the lane, a house, the family */
     const outL = S.layer({ par: 0.26, sh: 3 });
     outL.add(sheet().p(c.cut([[-900, 540], [2500, 540], [2500, 1700], [-900, 1700]], 1, 20), mix(C.sand, C.sage2, 0.3)).out() + house(c, 60, 548, 150, 110) + olive(c, 1240, 552, 0.8) + cypress(c, 1440, 548, 140) + house(c, 1060, 552, 170, 120, { stairs: false }));
-    const famGlow = outL.add(`<g opacity="0"><ellipse cx="410" cy="${WALL - 60}" rx="150" ry="120" fill="url(#halo-glow)"/></g>`);
+    const famGlow = outL.add(`<g opacity="0"><ellipse cx="${P ? 545 : 410}" cy="${WALL - 60}" rx="150" ry="120" fill="url(#halo-glow)"/></g>`);
     const FAM = [
       { o: MARY, x: 415, s: 0.88 },
       { o: BROTHERS[0], x: 350, s: 0.88 },
@@ -55,7 +58,7 @@ export default {
 
     /* the crowd: people in the gateway (standing) and sitting all round Him */
     const crowdL = S.layer({ par: 0.38, sh: 4 });
-    const gateCrowd = crowdL.sprite(knot('lk8-fam-gate', 4, { s: 0.84, spread: 30, rows: 2, flip: false }), 505, WALL + 18);
+    const gateCrowd = crowdL.sprite(knot('lk8-fam-gate', 4, { s: 0.84, spread: 30, rows: 2, flip: false }), GX, WALL + 18);
     const SEAT = [[570, 668, 'a', false, 4], [680, 700, 'b', false, 3], [930, 700, 'c', true, 3], [1060, 668, 'd', true, 4], [630, 632, 'e', false, 4], [990, 632, 'f', true, 4]];
     const seated = SEAT.map(([x, y, k, flip, n], i) => ({
       i, x, y,
@@ -63,7 +66,7 @@ export default {
       b: crowdL.sprite(knot('lk8-fam-' + k, n, { s: 0.74, spread: 42, rows: 1, flip, pose: 'sit', arms: [60, 100], armB: [110, 150], head: [-12, -6] }), x, y),
     }));
     const glowL = S.layer({ par: 0.4, sh: 0, flat: true });
-    const lights = [[470, 690], [1130, 690], [800, 560]].map(([x, y]) => glowL.add(`<g opacity="0"><ellipse cx="${x}" cy="${y - 90}" rx="150" ry="120" fill="url(#halo-glow)"/></g>`));
+    const lights = [[PO[0] + 50, 690], [GB[1] + 30, 690], [800, 560]].map(([x, y]) => glowL.add(`<g opacity="0"><ellipse cx="${x}" cy="${y - 90}" rx="150" ry="120" fill="url(#halo-glow)"/></g>`));
 
     /* the act: Jesus, the man at the gate, those who do the word */
     const act = S.layer({ par: 0.4, sh: 5 });
@@ -88,18 +91,18 @@ export default {
       /* v19 — His mother and brothers cannot get near for the crowd */
       FAM.forEach((f) => {
         const k = es(t, 0.05 + f.i * 0.05, 0.5 + f.i * 0.05);
-        const x = lerp(f.x - 420, f.x, k);
+        const fx0 = P ? FXP[f.i] : f.x, x = lerp(fx0 - 420, fx0, k);
         const tip = f.i === 0 ? bump(t, 0.55, 1.0) + bump(t, 1.1, 1.5) : f.i === 1 ? bump(t, 0.6, 0.95) : 0;
         f.p.set({ x: x + (f.i === 1 ? bump(t, 0.6, 0.95) * 30 : 0), y: WALL - 18 + (f.dy || 0) - (f.i === 0 ? tip * 8 : 0), s: f.s, flip: false, walk: k > 0 && k < 1 ? x * 0.05 : undefined, armF: 14 + (f.i === 1 ? bump(t, 0.6, 0.95) * 70 : 0) + (f.i === 0 ? es(t, 2.6, 2.9) * 30 : 0), armB: 6 + (f.i === 0 ? es(t, 2.6, 2.9) * 40 : 0), head: f.i === 0 ? -tip * 8 - es(t, 2.5, 2.8) * 6 : -2, blink: blinkAt(T, f.seed) });
       });
       const jostle = bump(t, 0.6, 0.95);
-      gateCrowd.set({ x: 505 + jostle * 8, y: WALL + 18 });
+      gateCrowd.set({ x: GX + jostle * 8, y: WALL + 18 });
 
       /* v20 — word is brought to Him */
       const turn = es(t, 1.05, 1.2);
-      teller.set({ x: 600, y: WALL + 64, s: 0.92, flip: turn < 0.5, armF: 20 + es(t, 1.15, 1.35) * 60 * (1 - es(t, 1.95, 2.1)), armB: 10 + es(t, 1.15, 1.35) * 90 * (1 - es(t, 1.95, 2.1)), head: -4, blink: blinkAt(T, 7) });
+      teller.set({ x: TX, y: WALL + 64, s: 0.92, flip: turn < 0.5, armF: 20 + es(t, 1.15, 1.35) * 60 * (1 - es(t, 1.95, 2.1)), armB: 10 + es(t, 1.15, 1.35) * 90 * (1 - es(t, 1.95, 2.1)), head: -4, blink: blinkAt(T, 7) });
       const sb = es(t, 1.2, 1.35, ease.back) * (1 - es(t, 1.95, 2.05));
-      const [thx, thy] = headAt(600, WALL + 64, 0.92, false);
+      const [thx, thy] = headAt(TX, WALL + 64, 0.92, false);
       pose(say, { x: thx + 10, y: thy - 30, s: sb, o: sb > 0.02 ? 1 : 0 });
 
       /* v21 — those who hear the word of God and do it */
@@ -111,20 +114,20 @@ export default {
       seated.forEach((g) => { const k = es(t, 2.35 + g.i * 0.04, 2.42 + g.i * 0.04); g.a.set({ x: g.x, y: g.y, o: 1 - k }); g.b.set({ x: g.x, y: g.y, o: k }); });
       // doing it: bread for the beggar, water for the old man
       const give = es(t, 2.3, 2.55);
-      giver.set({ x: 1180, y: 736, s: 1.0, flip: true, armF: 20 + give * 60, armB: 10, head: 6 * give, blink: blinkAt(T, 2) });
-      beggar.set({ x: 1100, y: 740, s: 0.96, flip: false, armF: 30 + give * 50, armB: 20, head: -give * 6, blink: blinkAt(T, 5) });
-      const [gx, gy] = hand(1180, 736, 1.0, true, 20 + give * 60);
+      giver.set({ x: GB[0], y: 736, s: 1.0, flip: true, armF: 20 + give * 60, armB: 10, head: 6 * give, blink: blinkAt(T, 2) });
+      beggar.set({ x: GB[1], y: 740, s: 0.96, flip: false, armF: 30 + give * 50, armB: 20, head: -give * 6, blink: blinkAt(T, 5) });
+      const [gx, gy] = hand(GB[0], 736, 1.0, true, 20 + give * 60);
       pose(crumb, { x: lerp(gx, gx - 30, give), y: gy + give * 4, o: es(t, 2.5, 2.55) });
       const pour = es(t, 2.35, 2.6);
-      pourer.set({ x: 420, y: 736, s: 1.0, flip: false, armF: 20 + pour * 70, armB: 10, head: 6 * pour, lean: pour * 6, blink: blinkAt(T, 6) });
-      oldman.set({ x: 500, y: 740, s: 0.96, flip: true, armF: 30 + pour * 40, armB: 10, head: -pour * 8, blink: blinkAt(T, 8) });
-      const [px2, py2] = hand(420, 736, 1.0, false, 20 + pour * 70);
+      pourer.set({ x: PO[0], y: 736, s: 1.0, flip: false, armF: 20 + pour * 70, armB: 10, head: 6 * pour, lean: pour * 6, blink: blinkAt(T, 6) });
+      oldman.set({ x: PO[1], y: 740, s: 0.96, flip: true, armF: 30 + pour * 40, armB: 10, head: -pour * 8, blink: blinkAt(T, 8) });
+      const [px2, py2] = hand(PO[0], 736, 1.0, false, 20 + pour * 70);
       drops.forEach((d, i) => { const k = ((T ? T * 1.6 : 0) + i / 3) % 1; pose(d, { x: px2 + 10 + k * 14, y: py2 + 24 + k * 30, o: pour > 0.9 ? Math.sin(k * PI) : 0 }); });
       lights.forEach((l, i) => pose(l, { o: es(t, 2.3 + i * 0.1, 2.6 + i * 0.1) * 0.9 }));
       pose(famGlow, { o: es(t, 2.55, 2.85) * 0.9 });
-      hearts.forEach((h, i) => { const k = es(t, 2.5 + i * 0.1, 2.7 + i * 0.1, ease.back); pose(h, { x: [470, 1140, 420][i], y: [560, 560, 400][i] - k * 10, s: k, o: k > 0.02 ? 1 : 0 }); });
+      hearts.forEach((h, i) => { const k = es(t, 2.5 + i * 0.1, 2.7 + i * 0.1, ease.back); pose(h, { x: [PO[0] + 50, GB[1] + 40, (P ? 560 : 420)][i], y: [560, 560, 400][i] - k * 10, s: k, o: k > 0.02 ? 1 : 0 }); });
 
-      S.cam.x = -es(t, 0.0, 0.6) * 60 + es(t, 1.9, 2.3) * 60;
+      S.cam.x = (-es(t, 0.0, 0.6) + es(t, 1.9, 2.3)) * (P ? 110 : 60);   // phone: further left, to the family at the gate
       S.cam.z = 1.08 + es(t, 0.0, 0.6) * 0.04 - es(t, 1.9, 2.3) * 0.06;
       S.cam.y = 10;
     };

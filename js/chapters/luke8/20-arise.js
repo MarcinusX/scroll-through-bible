@@ -20,6 +20,7 @@ export default {
   ],
   cam: { x: [-40, 160], y: [-60, 40], z: [0.96, 1.2] },
   build(S) {
+    const P = S.portrait;   // phone: the call, the mother and the parents' marks kept clear of the right edge
     const set = roomSet(S);
     const c = S.c;
     const light = set.room.add(`<g opacity="0"><circle r="150" fill="url(#halo-glow)"/></g>`);
@@ -56,7 +57,7 @@ export default {
       jUp.set({ x: 930, y: FEET, s: 1.04, o: up, flip: t > 2.9, armF: 40 + bump(t, 2.05, 2.8) * 40 + hushK * 60, armB: 20 + hushK * 100, head: -4, blink: blinkAt(T) });
       const [jhx, jhy] = headAt(960, FEET, 1.04, false, 46);
       const cb = es(t, 0.3, 0.45, ease.back) * (1 - es(t, 0.95, 1.02));
-      pose(call, { x: jhx + 10, y: jhy - 40, s: cb, o: cb > 0.02 ? 1 : 0 });
+      pose(call, { x: jhx + (P ? -150 : 10), y: jhy - 40, s: cb, o: cb > 0.02 ? 1 : 0 });
       /* v55a — her spirit returns and she gets up at once */
       const sk = seg(t, 1.02, 1.22);
       pose(spirit, { x: lerp(RM.WIN, 1080, sk), y: lerp(360, RM.FLOOR - 70, sk) - Math.sin(sk * PI) * 30, s: 1 - sk * 0.3, o: sk > 0 && sk < 1 ? 1 : 0 });
@@ -72,24 +73,24 @@ export default {
       const eb = es(t, 2.05, 2.2, ease.back) * (1 - es(t, 2.9, 3.0));
       const [uhx, uhy] = headAt(930, FEET, 1.04, false);
       pose(eat, { x: uhx + 16, y: uhy - 36, s: eb, o: eb > 0.02 ? 1 : 0 });
-      const MK = [[0, 470], [2.1, 470], [2.45, 1130]];
+      const MK = [[0, 470], [2.1, 470], [2.45, P ? 1095 : 1130]];
       const mx = kf(t, MK);
       const amaze = es(t, 3.05, 3.3) * (1 - es(t, 4.1, 4.3) * 0.6);
       mother.set({ x: mx, y: FEET - 4, s: 0.96, flip: t > 2.4, walk: t > 2.1 && t < 2.45 ? mx * 0.06 : undefined, armF: 30 + es(t, 2.1, 2.3) * 30 * (1 - amaze) + amaze * 120, armB: 20 + amaze * 130, head: 8 - amaze * 16, blink: blinkAt(T, 7) });
       const hold = mother.el.querySelector('.hold');
       if (hold) fade(hold, 1 - es(t, 2.5, 2.6));
       /* v56a — her parents are amazed */
-      const FK = [[0, 420], [3.0, 420], [3.3, 560]];
+      const FK = [[0, 420], [3.0, 420], [3.3, P ? 585 : 560]];   // phone: he and the three by the door stay inside the frame
       const fx_ = kf(t, FK);
       father.set({ x: fx_, y: FEET - 6, s: 1.0, walk: t > 3.0 && t < 3.3 ? fx_ * 0.06 : undefined, armF: 20 + amaze * 110, armB: 10 + amaze * 140, head: -amaze * 12, blink: blinkAt(T, 3) });
-      const WP = [[mx + 6, 330], [fx_ + 16, 340]];
+      const WP = [[mx + (P ? -30 : 6), 330], [fx_ + 16, 340]];
       wow.forEach((w, i) => { const k = es(t, 3.15 + i * 0.08, 3.3 + i * 0.08, ease.back); pose(w, { x: WP[i][0], y: WP[i][1], s: k, o: k > 0.02 ? 1 : 0 }); });
       tapes.forEach((tp, i) => { const k = es(t, 4.2 + i * 0.08, 4.38 + i * 0.08, ease.back); pose(tp, { x: WP[i][0] - 11, y: WP[i][1] - 54, s: k, r: -8 + i * 12, o: k > 0.02 ? 1 : 0 }); });
       hearts.forEach((h, i) => { const k = es(t, 3.2 + i * 0.1, 3.4 + i * 0.1, ease.back) * (1 - es(t, 4.1, 4.3)); pose(h, { x: [1000, 1080][i], y: 430 - k * 10, s: k * 0.9, o: k > 0.02 ? 1 : 0 }); });
-      DIS.forEach((d) => d.p.set({ x: d.x - es(t, 2.9, 3.3) * 60, y: FEET - 10 + (d.i % 2) * 8, s: 0.94, armF: 14 + amaze * (d.i === 1 ? 60 : 30), armB: 8 + amaze * (d.i === 1 ? 90 : 40), head: -amaze * 6, blink: blinkAt(T, d.seed) }));
+      DIS.forEach((d) => d.p.set({ x: d.x - es(t, 2.9, 3.3) * (P ? 32 : 60), y: FEET - 10 + (d.i % 2) * 8, s: 0.94, armF: 14 + amaze * (d.i === 1 ? 60 : 30), armB: 8 + amaze * (d.i === 1 ? 90 : 40), head: -amaze * 6, blink: blinkAt(T, d.seed) }));
       /* v56b — but He tells them to tell no one */
 
-      S.cam.x = kf(t, [[0, 120], [1.9, 120], [2.3, 40], [3.9, 40], [4.3, 0]]);
+      S.cam.x = P ? kf(t, [[0, 120], [1.9, 120], [2.3, 85]]) : kf(t, [[0, 120], [1.9, 120], [2.3, 40], [3.9, 40], [4.3, 0]]);
       S.cam.z = 1.1 + es(t, 0.0, 0.5) * 0.04 - es(t, 2.0, 2.4) * 0.08 - es(t, 3.9, 4.3) * 0.04;
       S.cam.y = 20;
     };

@@ -34,7 +34,7 @@ export default {
     { v: 18, text: 'Uważajcie więc, jak słuchacie.' },
     { v: 18, cont: true, text: 'Bo kto ma, temu będzie dane; a kto nie ma, temu zabiorą i to, co mu się wydaje, że ma».' },
   ],
-  cam: { x: [-40, 60], y: [-30, 50], z: [1, 1.18] },
+  cam: { x: [-110, 60], y: [-30, 50], z: [1, 1.18] },
   build(S) {
     const c = S.c;
     sky(S, ['#6f6c98', '#c79a9a', '#e8b996']);
@@ -111,7 +111,7 @@ export default {
       const np = es(t, 0.34, 0.44, ease.back) * (1 - es(t, 0.95, 1.05));
       pose(noPot, { x: 655, y: FLOOR - 200, s: np, o: np > 0.02 ? 1 : 0 });
       const nb = es(t, 0.66, 0.76, ease.back) * (1 - es(t, 0.95, 1.05));
-      pose(noBed, { x: BEDX + 10, y: FLOOR - 130, s: nb, o: nb > 0.02 ? 1 : 0 });
+      pose(noBed, { x: S.portrait ? BEDX - 45 : BEDX + 10, y: S.portrait ? FLOOR - 70 : FLOOR - 130, s: nb, o: nb > 0.02 ? 1 : 0 });
       const hidden = Math.max(covered, toBed * (1 - up));
       /* v16b — on the lampstand: those who come in see the light */
       const light = up * lit;
@@ -152,7 +152,9 @@ export default {
       pose(flyFlame, { x: bx + fly * 90, y: by - fly * 230, r: fly * 50, s: 1.5 - fly * 0.3, o: fly > 0 ? 1 - es(t, 4.85, 4.98) : 0 });
 
       S.cam.z = 1.06 + es(t, 0.05, 0.4) * 0.06 - es(t, 1.0, 1.4) * 0.08 + es(t, 3.9, 4.2) * 0.06;
-      S.cam.x = -es(t, 0.05, 0.4) * 20 + es(t, 0.45, 0.65) * 60 - es(t, 1.0, 1.4) * 40 - es(t, 3.9, 4.2) * 30;
+      S.cam.x = -es(t, 0.05, 0.4) * 20 + es(t, 0.45, 0.65) * 60 - es(t, 1.0, 1.4) * 40 - es(t, 3.9, 4.2) * 30
+        // phone: lean left while the guests at the door are the subject (they stand at the screen's edge otherwise)
+        - (S.portrait ? (es(t, 1.0, 1.4) - es(t, 1.9, 2.2) + es(t, 2.9, 3.2)) * 70 : 0);
       S.cam.y = 20;
     };
   },

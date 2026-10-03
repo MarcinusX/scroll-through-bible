@@ -34,7 +34,8 @@ export default {
     const MORN = ['#e2dcc6', '#f5e9d0', '#f8eedc'];
     sky(S, MORN);
     const hangL = S.layer({ par: 0.04, sh: 5 });
-    const sunEl = hanging(hangL, sun(c, 48), { x: 1200, y: 170, len: 700 });
+    const SUNX = S.portrait ? 1010 : 1200;   // phone: clear of the progress thread
+    const sunEl = hanging(hangL, sun(c, 48), { x: SUNX, y: 170, len: 700 });
     const cl1 = hanging(hangL, cloud(c, 190), { x: 420, y: 160, len: 700 });
     const cl2 = hanging(hangL, cloud(c, 130), { x: 860, y: 110, len: 700 });
 
@@ -143,7 +144,7 @@ export default {
 
     return (t, time) => {
       const T = time;
-      swing(sunEl, 1200, 170, T, 1.2, 0.7);
+      swing(sunEl, SUNX, 170, T, 1.2, 0.7);
       swing(cl1, 420 + Math.sin(T * 0.12) * 30, 160, T, 1.4, 0.6, 1);
       swing(cl2, 860 + Math.sin(T * 0.1 + 1) * 30, 110, T, 1.4, 0.8, 2);
 

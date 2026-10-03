@@ -89,7 +89,7 @@ export default {
     const fChain = wL.add(`<g opacity="0">${chain(c, 7, 6)}</g>`);
     const fWind = [0, 1, 2].map(() => wL.add(`<g opacity="0">${spirit(c, 0.7)}</g>`));
 
-    const boatKeys = [[0.05, [-80, 716]], [0.85, [390, 730]]];
+    const boatKeys = [[0.05, [-80, 716]], [0.85, [S.portrait ? 440 : 390, 730]]];   // phone: Jesus at the stern lands inside the screen
     const manPath = [[TOMB[0], TOMB[1] + 2], [1120, set.hfn(1120) + 26], [1040, 650], [960, 686], [MX, FEET + 4]];
 
     return (t, time) => {
@@ -138,9 +138,10 @@ export default {
 
       /* v29b — the story of before, on a sepia flat */
       const fk = dropK(t, 6.02, 7.2, 0.25);
-      flyTo(flatEl, fk, 800, 318, T);
+      const FX = S.portrait ? 760 : 800;   // phone: the flat clear of the thread
+      flyTo(flatEl, fk, FX, 318, T);
       // the pieces ride with the flat (its centre is at (800, baseY))
-      const baseX = 800, baseY = lerp(-1500, 318, fk);
+      const baseX = FX, baseY = lerp(-1500, 318, fk);
       const snap = es(t, 6.3, 6.4);
       const drive = es(t, 6.45, 6.95);
       const fmx = baseX - 20 + drive * 150;
@@ -149,7 +150,7 @@ export default {
       fLinks.forEach((l) => { const k = es(t, 6.32, 6.7, ease.out); pose(l.el, { x: baseX - 10 + Math.cos(l.a) * k * 110, y: baseY + 50 + Math.sin(l.a) * k * 70 + k * k * 40, r: k * 300 * (l.i % 2 ? 1 : -1), o: k > 0.01 && fk > 0.5 ? 1 - es(t, 6.85, 7.0) : 0 }); });
       fWind.forEach((w, i) => { pose(w, { x: fmx - 50 - i * 26, y: baseY + 40 + i * 14 + (T ? Math.sin(T * 3 + i) * 4 : 0), s: 0.8, o: drive * (fk > 0.5 ? 0.9 : 0) }); });
 
-      S.cam.x = -50 + es(t, 0.8, 1.5) * 50 + es(t, 2.0, 2.4) * 40 - es(t, 3.0, 3.4) * 40;
+      S.cam.x = (S.portrait ? lerp(-110, -55, es(t, 0.8, 1.5)) : -50 * (1 - es(t, 0.8, 1.5)))   /* phone: the disciple at the bow stays whole */ + es(t, 2.0, 2.4) * 40 - es(t, 3.0, 3.4) * 40;
       S.cam.y = 20 - es(t, 2.0, 2.4) * 30 + es(t, 3.0, 3.4) * 30 - es(t, 6.0, 6.3) * 30;
       S.cam.z = 1.04 + es(t, 3.0, 3.4) * 0.1 - es(t, 6.0, 6.3) * 0.1;
     };

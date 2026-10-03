@@ -19,6 +19,7 @@ export default {
   cam: { x: [-40, 140], y: [-40, 60], z: [1, 1.2] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;   // phone: the legion, its standard, the pit and the plea drawn in from the edge
     const set = gerasaShore(S, { skyCols: ['#b4bfcf', '#ead3bd', '#f3d6ae'], sunAt: [1320, 260], sunR: 40 });
     const back = S.layer({ par: 0.5, sh: 4 });
     const B = boat(c, {});
@@ -38,7 +39,7 @@ export default {
     const COLS = 6, ROWS = 4;
     const imps = Array.from({ length: COLS * ROWS }, (_, i) => {
       const col = i % COLS, row = Math.floor(i / COLS);
-      return { i, col, row, el: swarmL.add(`<g opacity="0">${spirit(c, 0.9)}</g>`), rank: [890 + col * 34 + (row % 2) * 17, 400 + row * 38], ph: c.rr(0, 6) };
+      return { i, col, row, el: swarmL.add(`<g opacity="0">${spirit(c, 0.9)}</g>`), rank: [(P ? 850 : 890) + col * 34 + (row % 2) * 17, 400 + row * 38], ph: c.rr(0, 6) };
     });
 
     /* words */
@@ -74,14 +75,14 @@ export default {
         pose(m.el, { x, y, s: 0.9 + recoil * 0.05, r: wob * 2, o: breakK });
       });
       const sk = es(t, 1.6, 1.9, ease.back);
-      pose(standard, { x: 1150, y: 600, s: sk, r: (T ? Math.sin(T * 0.8) * 2 : 0) - recoil * 6, o: sk > 0.02 ? 1 : 0 });
+      pose(standard, { x: P ? 1070 : 1150, y: 600, s: sk, r: (T ? Math.sin(T * 0.8) * 2 : 0) - recoil * 6, o: sk > 0.02 ? 1 : 0 });
       /* v31 — they beg Him not to send them into the abyss */
       const open = es(t, 2.05, 2.35);
-      pose(pit, { x: 1080, y: 690, sx: open, sy: open, o: open > 0.02 ? 1 : 0 });
+      pose(pit, { x: P ? 1020 : 1080, y: 690, sx: open, sy: open, o: open > 0.02 ? 1 : 0 });
       const bb = es(t, 2.35, 2.5, ease.back);
-      pose(beg, { x: 1060, y: 360, s: bb, r: bb > 0.02 && T ? Math.sin(T * 7) * 2 : 0, o: bb > 0.02 ? 1 : 0 });
+      pose(beg, { x: P ? 915 : 1060, y: P ? 330 : 360, s: bb, r: bb > 0.02 && T ? Math.sin(T * 7) * 2 : 0, o: bb > 0.02 ? 1 : 0 });
 
-      S.cam.x = es(t, 0.9, 1.5) * 50;
+      S.cam.x = es(t, 0.9, 1.5) * (P ? 110 : 50);
       S.cam.z = 1.1 - es(t, 0.9, 1.5) * 0.06;
       S.cam.y = 20 - es(t, 0.9, 1.5) * 20 + es(t, 2.0, 2.4) * 20;
     };

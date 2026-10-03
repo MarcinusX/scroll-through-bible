@@ -22,7 +22,7 @@ export default {
   cam: { x: [-80, 120], y: [-30, 50], z: [1, 1.16] },
   build(S) {
     const c = S.c;
-    const set = capShore(S, { skyCols: MORNING, sunAt: [460, 170], beachY: 640 });
+    const set = capShore(S, { skyCols: MORNING, sunAt: [S.portrait ? 530 : 460, 170], beachY: 640 });   // phone: the sun whole, not cut by the frame
 
     /* the crowd on the beach: sitting and waiting, then up to welcome Him */
     const crowdL = S.layer({ par: 0.4, sh: 4 });

@@ -39,9 +39,10 @@ export default {
 
     /* the town up on the hillside to the right, with farms */
     const hillL = S.layer({ par: 0.3, sh: 3 });
-    const TX = 1130, TY = 520;
-    hillL.add(walledTown(c, TX, TY, 0.62) + house(c, 960, 566, 50, 36, { stairs: false }) + house(c, 1330, 470, 56, 40, { stairs: false }) + cypress(c, 1010, 560, 80));
-    const bangs = [[TX, TY - 70, 0], [TX - 70, TY - 44, 0.06], [TX + 70, TY - 50, 0.1], [960, 520, 0.16], [1330, 420, 0.22]].map(([x, y, d]) => ({ d, x, y, el: hillL.add(`<g opacity="0">${glyphTag(c, '!', { size: 20 })}</g>`) }));
+    const P = S.portrait;   // phone: the town, the runners and the townspeople drawn in from the right edge
+    const TX = P ? 1020 : 1130, TY = 520, HX = P ? 900 : 960;
+    hillL.add(walledTown(c, TX, TY, 0.62) + house(c, HX, 566, 50, 36, { stairs: false }) + house(c, 1330, 470, 56, 40, { stairs: false }) + cypress(c, HX + 50, 560, 80));
+    const bangs = [[TX, TY - 70, 0], [TX - 70, TY - 44, 0.06], [TX + 70, TY - 50, 0.1], [HX, 520, 0.16], [1330, 420, 0.22]].map(([x, y, d]) => ({ d, x, y, el: hillL.add(`<g opacity="0">${glyphTag(c, '!', { size: 20 })}</g>`) }));
 
     /* the boat pulled up on the left, the disciples */
     const back = S.layer({ par: 0.45, sh: 4 });
@@ -52,7 +53,7 @@ export default {
     const runL = S.layer({ par: 0.3, sh: 4 });
     const runners = [L5.herdsman, L5.herdsman2].map((o, i) => ({ i, p: S.puppet(runL.add(person(c, { ...o, holdF: `<g transform="rotate(-30)">${staff(c, 170)}</g>` }))) }));
     const crowdL = S.layer({ par: 0.45, sh: 4 });
-    const GROUPS = [[1010, 690, 'a', 4], [1120, 716, 'b', 4], [1200, 676, 'c', 3], [930, 716, 'd', 3]].map(([x, y, k, n], i) => ({
+    const GROUPS = (P ? [[905, 690, 'a', 4], [990, 716, 'b', 4], [1045, 676, 'c', 3], [840, 716, 'd', 3]] : [[1010, 690, 'a', 4], [1120, 716, 'b', 4], [1200, 676, 'c', 3], [930, 716, 'd', 3]]).map(([x, y, k, n], i) => ({
       i, x, y,
       calm: crowdL.sprite(knot('lk8-town-' + k, n, { s: 0.9, spread: 38, rows: 1, flip: true }), x, y),
       fear: crowdL.sprite(knot('lk8-town-' + k, n, { s: 0.9, spread: 38, rows: 1, flip: true, arms: [140, 158], armB: [20, 50], head: [8, 14] }), x, y),
@@ -74,7 +75,7 @@ export default {
       /* v34 — the herdsmen flee and tell it in the town and the country */
       runners.forEach((r) => {
         const k = es(t, 0.02 + r.i * 0.08, 0.7 + r.i * 0.08, (u) => u);
-        const x = lerp(560 + r.i * 50, 1080 + r.i * 50, k);
+        const x = lerp(560 + r.i * 50, (P ? 970 : 1080) + r.i * 50, k);
         r.p.set({ x, y: lerp(600, 540, k), s: 0.5, flip: false, o: 1 - es(t, 0.8, 0.95), walk: k > 0 && k < 1 ? x * 0.1 : undefined, amt: 1.6, armF: 60, armB: 140, head: -8, lean: 10 });
       });
       bangs.forEach((b) => { const k = es(t, 0.55 + b.d, 0.7 + b.d, ease.back) * (1 - es(t, 1.6, 1.8)); pose(b.el, { x: b.x, y: b.y, s: k, o: k > 0.02 ? 1 : 0 }); });
@@ -83,7 +84,7 @@ export default {
       GROUPS.forEach((g) => {
         const k = es(t, 1.05 + g.i * 0.08, 1.8 + g.i * 0.06);
         const recoil = es(t, 3.05 + g.i * 0.03, 3.3 + g.i * 0.03);
-        const x = lerp(TX + 20, g.x, k) + recoil * 40, y = lerp(TY + 10, g.y, k);
+        const x = lerp(TX + 20, g.x, k) + recoil * (P ? 15 : 40), y = lerp(TY + 10, g.y, k);
         const fear = es(t, 3.08 + g.i * 0.03, 3.14 + g.i * 0.03) * (1 - es(t, 4.05, 4.2));
         g.calm.set({ x, y: y - (k > 0 && k < 1 ? Math.abs(Math.sin(k * 30 + g.i)) * 3 : 0), s: lerp(0.7, 1, k), o: seg(t, 1.02, 1.1) * (1 - fear) });
         g.fear.set({ x, y, s: 1, o: fear });

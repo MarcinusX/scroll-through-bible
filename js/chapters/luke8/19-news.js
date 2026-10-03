@@ -48,7 +48,7 @@ export default {
     const crowdL = S.layer({ par: 0.45, sh: 4 });
     const CR = [[300, 690, 'a', 4], [430, 716, 'b', 4], [540, 690, 'c', 3]].map(([x, y, k, n], i) => ({ i, x, y, sp: crowdL.sprite(knot('lk8-news-' + k, n, { s: 0.9, spread: 40, rows: 1, flip: false, arms: [10, 40] }), x, y) }));
     /* the mourners at the house */
-    const MG = [[[0, 1, 2], 975, 0], [[3, 1, 0], 1085, 1]].map(([idx, x, i]) => ({ i, x, wail: crowdL.sprite(mourners(c, idx, 'wail'), x, FEET - 8), laugh: crowdL.sprite(mourners(c, idx, 'laugh'), x, FEET - 8) }));
+    const MG = [[[0, 1, 2], S.portrait ? 955 : 975, 0], [[3, 1, 0], S.portrait ? 1050 : 1085, 1]].map(([idx, x, i]) => ({ i, x, wail: crowdL.sprite(mourners(c, idx, 'wail'), x, FEET - 8), laugh: crowdL.sprite(mourners(c, idx, 'laugh'), x, FEET - 8) }));
 
     /* the people of the story */
     const L = S.layer({ par: 0.5, sh: 5 });
@@ -79,7 +79,7 @@ export default {
       const db = es(t, 0.45, 0.6, ease.back) * (1 - es(t, 0.95, 1.02));
       pose(dead, { x: mhx + 10, y: mhy - 28, s: db, o: db > 0.02 ? 1 : 0 });
       const sink = es(t, 0.6, 0.66) * (1 - es(t, 2.0, 2.06));
-      const JRK = [[2.02, 860], [2.6, 1190]];
+      const JRK = [[2.02, 860], [2.6, S.portrait ? 1035 : 1190]];   // phone: the father and mother stay on the screen
       const jrx = kf(t, JRK);
       jair.set({ x: jrx, y: FEET, s: 1.0, flip: t < 2.0 ? false : false, o: 1 - sink, walk: t > 2.02 && t < 2.6 ? jrx * 0.06 : undefined, armF: 20 + (t < 0.6 ? bump(t, 0.4, 0.6) * 40 : 0), armB: 10, head: 4, blink: blinkAt(T, 3) });
       jairK.set({ x: 860, y: FEET + 4, s: 1.0, flip: false, o: sink, armF: 150, armB: 40, head: 16, lean: 10, blink: 1 });
@@ -101,7 +101,7 @@ export default {
       });
       CR.forEach((g) => { const k = es(t, 2.05, 2.6); g.sp.set({ x: g.x + k * 60 - es(t, 2.3, 2.6) * 20, y: g.y }); });
       const momIn = es(t, 2.3, 2.6);
-      mother.set({ x: lerp(DOOR, DOOR + 40, momIn), y: FEET - 4, s: 0.96, flip: true, o: momIn, armF: 30 + es(t, 3.05, 3.3) * 120 * (1 - es(t, 4.0, 4.2)), armB: 20 + es(t, 3.05, 3.3) * 100 * (1 - es(t, 4.0, 4.2)), head: 14 - es(t, 3.05, 3.3) * 20, blink: blinkAt(T, 7) });
+      mother.set({ x: lerp(DOOR, DOOR + (S.portrait ? 5 : 40), momIn), y: FEET - 4, s: 0.96, flip: true, o: momIn, armF: 30 + es(t, 3.05, 3.3) * 120 * (1 - es(t, 4.0, 4.2)), armB: 20 + es(t, 3.05, 3.3) * 100 * (1 - es(t, 4.0, 4.2)), head: 14 - es(t, 3.05, 3.3) * 20, blink: blinkAt(T, 7) });
       /* v52a — all are weeping and mourning her */
       MG.forEach((g) => {
         const inK = es(t, 3.05 + g.i * 0.1, 3.4 + g.i * 0.1);
