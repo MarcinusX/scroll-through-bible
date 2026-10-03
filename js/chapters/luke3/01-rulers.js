@@ -27,6 +27,10 @@ export default {
   cam: { x: [-30, 30], y: [-20, 30], z: [1, 1.06] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;
+    // phone: a slightly smaller map, and the rulers hung nearer to it, clear of the edge and the thread
+    const ms = PH ? 0.7 : MS, at = ([x, y]) => [MX + x * ms, MY + y * ms];
+    const LX = PH ? 590 : 548, RX = PH ? 1012 : 1055;
     sky(S, ROMAN);
     const hangL = S.layer({ par: 0.04, sh: 5 });
     const sunEl = hanging(hangL, sun(c, 46), { x: 1250, y: 150, len: 700 });
@@ -61,10 +65,10 @@ export default {
     const years = Array.from({ length: 15 }, (_, i) => ({ i, el: galL.add(`<g>${sheet().p(c.cut(c.circ(0, 0, 6.5, 10), 0.2, 2), i === 14 ? C.terracotta : C.sun).out()}</g>`) }));
 
     const R = [
-      { key: 'pilate', el: P(PILATE, '', tr('Poncjusz Piłat', 'Pontius Pilate'), { rim: C.stone2, back: mix(C.curtain, C.cream, 0.5), size: 18 }), x: 548, y: 510, regs: ['judea'], pins: [[-130, 84]], b: 2 },
-      { key: 'herod', el: P(HEROD, kingHead(c), tr('Herod', 'Herod'), { rim: C.sun, back: mix(C.sageRobe, C.cream, 0.45) }), x: 548, y: 285, regs: ['galilee'], pins: [[-110, -150]], b: 3 },
-      { key: 'philip', el: P(PHILIP_T, `<g transform="translate(0 1)">${circlet(c)}</g>`, tr('Filip', 'Philip'), { rim: C.haloRim, back: mix(C.mauve, C.cream, 0.5), flip: true }), x: 1055, y: 450, regs: ['iturea', 'trachon'], pins: [[62, -180], [128, -108]], b: 4 },
-      { key: 'lys', el: P(LYSANIAS, `<g transform="translate(0 1)">${circlet(c)}</g>`, tr('Lizaniasz', 'Lysanias'), { rim: C.haloRim, back: mix(C.tealRobe, C.cream, 0.55), flip: true }), x: 1055, y: 235, regs: ['abilene'], pins: [[76, -250]], b: 5 },
+      { key: 'pilate', el: P(PILATE, '', tr('Poncjusz Piłat', 'Pontius Pilate'), { rim: C.stone2, back: mix(C.curtain, C.cream, 0.5), size: 18 }), x: LX, y: 510, regs: ['judea'], pins: [[-130, 84]], b: 2 },
+      { key: 'herod', el: P(HEROD, kingHead(c), tr('Herod', 'Herod'), { rim: C.sun, back: mix(C.sageRobe, C.cream, 0.45) }), x: LX, y: 285, regs: ['galilee'], pins: [[-110, -150]], b: 3 },
+      { key: 'philip', el: P(PHILIP_T, `<g transform="translate(0 1)">${circlet(c)}</g>`, tr('Filip', 'Philip'), { rim: C.haloRim, back: mix(C.mauve, C.cream, 0.5), flip: true }), x: RX, y: 450, regs: ['iturea', 'trachon'], pins: [[62, -180], [128, -108]], b: 4 },
+      { key: 'lys', el: P(LYSANIAS, `<g transform="translate(0 1)">${circlet(c)}</g>`, tr('Lizaniasz', 'Lysanias'), { rim: C.haloRim, back: mix(C.tealRobe, C.cream, 0.55), flip: true }), x: RX, y: 235, regs: ['abilene'], pins: [[76, -250]], b: 5 },
     ];
     R.forEach((r) => { r.thr = r.pins.map(() => thread()); });
     const PR = [
@@ -82,11 +86,11 @@ export default {
 
       /* v1a — Tiberius Caesar, and his fifteen years */
       const tIn = es(t, 1.04, 1.4, ease.out), tUp = es(t, 2.0, 2.4);
-      const tx = lerp(740, 800, tUp), ty = lerp(lerp(-600, 330, tIn), 168, tUp), ts = lerp(1.2, 0.74, tUp);
+      const tx = lerp(PH ? 715 : 740, 800, tUp), ty = lerp(lerp(-600, 330, tIn), 168, tUp), ts = lerp(1.2, 0.74, tUp);
       pose(tib, { x: tx, y: ty, s: ts, r: Math.sin(time * 0.6) * 1.2 * (1 - tUp), o: tIn > 0.001 ? 1 : 0 });
       pose(tibGlow, { x: tx, y: ty, s: ts, o: es(t, 1.3, 1.6) * (1 - tUp * 0.5) });
       const pIn = es(t, 1.12, 1.45, ease.out);
-      const px = lerp(1030, 648, tUp), py = lerp(lerp(-600, 310, pIn), 160, tUp), ps = lerp(1, 0.62, tUp);
+      const px = lerp(PH ? 978 : 1030, 648, tUp), py = lerp(lerp(-600, 310, pIn), 160, tUp), ps = lerp(1, 0.62, tUp);
       pose(plaque, { x: px, y: py, s: ps, r: Math.sin(time * 0.7 + 1) * 1.4 * (1 - tUp), o: pIn > 0.001 ? 1 : 0 });
       years.forEach((y) => {
         const k = es(t, 1.4 + y.i * 0.022, 1.48 + y.i * 0.022, ease.back);
@@ -97,14 +101,14 @@ export default {
 
       /* v1b… — the map comes down; each ruler hangs beside his country and a thread runs to it */
       const mIn = es(t, 0.15, 0.7, ease.out);
-      pose(mapEl, { x: MX, y: lerp(-700, MY, mIn), s: MS, r: Math.sin(time * 0.5) * 0.4 * mIn, o: mIn > 0.001 ? 1 : 0 });
-      Object.values(REG).forEach((el) => pose(el, { x: MX, y: lerp(-700, MY, mIn), s: MS, o: 0 }));
+      pose(mapEl, { x: MX, y: lerp(-700, MY, mIn), s: ms, r: Math.sin(time * 0.5) * 0.4 * mIn, o: mIn > 0.001 ? 1 : 0 });
+      Object.values(REG).forEach((el) => pose(el, { x: MX, y: lerp(-700, MY, mIn), s: ms, o: 0 }));
       R.forEach((r) => {
         const k = es(t, r.b + (r.b === 2 ? 0.3 : 0.05), r.b + (r.b === 2 ? 0.62 : 0.4), ease.out);
         swing(r.el, r.x, lerp(-700, r.y, k), time, 1.2 * k, 0.7, r.b);
         fade(r.el, k > 0.001 ? 1 : 0);
         const col = es(t, r.b + (r.b === 2 ? 0.55 : 0.35), r.b + (r.b === 2 ? 0.72 : 0.55));
-        r.regs.forEach((g) => pose(REG[g], { x: MX, y: lerp(-700, MY, mIn), s: MS, o: col }));
+        r.regs.forEach((g) => pose(REG[g], { x: MX, y: lerp(-700, MY, mIn), s: ms, o: col }));
         r.pins.forEach((pin, j) => {
           const [x1, y1] = at(pin);
           const x0 = r.x + (r.x < MX ? 50 : -50), y0 = r.y + 6;

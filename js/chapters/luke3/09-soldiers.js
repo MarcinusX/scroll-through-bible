@@ -9,7 +9,7 @@ import {
   crossX, addToBody, DUSKGOLD, tr, es, ease, bump, seg, fade, pose, lerp, PI,
 } from './lib.js';
 
-const JX = 525;
+const JX0 = 525;
 const MERCHANT = { robe: C.ochreRobe, mantle: C.dustyBlue, hair: C.hair2, hairStyle: 'wrap', veil: C.linen, beard: 'short', skin: C.skin2, belt: C.leather };
 
 export default {
@@ -22,6 +22,9 @@ export default {
   cam: { x: [-20, 60], y: [0, 60], z: [1, 1.12] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;
+    // phone: John, the soldier, the merchant and the false charge come inward, clear of the frame and the thread
+    const JX = PH ? 550 : JX0, SX = PH ? 872 : 900, MX = PH ? 1005 : 1060, AX = PH ? 975 : 1090, XX = PH ? 998 : 1116;
     const M = meadowSet(S, { skyCols: DUSKGOLD, sunAt: [1230, 260], ground: mix(C.sage2, C.wheat, 0.35) });
     const { GY } = M;
     const mem = Array.from({ length: 7 }, (_, k) => ({ x: (k - 3) * 76 + c.rr(-10, 10), y: c.rr(-6, 6), s: 1, flip: k > 3, o: folk(c) }));
@@ -66,28 +69,28 @@ export default {
       const bully = es(t, 1.05, 1.2) * (1 - es(t, 1.4, 1.55));
       const giveBack = es(t, 1.5, 1.66);
       const mIn = es(t, 1.0, 1.15);
-      const s1x = lerp(x1, 900, turn);
+      const s1x = lerp(x1, SX, turn);
       s1.set({ x: s1x, y: GY, s: 1.2, flip: turn < 0.5, walk: come > 0 && come < 1 ? t * 30 : undefined, armF: 20 + ask * 80 + bully * 60 + giveBack * 70 * (1 - es(t, 2.1, 2.2)) + es(t, 2.2, 2.35) * 70 - content * 50, armB: 10 + bully * 150, head: -ask * 6 + bully * 4 - giveBack * 4 + content * 10, lean: bully * 4, blink: blinkAt(time, 3) });
       fade(clubEl, 1 - es(t, 1.45, 1.5));
       fade(held, bully > 0.2 || (t > 1.1 && t < 1.55) ? 1 : 0);
-      const [mhx, mhy] = hand(1060, GY + 2, 1.15, true, 60);
-      merchant.set({ x: 1060, y: GY + 2, s: 1.15, flip: true, o: mIn, lean: -bully * 10 + giveBack * 0, head: bully * 10 - giveBack * 8, armF: 60 - bully * 20 + giveBack * 10, armB: 30 + bully * 110, blink: blinkAt(time, 5) });
+      const [mhx, mhy] = hand(MX, GY + 2, 1.15, true, 60);
+      merchant.set({ x: MX, y: GY + 2, s: 1.15, flip: true, o: mIn, lean: -bully * 10 + giveBack * 0, head: bully * 10 - giveBack * 8, armF: 60 - bully * 20 + giveBack * 10, armB: 30 + bully * 110, blink: blinkAt(time, 5) });
       fade(mPurse, t > 1.55 ? 1 : 0);
       s2.set({ x: x2 - turn * 130, y: GY + 4, s: 1.18, flip: true, walk: (come > 0 && come < 1) ? t * 30 + 1 : undefined, armF: 34, armB: 10 + ask * 60, head: -ask * 4, blink: blinkAt(time, 4) });
       const ak = es(t, 1.12, 1.25, ease.back) * (1 - es(t, 1.9, 2.0));
-      pose(acc, { x: 1090, y: GY - 300, s: ak, o: ak > 0.01 ? 1 : 0 });
+      pose(acc, { x: AX, y: GY - 300, s: ak, o: ak > 0.01 ? 1 : 0 });
       const xk = es(t, 1.45, 1.55, ease.back) * (1 - es(t, 1.9, 2.0));
-      pose(xEl, { x: 1116, y: GY - 330, s: xk, o: xk > 0.01 ? 1 : 0 });
+      pose(xEl, { x: XX, y: GY - 330, s: xk, o: xk > 0.01 ? 1 : 0 });
 
       /* v14c — content with his wages: three coins into his palm, his hand on his heart */
       const wk = es(t, 2.05, 2.3, ease.out);
       pose(wage, { x: 960, y: lerp(-500, 330, wk), r: Math.sin(time * 0.8) * 1.2, o: wk > 0.01 ? 1 : 0 });
-      const [px, py] = hand(900, GY, 1.2, false, 90);
+      const [px, py] = hand(SX, GY, 1.2, false, 90);
       COINS.forEach((co, i) => {
         const k = seg(t, 2.25 + i * 0.07, 2.42 + i * 0.07);
         pose(co, { x: lerp(960 + (i - 1) * 20, px + (i - 1) * 5, k), y: lerp(360, py - 4 - i * 2, k * k), r: k * 200, o: k > 0 && t < 2.62 ? 1 : 0 });
       });
-      pose(heart, { x: 900 + 16, y: GY - 140, s: 0.8 + content * 0.4, o: content * 0.7 });
+      pose(heart, { x: SX + 16, y: GY - 140, s: 0.8 + content * 0.4, o: content * 0.7 });
 
       john.set({ x: JX, y: GY, s: 1.22, armF: 20 + es(t, 1.03, 1.2) * 60 * (1 - es(t, 2.85, 3.0)), armB: 10 + es(t, 1.03, 1.2) * 20, head: -4 * es(t, 1.03, 1.2) + bump(t, 0.6, 1.0) * 6, blink: blinkAt(time) });
       const [hx, hy] = headAt(JX, GY, 1.22);

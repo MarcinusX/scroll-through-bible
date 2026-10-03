@@ -53,7 +53,7 @@ export default {
         R('Tare', 'Terah', { rim: 'patriarch' }),
         R('Nachor', 'Nahor', { rim: 'patriarch' }),
       ], opts: { gold: true } },
-    ], [0, 1, 2], { extra: 2 });
+    ], [0, 1, 2], { extra: 2, gopts: S.portrait ? { x0: 370, x1: 1190, inner: 110 } : null });   // phone: the row stays clear of the edges and the thread
 
     return (t, time) => {
       const night = es(t, 2.0, 2.45);

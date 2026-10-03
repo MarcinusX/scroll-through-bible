@@ -13,10 +13,10 @@ import {
 } from './lib.js';
 
 const GY = 690;                    // where people stand
-const JX = 512;                    // John
+const JX0 = 512;                   // John
 const TX = 650, TY = 694;          // the young tree
-const BX = 1050, BY = 690;         // the barren tree
-const FX = 1100;                   // the fire
+const BX0 = 1050, BY = 690;        // the barren tree
+const FX0 = 1100;                  // the fire
 const AX = 810, AY = 250;          // Abraham's medallion
 
 export default {
@@ -31,6 +31,8 @@ export default {
   cam: { x: [-20, 60], y: [0, 60], z: [1, 1.12] },
   build(S) {
     const c = S.c;
+    // phone: John, the barren tree and the fire come a little inward, clear of the frame and the thread
+    const JX = S.portrait ? 548 : JX0, BX = S.portrait ? 1025 : BX0, FX = S.portrait ? 1068 : FX0;
     sky(S, JORDAN_DAY);
     const hangL = S.layer({ par: 0.04, sh: 5 });
     const sunEl = hanging(hangL, sun(c, 44), { x: 1260, y: 150, len: 700 });

@@ -197,7 +197,7 @@ export function depthPose(d) {
  * short strings. Drawn in world coords, wrapped so it scales about VP. people: [{ o, name, r, icon, rim, back,
  * key, head, front, dotted, flip }]. Returns { markup, spots: [{ x, y, r }] }.
  */
-export function garland(S, people, { x0 = 380, x1 = 1220, top = 176, sag = 46, poleCol = C.wood2, base = 930, cord = mix(C.rope, C.wood3, 0.4), blank = false, size = 20, gold = false } = {}) {
+export function garland(S, people, { x0 = 380, x1 = 1220, top = 176, sag = 46, poleCol = C.wood2, base = 930, cord = mix(C.rope, C.wood3, 0.4), blank = false, size = 20, gold = false, inner = 70 } = {}) {
   const c = S.c;
   const n = people.length;
   const mid = (x0 + x1) / 2, half = (x1 - x0) / 2;
@@ -212,7 +212,7 @@ export function garland(S, people, { x0 = 380, x1 = 1220, top = 176, sag = 46, p
   const cp = [];
   for (let i = 0; i <= 30; i++) { const x = lerp(x0, x1, i / 30); cp.push([x, cordY(x)]); }
   s.p(c.ribbon(cp, 4), gold ? C.haloRim : cord);
-  const inner = 70, span = x1 - x0 - inner * 2;
+  const span = x1 - x0 - inner * 2;
   const spots = [];
   let strings = '', dots = '', meds = '';
   people.forEach((p, j) => {
@@ -248,18 +248,18 @@ export function garland(S, people, { x0 = 380, x1 = 1220, top = 176, sag = 46, p
  * of the new front garland light up one by one. extra: garlands of blank beads further back (the line goes on).
  * Returns update(t) and the list (with spots) so a scene can add its own touches.
  */
-export function lineRoad(S, list, at, { par = 0.3, extra = 2, lightStep = 0.08, glowR = 1.9, arrive = 0.45, start = 1, tweak = null } = {}) {
+export function lineRoad(S, list, at, { par = 0.3, extra = 2, lightStep = 0.08, glowR = 1.9, arrive = 0.45, start = 1, tweak = null, gopts = null } = {}) {
   const c = S.c;
   const glowL = S.layer({ par, sh: 1, flat: true });
   const L = S.layer({ par, sh: 5 });
   const all = [];
   // further garlands first (the nearer ones are laid over them)
   for (let e = extra; e >= 1; e--) {
-    const g = garland(S, Array.from({ length: 5 }, () => ({})), { blank: true, sag: 40 + e * 3 });
+    const g = garland(S, Array.from({ length: 5 }, () => ({})), { ...(gopts || {}), blank: true, sag: 40 + e * 3 });
     all.push({ i: list.length - 1 + e, el: L.add(g.markup), spots: [], glows: [] });
   }
   for (let i = list.length - 1; i >= 0; i--) {
-    const g = garland(S, list[i].people, list[i].opts || {});
+    const g = garland(S, list[i].people, { ...(gopts || {}), ...(list[i].opts || {}) });
     const glows = g.spots.map((sp) => glowL.add(`<circle r="${(sp.r * glowR).toFixed(0)}" fill="url(#warm-glow)"/>`));
     all.push({ i, el: L.add(g.markup), spots: g.spots, glows, key: list[i] });
   }

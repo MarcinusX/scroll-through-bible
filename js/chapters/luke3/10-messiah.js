@@ -47,7 +47,9 @@ export default {
 
     /* the near bank: the people who wonder */
     const { N } = J.nearBank();
-    const LIS = [[380, false, 0.9], [490, false, 0.86], [1040, true, 0.88], [1150, true, 0.92], [1260, true, 0.86]].map(([x, flip, s], i) => ({ x, flip, s, i, p: S.puppet(N.add(person(c, folk(c)))), seed: c.rr(0, 9) }));
+    const LIS = (S.portrait   // phone: all five who wonder stand on screen, their thoughts clear of the thread
+      ? [[512, false, 0.9], [582, false, 0.86], [915, true, 0.88], [970, true, 0.92], [1025, true, 0.86]]
+      : [[380, false, 0.9], [490, false, 0.86], [1040, true, 0.88], [1150, true, 0.92], [1260, true, 0.86]]).map(([x, flip, s], i) => ({ x, flip, s, i, p: S.puppet(N.add(person(c, folk(c)))), seed: c.rr(0, 9) }));
     J.foreground();
 
     /* thoughts, the crown, the sandal, the dove, the flames */
@@ -102,7 +104,7 @@ export default {
       /* v16c — the Holy Spirit and fire */
       gold.fade(spirit * 0.8);
       const dv = seg(t, 3.1, 3.95);
-      pose(doveEl, { x: lerp(260, 1340, dv), y: 300 - Math.sin(dv * PI) * 80, s: 0.95, o: dv > 0 && dv < 1 ? 1 : 0 });
+      pose(doveEl, { x: S.portrait ? lerp(380, 1200, dv) : lerp(260, 1340, dv), y: 300 - Math.sin(dv * PI) * 80, s: 0.95, o: dv > 0 && dv < 1 ? 1 : 0 });
       flapWings(doveEl, time, 30, 7);
       LIS.forEach((l) => {
         l.p.set({ x: l.x, y: BANK + (l.i % 2) * 6, s: l.s, flip: l.flip, armF: 20 + wonder * 20 * (1 - push) + spirit * (l.i % 2 ? 90 : 40), armB: spirit * (l.i % 2 ? 30 : 130), head: -wonder * 6 + push * 4 - spirit * 12, blink: blinkAt(time, l.seed) });

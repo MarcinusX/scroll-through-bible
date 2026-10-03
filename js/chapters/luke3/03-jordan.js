@@ -26,7 +26,8 @@ export default {
     hill.add(town(c, { x: 330, y: 452, n: 6, spread: 220, sc: 0.55 }) + town(c, { x: 1060, y: 476, n: 5, spread: 200, sc: 0.5 }) + town(c, { x: 1450, y: 470, n: 5, spread: 200, sc: 0.5 }));
 
     /* the villagers who come down to the far bank as he passes */
-    const VIL = [[1300, 3, 0.18], [1080, 2, 0.3], [620, 3, 0.52], [380, 3, 0.66]].map(([x, n, a], i) => {
+    const VIL = (S.portrait ? [[1300, 3, 0.18], [1010, 2, 0.3], [640, 3, 0.52], [480, 3, 0.66]] : [[1300, 3, 0.18], [1080, 2, 0.3], [620, 3, 0.52], [380, 3, 0.66]]).map(   // phone: the villages that come down stay on screen
+     ([x, n, a], i) => {
       const mem = Array.from({ length: n }, (_, k) => ({ x: (k - (n - 1) / 2) * 30 + c.rr(-5, 5), y: c.rr(-4, 4), s: 1, flip: x > 800, o: folk(c) }));
       return { x, a, i, sp: far.sprite(`<g transform="scale(.42)">${group(c, mem)}</g>`, x, fbFn(x) + 8) };
     });
@@ -40,7 +41,7 @@ export default {
     const man = S.puppet(R.add(person(c, MAN)));
     const manK = S.puppet(R.add(person(c, { ...MAN, pose: 'kneel' })));
     const sackEl = R.add(`<g>${sinSack(c, 56, 62)}</g>`);
-    const WAIT = [{ o: { robe: C.roseRobe, hairStyle: 'veil', veil: C.blushVeil, skin: C.skin }, x: 1130 }, { o: { robe: C.sageRobe, hairStyle: 'wrap', veil: C.stone, hair: C.hair, beard: 'full', skin: C.skin2 }, x: 1230 }]
+    const WAIT = [{ o: { robe: C.roseRobe, hairStyle: 'veil', veil: C.blushVeil, skin: C.skin }, x: S.portrait ? 1012 : 1130 }, { o: { robe: C.sageRobe, hairStyle: 'wrap', veil: C.stone, hair: C.hair, beard: 'full', skin: C.skin2 }, x: S.portrait ? 1062 : 1230 }]
       .map((w, i) => ({ ...w, i, p: S.puppet(R.add(person(c, w.o))), sack: R.add(`<g>${sinSack(c, 44, 50)}</g>`) }));
     J.waterFront(R);
     const stainEl = R.add(`<g>${stain(c, 44)}</g>`);

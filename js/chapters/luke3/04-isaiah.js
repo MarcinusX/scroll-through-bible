@@ -13,7 +13,7 @@ import {
 } from './lib.js';
 
 const HY = 560;                          // the far edge of the plain
-const JX = 512, JY = 700;                // John on his rock
+const JX0 = 512, JY = 700;               // John on his rock
 const LX = 1102;                         // where the light rises (the mountain's place)
 // the road across the plain: u 0 (front) … 1 (the horizon)
 const rw = (u) => 7 + 46 * Math.pow(1 - u, 1.2);
@@ -108,12 +108,13 @@ export default {
 
     /* people from every side, come to see (sprites) */
     const crowdL = S.layer({ par: 0.3, sh: 4 });
-    const GROUPS = [[1, 880, 724, 0.66, 3], [-1, 690, 640, 0.48, 3], [1, 1040, 660, 0.5, 3], [-1, 880, 604, 0.36, 4], [1, 1210, 612, 0.36, 3], [-1, 1010, 580, 0.26, 4]].map(([side, x, y, s, n], i) => {
+    const GROUPS = [[1, 880, 724, 0.66, 3], [-1, 690, 640, 0.48, 3], [1, S.portrait ? 985 : 1040, 660, 0.5, 3], [-1, 880, 604, 0.36, 4], [1, S.portrait ? 1040 : 1210, 612, 0.36, 3], [-1, 1010, 580, 0.26, 4]].map(([side, x, y, s, n], i) => {
       const mem = Array.from({ length: n }, (_, k) => ({ x: (k - (n - 1) / 2) * 34 + c.rr(-5, 5), y: c.rr(-4, 4), s: k === n - 1 && i % 2 ? 0.62 : 1, flip: false, o: folk(c) }));
       return { side, x, y, i, sp: crowdL.sprite(`<g transform="scale(${s})">${group(c, mem)}</g>`, x, y) };
     });
 
     /* John on his rock */
+    const JX = S.portrait ? 550 : JX0;   // phone: John and his rock clear of the left edge
     const act = S.layer({ par: 0.3, sh: 5 });
     act.add(`<g transform="translate(${JX} ${JY})">${standRock(c, 190, 110)}</g>`);
     const john = S.puppet(act.add(person(c, { ...JOHN_B })));
@@ -132,7 +133,7 @@ export default {
 
       /* v4a — Isaiah and his book */
       const pk = es(t, 0.05, 0.4, ease.out), pUp = es(t, 1.8, 2.15, ease.in);
-      swing(isaiah, 1050, lerp(-600, 250, pk) - pUp * 800, time, 1.2, 0.7);
+      swing(isaiah, S.portrait ? 985 : 1050, lerp(-600, 250, pk) - pUp * 800, time, 1.2, 0.7);
       fade(isaiah, pk > 0.01 && pUp < 1 ? 1 : 0);
       const down = es(t, 0.15, 0.5, ease.out), unroll = es(t, 0.45, 0.75), up = es(t, 1.8, 2.1);
       pose(scrollEl, { x: lerp(760, 820, up), y: lerp(-500, 120, down) - up * 36, s: 1 - up * 0.3, r: Math.sin(time * 0.6) * 0.6 });
@@ -190,7 +191,8 @@ export default {
 
       /* v6 — the light rises at the end of the straight road; all people come to see it */
       const see = es(t, 6.05, 6.5, ease.out);
-      pose(light, { x: LX, y: lerp(700, 470, see), s: 0.5 + see * 0.5, r: t * 4, o: see });
+      pose(light, { x: S.portrait ? 1045 : LX, y:   // phone: the light rises clear of the thread
+        lerp(700, 470, see), s: 0.5 + see * 0.5, r: t * 4, o: see });
       gold.fade(see * 0.7);
       GROUPS.forEach((g) => {
         const k = es(t, 6.12 + g.i * 0.04, 6.45 + g.i * 0.04);

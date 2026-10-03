@@ -54,7 +54,7 @@ export default {
         R('Salatiel', 'Shealtiel', { rim: 'exile', icon: ICON3.chain }),
         R('Neri', 'Neri'),
       ] },
-    ], [0, 1, 2, 3], { extra: 2 });
+    ], [0, 1, 2, 3], { extra: 2, gopts: S.portrait ? { x0: 370, x1: 1190, inner: 110 } : null });   // phone: the row stays clear of the edges and the thread
 
     return (t, time) => {
       swing(sunEl, 1260, 200, time, 1, 0.6);

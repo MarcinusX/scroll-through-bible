@@ -9,7 +9,7 @@ import { grainPile } from '../../assets/things.js';
 import { silhouette } from '../mark3/lib.js';
 import { hand, winnowFork, granary, sack, chaffFlake, kernel, firePit, fireFlames, storyFrame, lightDisc, es, ease, bump, seg, fade, pose, lerp, PI } from './lib.js';
 
-const GY = 652, WX = 860, HX = 730, BX = 500, FX = 1110;
+const GY = 652, WX = 860, HX = 730, BX0 = 500, FX0 = 1110;
 const SUNSET = ['#b98aa2', '#eea57e', '#f6cf98'];
 const INK = '#3b2a22';
 
@@ -24,6 +24,7 @@ export default {
   cam: { x: [-80, 80], y: [0, 50], z: [1, 1.14] },
   build(S) {
     const c = S.c;
+    const BX = S.portrait ? 572 : BX0, FX = S.portrait ? 1048 : FX0;   // phone: the granary and the fire come inward
     sky(S, SUNSET);
     const hangL = S.layer({ par: 0.04, sh: 4 });
     const sunGlow = hangL.add(`<g>${lightDisc(c, 260, { grad: 'warm-glow' })}</g>`);

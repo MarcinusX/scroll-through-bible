@@ -8,7 +8,7 @@ import {
   es, ease, bump, seg, fade, pose, lerp, PI,
 } from './lib.js';
 
-const JX = 530;
+const JX0 = 530;
 const RICH = { robe: C.wheatRobe, mantle: C.clayMantle, hair: C.hair2, hairStyle: 'short', beard: 'full', skin: C.skin2, belt: C.leather };
 const POOR = { robe: mix(C.stone2, C.rock2, 0.4), hair: C.hair3, hairStyle: 'wild', beard: 'short', skin: C.skin3 };
 const WOMAN = { robe: C.roseRobe, hairStyle: 'veil', veil: C.linen2, veil2: C.stone2, skin: C.skin, hair: C.hair, belt: C.ochre };
@@ -25,6 +25,8 @@ export default {
   cam: { x: [-20, 40], y: [0, 60], z: [1, 1.1] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;
+    const JX = PH ? 552 : JX0;   // phone: the whole row comes inward, the boy clear of the thread
     const M = meadowSet(S, { sunAt: [1260, 150] });
     const { GY } = M;
     /* the crowd behind (one still sheet) */
@@ -54,9 +56,9 @@ export default {
 
     /* the question marks */
     const fx = S.layer({ par: 0.35, sh: 5 });
-    const Q = [[660, 380], [840, 370], [1040, 390], [860, 220]].map(([x, y], i) => ({ x, y, i, el: fx.add(`<g>${question(c)}</g>`) }));
+    const Q = [[660, 380], [840, 370], [PH ? 980 : 1040, 390], [860, 220]].map(([x, y], i) => ({ x, y, i, el: fx.add(`<g>${question(c)}</g>`) }));
 
-    const RX = 670, PX = 810, WX = 945, MX = 1050, BX2 = 1112;
+    const [RX, PX, WX, MX, BX2] = PH ? [678, 800, 915, 1005, 1060] : [670, 810, 945, 1050, 1112];
 
     return (t, time) => {
       M.update(time);

@@ -39,6 +39,7 @@ export default {
       ], opts: { gold: true } },
     ], [0, 1], {
       extra: 0,
+      gopts: S.portrait ? { x0: 370, x1: 1190, inner: 110 } : null,   // phone: the row stays clear of the edges and the thread
       // the last garland comes to rest at the end of the road, low, where the closing card leaves it visible
       tweak: (i, t) => (i === 1 ? { dy: es(t, 1.35, 1.75) * 250, s: 1 - es(t, 1.35, 1.75) * 0.22 } : null),
     });

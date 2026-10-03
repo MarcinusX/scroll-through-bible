@@ -47,7 +47,7 @@ export default {
         R('Noe', 'Noah', { o: { robe: C.sageRobe, mantle: C.linen2, hair: '#ece6da', hairStyle: 'wrap', veil: C.linen, beard: 'wild', beardColor: '#ece6da', skin: C.skin2 }, r: 58, rim: 'patriarch', back: mix(C.skyVeil, C.cream, 0.3), icon: ICON3.ark, size: 22 }),
         R('Lamech', 'Lamech', { rim: 'patriarch' }),
       ] },
-    ], [0, 1], { extra: 2 });
+    ], [0, 1], { extra: 2, gopts: S.portrait ? { x0: 370, x1: 1190, inner: 110 } : null });   // phone: the row stays clear of the edges and the thread
 
     return (t, time) => {
       swing(cl1, 440 + Math.sin(time * 0.1) * 20, 150, time, 1.2, 0.6, 1);

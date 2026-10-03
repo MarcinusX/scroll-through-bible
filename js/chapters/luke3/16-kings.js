@@ -52,7 +52,7 @@ export default {
         R('Natan', 'Nathan', { o: { robe: C.mauve, mantle: C.ochre, hair: C.hair2, hairStyle: 'curly', beard: 'short', skin: C.skin, belt: C.sun }, rim: 'king', head: (cc) => circlet(cc) }),
         R('król Dawid', 'King David', { o: { ...DAVID, holdF: '' }, r: 60, rim: 'king', icon: ICON3.harp, head: kingHead, size: 22 }),
       ], opts: { gold: true } },
-    ], [0, 1, 2, 3], { extra: 2 });
+    ], [0, 1, 2, 3], { extra: 2, gopts: S.portrait ? { x0: 370, x1: 1190, inner: 110 } : null });   // phone: the row stays clear of the edges and the thread
 
     return (t, time) => {
       swing(sunEl, 1230, 250, time, 1, 0.6);

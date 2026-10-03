@@ -96,7 +96,7 @@ export default {
       });
 
       const nk = es(t, 0.08, 0.34, ease.out);
-      swing(name, 1040, lerp(-400, 300, nk), time, 1, 0.8);
+      swing(name, S.portrait ? 935 : 1040, lerp(-400, 300, nk), time, 1, 0.8);
       fade(name, nk > 0.01 ? 1 : 0);
 
       S.cam.z = 1.02 + es(t, 0.1, 0.7) * 0.08;

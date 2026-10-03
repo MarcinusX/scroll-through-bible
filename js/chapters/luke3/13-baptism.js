@@ -63,7 +63,8 @@ export default {
 
     /* in the river: the people being baptised, and Jesus */
     const R = J.riverLayer();
-    const BAP = [[470, 0.0], [590, 0.18], [1010, 0.1], [1130, 0.28]].map(([x, d], i) => ({ x, d, i, p: S.puppet(R.add(person(c, folk(c)))) }));
+    const BAP = (S.portrait ? [[545, 0.0], [640, 0.18], [960, 0.1], [1045, 0.28]] : [[470, 0.0], [590, 0.18], [1010, 0.1], [1130, 0.28]])   // phone: the people being baptised stay on screen
+     .map(([x, d], i) => ({ x, d, i, p: S.puppet(R.add(person(c, folk(c)))) }));
     const jesus = S.puppet(R.add(person(c, { ...CAST.jesus })));
     const jesusP = S.puppet(R.add(person(c, { ...CAST.jesus, eyes: 'closed' })));
     const dripEl = R.add(`<g>${drops(c, 7, C.lake)}</g>`);
@@ -72,7 +73,7 @@ export default {
 
     /* the near bank */
     const { N } = J.nearBank();
-    const LIS = [[360, false, 0.86], [470, false, 0.82], [1130, true, 0.84], [1240, true, 0.86]].map(([x, flip, s], i) => ({ x, flip, s, i, p: S.puppet(N.add(person(c, folk(c)))), seed: c.rr(0, 9) }));
+    const LIS = (S.portrait ? [[530, false, 0.86], [600, false, 0.82], [1000, true, 0.84], [1060, true, 0.86]] : [[360, false, 0.86], [470, false, 0.82], [1130, true, 0.84], [1240, true, 0.86]]).map(([x, flip, s], i) => ({ x, flip, s, i, p: S.puppet(N.add(person(c, folk(c)))), seed: c.rr(0, 9) }));
     J.foreground();
 
     /* the dove, the voice, the words */

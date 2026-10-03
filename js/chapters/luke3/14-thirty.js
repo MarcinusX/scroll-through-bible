@@ -55,7 +55,7 @@ export default {
       jesus.set({ x: jx, y: JY, s: 1.14, flip: !turn, walk: come > 0 && come < 1 ? jx * 0.05 : undefined, armF: 14 + es(t, 0.6, 0.8) * 30 + es(t, 1.4, 1.6) * 10, armB: 10 + es(t, 0.6, 0.8) * 20, head: -es(t, 1.1, 1.4) * 10, blink: blinkAt(time, 3) });
       pose(glow, { x: jx, y: JY - 180, s: 1, o: 0.5 + es(t, 0.5, 0.8) * 0.4 });
       const sk = es(t, 0.3, 0.6, ease.out), sUp = es(t, 1.0, 1.25, ease.in);
-      pose(sign, { x: 1040, y: lerp(-500, 320, sk) - sUp * 800, r: Math.sin(time * 0.8) * 1.2, o: sk > 0.01 && sUp < 1 ? 1 : 0 });
+      pose(sign, { x: S.portrait ? 950 : 1040, y: lerp(-500, 320, sk) - sUp * 800, r: Math.sin(time * 0.8) * 1.2, o: sk > 0.01 && sUp < 1 ? 1 : 0 });
 
       /* v23b — son (as was supposed) of Joseph, son of Heli */
       const tk = es(t, 1.5, 1.72, ease.back);

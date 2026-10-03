@@ -8,11 +8,11 @@ import {
   addToBody, tr, es, ease, bump, seg, fade, pose, lerp, PI,
 } from './lib.js';
 
-const JX = 525;
+const JX0 = 525;
 const TAXA = { robe: C.plumRobe, mantle: C.ochre, hair: C.hair3, hairStyle: 'wrap', veil: C.stone, beard: 'short', skin: C.skin3, belt: C.sun };
 const TAXB = { robe: C.tealRobe, mantle: C.wheatRobe, hair: C.hair, hairStyle: 'short', beard: 'full', skin: C.skin2, belt: C.sun };
 const FARMER = { robe: C.sageRobe, hair: C.greyHair, hairStyle: 'wrap', veil: C.linen2, beard: 'full', beardColor: C.greyHair, skin: C.skin4, belt: C.rope };
-const TX = 950, TY = 664;          // the counting table (top centre)
+const TX0 = 950, TY = 664;          // the counting table (top centre)
 
 export default {
   id: 'lk3-tax',
@@ -24,7 +24,10 @@ export default {
   cam: { x: [-20, 60], y: [0, 60], z: [1, 1.12] },
   build(S) {
     const c = S.c;
-    const M = meadowSet(S, { sunAt: [1150, 120] });
+    const PH = S.portrait;
+    // phone: John, the table and the farmer come inward; the sun hangs clear of the thread
+    const JX = PH ? 550 : JX0, TX = PH ? 930 : TX0, FMX = PH ? 1062 : 1100;
+    const M = meadowSet(S, { sunAt: PH ? [1030, 110] : [1150, 120] });
     const { GY } = M;
     const mem = Array.from({ length: 8 }, (_, k) => ({ x: (k - 3.5) * 74 + c.rr(-10, 10), y: c.rr(-6, 6), s: 1, flip: k > 3, o: folk(c) }));
     const crowdSp = M.back.sprite(`<g transform="scale(.5)">${group(c, mem)}</g>`, 860, 630);
@@ -84,20 +87,20 @@ export default {
       pose(table, { x: TX, y: TY + (1 - tIn) * 90, s: 1.2, o: tIn > 0.01 ? 1 : 0 });
       const fIn = es(t, 2.05, 2.3);
       const back = es(t, 2.72, 2.84);
-      farmer.set({ x: lerp(1260, 1100, fIn), y: GY + 2, s: 1.16, flip: true, o: fIn > 0.01 ? 1 : 0, walk: fIn > 0 && fIn < 1 ? t * 30 : undefined, armF: 30 + bump(t, 2.22, 2.36) * 60 + back * 60, armB: 20 + back * 50, head: 8 - back * 12, blink: blinkAt(time, 4) });
+      farmer.set({ x: lerp(1260, FMX, fIn), y: GY + 2, s: 1.16, flip: true, o: fIn > 0.01 ? 1 : 0, walk: fIn > 0 && fIn < 1 ? t * 30 : undefined, armF: 30 + bump(t, 2.22, 2.36) * 60 + back * 60, armB: 20 + back * 50, head: 8 - back * 12, blink: blinkAt(time, 4) });
       const lk = es(t, 2.12, 2.35, ease.out);
       pose(tablet, { x: TX, y: lerp(-500, 420, lk), r: Math.sin(time * 0.8) * 1, o: lk > 0.01 ? 1 : 0 });
       COINS.forEach((co) => {
         const pile = [TX + 50 + (co.i % 3) * 16, TY - 8 - Math.floor(co.i / 3) * 5];
         const pour = es(t, 2.24 + co.i * 0.006, 2.34 + co.i * 0.006);
-        const from = [1060, GY - 110];
+        const from = [FMX - 40, GY - 110];
         let [x, y] = [lerp(from[0], pile[0], pour), lerp(from[1], pile[1], pour) - Math.sin(pour * PI) * 20];
         if (co.i < 10) {
           const k = es(t, 2.38 + co.i * 0.025, 2.44 + co.i * 0.025);
           x = lerp(x, TX - 84, k); y = lerp(y, TY - 50, k) - Math.sin(k * PI) * 18;
           pose(co.el, { x, y, s: 1 - k * 0.3, o: pour > 0 && k < 1 ? 1 : 0 });
         } else {
-          const [fx, fy] = hand(1100, GY + 2, 1.16, true, 90);
+          const [fx, fy] = hand(FMX, GY + 2, 1.16, true, 90);
           x = lerp(x, fx - 4 + (co.i - 10) * 6, back); y = lerp(y, fy - 2, back) - Math.sin(back * PI) * 24;
           pose(co.el, { x, y, o: pour > 0 ? 1 : 0 });
         }

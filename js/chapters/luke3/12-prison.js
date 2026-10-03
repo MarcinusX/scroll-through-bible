@@ -15,8 +15,8 @@ import { attr } from '../../core/anim.js';
 const GY = 690;
 const JX = 515;
 const CELL = { x0: 760, x1: 890, top: 450, floor: 686 };
-const HX = 1010, HDX = 1118;          // Herod (seated), Herodias
-const BAL = { x: 1070, y: 250 };      // the balance
+const HX = 1010, HDX0 = 1118;         // Herod (seated), Herodias
+const BAL0 = { x: 1070, y: 250 };     // the balance
 
 function ringsX(c) {
   return sheet().x(c.ribbon(c.arc(-10, 0, 12, 12, 0, PI * 2, 16), 3.2) + c.ribbon(c.arc(10, 0, 12, 12, 0, PI * 2, 16), 3.2), C.sun).x(c.ribbon([[-28, -20], [28, 20]], 5) + c.ribbon([[28, -20], [-28, 20]], 5), C.terracotta).out();
@@ -37,6 +37,9 @@ export default {
   cam: { x: [-30, 50], y: [0, 50], z: [1, 1.1] },
   build(S) {
     const c = S.c;
+    // phone: Herodias, her tag, the rings and the balance come inward, clear of the thread
+    const PH = S.portrait;
+    const HDX = PH ? 1050 : HDX0, BAL = PH ? { x: 922, y: 250 } : BAL0, TGX = PH ? 958 : HDX0 + 10, RGX = PH ? 1020 : 1064;
     sky(S, JORDAN_DAY);
     const dusk = sky(S, ['#8f7fa6', '#d9a996', '#eccaa6'], { name: 'dusk' }).layer;
     dusk.fade(0);
@@ -131,9 +134,9 @@ export default {
       const [hx, hy] = headAt(JX, GY, 1.02);
       voice(hx + 14, hy, Math.max(preach * 0.7, rebuke * (1 - es(t, 2.9, 3.0))), time, { spread: 2.6, dir: 1 });
       const rk = es(t, 1.2, 1.4, ease.back) * (1 - es(t, 2.9, 3.05));
-      pose(rings, { x: 1064, y: 470, s: rk * 1.3, r: Math.sin(time * 2) * 5, o: rk > 0.01 ? 1 : 0 });
+      pose(rings, { x: RGX, y: 470, s: rk * 1.3, r: Math.sin(time * 2) * 5, o: rk > 0.01 ? 1 : 0 });
       const tk = es(t, 1.3, 1.6, ease.out), tUp = es(t, 1.95, 2.1, ease.in);
-      swing(tagHd, HDX + 10, lerp(-500, 390, tk) - tUp * 800, time, 1.2, 0.8);
+      swing(tagHd, TGX, lerp(-500, 390, tk) - tUp * 800, time, 1.2, 0.8);
       fade(tagHd, tk > 0.01 && tUp < 1 ? 1 : 0);
       const angry = es(t, 1.3, 1.5);
       attr(hAngry, 'opacity', angry.toFixed(2));

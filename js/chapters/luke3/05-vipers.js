@@ -11,7 +11,7 @@ import {
   es, ease, bump, seg, fade, PI,
 } from './lib.js';
 
-const JX = 700, WADE = 702, BANK = 776;
+const WADE = 702, BANK = 776;
 
 export default {
   id: 'lk3-vipers',
@@ -22,6 +22,8 @@ export default {
   cam: { x: [-20, 50], y: [0, 70], z: [1, 1.12] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;
+    const JX = PH ? 630 : 700;   // phone: John and the line of listeners shift left so the whole line is on screen
     const J = jordanSet(S, { skyCols: JORDAN_DAY, sunAt: [1250, 150], city: false, path: false });
     const { fbFn, far } = J;
 
@@ -64,7 +66,7 @@ export default {
       const mem = Array.from({ length: n }, (_, k) => ({ x: (k - (n - 1) / 2) * 44 + c.rr(-6, 6), y: c.rr(-6, 6), s: 1, flip: side > 0, o: folk(c) }));
       return { side, x, i, sp: N.sprite(`<g transform="scale(.82)">${group(c, mem)}</g>`, x, BANK + 4) };
     });
-    const LIS = [[880, 0.96], [975, 0.9], [1070, 0.98], [1165, 0.92], [1255, 0.95]].map(([x, s], i) => ({ x, s, i, p: S.puppet(N.add(person(c, folk(c, i % 2 === 0 ? true : null)))), seed: c.rr(0, 9) }));
+    const LIS = (PH ? [[775, 0.96], [848, 0.9], [921, 0.98], [993, 0.92], [1062, 0.95]] : [[880, 0.96], [975, 0.9], [1070, 0.98], [1165, 0.92], [1255, 0.95]]).map(([x, s], i) => ({ x, s, i, p: S.puppet(N.add(person(c, folk(c, i % 2 === 0 ? true : null)))), seed: c.rr(0, 9) }));
     const qEl = N.add(`<g opacity="0">${question(c)}</g>`);
     J.foreground();
 
@@ -93,7 +95,7 @@ export default {
           blink: blinkAt(time, m.seed),
         });
       });
-      pose(qEl, { x: 1060, y: BANK - 250, s: es(t, 1.55, 1.72, ease.back), o: seg(t, 1.55, 1.6) });
+      pose(qEl, { x: PH ? 950 : 1060, y: BANK - 250, s: es(t, 1.55, 1.72, ease.back), o: seg(t, 1.55, 1.6) });
 
       /* v7b — "Brood of vipers!": he points at them */
       const talk = es(t, 0.55, 0.75);
