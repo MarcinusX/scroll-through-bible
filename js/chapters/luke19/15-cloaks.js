@@ -16,7 +16,7 @@ export default {
   ],
   cam: { x: [-80, 520], y: [-40, 60], z: [1, 1.2] },
   build(S) {
-    const O = olivetSet(S, { cityX: 1300, cityY: 450, cityS: 0.36, sunAt: [420, 140], slopeY: 560, seed: 'lk19-olivet-b' });
+    const O = olivetSet(S, { cityX: 1300, cityY: 450, cityS: 0.36, sunAt: [S.portrait ? 720 : 420, 140], slopeY: 560, seed: 'lk19-olivet-b' });
     const c = S.c;
     const A = O.act;
     /* the carpet of cloaks on the road */

@@ -11,8 +11,8 @@ import { boat } from '../../assets/things.js';
 import { NOBLE, SERV, SEA, still, mina, crown, staff, say, storyFrame, walledCityM, headAt, hand, kf, tr, es, ease, bump, seg, PI, mix, shade, sheet, STRING } from './lib.js';
 
 const FL = 716, NX = 500;
-const ROW = Array.from({ length: 10 }, (_, i) => 640 + i * 66);
-const FAR = [1170, 452];
+const ROW0 = Array.from({ length: 10 }, (_, i) => 640 + i * 66);
+const FAR0 = [1170, 452];
 
 export default {
   id: 'lk19-nobleman',
@@ -26,13 +26,16 @@ export default {
   cam: { x: [-40, 120], y: [-40, 60], z: [1, 1.14] },
   build(S) {
     const c = S.c;
+    // phone: the far country and the ten servants inside the narrow screen
+    const ROW = S.portrait ? Array.from({ length: 10 }, (_, i) => 590 + i * 50) : ROW0;
+    const FAR = S.portrait ? [1020, 452] : FAR0;
     sky(S, SEA, { rise: 0 });
     const hangL = S.layer({ par: 0.04, sh: 4 });
     const sunEl = hanging(hangL, sun(c, 36), { x: 1180, y: 150, len: 800 });
     const cls = [[520, 140, 170], [860, 100, 120]].map(([x, y, w], i) => ({ x, y, i, el: hanging(hangL, cloud(c, w), { x, y, len: 800 }) }));
     /* the far country across the sea */
     const farL = S.layer({ par: 0.08, sh: 2 });
-    farL.add(band(c, { y: 456, amps: [8, 4, 2], lens: [700, 260, 100], color: mix(C.hillFar, C.lavender, 0.3), x0: 1000, x1: 2600 }).markup);
+    farL.add(band(c, { y: 456, amps: [8, 4, 2], lens: [700, 260, 100], color: mix(C.hillFar, C.lavender, 0.3), x0: S.portrait ? 880 : 1000, x1: 2600 }).markup);
     const glowL = S.layer({ par: 0.08, sh: 0, flat: true });
     const farGlow = glowL.add(`<g><circle r="150" fill="url(#halo-glow)"/></g>`);
     const palL = S.layer({ par: 0.08, sh: 2 });
@@ -118,7 +121,7 @@ export default {
       S.cam.x = kf(t, [[-0.5, 40], [0.4, 80], [1.0, 60], [2.4, 40], [2.9, 90]]);
       S.cam.y = kf(t, [[-0.5, 20], [0.5, 0], [1.0, 30]]);
       S.cam.z = kf(t, [[-0.5, 1.02], [0.5, 1.04], [1.0, 1.1]]);
-      if (S.portrait) { S.cam.x = kf(t, [[-0.5, -200], [0.95, -160], [1.2, 60], [1.9, 60], [2.2, -120]]); S.cam.z = 1.0; }
+      if (S.portrait) { S.cam.x = kf(t, [[-0.5, -200], [0.95, -160], [1.2, -75], [1.9, -75], [2.2, -120]]); S.cam.z = 1.0; }
     };
   },
 };

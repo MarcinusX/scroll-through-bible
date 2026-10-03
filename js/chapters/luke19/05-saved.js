@@ -67,7 +67,7 @@ export default {
       zac.set({ x: ZX, y: ZY, s: ZS, flip: true, armF: 60 + bump(t, 0.2, 0.9) * 50, armB: 40 + es(t, 0.3, 0.6) * 60, head: -8, lean: -4, blink: blinkAt(T, 3) });
       const out = es(t, 0.25, 0.55);
       wife.set({ x: lerp(DX, DX + 170, out), y: lerp(ZY, GY - ZH.STEP + 2, out), s: 0.8, flip: true, o: seg(t, 0.25, 0.3), walk: out > 0 && out < 1 ? out * 20 : undefined, armF: 30 + es(t, 0.55, 0.7) * 50, armB: es(t, 0.55, 0.7) * 90, head: -6, blink: blinkAt(T, 7) });
-      kid.set({ x: lerp(DX + 10, DX + 236, out), y: lerp(ZY, GY + 4, out), s: 0.5, flip: true, o: seg(t, 0.3, 0.35), walk: out > 0 && out < 1 ? out * 26 : undefined, armF: 40, armB: es(t, 0.55, 0.7) * 150, head: -10, blink: blinkAt(T, 9) });
+      kid.set({ x: lerp(DX + 10, DX + (S.portrait ? 206 : 236), out), y: lerp(ZY, GY + 4, out), s: 0.5, flip: true, o: seg(t, 0.3, 0.35), walk: out > 0 && out < 1 ? out * 26 : undefined, armF: 40, armB: es(t, 0.55, 0.7) * 150, head: -10, blink: blinkAt(T, 9) });
       const ab = es(t, 0.45, 0.75, ease.back);
       joy.forEach((j, i) => { const k = bump(t, 0.2 + i * 0.1, 0.9 + i * 0.1); pose(j, { x: DX - 60 + i * 60, y: ZY - 250 + (i % 2) * 30, s: k, r: T * 30, o: k > 0.02 ? 1 : 0 }); });
       const hk = bump(t, 0.3, 1.0);
@@ -89,7 +89,7 @@ export default {
       S.cam.x = kf(t, [[-0.5, 40], [0.5, 60], [1.1, 20]]);
       S.cam.y = kf(t, [[-0.5, 30], [0.5, 20], [1.1, -60]]);
       S.cam.z = kf(t, [[-0.5, 1.06], [0.5, 1.12], [1.1, 1.06]]);
-      if (S.portrait) { S.cam.x = kf(t, [[-0.5, 60], [0.5, 80], [1.1, 20]]); S.cam.z = 1.0; }
+      if (S.portrait) { S.cam.x = kf(t, [[-0.5, 60], [0.5, 120], [1.1, 80]]); S.cam.z = 1.0; }
       void hand; void shade; void sheet; void PR; void strip;
     };
   },

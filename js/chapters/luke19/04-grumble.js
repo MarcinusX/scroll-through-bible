@@ -21,7 +21,7 @@ export default {
     { v: 8, text: 'Lecz Zacheusz stanął i rzekł do Pana: «Panie, oto połowę mego majątku daję ubogim,' },
     { v: 8, cont: true, text: 'a jeśli kogo w czym skrzywdziłem, zwracam poczwórnie».' },
   ],
-  cam: { x: [-160, 260], y: [0, 100], z: [1, 1.3] },
+  cam: { x: [-200, 600], y: [0, 100], z: [1, 1.3] },
   build(S) {
     const H = zacHouse(S, { sunAt: [1320, 140] });
     const c = S.c;
@@ -38,14 +38,14 @@ export default {
 
     /* the grumblers in the court (left), and the poor who come in at the gate */
     const fr = S.layer({ par: 0.5, sh: 5 });
-    const GR = GRUMBLE.map((o, i) => ({ i, x: 260 + i * 74, y: GY + 34 + (i % 2) * 12, p: S.puppet(fr.add(addToHead(person(c, o), `<g class="ang" opacity="0">${angryFace(c)}</g>`))) }));
+    const GR = GRUMBLE.map((o, i) => ({ i, x: S.portrait ? 340 + i * 66 : 260 + i * 74, y: GY + 34 + (i % 2) * 12, p: S.puppet(fr.add(addToHead(person(c, o), `<g class="ang" opacity="0">${angryFace(c)}</g>`))) }));
     GR.forEach((g) => { g.ang = g.p.el.querySelector('.ang'); });
     const puffs = GR.map(() => fr.add(`<g>${puff(c, 14)}</g>`));
     const mutter = fr.add(`<g>${say(c, tr(['Do grzesznika', 'poszedł w gościnę!'], ['He has gone to be the', 'guest of a sinner!']), { size: 19, side: 1, jag: true })}</g>`);
     const POORS = [
       { o: BLINDM, x: 1190 }, { o: { ...LAMEM, holdF: crutchHeld(c) }, x: 1262 },
       { o: POORW, x: 1330 }, { o: POOR, x: 1400 },
-    ].map((m, i) => ({ ...m, i, p: S.puppet(fr.add(person(c, m.o))) }));
+    ].map((m, i) => ({ ...m, x: S.portrait ? 1170 + i * 55 : m.x, i, p: S.puppet(fr.add(person(c, m.o))) }));
     const gifts = POORS.map(() => fr.add(`<g>${mina(c, 11)}</g>`));
     const wronged = S.puppet(fr.add(person(c, WRONGED)));
     const four = [0, 1, 2, 3].map(() => fr.add(`<g>${mina(c, 12)}</g>`));
@@ -90,7 +90,7 @@ export default {
       pose(pileL, { x: lerp(PILE[0] - 16, 1160, slide), y: lerp(PILE[1], GY + 20, slide) - Math.sin(slide * PI) * 40, o: bring * (1 - es(t, 2.6, 2.66)) });
       POORS.forEach((m) => {
         const k = es(t, 2.05 + m.i * 0.05, 2.35 + m.i * 0.05);
-        const x = lerp(m.x + 320, m.x, k) + es(t, 3.0, 3.3) * 150;
+        const x = lerp(m.x + 320, m.x, k) + es(t, 3.0, 3.3) * (S.portrait ? 420 : 150);   // phone: the poor walk off instead of lingering under the thread
         const got = es(t, 2.6 + m.i * 0.03, 2.68 + m.i * 0.03);
         const y = GY + 30 + (m.i % 2) * 10;
         const aF = m.i < 2 ? 30 + got * 40 : 40 + k * 30 + got * 50;
@@ -119,7 +119,7 @@ export default {
       S.cam.x = kf(t, [[-0.5, 60], [0.5, -80], [1.9, -60], [2.3, 120], [3.1, 160]]);
       S.cam.y = kf(t, [[-0.5, 30], [0.5, 60], [2.3, 70]]);
       S.cam.z = kf(t, [[-0.5, 1.04], [0.5, 1.14], [1.9, 1.12], [2.3, 1.18], [3.2, 1.22]]);
-      if (S.portrait) { S.cam.x = kf(t, [[-0.5, 60], [0.5, -160], [1.9, -120], [2.3, 200], [3.1, 260]]); S.cam.z = 1.0; }
+      if (S.portrait) { S.cam.x = kf(t, [[-0.5, 60], [0.5, -200], [1.9, -180], [2.3, 560], [3.1, 600]]); S.cam.z = 1.0; }
       void moving; void mix; void shade; void sheet; void folk;
     };
   },

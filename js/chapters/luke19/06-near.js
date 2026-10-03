@@ -20,7 +20,7 @@ export default {
   cam: { x: [-60, 120], y: [-60, 40], z: [1, 1.14] },
   build(S) {
     const c = S.c;
-    const R = roadSet(S, { skyCols: GOLDEN, jerusalem: false, jer: 1, jerX: 1150, farY: 420, hillY: 500, groundY: 590, trees: 14, treeCol: C.olive, sunAt: [420, 150], clouds: [[700, 110, 160]] });
+    const R = roadSet(S, { skyCols: GOLDEN, jerusalem: false, jer: 1, jerX: 1150, farY: 420, hillY: 500, groundY: 590, trees: 14, treeCol: C.olive, sunAt: [S.portrait ? 500 : 420, 150], clouds: [[700, 110, 160]] });
 
     /* Jerusalem close now, on its hill across the last valley (its glow can brighten) */
     const glowL = S.layer({ par: 0.1, sh: 0, flat: true });

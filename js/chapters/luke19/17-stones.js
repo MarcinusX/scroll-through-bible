@@ -19,6 +19,8 @@ export default {
   ],
   cam: { x: [-40, 120], y: [-40, 90], z: [1, 1.2] },
   build(S) {
+    // phone: the near right-hand stone sits clear of the progress thread
+    const ST = S.portrait ? STONES.map((st) => st[0] === 1140 ? [1010, ...st.slice(1)] : st) : STONES;
     const O = olivetSet(S, { skyCols: PRAISE, cityX: 1060, cityY: 500, cityS: 0.62, sunAt: [1300, 130], slopeY: 590, seed: 'lk19-olivet-c', grove2: false, road: [[-1400, RY(-1400)], [0, RY(0)], [800, RY(800)], [1600, RY(1600)], [3000, RY(3000)]] });
     const c = S.c;
     const A = O.act;
@@ -34,12 +36,12 @@ export default {
     const phar = [0, 1].map((i) => ({ i, p: S.puppet(A.add(person(c, pharisee(c, i)))) }));
     /* the roadside stones, and their waking faces */
     const stL = S.layer({ par: 0.55, sh: 4 });
-    const glows = STONES.map(([x, y, w, h]) => stL.add(`<g opacity="0"><ellipse rx="${w * 1.2}" ry="${h * 1.0}" fill="url(#warm-glow)"/></g>`));
-    STONES.forEach(([x, y, w, h]) => stL.add(rock(c, x, y, w, h, mix(C.rock, C.stone2, 0.3))));
-    const faces = STONES.map(([x, y, w, h]) => stL.add(`<g>${stoneFace(c, Math.min(w, h * 1.6) / 50)}</g>`));
+    const glows = ST.map(([x, y, w, h]) => stL.add(`<g opacity="0"><ellipse rx="${w * 1.2}" ry="${h * 1.0}" fill="url(#warm-glow)"/></g>`));
+    ST.forEach(([x, y, w, h]) => stL.add(rock(c, x, y, w, h, mix(C.rock, C.stone2, 0.3))));
+    const faces = ST.map(([x, y, w, h]) => stL.add(`<g>${stoneFace(c, Math.min(w, h * 1.6) / 50)}</g>`));
     const fx = S.layer({ par: 0.55, sh: 6 });
-    const notes = STONES.map(() => [0, 1, 2].map(() => fx.add(`<g>${noteGlyph(c)}</g>`)));
-    const say1 = O.fx.add(`<g>${say(c, tr(['Nauczycielu, zabroń', 'tego swoim uczniom!'], ['Teacher,', 'rebuke your disciples!']), { size: 19, side: 1 })}</g>`);
+    const notes = ST.map(() => [0, 1, 2].map(() => fx.add(`<g>${noteGlyph(c)}</g>`)));
+    const say1 = O.fx.add(`<g>${say(c, tr(['Nauczycielu, zabroń', 'tego swoim uczniom!'], ['Teacher,', 'rebuke your disciples!']), { size: 19, side: S.portrait ? -1 : 1 })}</g>`);
     const say2 = O.fx.add(`<g>${say(c, tr(['Jeśli ci umilkną,', 'kamienie wołać będą!'], ['If these were silent,', 'the stones would cry out!']), { size: 19, side: 1 })}</g>`);
 
     return (t, time) => {
@@ -67,7 +69,7 @@ export default {
       const jhx = CX - 16 * 1 + 4, jhy = RY(CX) + 6 - 106 - 105 * 0.95;
       const k2 = es(t, 1.05, 1.2, ease.back) * (1 - es(t, 1.95, 2.02));
       pose(say2, { x: jhx + 20, y: jhy - 30, s: k2, o: k2 > 0.02 ? 1 : 0 });
-      STONES.forEach(([x, y, w, h], i) => {
+      ST.forEach(([x, y, w, h], i) => {
         const k = es(t, 1.35 + i * 0.05, 1.55 + i * 0.05, ease.back);
         pose(faces[i], { x, y: y - h * 0.55, s: k, o: k > 0.02 ? 1 : 0 });
         pose(glows[i], { x, y: y - h * 0.3, s: 0.9 + (T ? Math.sin(T * 2 + i) * 0.05 : 0), o: k * 0.9 });

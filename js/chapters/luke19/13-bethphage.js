@@ -10,7 +10,7 @@ import { olivetSet, OV, TWELVE, TWO, still, colt, hungPlate, tagOnString, say, q
 import { house } from '../../assets/nature.js';
 
 const GY = OV.GY, JX = 800;
-const PLATE = [1010, 340], PR = 124;
+const PLATE0 = [1010, 340], PR = 124;
 
 export default {
   id: 'lk19-bethphage',
@@ -25,13 +25,16 @@ export default {
   build(S) {
     const O = olivetSet(S, { cityX: 1420, cityY: 430, cityS: 0.24, sunAt: [300, 150], slopeY: 540, villages: [{ x: 420, n: 6, sc: 0.55 }, { x: 1120, n: 7, sc: 0.6 }] });
     const c = S.c;
+    // phone: the plate and the three tags inside the narrow screen
+    const PLATE = S.portrait ? [850, 340] : PLATE0;
+    const TX3 = S.portrait ? [580, 1040, 790] : [420, 1120, 690];
     /* tags over the villages and the mount */
     const tagL = S.layer({ par: 0.3, sh: 4 });
-    const TAGS = [[tr('Betania', 'Bethany'), 420, 430], [tr('Betfage', 'Bethphage'), 1120, 420], [tr('Góra Oliwna', 'the Mount of Olives'), 690, 330]].map(([txt, x, y], i) => ({ i, x, y, el: tagL.add(`<g>${tagOnString(c, txt, { size: 18, len: 2400 })}</g>`) }));
+    const TAGS = [[tr('Betania', 'Bethany'), TX3[0], 430], [tr('Betfage', 'Bethphage'), TX3[1], 420], [tr('Góra Oliwna', 'the Mount of Olives'), TX3[2], 330]].map(([txt, x, y], i) => ({ i, x, y, el: tagL.add(`<g>${tagOnString(c, txt, { size: 18, len: 2400 })}</g>`) }));
 
     /* Jesus, the disciples (two of them are sent) */
     const A = O.act;
-    const rest = A.sprite(still(c, [0, 2, 3, 6, 5, 8].map((k, i) => ({ x: -i * 50, y: (i % 2) * 10 - 6, s: 0.88, head: 2, armF: (i % 3) * 12, o: TWELVE[k].o }))), 560, GY + 6);
+    const rest = A.sprite(still(c, [0, 2, 3, 6, 5, 8].map((k, i) => ({ x: -i * (S.portrait ? 40 : 50), y: (i % 2) * 10 - 6, s: 0.88, head: 2, armF: (i % 3) * 12, o: TWELVE[k].o }))), 560, GY + 6);
     const two = TWO.map((o, i) => ({ i, p: S.puppet(A.add(person(c, o))) }));
     const jesus = S.puppet(A.add(person(c, CAST.jesus)));
 
@@ -100,7 +103,7 @@ export default {
       S.cam.x = kf(t, [[-0.5, -60], [0.9, 0], [1.4, -20], [2.3, 100], [4.6, 120], [5.0, 160]]);
       S.cam.y = kf(t, [[-0.5, 30], [1.0, 20], [1.4, -10], [2.3, -40]]);
       S.cam.z = kf(t, [[-0.5, 1.06], [1.0, 1.04], [2.3, 1.1]]);
-      if (S.portrait) { S.cam.x = kf(t, [[-0.5, -80], [0.9, 0], [2.0, 0], [2.3, 160], [5.0, 200]]); S.cam.z = 1.0; }
+      if (S.portrait) { S.cam.x = kf(t, [[-0.5, -80], [0.9, 0], [2.0, 0], [2.3, 110], [5.0, 150]]); S.cam.z = 1.0; }
       void question; void mix; void shade; void sheet; void STRING; void hand;
     };
   },

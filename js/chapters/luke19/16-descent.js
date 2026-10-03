@@ -54,7 +54,7 @@ export default {
     const fx = O.fx;
     const rings = voiceRings(fx, c, { n: 3, r: 34, w: 4, color: C.ochre });
     const banL = S.layer({ par: 0.4, sh: 5 });
-    const banner = banL.add(`<g><path d="M-300 -2000V0M300 -2000V0" stroke="${STRING}" stroke-width="1.3" fill="none"/>${clothBanner(c, tr('Błogosławiony Król, który przychodzi w imię Pańskie!', 'Blessed is the King who comes in the name of the Lord!'), { size: 24, w: 720 })}</g>`);
+    const banner = banL.add(`<g><path d="M-300 -2000V0M300 -2000V0" stroke="${STRING}" stroke-width="1.3" fill="none"/>${clothBanner(c, tr('Błogosławiony Król, który przychodzi w imię Pańskie!', 'Blessed is the King who comes in the name of the Lord!'), S.portrait ? { size: 22, w: 640 } : { size: 24, w: 720 })}</g>`);
     O.front();
 
     return (t, time) => {
@@ -73,12 +73,13 @@ export default {
       rings(hx, hy, es(t, 0.1, 0.3) * 0.8, T, { spread: 2.2 });
       MED.forEach((m) => {
         const k = es(t, 0.2 + m.i * 0.1, 0.55 + m.i * 0.1, ease.back);
-        const x = 500 + m.i * 170, y = 250 + (m.i % 2) * 44;
+        // phone: closer together, the rows staggered deeper so the names don't collide
+        const x = S.portrait ? 560 + m.i * 120 : 500 + m.i * 170, y = 250 + (m.i % 2) * (S.portrait ? 84 : 44);
         pose(m.el, { x, y: lerp(-1300, y, k) + (T ? Math.sin(T * 0.8 + m.i) * 3 : 0), r: T ? Math.sin(T * 0.6 + m.i) * 2 : 0, o: k > 0.001 && t < 1.2 ? 1 - es(t, 1.02, 1.2) : 0 });
       });
       /* v38a — "Blessed is the King who comes in the name of the Lord!" */
       const bk = es(t, 1.05, 1.35, ease.back);
-      pose(banner, { x: 820, y: lerp(-1300, 330, bk) - es(t, 2.0, 2.3) * 60, r: T ? Math.sin(T * 0.7) * 0.8 : 0, o: bk > 0.001 ? 1 : 0 });
+      pose(banner, { x: S.portrait ? 805 : 820, y: lerp(-1300, 330, bk) - es(t, 2.0, 2.3) * 60, r: T ? Math.sin(T * 0.7) * 0.8 : 0, o: bk > 0.001 ? 1 : 0 });
       /* v38b — "Peace in heaven, and glory in the highest!" */
       const g1 = es(t, 2.1, 2.4, ease.back), g2 = es(t, 2.25, 2.55, ease.back);
       pose(w1, { x: S.portrait ? 700 : 780, y: lerp(-800, 196, g1), o: g1 > 0.001 ? 1 : 0 });

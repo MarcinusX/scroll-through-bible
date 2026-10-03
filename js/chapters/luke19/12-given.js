@@ -22,7 +22,7 @@ export default {
     { v: 26 },
     { v: 27 },
   ],
-  cam: { x: [-240, 160], y: [-60, 60], z: [1, 1.2] },
+  cam: { x: [-240, 200], y: [-60, 60], z: [1, 1.2] },
   build(S) {
     let dark = null;
     const H = hallSet(S, {
@@ -34,12 +34,14 @@ export default {
       },
     });
     const c = S.c;
+    // phone: the servants, the bystanders and the enemies closer in (the hall is wider than the screen)
+    const P = S.portrait, S1 = P ? 940 : S1X, S2X = P ? 1010 : 1060;
     const A = H.act;
     const kUp = S.puppet(A.add(addToHead(person(c, NOBLE), crown(c))));
     A.add(`<g transform="translate(${TX} ${FL + 4})">${lowTable(c, 130, 40)}</g><g transform="translate(${TX + 36} ${FL - 40})">${minaPile(c, 6, 10)}</g>`);
     const heap = A.add(`<g>${minaPile(c, 11, 10)}</g>`);
     const s1 = S.puppet(A.add(person(c, SERV[0])));
-    const s2 = A.sprite(`<g transform="scale(-.86 .86)">${person(c, SERV[1])}</g>`, 1060, FL + 4);
+    const s2 = A.sprite(`<g transform="scale(-.86 .86)">${person(c, SERV[1])}</g>`, S2X, FL + 4);
     const s3k = S.puppet(A.add(person(c, { ...SERV[2], pose: 'kneel' })));
     const K = kerchief(c);
     const cloth = A.add(`<g>${K.open}</g>`);
@@ -66,7 +68,7 @@ export default {
       kUp.set({ x: KX + 16, y: KS, s: 1.04, flip: false, armF: 30 + es(t, 0.05, 0.25) * 60 * (1 - es(t, 0.9, 1.1)) + es(t, 2.05, 2.25) * 40 * (1 - es(t, 2.9, 3.0)) + doom * 70, armB: 10 + es(t, 2.05, 2.25) * 90 * (1 - es(t, 2.9, 3.0)), head: 2, blink: blinkAt(T) });
       const [khx, khy] = headAt(KX + 16, KS, 1.04, false);
       pop(order, t, 0.05, 0.95, khx + 20, khy - 20);
-      const GK = [[0.1, 1250], [0.45, PX + 70], [0.55, PX + 70], [0.9, S1X + 60]];
+      const GK = [[0.1, 1250], [0.45, PX + 70], [0.55, PX + 70], [0.9, S1 + 60]];
       const gx = kf(t, GK, (x) => x);
       const gw = (t > 0.1 && t < 0.45) || (t > 0.55 && t < 0.9);
       const bend = bump(t, 0.43, 0.6);
@@ -78,31 +80,33 @@ export default {
       const toHeap = es(t, 2.05, 2.35);
       let cx = hx - 16, cy = hy - 2;
       if (t > 0.5) { cx = ghx; cy = ghy - 8; }
-      const [s1hx, s1hy] = hand(S1X, FL + 10, 0.9, true, 60);
+      const [s1hx, s1hy] = hand(S1, FL + 10, 0.9, true, 60);
       if (t > 1.0) { cx = s1hx - 4; cy = s1hy - 10; }
       cx = lerp(cx, TX - 30, toHeap); cy = lerp(cy, FL - 110, toHeap) - Math.sin(toHeap * PI) * 60;
       pose(coin, { x: cx, y: cy, o: toHeap < 1 ? 1 : 0 });
       pose(heap, { x: TX - 30, y: FL - 40, s: 1 + bump(t, 2.3, 2.6) * 0.08 });
-      s1.set({ x: S1X, y: FL + 10, s: 0.9, flip: true, armF: 20 + es(t, 0.95, 1.05) * 40 * (1 - es(t, 2.0, 2.1)) + es(t, 2.0, 2.1) * 10, armB: 10, head: 4, blink: blinkAt(T, 4), o: 1 - doom });
-      s2.set({ x: 1060, y: FL + 4, o: 1 - doom });
+      s1.set({ x: S1, y: FL + 10, s: 0.9, flip: true, armF: 20 + es(t, 0.95, 1.05) * 40 * (1 - es(t, 2.0, 2.1)) + es(t, 2.0, 2.1) * 10, armB: 10, head: 4, blink: blinkAt(T, 4), o: 1 - doom });
+      s2.set({ x: S2X, y: FL + 4, o: 1 - doom });
       /* v25 — "Lord, he has ten minas!" */
       by.forEach((p, i) => {
         const k = es(t, 1.05, 1.2) * (1 - es(t, 1.9, 2.05));
-        p.set({ x: 1160 + i * 70, y: FL + 2 - i * 8, s: 0.9, flip: true, armF: 20 + k * 80, armB: 10 + k * (i ? 130 : 60), lean: k * -6, head: -k * 6, blink: blinkAt(T, 6 + i), o: 1 - doom });
+        const off = P ? 1 - es(t, 0.85, 1.05) + es(t, 2.0, 2.3) : 0;   // phone: they step in to speak, then back off the edge
+        const x = P ? 1030 + i * 55 + off * 260 : 1160 + i * 70;
+        p.set({ x, y: FL + 2 - i * 8, s: 0.9, flip: off < 0.02, walk: off > 0 && off < 1 ? x * 0.06 + i : undefined, armF: 20 + k * 80, armB: 10 + k * (i ? 130 : 60), lean: k * -6, head: -k * 6, blink: blinkAt(T, 6 + i), o: 1 - doom });
       });
-      pop(protest, t, 1.05, 1.98, 1170, FL - 190);
+      pop(protest, t, 1.05, 1.98, P ? 1070 : 1170, FL - 190);
       /* v26 — to him who has, more; from him who has not, even that */
       const drop = es(t, 2.35, 2.8);
       s3k.set({ x: PX, y: FL + 12, s: 0.9, flip: true, armF: 50 - drop * 20, armB: 20, head: 16 + drop * 6, lean: 10, blink: blinkAt(T, 8), o: 1 - doom });
       pose(cloth, { x: hx - 16 + drop * 30, y: hy + 8 + drop * 70, r: drop * 40, s: 0.9, o: 1 - doom });
       pop(more, t, 2.3, 2.98, TX + 150, FL - 360);
-      pop(less, t, 2.45, 2.98, PX + 170, FL - 300);
+      pop(less, t, 2.45, 2.98, PX + (P ? 120 : 170), FL - 300);
       shine.forEach((e, i) => { const k = bump(t, 2.3 + i * 0.08, 2.9 + i * 0.08); pose(e, { x: TX - 60 + i * 34, y: FL - 120 - (i % 2) * 20, s: k, r: T * 30, o: k > 0.02 ? 1 : 0 }); });
       /* v27 — the enemies: the hall darkens, they are led in as shadows, and a curtain falls over them */
       if (dark) dark.fade(es(t, 3.0, 3.25) * 0.95);
       enemies.forEach((e) => {
         const k = es(t, 3.1 + e.i * 0.05, 3.45 + e.i * 0.05);
-        pose(e.el, { x: lerp(1500, 1040 + e.i * 70, k), y: FL + 6 - (e.i % 2) * 8, s: 0.9, sx: -1, o: seg(t, 3.08, 3.2) });
+        pose(e.el, { x: lerp(1500, P ? 880 + e.i * 55 : 1040 + e.i * 70, k), y: FL + 6 - (e.i % 2) * 8, s: 0.9, sx: -1, o: seg(t, 3.08, 3.2) });
       });
       const fall = es(t, 3.8, 3.98);
       pose(curtain, { x: 0, y: lerp(-1400, 0, fall), o: fall > 0.001 ? 1 : 0 });
@@ -110,7 +114,7 @@ export default {
       S.cam.x = kf(t, [[-0.5, -120], [0.5, -60], [1.1, 40], [2.1, -140], [3.0, -80]]);
       S.cam.y = kf(t, [[-0.5, 20], [1.0, 30], [2.2, 10], [3.0, 0]]);
       S.cam.z = kf(t, [[-0.5, 1.12], [1.0, 1.12], [2.2, 1.18], [3.0, 1.06]]);
-      if (S.portrait) { S.cam.x = kf(t, [[-0.5, -160], [0.5, -80], [1.1, 140], [2.0, 140], [2.25, -140], [3.0, -60]]); S.cam.z = 1.0; }
+      if (S.portrait) { S.cam.x = kf(t, [[-0.5, -160], [0.5, -80], [1.1, 200], [2.0, 200], [2.25, -140], [3.0, -60]]); S.cam.z = 1.0; }
       void shade; void sheet;
     };
   },

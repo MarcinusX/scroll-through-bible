@@ -25,7 +25,8 @@ export default {
     const c = S.c;
     sky(S, SEA, { rise: 0 });
     const hangL = S.layer({ par: 0.04, sh: 4 });
-    const sunEl = hanging(hangL, sun(c, 36), { x: 1100, y: 140, len: 800 });
+    const SUNX = S.portrait ? 980 : 1100;   // phone: clear of the progress thread
+    const sunEl = hanging(hangL, sun(c, 36), { x: SUNX, y: 140, len: 800 });
     const cls = [[300, 150, 160], [800, 110, 130]].map(([x, y, w], i) => ({ x, y, i, el: hanging(hangL, cloud(c, w), { x, y, len: 800 }) }));
     S.layer({ par: 0.1, sh: 2 }).add(band(c, { y: 440, amps: [16, 7, 3], lens: [1000, 360, 130], color: mix(C.hillFar, C.lavender, 0.2), x0: -1400, x1: 3000 }).markup);
     const mid = S.layer({ par: 0.25, sh: 3 });
@@ -59,7 +60,7 @@ export default {
 
     return (t, time) => {
       const T = time;
-      swing(sunEl, 1100, 140, T, 1, 0.6);
+      swing(sunEl, SUNX, 140, T, 1, 0.6);
       cls.forEach((k) => swing(k.el, k.x + (T ? Math.sin(T * 0.1 + k.i) * 16 : 0), k.y, T, 1.1, 0.6, k.i));
       back.set({ x: GATE + 20, y: FL - 6 });
       /* v14a — they hated him: they send an envoy after him */
@@ -96,7 +97,7 @@ export default {
       S.cam.x = kf(t, [[-0.5, -440], [0.35, -420], [1.1, 560], [2.4, 580], [2.95, 420]]);
       S.cam.y = kf(t, [[-0.5, 20], [0.5, 30], [1.2, 20]]);
       S.cam.z = kf(t, [[-0.5, 1.04], [0.5, 1.1], [1.2, 1.08], [2.2, 1.12]]);
-      if (S.portrait) { S.cam.x = kf(t, [[-0.5, -380], [0.35, -380], [1.1, 600], [2.4, 640], [2.95, 480]]); S.cam.z = 1.0; }
+      if (S.portrait) { S.cam.x = kf(t, [[-0.5, -380], [0.35, -380], [0.8, -320], [1.15, 600], [2.4, 640], [2.95, 480]]); S.cam.z = 1.0; }
       void shade; void ease;
     };
   },

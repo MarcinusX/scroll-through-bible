@@ -9,7 +9,7 @@ import { templeCourt, courtFront, changerTable, coinStack, coin, balance, cage, 
 import { menorah } from '../mark2/lib.js';
 
 const FLOOR = 676;
-const TB = { x: 990, w: 150 }, BN = { x: 560, w: 160 };
+const TB0 = { x: 990, w: 150 }, BN = { x: 560, w: 160 };
 const PA = [600, 300], PB = [1000, 300], PR = 104;
 
 export default {
@@ -21,6 +21,7 @@ export default {
   cam: { x: [-80, 120], y: [-60, 40], z: [0.98, 1.14] },
   build(S) {
     const c = S.c;
+    const TB = S.portrait ? { x: 900, w: 150 } : TB0;   // phone: the overturned table lands clear of the progress thread
     const { sunEl, cl1 } = templeCourt(S, { skyCols: TEMPLE, floorY: FLOOR + 40, sanctX: 800, sunAt: [1220, 140] });
     const mk = S.layer({ par: 0.5, sh: 5 });
     /* sellers and buyers */

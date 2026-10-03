@@ -21,7 +21,7 @@ export default {
     { v: 44, text: 'Powalą na ziemię ciebie i twoje dzieci z tobą i nie zostawią w tobie kamienia na kamieniu' },
     { v: 44, cont: true, text: 'za to, żeś nie rozpoznało czasu twojego nawiedzenia».' },
   ],
-  cam: { x: [-60, 120], y: [-60, 60], z: [1, 1.14] },
+  cam: { x: [-200, 120], y: [-60, 60], z: [1, 1.14] },
   build(S) {
     let P = null;
     const O = olivetSet(S, {
@@ -49,6 +49,7 @@ export default {
       },
     });
     const c = S.c;
+    const JXP = S.portrait ? 590 : JX;   // phone: Jesus and the colt further in from the edge
     const A = O.act;
     const dis = A.sprite(still(c, [0, 2, 3].map((k, i) => ({ x: -i * 56, y: (i % 2) * 8, s: 0.9, head: 6 + i, armF: 20, o: TWELVE[k].o }))), 250, GY + 4);
     const cR = coltRig(A.add(colt(c, { over: saddleCloaks(c, [CAST.peter.mantle, CAST.james.mantle]) })));
@@ -76,17 +77,17 @@ export default {
       P.dusts.forEach((d, i) => { const k = bump(t, 1.3 + i * 0.06, 2.0 + i * 0.06); pose(d, { x: CITY[0] - 360 + i * 180, y: CITY[1] + 20 - k * 30, s: 0.6 + k * 1.2, o: k * 0.9 }); });
       /* v44b — the time of your visitation: the vision fades; the tear */
       const hk = es(t, 2.2, 2.5, ease.back);
-      pose(P.hg, { x: CITY[0] + 10, y: lerp(-1300, 270, hk), r: T ? Math.sin(T * 0.7) * 1.5 : 0, o: hk > 0.001 ? 1 : 0 });
+      pose(P.hg, { x: S.portrait ? 940 : CITY[0] + 10, y: lerp(-1300, 270, hk), r: T ? Math.sin(T * 0.7) * 1.5 : 0, o: hk > 0.001 ? 1 : 0 });
       dis.set({ x: 250, y: GY + 4 });
-      cR.set({ x: JX - 150, y: GY + 2, s: 0.96, nod: 12, ear: T ? Math.sin(T * 1.2) * 5 : 0, tail: T ? Math.sin(T * 1.6) * 6 : 0 });
-      jesus.set({ x: JX, y: GY, s: 1.08, flip: false, armF: 20 + dark * 30, armB: 10 + dark * 20, head: 6 + es(t, 2.1, 2.4) * 6, blink: blinkAt(T) * 0.5 });
+      cR.set({ x: JXP - (S.portrait ? 130 : 150), y: GY + 2, s: 0.96, nod: 12, ear: T ? Math.sin(T * 1.2) * 5 : 0, tail: T ? Math.sin(T * 1.6) * 6 : 0 });
+      jesus.set({ x: JXP, y: GY, s: 1.08, flip: false, armF: 20 + dark * 30, armB: 10 + dark * 20, head: 6 + es(t, 2.1, 2.4) * 6, blink: blinkAt(T) * 0.5 });
       face(jEl, 'sad', 1);
       face(jEl, 'tear', 1);
 
       S.cam.x = kf(t, [[-0.5, 60], [0.5, 80], [2.1, 60], [2.5, -40]]);
       S.cam.y = kf(t, [[-0.5, 0], [0.5, -20], [2.1, 0], [2.5, 40]]);
       S.cam.z = kf(t, [[-0.5, 1.02], [0.5, 1.04], [2.1, 1.02], [2.5, 1.14]]);
-      if (S.portrait) { S.cam.x = kf(t, [[-0.5, -40], [2.1, -40], [2.5, -100]]); S.cam.z = 1.0; }
+      if (S.portrait) { S.cam.x = kf(t, [[-0.5, -160], [2.1, -160], [2.5, -200]]); S.cam.z = 1.0; }
       void headAt; void shade; void sheet; void seg; void PI; void shadowPerson; void GUARD;
     };
   },

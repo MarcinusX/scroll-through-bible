@@ -45,6 +45,7 @@ export default {
     /* the two plates of his fear */
     const pl = S.layer({ par: 0.3, sh: 5 });
     const plateA = pl.add(`<g>${hungPlate(S, c, PR, plateAInner(c), { face: mix(C.parchment, C.sand, 0.3) })}</g>`);
+    const PBX = S.portrait ? 930 : PB[0];   // phone: clear of the progress thread
     const plateB = pl.add(`<g>${hungPlate(S, c, PR, plateBInner(c), { face: mix(C.skyBlue, C.cream, 0.4) })}</g>`);
     const pp = S.layer({ par: 0.3, sh: 3 });
     const coinsA = [0, 1, 2].map(() => pp.add(`<g>${mina(c, 8)}</g>`));
@@ -83,20 +84,20 @@ export default {
       const da = es(t, 2.02, 2.25, ease.back), db = es(t, 2.1, 2.33, ease.back);
       const ay = lerp(-1300, PA[1], da), by = lerp(-1300, PB[1], db);
       pose(plateA, { x: PA[0], y: ay, o: da > 0.001 ? 1 : 0 });
-      pose(plateB, { x: PB[0], y: by, o: db > 0.001 ? 1 : 0 });
+      pose(plateB, { x: PBX, y: by, o: db > 0.001 ? 1 : 0 });
       const grab = es(t, 2.35, 2.65);
       const back = es(t, 2.65, 2.85);
       pose(handA, { x: PA[0] + lerp(-40, 4, grab) - back * 50, y: ay + 16, s: 0.7, o: da > 0.001 ? es(t, 2.3, 2.4) * (1 - es(t, 2.9, 3.0) * 0) : 0 });
       coinsA.forEach((el, i) => { const x0 = PA[0] + 2 + i * 16, y0 = ay + 18; pose(el, { x: x0 - back * (50 + i * 6) * (grab >= 1 ? 1 : 0), y: y0 - back * 4, o: da > 0.001 && (back < 0.9) ? 1 : 0 }); });
       const cut = es(t, 2.4, 2.75);
-      pose(wheat, { x: PB[0] - 10, y: by + 48, o: db > 0.001 ? 1 - es(t, 2.6, 2.7) : 0 });
-      pose(stub, { x: PB[0] - 10, y: by + 48, o: db > 0.001 ? es(t, 2.6, 2.7) : 0 });
-      pose(scy, { x: PB[0] + lerp(60, -60, cut), y: by + 10 + Math.sin(cut * PI) * 10, r: lerp(-20, 40, cut), o: db > 0.001 ? es(t, 2.3, 2.4) : 0 });
+      pose(wheat, { x: PBX - 10, y: by + 48, o: db > 0.001 ? 1 - es(t, 2.6, 2.7) : 0 });
+      pose(stub, { x: PBX - 10, y: by + 48, o: db > 0.001 ? es(t, 2.6, 2.7) : 0 });
+      pose(scy, { x: PBX + lerp(60, -60, cut), y: by + 10 + Math.sin(cut * PI) * 10, r: lerp(-20, 40, cut), o: db > 0.001 ? es(t, 2.3, 2.4) : 0 });
 
       S.cam.x = kf(t, [[-0.5, -60], [0.4, -120], [1.1, -160], [1.5, -160], [2.1, -120]]);
       S.cam.y = kf(t, [[-0.5, 30], [0.4, 60], [1.1, 20], [2.1, -40]]);
       S.cam.z = kf(t, [[-0.5, 1.12], [0.4, 1.3], [1.1, 1.12], [2.1, 1.06]]);
-      if (S.portrait) { S.cam.x = kf(t, [[-0.5, -60], [0.4, -180], [1.1, -160], [2.1, -40]]); S.cam.z = 1.0; }
+      if (S.portrait) { S.cam.x = kf(t, [[-0.5, -60], [0.4, -140], [1.1, -140], [2.1, -40]]); S.cam.z = 1.0; }
       void cityToken; void shade; void sheet;
     };
   },

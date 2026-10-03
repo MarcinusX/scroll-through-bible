@@ -16,7 +16,7 @@ export default {
     { v: 42, text: 'i rzekł: «O gdybyś i ty poznało w ten dzień to, co służy pokojowi!' },
     { v: 42, cont: true, text: 'Ale teraz zostało to zakryte przed twoimi oczami.' },
   ],
-  cam: { x: [-180, 120], y: [-60, 70], z: [1, 1.34] },
+  cam: { x: [-200, 120], y: [-60, 70], z: [1, 1.34] },
   build(S) {
     let peace = null, veil = null;
     const O = olivetSet(S, {
@@ -43,17 +43,18 @@ export default {
     const jesus = S.puppet(jEl);
     O.front();
 
+    const JXP = S.portrait ? 640 : JX;   // phone: Jesus and the colt in from the left edge, the colt whole
     return (t, time) => {
       const T = time;
       O.update(T, { glow: 0.55 - es(t, 2.0, 2.5) * 0.3, sunY: 230 + es(t, 0, 3) * 50 });
       O.sk2.fade(es(t, 0.2, 2.8));
       dis.set({ x: 340, y: GY + 4 });
-      cR.set({ x: JX - 170, y: GY + 2, s: 0.96, nod: 10 + (T ? Math.sin(T * 0.7) * 2 : 0), ear: T ? Math.sin(T * 1.2) * 5 : 0, tail: T ? Math.sin(T * 1.6) * 6 : 0 });
+      cR.set({ x: JXP - (S.portrait ? 130 : 170), y: GY + 2, s: 0.96, nod: 10 + (T ? Math.sin(T * 0.7) * 2 : 0), ear: T ? Math.sin(T * 1.2) * 5 : 0, tail: T ? Math.sin(T * 1.6) * 6 : 0 });
       /* v41 — seeing the city, He wept over it */
       const see = es(t, -0.3, 0.3);
       const weep = es(t, 0.3, 0.6);
       const reach = es(t, 1.05, 1.3) * (1 - es(t, 2.05, 2.3) * 0.6);
-      jesus.set({ x: JX, y: GY, s: 1.08, flip: false, armF: 14 + reach * 70 + weep * 10 * (1 - reach), armB: 10 + weep * 30 * (1 - reach) + reach * 40, head: 4 + weep * 8 - reach * 6, blink: blinkAt(T) * (1 - weep * 0.5) });
+      jesus.set({ x: JXP, y: GY, s: 1.08, flip: false, armF: 14 + reach * 70 + weep * 10 * (1 - reach), armB: 10 + weep * 30 * (1 - reach) + reach * 40, head: 4 + weep * 8 - reach * 6, blink: blinkAt(T) * (1 - weep * 0.5) });
       face(jEl, 'sad', weep);
       face(jEl, 'tear', es(t, 0.45, 0.7));
       /* v42a — the things that make for peace: the dove with the olive twig over the city */
@@ -72,7 +73,7 @@ export default {
       S.cam.x = kf(t, [[-0.5, 40], [0.5, -170], [1.1, 20], [2.1, 40]]);
       S.cam.y = kf(t, [[-0.5, 20], [0.5, 60], [1.1, 0], [2.1, 10]]);
       S.cam.z = kf(t, [[-0.5, 1.06], [0.5, 1.34], [1.1, 1.06], [2.1, 1.08]]);
-      if (S.portrait) { S.cam.x = kf(t, [[-0.5, -60], [0.5, -120], [1.1, 20], [2.1, -40]]); S.cam.z = 1.0; }
+      if (S.portrait) { S.cam.x = kf(t, [[-0.5, -60], [0.5, -200], [1.1, -60], [2.1, -120]]); S.cam.z = 1.0; }
       void hand; void headAt; void shade; void sheet; void seg; void bump; void PI; void tr;
     };
   },

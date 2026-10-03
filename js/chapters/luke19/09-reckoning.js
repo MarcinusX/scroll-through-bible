@@ -41,7 +41,9 @@ export default {
     const s2k = S.puppet(A.add(person(c, { ...SERV[1], pose: 'kneel' })));
     const s3 = S.puppet(A.add(person(c, SERV[2])));
     const hangL = S.layer({ par: 0.3, sh: 4 });
-    const t10 = TOWNS10.map(() => hangL.add(`<g>${cityToken(c, { r: 24 })}</g>`));
+    // phone: the arc of ten towns narrower, inside the screen
+    const TW10 = S.portrait ? TOWNS10.map(([, y], i) => [540 + i * 46, y]) : TOWNS10;
+    const t10 = TW10.map(() => hangL.add(`<g>${cityToken(c, { r: 24 })}</g>`));
     const t5 = TOWNS5.map(() => hangL.add(`<g>${cityToken(c, { r: 24, col: mix(C.cream, C.halo, 0.4) })}</g>`));
     const fx = H.fx;
     const callB = fx.add(`<g>${say(c, tr('Przywołajcie sługi!', 'Call the servants!'), { size: 19, side: 1 })}</g>`);
@@ -63,10 +65,10 @@ export default {
       const sp = es(t, 0.1, 0.3) * (1 - es(t, 0.9, 1.0));
       king.set({ x: KX + 4, y: KY, s: 1.02, flip: false, armF: 30 + sp * 60 + es(t, 2.05, 2.2) * (1 - es(t, 2.9, 3.0)) * 60 + es(t, 4.05, 4.2) * 60, armB: 20 + sp * 40, head: 4, blink: blinkAt(T) });
       const st = es(t, 0.9, 1.1);
-      steward.set({ x: lerp(820, 1000, st), y: lerp(FL + 10, FL - 16, st), s: 0.94 - st * 0.08, flip: st > 0.5, walk: st > 0 && st < 1 ? st * 30 : undefined, armF: 20 + sp * 40, armB: 10 + sp * 140, head: -sp * 6, blink: blinkAt(T, 3) });
+      steward.set({ x: lerp(820, S.portrait ? 950 : 1000, st), y: lerp(FL + 10, FL - 16, st), s: 0.94 - st * 0.08, flip: st > 0.5, walk: st > 0 && st < 1 ? st * 30 : undefined, armF: 20 + sp * 40, armB: 10 + sp * 140, head: -sp * 6, blink: blinkAt(T, 3) });
       pop(callB, t, 0.15, 0.95, 830, FL - 200);
       /* the three come in along the carpet */
-      const inK = (i) => es(t, 0.35 + i * 0.1, 0.9 + i * 0.1);
+      const inK = (i) => S.portrait ? es(t, 0.25 + i * 0.08, 0.65 + i * 0.06) : es(t, 0.35 + i * 0.1, 0.9 + i * 0.1);   // phone: all three are in by the pause
       /* v16 — the first: ten minas more */
       const f1 = es(t, 1.0, 1.2);
       const k1 = es(t, 1.22, 1.26);
@@ -82,7 +84,7 @@ export default {
       const [khx, khy] = headAt(KX + 4, KY, 1.02, false, 62);
       pop(well, t, 2.05, 2.95, khx + 20, khy - 30);
       t10.forEach((el, i) => {
-        const [x, y] = TOWNS10[i];
+        const [x, y] = TW10[i];
         const k = es(t, 2.15 + i * 0.04, 2.45 + i * 0.04, ease.back);
         const away = es(t, 2.95, 3.3);
         const cx = lerp(x, 1060 + (i % 5) * 50, away), cy = lerp(y, 190 + Math.floor(i / 5) * 70, away);
@@ -92,8 +94,11 @@ export default {
       /* v18 — the second: five minas */
       const f2 = es(t, 3.1, 3.3);
       const k2 = es(t, 3.32, 3.36);
-      const x2 = lerp(1360, 1040, inK(1)) - f2 * (1040 - PX);
-      s2.set({ x: x2, y: FL + 12, s: 0.9, flip: true, o: 1 - k2, walk: (inK(1) > 0 && inK(1) < 1) || (f2 > 0 && f2 < 1) ? x2 * 0.06 : undefined, armF: 40, head: 4, blink: blinkAt(T, 6) });
+      // phone: the two who wait step back off the edge while the first gives account (the bubbles need the room)
+      const wait = S.portrait ? es(t, 1.0, 1.3) : 0, waiting = wait > 0 && wait < 1;
+      const d2 = 1040 + wait * 260;
+      const x2 = lerp(1360, d2, inK(1)) - f2 * (d2 - PX);
+      s2.set({ x: x2, y: FL + 12, s: 0.9, flip: true, o: 1 - k2, walk: (inK(1) > 0 && inK(1) < 1) || (f2 > 0 && f2 < 1) || waiting ? x2 * 0.06 : undefined, armF: 40, head: 4, blink: blinkAt(T, 6) });
       s2k.set({ x: PX, y: FL + 12, s: 0.9, flip: true, o: k2, armF: 70 + bump(t, 3.4, 3.7) * 30, armB: 20, head: 6 - es(t, 4.05, 4.3) * 12, lean: -es(t, 4.3, 4.6) * 10, blink: blinkAt(T, 6) });
       pile2.forEach((el, i) => { const [x, y] = pileSpot(6, i, TX + 36); pop(el, t, 3.4 + i * 0.05, undefined, x, y); });
       pop(tag5, t, 3.55, 4.0, TX + 36, TOP - 90);
@@ -106,13 +111,13 @@ export default {
         pose(el, { x, y: lerp(-1300, y, k), o: k > 0.001 ? 1 : 0 });
       });
       /* the third waits at the back */
-      const x3 = lerp(1400, 1120, inK(2));
-      s3.set({ x: x3, y: FL + 10, s: 0.9, flip: true, walk: inK(2) > 0 && inK(2) < 1 ? x3 * 0.06 : undefined, armF: 30, armB: 30, head: 8, lean: 3, blink: blinkAt(T, 8) });
+      const x3 = lerp(1400, 1120, inK(2)) + wait * 260;
+      s3.set({ x: x3, y: FL + 10, s: 0.9, flip: true, walk: (inK(2) > 0 && inK(2) < 1) || waiting ? x3 * 0.06 : undefined, armF: 30, armB: 30, head: 8, lean: 3, blink: blinkAt(T, 8) });
 
       S.cam.x = kf(t, [[-0.5, 40], [0.8, 60], [1.2, -240], [3.0, -220], [3.3, -240]]);
       S.cam.y = kf(t, [[-0.5, 20], [1.0, 50], [2.1, -30], [2.9, 40], [4.1, -30]]);
       S.cam.z = kf(t, [[-0.5, 1.06], [1.0, 1.26], [2.1, 1.14], [3.0, 1.26], [4.1, 1.14]]);
-      if (S.portrait) { S.cam.x = kf(t, [[-0.5, 100], [0.8, 100], [1.2, -240], [3.0, -220]]); S.cam.z = 1.0; }
+      if (S.portrait) { S.cam.x = kf(t, [[-0.5, 100], [0.8, 100], [1.2, -180], [3.0, -180]]); S.cam.z = 1.0; }
     };
   },
 };

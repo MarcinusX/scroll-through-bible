@@ -16,7 +16,7 @@ export default {
     { v: 1 },
     { v: 2 },
   ],
-  cam: { x: [-640, 420], y: [0, 90], z: [1, 1.44] },
+  cam: { x: [-640, 520], y: [0, 90], z: [1, 1.44] },
   build(S) {
     const J = jerichoSet(S, { booth: BX, sunAt: [1280, 150] });
     const c = S.c;
@@ -42,7 +42,7 @@ export default {
     const DIS = [0, 3, 1, 2].map((k, i) => ({ i, p: S.puppet(J.act.add(person(c, TWELVE[k].o))), dx: -70 - i * 54, dy: (i % 2) * 10 - 6 }));
     const jesus = S.puppet(J.act.add(person(c, CAST.jesus)));
     // townsfolk along the street who turn to look
-    const side = [[380, GY - 40, 0], [820, GY - 42, 1], [1330, GY - 40, 2]].map(([x, y, i]) => ({ x, y, i, p: S.puppet(J.crowdL.add(person(c, { ...folk(c, i !== 1), veil: [C.skyVeil, C.blushVeil, C.stone][i], veil2: undefined }))) }));
+    const side = [[380, GY - 40, 0], [S.portrait ? 740 : 820, GY - 42, 1], [S.portrait ? 1420 : 1330, GY - 40, 2]].map(([x, y, i]) => ({ x, y, i, p: S.puppet(J.crowdL.add(person(c, { ...folk(c, i !== 1), veil: [C.skyVeil, C.blushVeil, C.stone][i], veil2: undefined }))) }));
 
     return (t, time) => {
       const T = time;
@@ -56,7 +56,10 @@ export default {
       crowd.set({ x: jx - 300, y: WALK - 30 });
       side.forEach((m) => {
         const look = es(t, 1.0 + m.i * 0.25, 1.3 + m.i * 0.25);
-        m.p.set({ x: m.x, y: m.y, s: 0.78, flip: jx < m.x, armF: look * 30, armB: m.i === 1 ? look * 60 : 0, head: look * 4, blink: blinkAt(T, m.i + 7) });
+        // phone: the woman in the middle stands clear of the thread while He passes, then steps along as the camera turns to the booth
+        const mv = S.portrait && m.i === 1 ? es(t, 1.95, 2.4) : 0;
+        const mx = m.x + mv * 110;
+        m.p.set({ x: mx, y: m.y, s: 0.78, flip: mv > 0 && mv < 1 ? false : jx < m.x, walk: mv > 0 && mv < 1 ? mx * 0.06 : undefined, armF: look * 30, armB: m.i === 1 ? look * 60 : 0, head: look * 4, blink: blinkAt(T, m.i + 7) });
       });
 
       /* v2 — Zacchaeus, chief tax collector, very rich */
@@ -78,7 +81,7 @@ export default {
       S.cam.x = lerp(follow, 420, es(t, 1.95, 2.4));
       S.cam.y = kf(t, [[0, 30], [1.0, 40], [2.2, 90]]);
       S.cam.z = kf(t, [[0, 1.02], [1.0, 1.04], [1.9, 1.08], [2.4, 1.44]]);
-      if (S.portrait) { S.cam.x = lerp(Math.max(-620, (jx + 40 - 800) / 0.48), 420, es(t, 1.95, 2.4)); S.cam.z = kf(t, [[1.9, 1.0], [2.35, 1.3]]); }
+      if (S.portrait) { S.cam.x = lerp(Math.max(-620, (jx + 40 - 800) / 0.48), 520, es(t, 1.95, 2.4)); S.cam.z = kf(t, [[1.9, 1.0], [2.35, 1.3]]); }
       void hand; void headAt; void moving; void seg; void mix; void shade; void sheet;
     };
   },

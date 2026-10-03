@@ -26,6 +26,7 @@ export default {
   build(S) {
     const H = hallSet(S);
     const c = S.c;
+    const BXP = S.portrait ? 960 : BX;   // phone: the banker's table inside the screen
     const shadow = H.shadowL.add(`<g>${kingShadow(c, DARK, { armF: 90, armB: 20 })}</g>`);
     const A = H.act;
     const kSit = S.puppet(A.add(addToHead(person(c, { ...NOBLE, pose: 'sit' }), crown(c))));
@@ -74,7 +75,7 @@ export default {
       pose(shadow, { x: KX + 150, y: FL + 30, s: 1.2 + sh * 1.5, o: Math.min(1, sh * 2) });
       /* v23a — why not the bank? */
       const slide = es(t, 2.02, 2.3);
-      const bx = lerp(1500, BX, slide);
+      const bx = lerp(1500, BXP, slide);
       banker.set({ x: bx + 80, y: FL + 6, s: 0.92, flip: true, o: slide > 0.01 ? 1 : 0, armF: 50 + es(t, 3.1, 3.3) * 40, armB: 10, head: 6, blink: blinkAt(T, 12) });
       pose(bank, { x: bx, y: FL + 10, o: slide > 0.01 ? 1 : 0 });
       pop(why, t, 2.05, 2.98, khx + 20, khy - 20);
@@ -90,7 +91,7 @@ export default {
       S.cam.x = kf(t, [[-0.5, -180], [0.5, -160], [1.9, -120], [2.4, 40], [3.2, 60]]);
       S.cam.y = kf(t, [[-0.5, 20], [0.5, 10], [1.1, -20], [2.3, 30]]);
       S.cam.z = kf(t, [[-0.5, 1.14], [0.5, 1.18], [1.1, 1.08], [2.3, 1.16]]);
-      if (S.portrait) { S.cam.x = kf(t, [[-0.5, -200], [1.9, -200], [2.4, -60], [3.2, -20]]); S.cam.z = 1.0; }
+      if (S.portrait) { S.cam.x = kf(t, [[-0.5, -200], [1.9, -200], [2.4, -80], [3.2, -60]]); S.cam.z = 1.0; }
     };
   },
 };
