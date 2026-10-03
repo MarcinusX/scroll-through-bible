@@ -10,6 +10,7 @@ import { synagogueInterior, WITHERED, witheredHand, phOpts, scribeOpts, waxTable
 const FEET = 742;
 const JX = 800;
 export const PHX = [1030, 1110, 1190];
+export const PHX_P = [1028, 1076, 1124];   // phone: the watchers sit closer, at the near end of their bench
 
 export default {
   id: 'lk6-synagogue',
@@ -18,9 +19,10 @@ export default {
     { v: 6, cont: true, text: 'A był tam człowiek, który miał uschłą prawą rękę.' },
     { v: 7 },
   ],
-  cam: { x: [-40, 40], y: [0, 50], z: [1, 1.14] },
+  cam: { x: [-40, 160], y: [0, 50], z: [1, 1.14] },
   build(S) {
     const c = S.c;
+    const X = S.portrait ? PHX_P : PHX;
     const I = synagogueInterior(S);
     const L = S.layer({ par: I.P, sh: 4 });
     const [, FRONT] = I.benchY;
@@ -29,7 +31,7 @@ export default {
     const man = S.puppet(L.add(person(c, { ...WITHERED, pose: 'sit', holdF: witheredHand(c) })));
     const handRing = L.add(`<g opacity="0"><circle r="40" fill="url(#warm-glow)"/><path d="${c.ribbon(c.arc(0, 0, 30, 30, 0, PI * 2, 30), 3)}" fill="${C.sun}" opacity=".8"/></g>`);
     const PH = [phOpts(0), { ...scribeOpts(1), holdF: `<g transform="translate(8 -4) rotate(-20)">${waxTablet(c)}</g>` }, phOpts(2)]
-      .map((o, i) => ({ o, i, x: PHX[i], seed: c.rr(0, 9), p: S.puppet(L.add(person(c, { ...o, pose: 'sit' }))) }));
+      .map((o, i) => ({ o, i, x: X[i], seed: c.rr(0, 9), p: S.puppet(L.add(person(c, { ...o, pose: 'sit' }))) }));
 
     const act = S.layer({ par: 0.5, sh: 5 });
     const DIS = [{ k: 'peter', x: 400 }, { k: 'john', x: 478 }].map((d, i) => ({ ...d, i, seed: c.rr(0, 9), p: S.puppet(act.add(person(c, { ...CAST[d.k] }))) }));
@@ -88,11 +90,11 @@ export default {
         pose(looks[m.i], { x: ex - 16, y: ey - 3, r: (Math.atan2(dy, dx) * 180) / PI, sx: (len / 224) * k, sy: 1, o: k > 0.01 ? 0.75 : 0 });
       });
       const ac = es(t, 2.35, 2.6, ease.back);
-      pose(accuse, { x: PHX[1] - 40, y: 500, s: ac * 1.5, o: ac > 0.01 ? 1 : 0 });
-      const [whx, why] = handAt(PHX[1], FRONT, 0.9, true, 60, 'sit');
+      pose(accuse, { x: S.portrait ? 990 : X[1] - 40, y: 500, s: ac * 1.5, o: ac > 0.01 ? 1 : 0 });
+      const [whx, why] = handAt(X[1], FRONT, 0.9, true, 60, 'sit');
       pose(writing, { x: whx - 8, y: why - 6, o: es(t, 2.5, 2.6) });
 
-      S.cam.x = kf(t, [[-0.5, -30], [0.6, 0], [1.1, -40], [1.9, -40], [2.2, 30]]);
+      S.cam.x = kf(t, [[-0.5, -30], [0.6, 0], [1.1, -40], [1.9, -40], [2.2, S.portrait ? 160 : 30]]);   // phone: the camera goes on to the watchers
       S.cam.z = kf(t, [[-0.5, 1.0], [0.6, 1.03], [1.1, 1.14], [1.9, 1.14], [2.2, 1.06]]);
       S.cam.y = kf(t, [[-0.5, 10], [1.1, 40], [1.9, 40], [2.2, 30]]);
     };

@@ -25,9 +25,9 @@ export default {
     const act = S.layer({ par: 0.6, sh: 5 });
     const aura = act.add(`<g opacity="0">${glow(250, 1, 'halo-glow')}</g>`);
     const rays = act.add(`<g opacity="0">${rayBurst(c, { n: 22, r0: 50, r1: 360, spread: 0.04, color: '#fff3cf', o: 0.5 })}</g>`);
-    const DIS = [{ k: 'james', x: 470 }, { k: 'peter', x: 556 }, { k: 'andrew', x: 640 }].map((d, i) => ({ ...d, i, seed: c.rr(0, 9), p: S.puppet(act.add(person(c, { ...CAST[d.k] }))) }));
+    const DIS = (S.portrait ? [{ k: 'james', x: 510 }, { k: 'peter', x: 590 }, { k: 'andrew', x: 668 }] : [{ k: 'james', x: 470 }, { k: 'peter', x: 556 }, { k: 'andrew', x: 640 }]).map((d, i) => ({ ...d, i, seed: c.rr(0, 9), p: S.puppet(act.add(person(c, { ...CAST[d.k] }))) }));
     const jesus = S.puppet(act.add(person(c, { ...CAST.jesus })));
-    const PH = [{ x: 990, o: phOpts(0) }, { x: 1076, o: scribeOpts(1) }, { x: 1158, o: phOpts(2) }].map((m, i) => ({ ...m, i, seed: c.rr(0, 9), p: S.puppet(act.add(person(c, m.o))) }));
+    const PH = (S.portrait ? [{ x: 910, o: phOpts(0) }, { x: 970, o: scribeOpts(1) }, { x: 1028, o: phOpts(2) }] : [{ x: 990, o: phOpts(0) }, { x: 1076, o: scribeOpts(1) }, { x: 1158, o: phOpts(2) }]).map((m, i) => ({ ...m, i, seed: c.rr(0, 9), p: S.puppet(act.add(person(c, m.o))) }));
     const sparks = [0, 1, 2].map(() => act.add(`<g opacity="0">${sparkle(c, 12)}</g>`));
     F.front();
 
@@ -51,7 +51,7 @@ export default {
       PH.forEach((m) => {
         const back = es(t, 0.45 + m.i * 0.05, 0.75);
         const point = 1 - es(t, 0.2, 0.45);
-        m.p.set({ x: m.x + back * 46, y: FP + (m.i % 2 ? -6 : 4), s: 0.95, flip: true, armF: m.i === 0 ? 12 + point * 80 : 12, armB: m.i === 2 ? 26 : 8, head: 4 - back * 6, lean: -back * 5, blink: blinkAt(T, m.seed) });
+        m.p.set({ x: m.x + back * (S.portrait ? 20 : 46), y: FP + (m.i % 2 ? -6 : 4), s: 0.95, flip: true, armF: m.i === 0 ? 12 + point * 80 : 12, armB: m.i === 2 ? 26 : 8, head: 4 - back * 6, lean: -back * 5, blink: blinkAt(T, m.seed) });
       });
       sparks.forEach((sp, i) => {
         const k = es(t, 0.5 + i * 0.06, 0.66 + i * 0.06, ease.back);

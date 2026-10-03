@@ -15,7 +15,7 @@ import { houseParts, stormKit, WISE, FOOL, kf, moving, storyFrame, halo, PI } fr
 
 const GY = 612;          // the ground surface
 const ROCK = 740;        // the top of the rock, deep down
-const WX = 600, FX = 1015;
+const WX0 = 600, FX0 = 1015;
 const FLOOD = 578;       // how high the flood comes
 
 function spade(c) { return sheet().p(c.ribbon([[0, 0], [0, 150]], 5), C.wood).p(c.cut([[-12, 150], [12, 150], [10, 180], [0, 188], [-10, 180]], 0.3, 4), C.stone2).out(); }
@@ -30,8 +30,12 @@ export default {
     { v: 49, text: 'Lecz ten, kto słucha, a nie wypełnia, podobny jest do człowieka, który zbudował dom na ziemi bez fundamentu.' },
     { v: 49, cont: true, text: '[Gdy] potok uderzył w niego, od razu runął, a upadek jego był wielki».' },
   ],
-  cam: { x: [-40, 40], y: [-30, 70], z: [1, 1.12] },
+  cam: { x: [-70, 40], y: [-30, 70], z: [1, 1.12] },
   build(S) {
+    // phone: the house on the bare earth and its builder stand further in, clear of the thread
+    const FX = S.portrait ? 965 : FX0;
+    // phone: the house on the rock stands further in too, clear of the left frame in the flood beats
+    const WX = S.portrait ? 640 : WX0, PILE = WX + (S.portrait ? 190 : 215);
     const c = S.c;
     sky(S, ['#cfe1dc', '#f1e7cc', '#f8e9cd']);
     const K = stormKit(S);
@@ -112,9 +116,9 @@ export default {
       slabs.forEach((s) => {
         const k = es(t, 0.04 + s.i * 0.1, 0.14 + s.i * 0.1);
         const y0 = GY + s.i * ((ROCK - GY) / 3);
-        pose(s.el, { x: lerp(WX, WX + 215, k), y: lerp(y0, GY - 30, k) - Math.sin(k * PI) * 60, s: 1 - k * 0.7, r: k * 20, o: 1 - es(t, 0.12 + s.i * 0.1, 0.16 + s.i * 0.1) });
+        pose(s.el, { x: lerp(WX, PILE, k), y: lerp(y0, GY - 30, k) - Math.sin(k * PI) * 60, s: 1 - k * 0.7, r: k * 20, o: 1 - es(t, 0.12 + s.i * 0.1, 0.16 + s.i * 0.1) });
       });
-      pose(pile, { x: WX + 215, y: GY, sy: 0.2 + es(t, 0.1, 0.36) * 0.8, o: 1 });
+      pose(pile, { x: PILE, y: GY, sy: 0.2 + es(t, 0.1, 0.36) * 0.8, o: 1 });
       FOUND.forEach((f, i) => {
         const k = es(t, 0.36 + i * 0.018, 0.42 + i * 0.018, ease.out);
         pose(f.el, { x: f.x, y: f.y - (1 - k) * 150, o: k > 0.01 ? 1 : 0 });
@@ -167,11 +171,11 @@ export default {
       const lounge = es(t, 2.52, 2.56) * (1 - es(t, 3.08, 3.12));
       const run = es(t, 3.12, 3.5, (u) => u);
       foolSit.set({ x: FX + 30, y: GY + 4, s: 0.96, flip: true, armF: 150, armB: 150, head: -6, o: lounge, blink: blinkAt(T, 3) });
-      const fx = build ? FX + 140 - Math.sin(t * 30) * 20 : lerp(FX + 30, 1170, run);
+      const fx = build ? FX + (S.portrait ? 100 : 140) - Math.sin(t * 30) * 20 : lerp(FX + 30, 1170, run);
       const aghast = es(t, 3.5, 3.65);
       fool.set({ x: fx, y: GY, s: 0.96, flip: run > 0 && aghast < 0.5 ? false : true, walk: build || (run > 0 && run < 1) ? fx * 0.08 : undefined, amt: 1.4, armF: build ? 60 + Math.abs(Math.sin(t * 50)) * 60 : 40 + aghast * 110, armB: build ? 20 : 30 + aghast * 150, head: aghast * 6, o: (t > 1.98 ? 1 : 0) * (1 - lounge), blink: blinkAt(T, 3) });
 
-      S.cam.x = kf(t, [[-0.5, -10], [0.9, -10], [1.9, 0], [2.2, 10], [3.0, 10], [3.3, 10]]);
+      S.cam.x = kf(t, [[-0.5, -10], [0.9, -10], [1.9, 0], [2.2, 10], [3.0, 10], [3.3, 10]]) - (S.portrait ? 30 * (1 - es(t, 1.9, 2.2)) : 0);   // phone: the house on the rock clear of the frame
       S.cam.z = kf(t, [[-0.5, 1.04], [0.3, 1.08], [0.9, 1.06], [2.9, 1.06], [3.3, 1.02]]);
       S.cam.y = kf(t, [[-0.5, 40], [0.3, 60], [0.9, 30], [3.3, 20]]);
     };

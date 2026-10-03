@@ -10,6 +10,7 @@ import { fieldSet, pluckStalk, FP, kf, moving, sabbathTag, bubble, phOpts, scrib
 
 const WALK = 460;
 const DIS = [{ k: 'peter', x: 540 }, { k: 'andrew', x: 626 }, { k: 'john', x: 900 }, { k: 'james', x: 972 }];
+const DIS_P = [{ k: 'peter', x: 548 }, { k: 'andrew', x: 630 }, { k: 'john', x: 884 }, { k: 'james', x: 944 }];   // phone
 
 export default {
   id: 'lk6-grain',
@@ -18,7 +19,7 @@ export default {
     { v: 1 },
     { v: 2 },
   ],
-  cam: { x: [-30, 40], y: [-20, 50], z: [1, 1.14] },
+  cam: { x: [-30, 80], y: [-20, 50], z: [1, 1.14] },
   build(S) {
     const F = fieldSet(S, { walk: WALK });
     const c = F.c;
@@ -28,7 +29,7 @@ export default {
 
     /* ---------- on the path ---------- */
     const act = S.layer({ par: 0.6, sh: 5 });
-    const D = DIS.map((d, i) => ({ ...d, i, seed: c.rr(0, 9), p: S.puppet(act.add(person(c, { ...CAST[d.k] }))) }));
+    const D = (S.portrait ? DIS_P : DIS).map((d, i) => ({ ...d, i, seed: c.rr(0, 9), p: S.puppet(act.add(person(c, { ...CAST[d.k] }))) }));
     const jesus = S.puppet(act.add(person(c, { ...CAST.jesus })));
     // the ears they pluck, at the edge of the path ahead of each disciple
     const STALKS = D.map((d, i) => ({ ...pluckStalk(act, c, 128 + (i % 2) * 8), x: d.x + (i < 2 ? 44 : -44), d }));
@@ -39,7 +40,8 @@ export default {
 
     /* ---------- the Pharisees, coming along the path ---------- */
     const phL = S.layer({ par: 0.6, sh: 5 });
-    const PH = [{ x: 1112, o: phOpts(0) }, { x: 1196, o: scribeOpts(1) }, { x: 1276, o: phOpts(2) }].map((m, i) => ({ ...m, i, seed: c.rr(0, 9), p: S.puppet(phL.add(person(c, m.o))) }));
+    // phone: the Pharisees stop closer together, inside the screen and clear of the thread
+    const PH = [{ x: 1112, o: phOpts(0) }, { x: 1196, o: scribeOpts(1) }, { x: 1276, o: phOpts(2) }].map((m, i) => (S.portrait ? { ...m, x: 996 + i * 56 } : m)).map((m, i) => ({ ...m, i, seed: c.rr(0, 9), p: S.puppet(phL.add(person(c, m.o))) }));
     F.front();
 
     const fx = S.layer({ par: 0.62, sh: 4 });
@@ -118,7 +120,7 @@ export default {
 
       S.cam.z = kf(t, [[0.8, 1.03], [1.42, 1.04], [1.62, 1.14], [2.0, 1.14], [2.3, 1.04]]);
       S.cam.y = kf(t, [[0.8, 20], [1.42, 20], [1.62, 44], [2.0, 44], [2.3, 14]]);
-      S.cam.x = kf(t, [[1.95, 0], [2.35, 34]]);
+      S.cam.x = kf(t, [[1.95, 0], [2.35, S.portrait ? 80 : 34]]);
     };
   },
 };

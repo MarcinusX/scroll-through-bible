@@ -21,7 +21,7 @@ export default {
     { v: 4, text: 'Jak wszedł do domu Bożego i wziąwszy chleby pokładne, sam jadł i dał swoim ludziom?' },
     { v: 4, cont: true, text: 'Chociaż samym tylko kapłanom wolno je spożywać».' },
   ],
-  cam: { x: [-40, 30], y: [-20, 40], z: [1, 1.12] },
+  cam: { x: [-90, 30], y: [-20, 40], z: [1, 1.12] },
   build(S) {
     const P = parchSet(S, { gy: 650, sunAt: [1180, 180] });
     const c = P.c;
@@ -61,7 +61,7 @@ export default {
       { robe: C.clayMantle, hair: C.hair3, hairStyle: 'wrap', veil: C.stone, beard: 'short', skin: C.skin3, belt: C.leather },
       { robe: C.sageRobe, hair: C.hair, hairStyle: 'short', beard: 'full', skin: C.skin2, belt: C.leather },
       { robe: C.ochreRobe, hair: C.hair2, hairStyle: 'curly', beard: 'short', skin: C.skin4, belt: C.leather },
-    ].map((o, i) => ({ i, o, x1: [900, 990, 1080][i], seed: c.rr(0, 9), p: S.puppet(act.add(person(c, o))) }));
+    ].map((o, i) => ({ i, o, x1: (S.portrait ? [880, 950, 1020] : [900, 990, 1080])[i], seed: c.rr(0, 9), p: S.puppet(act.add(person(c, o))) }));
     const david = S.puppet(act.add(davidPuppet(c)));
     const pouch = act.add(`<g>${sheet().p(c.cut([[-9, 0], [9, 0], [12, 18], [0, 24], [-12, 18]], 0.4, 4), C.leather).p(c.ribbon([[-8, 2], [8, 2]], 3), C.rope).out()}</g>`);
     const bread = [0, 1, 2, 3].map(() => act.add(`<g>${loaf(c, 17, shade(C.wheat2, -0.06))}</g>`));
@@ -109,7 +109,7 @@ export default {
 
       /* v4a — the curtain opens; he takes the bread, eats, and gives it to his men */
       const open = es(t, 1.02, 1.3);
-      priest.set({ x: 452, y: Y + 4, s: 1.0, flip: false, armF: open * 40 + es(t, 2.1, 2.3) * 40, armB: open * 50 + es(t, 2.1, 2.3) * 90, head: -2 - es(t, 2.1, 2.3) * 6, blink: blinkAt(T, 7), o: 1 });
+      priest.set({ x: S.portrait ? 478 : 452, y: Y + 4, s: 1.0, flip: false, armF: open * 40 + es(t, 2.1, 2.3) * 40, armB: open * 50 + es(t, 2.1, 2.3) * 90, head: -2 - es(t, 2.1, 2.3) * 6, blink: blinkAt(T, 7), o: 1 });
       pose(flapL, { x: TENT.d0, y: 450, sx: 1 - open * 0.78 });
       pose(flapR, { x: TENT.d1, y: 450, sx: 1 - open * 0.78 });
       pose(inGlow, { x: TABLE.x, y: 580, o: open * 0.9 });
@@ -149,7 +149,7 @@ export default {
       const pl = es(t, 2.05, 2.35, ease.back);
       pose(onlyP, { x: TABLE.x, y: lerp(-300, 320, pl), r: Math.sin(T * 0.9) * 0.6, oy: 0, o: pl > 0.01 ? 1 : 0 });
 
-      S.cam.x = kf(t, [[-0.5, 30], [0.6, 20], [1.2, -20], [2.2, -30]]);
+      S.cam.x = kf(t, [[-0.5, 30], [0.6, 20], [1.2, -20], [2.2, -30]]) - (S.portrait ? 60 : 0);   // phone: the priest at the door stays on screen
       S.cam.z = kf(t, [[-0.5, 1.02], [0.6, 1.05], [1.2, 1.08], [2.2, 1.06]]);
       S.cam.y = kf(t, [[-0.5, 10], [1.2, 24], [2.2, 10]]);
     };

@@ -29,7 +29,7 @@ export default {
     { v: 40, text: 'Uczeń nie przewyższa nauczyciela.' },
     { v: 40, cont: true, text: 'Lecz każdy, dopiero w pełni wykształcony, będzie jak jego nauczyciel.' },
   ],
-  cam: { x: [-40, 60], y: [-20, 60], z: [1, 1.12] },
+  cam: { x: [-100, 60], y: [-20, 60], z: [1, 1.12] },
   build(S) {
     const c = S.c;
     sky(S, DUSK6);
@@ -124,21 +124,24 @@ export default {
       });
 
       /* v40a — the teacher with his lamp, the pupil behind him; v40b — the pupil like his teacher */
-      const TX = kfl(t, [[1.8, 1500], [2.45, 1010]]);
+      const DXP = S.portrait ? -50 : 0;   // phone: teacher and pupil stop further in, the pupil clear of the thread
+      const TX = kfl(t, [[1.8, 1500], [2.45, 1010 + DXP]]);
       const walkT = t > 1.8 && t < 2.45;
       teacher.set({ x: TX, y: GY, s: 0.98, flip: true, walk: walkT ? TX * 0.05 : undefined, armF: 70 + bump(t, 2.45, 2.9) * 20, armB: 10 + bump(t, 2.5, 2.95) * 50, head: 8, o: t > 1.75 ? 1 : 0, blink: blinkAt(T, 3) });
-      const PXp = kfl(t, [[1.9, 1620], [2.55, 1110]]);
+      const PXp = kfl(t, [[1.9, 1620], [2.55, 1110 + DXP]]);
       const grow = es(t, 3.05, 3.4);
       const become = es(t, 3.3, 3.36);
       const side = es(t, 3.2, 3.6);
-      const px = lerp(PXp, 1086, side);
+      const px = lerp(PXp, 1086 + DXP, side);
       const ps = lerp(0.72, 0.98, grow);
       pupil.set({ x: px, y: GY, s: ps, flip: true, walk: (t > 1.9 && t < 2.55) || (side > 0 && side < 1) ? px * 0.06 : undefined, armF: 20 + bump(t, 2.55, 2.95) * 30, armB: 10, head: -6, o: (t > 1.85 ? 1 : 0) * (1 - become), blink: blinkAt(T, 6) });
       pupil2.set({ x: px, y: GY, s: ps, flip: true, armF: 70, armB: 10, head: 8, o: become, blink: blinkAt(T, 6) });
-      pose(pool, { x: 1000, y: GY + 4, s: 1 + side * 0.3, o: es(t, 2.3, 2.6) * (0.5 + night * 0.5) });
-      pose(kindle, { x: 1060, y: GY - 150, s: bump(t, 3.3, 3.7), r: T * 40, o: bump(t, 3.3, 3.7) });
+      pose(pool, { x: 1000 + DXP, y: GY + 4, s: 1 + side * 0.3, o: es(t, 2.3, 2.6) * (0.5 + night * 0.5) });
+      pose(kindle, { x: 1060 + DXP, y: GY - 150, s: bump(t, 3.3, 3.7), r: T * 40, o: bump(t, 3.3, 3.7) });
 
-      S.cam.x = kfl(t, [[-0.5, -30], [1.0, 0], [1.6, 0], [2.4, 50], [3.9, 50]]);
+      S.cam.x = S.portrait   // phone: the camera stays further left on v39a, so the blind man behind is not cut by the frame
+        ? kfl(t, [[-0.5, -90], [1.0, -90], [1.4, 0], [1.6, 0], [2.4, 50], [3.9, 50]])
+        : kfl(t, [[-0.5, -30], [1.0, 0], [1.6, 0], [2.4, 50], [3.9, 50]]);
       S.cam.z = 1.03 + es(t, 0.9, 1.3) * 0.05 - es(t, 1.8, 2.3) * 0.02;
       S.cam.y = 10 + es(t, 0.9, 1.3) * 30;
     };

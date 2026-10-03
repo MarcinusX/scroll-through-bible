@@ -24,6 +24,7 @@ export default {
   ],
   cam: { x: [-30, 30], y: [-20, 50], z: [1, 1.1] },
   build(S) {
+    const P = S.portrait;   // phone: the ring is a little tighter and the tags hang closer in, inside the screen
     const M = summitSet(S);
     const c = S.c;
     const pf = M.pf;
@@ -39,7 +40,7 @@ export default {
     });
     const shadowL = S.layer({ par: 0.42, sh: 1, flat: true });
     const L = S.layer({ par: 0.42, sh: 4 });
-    const T12 = LK12.map((m, i) => ({ ...m, slot: ringSlot(pf, RING_OF[i]), seed: c.rr(0, 9), at: AT[i], p: S.puppet(L.add(person(c, m.o))) }));
+    const T12 = LK12.map((m, i) => ({ ...m, slot: ringSlot(pf, RING_OF[i], P ? 48 : 56), seed: c.rr(0, 9), at: AT[i], p: S.puppet(L.add(person(c, m.o))) }));
     const judas = T12[11];
     const jShadow = shadowL.add(`<g opacity="0">${shadowPerson(c, judas.o, '#3a3040')}</g>`);
     const jesus = S.puppet(L.add(person(c, { ...CAST.jesus })));
@@ -49,12 +50,13 @@ export default {
     T12.forEach((m) => {
       const k = RING_OF[m.i] % 6;
       m.level = k % 2;
-      m.tagY = m.slot.y - 185 * m.slot.s - 70 - m.level * (k >= 4 ? 96 : 80);
+      m.tagY = m.slot.y - 185 * m.slot.s - 70 - m.level * (P && k === 5 ? 186 : k >= 4 ? 96 : 80);
       const name = m.name();
       let inner = `<g data-part="front">${nameTag(c, name, { size: 15, dark: m.k === 'judas' })}</g>`;
       if (m.k === 'peter') inner += `<g data-part="back" opacity="0">${nameTag(c, tr('Piotr', 'Peter'), { size: 19, w: 92 })}<g transform="translate(0 64) scale(.8)">${rockIcon(c)}</g></g>`;
       if (m.k === 'judas') inner += `<g data-part="back" opacity="0">${nameTag(c, tr(['który stał się', 'zdrajcą'], ['who became', 'a traitor']), { size: 15, dark: true })}</g>`;
-      m.tag = hanging(tagL, inner, { x: m.slot.x, y: m.tagY, len: 900 });
+      m.tagX = P ? 800 + (m.slot.flip ? 1 : -1) * [61, 100, 140, 179, 218, 228][k] : m.slot.x;
+      m.tag = hanging(tagL, inner, { x: m.tagX, y: m.tagY, len: 900 });
       m.front = m.tag.querySelector('[data-part="front"]');
       m.back = m.tag.querySelector('[data-part="back"]');
     });
@@ -87,7 +89,7 @@ export default {
         pose(rays[m.i], { x: SUN[0], y: SUN[1], sx: len * rk, sy: 1, r: (Math.atan2(hy - SUN[1], hx - SUN[0]) * 180) / PI, o: rk > 0.01 ? 1 : 0 });
         // the tag
         const drop = es(t, m.at, m.at + 0.2, ease.back);
-        pose(m.tag, { x: m.slot.x, y: lerp(-300, m.tagY, drop), r: Math.sin(T * 0.8 + m.seed) * 2, oy: 0, o: drop > 0.001 ? 1 : 0 });
+        pose(m.tag, { x: m.tagX, y: lerp(-300, m.tagY, drop), r: Math.sin(T * 0.8 + m.seed) * 2, oy: 0, o: drop > 0.001 ? 1 : 0 });
         if (m.back) {
           const k = m.k === 'judas' ? seg(t, 2.42, 2.56) : seg(t, 0.14, 0.26);
           pose(m.front, { sx: k < 0.5 ? Math.max(0.04, Math.cos(k * PI)) : 0.04, o: k < 0.5 ? 1 : 0 });
@@ -105,7 +107,7 @@ export default {
       const toRight = curM.slot.flip;
       jesus.set({ x: 800, y: SUMMIT.TOP, s: 1.0, flip: !toRight, armF: 16 + 44 + bump(t, curM.at - 0.04, curM.at + 0.3) * 30, armB: 10, head: -2, blink: blinkAt(T, 2) });
 
-      S.cam.x = kf(t, [[-0.5, 0], [0.1, -20], [0.7, 0], [1.0, 0], [1.6, 10], [2.0, 10], [2.5, 30]]);
+      S.cam.x = P ? 0 : kf(t, [[-0.5, 0], [0.1, -20], [0.7, 0], [1.0, 0], [1.6, 10], [2.0, 10], [2.5, 30]]);
       S.cam.y = kf(t, [[-0.5, 30], [0.3, 20], [2.0, 20], [2.5, 30]]);
       S.cam.z = kf(t, [[-0.5, 1.02], [0.3, 1.05], [2.0, 1.05], [2.5, 1.08]]);
     };

@@ -272,28 +272,29 @@ export function stillGroup(c, members) {
 export const BAL = {
   X: 800, Y: 222, ARM: 244, ROD: 60, SLOT_S: 0.42,
   // plates: row 1 hangs 118 below the beam end, row 2 another 104 below; ±60 from the rod's middle
-  slot(side, i, tilt = 0) {
+  // arm / spread (optional): a shorter beam and closer plates (phones)
+  slot(side, i, tilt = 0, arm = this.ARM, spread = 56) {
     const r = (tilt * PI) / 180;
-    const ex = this.X + side * Math.cos(r) * this.ARM, ey = this.Y + side * Math.sin(r) * this.ARM;
-    const dx = (i % 2 ? 1 : -1) * 56, dy = 118 + (i >> 1) * 104;
+    const ex = this.X + side * Math.cos(r) * arm, ey = this.Y + side * Math.sin(r) * arm;
+    const dx = (i % 2 ? 1 : -1) * spread, dy = 118 + (i >> 1) * 104;
     return [ex + dx, ey + dy];
   },
-  end(side, tilt = 0) { const r = (tilt * PI) / 180; return [this.X + side * Math.cos(r) * this.ARM, this.Y + side * Math.sin(r) * this.ARM]; },
+  end(side, tilt = 0, arm = this.ARM) { const r = (tilt * PI) / 180; return [this.X + side * Math.cos(r) * arm, this.Y + side * Math.sin(r) * arm]; },
 };
-export function balanceParts(c) {
+export function balanceParts(c, ARM = BAL.ARM) {
   const col = mix(C.ochre, C.wood3, 0.3);
   const beam = sheet()
-    .p(c.cut([[-BAL.ARM - 10, -7], [-40, -9], [0, -16], [40, -9], [BAL.ARM + 10, -7], [BAL.ARM + 10, 7], [0, 9], [-BAL.ARM - 10, 7]], 0.4, 10), col)
-    .p(c.cut(c.circ(-BAL.ARM, 0, 10, 12), 0.2, 3) + c.cut(c.circ(BAL.ARM, 0, 10, 12), 0.2, 3), shade(col, -0.2))
+    .p(c.cut([[-ARM - 10, -7], [-40, -9], [0, -16], [40, -9], [ARM + 10, -7], [ARM + 10, 7], [0, 9], [-ARM - 10, 7]], 0.4, 10), col)
+    .p(c.cut(c.circ(-ARM, 0, 10, 12), 0.2, 3) + c.cut(c.circ(ARM, 0, 10, 12), 0.2, 3), shade(col, -0.2))
     .p(c.cut(c.circ(0, 0, 16, 16), 0.3, 3), C.sun)
-    .x(c.ribbon([[-BAL.ARM + 20, -2], [BAL.ARM - 20, -2]], 1.4), shade(col, 0.3), 'opacity=".6"').out();
+    .x(c.ribbon([[-ARM + 20, -2], [ARM - 20, -2]], 1.4), shade(col, 0.3), 'opacity=".6"').out();
   const pivot = `<path d="M0 -1800V-14" stroke="${STRING}" stroke-width="1.6" fill="none"/>${sheet().p(c.cut([[-22, -30], [22, -30], [0, -6]], 0.3, 4), shade(col, -0.25)).out()}`;
   const rod = `<path d="M0 0V${BAL.ROD}" stroke="${STRING}" stroke-width="1.6" fill="none"/>${sheet().p(c.cut([[-70, BAL.ROD - 5], [70, BAL.ROD - 5], [70, BAL.ROD + 5], [-70, BAL.ROD + 5]], 0.3, 8), C.wood2).p(c.cut(c.circ(-66, BAL.ROD, 5, 8), 0.2, 2) + c.cut(c.circ(66, BAL.ROD, 5, 8), 0.2, 2), C.ochre).out()}`;
   return { beam, pivot, rod };
 }
 /** add the balance to layer L; returns { set(tilt, o) } that places beam, pivot and both rods */
-export function addBalance(L, c) {
-  const P = balanceParts(c);
+export function addBalance(L, c, { arm = BAL.ARM } = {}) {
+  const P = balanceParts(c, arm);
   const pivot = L.add(`<g>${P.pivot}</g>`);
   const rods = [-1, 1].map((side) => ({ side, el: L.add(`<g>${P.rod}</g>`) }));
   const beam = L.add(`<g>${P.beam}</g>`);
@@ -301,7 +302,7 @@ export function addBalance(L, c) {
     set(tilt = 0, { y = BAL.Y, o = 1 } = {}) {
       pose(pivot, { x: BAL.X, y, o });
       pose(beam, { x: BAL.X, y, r: tilt, o });
-      rods.forEach((r) => { const [ex, ey] = BAL.end(r.side, tilt); pose(r.el, { x: ex, y: ey + (y - BAL.Y), o }); });
+      rods.forEach((r) => { const [ex, ey] = BAL.end(r.side, tilt, arm); pose(r.el, { x: ex, y: ey + (y - BAL.Y), o }); });
     },
   };
 }

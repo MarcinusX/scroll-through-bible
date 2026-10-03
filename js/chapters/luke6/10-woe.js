@@ -31,11 +31,13 @@ export default {
   build(S) {
     const P = plainSet(S);
     const c = S.c;
+    // phone: a shorter beam with the plates closer together, so both arms stay inside the screen
+    const ARM = S.portrait ? 196 : BAL.ARM, SPREAD = S.portrait ? 50 : 56;
     const aura = P.aura;
 
     const BL = S.layer({ par: 0.12, sh: 6, rise: 0 });
     const lightL = BL.add(`<g opacity="0">${glow(210, 1, 'halo-glow')}</g>`);
-    const bal = addBalance(BL, c);
+    const bal = addBalance(BL, c, { arm: ARM });
     const plaqueL = BL.add(`<g>${beamPlaque(c, tr('Błogosławieni', 'Blessed'), { size: 19, drop: 30 })}</g>`);
     const plaqueR = BL.add(`<g>${beamPlaque(c, tr('Biada', 'Woe'), { size: 19, drop: 30, fill: mix(C.stone2, C.cream, 0.4) })}</g>`);
     const PLL = S.layer({ par: 0.14, sh: 6, rise: 0 });
@@ -56,15 +58,16 @@ export default {
       const [lx, ly] = beamAt(-150, tilt), [rx, ry] = beamAt(150, tilt);
       pose(plaqueL, { x: lx, y: ly, r: Math.sin(T * 0.9) * 1.5 - tilt * 0.3 });
       pose(plaqueR, { x: rx, y: ry, r: Math.sin(T * 0.8 + 1) * 1.5 - tilt * 0.3 });
-      const [ex, ey] = BAL.end(-1, tilt);
+      const [ex, ey] = BAL.end(-1, tilt, ARM);
       pose(lightL, { x: ex, y: ey + 170, s: 1.2, o: es(t, 4.4, 4.9) * 0.9 });
 
-      blessed.forEach((pl) => { const [sx, sy] = BAL.slot(-1, pl.i, tilt); placePlate(pl, sx, sy, BAL.SLOT_S, 1, 1, Math.sin(T * 0.8 + pl.i) * 0.6); });
-      woes.forEach((pl) => drivePlate(pl, strs[pl.i], t, T, { bx: BIG[0], by: BIG[1], ...PLAN[pl.i], slot: BAL.slot(1, pl.i, tilt) }, es, ease.back));
+      blessed.forEach((pl) => { const [sx, sy] = BAL.slot(-1, pl.i, tilt, ARM, SPREAD); placePlate(pl, sx, sy, BAL.SLOT_S, 1, 1, Math.sin(T * 0.8 + pl.i) * 0.6); });
+      woes.forEach((pl) => drivePlate(pl, strs[pl.i], t, T, { bx: S.portrait ? 950 : BIG[0], by: BIG[1], ...PLAN[pl.i], slot: BAL.slot(1, pl.i, tilt, ARM, SPREAD) }, es, ease.back));
 
       FP.forEach((p) => {
         const k = es(t, 4.06 + p.i * 0.08, 4.32 + p.i * 0.08, ease.back);
-        pose(p.el, { x: 700 + p.i * 100, y: lerp(-400, 380, k), r: Math.sin(T * 0.9 + p.i) * 1.2, oy: 0, o: k > 0.01 ? 1 : 0 });
+        pose(p.el, { x: S.portrait ? 734 + p.i * 66 : 700 + p.i * 100, y: lerp(-400, 380, k), s: S.portrait ? 0.72 : 1,   // phone: smaller, between the two arms' plates
+        r: Math.sin(T * 0.9 + p.i) * 1.2, oy: 0, o: k > 0.01 ? 1 : 0 });
       });
 
       const show = t < 4 ? bump(t % 1, 0.2, 0.9) : 0;

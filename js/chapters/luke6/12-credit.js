@@ -15,7 +15,7 @@ import { seg, es, ease, bump } from '../../core/anim.js';
 import { ENEMY, TAXMAN, ROUGH, AFTERNOON, kf, moving, headAt, handAt, heart, thought, equals, wreath6, loaf, cup, jug, coin, ledger, sparkle, storyFrame, halo, rayBurst, figure, tr, PI } from './lib.js';
 
 const GY = 706;
-const AX = 540, BX = 650, TX = 950, RX = 1060;
+const AX0 = 540, BX0 = 650, TX0 = 950, RX0 = 1060;
 const A = { robe: C.dustyBlue, mantle: C.wheatRobe, hair: C.hair2, hairStyle: 'short', beard: 'full', skin: C.skin2, belt: C.leather };
 const B = { robe: C.roseRobe, hair: C.hair3, hairStyle: 'wrap', veil: C.linen2, veil2: C.clayMantle, beard: 'short', skin: C.skin3, belt: C.rope };
 
@@ -50,6 +50,8 @@ export default {
   ],
   cam: { x: [-40, 40], y: [-30, 40], z: [1, 1.1] },
   build(S) {
+    // phone: the two pairs stand a little closer to the well, the sinners clear of the thread
+    const [AX, BX, TX, RX] = S.portrait ? [566, 668, 932, 1026] : [AX0, BX0, TX0, RX0];
     const c = S.c;
     sky(S, AFTERNOON);
     const hangL = S.layer({ par: 0.04, sh: 4 });

@@ -10,9 +10,9 @@ import { along } from '../mark3/lib.js';
 import { summitSet, SUMMIT, SUMMIT_PATH, LK12, folk, stillGroup, kf, sparkle, halo, hungWord, tr, PI } from './lib.js';
 
 /** the half-ring round Him on the summit: slot i (0..5 left, inner → outer; 6..11 right) */
-export function ringSlot(pf, i) {
+export function ringSlot(pf, i, step = 56) {
   const side = i < 6 ? -1 : 1, k = i % 6;
-  const x = 800 + side * (74 + k * 56);
+  const x = 800 + side * (74 + k * step);
   return { x, y: pf(x) + 6 + (k % 2) * 8, s: 0.8 - k * 0.012, flip: side > 0 };
 }
 /** the order of the Twelve in the ring: Luke's pairs, one left, one right */

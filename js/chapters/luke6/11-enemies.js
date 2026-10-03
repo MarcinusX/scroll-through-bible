@@ -117,7 +117,7 @@ export default {
       swing(cl, 640 + Math.sin(T * 0.1) * 20, 120, T, 1.2, 0.6, 1);
 
       /* the man: to the neighbour's door with the figs, back; kneels; stands; is struck; is robbed; gives */
-      const hK = [[0.1, 440], [0.62, 860], [0.9, 860], [1.08, HX], [4.0, HX], [4.2, 640]];
+      const hK = [[0.1, 440], [0.62, 860], [0.9, 860], [1.08, HX], [4.0, HX], [4.2, S.portrait ? 680 : 640]];   // phone: the giving happens inside the screen
       const hx = kf(t, hK);
       const hWalk = moving(t, hK);
       const pray = es(t, 1.62, 1.68) * (1 - es(t, 2.0, 2.06));
@@ -137,7 +137,8 @@ export default {
       kneel.set({ x: hx, y: GY, s: 1.0, flip: false, armF: 60, armB: 140, head: -16, o: pray, blink: 0 });
 
       /* the neighbour */
-      const eK = [[0, 1060], [1.02, 1060], [1.12, 1040], [2.05, EX], [4.45, EX], [4.95, 1180]];
+      const E0 = S.portrait ? 1020 : 1060;   // phone: the neighbour clear of the thread at the start
+      const eK = [[0, E0], [1.02, E0], [1.12, E0 - 20], [2.05, EX], [4.45, EX], [4.95, S.portrait ? 1090 : 1180]];
       const ex = kf(t, eK);
       const glare = es(t, 0.05, 0.25);
       const shout = bump(t, 1.04, 1.4);
@@ -187,7 +188,7 @@ export default {
       pose(q, { x: ehx - 16, y: ehy - 66, s: puzzled, o: puzzled });
 
       /* v30 — the beggar and his boy; bread and a coin; the neighbour goes off with the cloak and the jar */
-      const bK = [[3.9, 200], [4.3, 520]];
+      const bK = [[3.9, 200], [4.3, S.portrait ? 584 : 520]];
       const bx = kf(t, bK);
       const got = es(t, 4.4, 4.5);
       beggar.set({ x: bx, y: GY, s: 0.96, flip: false, walk: moving(t, bK) ? bx * 0.05 : undefined, armF: 40 + got * 40, armB: 10 + got * 40, head: 8 - got * 10, o: seg(t, 3.88, 3.95), blink: blinkAt(T, 5) });

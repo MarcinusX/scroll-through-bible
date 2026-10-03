@@ -57,7 +57,7 @@ export default {
       { x: 470, kind: 'judge', a: manO(pc, { robe: C.ochreRobe }), b: womanO(pc, { robe: C.tealRobe }) },
       { x: 1110, kind: 'condemn', a: manO(pc, { robe: C.plumRobe, mantle: C.linen2 }), b: manO(pc, { robe: C.stone2 }) },
       { x: 640, kind: 'release', a: manO(pc, { robe: C.clayMantle, belt: C.sun }), b: manO(pc, { robe: mix(C.stone2, C.sand2, 0.4) }) },
-    ].map((p, i) => ({ ...p, i, seed: pc.rr(0, 9), pa: S.puppet(L.add(person(c, p.a))), pb: S.puppet(L.add(person(c, { ...p.b, pose: 'kneel' }))), pb2: S.puppet(L.add(person(c, p.b))) }));
+    ].map((p, i) => (S.portrait ? { ...p, x: [528, 1036, 690][i] } : p)).map((p, i) => ({ ...p, i, seed: pc.rr(0, 9), pa: S.puppet(L.add(person(c, p.a))), pb: S.puppet(L.add(person(c, { ...p.b, pose: 'kneel' }))), pb2: S.puppet(L.add(person(c, p.b))) }));
     const ver = L.add(`<g>${verdict(c)}</g>`);
     const verL = L.add(`<g opacity="0">${half(c, -1)}</g>`), verR = L.add(`<g opacity="0">${half(c, 1)}</g>`);
     const fet = L.add(`<g>${fetter(c, 11)}<g transform="translate(10 0)">${chain(c, 3, 6)}</g><g transform="translate(34 0)">${fetter(c, 11)}</g></g>`);
@@ -85,7 +85,7 @@ export default {
       PAIRS.forEach((p) => {
         const flip = p.x > 800;
         const d = flip ? -1 : 1;
-        const ax = p.x - d * 40, bx = p.x + d * 44;
+        const ax = p.x - d * (S.portrait ? 34 : 40), bx = p.x + d * (S.portrait ? 38 : 44);   // phone: the three pairs inside the screen
         const k0 = 1.05 + p.i * 0.18;
         const act = es(t, k0, k0 + 0.16);
         const joy = es(t, k0 + 0.16, k0 + 0.32);

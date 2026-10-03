@@ -17,7 +17,7 @@ const GY = 700;
 const GOOD = { robe: C.skyVeil, mantle: C.wheatRobe, hair: C.hair2, hairStyle: 'short', beard: 'full', skin: C.skin2, belt: C.leather };
 const EVIL = { robe: mix(C.plumRobe, C.storm2, 0.35), mantle: mix(C.soil, C.storm, 0.3), hair: C.hair3, hairStyle: 'wild', beard: 'short', skin: C.skin3, belt: C.ochre };
 const PICKER = { robe: C.ochreRobe, hair: C.hair, hairStyle: 'wrap', veil: C.linen2, veil2: C.clayMantle, beard: 'short', skin: C.skin4, belt: C.rope };
-const GT = [470, GY - 10], BT = [1130, GY - 10];
+const GT0 = [470, GY - 10], BT0 = [1130, GY - 10];
 
 function heartChest(c, dark) {
   const ch = chest(c, { w: 70, h: 44, dark });
@@ -51,11 +51,14 @@ export default {
   ],
   cam: { x: [-40, 40], y: [-30, 50], z: [1, 1.12] },
   build(S) {
+    // phone: the two trees stand further in, the bad one clear of the thread
+    const GT = S.portrait ? [540, GY - 10] : GT0, BT = S.portrait ? [1010, GY - 10] : BT0;
     const c = S.c;
     sky(S, GOLDEN);
     const hangL = S.layer({ par: 0.04, sh: 4 });
     const sunEl = hanging(hangL, sun(c, 42), { x: 820, y: 150, len: 800 });
-    const cl = hanging(hangL, cloud(c, 170), { x: 1180, y: 140, len: 800 });
+    const CLX = S.portrait ? 1040 : 1180;   // phone: the cloud clear of the thread
+    const cl = hanging(hangL, cloud(c, 170), { x: CLX, y: 140, len: 800 });
     S.layer({ par: 0.1, sh: 2 }).add(band(c, { y: 440, amps: [18, 8, 3], lens: [1100, 380, 130], color: mix(C.hillFar, C.dusk, 0.15) }).markup);
     S.layer({ par: 0.18, sh: 3 }).add(hillsWith(c, { y: 520, amps: [12, 6, 2], lens: [900, 300, 110], color: mix(C.hillMid, C.wheat, 0.2), trees: 12, treeColor: C.olive, treeH: 18 }).markup);
     const G = S.layer({ par: 0.3, sh: 3 });
@@ -95,7 +98,7 @@ export default {
     return (t, time) => {
       const T = time;
       swing(sunEl, 820, 150, T, 1, 0.6);
-      swing(cl, 1180 + Math.sin(T * 0.1) * 20, 140, T, 1.2, 0.6, 1);
+      swing(cl, CLX + Math.sin(T * 0.1) * 20, 140, T, 1.2, 0.6, 1);
 
       /* v43 — the fruit comes */
       goodF.forEach((f) => { const k = es(t, 0.05 + f.i * 0.04, 0.4 + f.i * 0.04, ease.back); pose(f.el, { x: f.x, y: f.y, s: k, o: k > 0.01 ? 1 : 0 }); });

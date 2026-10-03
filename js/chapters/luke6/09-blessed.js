@@ -33,12 +33,14 @@ export default {
   build(S) {
     const P = plainSet(S);
     const c = S.c;
+    // phone: a shorter beam with the plates closer together, so both arms stay inside the screen
+    const ARM = S.portrait ? 196 : BAL.ARM, SPREAD = S.portrait ? 50 : 56;
     const aura = P.aura;
     const joy = P.dis.map(() => P.fx.add(`<g opacity="0">${sparkle(c, 10)}</g>`));
 
     /* the balance and the plates */
     const BL = S.layer({ par: 0.12, sh: 6, rise: 0 });
-    const bal = addBalance(BL, c);
+    const bal = addBalance(BL, c, { arm: ARM });
     const plaque = BL.add(`<g>${beamPlaque(c, tr('Błogosławieni', 'Blessed'), { size: 19, drop: 30 })}</g>`);
     const PLL = S.layer({ par: 0.14, sh: 6, rise: 0 });
     const strs = [0, 1, 2, 3].map(() => PLL.add(`<g>${longString}</g>`));
@@ -56,13 +58,13 @@ export default {
       const [px, py] = beamAt(-150, tilt, lerp(-300, BAL.Y, lower));
       pose(plaque, { x: px, y: py, r: Math.sin(T * 0.9) * 1.5 });
 
-      plates.forEach((pl) => drivePlate(pl, strs[pl.i], t, T, { bx: BIG[0], by: BIG[1], ...PLAN[pl.i], slot: BAL.slot(-1, pl.i, tilt) }, es, ease.back));
+      plates.forEach((pl) => drivePlate(pl, strs[pl.i], t, T, { bx: S.portrait ? 650 : BIG[0], by: BIG[1], ...PLAN[pl.i], slot: BAL.slot(-1, pl.i, tilt, ARM, SPREAD) }, es, ease.back));
 
       /* the prophets */
       PR.forEach((p) => {
         const k = es(t, 5.08 + p.i * 0.08, 5.34 + p.i * 0.08, ease.back);
-        const x = 700 + p.i * 100;
-        pose(p.el, { x, y: lerp(-400, 360, k), r: Math.sin(T * 0.9 + p.i) * 1.2, oy: 0, o: k > 0.01 ? 1 : 0 });
+        const x = S.portrait ? 764 + p.i * 76 : 700 + p.i * 100;   // phone: closer in, clear of the blessings' plates on the left arm
+        pose(p.el, { x, y: lerp(-400, 360, k), s: S.portrait ? 0.84 : 1, r: Math.sin(T * 0.9 + p.i) * 1.2, oy: 0, o: k > 0.01 ? 1 : 0 });
         const sk = bump(t, 5.3 + p.i * 0.08, 5.95);
         pose(stones[p.i], { x: x + 30, y: 330, s: 0.8, r: Math.sin(T * 2 + p.i) * 6, o: sk * 0.9 });
       });

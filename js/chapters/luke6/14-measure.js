@@ -12,7 +12,7 @@ import { seg, es, ease, bump } from '../../core/anim.js';
 import { AFTERNOON, kf, moving, headAt, handAt, loaf, scoop, sparkle, storyFrame, equals, tr, PI } from './lib.js';
 
 const GY = 706;
-const WX = 690, MX = 850, SX = 1080, BGX = 470;
+const WX = 690, MX = 850, SX0 = 1080, BGX0 = 470;
 const WOMAN = { robe: C.roseRobe, mantle: C.ochreRobe, hairStyle: 'veil', veil: C.linen2, veil2: C.ochreRobe, beard: 'none', skin: C.skin2, belt: null };
 const MERCHANT = { robe: C.linen2, mantle: C.tealRobe, hair: C.hair3, hairStyle: 'wrap', veil: C.cream, veil2: C.terracotta, beard: 'full', skin: C.skin3, belt: C.leather };
 const STINGY = { robe: C.plumRobe, mantle: C.stone, hair: C.greyHair, hairStyle: 'short', beard: 'short', beardColor: C.greyHair, skin: C.skin2, belt: C.sun };
@@ -47,6 +47,8 @@ export default {
   ],
   cam: { x: [-40, 40], y: [-10, 60], z: [1, 1.16] },
   build(S) {
+    // phone: the beggar sits further along his wall and the stingy man stands nearer the stall, both on screen
+    const SX = S.portrait ? 1030 : SX0, BGX = S.portrait ? 532 : BGX0;
     const c = S.c;
     sky(S, AFTERNOON);
     const hangL = S.layer({ par: 0.04, sh: 4 });
