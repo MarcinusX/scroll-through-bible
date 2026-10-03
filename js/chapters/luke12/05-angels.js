@@ -15,8 +15,8 @@ import { village, DAY, angel, cloudBand, L3, dove, flapWings, headAt, hand, ques
 
 const F = 716;                        // the square
 const UP = 338, JX = 800;             // the floor of cloud
-const CF = { x: 600, flip: true }, D = { x: 960, flip: false };
-const QS = [{ x: 430, flip: false }, { x: 506, flip: false }, { x: 1040, flip: true }, { x: 1110, flip: true }];
+const CF = { x: 600, flip: true }, D0 = { x: 960, flip: false };
+const QS0 = [{ x: 430, flip: false }, { x: 506, flip: false }, { x: 1040, flip: true }, { x: 1110, flip: true }];
 const ANG = [{ x: 590, flip: false }, { x: 672, flip: false }, { x: 928, flip: true }, { x: 1010, flip: true }];
 
 export default {
@@ -29,6 +29,9 @@ export default {
   ],
   cam: { x: [-30, 40], y: [-60, 40], z: [1, 1.1] },
   build(S) {
+    // phone: the questioners and the man who denies stand in from the edges (the blasphemer was under the thread)
+    const D = S.portrait ? { ...D0, x: 925 } : D0;
+    const QS = S.portrait ? [500, 548, 995, 1055].map((x, i) => ({ ...QS0[i], x })) : QS0;
     const V = village(S, { skyCols: DAY, sunAt: [1250, -600], seed: 'lk12-square' });
     const c = S.c;
 
@@ -142,6 +145,7 @@ export default {
       S.cam.x = kf(t, [[-0.5, -20], [0.9, -20], [1.2, 30], [1.95, 30], [2.2, -20], [2.95, -20], [3.2, 30]]);
       S.cam.y = kf(t, [[-0.5, -20], [3.0, -20], [3.3, 10]]);
       S.cam.z = 1.02 + bump(t, 2.0, 3.0) * 0.03;
+      if (S.portrait) { S.cam.x = 5; S.cam.z = 1.0; }   // phone: no pan or push-in, both groups stay whole between the edge and the thread
     };
   },
 };

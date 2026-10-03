@@ -14,7 +14,7 @@ import { plainSet, RISE, DAY, seatDisciples, poseSeated, lily, spindle, newMantl
 
 const JX = 800;
 const LIL = [[330, 640], [420, 662], [560, 650], [1040, 652], [1180, 648], [1270, 668], [470, 690], [1120, 690], [440, 728], [500, 736], [585, 730], [760, 734], [846, 738], [1015, 732], [1100, 736], [1160, 726]];
-const OVX = 1112, WX = 1040;
+const OVX0 = 1112, WX0 = 1040;
 
 function solomonPlate(c, id) {
   const s = sheet().p(c.cut(c.circ(0, 0, 84, 48), 0.5, 6), C.sun).p(c.cut(c.circ(0, 0, 76, 48), 0.5, 6), mix(C.parchment, C.halo, 0.4)).out();
@@ -31,6 +31,8 @@ export default {
   ],
   cam: { x: [-30, 60], y: [-40, 60], z: [1, 1.12] },
   build(S) {
+    // phone: the woman and her oven step in from under the thread, and the camera stays a little to the right
+    const PO = S.portrait, OVX = PO ? 1052 : OVX0, WX = PO ? 996 : WX0;
     const P = plainSet(S, { skyCols: DAY, crowd: false, near: false });
     const c = S.c;
     const dis = seatDisciples(S, P);
@@ -95,7 +97,7 @@ export default {
       const mk = es(t, 2.5, 2.8, ease.out);
       pose(mant, { x: thx - 2, y: lerp(-1500, thy + 14, mk), o: mk > 0.01 ? 1 : 0 });
 
-      S.cam.x = lerp(0, 40, es(t, 2.0, 2.3)) - es(t, 2.55, 2.75) * 40;
+      S.cam.x = PO ? lerp(0, 60, es(t, 2.0, 2.3)) - es(t, 2.55, 2.75) * 20 : lerp(0, 40, es(t, 2.0, 2.3)) - es(t, 2.55, 2.75) * 40;
       S.cam.y = 50 - es(t, 1.0, 1.3) * 80 + es(t, 2.0, 2.3) * 60;
       S.cam.z = 1.06 - es(t, 1.0, 1.3) * 0.04 + es(t, 2.0, 2.3) * 0.02;
     };

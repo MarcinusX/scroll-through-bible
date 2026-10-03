@@ -81,9 +81,9 @@ export default {
 
       /* v15b — his life does not come from what he has */
       const lk = es(t, 3.2, 3.3, ease.back), lu = es(t, 3.3, 3.6);
-      pose(life, { x: lerp(ahx, 560, lu), y: lerp(ahy - 60, 330, lu) + (time ? Math.sin(T * 2) * 3 : 0), s: lk * (1 + lu * 0.5), o: lk > 0.01 ? 1 : 0 });
+      pose(life, { x: lerp(ahx, S.portrait ? 610 : 560, lu), y: lerp(ahy - 60, 330, lu) + (time ? Math.sin(T * 2) * 3 : 0), s: lk * (1 + lu * 0.5), o: lk > 0.01 ? 1 : 0 });
       const gu = es(t, 3.35, 3.65);
-      pose(small, { x: lerp(HX, 1000, gu), y: lerp(GY - 60, 350, gu), s: 0.6 + gu * 0.8, o: gu > 0.01 ? 1 : 0 });
+      pose(small, { x: lerp(HX, S.portrait ? 955 : 1000, gu), y: lerp(GY - 60, 350, gu), s: 0.6 + gu * 0.8, o: gu > 0.01 ? 1 : 0 });
       const ek = es(t, 3.5, 3.75, ease.out);
       hangAt(ne, 780, lerp(-1500, 330, ek), T, 1.4, 0.8);
 

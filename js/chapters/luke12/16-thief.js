@@ -21,9 +21,11 @@ export default {
     { v: 39 },
     { v: 40 },
   ],
-  cam: { x: [-20, 120], y: [-60, 30], z: [1, 1.1] },
+  cam: { x: [-20, 300], y: [-60, 30], z: [1, 1.1] },
   build(S) {
     const c = S.c;
+    // phone: the camera goes further right and the thief flees more slowly, so he is seen at the wall, not under the thread
+    const PO = S.portrait, CX = PO ? 290 : 110;
     const NIGHTC = mix(C.night, C.duskViolet, 0.2);
     S.defs(`<clipPath id="lk12-watch-clip2"><circle r="47"/></clipPath>`);
     sky(S, SKIES.deep);
@@ -62,7 +64,7 @@ export default {
       const creep = es(t, 0.12, 0.45);
       const [tx, ty] = alongPts(ROAD, creep);
       const dig = bump(t, 0.42, 0.6);
-      const flee = es(t, 0.66, 0.98);
+      const flee = PO ? es(t, 0.66, 1.0, (u) => u * u) : es(t, 0.66, 0.98);
       const [fx, fy] = alongPts(ROAD, 1 - flee);
       const thX = flee > 0 ? fx : tx, thY = flee > 0 ? fy : ty;
       thief.set({ x: thX, y: thY + 6, s: lerp(0.7, 0.96, flee > 0 ? 1 - flee : creep), flip: flee <= 0, walk: (creep > 0 && creep < 1) || (flee > 0 && flee < 1) ? thX * 0.05 : undefined, armF: 40 + dig * 60, armB: 20 + bump(t, 0.7, 0.85) * 60, head: flee > 0 ? -6 : 8, lean: flee > 0 ? -6 : 8, o: seg(t, 0.12, 0.16) * (1 - es(t, 1.0, 1.06)) });
@@ -93,7 +95,7 @@ export default {
       pose(rise, { x: 700, y: lerp(560, 260, rk), s: 0.6 + rk * 0.6, r: T * 2, o: rk });
       starL.fade(1 - rk * 0.7);
 
-      S.cam.x = lerp(20, 110, es(t, 0.1, 0.4)) - es(t, 1.0, 1.3) * 110;
+      S.cam.x = lerp(20, CX, es(t, 0.1, 0.4)) - es(t, 1.0, 1.3) * CX;
       S.cam.y = -es(t, 1.3, 1.7) * 50;
       S.cam.z = 1.06 - es(t, 1.3, 1.7) * 0.05;
     };

@@ -22,6 +22,8 @@ export default {
   build(S) {
     const P = plainSet(S);
     const c = S.c;
+    const PO = S.portrait;
+    const PHX = PO ? [968, 1030] : PH.map((m) => m.x);   // phone: the masked Pharisee stays clear of the thread
     // each knot walks down its road, then out to its place
     P.crowd.forEach((g) => {
       const road = ROADS[g.road];
@@ -29,7 +31,7 @@ export default {
       g.d = (g.i % 5) * 0.06 + (g.road === 1 ? 0.08 : 0);
     });
     /* two Pharisees at the edge of the crowd; one has a mask on a stick */
-    const phs = PH.map((m) => ({ ...m, seed: c.rr(0, 9), p: S.puppet(P.act.add(person(c, pharisee(m.i + 1)))) }));
+    const phs = PH.map((m, i) => ({ ...m, x: PHX[i], seed: c.rr(0, 9), p: S.puppet(P.act.add(person(c, pharisee(m.i + 1)))) }));
     const maskEl = P.act.add(`<g>${mask(c, { r: 21 })}</g>`);
     const puffs = [[520, 690], [650, 668], [980, 668], [1110, 690], [720, 640], [890, 640], [400, 700], [1230, 700]].map(([x, y], i) => ({ x, y, i, el: P.fx.add(`<g opacity="0">${dustPuff(c, 18)}</g>`) }));
     const voice = voiceRings(P.act, c, { n: 3, color: C.sun, r: 38, w: 5 });
@@ -87,7 +89,7 @@ export default {
       const ek = es(t, 2.3, 2.55, ease.out);
       hangAt(eq, 800, lerp(-1500, 300, ek), T, 1.4, 0.8, 1);
       const mk = es(t, 2.38, 2.65, ease.out);
-      hangAt(maskTag, 972, lerp(-1500, 316, mk), T, 1.2, 0.7, 2);
+      hangAt(maskTag, PO ? 930 : 972, lerp(-1500, 316, mk), T, 1.2, 0.7, 2);
       const lift = es(t, 2.45, 2.7);
       phs.forEach((m) => {
         const k = es(t, 1.2 + m.i * 0.08, 1.7 + m.i * 0.08);

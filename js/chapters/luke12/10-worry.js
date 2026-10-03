@@ -54,7 +54,8 @@ export default {
       clouds.forEach((cl) => {
         const k = es(t, 0.08 + cl.i * 0.06, 0.3 + cl.i * 0.06, ease.back);
         const up = es(t, 0.6 + cl.i * 0.04, 0.95, ease.in);
-        pose(cl.el, { x: cl.x, y: cl.y - up * 700 + (time ? Math.sin(T * 1.3 + cl.i) * 4 : 0), s: k, o: k > 0.01 ? 1 : 0 });
+        pose(cl.el, { x: cl.x, y: cl.y - up * (S.portrait ? 1150 : 700) +   // phone: drawn right up out of sight, not parked under the tag
+                 (time ? Math.sin(T * 1.3 + cl.i) * 4 : 0), s: k, o: k > 0.01 ? 1 : 0 });
       });
 
       /* v23 — life more than food, the body more than clothing */

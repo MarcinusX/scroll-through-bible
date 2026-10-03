@@ -35,6 +35,9 @@ export default {
   cam: { x: [-40, 60], y: [-80, 30], z: [1, 1.14] },
   build(S) {
     const c = S.c;
+    const PO = S.portrait;   // phone: the neighbours and the words in the light come in from under the thread
+    const NBX = PO ? [925, 995, 1065] : NB.map((n) => n.x);
+    const TO = PO ? [[900, 450], [968, 415], [1032, 460]] : [[1000, 470], [1090, 430], [1170, 480]];
     sky(S, NIGHT);
     const morn = sky(S, MORNING, { name: 'morn', rise: 0 });
     morn.layer.fade(0);
@@ -67,13 +70,13 @@ export default {
 
     /* the street: neighbours, the crier */
     const pL = S.layer({ par: 0.5, sh: 5 });
-    const nb = NB.map((n, i) => ({ ...n, i, seed: c.rr(0, 9), p: S.puppet(pL.add(person(c, i === 1 ? womanO(c, { robe: C.roseRobe }) : manO(c)))) }));
+    const nb = NB.map((n, i) => ({ ...n, x: NBX[i], i, seed: c.rr(0, 9), p: S.puppet(pL.add(person(c, i === 1 ? womanO(c, { robe: C.roseRobe }) : manO(c)))) }));
     const crier = S.puppet(pL.add(person(c, manO(c, { robe: C.ochreRobe, mantle: C.tealRobe, belt: C.leather }))));
     const voice = voiceRings(pL, c, { n: 3, color: C.sun, r: 40, w: 6 });
 
     /* words */
     const fx = S.layer({ par: 0.5, sh: 6 });
-    const WORDS = [0, 1, 2].map((i) => ({ i, dark: fx.add(`<g opacity="0">${darkKnot(c, 14)}</g>`), light: fx.add(`<g opacity="0">${wordSlip(c, 44)}</g>`), to: [[1000, 470], [1090, 430], [1170, 480]][i] }));
+    const WORDS = [0, 1, 2].map((i) => ({ i, dark: fx.add(`<g opacity="0">${darkKnot(c, 14)}</g>`), light: fx.add(`<g opacity="0">${wordSlip(c, 44)}</g>`), to: TO[i] }));
     const whisper = fx.add(`<g opacity="0">${darkKnot(c, 8)}</g>`);
     const big = fx.add(`<g transform="translate(0 -1500)"><path d="M-60 -2400V-36M60 -2400V-36" stroke="rgba(74,54,34,.55)" stroke-width="1.3" fill="none"/>${scroll(c, 180)}</g>`);
     const sparks = [0, 1, 2].map(() => fx.add(`<g opacity="0">${sparkle(c, 12)}</g>`));

@@ -29,9 +29,11 @@ export default {
     { v: 58, cont: true, text: 'by cię nie pociągnął do sędziego; a sędzia przekazałby cię dozorcy, dozorca zaś wtrąciłby cię do więzienia.' },
     { v: 59 },
   ],
-  cam: { x: [-80, 140], y: [0, 60], z: [1, 1.28] },
+  cam: { x: [-80, 200], y: [0, 60], z: [1, 1.28] },
   build(S) {
     const c = S.c;
+    // phone: the camera goes further right at the prison, and the hung prison window comes in from the thread
+    const PO = S.portrait;
     sky(S, ['#d8cfb8', '#f2dcb4', '#f7e6c4']);
     const hangL = S.layer({ par: 0.04, sh: 4 });
     const sunEl = hanging(hangL, sun(c, 40, { rays: C.sunDeep }), { x: 300, y: 160, len: 800 });
@@ -117,7 +119,7 @@ export default {
         pose(co, { x: lerp(winX - 6, bx + 4, k), y: lerp(winY + 20, by, k) - Math.sin(k * PI) * 20, o: k > 0 && k < 1 ? 1 : 0 });
       });
       const pk = es(t, 2.02, 2.25, ease.out);
-      const PX0 = 1085, PY0 = lerp(-1500, 250, pk);
+      const PX0 = PO ? 990 : 1085, PY0 = lerp(-1500, 250, pk);
       pose(plateEl, { x: PX0, y: PY0, r: time ? Math.sin(T * 0.7) * 0.8 : 0, oy: 0 });
       pose(hand2, { x: PX0 + 10, y: PY0 + 96, o: es(t, 2.25, 2.3) });
       drops.forEach((d, i) => {
@@ -127,7 +129,7 @@ export default {
         if (i < 4) pose(pileC[i], { x: PX0 + (i - 1.5) * 12, y: PY0 + 168 - (i % 2) * 3, o: k >= 1 ? 1 : 0 });
       });
 
-      S.cam.x = lerp(-80, -20, es(t, 0.3, 0.9)) + es(t, 1.0, 1.4) * 60 + es(t, 1.5, 1.9) * 60;
+      S.cam.x = lerp(-80, -20, es(t, 0.3, 0.9)) + es(t, 1.0, 1.4) * 60 + (PO ? es(t, 1.3, 1.65) * 150 : es(t, 1.5, 1.9) * 60);   // phone: at the prison before the sentence gets there
       S.cam.y = 60 - es(t, 2.4, 2.7) * 40;
       S.cam.z = 1.26 - es(t, 2.4, 2.7) * 0.08;
     };

@@ -13,7 +13,7 @@ import { behindOf, plainSet, RISE, DAY, seatDisciples, poseSeated, globe, kingdo
 import { makeCutter } from '../../core/paper.js';
 
 const JX = 800;
-const GX = 600, GYY = 300, GR = 84;       // the globe
+const GX0 = 600, GYY = 300, GR = 84;       // the globe
 
 export default {
   id: 'lk12-seek',
@@ -24,6 +24,8 @@ export default {
   ],
   cam: { x: [-30, 30], y: [-60, 40], z: [1, 1.1] },
   build(S) {
+    // phone: the globe and its runners hang further in, the things the Father keeps float clear of the thread
+    const PO = S.portrait, GX = PO ? 670 : GX0, KX = PO ? 915 : 940, KD = PO ? 60 : 70, LX = PO ? 975 : 1000;
     const P = plainSet(S, { skyCols: DAY, crowd: false, near: false });
     const c = S.c;
     const dis = seatDisciples(S, P);
@@ -73,7 +75,7 @@ export default {
         pose(l.el, { x: GX + Math.cos(ang) * (GR + 64), y: gy + Math.sin(ang) * (GR + 64), r: ((ang + PI / 2) * 180) / PI, o: gk > 0.3 ? 1 : 0 });
       });
       const lk = es(t, 1.35, 1.65);
-      pose(light, { x: 1000, y: 500, o: lk * (1 - es(t, 2.9, 3.0) * 0.4) });
+      pose(light, { x: LX, y: 500, o: lk * (1 - es(t, 2.9, 3.0) * 0.4) });
       /* v31 — seek His Kingdom; the rest is added */
       const ck = es(t, 2.05, 2.35, ease.out);
       pose(crownEl, { x: JX, y: lerp(-1500, 250, ck), r: time ? Math.sin(T * 0.7) * 1.2 : 0, oy: 0, o: ck > 0.01 ? 1 : 0 });
@@ -83,7 +85,7 @@ export default {
         const inL = es(t, 1.45 + k.i * 0.08, 1.7 + k.i * 0.08);
         const down = es(t, 2.55 + k.i * 0.08, 2.85 + k.i * 0.08);
         const d = dis[[2, 3, 4][k.i]];
-        const hx0 = 940 + k.i * 70, hy0 = 470 + (k.i % 2) * 20;
+        const hx0 = KX + k.i * KD, hy0 = 470 + (k.i % 2) * 20;
         pose(k.el, { x: lerp(hx0, d.x + (d.flip ? 34 : -34), down), y: lerp(hy0 + (time ? Math.sin(T + k.i) * 4 : 0), d.y + 4, down), s: 1 + (1 - down) * 0.2, o: inL });
       });
 

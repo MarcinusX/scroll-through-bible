@@ -34,10 +34,13 @@ export default {
     { v: 19, text: 'I powiem sobie: Masz wielkie zasoby dóbr, na długie lata złożone;' },
     { v: 19, cont: true, text: 'odpoczywaj, jedz, pij i używaj!' },
   ],
-  cam: { x: [-120, 120], y: [-30, 40], z: [1, 1.14] },
+  cam: { x: [-120, 140], y: [-30, 40], z: [1, 1.14] },
   build(S) {
     const F = farmSet(S);
     const c = S.c;
+    // phone: the barns stand a little further in and the camera leans right, so the second barn and the great new one
+    // are not cut by the thread; the garland of years is strung shorter
+    const PO = S.portrait, BDX = PO ? -45 : 0, YX = PO ? 525 : 500, YW = PO ? 590 : 680;
     /* sheaves in the field, heaps in the yard */
     const sheaves = [-160, -40, 80, 200, 320, 440, 560].map((x, i) => ({ i, x, y: 640 + (i % 3) * 22, el: F.fieldL.add(`<g opacity="0">${sheaf(c, 70)}</g>`) }));
     const heaps = HEAP.map(([x, y], i) => ({ i, x, y, el: F.act.add(`<g opacity="0">${i % 2 ? sheaf(c, 64) : flourSack(c, 46, 54)}</g>`) }));
@@ -62,6 +65,7 @@ export default {
     return (t, time) => {
       const T = time;
       F.update(T);
+      if (PO) F.barnL.shift(BDX, 0);
       /* v16 — the ground brings forth plentifully */
       F.rows.forEach((el, i) => { const k = es(t, 0.05 + i * 0.1, 0.5 + i * 0.1); pose(el, { x: 0, y: (1 - k) * 80 }); });
       sheaves.forEach((s) => { const k = es(t, 0.55 + s.i * 0.04, 0.72 + s.i * 0.04, ease.back); pose(s.el, { x: s.x, y: s.y, s: k, o: k > 0.01 ? 1 : 0 }); });
@@ -81,7 +85,7 @@ export default {
       heaps.forEach((h) => {
         const k = es(t, 1.1 + h.i * 0.06, 1.3 + h.i * 0.06, ease.back);
         const inK = es(t, 4.1 + h.i * 0.08, 4.35 + h.i * 0.08);
-        const [dx, dy] = alongPts([[h.x, h.y], [(h.x + FARM.BIG[0]) / 2, GY - 160], [FARM.BIG[0], GY - 60]], inK);
+        const [dx, dy] = alongPts([[h.x, h.y], [(h.x + FARM.BIG[0] + BDX) / 2, GY - 160], [FARM.BIG[0] + BDX, GY - 60]], inK);
         pose(h.el, { x: dx, y: dy, s: k * (1 - inK * 0.5), r: inK * 30, o: k > 0.01 && inK < 0.98 ? 1 : 0 });
       });
 
@@ -97,12 +101,12 @@ export default {
         const rb = es(t, 3.3 + i * 0.1, 3.5 + i * 0.1) * (1 - es(t, 3.6, 3.8));
         pose(rubble[i].el, { x: bx, y: GY + 2, s: rb, o: rb > 0.01 ? 1 : 0 });
       });
-      dust.forEach((d, i) => { const k = bump(t, 3.25 + (i % 3) * 0.05, 3.8 + (i % 3) * 0.05); pose(d, { x: FARM.SB[i % 2][0] + (i - 2.5) * 30, y: GY - 30 - k * 40, s: 0.6 + k, o: k * 0.85 }); });
+      dust.forEach((d, i) => { const k = bump(t, 3.25 + (i % 3) * 0.05, 3.8 + (i % 3) * 0.05); pose(d, { x: FARM.SB[i % 2][0] + BDX + (i - 2.5) * 30, y: GY - 30 - k * 40, s: 0.6 + k, o: k * 0.85 }); });
 
       /* v18a — bigger barns rise; v18b — everything goes in */
       const rise = es(t, 3.45, 3.95, ease.out);
-      const [BX, BW, BH] = FARM.BIG;
-      pose(F.big, { x: BX, y: GY + (1 - rise) * (BH + 100), o: rise > 0.001 ? 1 : 0 });
+      const [BX0, BW, BH] = FARM.BIG, BX = BX0 + BDX;
+      pose(F.big, { x: BX0, y: GY + (1 - rise) * (BH + 100), o: rise > 0.001 ? 1 : 0 });
       pose(F.bigDoor, { x: -46, y: 0, sx: 1 - es(t, 3.95, 4.1) * 0.9 });
       goods.forEach((g) => {
         const k = es(t, 4.4 + g.i * 0.1, 4.75 + g.i * 0.1);
@@ -123,18 +127,18 @@ export default {
       richSit.set({ x: 660, y: GY + 6, s: 1.0, o: sitK, armF: 30 + pat * 50 + lean * 90, armB: 20 + pat * 10 + bump(t, 6.2, 6.9) * 60, head: -lean * 10, lean: -lean * 10, blink: blinkAt(T, 1) });
       pose(cushion, { x: 640, y: GY + 8, o: sitK });
       const lk = es(t, 5.2, 5.45);
-      pose(line, { x: 500, y: 236, o: lk });
+      pose(line, { x: YX, y: 236, sx: YW / 680, o: lk });
       years.forEach((y) => {
         const k = es(t, 5.25 + y.i * 0.05, 5.45 + y.i * 0.05, ease.back);
         const u = (y.i + 0.5) / 8;
-        pose(y.el, { x: 500 + u * 680, y: 236 + 160 * u * (1 - u) + 26, s: k, r: time ? Math.sin(T + y.i) * 3 : 0, o: k > 0.01 ? 1 : 0 });
+        pose(y.el, { x: YX + u * YW, y: 236 + 160 * u * (1 - u) + 26, s: k, r: time ? Math.sin(T + y.i) * 3 : 0, o: k > 0.01 ? 1 : 0 });
       });
 
       /* v19b — eat, drink, be merry */
       const tk = es(t, 6.05, 6.3);
       pose(table, { x: lerp(560, 780, tk), y: GY + 16, s: 1.2, o: tk > 0.01 ? 1 : 0 });
 
-      S.cam.x = kf(t, [[-0.5, -110], [0.9, -100], [1.4, 60], [2.9, 90], [3.3, 110], [4.8, 110], [5.2, 20], [6.0, 20], [6.3, -40]]);
+      S.cam.x = kf(t, [[-0.5, -110], [0.9, -100], [1.4, 60], [2.9, 90], [3.3, 110], [4.8, 110], [5.2, 20], [6.0, 20], [6.3, -40]]) + (PO ? 30 * es(t, 0.9, 1.4) * (1 - es(t, 4.8, 5.2)) : 0);
       S.cam.y = kf(t, [[-0.5, 30], [0.9, 30], [1.4, 30], [3.1, 30], [3.4, 0], [5.0, 0], [5.3, -20], [6.0, -20], [6.3, 30]]);
       S.cam.z = kf(t, [[-0.5, 1.08], [1.4, 1.12], [3.1, 1.12], [3.4, 1.04], [5.0, 1.04], [6.0, 1.02], [6.3, 1.14]]);
     };

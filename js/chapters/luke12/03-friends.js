@@ -69,6 +69,7 @@ export default {
 
     return (t, time) => {
       const T = time;
+      if (S.portrait) gh.shift(-130, 0);   // phone: Gehenna smoulders between John and James, not under the thread
       /* v4 — my friends; the shadow that kills the body, and can do no more */
       const open = es(t, 0.05, 0.3);
       const sd = es(t, 0.05, 0.3, ease.out) * (1 - es(t, 1.02, 1.3, ease.in));

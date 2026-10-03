@@ -45,6 +45,7 @@ export default {
     let shaftL;
     const F = farmSet(S, { night: true, beforeAct: () => { shaftL = S.layer({ par: 0.45, sh: 0, flat: true }); } });
     const c = S.c;
+    const YX = S.portrait ? 525 : 500, YW = S.portrait ? 590 : 680;   // phone: the garland of years strung shorter
     const grey = S.layer({ par: 0, sh: 0, flat: true });
     grey.add(`<rect x="-3000" y="-3000" width="8000" height="8000" fill="#8f95a8" opacity=".35"/>`);
     /* the shaft of light and the word */
@@ -89,11 +90,11 @@ export default {
       pose(fire, { x: lampX + WICK[0], y: lampY + WICK[1], s: (1 - out) * (1 + (time ? Math.sin(T * 9) * 0.05 : 0)), o: 1 - out });
       pose(smk, { x: lampX + WICK[0], y: lampY + WICK[1], o: bump(t, 0.5, 1.3) * 0.8 });
       const snap = es(t, 0.5, 0.95, ease.in);
-      pose(line, { x: 500, y: 236 + snap * 700, r: snap * 20, o: 1 - snap });
+      pose(line, { x: YX, y: 236 + snap * 700, sx: YW / 680, r: snap * 20, o: 1 - snap });
       years.forEach((y) => {
         const u = (y.i + 0.5) / 8;
         const d = y.i === 0 ? 0 : es(t, 0.5 + y.i * 0.03, 0.95 + y.i * 0.03, ease.in);
-        pose(y.el, { x: 500 + u * 680 + d * y.seed * 60, y: 236 + 160 * u * (1 - u) + 26 + d * 700, r: d * 90 * y.seed, o: (1 - d) * (1 - es(t, 1.9, 2.1)) });
+        pose(y.el, { x: YX + u * YW + d * y.seed * 60, y: 236 + 160 * u * (1 - u) + 26 + d * 700, r: d * 90 * y.seed, o: (1 - d) * (1 - es(t, 1.9, 2.1)) });
       });
       const up = es(t, 0.55, 0.95);
       const [hx, hy] = headAt(MX, GY + 6, 1.0, false, 62);

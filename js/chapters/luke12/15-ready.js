@@ -29,9 +29,10 @@ export default {
     { v: 37, cont: true, text: 'Zaprawdę, powiadam wam: Przepasze się i każe im zasiąść do stołu, a obchodząc będzie im usługiwał.' },
     { v: 38 },
   ],
-  cam: { x: [-40, 160], y: [-60, 40], z: [1, 1.12] },
+  cam: { x: [-40, 200], y: [-60, 40], z: [1, 1.12] },
   build(S) {
     const c = S.c;
+    const PO = S.portrait;   // phone: the doorkeeper waits a step further in; the camera goes further right for the knock
     const NIGHTC = mix(C.night, C.duskViolet, 0.3);
     S.defs(`<clipPath id="lk12-watch-clip"><circle r="47"/></clipPath>`);
     sky(S, SKIES.night);
@@ -80,7 +81,7 @@ export default {
         const lit = es(t, 0.45 + s.i * 0.08, 0.55 + s.i * 0.08);
         const st = SEAT[s.i];
         const look = s.i === 3 ? 0 : es(t, 1.2, 1.4);
-        const x = s.i === 3 ? lerp(s.x, 980, es(t, 1.4, 1.6)) : s.x;
+        const x = s.i === 3 ? lerp(PO ? 950 : s.x, 980, es(t, 1.4, 1.6)) : s.x;
         const armF = 30 + bump(t, 0.05 + s.i * 0.05, 0.35 + s.i * 0.05) * 20 + lit * 20 + bump(t, 2.05, 2.5) * 20;
         const armB = 10 + bump(t, 0.05 + s.i * 0.05, 0.35 + s.i * 0.05) * 40 + (s.i === 3 ? es(t, 1.6, 1.75) * 60 * (1 - es(t, 2.0, 2.2)) : 0);
         const flip = s.i === 3 ? es(t, 1.4, 1.5) < 0.5 : false;
@@ -124,7 +125,7 @@ export default {
         fade(w.lit, w.i ? es(t, 4.55, 4.7) : es(t, 4.3, 4.45) * (1 - es(t, 4.55, 4.7) * 0.6));
       });
 
-      S.cam.x = lerp(0, 150, es(t, 0.95, 1.25)) - es(t, 1.9, 2.3) * 150;
+      S.cam.x = (lerp(0, 150, es(t, 0.95, 1.25)) - es(t, 1.9, 2.3) * 150) * (PO ? 1.3 : 1);
       S.cam.y = 10 + es(t, 3.05, 3.3) * 30 - es(t, 3.95, 4.3) * 70;
       S.cam.z = 1.06 + es(t, 0.95, 1.25) * 0.04 - es(t, 1.9, 2.3) * 0.04;
     };

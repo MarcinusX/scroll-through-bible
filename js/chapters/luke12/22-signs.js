@@ -32,6 +32,8 @@ export default {
   ],
   cam: { x: [-40, 40], y: [-60, 40], z: [0.98, 1.12] },
   build(S) {
+    // phone: the crowd's bubbles, the hot sun, the two plates and the balance all hang further in from the edges
+    const PO = S.portrait;
     const P = plainSet(S, { skyCols: DAY, twins: true, near: true });
     const c = S.c;
     const grey = behindOf(sky(S, ['#7d8698', '#aeb3b8', '#d2cdc4'], { name: 'grey', rise: 0 }).layer, P.hangL);
@@ -66,7 +68,7 @@ export default {
       P.update(T, { sunY: 150 + (es(t, 0.3, 0.8) * (1 - es(t, 2.0, 2.3)) + es(t, 3.0, 3.2) * (1 - es(t, 4.0, 4.3))) * 900 });
       /* v54 — a cloud from the west: "a shower is coming" — and so it happens */
       const ck = es(t, 0.1, 0.7) * (1 - es(t, 1.9, 2.2));
-      pose(cloudEl, { x: lerp(240, 560, ck), y: lerp(520, 350, ck), s: 0.55 + ck * 0.25, o: ck > 0.01 ? 1 : 0 });
+      pose(cloudEl, { x: PO ? lerp(300, 620, ck) : lerp(240, 560, ck), y: lerp(520, 350, ck), s: 0.55 + ck * 0.25, o: ck > 0.01 ? 1 : 0 });
       grey.fade(es(t, 0.4, 0.9) * (1 - es(t, 1.9, 2.2)));
       const rn = es(t, 1.05, 1.3) * (1 - es(t, 1.85, 2.05));
       rainL.fade(rn * 0.9);
@@ -79,7 +81,7 @@ export default {
         g.sp.set({ x: g.x, y: g.y, s: 1, o: 1 - up });
         g.alt.set({ x: g.x, y: g.y, s: 1, o: up });
       });
-      const BUBS = [[440, 560], [1160, 560]];
+      const BUBS = PO ? [[500, 560], [1065, 560]] : [[440, 560], [1160, 560]];
       bubR.forEach((b, i) => { const k = es(t, 0.45 + i * 0.08, 0.6 + i * 0.08, ease.back) * (1 - es(t, 1.0, 1.1)); pose(b, { x: BUBS[i][0], y: BUBS[i][1] - 40, s: k, o: k > 0.01 ? 1 : 0 }); });
       /* v55 — a south wind: "scorching heat" — and it happens */
       winds.forEach((w, i) => {
@@ -90,13 +92,13 @@ export default {
       bubS.forEach((b, i) => { const k = es(t, 2.4 + i * 0.08, 2.55 + i * 0.08, ease.back) * (1 - es(t, 3.0, 3.1)); pose(b, { x: BUBS[i][0], y: BUBS[i][1] - 40, s: k, o: k > 0.01 ? 1 : 0 }); });
       const heat = es(t, 3.05, 3.35) * (1 - es(t, 3.95, 4.2));
       hot.fade(heat);
-      pose(bigSun, { x: 1060, y: 190, s: 0.8 + heat * 0.5 + (time ? Math.sin(T * 2) * 0.02 : 0), r: T * 3, o: heat });
+      pose(bigSun, { x: PO ? 960 : 1060, y: 190, s: 0.8 + heat * 0.5 + (time ? Math.sin(T * 2) * 0.02 : 0), r: T * 3, o: heat });
       fade(shimmer, heat * 0.8);
       pose(shimmer, { x: 0, y: time ? Math.sin(T * 3) * 3 : 0, o: heat * 0.8 });
       /* v56 — they read the sky, not this time */
       plates.forEach((p) => {
         const k = es(t, 4.05 + p.i * 0.1, 4.3 + p.i * 0.1, ease.out) * (1 - es(t, 5.05, 5.3, ease.in));
-        pose(p.el, { x: p.i ? 1050 : 560, y: lerp(-1500, 250, k), r: time ? Math.sin(T * 0.8 + p.i) * 1.5 : 0, oy: 0 });
+        pose(p.el, { x: p.i ? (PO ? 1010 : 1050) : (PO ? 595 : 560), y: lerp(-1500, 250, k), r: time ? Math.sin(T * 0.8 + p.i) * 1.5 : 0, oy: 0 });
       });
       const [jhx, jhy] = headAt(JX, RISE, P.J.s, false);
       signs.forEach((s) => {
@@ -109,9 +111,9 @@ export default {
       P.near.forEach((d) => d.p.set({ x: d.x, y: d.y, s: 0.94, flip: d.flip, armF: 14, armB: 6, head: -2 - gaze * 4, blink: blinkAt(T, d.seed) }));
       /* v57 — judge for yourselves */
       const bk = es(t, 5.05, 5.35, ease.out);
-      pose(bal, { x: 1000, y: lerp(-1500, 390, bk), r: time ? Math.sin(T * 0.8) * 1.2 : 0, oy: 0 });
+      pose(bal, { x: PO ? 955 : 1000, y: lerp(-1500, 390, bk), r: time ? Math.sin(T * 0.8) * 1.2 : 0, oy: 0 });
       const turn = es(t, 5.3, 5.45);
-      turner.set({ x: 1030, y: 716, s: 0.96, flip: turn > 0.5, o: seg(t, 5.18, 5.22), armF: 20 + (1 - turn) * 100, armB: 10 + turn * 40, head: -10 * (1 - turn) + turn * 6, blink: blinkAt(T, 9) });
+      turner.set({ x: PO ? 995 : 1030, y: 716, s: 0.96, flip: turn > 0.5, o: seg(t, 5.18, 5.22), armF: 20 + (1 - turn) * 100, armB: 10 + turn * 40, head: -10 * (1 - turn) + turn * 6, blink: blinkAt(T, 9) });
 
       S.cam.x = -es(t, 0.1, 0.5) * 30 * (1 - es(t, 1.9, 2.2)) + es(t, 2.05, 2.4) * 30 * (1 - es(t, 4.0, 4.3));
       S.cam.y = -es(t, 0.1, 0.5) * 30 * (1 - es(t, 4.8, 5.0)) + es(t, 5.0, 5.3) * 20;

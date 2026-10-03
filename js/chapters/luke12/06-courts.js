@@ -15,7 +15,7 @@ import { hallSet, judgeSeat, worryCloud, hourglass, dove, flapWings, headAt, han
 
 const GY = 712;
 const PX = 740, JX2 = 832;                  // where Peter and John stand
-const SEATS = [{ x: 430, y: 646 }, { x: 800, y: 520 }, { x: 1130, y: 652 }];
+const SEATS0 = [{ x: 430, y: 646 }, { x: 800, y: 520 }, { x: 1130, y: 652 }];
 
 export default {
   id: 'lk12-courts',
@@ -26,6 +26,10 @@ export default {
   ],
   cam: { x: [-60, 30], y: [-40, 40], z: [1, 1.1] },
   build(S) {
+    // phone: the elders' bench and the Roman's seat come in from the edges (the magistrate sat under the thread)
+    const PO = S.portrait;
+    const SEATS = PO ? [{ x: 492, y: 646 }, SEATS0[1], { x: 1058, y: 652 }] : SEATS0;
+    const ED = PO ? 64 : 80, G0 = PO ? 606 : 560;
     const H = hallSet(S);
     const c = S.c;
     /* the three seats and their spots of light */
@@ -74,10 +78,10 @@ export default {
       peter.set({ x: px, y: GY, s: 0.98, flip: false, walk: moving ? px * 0.05 : undefined, armF: 14 + worry * 30 + es(t, 2.35, 2.5) * 50 * (1 - speak) + speak * 60, armB: 10 + speak * 130, head: moving ? look : 6 * worry - up * 12 + speak * 4, blink: blinkAt(T, 1) });
       john.set({ x: jx, y: GY + 6, s: 0.94, flip: walk >= 1, walk: moving ? jx * 0.05 + 1 : undefined, armF: 14 + bump(t, 2.6, 3.0) * 30, armB: 8, head: moving ? look : 6 - up * 10, blink: blinkAt(T, 2) });
       guards.forEach((g) => {
-        const gx = g.i ? lerp(20, 950, walk) : lerp(-60, 560, walk);
+        const gx = g.i ? lerp(20, 950, walk) : lerp(-60, G0, walk);
         g.p.set({ x: gx, y: GY + 10 - g.i * 4, s: 0.96, flip: walk >= 1 && g.i === 1, walk: moving ? gx * 0.05 + g.i : undefined, armF: 34, armB: 20 + (g.i === 0 && moving ? 40 : 0), head: 0, blink: blinkAt(T, 3 + g.i) });
       });
-      eld.forEach((e) => e.p.set({ x: SEATS[0].x - 40 + e.i * 80, y: SEATS[0].y - 16, s: 0.84, flip: false, armF: 20 + (e.i ? ask * 70 : 0) + lean * 20, armB: 10, head: 4 - lean * 8, lean: lean * 8, blink: blinkAt(T, 5 + e.i) }));
+      eld.forEach((e) => e.p.set({ x: SEATS[0].x - ED / 2 + e.i * ED, y: SEATS[0].y - 16, s: 0.84, flip: false, armF: 20 + (e.i ? ask * 70 : 0) + lean * 20, armB: 10, head: 4 - lean * 8, lean: lean * 8, blink: blinkAt(T, 5 + e.i) }));
       ruler.set({ x: SEATS[1].x, y: SEATS[1].y - 16, s: 0.7, flip: false, armF: 20 + ask * 60 + lean * 20, armB: 10 + ask * 40, head: 8 - lean * 6, lean: lean * 6, blink: blinkAt(T, 7) });
       roman.set({ x: SEATS[2].x + 6, y: SEATS[2].y - 8, s: 0.86, flip: true, armF: 20 + bump(t, 1.2, 1.7) * 80 + lean * 20, armB: 10, head: 4 - lean * 8, lean: lean * 8, blink: blinkAt(T, 8) });
 

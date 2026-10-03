@@ -17,7 +17,7 @@ import { loaf as loafI, coin as coinI, bowl as bowlI } from '../mark2/lib.js';
 import { DAY, wheatRow, barn, flourSack, hourglass, careCloud, heart, halo, warm, beam, flapWings, headAt, hand, kf, PI } from './lib.js';
 
 const GY = 712;
-const TREE = [560, 690], NEST = [672, 436];
+const TREE0 = [560, 690], NEST0 = [672, 436];
 const FAM = 760;
 
 function deadTree(c) {
@@ -56,6 +56,9 @@ export default {
   cam: { x: [-80, 120], y: [-60, 40], z: [1, 1.16] },
   build(S) {
     const c = S.c;
+    // phone: the ravens' tree stands further in (its outer branch and birds were cut by the frame), the barn too
+    const DX = S.portrait ? 70 : 0, BXN = S.portrait ? 975 : 1180, CX1 = S.portrait ? 965 : 1170, RPX = S.portrait ? 1025 : 1060;
+    const TREE = [TREE0[0] + DX, TREE0[1]], NEST = [NEST0[0] + DX, NEST0[1]];
     sky(S, DAY);
     const hangL = S.layer({ par: 0.04, sh: 4 });
     const sunEl = hanging(hangL, sun(c, 40), { x: 1240, y: 150, len: 800 });
@@ -73,7 +76,7 @@ export default {
     fields.add(wheatRow(c, 604, { x0: 990, x1: 1500, h: 44 }) + wheatRow(c, 640, { x0: 980, x1: 1500, h: 50 }));
     const barnL = S.layer({ par: 0.26, sh: 4 });
     const B = barn(c, { w: 190, h: 140 });
-    barnL.add(`<g transform="translate(1180 640)">${B.body}</g>`);
+    barnL.add(`<g transform="translate(${BXN} 640)">${B.body}</g>`);
     const G = S.layer({ par: 0.4, sh: 3 });
     const gfn = c.wave(690, [4, 2], [600, 180]);
     G.add(sheet().p(c.ridge(gfn, -900, 2500, 1800, 12, 1), mix(C.hillNear, C.sage2, 0.4)).out() + rock(c, TREE[0], TREE[1] + 12, 190, 60, C.rock2) + grass(c, { x0: -800, x1: 2400, y: 690, fn: gfn, n: 40, h: 12, color: C.moss }) + flowers(c, { x0: 620, x1: 1400, y: 700, fn: gfn, n: 12 }));
@@ -95,7 +98,7 @@ export default {
     const famBeam = lightL.add(`<g opacity="0">${beam(c, 40, 130, 620)}</g>`);
     const B2 = S.layer({ par: 0.4, sh: 5 });
     const chicks = [-16, 0, 16].map((dx, i) => ({ i, dx, el: B2.add(`<g>${chick(c)}</g>`) }));
-    const ravens = [0, 1, 2].map((i) => ({ i, el: B2.add(bird(c, { color: C.crow, belly: shade(C.crow, 0.25) })), perch: [[490, 404], [616, 470], [530, 540]][i], from: [[-200, 200], [-300, 120], [-160, 300]][i] }));
+    const ravens = [0, 1, 2].map((i) => ({ i, el: B2.add(bird(c, { color: C.crow, belly: shade(C.crow, 0.25) })), perch: [[490 + DX, 404], [616 + DX, 470], [530 + DX, 540]][i], from: [[-200, 200], [-300, 120], [-160, 300]][i] }));
     const food = [0, 1, 2, 3, 4].map((i) => B2.add(`<g opacity="0"><path d="${c.cut(c.circ(0, 0, 4.5, 8), 0.2, 2)}" fill="${i % 2 ? C.plumRobe : C.wheat2}"/></g>`));
 
     /* the father and his daughter */
@@ -127,12 +130,12 @@ export default {
       sower.set({ x: 760 + es(t, 0, 2, (u) => u) * 80, y: 650, s: 0.62, walk: sw, armF: 40 + Math.sin(sw) * 50, armB: 10, blink: blinkAt(T, 1) });
       seeds.forEach((sd, i) => { const k = (t * 2.2 + i / 4) % 1; const [hx, hy] = hand(760 + es(t, 0, 2, (u) => u) * 80, 650, 0.62, false, 60); pose(sd, { x: hx + k * 40, y: hy + k * 50, o: (1 - k) * (1 - es(t, 2.0, 2.2)) }); });
       const swing2 = Math.sin(t * 9);
-      reaper.set({ x: 1060, y: 656, s: 0.62, armF: 60 + swing2 * 40, armB: 20, lean: 12, head: 10, blink: blinkAt(T, 2) });
+      reaper.set({ x: RPX, y: 656, s: 0.62, armF: 60 + swing2 * 40, armB: 20, lean: 12, head: 10, blink: blinkAt(T, 2) });
       sheaves.forEach((s, i) => pose(s, { x: 1110 + i * 34, y: 660, s: es(t, 0.3 + i * 0.2, 0.5 + i * 0.2, ease.back) * 0.8, o: es(t, 0.3 + i * 0.2, 0.32 + i * 0.2) }));
 
       /* v24b — no barn: God feeds them */
       const carry = es(t, 1.02, 1.5, (u) => u);
-      const cx = lerp(1060, 1170, carry);
+      const cx = lerp(1060, CX1, carry);
       carrier.set({ x: cx, y: 646, s: 0.62, walk: carry > 0 && carry < 1 ? cx * 0.08 : undefined, o: seg(t, 0.95, 1.0) * (1 - es(t, 1.45, 1.52)), armF: 90, armB: 110, blink: blinkAt(T, 3) });
       const [chx, chy] = headAt(cx, 646, 0.62, false);
       pose(sack, { x: chx, y: chy - 4, s: 0.9, o: seg(t, 0.95, 1.0) * (1 - es(t, 1.45, 1.52)) });

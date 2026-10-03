@@ -116,12 +116,13 @@ export default {
       /* v7b — worth more than many sparrows */
       const dk = es(t, 3.1, 3.4, ease.back);
       const by0 = lerp(-500, PIV[1], dk);
+      const PVX = S.portrait ? 855 : PIV[0];   // phone: the balance a step left, its pans clear of the thread
       const settle = es(t, 3.45, 3.8);
       const tilt = es(t, 3.6, 3.95, ease.back) * 13 + (time ? Math.sin(T * 1.2) * 0.5 * dk : 0);
       const a = (tilt * PI) / 180;
-      const lx = PIV[0] - Math.cos(a) * 150, ly = by0 - Math.sin(a) * 150, rx = PIV[0] + Math.cos(a) * 150, ry = by0 + Math.sin(a) * 150;
-      pose(frame, { x: PIV[0], y: by0, o: dk > 0.002 ? 1 : 0 });
-      pose(beamB, { x: PIV[0], y: by0, r: tilt, o: dk > 0.002 ? 1 : 0 });
+      const lx = PVX - Math.cos(a) * 150, ly = by0 - Math.sin(a) * 150, rx = PVX + Math.cos(a) * 150, ry = by0 + Math.sin(a) * 150;
+      pose(frame, { x: PVX, y: by0, o: dk > 0.002 ? 1 : 0 });
+      pose(beamB, { x: PVX, y: by0, r: tilt, o: dk > 0.002 ? 1 : 0 });
       pose(panL, { x: lx, y: ly, o: dk > 0.002 ? 1 : 0 });
       pose(panR, { x: rx, y: ry, o: dk > 0.002 ? 1 : 0 });
       FLOCK.forEach((f) => {
@@ -134,7 +135,8 @@ export default {
       void settle;
 
       const out = es(t, 3.0, 3.4);
-      S.cam.x = lerp(lerp(-150, -80, es(t, 1.0, 1.3)), (bhx - 800) / 0.5, zoom) + out * 120;
+      S.cam.x = lerp(S.portrait ? lerp(-105, -45, es(t, 1.0, 1.3)) : lerp(-150, -80, es(t, 1.0, 1.3)),   // phone: the seller and his stall come in from the edge
+                     (bhx - 800) / 0.5, zoom) + out * (S.portrait ? 20 : 120);   // phone: the seller stays whole when the camera pulls back
       S.cam.y = lerp(90, (bhy + 6 - 470) / 0.5, zoom) - out * 130;
       S.cam.z = lerp(1.16, 1.9, zoom) - out * 0.12;
     };

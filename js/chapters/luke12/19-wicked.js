@@ -39,6 +39,8 @@ export default {
   cam: { x: [-30, 90], y: [-70, 30], z: [1, 1.1] },
   build(S) {
     const c = S.c;
+    // phone: the master who comes back stands a step inside the gate, and the left slate hangs further in
+    const PO = S.portrait, MX = PO ? 968 : 1010, SL = PO ? 595 : 560;
     const NIGHTC = mix(C.night, C.duskViolet, 0.3);
     sky(S, SKIES.night);
     const morn = sky(S, SKIES.morning, { name: 'morn', rise: 0 });
@@ -103,8 +105,8 @@ export default {
       pose(fallCup, { x: cx0 + drop * 20, y: lerp(cy0, F + 4, drop), r: drop * 110, o: drop > 0 && t < 1.9 ? 1 : 0 });
       /* v46 — the master comes when he does not expect; his portion with the unfaithful */
       const comeIn = es(t, 1.02, 1.1);
-      master.set({ x: 1010, y: F + 4, s: 0.96, flip: true, o: comeIn * (1 - es(t, 1.85, 1.95)), armF: 70, armB: 20 + bump(t, 1.2, 1.6) * 60, head: 4, blink: blinkAt(T, 7) });
-      const [mpx, mpy] = palm(1010, F + 4, 0.96, true, 70);
+      master.set({ x: MX, y: F + 4, s: 0.96, flip: true, o: comeIn * (1 - es(t, 1.85, 1.95)), armF: 70, armB: 20 + bump(t, 1.2, 1.6) * 60, head: 4, blink: blinkAt(T, 7) });
+      const [mpx, mpy] = palm(MX, F + 4, 0.96, true, 70);
       pose(mBody, { x: mpx, y: mpy, sx: -1, o: comeIn * (1 - es(t, 1.85, 1.95)) });
       pose(mFire, { x: mpx - WICK[0], y: mpy + WICK[1], o: comeIn * (1 - es(t, 1.85, 1.95)) });
       pose(mGlow, { x: mpx - WICK[0], y: mpy - 10, o: comeIn * (1 - es(t, 1.85, 1.95)) });
@@ -121,7 +123,7 @@ export default {
       slates.forEach((s) => {
         const a = 2.05 + s.i;
         const k = es(t, a, a + 0.22, ease.out) * (1 - es(t, 3.95, 4.15, ease.in));
-        pose(s.el, { x: s.i ? 900 : 560, y: lerp(-1500, 400, k), r: time ? Math.sin(T * 0.8 + s.i) * 1 : 0, oy: 0 });
+        pose(s.el, { x: s.i ? 900 : SL, y: lerp(-1500, 400, k), r: time ? Math.sin(T * 0.8 + s.i) * 1 : 0, oy: 0 });
         s.st.forEach((st, j) => fade(st, es(t, a + 0.25 + j * (s.i ? 0.15 : 0.04), a + 0.3 + j * (s.i ? 0.15 : 0.04))));
       });
       /* v48b — much given, much required */

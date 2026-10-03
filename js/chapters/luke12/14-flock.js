@@ -15,7 +15,7 @@ import { behindOf, plainSet, RISE, EVENING, seatDisciples, poseSeated, moneyBag,
 
 const JX = 800;
 const GATE = [800, 470];
-const MT = { x: 540, y: 716 }, MER = 450, BEG = 1110, MT2 = 1030;
+const MT = { x: 540, y: 716 }, MER0 = 450, BEG0 = 1110, MT20 = 1030;
 const SH = [[655, 726, 0.8], [750, 722, 0.78], [852, 726, 0.8], [945, 728, 0.8], [575, 724, 0.72], [1030, 724, 0.74]];
 
 function gateLeaf(c, dir) {
@@ -44,6 +44,8 @@ export default {
   ],
   cam: { x: [-40, 40], y: [-90, 40], z: [1, 1.12] },
   build(S) {
+    // phone: the buyer, the beggar, the thief and the heavenly store all come in from the edges
+    const PO = S.portrait, MER = PO ? 482 : MER0, BEG = PO ? 1052 : BEG0, MT2 = PO ? 972 : MT20, THX = PO ? 1068 : 1150, SX = PO ? 965 : 1000;
     const P = plainSet(S, { skyCols: EVENING, crowd: false, near: false });
     const c = S.c;
     /* the gate of the Kingdom, behind them on the hill */
@@ -114,7 +116,7 @@ export default {
       });
 
       /* v33b — purses that do not wear out, a treasure in heaven */
-      const SX = 1000, SY = 220;
+      const SY = 220;
       const sk = es(t, 2.02, 2.3, ease.out);
       pose(store, { x: SX, y: lerp(-1500, SY, sk), r: time ? Math.sin(T * 0.6) * 0.8 : 0, oy: 0 });
       pose(lid, { x: -45, y: -44, r: -es(t, 2.3, 2.45) * 100 });
@@ -124,7 +126,7 @@ export default {
         pose(p, { x: lerp(bx - 40, SX + (i - 1.5) * 12, k) + Math.sin(k * PI) * (i - 1.5) * 30, y: lerp(640, SY - 60, k), s: 0.8 + k * 0.3, o: k > 0 && k < 0.97 ? 1 : 0 });
       });
       const reach = bump(t, 2.5, 3.0);
-      pose(thief, { x: 1150, y: 724 - reach * 40, s: 1, sx: -1, o: reach * 0.75 });
+      pose(thief, { x: THX, y: 724 - reach * 40, s: 1, sx: -1, o: reach * 0.75 });
       const mk = seg(t, 2.55, 2.98);
       pose(mothEl, { x: SX - 120 + mk * 60, y: lerp(560, SY + 10, Math.sin(mk * PI) * 0.9) + (time ? Math.sin(T * 12) * 4 : 0), r: Math.sin(mk * 20) * 20, o: mk > 0 && mk < 1 ? 1 : 0 });
 

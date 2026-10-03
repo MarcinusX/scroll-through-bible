@@ -29,6 +29,8 @@ export default {
   cam: { x: [-30, 80], y: [-60, 30], z: [1, 1.1] },
   build(S) {
     const c = S.c;
+    // phone: the returning master stops inside the gate, clear of the thread; the four plates hang closer together
+    const PO = S.portrait, MB = PO ? 1025 : 1080;
     sky(S, ['#d2e0d6', '#f2e3c2', '#f8e8c8']);
     const hangL = S.layer({ par: 0.04, sh: 4 });
     const sunEl = hanging(hangL, sun(c, 40), { x: 1260, y: 260, len: 700 });
@@ -50,7 +52,7 @@ export default {
     const flock = `<g transform="translate(-22 16)">${beast(c, 'sheep')}</g><g transform="translate(14 22)">${beast(c, 'sheep', C.cream)}</g>`;
     const field = `<g transform="translate(0 6)">${sheet().p(c.cut(c.rect(-34, -8, 68, 26), 0.4, 5), C.wheat2).x(c.ribbon([[-30, -2], [30, -2]], 1.4) + c.ribbon([[-30, 6], [30, 6]], 1.4) + c.ribbon([[-30, 13], [30, 13]], 1.4), shade(C.wheat2, -0.2), 'opacity=".7"').out()}</g>`;
     const home = `<g transform="translate(0 18)">${sheet().p(c.cut(c.rect(-26, -30, 52, 30), 0.3, 5), C.plaster).p(c.cut([[-32, -28], [32, -28], [32, -36], [-32, -36]], 0.3, 5), C.roof).p(c.cut(c.rect(-8, -18, 12, 18), 0.2, 4), C.wood2).out()}</g>`;
-    const GOODS = [`<g transform="translate(0 22) scale(.7)">${coinChest(c)}</g>`, flock, field, home].map((ic, i) => ({ i, x: 560 + i * 160, el: goodsL.add(`<g transform="translate(0 -1500)"><path d="M0 -1500V-50" stroke="rgba(74,54,34,.55)" stroke-width="1.2"/>${roundel(c, 46, { face: C.parchment })}${ic}</g>`) }));
+    const GOODS = [`<g transform="translate(0 22) scale(.7)">${coinChest(c)}</g>`, flock, field, home].map((ic, i) => ({ i, x: PO ? 585 + i * 140 : 560 + i * 160, el: goodsL.add(`<g transform="translate(0 -1500)"><path d="M0 -1500V-50" stroke="rgba(74,54,34,.55)" stroke-width="1.2"/>${roundel(c, 46, { face: C.parchment })}${ic}</g>`) }));
 
     return (t, time) => {
       const T = time;
@@ -63,11 +65,11 @@ export default {
       const give = es(t, 0.05, 0.22);
       const leave = es(t, 0.25, 0.6);
       const back = es(t, 1.02, 1.35);
-      const mx = back > 0 ? lerp(1460, 1080, back) : lerp(760, 1460, leave);
+      const mx = back > 0 ? lerp(1460, MB, back) : lerp(760, 1460, leave);
       const my = back > 0 ? alongPts(ROAD.slice().reverse(), back)[1] : leave > 0 ? alongPts([[760, F], ...ROAD], leave)[1] : F;
       const ms = back > 0 ? lerp(0.6, 0.98, back) : lerp(0.98, 0.6, leave);
       const invest = es(t, 2.1, 2.35);
-      const mX = invest > 0 ? lerp(1080, 870, invest) : mx;
+      const mX = invest > 0 ? lerp(MB, 870, invest) : mx;
       master.set({ x: mX, y: invest > 0 ? F + 4 : my + 4, s: invest > 0 ? 0.98 : ms, flip: (leave <= 0 && t < 0.3) || back > 0, walk: (leave > 0 && leave < 1) || (back > 0 && back < 1) || (invest > 0 && invest < 1) ? mX * 0.05 : undefined, o: back > 0 || leave < 0.98 ? 1 : 0, armF: 20 + give * 60 * (1 - leave) + bump(t, 1.4, 1.9) * 60 + es(t, 2.35, 2.55) * 70, armB: 10 + es(t, 2.35, 2.55) * 60, head: bump(t, 1.4, 1.9) * -6, blink: blinkAt(T, 1) });
       const SX = 790;
       const dealing = seg(t, 0.55, 1.95);
