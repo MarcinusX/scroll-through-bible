@@ -413,7 +413,7 @@ export function soilStage(S, { left, right, skyCols = ['#cfe2df', '#e6ece0', '#f
   const sk2L = sky2 ? sky(S, sky2, { name: 'sky2' }).layer : null;
   if (sk2L) sk2L.fade(0);
   const skyL = S.layer({ par: 0.05, sh: 4 });
-  const SUN = [1180, 160];
+  const SUN = S.portrait ? [940, 150] : [1180, 160];   // on a phone the sun hangs clear of the progress thread
   const sunEl = hanging(skyL, sun(c, 46), { x: SUN[0], y: SUN[1], len: 620 });
   const clouds = [[400, 150, 190], [820, 105, 130]].map(([x, y, w], i) => ({ x, y, i, el: hanging(skyL, cloud(c, w), { x, y, len: 500 + i * 60 }) }));
   S.layer({ par: 0.12, sh: 2 }).add(hillsWith(c, { y: 408, amps: [20, 8, 3], lens: [1000, 380, 140], color: C.hillFar, trees: 20, treeColor: C.sage2, treeH: 22 }).markup);
