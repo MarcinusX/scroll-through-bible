@@ -66,11 +66,13 @@ export default {
       fade(J.sad, kiss * 0.6 + speak * 0.4);
       const [jhx, jhy] = headAt(JX, GY + 6, 1.04, true);
       const wk = es(t, 2.12, 2.32, ease.back);
-      vis(words, { x: jhx - 4, y: jhy - 30, s: wk, o: wk > 0.01 ? 1 : 0 });
+      vis(words, { x: jhx + (S.portrait ? 26 : -4), y: jhy - 30,   // phone: the words clear of the left edge
+                   s: wk, o: wk > 0.01 ? 1 : 0 });
 
       const fear = es(t, 0.3, 0.8);
       D.forEach((m) => {
-        m.p.set({ x: m.x + 20, y: m.y, s: m.s, flip: true, armF: m.arm, armB: 8 + fear * 30, head: -fear * 6, lean: fear * 3, blink: blinkAt(T, m.seed) });
+        m.p.set({ x: S.portrait ? 920 + (m.x - 900) * 0.45 : m.x + 20, y: m.y,   // phone: the Eleven closer, none under the thread
+ s: m.s, flip: true, armF: m.arm, armB: 8 + fear * 30, head: -fear * 6, lean: fear * 3, blink: blinkAt(T, m.seed) });
         fade(m.sad, fear * 0.9);
         lamp(m, 1, 0, T);
       });

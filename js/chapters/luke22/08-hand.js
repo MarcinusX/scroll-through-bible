@@ -17,11 +17,12 @@ export default {
     const c = S.c;
     const T0 = tableSet(S, { skyCols: NIGHTROOM });
     const { R, at, by, SEAT, TOP } = T0;
+    if (S.portrait) at.forEach((m) => { m.x = 800 + (m.x - 800) * 0.76; });   // phone: the thirteen sit closer so the table fits
     const J = by.jesus, JU = by.judas;
     const jShG = T0.wallFx.add(`<g opacity="0">${shadowPerson(c, { ...TW.judas, pose: 'sit' }, '#2a2034')}</g>`);
     const jSh = S.puppet(jShG.firstElementChild);
     T0.tabL.add(`<g transform="translate(${DISH} ${TOP - 2})">${bowl(c, { w: 40, food: 'stew', color: mix(C.pot, C.clay, 0.4) })}</g>`);
-    const cand = T0.tabL.add(`<g transform="translate(906 ${TOP - 2}) scale(.55)">${candle(c, 40)}</g>`);
+    const cand = T0.tabL.add(`<g transform="translate(${S.portrait ? 881 : 906} ${TOP - 2}) scale(.55)">${candle(c, 40)}</g>`);
     const cFlame = cand.querySelector('.flame'), cGlow = cand.querySelector('.glow');
     const shadeL = S.layer({ par: 0.56, sh: 0, flat: true });
     shadeL.add(`<rect x="-3000" y="-3000" width="8000" height="8000" fill="#1d1830" opacity=".34"/>`);
@@ -76,8 +77,9 @@ export default {
         vis(q.el, { x: hx + (q.m.flip ? -6 : 6), y: hy - 48 - (q.m.i % 2) * 16, s: k * 0.8, r: q.m.flip ? 6 : -6, o: k > 0.01 ? 1 : 0 });
       });
 
-      S.cam.x = kf(t, [[-0.3, 0], [0.3, 40], [1.0, 40], [1.3, 0], [1.5, 40], [2.0, 30], [2.2, 0]]);
-      S.cam.z = kf(t, [[-0.3, 1.3], [0.3, 1.95], [1.0, 1.95], [1.25, 1.3], [1.5, 1.7], [1.95, 1.7], [2.2, 1.28]]);
+      S.cam.x = kf(t, [[-0.3, 0], [0.3, 40], [1.0, 40], [1.3, 0], [1.5, 40], [2.0, 30], [2.2, 0]]) + (S.portrait ? 16 : 0);   // phone: the row sits clear of the progress thread
+      const zk = kf(t, [[-0.3, 1.3], [0.3, 1.95], [1.0, 1.95], [1.25, 1.3], [1.5, 1.7], [1.95, 1.7], [2.2, 1.28]]);
+      S.cam.z = S.portrait ? Math.max(1, zk - 0.12) : zk;   // phone: a little wider, so the whole table shows
       S.cam.y = kf(t, [[-0.3, 150], [0.3, 290], [1.0, 290], [1.25, 120], [1.5, 230], [1.95, 230], [2.2, 150]]);
     };
   },

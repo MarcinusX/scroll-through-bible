@@ -23,6 +23,7 @@ export default {
     const c = S.c;
     const T0 = tableSet(S, { skyCols: NIGHTROOM });
     const { R, at, by, SEAT, TOP } = T0;
+    if (S.portrait) at.forEach((m) => { m.x = 800 + (m.x - 800) * 0.76; });   // phone: the thirteen sit closer so the table fits
     const J = by.jesus;
     const ARGUE = ['peter', 'james', 'john', 'thomas', 'matthew', 'andrew'];
     const fx = S.layer({ par: 0.57, sh: 4 });
@@ -93,8 +94,9 @@ export default {
       vis(plB, { x: 960, y: 330 - (1 - pb) * 700, r: T ? Math.sin(T * 0.8 + 2) * 2 : 0, o: pb > 0.01 ? 1 : 0 });
       vis(labB, { x: 960, y: 420 - (1 - pb) * 700, r: T ? Math.sin(T * 0.8 + 3) * 2 : 0, o: pb > 0.01 ? 1 : 0 });
 
-      S.cam.x = 0;
-      S.cam.z = kf(t, [[-0.3, 1.26], [0.9, 1.3], [1.2, 1.02], [2.1, 1.02], [2.4, 1.3], [3.0, 1.26], [3.3, 1.08]]);
+      S.cam.x = 0 + (S.portrait ? 16 : 0);   // phone: the row sits clear of the progress thread
+      const zk = kf(t, [[-0.3, 1.26], [0.9, 1.3], [1.2, 1.02], [2.1, 1.02], [2.4, 1.3], [3.0, 1.26], [3.3, 1.08]]);
+      S.cam.z = S.portrait ? Math.max(1, zk - 0.12) : zk;   // phone: a little wider, so the whole table shows
       S.cam.y = kf(t, [[-0.3, 130], [0.9, 140], [1.2, 0], [2.1, 0], [2.4, 130], [3.0, 120], [3.3, 40]]);
     };
   },

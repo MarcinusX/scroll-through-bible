@@ -227,7 +227,7 @@ export function miniMan(c, col = C.dustyBlue, skin = C.skin2, sc = 1) {
  * cut the other way round: the door on the LEFT (so Judas comes in where a phone can see him), the window right of
  * centre. Returns { sky, stars, crowd (layer inside the window), shadows (on the wall), dim, clipId, FLOOR, CEIL, DOOR, WIN }.
  */
-export function chamberL(S, { skyCols = LATEDUSK } = {}) {
+export function chamberL(S, { skyCols = LATEDUSK, ctop = -1200 } = {}) {
   const c = S.c;
   const FLOOR = 700, CEIL = 230;
   const W0 = 700, W1 = 1060, WT = 300, WB = 560;
@@ -260,7 +260,8 @@ export function chamberL(S, { skyCols = LATEDUSK } = {}) {
     blot += c.cut(c.blob(bx, by, rx, ry, 10, 0.2), 0.8, 6);
   }
   w.x(blot, shade(wcol, -0.06), 'opacity=".55"');
-  w.p(c.cut([[-900, -1200], [2500, -1200], [2500, CEIL], [-900, CEIL]], 0.8, 30), shade(C.wood2, -0.25));
+  // ctop: the top of the ceiling's wood (a phone passes CEIL - 150, so the ceiling is a beam, not the top third of the screen)
+  w.p(c.cut([[-900, ctop], [2500, ctop], [2500, CEIL], [-900, CEIL]], 0.8, 30), shade(C.wood2, -0.25));
   let beams = '';
   for (let x = -300; x < 1900; x += 110) beams += c.cut(c.rect(x, CEIL - 6, 22, 26), 0.3, 5);
   w.p(beams, shade(C.wood, -0.1));
@@ -319,7 +320,7 @@ export function courtScene(S, { skyCols = DEEPNIGHT, lead = false } = {}) {
   const PL = S.layer({ par: P, sh: 5 });
   const ring = RINGL.map((d, i) => {
     const o = go14(c);
-    return { ...d, i, x: FIRE + d.dx, seed: c.rr(0, 9), s: d.s ?? 0.9, sit: S.puppet(PL.add(wf3(person(c, { ...o, pose: 'sit' }), fb3(c)))), stand: S.puppet(PL.add(person(c, o))) };
+    return { ...d, i, x: FIRE + (S.portrait && i === 0 ? -125 : d.dx), seed: c.rr(0, 9), s: d.s ?? 0.9, sit: S.puppet(PL.add(wf3(person(c, { ...o, pose: 'sit' }), fb3(c)))), stand: S.puppet(PL.add(person(c, o))) };
   });
   const pSitEl = PL.add(wf3(person(c, { ...TW14.peter, pose: 'sit' }), fb3(c)));
   const pStEl = PL.add(wf3(person(c, TW14.peter), fb3(c)));
@@ -335,7 +336,7 @@ export function courtScene(S, { skyCols = DEEPNIGHT, lead = false } = {}) {
     pSit: S.puppet(pSitEl), pSt: S.puppet(pStEl), pSitF: face(pSitEl), pStF: face(pStEl),
     maid: S.puppet(maidEl), maidFl: maidEl.querySelector('.flame'),
     roEl, roHead: roEl.querySelector('.rhead'), beakL: roEl.querySelector('.beakL'),
-    ...CY18, ROO: { x: 470, y: 428 },
+    ...CY18, ROO: { x: S.portrait ? 520 : 470, y: 428 },   // phone: the rooster whole on the wall, not a half at the edge
     /** idle: lamps, fire (k 0 = out, 1 = burning), gate lamp */
     idle(T, fireK = 1) {
       R.hallLamps.forEach((l, i) => { swing(l.el, l.x, l.y, T, 0.8, 0.7, i); pose(l.fl, { x: 26, y: 36, sx: 1 + (T ? Math.sin(T * 7 + i) * 0.08 : 0), sy: 1 + (T ? Math.sin(T * 5.3 + i) * 0.1 : 0) }); });
@@ -349,7 +350,7 @@ export function courtScene(S, { skyCols = DEEPNIGHT, lead = false } = {}) {
     hall(T, { look = 0, jx = JXH, jo = 1, head = 8 } = {}) {
       hp.set({ x: ANX, y: HALL, s: 0.9, flip: true, armF: 30, armB: 20, head: 4, blink: blinkAt(T, 5) });
       hg[0].set({ x: JXH - 110, y: HALL, s: 0.88, flip: false, armF: 16, armB: 6, blink: blinkAt(T, 7) });
-      hg[1].set({ x: JXH + 120, y: HALL, s: 0.88, flip: true, armF: 20, armB: 6, blink: blinkAt(T, 8) });
+      hg[1].set({ x: JXH + 120, y: HALL, s: 0.88, flip: true, o: S.portrait ? 0 : 1, armF: 20, armB: 6, blink: blinkAt(T, 8) });   // phone: he would only stand under the progress thread
       jesus.set({ x: jx, y: HALL, s: 0.94, flip: look > 0.5, o: jo, armF: 26, armB: 12, head, blink: blinkAt(T) });
     },
   };
@@ -372,7 +373,7 @@ export function councilScene(S, { skyCols = DEEP_C, dawnCols = DAYBREAK } = {}) 
   const SEATED = [
     { m: () => sc14(c, 0, { pose: 'sit' }), x: 680 }, { m: () => pr14(c, 1, { pose: 'sit' }), x: 742 }, { m: () => sc14(c, 3, { pose: 'sit' }), x: 804 }, { m: () => pr14(c, 2, { pose: 'sit' }), x: 866 },
     { m: () => pr14(c, 3, { pose: 'sit' }), x: 1320, flip: true }, { m: () => sc14(c, 2, { pose: 'sit' }), x: 1382, flip: true },
-  ].map((d, i) => { const el = hallL.add(wf3(d.m(), fb3(c))); return { ...d, i, el, seed: c.rr(0, 9), p: S.puppet(el), angry: el.querySelector('[data-part="angry"]'), sad: el.querySelector('[data-part="sad"]') }; });
+  ].map((d, i) => { const el = hallL.add(wf3(d.m(), fb3(c))); return { ...d, x: S.portrait && d.x < 900 ? 866 - (866 - d.x) * 0.62 : d.x, i, el, seed: c.rr(0, 9), p: S.puppet(el), angry: el.querySelector('[data-part="angry"]'), sad: el.querySelector('[data-part="sad"]') }; });
   const hpEl = hallL.add(wf3(hp14(c, { pose: 'sit' }), fb3(c)));
   const guard = S.puppet(hallL.add(person(c, go14(c))));
   const jEl = hallL.add(wf3(person(c, { ...CAST.jesus, holdF: rope18(c) }), fb3(c)));

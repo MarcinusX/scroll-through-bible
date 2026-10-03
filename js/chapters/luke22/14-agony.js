@@ -25,7 +25,7 @@ export default {
     { v: 46, text: 'Rzekł do nich: «Czemu śpicie?' },
     { v: 46, cont: true, text: 'Wstańcie i módlcie się, abyście nie ulegli pokusie».' },
   ],
-  cam: { x: [-220, 160], y: [-40, 180], z: [1, 1.5] },
+  cam: { x: [-260, 170], y: [-40, 180], z: [1, 1.5] },
   build(S) {
     const c = S.c;
     const N = nightSet(S, { moonAt: [1240, 140], cityX: 250, zigzag: true });
@@ -43,7 +43,7 @@ export default {
     const D = SLEEP.map((d, i) => {
       const a = P.add(withFace(person(c, { ...TW[d.k], pose: 'sit', eyes: 'closed' }), faceBits(c)));
       const b = P.add(withFace(person(c, { ...TW[d.k], pose: 'sit' }), faceBits(c)));
-      return { ...d, i, s: d.s ?? 0.92, y: GY + d.y, pa: S.puppet(a), pb: S.puppet(b), sadA: a.querySelector('[data-part="sad"]'), sadB: b.querySelector('[data-part="sad"]'), seed: c.rr(0, 9) };
+      return { ...d, i, x: S.portrait ? 600 - (600 - d.x) * 0.7 : d.x, s: d.s ?? 0.92, y: GY + d.y, pa: S.puppet(a), pb: S.puppet(b), sadA: a.querySelector('[data-part="sad"]'), sadB: b.querySelector('[data-part="sad"]'), seed: c.rr(0, 9) };
     });
     const angelEl = P.add(angel(c, { ...ANGEL }));
     const ang = S.puppet(angelEl);
@@ -69,8 +69,8 @@ export default {
       const aIn = es(t, 0.05, 0.45, ease.out);
       const aOut = es(t, 1.9, 2.2);
       const touch = es(t, 0.4, 0.65);
-      ang.set({ x: KX + 110, y: GY + 4 - (1 - aIn) * 60, s: 1.06, flip: true, o: aIn * (1 - aOut), armF: 30 + touch * 30, armB: 20 + touch * 10, head: 10, blink: blinkAt(T, 4) });
-      vis(aGlow, { x: KX + 120, y: GY - 210, s: 1, o: aIn * (1 - aOut) * 0.9 });
+      ang.set({ x: KX + (S.portrait ? 92 : 110), y: GY + 4 - (1 - aIn) * 60, s: 1.06, flip: true, o: aIn * (1 - aOut), armF: 30 + touch * 30, armB: 20 + touch * 10, head: 10, blink: blinkAt(T, 4) });
+      vis(aGlow, { x: KX + (S.portrait ? 102 : 120), y: GY - 210, s: 1, o: aIn * (1 - aOut) * 0.9 });
 
       /* v44 — agony; the drops */
       const agony = es(t, 1.05, 1.3) * (1 - es(t, 1.95, 2.1));
@@ -112,7 +112,9 @@ export default {
       vis(prayB, { x: bx - 14, y: by - 26, s: pb, o: pb > 0.01 ? 1 : 0 });
       tl(seg(t, 4.2, 5.4), es(t, 4.2, 4.4), T);
 
-      S.cam.x = kf(t, [[-0.4, 120], [1.9, 130], [2.7, -80], [4.0, -80], [4.4, -140]]);
+      S.cam.x = S.portrait   // phone: the angel's wing clear of the thread; the sleepers He comes back to in view
+        ? kf(t, [[-0.4, 135], [1.9, 145], [2.7, -150], [4.0, -150], [4.4, -250]])
+        : kf(t, [[-0.4, 120], [1.9, 130], [2.7, -80], [4.0, -80], [4.4, -140]]);
       S.cam.z = kf(t, [[-0.4, 1.2], [0.6, 1.3], [1.2, 1.44], [1.9, 1.44], [2.7, 1.2], [4.0, 1.24], [4.5, 1.08]]);
       S.cam.y = kf(t, [[-0.4, 60], [0.6, 80], [1.2, 120], [1.9, 120], [2.7, 80], [4.5, 20]]);
     };

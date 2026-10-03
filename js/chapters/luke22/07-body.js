@@ -16,6 +16,7 @@ export default {
     const c = S.c;
     const T0 = tableSet(S, { skyCols: NIGHTROOM });
     const { R, at, by, SEAT, TOP } = T0;
+    if (S.portrait) at.forEach((m) => { m.x = 800 + (m.x - 800) * 0.76; });   // phone: the thirteen sit closer so the table fits
     const J = by.jesus;
     // light gathering — behind the diners, on the wall
     const glowB = T0.behindL.add(`<g><circle r="110" fill="url(#halo-glow)"/></g>`);
@@ -80,8 +81,9 @@ export default {
         vis(mo.el, { x, y, s: 0.9, o: k > 0.001 ? 1 : 0 });
       });
 
-      S.cam.x = kf(t, [[-0.3, 0], [0.5, 0], [0.9, 0], [1.3, 0]]);
-      S.cam.z = kf(t, [[-0.3, 1.8], [0.45, 1.9], [0.62, 1.45], [1.0, 1.45], [1.15, 1.85], [1.36, 1.9], [1.5, 1.45]]);
+      S.cam.x = kf(t, [[-0.3, 0], [0.5, 0], [0.9, 0], [1.3, 0]]) + (S.portrait ? 16 : 0);   // phone: the row sits clear of the progress thread
+      const zk = kf(t, [[-0.3, 1.8], [0.45, 1.9], [0.62, 1.45], [1.0, 1.45], [1.15, 1.85], [1.36, 1.9], [1.5, 1.45]]);
+      S.cam.z = S.portrait ? Math.max(1, zk - 0.12) : zk;   // phone: a little wider, so the whole table shows
       S.cam.y = kf(t, [[-0.3, 260], [0.45, 275], [0.62, 200], [1.0, 200], [1.15, 265], [1.36, 275], [1.5, 200]]);
     };
   },

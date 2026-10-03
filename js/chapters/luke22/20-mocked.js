@@ -14,7 +14,7 @@ export default {
     { v: 64 },
     { v: 65 },
   ],
-  cam: { x: [-60, 460], y: [-300, 100], z: [1, 1.5] },
+  cam: { x: [-60, 480], y: [-300, 100], z: [1, 1.5] },
   build(S) {
     const c = S.c;
     const R = courtyard(S, { skyCols: DEEPNIGHT });
@@ -57,20 +57,21 @@ export default {
       vis(ringEl, { x: OX + 2, y: OY + hy - 2, s: 0.95, o: shown * es(t, 2.5, 2.8) });
       smP.forEach((p, i) => {
         const side = i % 2 ? 1 : -1;
-        const x0 = side * (100 + Math.floor(i / 2) * 90);
+        const x0 = side * (100 + Math.floor(i / 2) * 90) * (S.portrait ? 0.82 : 1);   // phone: the ring of them a little tighter
         const hit = i < 3 ? bump(t, 0.3 + i * 0.14, 0.7 + i * 0.14) + bump(t, 1.35 + i * 0.12, 1.7 + i * 0.12) : bump(t, 2.05 + (i - 3) * 0.15, 2.45 + (i - 3) * 0.15);
         const on = i < 3 ? es(t, 0.05, 0.1) : es(t, 1.9, 1.95);
         p.set({ x: OX + x0 * 1.1, y: OY + FY + 10, s: 0.9, flip: side > 0, o: on * shown, armF: 30 + hit * 90, armB: 20 + hit * 60 + (i === 4 ? es(t, 2.1, 2.3) * 100 : 0), lean: hit * 8, head: -hit * 6 });
       });
       const pk = es(t, 1.3, 1.5, ease.back) * (1 - es(t, 1.9, 2.0));
-      vis(prophesy, { x: CXc - 140, y: 230, s: pk, o: pk > 0.01 ? 1 : 0 });
+      vis(prophesy, { x: CXc - (S.portrait ? 100 : 140), y: 230, s: pk, o: pk > 0.01 ? 1 : 0 });
       taunts.forEach((b, i) => {
         const k = es(t, 2.05 + i * 0.1, 2.2 + i * 0.1, ease.back) * (1 - es(t, 2.88, 2.98));
-        vis(b, { x: CXc + [-260, 230, -170, 150][i], y: [230, 250, 180, 170][i], s: k, r: i % 2 ? 6 : -6, o: k > 0.01 ? 1 : 0 });
+        vis(b, { x: CXc + (S.portrait ? [-260, 160, -170, 100] : [-260, 230, -170, 150])[i],   // phone: the right-hand taunts clear of the thread
+                y: [230, 250, 180, 170][i], s: k, r: i % 2 ? 6 : -6, o: k > 0.01 ? 1 : 0 });
       });
-      S.cam.x = 420;
+      S.cam.x = S.portrait ? 455 : 420;   // phone: the cloth centred, its outermost shadows clear of the thread
       S.cam.y = kf(t, [[-0.3, -250], [3, -250]]);
-      S.cam.z = kf(t, [[-0.3, 1.3], [1.0, 1.36], [2.0, 1.36], [2.6, 1.46]]);
+      S.cam.z = S.portrait ? 1.3 : kf(t, [[-0.3, 1.3], [1.0, 1.36], [2.0, 1.36], [2.6, 1.46]]);
     };
   },
 };

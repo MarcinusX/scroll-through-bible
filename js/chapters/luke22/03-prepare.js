@@ -55,6 +55,7 @@ export default {
       { k: 'thomas', x: 430 }, { k: 'andrew', x: 506 }, { k: 'james', x: 580 },
       { k: 'john', x: 930, go: 1 }, { k: 'peter', x: 1000, go: 0 }, { k: 'matthew', x: 1080 }, { k: 'philip', x: 1150 }, { k: 'judas', x: 1220 },
     ].map((d, i) => ({ ...d, i, seed: c.rr(0, 9), y: GY + (i % 2) * 8, p: S.puppet(P.add(person(c, TW[d.k]))) }));
+    if (S.portrait) DIS.forEach((d) => { d.x = JX + (d.x - JX) * (d.x > JX ? 0.62 : 0.74); });   // phone: the group closer round Him, no half figure at the edge or under the thread
     const jesus = S.puppet(P.add(person(c, CAST.jesus)));
     const fx = S.layer({ par: 0.58, sh: 4 });
     const table = `<g transform="translate(0 20) scale(.7)">${lowTable(c, 80, 20)}</g><g transform="translate(-14 4) scale(.34)">${lamb(c)}</g><g transform="translate(18 2) scale(.3)">${matzahRound(c, 30)}</g>`;
@@ -74,8 +75,9 @@ export default {
         vis(p.el, { x: tx + Math.sin(k * 5 + p.i) * 10 + k * 40, y: ty - k * 190, s: 0.6 + k * 1.7, o: on * (1 - k) * 0.9 });
       });
       const pin = es(t, 0.1, 0.5, ease.out) * (1 - es(t, 1.0, 1.3, ease.in));
-      vis(plate, { x: 1010, y: 300 - (1 - pin) * 700, r: T ? Math.sin(T * 0.9) * 2 : 0, o: pin > 0.01 ? 1 : 0 });
-      vis(tagEl, { x: 1010, y: 386 - (1 - pin) * 700, r: T ? Math.sin(T * 1.2 + 1) * 3 : 0, o: pin > 0.01 ? 1 : 0 });
+      const PLX = S.portrait ? 930 : 1010;   // phone: the plate and its tag clear of the thread
+      vis(plate, { x: PLX, y: 300 - (1 - pin) * 700, r: T ? Math.sin(T * 0.9) * 2 : 0, o: pin > 0.01 ? 1 : 0 });
+      vis(tagEl, { x: PLX, y: 386 - (1 - pin) * 700, r: T ? Math.sin(T * 1.2 + 1) * 3 : 0, o: pin > 0.01 ? 1 : 0 });
 
       /* v8 — He sends Peter and John */
       const call = es(t, 1.05, 1.3);
@@ -86,7 +88,7 @@ export default {
         let x = d.x, walk, flip = d.x > JX, armF = 14, armB = 4, head = 0;
         head -= bump(t, 0, 0.9) * (d.i % 2 ? -8 : 6) * (d.x < JX ? 1 : 0);
         if (d.go !== undefined) {
-          const gK = [[1.1, d.x], [1.6, 900 + d.go * 70]];
+          const gK = [[1.1, d.x], [1.6, S.portrait ? 860 + d.go * 60 : 900 + d.go * 70]];
           x = kf(t, gK, ease.sine);
           walk = moving(t, gK, 1) ? x * 0.05 : undefined;
           flip = true;
@@ -99,7 +101,7 @@ export default {
       const [jhx, jhy] = headAt(JX, GY + 4, 1.04, false);
       const gb = es(t, 1.45, 1.65, ease.back) * (1 - es(t, 1.95, 2.05));
       vis(goB, { x: jhx + 20, y: jhy - 26, s: gb, o: gb > 0.01 ? 1 : 0 });
-      const [ax, ay] = headAt(970, GY, 0.98, true);
+      const [ax, ay] = headAt(S.portrait ? 920 : 970, GY, 0.98, true);
       const a = es(t, 2.2, 2.4, ease.back);
       vis(ask, { x: ax - 16, y: ay - 26, s: a, o: a > 0.01 ? 1 : 0 });
 

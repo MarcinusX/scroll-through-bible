@@ -20,11 +20,12 @@ export default {
     const c = S.c;
     const T0 = tableSet(S, { skyCols: EVE });
     const { R, at, by, SEAT, TOP } = T0;
+    if (S.portrait) at.forEach((m) => { m.x = 800 + (m.x - 800) * 0.76; });   // phone: the thirteen sit closer so the table fits
     const J = by.jesus;
     // they come in (behind the table) and sit
     const order = ['jesus', ...SEATS.filter(([k]) => k !== 'jesus').map(([k]) => k).reverse()];
     const walkers = order.map((k, n) => {
-      const x = SEATS.find((s) => s[0] === k)[1];
+      const x = by[k].x;   // (on a phone the seats are closer)
       return { k, n, x, p: S.puppet(T0.behindL.add(person(c, k === 'jesus' ? CAST.jesus : TW[k]))), seed: c.rr(0, 9) };
     });
     // the light on the lamb in the dish (behind the diners' front, on the table)
@@ -74,8 +75,9 @@ export default {
       const kin = es(t, 2.1, 2.45, ease.out);
       vis(kingdom, { x: 800, y: 330 - (1 - kin) * 700, r: T ? Math.sin(T * 0.8) * 1.5 : 0, o: kin > 0.01 ? 1 : 0 });
 
-      S.cam.x = 0;
-      S.cam.z = kf(t, [[-0.3, 1.1], [0.9, 1.2], [1.3, 1.7], [1.9, 1.7], [2.2, 1.2], [3, 1.16]]);
+      S.cam.x = 0 + (S.portrait ? 16 : 0);   // phone: the row sits clear of the progress thread
+      const zk = kf(t, [[-0.3, 1.1], [0.9, 1.2], [1.3, 1.7], [1.9, 1.7], [2.2, 1.2], [3, 1.16]]);
+      S.cam.z = S.portrait ? Math.max(1, zk - 0.12) : zk;   // phone: a little wider, so the whole table shows
       S.cam.y = kf(t, [[-0.3, 60], [0.9, 120], [1.3, 220], [1.9, 220], [2.2, 90], [3, 80]]);
     };
   },

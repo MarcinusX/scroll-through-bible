@@ -54,7 +54,7 @@ export default {
       K.idle(T * (1 - still), 1 - still * 0.75);
       K.R.dawn.fade(es(t, 2.1, 2.9) * 0.5);
       hush.fade(still * (1 - es(t, 2.0, 2.3) * 0.2));
-      pose(K.roEl, { x: K.ROO.x, y: K.ROO.y, s: 0.9 });
+      pose(K.roEl, { x: 470, y: K.ROO.y, s: 0.9 });   // (here the rooster stays where it was: on a phone it stands clear left of the memory)
 
       /* the world goes on, frozen, in the dark */
       K.hall(T, { jo: 0, jx: JXH, head: 10 });
@@ -78,7 +78,8 @@ export default {
 
       /* v61b — he remembers */
       const mk = es(t, 1.08, 1.4, ease.out) * (1 - es(t, 1.9, 2.1, ease.in));
-      vis(memory, { x: 620, y: 400 - (1 - mk) * 800, r: T ? Math.sin(T * 0.6) * 1.2 : 0, o: mk > 0.01 ? 1 : 0 });
+      vis(memory, { x: S.portrait ? 660 : 620,   // phone: the memory clear of the left edge
+                    y: 400 - (1 - mk) * 800, r: T ? Math.sin(T * 0.6) * 1.2 : 0, o: mk > 0.01 ? 1 : 0 });
 
       /* v62 — out through the gate; he weeps bitterly */
       const wK = [[2.05, [PX, PY - 14]], [2.55, [GATE - 60, YARD + 4]], [2.62, [GATE - 150, YARD + 8]]];
@@ -94,9 +95,10 @@ export default {
         vis(d, { x: hx - 40 + (i % 2 ? -6 : 6), y: hy + 20 + k * 60, s: 1.3, o: kneel * (1 - k) });
       });
       // his tears at the fire too, as he looks
-      S.cam.x = kf(t, [[-0.3, 60], [0.02, 60], [0.2, 330], [0.34, 330], [0.46, -160], [0.6, -160], [0.74, 70], [1.0, 70], [1.1, -80], [2.0, -80], [2.5, S.portrait ? -960 : -660], [3, S.portrait ? -1000 : -700]]);
+      S.cam.x = kf(t, [[-0.3, 60], [0.02, 60], [0.2, 330], [0.34, 330], [0.46, -160], [0.6, -160], [0.74, 70], [1.0, 70], [1.1, S.portrait ? -50 : -80], [2.0, S.portrait ? -50 : -80], [2.5, S.portrait ? -960 : -660], [3, S.portrait ? -1000 : -700]]);
       S.cam.y = kf(t, [[-0.3, 140], [0.02, 130], [0.2, -20], [0.34, -20], [0.46, 210], [0.6, 210], [0.74, 110], [1.0, 110], [1.1, 160], [2.0, 160], [2.5, 170], [3, 180]]);
-      S.cam.z = kf(t, [[-0.3, 1.2], [0.02, 1.2], [0.2, 1.48], [0.34, 1.48], [0.46, 1.48], [0.6, 1.48], [0.74, 1.26], [1.0, 1.26], [1.1, 1.3], [2.0, 1.3], [2.5, 1.2], [3, 1.22]]);
+      S.cam.z = kf(t, [[-0.3, 1.2], [0.02, 1.2], [0.2, 1.48], [0.34, 1.48], [0.46, 1.48], [0.6, 1.48], [0.74, 1.26], [1.0, 1.26], [1.1, S.portrait ? 1.18 : 1.3], [2.0, S.portrait ? 1.18 : 1.3],   // phone: Jesus in the hall clear of the thread
+         [2.5, 1.2], [3, 1.22]]);
     };
   },
 };

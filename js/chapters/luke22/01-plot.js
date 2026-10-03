@@ -18,9 +18,10 @@ export default {
     { v: 1 },
     { v: 2 },
   ],
-  cam: { x: [-120, 40], y: [-40, 80], z: [1, 1.2] },
+  cam: { x: [-170, 40], y: [-40, 80], z: [1, 1.2] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;
     const SKY = ['#a69abf', '#eab99c', '#f5d6b0'];
     const T0 = templeCourt(S, { skyCols: SKY, floorY: FLOOR + 40, sanctX: 820, sunAt: [1250, 210] });
 
@@ -111,13 +112,13 @@ export default {
         fade(m.sad, glance * (m.i >= 2 ? 1 : 0.5));
       });
       const pb = es(t, 2.12, 2.32, ease.back);
-      vis(plotB, { x: 470, y: 470, s: pb * 1.25, o: pb > 0.01 ? 1 : 0 });
+      vis(plotB, { x: P ? 530 : 470, y: P ? 440 : 470, s: pb * 1.25, o: pb > 0.01 ? 1 : 0 });
       const fb = es(t, 2.52, 2.7, ease.back);
       const [hx, hy] = headAt(560 - 12, FLOOR - 24, 0.86, false);
       vis(fearB, { x: hx + 26, y: hy - 30, s: fb * 1.1, o: fb > 0.01 ? 1 : 0 });
       sitL.set({ o: 1 }); sitR.set({ o: 1 });
 
-      S.cam.x = kf(t, [[0, -20], [1.0, -10], [2.0, -10], [2.3, -90], [3, -90]]);
+      S.cam.x = kf(t, [[0, -20], [1.0, -10], [2.0, -10], [2.3, P ? -150 : -90], [3, P ? -150 : -90]]);   // phone: the priests and their thought inside the screen
       S.cam.y = kf(t, [[0, 20], [1.0, 0], [2.0, 0], [2.3, 50], [3, 50]]);
       S.cam.z = kf(t, [[0, 1.02], [1.0, 1.0], [2.0, 1.02], [2.3, 1.14], [3, 1.16]]);
     };

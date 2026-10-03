@@ -20,10 +20,11 @@ export default {
     { v: 5 },
     { v: 6 },
   ],
-  cam: { x: [-140, 60], y: [-40, 120], z: [1, 1.3] },
+  cam: { x: [-180, 60], y: [-40, 120], z: [1, 1.3] },
   build(S) {
     const c = S.c;
-    const R = chamberL(S);
+    const P = S.portrait;
+    const R = chamberL(S, P ? { ctop: 80 } : {});   // phone: the ceiling a beam across the wall
     const { FLOOR, DOOR } = R;
     const TOP = FLOOR - 100, TX = 880;
 
@@ -35,7 +36,7 @@ export default {
     const cast = [
       { k: 'pr1', o: priestOpts(1), m: () => withFace(priest(c, 1), faceBits(c)), x: 800, y: FLOOR - 26, s: 0.94 },
       { k: 'hp', o: HP, m: () => withFace(highPriest(c), faceBits(c)), x: 955, y: FLOOR - 26, s: 0.98 },
-      { k: 'cap', o: CAPTAIN, m: () => withFace(captain(c), faceBits(c)), x: 1110, y: FLOOR + 8, s: 1.0, front: true },
+      { k: 'cap', o: CAPTAIN, m: () => withFace(captain(c), faceBits(c)), x: P ? 1030 : 1110, y: FLOOR + 8, s: 1.0, front: true },
     ];
     cast.forEach((m) => {
       m.seed = c.rr(0, 9);
@@ -161,7 +162,7 @@ export default {
       fade(wDay, 1 - alone);
       fade(wNight, alone);
 
-      S.cam.x = kf(t, [[-0.3, -130], [1.0, -120], [1.5, -10], [3.2, 10], [3.6, -40]]);
+      S.cam.x = kf(t, [[-0.3, P ? -170 : -130], [1.0, P ? -160 : -120], [1.5, -10], [3.2, 10], [3.6, P ? -10 : -40]]);
       S.cam.z = kf(t, [[-0.3, 1.1], [0.6, 1.22], [1.0, 1.22], [1.5, 1.1], [2.2, 1.14], [3.2, 1.14], [3.6, 1.18]]);
       S.cam.y = kf(t, [[-0.3, 40], [0.6, 80], [1.0, 80], [1.5, 50], [3.6, 30]]);
     };

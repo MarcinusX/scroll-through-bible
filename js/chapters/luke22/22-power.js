@@ -31,6 +31,8 @@ export default {
     const vclip = S.id('vis');
     const sonM = `<g transform="translate(-92 ${PH - 26})">${smallThrone(c, 1.3)}<g transform="translate(4 -12) scale(.4)">${person(c, { ...CAST.jesus, pose: 'sit' })}</g></g>`;
     const visionEl = hanging(fx, `${sheet().p(c.cut(c.rect(-PW / 2 - 10, -10, PW + 20, PH + 20), 0.6, 8), C.wood2).out()}<defs><clipPath id="${vclip}"><rect x="${-PW / 2}" y="0" width="${PW}" height="${PH}"/></clipPath></defs><g clip-path="url(#${vclip})"><rect x="${-PW / 2}" y="0" width="${PW}" height="${PH}" fill="${C.night}"/>${heavenPanel(c, PW, PH + 30)}<g transform="translate(40 ${PH * 0.45})"><circle r="120" fill="url(#halo-glow)"/><g transform="scale(.5)">${radiance(c, 150)}</g></g>${sonM}</g>`, { x: 0, y: -1500, len: 800 });
+    // phone: the two who sit beyond the high priest would only be slivers under the progress thread — they stay away
+    const FAR = (m) => S.portrait && m.x > 1250;
     const qs = K.SEATED.map((m) => ({ m, el: fx.add(`<g>${question(c)}</g>`) }));
     const hpQ = fx.add(`<g>${question(c)}</g>`);
     const iam = hanging(fx, goldWord(c, tr('Jestem', 'I am'), { size: 30 }), { x: 0, y: -1500, len: 700 });
@@ -48,7 +50,7 @@ export default {
 
       /* v69 — at the right hand of the Power */
       const vIn = es(t, 0.05, 0.45, ease.out) * (1 - es(t, 0.95, 1.2, ease.in));
-      vis(visionEl, { x: JX, y: 40 - (1 - vIn) * 700, r: T ? Math.sin(T * 0.6) * 0.8 : 0, o: vIn > 0.01 ? 1 : 0 });
+      vis(visionEl, { x: JX - (S.portrait ? 30 : 0), y: 40 - (1 - vIn) * 700, r: T ? Math.sin(T * 0.6) * 0.8 : 0, o: vIn > 0.01 ? 1 : 0 });
 
       /* v70 — "Are you the Son of God?" — "I am" */
       const cry = es(t, 1.05, 1.25) * (1 - es(t, 1.9, 2.05));
@@ -56,7 +58,7 @@ export default {
       const fling = es(t, 3.1, 3.35);
       const point = es(t, 4.05, 4.3);
       K.SEATED.forEach((m) => {
-        m.p.set({ x: m.x, y: HALL - 16, s: 0.72, flip: !!m.flip, armF: 30 + cry * 50 + point * 60, armB: 14 + cry * 90 * (m.i % 2 ? 1 : 0.5) + fling * 20, head: -cry * 8 - point * 4, lean: -cry * 4, blink: blinkAt(T, m.seed) });
+        m.p.set({ x: m.x, y: HALL - 16, s: 0.72, flip: !!m.flip, o: FAR(m) ? 0 : 1, armF: 30 + cry * 50 + point * 60, armB: 14 + cry * 90 * (m.i % 2 ? 1 : 0.5) + fling * 20, head: -cry * 8 - point * 4, lean: -cry * 4, blink: blinkAt(T, m.seed) });
         fade(m.angry, 0.5 + cry * 0.5 + point * 0.3);
       });
       K.hp.set({ x: SEATX, y: HALL - 16, s: 0.74, flip: true, armF: 30 + cry * 40 + fling * 60 * (1 - point) + point * 70, armB: 20 + cry * 80 + fling * 100 * (1 - es(t, 3.8, 4.0)), head: -cry * 8 - fling * 6, blink: blinkAt(T, 5) });
@@ -67,7 +69,7 @@ export default {
       qs.forEach((q) => {
         const k = es(t, 1.08 + q.m.i * 0.05, 1.22 + q.m.i * 0.05, ease.back) * (1 - es(t, 1.9, 2.0));
         const [mx, my] = headAt(q.m.x, HALL - 16, 0.72, !!q.m.flip, 62);
-        vis(q.el, { x: mx + (q.m.flip ? -6 : 6), y: my - 40 - (q.m.i % 2) * 14, s: k * 0.7, r: q.m.flip ? 6 : -6, o: k > 0.01 ? 1 : 0 });
+        vis(q.el, { x: mx + (q.m.flip ? -6 : 6), y: my - 40 - (q.m.i % 2) * 14, s: k * 0.7, r: q.m.flip ? 6 : -6, o: k > 0.01 && !FAR(q.m) ? 1 : 0 });
       });
       const [hx, hy] = headAt(SEATX, HALL - 16, 0.74, true, 62);
       const hq = es(t, 1.1, 1.3, ease.back) * (1 - es(t, 1.9, 2.0));
@@ -83,7 +85,9 @@ export default {
       const [ax, ay] = headAt(1320, HALL - 16, 0.72, true, 62);
       vis(mouth, { x: ax - 8, y: ay - 24, s: mk, o: 0 });
 
-      S.cam.x = kf(t, [[-0.3, 420], [0.9, 420], [1.1, 440], [4.0, 440], [4.3, 500]]);
+      S.cam.x = S.portrait   // phone: the elders on the left and their questions in view
+        ? kf(t, [[-0.3, 390], [0.9, 390], [1.1, 395], [4.0, 395], [4.3, 460]])
+        : kf(t, [[-0.3, 420], [0.9, 420], [1.1, 440], [4.0, 440], [4.3, 500]]);
       S.cam.y = kf(t, [[-0.3, -440], [0.9, -440], [1.1, -400], [4.0, -400], [4.3, -560]]);
       S.cam.z = kf(t, [[-0.3, 1.3], [0.9, 1.3], [1.1, 1.5], [2.1, 1.5], [2.35, 1.66], [2.9, 1.66], [3.1, 1.5], [4.0, 1.5], [4.3, 1.3]]);
     };

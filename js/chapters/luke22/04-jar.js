@@ -11,7 +11,7 @@ import {
 } from './lib.js';
 
 const { GY, HX, H1 } = HOUSE;
-const FX = 450;       // the fountain
+const FX0 = 450;      // the fountain
 
 export default {
   id: 'lk22-jar',
@@ -22,9 +22,11 @@ export default {
     { v: 12 },
     { v: 13 },
   ],
-  cam: { x: [-300, 460], y: [-60, 120], z: [1, 1.3] },
+  cam: { x: [-380, 670], y: [-60, 120], z: [1, 1.3] },
   build(S) {
     const c = S.c;
+    const P_ = S.portrait;
+    const FX = P_ ? FX0 + 150 : FX0;   // phone: the fountain, the man and the two who meet him come in where the screen sees them
     const R = streetSet(S, { skyCols: ['#c3d8d8', '#efe5cb', '#f7e6c8'] });
     const hangL = S.layer({ par: 0.04, sh: 4 });
     const sunEl = hanging(hangL, sun(c, 40), { x: 1500, y: 150, len: 700 });
@@ -87,7 +89,7 @@ export default {
       });
 
       /* Peter and John: in at the gate, they meet him, follow, ask, climb, prepare */
-      const pK = [[-0.4, [110, GY]], [0.55, [300, GY]], [1.0, [320, GY]], [1.9, [DOORX - 150, GY]], [3.85, [DOORX - 150, GY]], [4.05, [X0 - 150, GY - 60]], [4.28, [X0 - 20, H1 + 4]], [4.34, [X0 + 20, H1]]];
+      const pK = [[-0.4, [110, GY]], [0.55, [P_ ? 490 : 300, GY]], [1.0, [P_ ? 510 : 320, GY]], [1.9, [DOORX - 150, GY]], [3.85, [DOORX - 150, GY]], [4.05, [X0 - 150, GY - 60]], [4.28, [X0 - 20, H1 + 4]], [4.34, [X0 + 20, H1]]];
       const jK = pK.map(([tt, [x, y]], i) => [tt + (i > 4 ? 0.1 : 0.06), [x - (i > 4 ? 20 : 70), y + (i > 4 ? 2 : 6)]]);
       const [px, py] = kf(t, pK, ease.sine), [jx2, jy2] = kf(t, jK, ease.sine);
       const inRoom = es(t, 4.36, 4.42);
@@ -129,7 +131,9 @@ export default {
       });
 
       R.sky.blend(['#c3d8d8', '#efe5cb', '#f7e6c8'], ['#d2c8d6', '#f0d9bf', '#f5dcbf'], es(t, 4.3, 5.8));
-      S.cam.x = kf(t, [[-0.5, -260], [0.3, -200], [1.0, -100], [1.9, 250], [2.6, 330], [3.2, 400], [4.1, 440], [5.0, 440]]);
+      S.cam.x = P_   // phone: the meeting at the fountain in the middle; the large room upstairs whole, clear of the thread
+        ? kf(t, [[-0.5, -360], [0.3, -360], [1.0, -320], [1.9, 250], [2.6, 330], [3.2, 640], [4.1, 650], [5.0, 650]])
+        : kf(t, [[-0.5, -260], [0.3, -200], [1.0, -100], [1.9, 250], [2.6, 330], [3.2, 400], [4.1, 440], [5.0, 440]]);
       S.cam.z = kf(t, [[-0.5, 1.06], [0.3, 1.14], [1.0, 1.1], [1.9, 1.08], [2.6, 1.14], [3.2, 1.06], [5.0, 1.2]]);
       S.cam.y = kf(t, [[-0.5, 30], [0.3, 40], [1.9, 30], [3.2, -30], [4.1, -20], [5.0, -50]]);
     };

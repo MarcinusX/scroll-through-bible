@@ -26,7 +26,7 @@ export default {
       const fireK = es(t, 2.05, 2.4);
       K.idle(T, fireK);
       K.R.dawn.fade(0);
-      pose(K.roEl, { x: K.ROO.x, y: K.ROO.y, s: 0.9 });
+      pose(K.roEl, { x: t < 1.0 ? 470 : K.ROO.x, y: K.ROO.y, s: 0.9 });   // (phone: out of the frame's edge while the camera passes it at v54a; it steps along the wall out of sight)
 
       /* v54a — led in, bound, up into the hall */
       const jK = [[-0.4, [-160, YARD]], [0.5, [560, YARD]], [0.72, [790, YARD]], [0.85, [880, HALL]], [0.98, [JXH, HALL]]];
@@ -64,7 +64,7 @@ export default {
       });
       K.maid.set({ x: 1300, y: YARD, s: 0.86, o: 0 });
 
-      S.cam.x = kf(t, [[-0.4, -900], [0.5, -300], [0.95, 280], [1.1, 200], [1.4, -760], [1.95, -760], [2.3, 0], [3, 20]]);
+      S.cam.x = kf(t, [[-0.4, -900], [0.5, -300], [0.95, 280], [1.1, 200], [1.4, -760], [1.95, -760], [2.3, S.portrait ? -15 : 0], [3, S.portrait ? -15 : 20]]);   // phone: as the denials frame it, Jesus in the hall clear of the thread
       S.cam.y = kf(t, [[-0.4, 120], [0.5, 120], [0.95, 0], [1.1, 20], [1.4, 130], [1.95, 130], [2.3, 110], [3, 110]]);
       S.cam.z = kf(t, [[-0.4, 1.2], [0.5, 1.2], [0.95, 1.1], [1.1, 1.1], [1.4, 1.3], [1.95, 1.3], [2.3, 1.16], [3, 1.2]]);
     };

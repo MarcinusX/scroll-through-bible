@@ -26,6 +26,7 @@ export default {
     const c = S.c;
     const T0 = tableSet(S, { skyCols: NIGHTROOM });
     const { R, at, by, SEAT, TOP } = T0;
+    if (S.portrait) at.forEach((m) => { m.x = 800 + (m.x - 800) * 0.76; });   // phone: the thirteen sit closer so the table fits
     const J = by.jesus;
     // Peter and James holding up the two swords (in front of the diners, behind the table)
     const SW = ['peter', 'james'].map((k) => {
@@ -113,8 +114,9 @@ export default {
       });
       function s0(k) { return k === 'peter' || k === 'james'; }
 
-      S.cam.x = 0;
-      S.cam.z = kf(t, [[-0.3, 1.04], [4.9, 1.04], [5.2, 1.3], [6.9, 1.3]]);
+      S.cam.x = 0 + (S.portrait ? 16 : 0);   // phone: the row sits clear of the progress thread
+      const zk = kf(t, [[-0.3, 1.04], [4.9, 1.04], [5.2, 1.3], [6.9, 1.3]]);
+      S.cam.z = S.portrait ? Math.max(1, zk - 0.12) : zk;   // phone: a little wider, so the whole table shows
       S.cam.y = kf(t, [[-0.3, 20], [4.9, 20], [5.2, 130], [6.9, 130]]);
     };
   },

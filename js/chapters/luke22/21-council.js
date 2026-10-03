@@ -27,6 +27,8 @@ export default {
     const words = fx.add(`<g>${speech(c, slip, { w: 64, h: 44 })}</g>`);
     const flying = [0, 1, 2].map(() => fx.add(`<g>${slip}</g>`));
     const ask = fx.add(`<g>${speech(c, `<g transform="translate(0 0)">${GLYPH.q(c)}</g>`, { w: 50, h: 44 })}</g>`);
+    // phone: the two who sit beyond the high priest would only be slivers under the progress thread — they stay away
+    const FAR = (m) => S.portrait && m.x > 1250;
     const hush = K.SEATED.map((m) => ({ m, el: fx.add(`<g>${speech(c, `<path d="${c.poly(c.circ(-9, 0, 2.6, 8)) + c.poly(c.circ(0, 0, 2.6, 8)) + c.poly(c.circ(9, 0, 2.6, 8))}" fill="${C.stone2}"/>`, { w: 40, h: 26, fill: mix(C.cream, C.stone, 0.3), flip: !!m.flip })}</g>`) }));
 
     return (t, time) => {
@@ -45,7 +47,7 @@ export default {
         const on = es(t, 0.05 + m.i * 0.07, 0.25 + m.i * 0.07);
         const ask1 = es(t, 1.05, 1.25) * (1 - es(t, 1.9, 2.05));
         const turn = away * (m.i % 2 ? 1 : 0.6);
-        m.p.set({ x: m.x, y: HALL - 16, s: 0.72, flip: turn > 0.5 ? !m.flip : !!m.flip, o: on, armF: 30 + ask1 * 40, armB: 14 + ask1 * 30 - turn * 0, head: -ask1 * 6 + turn * 10 + es(t, 3.1, 3.3) * 6, blink: blinkAt(T, m.seed) });
+        m.p.set({ x: m.x, y: HALL - 16, s: 0.72, flip: turn > 0.5 ? !m.flip : !!m.flip, o: on * (FAR(m) ? 0 : 1), armF: 30 + ask1 * 40, armB: 14 + ask1 * 30 - turn * 0, head: -ask1 * 6 + turn * 10 + es(t, 3.1, 3.3) * 6, blink: blinkAt(T, m.seed) });
         fade(m.angry, ask1 * 0.7 + es(t, 3.1, 3.3) * 0.4);
       });
       K.hp.set({ x: SEATX, y: HALL - 16, s: 0.74, flip: true, armF: 30 + es(t, 1.05, 1.25) * 50 * (1 - es(t, 1.9, 2.1)), armB: 20 + es(t, 1.05, 1.25) * 60 * (1 - es(t, 1.9, 2.1)), head: -es(t, 1.05, 1.25) * 6 + es(t, 3.1, 3.3) * 6, blink: blinkAt(T, 5) });
@@ -66,7 +68,7 @@ export default {
       vis(words, { x: jhx + 12, y: jhy - 24, s: b2, o: b2 > 0.01 ? 1 : 0 });
       flying.forEach((f, i) => {
         const k = es(t, 2.3 + i * 0.1, 2.7 + i * 0.1);
-        const tx = [720, 800, 1330][i];
+        const tx = [720, 800, S.portrait ? 1090 : 1330][i];
         const bounce = es(t, 2.7 + i * 0.1, 2.9 + i * 0.1);
         vis(f, { x: lerp(jhx + 30, tx, k), y: lerp(jhy - 40, 230, k) + bounce * 60, r: k * 20 + bounce * 90, o: k > 0.01 && bounce < 0.99 ? 1 - bounce : 0 });
       });
@@ -75,10 +77,12 @@ export default {
       hush.forEach((h) => {
         const k = es(t, 3.35 + h.m.i * 0.05, 3.5 + h.m.i * 0.05, ease.back);
         const [mx, my] = headAt(h.m.x, HALL - 16, 0.72, !!h.m.flip, 62);
-        vis(h.el, { x: mx + (h.m.flip ? -8 : 8), y: my - 22, s: k * 0.8, o: k > 0.01 ? 0.9 : 0 });
+        vis(h.el, { x: mx + (h.m.flip ? -8 : 8), y: my - 22, s: k * 0.8, o: k > 0.01 && !FAR(h.m) ? 0.9 : 0 });
       });
 
-      S.cam.x = kf(t, [[-0.3, 380], [0.8, 420], [1.1, 520], [1.9, 520], [2.1, 420], [4, 420]]);
+      S.cam.x = S.portrait   // phone: the elders on the left in view, the high priest clear of the thread
+        ? kf(t, [[-0.3, 360], [0.8, 380], [1.1, 480], [1.9, 480], [2.1, 390], [4, 390]])
+        : kf(t, [[-0.3, 380], [0.8, 420], [1.1, 520], [1.9, 520], [2.1, 420], [4, 420]]);
       S.cam.y = kf(t, [[-0.3, -300], [0.8, -400], [4, -400]]);
       S.cam.z = kf(t, [[-0.3, 1.2], [0.8, 1.44], [1.1, 1.6], [1.9, 1.6], [2.1, 1.5], [4, 1.5]]);
     };

@@ -30,6 +30,7 @@ export default {
     const c = S.c;
     const T0 = tableSet(S, { skyCols: NIGHTROOM });
     const { R, at, by, SEAT, TOP } = T0;
+    if (S.portrait) at.forEach((m) => { m.x = 800 + (m.x - 800) * 0.76; });   // phone: the thirteen sit closer so the table fits
     const J = by.jesus;
     // the light above (the Father: light only), on the wall behind
     const lightL = T0.wallFx;
@@ -95,7 +96,9 @@ export default {
       const rise = es(t, 2.05, 2.15);
       const sitBack = es(t, 2.95, 3.05);
       const standK = rise * (1 - sitBack);
-      const walkK = [[2.1, 800], [2.35, 700], [2.55, 700], [2.65, 640], [2.8, 640], [2.9, 560]];
+      const walkK = S.portrait   // phone: to the same three, who sit closer
+        ? [[2.1, 800], [2.35, 730], [2.55, 730], [2.65, 683], [2.8, 683], [2.9, 630]]
+        : [[2.1, 800], [2.35, 700], [2.55, 700], [2.65, 640], [2.8, 640], [2.9, 560]];
       const jx = kf(t, walkK, ease.sine);
       const pour = t > 2.35 && t < 2.9 ? 1 : 0;
       jS.set({ x: jx, y: 760, s: 1.04, flip: false, o: standK, walk: (t > 2.1 && t < 2.35) || (t > 2.55 && t < 2.65) || (t > 2.8 && t < 2.9) ? jx * 0.05 : undefined, armF: 30 + pour * 50, armB: 10, head: 12, blink: blinkAt(T) });
@@ -136,8 +139,9 @@ export default {
         fade(m.sad, trK * 0.5);
       });
 
-      S.cam.x = kf(t, [[-0.3, 0], [2.0, 0], [2.3, -60], [2.9, -70], [3.1, 0]]);
-      S.cam.z = kf(t, [[-0.3, 1.02], [1.9, 1.02], [2.2, 1.34], [2.9, 1.34], [3.1, 1.06], [4.0, 1.06], [4.3, 1.3], [4.95, 1.3], [5.2, 1.0]]);
+      S.cam.x = kf(t, [[-0.3, 0], [2.0, 0], [2.3, S.portrait ? -30 : -60], [2.9, S.portrait ? -40 : -70], [3.1, 0]]) + (S.portrait ? 16 : 0);   // phone: the row sits clear of the progress thread
+      const zk = kf(t, [[-0.3, 1.02], [1.9, 1.02], [2.2, 1.34], [2.9, 1.34], [3.1, 1.06], [4.0, 1.06], [4.3, 1.3], [4.95, 1.3], [5.2, 1.0]]);
+      S.cam.z = S.portrait ? Math.max(1, zk - 0.12 - es(t, 1.9, 2.2) * (1 - es(t, 2.9, 3.1)) * 0.1) : zk;   // (while He serves, wider still: the whole row)   // phone: a little wider, so the whole table shows
       S.cam.y = kf(t, [[-0.3, 20], [1.9, 20], [2.2, 150], [2.9, 150], [3.1, 30], [4.0, 30], [4.3, 140], [4.95, 140], [5.2, 0]]);
     };
   },

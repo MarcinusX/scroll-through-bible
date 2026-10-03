@@ -27,7 +27,7 @@ export default {
     { v: 53, text: 'Gdy codziennie bywałem u was w świątyni, nie podnieśliście rąk na Mnie,' },
     { v: 53, cont: true, text: 'lecz to jest wasza godzina i panowanie ciemności».' },
   ],
-  cam: { x: [-120, 60], y: [-120, 180], z: [1, 1.5] },
+  cam: { x: [-120, 160], y: [-120, 180], z: [1, 1.5] },
   build(S) {
     const c = S.c;
     const N = nightSet(S, { moonAt: [1250, 130] });
@@ -43,6 +43,7 @@ export default {
     // the leaders who came out with them, in colour
     const LD = [{ m: () => priest(c, 1), x: 400, y: GY - 22 }, { m: () => captain(c), x: 330, y: GY - 16 }, { m: () => scribe(c, 3), x: 470, y: GY - 26 }]
       .map((d, i) => ({ ...d, i, seed: c.rr(0, 9), p: S.puppet(bandL.add(withFace(d.m(), faceBits(c)))) }));
+    if (S.portrait) LD.forEach((d) => { d.x += 90; });   // phone: the leaders He speaks to come in from the left edge
     LD.forEach((d) => { d.angry = d.p.el.querySelector('[data-part="angry"]'); });
     const peopleL = S.layer({ par: 0.5, sh: 5 });
     const judas = S.puppet(peopleL.add(withFace(person(c, TW.judas), faceBits(c))));
@@ -83,7 +84,8 @@ export default {
       /* v49 — "shall we strike?" */
       const fear = 0.6;
       D.forEach((m) => {
-        m.p.set({ x: m.x + 26, y: m.y, s: m.s, flip: true, armF: m.arm, armB: 8 + fear * 30 + bump(t, 0.1, 0.9) * 50, head: -fear * 4, blink: blinkAt(T, m.seed) });
+        m.p.set({ x: S.portrait ? 974 + (m.x - 948) * 0.4 : m.x + 26, y: m.y,   // phone: the Eleven closer, none under the thread
+ s: m.s, flip: true, armF: m.arm, armB: 8 + fear * 30 + bump(t, 0.1, 0.9) * 50, head: -fear * 4, blink: blinkAt(T, m.seed) });
         fade(m.sad, fear);
         lamp(m, 1, 0, T);
       });
@@ -146,7 +148,7 @@ export default {
       vis(dR, { x: lerp(2300, 1060, night), y: 480, o: night > 0.01 ? 0.82 : 0 });
       vis(pool, { x: 470, y: GY, o: 1 - night * 0.5 });
 
-      S.cam.x = kf(t, [[-0.5, 60], [0.9, 40], [1.3, -40], [2.0, -40], [3.0, -60], [3.9, -60], [4.3, -40], [6.9, 0]]);
+      S.cam.x = kf(t, [[-0.5, S.portrait ? 160 : 60], [0.9, S.portrait ? 140 : 40], [1.3, -40], [2.0, -40], [3.0, -60], [3.9, -60], [4.3, S.portrait ? -100 : -40], [6.9, S.portrait ? -50 : 0]]);
       S.cam.y = kf(t, [[-0.5, 60], [0.9, 70], [1.3, 100], [2.0, 90], [3.0, 150], [3.9, 150], [4.3, 40], [6.9, 40]]);
       S.cam.z = kf(t, [[-0.5, 1.16], [0.9, 1.2], [1.3, 1.3], [2.0, 1.26], [3.0, 1.46], [3.9, 1.46], [4.3, 1.08], [6.9, 1.08]]);
     };

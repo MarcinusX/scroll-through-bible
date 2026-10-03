@@ -24,6 +24,7 @@ export default {
     const c = S.c;
     const T0 = tableSet(S, { skyCols: NIGHTROOM });
     const { R, at, by, SEAT, TOP } = T0;
+    if (S.portrait) at.forEach((m) => { m.x = 800 + (m.x - 800) * 0.76; });   // phone: the thirteen sit closer so the table fits
     const J = by.jesus, P = by.peter;
     // Peter standing (behind the table)
     const pStEl = T0.behindL.add(withFace(person(c, TW.peter), faceBits(c)));
@@ -86,7 +87,7 @@ export default {
 
       /* v33 — Peter stands: to prison and to death */
       const up = es(t, 3.02, 3.1) * (1 - es(t, 4.4, 4.5));
-      pSt.set({ x: 676, y: 720, s: 0.9, flip: false, o: up, armF: 40 + es(t, 3.1, 3.3) * 40, armB: 10 + es(t, 3.15, 3.35) * 90 * (1 - es(t, 4.05, 4.25)), head: -6 + es(t, 4.1, 4.3) * 16, blink: blinkAt(T, 3) });
+      pSt.set({ x: P.x, y: 720, s: 0.9, flip: false, o: up, armF: 40 + es(t, 3.1, 3.3) * 40, armB: 10 + es(t, 3.15, 3.35) * 90 * (1 - es(t, 4.05, 4.25)), head: -6 + es(t, 4.1, 4.3) * 16, blink: blinkAt(T, 3) });
       fade(pStSad, es(t, 4.1, 4.3));
       const bIn = es(t, 3.1, 3.4, ease.out) * (1 - es(t, 3.95, 4.15, ease.in));
       vis(barsEl, { x: 700, y: 380 - (1 - bIn) * 700, r: T ? Math.sin(T * 0.8) * 1.5 : 0, o: bIn > 0.01 ? 1 : 0 });
@@ -107,13 +108,14 @@ export default {
           fade(m.sad, es(t, 0.3, 0.6) * (1 - es(t, 2.1, 2.3)) + es(t, 4.45, 4.6));
           return;
         }
-        const near = Math.abs(m.x - 676) < 140 ? 1 : 0.4;
-        T0.sit(m, T, { head: -turn * 2 + es(t, 3.1, 3.3) * (m.x < 676 ? 6 : -6) * near });
+        const near = Math.abs(m.x - P.x) < (S.portrait ? 106 : 140) ? 1 : 0.4;
+        T0.sit(m, T, { head: -turn * 2 + es(t, 3.1, 3.3) * (m.x < P.x ? 6 : -6) * near });
         fade(m.sad, es(t, 4.4, 4.6) * near * 0.8);
       });
 
-      S.cam.x = kf(t, [[-0.3, -40], [0.3, -70], [3.0, -70], [3.3, -90], [4.0, -60], [4.4, 0]]);
-      S.cam.z = kf(t, [[-0.3, 1.2], [0.3, 1.2], [2.0, 1.2], [2.3, 1.05], [2.9, 1.05], [3.3, 1.36], [4.0, 1.36], [4.4, 1.2]]);
+      S.cam.x = kf(t, [[-0.3, -40], [0.3, -70], [3.0, -70], [3.3, -90], [4.0, -60], [4.4, 0]]) + (S.portrait ? 16 : 0);   // phone: the row sits clear of the progress thread
+      const zk = kf(t, [[-0.3, 1.2], [0.3, 1.2], [2.0, 1.2], [2.3, 1.05], [2.9, 1.05], [3.3, 1.36], [4.0, 1.36], [4.4, 1.2]]);
+      S.cam.z = S.portrait ? Math.max(1, zk - 0.12) : zk;   // phone: a little wider, so the whole table shows
       S.cam.y = kf(t, [[-0.3, 80], [0.3, 60], [2.0, 60], [2.3, 30], [2.9, 30], [3.3, 130], [4.0, 130], [4.4, 80]]);
     };
   },

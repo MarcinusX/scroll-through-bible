@@ -27,7 +27,7 @@ export default {
     { v: 42, text: 'tymi słowami: «Ojcze, jeśli chcesz, zabierz ode Mnie ten kielich!' },
     { v: 42, cont: true, text: 'Jednak nie moja wola, lecz Twoja niech się stanie!»' },
   ],
-  cam: { x: [-260, 160], y: [-40, 160], z: [1, 1.4] },
+  cam: { x: [-320, 160], y: [-40, 160], z: [1, 1.4] },
   build(S) {
     const c = S.c;
     const N = nightSet(S, { moonAt: [1240, 140], cityX: 250 });
@@ -92,7 +92,9 @@ export default {
       vis(cRays, { r: T * 3, s: 1 + accept * 0.2, o: 0.35 + accept * 0.25 });
       vis(above, { x: KX + 70, y: 160, s: 1, o: es(t, 3.0, 3.4) * 0.8 });
 
-      S.cam.x = kf(t, [[-0.4, -220], [0.9, -120], [1.9, -120], [2.4, 60], [2.9, 120], [4.9, 120]]);
+      S.cam.x = S.portrait   // phone: the disciples He speaks to in view; later the nearest of them whole, not a sliver at the edge
+        ? kf(t, [[-0.4, -300], [0.9, -220], [1.9, -220], [2.4, -20], [2.9, -10], [4.9, -10]])
+        : kf(t, [[-0.4, -220], [0.9, -120], [1.9, -120], [2.4, 60], [2.9, 120], [4.9, 120]]);
       S.cam.z = kf(t, [[-0.4, 1.04], [0.9, 1.08], [1.2, 1.16], [1.9, 1.16], [2.4, 1.1], [3.0, 1.26], [4.0, 1.26], [4.4, 1.34]]);
       S.cam.y = kf(t, [[-0.4, 30], [1.2, 70], [1.9, 70], [2.4, 40], [3.0, 50], [4.4, 80]]);
     };

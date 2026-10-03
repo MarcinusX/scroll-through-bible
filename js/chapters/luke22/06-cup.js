@@ -16,11 +16,12 @@ export default {
     const c = S.c;
     const T0 = tableSet(S, { skyCols: ['#4d4a7c', '#9a7f98', '#d8a592'] });
     const { R, at, by, SEAT, TOP } = T0;
+    if (S.portrait) at.forEach((m) => { m.x = 800 + (m.x - 800) * 0.76; });   // phone: the thirteen sit closer so the table fits
     const J = by.jesus;
     // the vine along the wall, revealed by a growing circle
     const vineL = T0.wallFx;
     const clip = S.id('vclip');
-    vineL.add(`<defs><clipPath id="${clip}"><circle data-k="vr" cx="800" cy="720" r="10"/></clipPath></defs><g clip-path="url(#${clip})">${vineSpray(c, [380, 720], [800, 262])}${vineSpray(c, [1220, 720], [800, 262])}</g>`);
+    vineL.add(`<defs><clipPath id="${clip}"><circle data-k="vr" cx="800" cy="720" r="10"/></clipPath></defs><g clip-path="url(#${clip})">${vineSpray(c, [S.portrait ? 500 : 380, 720], [800, 262])}${vineSpray(c, [S.portrait ? 1100 : 1220, 720], [800, 262])}</g>`);
     const vr = S.$('vr');
     const fx = S.layer({ par: 0.57, sh: 4 });
     const cupEl = fx.add(`<g>${chalice(c, 44)}</g>`);
@@ -59,8 +60,9 @@ export default {
       /* v18 — not of the fruit of the vine until the Kingdom comes */
       attr(vr, 'r', Math.round(10 + es(t, 1.2, 1.85) * 720));
 
-      S.cam.x = 0;
-      S.cam.z = kf(t, [[-0.3, 1.36], [0.4, 1.46], [0.7, 1.16], [1.6, 1.16], [1.9, 1.06]]);
+      S.cam.x = 0 + (S.portrait ? 16 : 0);   // phone: the row sits clear of the progress thread
+      const zk = kf(t, [[-0.3, 1.36], [0.4, 1.46], [0.7, 1.16], [1.6, 1.16], [1.9, 1.06]]);
+      S.cam.z = S.portrait ? Math.max(1, zk - 0.12) : zk;   // phone: a little wider, so the whole table shows
       S.cam.y = kf(t, [[-0.3, 170], [0.4, 190], [0.7, 110], [1.6, 110], [1.9, 40]]);
     };
   },
