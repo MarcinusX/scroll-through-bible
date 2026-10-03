@@ -7,7 +7,7 @@ import { C, person, CAST, blinkAt, pose, lerp, sheet } from '../kit.js';
 import { seg, es, ease, bump, fade } from '../../core/anim.js';
 import { synagogueInterior, POSSESSED, headAt, voiceRings, shadowShards, bubble, rayBurst, manO, womanO, tr, PI } from './lib.js';
 
-const JX = 820, FEET = 742, MX = 560;
+const JX = 820, FEET = 742, MX0 = 560;
 
 export default {
   id: 'lk4-demon',
@@ -23,6 +23,7 @@ export default {
   cam: { x: [-50, 30], y: [0, 50], z: [1, 1.12] },
   build(S) {
     const c = S.c;
+    const MX = S.portrait ? 615 : MX0;   // phone: the man and his shadow stand inside the left edge
     const I = synagogueInterior(S);
     const tint = S.layer({ par: 0, sh: 1, flat: true });
     tint.add(`<rect x="-3000" y="-3000" width="8000" height="8000" fill="#241c30"/>`);

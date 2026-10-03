@@ -21,9 +21,11 @@ export default {
   cam: { x: [-200, 30], y: [-20, 60], z: [1, 1.12] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;
+    const [SUNX, SUNY] = PH ? [1000, 215] : [1180, 160];   // phone: the sun hangs inside the screen, not under the progress thread
     sky(S, DAY);
     const hangL = S.layer({ par: 0.05, sh: 5 });
-    const sunEl = hanging(hangL, sun(c, 46), { x: 1180, y: 160, len: 800 });
+    const sunEl = hanging(hangL, sun(c, 46), { x: SUNX, y: SUNY, len: 800 });
     const cls = [[470, 150, 200], [900, 110, 150]].map(([x, y, w], i) => ({ x, y, i, el: hanging(hangL, cloud(c, w), { x, y, len: 800 }) }));
 
     /* ---------- hills with villages (their synagogues light up later) ---------- */
@@ -31,8 +33,9 @@ export default {
     const farL = S.layer({ par: 0.16, sh: 3 });
     const fh = hillsWith(c, { y: 470, amps: [30, 12, 4], lens: [900, 320, 110], color: C.hillMid, trees: 30, treeColor: C.sage, treeH: 20 });
     farL.add(fh.markup);
-    const VIL = [[180, 0.4], [430, 0.42], [700, 0.36], [1000, 0.4], [1270, 0.42], [1480, 0.4]].map(([x, sc], i) => ({ x, y: fh.fn(x) + 8, sc, i }));
-    VIL.forEach((v) => farL.add(village(c, v.x, v.y, { sc: v.sc, n: 5, spread: 120 })));
+    // phone: the six villages sit closer together, so the news is seen reaching every one of them
+    const VIL = (PH ? [[490, 0.34], [612, 0.38], [735, 0.32], [860, 0.36], [975, 0.38], [1085, 0.34]] : [[180, 0.4], [430, 0.42], [700, 0.36], [1000, 0.4], [1270, 0.42], [1480, 0.4]]).map(([x, sc], i) => ({ x, y: fh.fn(x) + 8, sc, i }));
+    VIL.forEach((v) => farL.add(village(c, v.x, v.y, { sc: v.sc, n: 5, spread: PH ? 90 : 120 })));
     // tiny synagogues on three of the hills, and their lit twins
     const SYN = [VIL[1], VIL[3], VIL[4]];
     SYN.forEach((v) => farL.add(`<g transform="translate(${v.x + 50} ${v.y - 4}) scale(.22)">${smallSynagogue(c)}</g>`));
@@ -63,7 +66,7 @@ export default {
     /* ---------- people: the village listeners (calm / praising) ---------- */
     const PL = S.layer({ par: 0.5, sh: 5 });
     const light = PL.add(`<g opacity="0"><circle r="150" fill="url(#halo-glow)"/></g>`);
-    const GROUPS = [[560, -1], [650, -1], [990, 1], [1090, 1]].map(([gx, side], i) => {
+    const GROUPS = (PH ? [[572, -1], [660, -1], [965, 1], [1050, 1]] : [[560, -1], [650, -1], [990, 1], [1090, 1]]).map(([gx, side], i) => {
       const r = S.c;
       const mem = [0, 1, 2].map((k) => ({ x: gx + (k - 1) * 34 + r.rr(-6, 6), y: GY + (k % 2) * 10, s: 0.84 + r.rr(-0.04, 0.04), flip: side > 0, o: (i + k) % 2 ? womanO(r) : manO(r) }));
       const calm = PL.add(`<g opacity="0">${mem.map((m) => figure(r, m.o, { x: m.x, y: m.y, s: m.s, flip: m.flip, armF: 20 })).join('')}</g>`);
@@ -84,7 +87,7 @@ export default {
     fg.add(palm(c, -60, 920, 330) + palm(c, 1680, 915, 300));
 
     return (t, time) => {
-      swing(sunEl, 1180, 160, time, 1, 0.6);
+      swing(sunEl, SUNX, SUNY, time, 1, 0.6);
       cls.forEach((cl) => swing(cl.el, cl.x + Math.sin(time * 0.1 + cl.i) * 20, cl.y, time, 1.2, 0.6, cl.i));
 
       /* v14a: along the road in the power of the Spirit */

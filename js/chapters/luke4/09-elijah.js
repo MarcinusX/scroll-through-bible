@@ -28,6 +28,7 @@ export default {
   cam: { x: [-20, 420], y: [0, 40], z: [1, 1.08] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;
     sky(S, DROUGHT);
     const skyB = sky(S, ['#cfe0d8', '#efe6cf', '#f6e9cf'], { name: 'jordan' }).layer;
     skyB.fade(0);
@@ -67,7 +68,7 @@ export default {
     let crn = '';
     for (let x = 1120; x < 1310; x += 30) crn += c.cut(c.rect(x, 454, 18, 18), 0.2, 3);
     gate.p(crn, mix(C.stone, C.sand, 0.3));
-    sea.add(gate.out() + palm(c, 1360, 680, 200));
+    sea.add(PH ? `<g transform="translate(-100 0)">${gate.out() + palm(c, 1360, 680, 200)}</g>` : gate.out() + palm(c, 1360, 680, 200));   // phone: the gate of Zarephath stands inside the screen
     const zSign = hanging(sea, labelTag(tr('Sarepta Sydońska', 'Zarephath of Sidon'), 20), { x: 0, y: -1500, len: 600 });
     const aGround = L({ par: 0.5, sh: 3 }, A);
     const gfn = c.wave(GY - 40, [6, 3], [700, 200]);
@@ -79,7 +80,7 @@ export default {
     const cracks = aGround.add(`<g opacity="0"><path d="${cr}" fill="${shade(C.dune, -0.35)}"/></g>`);
     const aPeople = L({ par: 0.5, sh: 5 }, A);
     const WV = [WIDOW, { ...WIDOW, veil: C.stone2, robe: mix(C.stone, C.mauve, 0.3) }, { ...WIDOW, veil: mix(C.storm, C.plumRobe, 0.3) }, { ...WIDOW, robe: mix(C.stone2, C.sageRobe, 0.3), veil: C.stone }, { ...WIDOW, skin: C.skin3 }];
-    const widows = aPeople.add(`<g>${WV.map((o, i) => figure(c, o, { x: 420 + i * 62, y: GY + (i % 2) * 8, s: 0.82, flip: false, armF: i % 2 ? 50 : 20, head: 8 })).join('')}${[0, 1, 2, 3, 4].map((i) => `<g transform="translate(${452 + i * 62} ${GY + 4 + (i % 2) * 8}) rotate(${i % 2 ? 80 : 0})">${jar(c, C.pot, 26)}</g>`).join('')}</g>`);
+    const widows = aPeople.add(`<g${PH ? ' transform="translate(55 0)"' : ''}>${WV.map((o, i) => figure(c, o, { x: 420 + i * 62, y: GY + (i % 2) * 8, s: 0.82, flip: false, armF: i % 2 ? 50 : 20, head: 8 })).join('')}${[0, 1, 2, 3, 4].map((i) => `<g transform="translate(${452 + i * 62} ${GY + 4 + (i % 2) * 8}) rotate(${i % 2 ? 80 : 0})">${jar(c, C.pot, 26)}</g>`).join('')}</g>`);
     const elijah = S.puppet(aPeople.add(person(c, { ...ELIJAH })));
     const sarepta = S.puppet(aPeople.add(person(c, { ...SAREPTA, pose: 'kneel', holdF: `<g transform="rotate(70)"><path d="${c.ribbon([[-20, 0], [24, 2]], 4)}" fill="${C.wood2}"/><path d="${c.ribbon([[-18, 8], [22, 6]], 4)}" fill="${C.wood}"/></g>` })));
     const store = aPeople.add(`<g><circle r="60" cy="-16" fill="url(#warm-glow)" data-k="lk4-el-glow"/><g transform="translate(-16 0)">${jar(c, C.plaster2, 30)}</g><g transform="translate(18 2) scale(.8)">${jug(c)}</g></g>`);
@@ -106,6 +107,8 @@ export default {
     for (let x = 920; x < 1500; x += c.rr(40, 80)) fo += c.cut([[x, rfn(x) + 4], [x + 24, rfn(x) + 1], [x + 48, rfn(x) + 4], [x + 24, rfn(x) + 6]], 0.2, 6);
     rs.x(fo, C.foam, 'opacity=".8"');
     river.add(rs.out());
+    // phone: the tall screen shows the river's straight left edge running down to the caption; a sloping bank closes it
+    if (PH) river.add(sheet().p(c.cut([[892, GY + 2], [930, GY + 40], [990, GY + 120], [1050, GY + 260], [1090, 1700], [300, 1700], [520, GY + 240], [760, GY + 90]], 1, 12), mix(C.hillNear, C.sand, 0.35)).out());
     const counts = [1, 2, 3, 4, 5, 6, 7].map((k) => hanging(river, `<circle r="44" fill="url(#warm-glow)" opacity=".6"/>` + paperLabel(String(k), { size: 34, w: 44 }), { x: 0, y: -1500, len: 500 }));
     const splashes = [0, 1, 2].map(() => river.add(`<g opacity="0"><path d="${c.ribbon(c.arc(0, 0, 30, 14, PI, 2 * PI, 10), 4)}" fill="${C.foam}"/></g>`));
     const bSparks = [0, 1, 2, 3].map(() => river.add(`<g opacity="0">${sparkle(c, 12)}</g>`));
@@ -129,7 +132,7 @@ export default {
       pose(bolt, { x: 800, y: lerp(-400, 323, bk), o: bk > 0.01 ? 1 : 0 });
       swing(sunEl, 1000, 200, time, 1, 0.6);
       const yk = es(t, 1.5, 1.75, ease.back) * (1 - es(t, 2.9, 3.0));
-      hangAt(years, 560, lerp(-500, 420, yk), time, 1.4, 0.8);
+      hangAt(years, PH ? 690 : 560, lerp(-500, 420, yk), time, 1.4, 0.8);
       const drought = es(t, 1.5, 1.9);
       pose(green, { o: 1 - drought });
       pose(dry, { o: drought });
@@ -145,11 +148,11 @@ export default {
       fade(storeGlow, meet);
       aSparks.forEach((sp, i) => { const k = bump(t, 2.65 + i * 0.08, 3.0); pose(sp, { x: 1226 + i * 18, y: GY - 40 - (i % 2) * 20, s: k, r: time * 50, o: k }); });
       const zk = es(t, 2.1, 2.4, ease.back);
-      hangAt(zSign, 1215, lerp(-500, 420, zk), time, 1.3, 0.8, 2);
+      hangAt(zSign, PH ? 1115 : 1215, lerp(-500, 420, zk), time, 1.3, 0.8, 2);
 
       /* v27a: many lepers in Israel in Elisha's day */
-      elisha.set({ x: 790, y: GY - 8, s: 0.92, flip: false, armF: 14 + es(t, 4.1, 4.3) * 60, armB: 10, head: 4, blink: blinkAt(time, 6) });
-      pose(lepers, { x: 0 });
+      elisha.set({ x: PH ? 815 : 790, y: GY - 8, s: 0.92, flip: false, armF: 14 + es(t, 4.1, 4.3) * 60, armB: 10, head: 4, blink: blinkAt(time, 6) });
+      pose(lepers, { x: PH ? 105 : 0 });
       /* v27b: none cleansed but Naaman the Syrian — seven times in the Jordan */
       const nx = 1060;
       const dips = seg(t, 4.08, 4.62) * 7;
@@ -161,11 +164,11 @@ export default {
       clean.set({ x: nx, y: GY + 24, s: 0.92, flip: true, o: up, armF: 60 + joy * 40, armB: 60 + joy * 100, head: -joy * 10, blink: blinkAt(time, 7) });
       const n = Math.min(7, Math.floor(dips) + (t >= 4.62 ? 1 : 0));
       const ck = es(t, 4.05, 4.2, ease.back);
-      counts.forEach((el, i) => pose(el, { x: 1180, y: lerp(-500, 460, ck), r: Math.sin(time * 1) * 1.5, oy: 0, o: ck > 0.01 && i === Math.max(1, n) - 1 ? 1 : 0 }));
+      counts.forEach((el, i) => pose(el, { x: PH ? 1105 : 1180, y: lerp(-500, 460, ck), r: Math.sin(time * 1) * 1.5, oy: 0, o: ck > 0.01 && i === Math.max(1, n) - 1 ? 1 : 0 }));
       splashes.forEach((sp, i) => { const k = t > 4.08 && t < 4.66 ? ((dips + i / 3) % 1) : 0; pose(sp, { x: nx - 10 + i * 10, y: GY + 10, s: 0.6 + k, o: k > 0 ? (1 - k) * 0.9 : 0 }); });
       bSparks.forEach((sp, i) => { const k = bump(t, 4.68 + i * 0.05, 5.0); pose(sp, { x: nx - 40 + i * 28, y: GY - 150 - (i % 2) * 40, s: k, r: time * 50, o: k }); });
       const bt = es(t, 3.1, 3.4, ease.back);
-      hangAt(bTag, 1250, lerp(-500, 560, bt), time, 1.3, 0.8, 5);
+      hangAt(bTag, PH ? 960 : 1250, lerp(-500, PH ? 790 : 560, bt), time, 1.3, 0.8, 5);
 
       S.cam.x = es(t, 2.0, 2.7) * (S.portrait ? 400 : 110) * (1 - swap) + swap * es(t, 3.9, 4.3) * 80;
       S.cam.y = 20;

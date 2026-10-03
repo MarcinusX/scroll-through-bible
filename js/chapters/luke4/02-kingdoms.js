@@ -12,7 +12,9 @@ import { peakSet, KINGDOMS, kingdomPlate, TEMPTER, tempterAura, whirl, hand, hea
 const TOP = 700;
 const JX = 900;
 const TX = 640;
-const PLATES = [[330, 330], [500, 248], [690, 200], [910, 200], [1100, 248], [1270, 330]];
+const PLATES_D = [[330, 330], [500, 248], [690, 200], [910, 200], [1100, 248], [1270, 330]];
+// phone: the six kingdoms hang in two rows of three inside the screen, a little smaller
+const PLATES_P = [[615, 150], [615, -45], [800, -75], [985, -45], [985, 150], [800, 120]];
 const L0 = 100;
 
 /** the tempter's back hand (the arm behind), from the same geometry as hand() */
@@ -30,6 +32,8 @@ export default {
   build(S) {
     const P = peakSet(S, { top: TOP });
     const c = P.c;
+    const PH = S.portrait;
+    const PLATES = PH ? PLATES_P : PLATES_D;
 
     /* the light from above (behind Him) */
     const lightL = S.layer({ par: 0.5, sh: 0, flat: true, pad: 320 });
@@ -37,7 +41,7 @@ export default {
 
     /* the kingdoms, all at once, and the strings the tempter holds them by */
     const fly = S.layer({ par: 0.5, sh: 6 });
-    const plates = PLATES.map(([x, y], i) => ({ x, y, i, el: fly.add(`<g class="hang" transform="translate(0 -1500)"><path d="M0 -1800V-78" stroke="rgba(74,54,34,.5)" stroke-width="1.2" fill="none"/><g class="obj">${kingdomPlate(c, KINGDOMS[i])}</g></g>`) }));
+    const plates = PLATES.map(([x, y], i) => ({ x, y, i, el: fly.add(`<g class="hang" transform="translate(0 -1500)"><path d="M0 -1800V-78" stroke="rgba(74,54,34,.5)" stroke-width="1.2" fill="none"/><g class="obj">${PH ? `<g transform="scale(.88)">${kingdomPlate(c, KINGDOMS[i])}</g>` : kingdomPlate(c, KINGDOMS[i])}</g></g>`) }));
     const flash = S.layer({ par: 0, sh: 0, flat: true });
     flash.add(`<rect x="-3000" y="-3000" width="8000" height="8000" fill="#fffaf0"/>`);
     flash.fade(0);
@@ -89,7 +93,7 @@ export default {
       const offer = es(t, 2.05, 2.35);
       const thrown = es(t, 3.05, 3.4, ease.out);
       const cower = es(t, 3.5, 3.9);
-      const tx = TX - thrown * 150;
+      const tx = TX - thrown * (PH ? 85 : 150);   // phone: thrown back but still inside the left edge
       const ts = 1.06 * (1 - thrown * 0.18);
       const aB = 10 + gather * 140 - offer * 60 - thrown * 50;
       const aF = 14 + bump(t, 1.3, 2.0) * 50 + offer * 60 * (1 - thrown);

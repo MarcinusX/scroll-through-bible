@@ -279,11 +279,12 @@ export function nazSynagogue(S, { skyCols = ['#bcd6d6', '#e2ecdf', '#f3ead3'] } 
       return [...L6x.map((x, i) => ({ x, left: true, o: i % 2 ? womanO(r) : manO(r) })), ...R6x.map((x, i) => ({ x, left: false, o: i % 2 ? manO(r) : womanO(r) }))]
         .map((m, i) => ({ ...m, i, seed: r.rr(0, 6) }));
     },
-    columns() {
+    /** ceilTop: where the wooden ceiling begins (default: a sheet from far above; a phone passes a band, e.g. -150) */
+    columns({ ceilTop = -1400 } = {}) {
       const fg = S.layer({ par: 0.9, sh: 8 });
       const colm = (x) => { const s = sheet(); s.p(c.cut(c.rect(x - 60, -1400, 120, 2600), 0.8, 20), C.stone2); s.p(c.cut(c.rect(x - 76, 900, 152, 40), 0.6, 10) + c.cut(c.rect(x - 70, 40, 140, 30), 0.6, 10), shade(C.stone2, -0.1)); s.x(c.ribbon([[x - 30, 80], [x - 30, 880]], 5) + c.ribbon([[x + 18, 80], [x + 18, 880]], 5), shade(C.stone2, -0.15), 'opacity=".5"'); return s.out(); };
       fg.add(colm(60) + colm(1540));
-      fg.add(sheet().p(c.cut([[-1200, -1400], [2800, -1400], [2800, 50], [-1200, 62]], 0.8, 16), C.wood2).out());
+      fg.add(sheet().p(c.cut([[-1200, ceilTop], [2800, ceilTop], [2800, 50], [-1200, 62]], 0.8, 16), C.wood2).out());
       return fg;
     },
   };

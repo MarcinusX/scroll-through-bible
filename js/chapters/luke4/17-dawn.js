@@ -32,7 +32,8 @@ export default {
     starL.add(stars(c, { x0: -600, x1: 2200, y0: -500, y1: 300, n: 80 }));
     const hangL = S.layer({ par: 0.04, sh: 5 });
     const sunGlow = hangL.add(`<circle r="260" fill="url(#warm-glow)" opacity="0"/>`);
-    const sunEl = hanging(hangL, sun(c, 50, { rays: C.sunDeep, disc: '#f0a868', inner: '#f5c08a' }), { x: 1180, y: 560, len: 900 });
+    const SUNX = S.portrait ? 985 : 1180;   // phone: the sun rises inside the screen, not under the progress thread
+    const sunEl = hanging(hangL, sun(c, 50, { rays: C.sunDeep, disc: '#f0a868', inner: '#f5c08a' }), { x: SUNX, y: 560, len: 900 });
 
     /* the far hills with their villages and synagogues */
     const far = S.layer({ par: 0.1, sh: 2 });
@@ -67,7 +68,8 @@ export default {
 
     /* the crowds come looking for Him */
     const crowdL = S.layer({ par: 0.45, sh: 4 });
-    const GR = [[980, 0], [1100, 1], [1220, 0], [560, 1], [440, 0]].map(([x, row], i) => {
+    // phone: the crowds that come stand closer, inside the screen
+    const GR = (S.portrait ? [[950, 0], [1020, 1], [1075, 0], [600, 1], [515, 0]] : [[980, 0], [1100, 1], [1220, 0], [560, 1], [440, 0]]).map(([x, row], i) => {
       const mem = [0, 1, 2].map((k) => ({ x: (k - 1) * 30 + c.rr(-5, 5), y: c.rr(-6, 6), s: 1, flip: x > JX, o: folk(c) }));
       return { i, x, row, d: i * 0.06, sp: crowdL.sprite(`<g transform="scale(.8)">${group(c, mem)}</g>`, x, GY - 14 + row * 10) };
     });
@@ -85,8 +87,8 @@ export default {
       day.fade(es(t, 1.0, 2.4));
       starL.fade(1 - es(t, 0.1, 0.8));
       const sy = lerp(560, 300, es(t, 0.2, 2.5));
-      swing(sunEl, 1180, sy, time, 0.8, 0.5);
-      pose(sunGlow, { x: 1180, y: sy, s: 0.6 + dayK * 0.6, o: dayK * 0.8 * (1 - es(t, 2.2, 3.0) * 0.6) });
+      swing(sunEl, SUNX, sy, time, 0.8, 0.5);
+      pose(sunGlow, { x: SUNX, y: sy, s: 0.6 + dayK * 0.6, o: dayK * 0.8 * (1 - es(t, 2.2, 3.0) * 0.6) });
       const w = es(t, 0.02, 0.6);
       const wx = lerp(1180, JX, w);
       const kneel = es(t, 0.66, 0.72) * (1 - es(t, 1.4, 1.46));
@@ -104,7 +106,7 @@ export default {
       GR.forEach((g) => {
         const k = es(t, 1.05 + g.d, 1.7 + g.d);
         const from = g.x > JX ? 1500 : 100;
-        const rel = es(t, 3.0, 3.4) * (g.x > JX ? 420 : -160) + es(t, 4.0, 4.4) * (g.x > JX ? 120 : 0);
+        const rel = es(t, 3.0, 3.4) * (g.x > JX ? 420 : S.portrait ? -340 : -160) + es(t, 4.0, 4.4) * (g.x > JX ? 120 : 0);
         g.sp.set({ x: lerp(from, g.x, k) + rel, y: GY - 14 + g.row * 10 - (k > 0 && k < 1 ? Math.abs(Math.sin(k * 24 + g.i)) * 3 : 0), s: 1, o: seg(t, 1.0 + g.d, 1.1 + g.d) });
       });
       HOLD.forEach((h) => {

@@ -45,6 +45,9 @@ export default {
   cam: { x: [-30, 20], y: [-20, 70], z: [1, 1.1] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;
+    // phone: the tempter, his picture, the crack and the hourglass stand inside the screen, clear of the thread
+    const TXp = PH ? 950 : TX, PXp = PH ? 632 : PX, PYp = PH ? 290 : PY, CRX = PH ? 1040 : 1100;
     sky(S, GOLDEN);
     const dusk = sky(S, ['#8f86ad', '#e3a58e', '#f3c79e'], { name: 'dusk' }).layer;
     dusk.fade(0);
@@ -122,7 +125,7 @@ export default {
       const show = es(t, 2.05, 2.35) * (1 - es(t, 4.05, 4.3));
       const recoil = es(t, 4.1, 4.5);
       const gone = es(t, 5.05, 5.5);
-      const tx = TX + recoil * 60;
+      const tx = TXp + recoil * (PH ? 40 : 60);
       const tArmF = 14 + point * 60 + show * 110;
       tempter.set({ x: tx, y: TY, s: 1.02, flip: true, o: arrive * (1 - es(t, 5.1, 5.25)), armF: tArmF, armB: 10 + show * 40 + bump(t, 3.1, 3.9) * 30, head: point * 14 - show * 8 + recoil * 12, lean: point * 10 - recoil * 8, blink: blinkAt(time, 5) });
       pose(aura, { x: tx - 6, y: TY + 10, s: 1.02 * (1 - recoil * 0.3) * (1 + Math.sin(time * 2) * 0.03), r: Math.sin(time * 0.7) * 4, o: arrive * 0.9 * (1 - recoil * 0.5) * (1 - es(t, 5.05, 5.2)) });
@@ -136,7 +139,7 @@ export default {
       /* v10–11: his picture of the psalm — angels on guard; a figure falls and is caught above the stone */
       const pk = es(t, 2.1, 2.45, ease.out);
       const pfall = es(t, 4.05, 4.5, ease.in);
-      const px = PX, py = lerp(PY + 420, PY, pk) + pfall * 600;
+      const px = PXp, py = lerp(PYp + 420, PYp, pk) + pfall * 600;
       pose(plate, { x: px, y: py, r: Math.sin(time * 0.7) * 1.5 + pfall * 30, s: 1, o: pk > 0.01 && pfall < 0.99 ? 1 : 0 });
       const catchK = es(t, 3.1, 3.5, ease.out);
       pose(faller, { x: px, y: py - 58 + catchK * 64, r: (1 - catchK) * 20, o: pk > 0.5 && t > 3.0 && pfall < 0.99 ? 1 : 0 });
@@ -158,11 +161,11 @@ export default {
         pose(sh.el, { x: tx - 10 + Math.cos(sh.a) * k * 120 * sh.drift + k * 260, y: TY - 100 + Math.sin(sh.a) * k * 80 - k * 200 * sh.drift, s: 1 - k * 0.6, r: k * 200 * (sh.i % 2 ? 1 : -1), o: seg(t, 5.05, 5.12) * (1 - seg(k, 0.7, 1)) });
       });
       const sl = es(t, 5.2, 5.6);
-      pose(lurk, { x: lerp(tx - 20, 1100, sl), y: lerp(TY - 60, TY + 56, sl), s: 1 - sl * 0.3, r: sl * 90, o: seg(t, 5.12, 5.2) });
+      pose(lurk, { x: lerp(tx - 20, CRX, sl), y: lerp(TY - 60, TY + 56, sl), s: 1 - sl * 0.3, r: sl * 90, o: seg(t, 5.12, 5.2) });
       fade(crack, es(t, 5.4, 5.6));
-      pose(crack, { x: 1100, y: TY + 76, o: es(t, 5.4, 5.6) });
+      pose(crack, { x: CRX, y: TY + 76, o: es(t, 5.4, 5.6) });
       const gk = es(t, 5.3, 5.6, ease.out);
-      pose(glass, { x: 1090, y: TY - 30, s: gk, r: es(t, 5.55, 5.85) * 180, o: gk > 0.01 ? 1 : 0 });
+      pose(glass, { x: CRX - 10, y: TY - 30, s: gk, r: es(t, 5.55, 5.85) * 180, o: gk > 0.01 ? 1 : 0 });
 
       birds.forEach((b) => { const a = time * 0.25 + b.i * 2.1; pose(b.el, { x: 380 + Math.cos(a) * 140 + b.i * 30, y: 640 + b.i * 40 + Math.sin(a * 2) * 12, s: 0.45 - b.i * 0.05, sx: (Math.sin(a) > 0 ? -1 : 1) * (0.45 - b.i * 0.05) }); flap(b.el, time + b.i, 20, 6); });
 

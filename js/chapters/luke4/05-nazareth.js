@@ -23,9 +23,10 @@ export default {
     { v: 16, text: 'Przyszedł również do Nazaretu, gdzie się wychował.' },
     { v: 16, cont: true, text: 'W dzień szabatu udał się swoim zwyczajem do synagogi' },
   ],
-  cam: { x: [-160, 200], y: [-80, 50], z: [1, 1.16] },
+  cam: { x: [-160, 250], y: [-80, 50], z: [1, 1.16] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;
     sky(S, MORNING);
     const hangL = S.layer({ par: 0.05, sh: 5 });
     const sunEl = hanging(hangL, sun(c, 48), { x: 560, y: 170, len: 700 });
@@ -103,7 +104,7 @@ export default {
 
       /* v16b: the Sabbath — up the lane to the synagogue, with the townsfolk */
       const sb = es(t, 1.0, 1.3, ease.back);
-      pose(sabbath, { x: 1110, y: lerp(-500, 200, sb), r: Math.sin(time * 1.1) * 2, o: sb > 0.01 ? 1 : 0 });
+      pose(sabbath, { x: PH ? 1060 : 1110, y: lerp(-500, 200, sb), r: Math.sin(time * 1.1) * 2, o: sb > 0.01 ? 1 : 0 });
       folk.forEach((f) => {
         const u = es(t, 0.75 + f.i * 0.08, 1.5 + f.i * 0.06, (x) => x) * 0.9 + 0.1;
         const k = seg(t, 0.72 + f.i * 0.08, 0.8 + f.i * 0.08);
@@ -111,7 +112,7 @@ export default {
         f.p.set({ x: x + (f.i % 2 ? 10 : -10), y, s, flip: false, o: k * (u > 0.97 ? 0 : 1), walk: (x + y) * 0.05 + f.i, blink: blinkAt(time, f.i) });
       });
 
-      S.cam.x = kf(t, [[0, -150], [0.7, 0], [1.1, 0], [1.9, 170]]);
+      S.cam.x = kf(t, [[0, -150], [0.7, 0], [1.1, 0], [1.9, PH ? 235 : 170]]);   // phone: follow Him further, so the synagogue door is not under the thread
       S.cam.y = kf(t, [[0, 20], [1.1, 20], [1.9, -60]]);
       S.cam.z = kf(t, [[0, 1.02], [0.7, 1.04], [1.1, 1.04], [1.9, 1.14]]);
     };

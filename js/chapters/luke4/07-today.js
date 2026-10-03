@@ -28,6 +28,10 @@ export default {
     const c = S.c;
     const N = nazSynagogue(S);
     const { FLOOR, FRONT } = N;
+    // phone: the scroll hangs a little smaller (as in the scene before) and the medallions close in round Him
+    const PH = S.portrait, K = PH ? 0.84 : 1, SC = PH ? 792 : SX;
+    const poseS = (el, o) => pose(el, PH ? { ...o, x: SC + (o.x - SX) * K, y: SY + (o.y - SY) * K, s: (o.s ?? 1) * K } : o);
+    const [MRX, MRY] = PH ? [285, 320] : [390, 300];
 
     /* ---------- the great scroll (as it was left) rolls up ---------- */
     const flies = S.layer({ par: 0.3, sh: 6 });
@@ -49,7 +53,7 @@ export default {
       const p = fn(c);
       const inner = `<g transform="translate(0 -8) scale(.6)">${p.base}${k === 3 ? p.seeing + `<g transform="translate(21 -10)">${p.eyeO}</g>` : k === 4 ? p.free : k === 2 ? '' : k === 1 ? `<g transform="translate(23 10)">${p.act}</g>` : k === 0 ? `<g transform="translate(0 -60)">${p.act}</g>` : `<g transform="translate(0 -34)">${p.act}</g>`}</g>`;
       const ang = PI * (1.12 + (k / 5) * 0.76);
-      return { k, x: JX + Math.cos(ang) * 390, y: 480 + Math.sin(ang) * 300, el: hi.add(`<g class="hang" transform="translate(0 -1500)"><path d="M0 -1600V-50" stroke="rgba(74,54,34,.5)" stroke-width="1.2" fill="none"/><g class="obj"><circle r="70" fill="url(#halo-glow)"/>${disc(c, inner, { r: 54, rim: C.haloRim })}</g></g>`) };
+      return { k, x: JX + Math.cos(ang) * MRX, y: 480 + Math.sin(ang) * MRY, el: hi.add(`<g class="hang" transform="translate(0 -1500)"><path d="M0 -1600V-50" stroke="rgba(74,54,34,.5)" stroke-width="1.2" fill="none"/><g class="obj"><circle r="70" fill="url(#halo-glow)"/>${disc(c, inner, { r: 54, rim: C.haloRim })}</g></g>`) };
     });
     const carp = hanging(hi, memoryPlate(c, 96) + `<g transform="translate(0 124)">${labelTag(tr('syn Józefa?', 'Joseph’s son?'), 19)}</g>`, { x: 0, y: -1500, len: 700 });
 
@@ -84,7 +88,7 @@ export default {
     const slips = Array.from({ length: 9 }, (_, i) => ({ i, el: fx2.add(`<g opacity="0">${goldSlip(c, 38 + (i % 3) * 6)}</g>`) }));
     const wows = [back[1], back[7], front[2], front[6], back[4]].map((m, i) => ({ m, i, el: fx2.add(`<g opacity="0">${paperLabel('!', { size: 24, w: 30 })}</g>`) }));
     const asks = [back[2], back[6], front[1], front[7], back[9], front[4]].map((m, i) => ({ m, i, el: fx2.add(`<g opacity="0">${speech(c, GLYPH.q(c), { w: 44, h: 38, flip: m.x > JX })}</g>`) }));
-    N.columns();
+    N.columns(S.portrait ? { ceilTop: -50 } : undefined);   // phone: the ceiling is a band, not a third of the screen of wood
 
     return (t, time) => {
       N.flicker(time);
@@ -92,12 +96,12 @@ export default {
       /* v20a: He rolls up the scroll, gives it back, sits down */
       const roll = es(t, 0.05, 0.45);
       const lift = es(t, 0.45, 0.8, ease.in);
-      const yy = SY - lift * 700 + Math.sin(time * 0.8) * 2;
+      const yy = SY - lift * (PH ? 1700 : 700) + Math.sin(time * 0.8) * 2;   // phone: pulled right up, out of sight above the ceiling band
       const half = sc.w / 2;
-      pose(parch, { x: SX, y: yy, sx: 0.02 + (1 - roll) * 0.98, o: roll < 0.99 ? 1 : 0 });
-      pose(rollL, { x: SX - (8 + (1 - roll) * half), y: yy, o: lift < 0.99 ? 1 : 0 });
-      pose(rollR, { x: SX + (8 + (1 - roll) * half), y: yy, o: lift < 0.99 ? 1 : 0 });
-      shut.forEach((s) => pose(s.el, { x: SX + sc.colX(s.k) * (1 - roll), y: yy + sc.winY, sx: 1 - roll, o: 1 - seg(roll, 0.6, 0.9) }));
+      poseS(parch, { x: SX, y: yy, sx: 0.02 + (1 - roll) * 0.98, o: roll < 0.99 ? 1 : 0 });
+      poseS(rollL, { x: SX - (8 + (1 - roll) * half), y: yy, o: lift < 0.99 ? 1 : 0 });
+      poseS(rollR, { x: SX + (8 + (1 - roll) * half), y: yy, o: lift < 0.99 ? 1 : 0 });
+      shut.forEach((s) => poseS(s.el, { x: SX + sc.colX(s.k) * (1 - roll), y: yy + sc.winY, sx: 1 - roll, o: 1 - seg(roll, 0.6, 0.9) }));
       const rolled = es(t, 0.3, 0.36);
       const given = es(t, 0.55, 0.61);
       const sit = es(t, 0.62, 0.68);

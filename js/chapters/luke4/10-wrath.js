@@ -40,7 +40,7 @@ export default {
     const tint = S.layer({ par: 0, sh: 1, flat: true });
     tint.add(`<rect x="-3000" y="-3000" width="8000" height="8000" fill="${C.terracotta}"/>`);
     tint.fade(0);
-    N.columns();
+    N.columns(S.portrait ? { ceilTop: -50 } : undefined);   // phone: the ceiling is a band, not a third of the screen of wood
     S.layer = mk;
 
     /* ---------- the street of Nazareth ---------- */

@@ -31,6 +31,9 @@ export default {
   build(S) {
     const D = desertSet(S);
     const c = D.c;
+    const PH = S.portrait;
+    const TALLY = PH ? [1025, 0.78] : [1110, 1];   // phone: the tally stone and its "40" stand clear of the progress thread
+    const TXp = PH ? 650 : TX;                     // phone: the tempter and his shadow stand inside the left edge
 
     /* ---------- the Jordan, winding out of the desert on the left ---------- */
     const riverL = S.layer({ par: 0.5, sh: 2 });
@@ -46,7 +49,7 @@ export default {
 
     /* ---------- the tally stone, the desert stones, the bowl ---------- */
     const G = D.G;
-    const tally = G.add(`<g transform="translate(1110 718)">${tallyStone(c, 170, 64)}</g>`);
+    const tally = G.add(`<g transform="translate(${TALLY[0]} 718)${PH ? ` scale(${TALLY[1]})` : ''}">${tallyStone(c, 170, 64)}</g>`);
     const marks = Array.from(tally.querySelectorAll('.tally'));
     const forty = G.add(`<g opacity="0">${paperLabel('40', { size: 30 })}</g>`);
     const stonesL = S.layer({ par: 0.5, sh: 3 });
@@ -112,11 +115,11 @@ export default {
       const shown = Math.floor(seg(t, 2.08, 2.68) * 40 + 0.001);
       marks.forEach((m, i) => fade(m, i < shown ? 1 : 0));
       const f40 = es(t, 2.64, 2.78, ease.back);
-      pose(forty, { x: 1110, y: 630 + Math.sin(time * 1.5) * 3, s: f40, r: Math.sin(time) * 3, o: f40 > 0 ? 1 - es(t, 3.3, 3.6) * 0.5 : 0 });
+      pose(forty, { x: TALLY[0], y: PH ? 648 : 630 + Math.sin(time * 1.5) * 3, s: f40, r: Math.sin(time) * 3, o: f40 > 0 ? 1 - es(t, 3.3, 3.6) * 0.5 : 0 });
 
       /* ---------- v1: full of the Spirit, up from the Jordan, led into the desert ---------- */
       const w = es(t, 1.12, 1.88);
-      const jx = lerp(470, JX, w);
+      const jx = lerp(PH ? 545 : 470, JX, w);   // phone: He comes up from the river inside the left edge
       const sitK = es(t, 2.0, 2.07);
       const standK = es(t, 5.0, 5.07);
       jWalk.set({ x: jx, y: GY, s: 1.05, o: seg(t, 0.4, 0.6) * (1 - sitK), walk: w > 0 && w < 1 ? jx * 0.045 : undefined, armF: 14 + bump(t, 1.0, 1.3) * 30, head: -6 + es(t, 1.8, 1.95) * 2, blink: blinkAt(time) });
@@ -139,13 +142,13 @@ export default {
       pose(seat, { o: 1 });
 
       /* ---------- v2a: tempted through the forty days — a shadow here, there, close ---------- */
-      const spots = [[1150, 604, 0.55, true, 2.08, 2.3], [480, 704, 0.8, false, 2.32, 2.55], [985, GY, 0.95, true, 2.58, 3.02]];
+      const spots = [[PH ? 1060 : 1150, 604, 0.55, true, 2.08, 2.3], [PH ? 540 : 480, 704, 0.8, false, 2.32, 2.55], [985, GY, 0.95, true, 2.58, 3.02]];
       let tx = -400, ty = GY, ts = 1, tflip = false, to = 0, whisper = 0;
       spots.forEach(([x, y, s, fl, a, b]) => { const k = bump(t, a, b); if (k > 0.001) { tx = x; ty = y; ts = s; tflip = fl; to = Math.min(1, k * 2.2); whisper = k; } });
       // v3: he comes out of the dunes on the left and holds up the stone
       const tin = es(t, 4.02, 4.42);
       const back = es(t, 5.25, 5.8);
-      if (t > 3.9) { tx = lerp(250, TX, tin) - back * 70; ty = GY; ts = 1.04 - back * 0.1; tflip = back > 0 && back < 1; to = seg(t, 3.95, 4.08); }
+      if (t > 3.9) { tx = lerp(250, TXp, tin) - back * (PH ? 40 : 70); ty = GY; ts = 1.04 - back * 0.1; tflip = back > 0 && back < 1; to = seg(t, 3.95, 4.08); }
       const lift = es(t, 4.35, 4.6) * (1 - es(t, 5.3, 5.45));
       const cower = es(t, 5.35, 5.7);
       const tArm = 16 + lift * 64 + bump(t, 4.62, 4.95) * 10;

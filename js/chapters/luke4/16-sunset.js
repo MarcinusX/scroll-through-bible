@@ -66,7 +66,9 @@ export default {
       return { i, x, side, d: c.rr(0, 0.3), sp: crowdL.sprite(`<g transform="scale(.74)">${group(c, mem)}</g>`, x, 694) };
     });
     // the ones with evil spirits, standing among them
-    const POS = [{ x: 470, o: manO(c, { robe: C.stone2, hairStyle: 'wild', hair: C.hair3 }) }, { x: 1120, o: womanO(c, { robe: C.clayMantle }) }, { x: 1230, o: manO(c, { robe: C.ochreRobe, hairStyle: 'wild', hair: C.hair }) }]
+    const PH = S.portrait;   // phone: the possessed and their cries stand inside the screen, the cries one above another
+    const POSX = PH ? [535, 1000, 1055] : [470, 1120, 1230];
+    const POS = [{ x: POSX[0], o: manO(c, { robe: C.stone2, hairStyle: 'wild', hair: C.hair3 }) }, { x: POSX[1], o: womanO(c, { robe: C.clayMantle }) }, { x: POSX[2], o: manO(c, { robe: C.ochreRobe, hairStyle: 'wild', hair: C.hair }) }]
       .map((p, i) => ({ ...p, i, flip: p.x > DOOR, p: S.puppet(crowdL.add(person(c, p.o))), shards: shadowShards(c, { n: 7, r: 56 }).map((sh) => ({ ...sh, el: crowdL.add(`<g opacity="0">${sh.m}</g>`), drift: c.rr(0.7, 1.2) })) }));
     const lamps = [0, 1, 2, 3].map((i) => crowdL.add(`<g opacity="0">${handLamp(c)}</g>`));
 
@@ -148,7 +150,7 @@ export default {
         });
         const cr = es(t, 2.12 + i * 0.1, 2.3 + i * 0.1, ease.back);
         const crumple = es(t, 3.1 + i * 0.05, 3.25 + i * 0.05);
-        const bx = px + (p.flip ? -70 : 70), by = 420 - i * 30;
+        const bx = px + (p.flip ? -70 : 70), by = 420 - i * (PH ? 52 : 30);
         pose(cries[i], { x: bx, y: by + Math.sin(time * 8 + i) * 2, s: cr * (1 - crumple), r: Math.sin(time * 6 + i) * 4 + crumple * 30, o: cr > 0.01 && crumple < 0.99 ? 1 : 0 });
         const fall = seg(t, 3.2 + i * 0.05, 3.8 + i * 0.05);
         pose(scraps[i], { x: bx + fall * 20, y: by + fall * fall * 280, r: fall * 300, o: fall > 0 && fall < 1 ? 1 - fall * 0.5 : 0 });

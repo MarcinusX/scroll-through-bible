@@ -30,6 +30,9 @@ export default {
     const c = S.c;
     const N = nazSynagogue(S);
     const { FLOOR, FRONT } = N;
+    // phone: Capernaum and Nazareth hang a little smaller and closer, both inside the screen, the road between them
+    const PH = S.portrait, [KAFX, NAZX] = PH ? [570, 990] : [520, 1080];
+    const small = (m) => (PH ? `<g transform="scale(.9)">${m}</g>` : m);
 
     /* ---------- the plates ---------- */
     const hi = S.layer({ par: 0.3, sh: 6 });
@@ -53,7 +56,7 @@ export default {
       const sp = [[-60, -10], [40, -30], [0, 70]].map(([x, y]) => `<g transform="translate(${x} ${y})">${sparkle(c, 12)}</g>`).join('');
       return archPlate(c, s.out() + houses + syn + jumper + sp, { w: 200, h: 220, bg: C.skyBlue });
     })();
-    const kafEl = hanging(hi, kaf + `<g transform="translate(0 134)">${labelTag(tr('Kafarnaum', 'Capernaum'), 18)}</g>`, { x: 0, y: -1500, len: 700 });
+    const kafEl = hanging(hi, small(kaf + `<g transform="translate(0 134)">${labelTag(tr('Kafarnaum', 'Capernaum'), 18)}</g>`), { x: 0, y: -1500, len: 700 });
     // Nazareth on its hill, hands held out: here too!
     const naz = (() => {
       const s = sheet();
@@ -62,7 +65,7 @@ export default {
       const ppl = [-56, -20, 16, 52].map((x, i) => figure(c, i % 2 ? womanO(c) : manO(c), { x, y: 116, s: 0.3, flip: i > 1, armF: 80, armB: 60 })).join('');
       return archPlate(c, s.out() + houses + ppl, { w: 200, h: 220, bg: C.skyBlue });
     })();
-    const nazEl = hanging(hi, naz + `<g transform="translate(0 134)">${labelTag(tr('Nazaret', 'Nazareth'), 18)}</g>`, { x: 0, y: -1500, len: 700 });
+    const nazEl = hanging(hi, small(naz + `<g transform="translate(0 134)">${labelTag(tr('Nazaret', 'Nazareth'), 18)}</g>`), { x: 0, y: -1500, len: 700 });
     const road = hi.add(`<g opacity="0"><path d="${Array.from({ length: 12 }, (_, i) => { const u0 = i / 12, u1 = u0 + 0.05; const p = (u) => [lerp(-230, 230, u), -Math.sin(u * PI) * 70]; return c.ribbon([p(u0), p(u1)], 4.4); }).join('')}" fill="${C.sunDeep}"/><path d="${c.poly([[222, -14], [246, 4], [218, 14]])}" fill="${C.sunDeep}"/></g>`);
     // a prophet outside the shut gate of his own town
     const prophet = (() => {
@@ -96,7 +99,7 @@ export default {
     const tint = S.layer({ par: 0, sh: 1, flat: true });
     tint.add(`<rect x="-3000" y="-3000" width="8000" height="8000" fill="#6c7898"/>`);
     tint.fade(0);
-    N.columns();
+    N.columns(S.portrait ? { ceilTop: -50 } : undefined);   // phone: the ceiling is a band, not a third of the screen of wood
     const [shx, shy] = headAt(JX, 618, 1.0, false, DY.sit);
 
     return (t, time) => {
@@ -112,11 +115,11 @@ export default {
       hangAt(physEl, 800, lerp(-500, 240, pk), time, 1.3, 0.8);
       /* v23b: Capernaum → here too */
       const kk = es(t, 1.08, 1.35, ease.back) * (1 - es(t, 1.95, 2.15));
-      hangAt(kafEl, 520, lerp(-500, 250, kk), time, 1.2, 0.8, 1);
+      hangAt(kafEl, KAFX, lerp(-500, 250, kk), time, 1.2, 0.8, 1);
       const nk = es(t, 1.18, 1.45, ease.back) * (1 - es(t, 1.95, 2.15));
-      hangAt(nazEl, 1080, lerp(-500, 250, nk), time, 1.2, 0.8, 2);
+      hangAt(nazEl, NAZX, lerp(-500, 250, nk), time, 1.2, 0.8, 2);
       const rk = es(t, 1.4, 1.6);
-      pose(road, { x: 800, y: 200 - (1 - kk) * 0, sx: 0.2 + rk * 0.8, o: rk * kk });
+      pose(road, { x: (KAFX + NAZX) / 2, y: 200 - (1 - kk) * 0, sx: (0.2 + rk * 0.8) * (NAZX - KAFX) / 560, o: rk * kk });
       demands.forEach((d) => {
         const k = es(t, 1.45 + d.i * 0.06, 1.62 + d.i * 0.06, ease.back) * (1 - es(t, 1.95, 2.1));
         const y0 = d.m.y ?? FRONT - 6, s0 = d.m.s ?? 0.8;

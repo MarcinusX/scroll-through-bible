@@ -30,6 +30,9 @@ export default {
     const c = S.c;
     const N = nazSynagogue(S);
     const { FLOOR, FRONT } = N;
+    // phone: the great scroll and its pictures hang a little smaller, so both rollers stay inside the screen
+    const PH = S.portrait, K = PH ? 0.84 : 1, SC = PH ? 792 : SX;
+    const poseS = (el, o) => pose(el, PH ? { ...o, x: SC + (o.x - SX) * K, y: SY + (o.y - SY) * K, s: (o.s ?? 1) * K } : o);
 
     /* ---------- the great scroll in the flies ---------- */
     const flies = S.layer({ par: 0.3, sh: 6 });
@@ -70,7 +73,7 @@ export default {
     const voice = voiceRings(act, c, { n: 3, color: C.sun, r: 40, w: 5 });
     N.bench(act);
     const front = N.frontLooks().filter((m) => m.i !== 4).map((m) => ({ ...m, p: S.puppet(act.add(person(c, { ...m.o, pose: 'sit' }))) }));
-    N.columns();
+    N.columns(S.portrait ? { ceilTop: -50 } : undefined);   // phone: the ceiling is a band, not a third of the screen of wood
 
     return (t, time) => {
       N.flicker(time);
@@ -106,10 +109,10 @@ export default {
       const yy = lerp(-500, SY, down) + Math.sin(time * 0.8) * 2;
       const half = sc.w / 2;
       const vis = down > 0.01 ? 1 : 0;
-      pose(parch, { x: SX, y: yy, sx: 0.02 + open * 0.98, o: vis && open > 0.01 ? 1 : 0 });
-      pose(rollL, { x: SX - (8 + open * half), y: yy, o: vis });
-      pose(rollR, { x: SX + (8 + open * half), y: yy, o: vis });
-      hangAt(title, SX, lerp(-500, 140, es(t, 1.05, 1.35, ease.back)), time, 1.4, 0.8);
+      poseS(parch, { x: SX, y: yy, sx: 0.02 + open * 0.98, o: vis && open > 0.01 ? 1 : 0 });
+      poseS(rollL, { x: SX - (8 + open * half), y: yy, o: vis });
+      poseS(rollR, { x: SX + (8 + open * half), y: yy, o: vis });
+      hangAt(title, PH ? SC : SX, lerp(-500, PH ? 160 : 140, es(t, 1.05, 1.35, ease.back)), time, 1.4, 0.8);
 
       /* the pictures, line by line */
       pics.forEach((p) => {
@@ -117,38 +120,38 @@ export default {
         const inK = es(t, a + 0.02, a + 0.3, ease.out);
         const on = inK > 0.01 ? 1 : 0;
         const pop = (0.7 + inK * 0.3) * 1.12;
-        pose(p.win, { x: p.x, y: yy + sc.winY, o: inK });
-        pose(p.base, { x: p.x, y: yy + sc.winY, s: pop, o: inK });
+        poseS(p.win, { x: p.x, y: yy + sc.winY, o: inK });
+        poseS(p.base, { x: p.x, y: yy + sc.winY, s: pop, o: inK });
         const doK = es(t, a + 0.25, a + 0.6);
         const sp = bump(t, a + 0.3, a + 0.85);
-        pose(p.spark, { x: p.x + 30, y: yy - 50, s: sp, r: time * 60, o: sp });
+        poseS(p.spark, { x: p.x + 30, y: yy - 50, s: sp, r: time * 60, o: sp });
         const Y = yy + sc.winY;
-        if (p.k === 0) pose(p.act, { x: p.x, y: Y + (-78 + doK * 18) * 1.12, s: pop, o: on * inK });
+        if (p.k === 0) poseS(p.act, { x: p.x, y: Y + (-78 + doK * 18) * 1.12, s: pop, o: on * inK });
         if (p.k === 1) {
-          pose(p.drop, { x: p.x - 10, s: 1.12, y: Y + (-26 + seg(t, a + 0.25, a + 0.45) * 48) * 1.12, o: bump(t, a + 0.22, a + 0.5) });
-          pose(p.act, { x: p.x + 26, y: Y + (-62 + doK * 72) * 1.12, r: (1 - doK) * 20, s: pop, o: on * inK });
+          poseS(p.drop, { x: p.x - 10, s: 1.12, y: Y + (-26 + seg(t, a + 0.25, a + 0.45) * 48) * 1.12, o: bump(t, a + 0.22, a + 0.5) });
+          poseS(p.act, { x: p.x + 26, y: Y + (-62 + doK * 72) * 1.12, r: (1 - doK) * 20, s: pop, o: on * inK });
         }
         if (p.k === 2) {
-          pose(p.act, { x: p.x - 24 * pop, y: Y, s: pop, sx: pop * (1 - doK * 0.85), o: on * inK });
-          pose(p.chL, { x: p.x + (-30 - doK * 10) * 1.12, y: Y + (10 + doK * 40) * 1.12, r: -doK * 60, s: 1, o: on * inK * (1 - seg(t, a + 0.6, a + 0.8)) });
-          pose(p.chR, { x: p.x + (-4 + doK * 14) * 1.12, y: Y + (10 + doK * 44) * 1.12, r: doK * 70, s: 1, o: on * inK * (1 - seg(t, a + 0.6, a + 0.8)) });
+          poseS(p.act, { x: p.x - 24 * pop, y: Y, s: pop, sx: pop * (1 - doK * 0.85), o: on * inK });
+          poseS(p.chL, { x: p.x + (-30 - doK * 10) * 1.12, y: Y + (10 + doK * 40) * 1.12, r: -doK * 60, s: 1, o: on * inK * (1 - seg(t, a + 0.6, a + 0.8)) });
+          poseS(p.chR, { x: p.x + (-4 + doK * 14) * 1.12, y: Y + (10 + doK * 44) * 1.12, r: doK * 70, s: 1, o: on * inK * (1 - seg(t, a + 0.6, a + 0.8)) });
         }
         if (p.k === 3 || p.k === 4) {
           const sw = es(t, a + 0.4, a + 0.47);
-          pose(p.a, { x: p.x, y: Y, s: pop, o: inK * (1 - sw) });
-          pose(p.b, { x: p.x, y: Y, s: pop, o: inK * sw });
+          poseS(p.a, { x: p.x, y: Y, s: pop, o: inK * (1 - sw) });
+          poseS(p.b, { x: p.x, y: Y, s: pop, o: inK * sw });
         }
         if (p.k === 3) {
           const sw = es(t, a + 0.35, a + 0.45);
-          pose(p.eC, { x: p.x + 24, y: Y - 11, s: 1.0, o: inK * (1 - sw) });
-          pose(p.eO, { x: p.x + 24, y: Y - 11, s: 1.0 + sw * 0.1, o: inK * sw });
+          poseS(p.eC, { x: p.x + 24, y: Y - 11, s: 1.0, o: inK * (1 - sw) });
+          poseS(p.eO, { x: p.x + 24, y: Y - 11, s: 1.0 + sw * 0.1, o: inK * sw });
         }
         if (p.k === 4) {
           const br = es(t, a + 0.38, a + 0.7);
-          pose(p.yL, { s: 1.12, x: p.x + (-6 - br * 26) * 1.12, y: Y + (-26 + br * 60) * 1.12, r: -br * 50, o: inK * (1 - seg(t, a + 0.6, a + 0.75)) });
-          pose(p.yR, { s: 1.12, x: p.x + (6 + br * 26) * 1.12, y: Y + (-26 + br * 60) * 1.12, r: br * 50, o: inK * (1 - seg(t, a + 0.6, a + 0.75)) });
+          poseS(p.yL, { s: 1.12, x: p.x + (-6 - br * 26) * 1.12, y: Y + (-26 + br * 60) * 1.12, r: -br * 50, o: inK * (1 - seg(t, a + 0.6, a + 0.75)) });
+          poseS(p.yR, { s: 1.12, x: p.x + (6 + br * 26) * 1.12, y: Y + (-26 + br * 60) * 1.12, r: br * 50, o: inK * (1 - seg(t, a + 0.6, a + 0.75)) });
         }
-        if (p.k === 5) pose(p.act, { x: p.x, y: Y + (-10 - doK * 24) * 1.12, r: t * 12, s: pop * (0.8 + doK * 0.2), o: on * inK });
+        if (p.k === 5) poseS(p.act, { x: p.x, y: Y + (-10 - doK * 24) * 1.12, r: t * 12, s: pop * (0.8 + doK * 0.2), o: on * inK });
       });
 
       /* the congregation: they turn to watch Him, then to the scroll */

@@ -47,7 +47,7 @@ export default {
     /* the report: the map of Galilee */
     const mapL = S.layer({ par: 0.3, sh: 8, pad: 1400 });
     const map = galileeMap(c);
-    const MS = 0.52, MCX = 975, MCY = 250;
+    const [MS, MCX, MCY] = S.portrait ? [0.46, 870, 235] : [0.52, 975, 250];   // phone: the map hangs a little smaller, inside the screen
     mapL.add(`<g transform="translate(${MCX} ${MCY}) scale(${MS})">${hang2(map.markup, 300, 1400)}</g>`);
     const kaf = map.towns[0];
     const others = map.towns.slice(1);

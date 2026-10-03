@@ -70,7 +70,9 @@ export default {
 
     /* ---------- people ---------- */
     const PL = S.layer({ par: P, sh: 5 });
-    const kneel = [{ o: CAST.peter, x: 470 }, { o: WIFE, x: 560 }, { o: CAST.andrew, x: 650 }].map((k, i) => ({ ...k, i, st: S.puppet(PL.add(person(c, k.o))), kn: S.puppet(PL.add(person(c, { ...k.o, pose: 'kneel' }))) }));
+    const PH = S.portrait;   // phone: the three who beg kneel a little closer to Him, and the camera goes in less, so the bed stays clear of the thread
+    const KNX = PH ? [545, 622, 700] : [470, 560, 650];
+    const kneel = [{ o: CAST.peter, x: KNX[0] }, { o: WIFE, x: KNX[1] }, { o: CAST.andrew, x: KNX[2] }].map((k, i) => ({ ...k, i, st: S.puppet(PL.add(person(c, k.o))), kn: S.puppet(PL.add(person(c, { ...k.o, pose: 'kneel' }))) }));
     const jesus = S.puppet(PL.add(person(c, { ...CAST.jesus })));
     const standing = S.puppet(PL.add(person(c, { ...MIL, holdF: `<g data-k="lk4-tray" transform="translate(4 -2)">${tray(c)}</g>` })));
     const trayEl = S.$('lk4-tray');
@@ -116,13 +118,13 @@ export default {
         k.st.set({ x: kx, y: FEET + (k.i % 2) * 4, s: 1.0, o: 1 - ask, walk: inK > 0 && inK < 1 ? kx * 0.05 : undefined, armF: 14 + es(t, 4.4, 4.7) * 50, armB: es(t, 4.4, 4.7) * (k.i === 1 ? 100 : 30), head: -es(t, 4.4, 4.7) * 6, blink: blinkAt(time, k.i + 1) });
         k.kn.set({ x: k.x, y: FEET + (k.i % 2) * 4, s: 1.0, o: ask, armF: 90, armB: 110, head: -8, blink: blinkAt(time, k.i + 1) });
       });
-      const [phx, phy] = headAt(650, FEET, 1.0, false, 46);
+      const [phx, phy] = headAt(KNX[2], FEET, 1.0, false, 46);
       beg(phx, phy, ask, time, { dir: 1, spread: 1.6 });
 
       /* v39a: He stands over her and rebukes the fever */
       const go = es(t, 3.02, 3.3);
       const back = es(t, 4.4, 4.7);
-      const jx = lerp(780, 850, go) - back * 110;
+      const jx = lerp(780, 850, go) - back * (PH ? 0 : 110);   // phone: He stays by the bed, so she serves in front of the others, not over Him
       const bend = es(t, 3.2, 3.4) * (1 - es(t, 3.9, 4.2));
       jesus.set({ x: jx, y: FEET, s: 1.05, flip: t > 1.6 && t < 3.02, walk: (go > 0 && go < 1) || (back > 0 && back < 1) ? jx * 0.045 : undefined, armF: 14 + ask * 30 + bend * 70, armB: 10 + bend * 140, lean: bend * 16, head: bend * 14, blink: blinkAt(time) });
       const [jhx, jhy] = headAt(jx, FEET, 1.05, false);
@@ -131,15 +133,16 @@ export default {
       /* v39b: she gets up at once and serves them */
       const stand = up;
       const serve = es(t, 4.25, 4.75);
-      const sx = lerp(935, 760, serve);
+      const sx = lerp(PH ? 905 : 935, PH ? 772 : 760, serve);
       const offer = es(t, 4.75, 4.95);
       const sArm = 20 + es(t, 4.2, 4.4) * 40 + offer * 25;
       pose(trayEl, { x: 4, y: -2, r: sArm });
       standing.set({ x: sx, y: FEET, s: 0.95, flip: true, o: stand, walk: serve > 0 && serve < 1 ? sx * 0.05 : undefined, armF: sArm, armB: 10, head: -4, blink: blinkAt(time, 3) });
 
       const inside = es(t, 0.5, 0.9);
-      S.cam.z = 1.04 + inside * 0.34 - es(t, 1.9, 2.3) * 0.08 + es(t, 3.0, 3.4) * 0.06 - es(t, 4.2, 4.6) * 0.06;
-      S.cam.x = -es(t, 1.9, 2.3) * 20 * (1 - es(t, 3.0, 3.3)) + es(t, 3.0, 3.4) * 30 * (1 - es(t, 4.2, 4.6));
+      if (PH) B.shift(-30, 0);
+      S.cam.z = 1.04 + inside * (PH ? 0.2 : 0.34) - es(t, 1.9, 2.3) * 0.08 + es(t, 3.0, 3.4) * 0.06 - es(t, 4.2, 4.6) * 0.06;
+      S.cam.x = (PH ? 10 * inside : 0) - es(t, 1.9, 2.3) * 20 * (1 - es(t, 3.0, 3.3)) + es(t, 3.0, 3.4) * 30 * (1 - es(t, 4.2, 4.6));
       S.cam.y = 20 + inside * 110;
     };
   },
