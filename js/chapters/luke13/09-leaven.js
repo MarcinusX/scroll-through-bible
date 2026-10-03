@@ -28,18 +28,19 @@ export default {
     /* the room */
     const wall = S.layer({ par: 0.3, sh: 3 });
     const W = sheet();
-    const win = [[1090, 330], [1190, 330], [1190, 430], [1090, 430]];
+    const WO = S.portrait ? -95 : 0;   // phone: the window comes in from under the thread
+    const win = [[1090 + WO, 330], [1190 + WO, 330], [1190 + WO, 430], [1090 + WO, 430]];
     W.p(c.cut([[-900, -900], [2500, -900], [2500, 1700], [-900, 1700]], 0.6, 40) + c.hole(win, 0.3, 6), mix(C.plaster, C.parchment, 0.3));
     let bl = '';
     for (let y = 220; y < 640; y += 44) for (let x = -900 + ((y / 44) % 2 ? 60 : 0); x < 2500; x += 120) bl += c.ribbon([[x, y], [x + 104, y + c.rr(-1, 1)]], 1.2);
     W.x(bl, C.plaster2, 'opacity=".45"');
     W.p(c.cut([[-900, 560], [2500, 556], [2500, 650], [-900, 650]], 0.5, 20), mix(C.plaster2, C.clay, 0.25));
-    W.p(c.cut(c.rect(1080, 322, 120, 10), 0.3, 5) + c.cut(c.rect(1080, 430, 120, 10), 0.3, 5), C.wood2);
+    W.p(c.cut(c.rect(1080 + WO, 322, 120, 10), 0.3, 5) + c.cut(c.rect(1080 + WO, 430, 120, 10), 0.3, 5), C.wood2);
     // the shelf with jars
     W.p(c.cut(c.rect(560, 490, 240, 10), 0.3, 6), C.wood2);
-    wall.add(`<g><rect x="1090" y="330" width="100" height="100" fill="${mix(C.dawn, C.skyBlue, 0.4)}"/></g>`);
+    wall.add(`<g><rect x="${1090 + WO}" y="330" width="100" height="100" fill="${mix(C.dawn, C.skyBlue, 0.4)}"/></g>`);
     wall.add(W.out() + `<g transform="translate(600 490)">${storeJar(c, 54)}</g><g transform="translate(680 490)">${storeJar(c, 44, C.clay)}</g><g transform="translate(760 490)">${storeJar(c, 50)}</g>`);
-    const shaft = wall.add(`<g><path d="${c.poly([[1090, 334], [1190, 334], [1100, 700], [930, 700]])}" fill="${C.lampGlow}" opacity=".22"/></g>`);
+    const shaft = wall.add(`<g><path d="${c.poly([[1090 + WO, 334], [1190 + WO, 334], [1100 + WO, 700], [930 + WO, 700]])}" fill="${C.lampGlow}" opacity=".22"/></g>`);
     const floor = S.layer({ par: 0.42, sh: 3 });
     const fl = sheet().p(c.cut([[-900, 640], [2500, 640], [2500, 1700], [-900, 1700]], 0.8, 20), mix(C.stone, C.sand, 0.4));
     let tiles = '';

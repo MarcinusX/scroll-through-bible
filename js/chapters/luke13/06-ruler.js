@@ -45,7 +45,9 @@ export default {
       `<g transform="translate(-16 26) scale(.4)">${candle(c, 44)}</g><g transform="translate(16 26) scale(.4)">${candle(c, 44)}</g>`,
     ];
     const cardL = S.layer({ par: 0.5, sh: 6 });
-    const cards = icons.map((ic, i) => ({ i, x: 618 + i * 88, el: cardL.add(`<g>${dayCard(c, i < 6 ? String(i + 1) : tr('szabat', 'Sabbath'), ic, { face: i < 6 ? C.cream : C.halo, rim: i < 6 ? C.parchment : C.haloRim, w: i < 6 ? 78 : 92 })}</g>`) }));
+    // phone: the row of seven is packed closer and a little smaller so the Sabbath card is not under the thread
+    const P = S.portrait, CS = P ? 0.86 : 1;
+    const cards = icons.map((ic, i) => ({ i, x: P ? 560 + i * 74 : 618 + i * 88, el: cardL.add(`<g>${dayCard(c, i < 6 ? String(i + 1) : tr('szabat', 'Sabbath'), ic, { face: i < 6 ? C.cream : C.halo, rim: i < 6 ? C.parchment : C.haloRim, w: i < 6 ? 78 : 92 })}</g>`) }));
     const marks = cards.map((cd) => ({ ...cd, el: cardL.add(`<g opacity="0">${healMark(c, 13)}</g>`) }));
     const cross = cardL.add(`<g opacity="0">${crossOut(c, 30)}</g>`);
 
@@ -72,14 +74,14 @@ export default {
       /* the six days and the Sabbath */
       cards.forEach((cd) => {
         const k = es(t, 0.3 + cd.i * 0.06, 0.52 + cd.i * 0.06, ease.out);
-        pose(cd.el, { x: cd.x, y: lerp(-800, 262 + (cd.i % 2) * 14, k) + (T ? Math.sin(T * 0.8 + cd.i) * 2 : 0), r: T ? Math.sin(T * 0.7 + cd.i * 1.3) * 1.5 : 0 });
+        pose(cd.el, { x: cd.x, s: CS, y: lerp(-800, 262 + (cd.i % 2) * 14, k) + (T ? Math.sin(T * 0.8 + cd.i) * 2 : 0), r: T ? Math.sin(T * 0.7 + cd.i * 1.3) * 1.5 : 0 });
       });
       marks.forEach((m) => {
         const k = es(t, 1.12 + m.i * 0.05, 1.26 + m.i * 0.05, ease.back);
-        pose(m.el, { x: m.x + 24, y: 262 + (m.i % 2) * 14 + 92, s: k, o: k > 0.02 ? 1 : 0 });
+        pose(m.el, { x: m.x + 24 * CS, y: 262 + (m.i % 2) * 14 + 92 * CS, s: k * CS, o: k > 0.02 ? 1 : 0 });
       });
       const xk = es(t, 1.5, 1.62, ease.back);
-      pose(cross, { x: cards[6].x + 24, y: 262 + 92, s: xk * 0.7, o: xk > 0.02 ? 1 : 0 });
+      pose(cross, { x: cards[6].x + 24 * CS, y: 262 + 92 * CS, s: xk * 0.7 * CS, o: xk > 0.02 ? 1 : 0 });
 
       S.cam.x = 20;
       S.cam.y = 130;

@@ -32,7 +32,7 @@ export default {
     const c = D.c;
 
     /* the people outside */
-    const G = [[640, 'a', 3, false, 646], [960, 'b', 3, true, 650], [560, 'e', 3, false, 720], [1050, 'f', 3, true, 724]].map(([x, k, n, flip, y], i) => ({
+    const G = [[640, 'a', 3, false, 646], [960, 'b', 3, true, 650], [560, 'e', 3, false, 720], [S.portrait ? 1005 : 1050, 'f', 3, true, 724]].map(([x, k, n, flip, y], i) => ({
       i, x, y, flip,
       a: D.crowdL.sprite(knot('lk13-shut-' + k, n, { s: 1, spread: 44, rows: 1, flip, arms: [20, 60] }), x, y),
       b: D.crowdL.sprite(knot('lk13-shut-' + k, n, { s: 1, spread: 44, rows: 1, flip: !flip, arms: [10, 20], head: [14, 20] }), x, y),

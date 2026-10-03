@@ -68,6 +68,8 @@ export default {
     const x18 = fx.add(`<g opacity="0">${crossOut(c, 26)}</g>`);
     const sparks = Array.from({ length: 8 }, (_, i) => fx.add(`<g opacity="0">${sparkle(c, 10 + (i % 3) * 4)}</g>`));
 
+    // phone: "a daughter of Abraham" and "18 years" come inside the left edge of the screen
+    const P = S.portrait, T18X = P ? 560 : 520;
     return (t, time) => {
       const T = time;
       I.flicker(T);
@@ -104,11 +106,11 @@ export default {
       const top = ay + 64 + 54 + 36;
       pose(thread, { x: whx, y: top, sx: 1, sy: Math.max(0.01, (why - 26 - top) * th), o: th > 0.01 ? 0.9 : 0 });
       const dk = es(t, 1.5, 1.65, ease.back);
-      pose(dTag, { x: WX - 150, y: FEET - 250, s: dk, o: dk > 0.02 ? 1 : 0 });
+      pose(dTag, { x: P ? WX - 100 : WX - 150, y: FEET - 250, s: dk * (P ? 0.86 : 1), o: dk > 0.02 ? 1 : 0 });
       const t18 = es(t, 1.2, 1.4, ease.out) * (1 - es(t, 2.1, 2.3, ease.in));
-      pose(tag18, { x: 520, y: lerp(-800, 380, t18) });
+      pose(tag18, { x: T18X, y: lerp(-800, 380, t18) });
       const xk = es(t, 1.62, 1.76, ease.back);
-      pose(x18, { x: 520, y: lerp(-800, 380, t18) + 38, s: xk, o: xk > 0.02 && t18 > 0.01 ? 1 : 0 });
+      pose(x18, { x: T18X, y: lerp(-800, 380, t18) + 38, s: xk, o: xk > 0.02 && t18 > 0.01 ? 1 : 0 });
       cords.forEach((cd, i) => {
         const k = es(t, 1.4 + i * 0.05, 1.8 + i * 0.05);
         pose(cd, { x: WX - 40 + i * 36 + k * (i - 1) * 30, y: FEET - 4 - k * 120 - i * 2, r: (i % 2 ? 80 : -70) * (1 - k), s: 1 - k * 0.7, o: 1 - es(t, 1.6 + i * 0.05, 1.85 + i * 0.05) });

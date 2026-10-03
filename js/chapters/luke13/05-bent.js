@@ -48,7 +48,8 @@ export default {
       const T = time;
       I.flicker(T);
       Y.set(0);
-      pose(sab, { x: 1040, y: lerp(-600, 250, es(t, 0, 0.3, ease.out)), r: T ? Math.sin(T * 0.8) * 0.8 : 0, oy: 0 });
+      // phone: clear of the progress thread
+      pose(sab, { x: S.portrait ? 950 : 1040, y: lerp(-600, 250, es(t, 0, 0.3, ease.out)), r: T ? Math.sin(T * 0.8) * 0.8 : 0, oy: 0 });
 
       /* v10 — He teaches; v12 — He sees her and calls her; v13 — He lays His hands on her */
       const see = es(t, 2.0, 2.12);

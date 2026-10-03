@@ -17,7 +17,7 @@ export default {
   ],
   cam: { x: [-30, 30], y: [-20, 40], z: [1, 1.1] },
   build(S) {
-    const R = roadSet(S, { skyCols: GOLDEN, sunAt: [420, 170] });
+    const R = roadSet(S, { skyCols: GOLDEN, sunAt: S.portrait ? [530, 170] : [420, 170] });   // phone: the evening sun whole, not halved by the frame
     const c = R.c;
     // Jerusalem far off on the horizon, on the far sheet (it rolls slowly)
     R.far.add(`<g transform="translate(1330 404)">${jerusalem(c, 0.14, { tglow: true })}</g>`);
@@ -62,7 +62,7 @@ export default {
       asker.set({ x: ax, y: FEET + 6, s: 1.0, flip: true, walk: run > 0 && run < 1 ? ax * 0.06 : undefined, armF: 20 + es(t, 1.3, 1.45) * 60, armB: 10 + es(t, 1.3, 1.45) * 30, head: -6, o: t > 0.99 ? 1 : 0, blink: blinkAt(T, 5) });
       const ak = es(t, 1.35, 1.5, ease.back) * (1 - es(t, 2.05, 2.2));
       const [ahx, ahy] = headAt(1000, FEET + 6, 1.0, true);
-      pose(ask, { x: ahx + 10, y: ahy - 36, s: ak, o: ak > 0.02 ? 1 : 0 });
+      pose(ask, { x: ahx + (S.portrait ? -30 : 10), y: ahy - 36, s: ak, o: ak > 0.02 ? 1 : 0 });
 
       S.cam.x = 0;
       S.cam.y = 0;

@@ -41,7 +41,9 @@ export default {
     const wingB = V.act.add(`<g>${H.wing}</g>`);
     const body = V.act.add(`<g>${H.body}</g>`);
     const wingF = V.act.add(`<g>${H.wing}</g>`);
-    const chicks = Array.from({ length: 7 }, (_, i) => ({ i, el: V.act.add(`<g>${chick(c)}</g>`), x0: 900 + (i % 4) * 60 + (i > 3 ? 30 : 0), y0: GY + 22 + (i % 2) * 12 }));
+    // phone: the hen a little smaller and further in, so her open wings stay clear of the progress thread
+    const P = S.portrait, HX = P ? 950 : HEN[0], HDX = HX - HEN[0];
+    const chicks = Array.from({ length: 7 }, (_, i) => ({ i, el: V.act.add(`<g>${chick(c)}</g>`), x0: 900 + HDX + (i % 4) * (P ? 52 : 60) + (i > 3 ? 30 : 0), y0: GY + 22 + (i % 2) * 12 }));
 
     return (t, time) => {
       const T = time;
@@ -64,11 +66,11 @@ export default {
       /* v34c — the hen spreads her wings; the chicks run away */
       const hIn = es(t, 2.0, 2.15);
       const spread = es(t, 2.12, 2.4);
-      const S0 = 0.56;
-      pose(body, { x: HEN[0], y: HEN[1], s: S0, o: hIn });
+      const S0 = P ? 0.5 : 0.56;
+      pose(body, { x: HX, y: HEN[1], s: S0, o: hIn });
       const wr = lerp(70, -22, spread);
-      pose(wingF, { x: HEN[0] + 44 * S0, y: HEN[1] - 90 * S0, s: S0, r: wr, o: hIn });
-      pose(wingB, { x: HEN[0] - 44 * S0, y: HEN[1] - 90 * S0, sx: -S0, sy: S0, r: -wr, o: hIn });
+      pose(wingF, { x: HX + 44 * S0, y: HEN[1] - 90 * S0, s: S0, r: wr, o: hIn });
+      pose(wingB, { x: HX - 44 * S0, y: HEN[1] - 90 * S0, sx: -S0, sy: S0, r: -wr, o: hIn });
       const away = es(t, 2.4, 2.9);
       chicks.forEach((ch) => {
         const tx = 1330 + ch.i * 46, ty = GY + 4 + (ch.i % 3) * 8;

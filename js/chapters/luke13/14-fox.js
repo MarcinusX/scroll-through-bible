@@ -64,13 +64,15 @@ export default {
       phs.forEach((p) => {
         const x = lerp(1500 + p.j * 90, 960 + p.j * 90, run);
         const back = es(t, 3.02, 3.4);
-        p.p.set({ x: x + back * (70 + 40 * p.j), y: GY + 10 + p.j * 6 + back * 24, s: 1.02, flip: back < 0.5 || p.j === 0, walk: run > 0 && run < 1 ? x * 0.05 : undefined, armF: 20 + es(t, 0.35, 0.5) * 60 * (1 - p.j) * (1 - back), armB: 10 + es(t, 0.35, 0.5) * 100 * p.j * (1 - back), head: -6, blink: blinkAt(T, 4 + p.j) });
+        p.p.set({ x: x + back * (S.portrait ? (p.j ? 10 : 55) : 70 + 40 * p.j),   // phone: a short step back, the second one stays clear of the thread
+           y: GY + 10 + p.j * 6 + back * 24, s: 1.02, flip: back < 0.5 || p.j === 0, walk: run > 0 && run < 1 ? x * 0.05 : undefined, armF: 20 + es(t, 0.35, 0.5) * 60 * (1 - p.j) * (1 - back), armB: 10 + es(t, 0.35, 0.5) * 100 * p.j * (1 - back), head: -6, blink: blinkAt(T, 4 + p.j) });
       });
       const sb = es(t, 0.4, 0.55, ease.back) * (1 - es(t, 0.95, 1.05));
       const [phx, phy] = headAt(960, GY + 10, 1.02, true);
       pose(say, { x: phx - 20, y: phy - 36, s: sb, o: sb > 0.02 ? 1 : 0 });
+      // phone: the medallion hangs clear of the progress thread
       const hk = es(t, 0.45, 0.7, ease.out) * (1 - es(t, 2.0, 2.2, ease.in));
-      const hx = 1040, hy = lerp(-900, 130, hk) + (T ? Math.sin(T * 0.8) * 2 : 0);
+      const hx = S.portrait ? 960 : 1040, hy = lerp(-900, 130, hk) + (T ? Math.sin(T * 0.8) * 2 : 0);
       const flipK = es(t, 1.2, 1.5);
       const sx = Math.cos(flipK * PI);
       pose(strng, { x: hx, y: hy });
@@ -99,6 +101,7 @@ export default {
       burst.forEach((b, i) => { const k = bump(t, 2.28 + i * 0.03, 2.7); const a = (i / 4) * PI * 2 + 0.4; pose(b, { x: 620 + Math.cos(a) * 60 * k, y: 248 + Math.sin(a) * 60 * k, s: k * 1.4, o: k }); });
 
       S.cam.x = kf(t, [[0, 20], [1.0, 40], [2.0, 20], [3.0, 20], [3.9, 50]]);
+      if (S.portrait && t > 3.0) S.cam.x = 20;   // phone: no drift right at the end
       S.cam.y = 0;
       S.cam.z = 1.04;
       void lightDisc; void seg; void mix; void shade; void sheet;

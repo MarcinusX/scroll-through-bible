@@ -130,7 +130,8 @@ export default {
       const om = es(t, 4.12, 4.35, ease.out) * (1 - es(t, 6.05, 6.3, ease.in));
       pose(oneMore, { x: 800, y: lerp(-800, 176, om) + (T ? Math.sin(T * 0.8) * 2 : 0), r: T ? Math.sin(T * 0.6) * 1.2 : 0 });
       const dk = es(t, 5.12, 5.3, ease.back) * (1 - es(t, 5.95, 6.05));
-      pose(dream, { x: 1030, y: 420, s: dk * 1.35, o: dk > 0.02 ? 1 : 0 });
+      // phone: clear of the thread
+      pose(dream, { x: S.portrait ? 955 : 1030, y: S.portrait ? 340 : 420, s: dk * 1.35, o: dk > 0.02 ? 1 : 0 });
 
       S.cam.x = kf(t, [[0, 0], [1.0, -20], [2.0, 0], [4.0, 0], [4.3, 20], [5.0, 20], [6.0, 0]]);
       S.cam.y = kf(t, [[0, 40], [1.0, 50], [2.0, 30], [4.3, 50], [6, 40]]);

@@ -44,6 +44,9 @@ export default {
   cam: { x: [-20, 20], y: [0, 60], z: [1, 1.1] },
   build(S) {
     const c = S.c;
+    // phone: the ones thrown out, the streams from east and west and the line all come inside the narrow screen
+    const P = S.portrait;
+    const SL = P ? [970, 885, 800, 715, 630] : SLOT;
     sky(S, ['#ecd3a0', '#f5e2b8', '#faefd6']);
     const glowL = S.layer({ par: 0.06, sh: 0, flat: true });
     glowL.add(`<g transform="translate(${CX} 380)"><circle r="520" fill="url(#halo-glow)" opacity=".75"/></g>`);
@@ -59,8 +62,8 @@ export default {
     /* people coming: sprites that walk the roads */
     const walkL = S.layer({ par: 0.3, sh: 4 });
     const streams = [
-      { k: 'w', flip: false, from: [-100, 706], to: [560, 706], s: 0.9 },
-      { k: 'e', flip: true, from: [1700, 710], to: [1040, 710], s: 0.9 },
+      { k: 'w', flip: false, from: [-100, 706], to: [P ? 610 : 560, 706], s: 0.9 },
+      { k: 'e', flip: true, from: [1700, 710], to: [P ? 995 : 1040, 710], s: 0.9 },
       { k: 'n', flip: false, from: [520, 470], to: [640, 520], s: 0.6 },
       { k: 's', flip: false, from: [800, 1100], to: [800, 780], s: 0.95 },
     ].map((st, i) => ({ ...st, i }));
@@ -87,7 +90,7 @@ export default {
     dark.add(`<path d="${c.cut([[-3000, -3000], [5000, -3000], [5000, 5000], [-3000, 5000]], 0, 400) + c.hole(c.blob(CX, 470, 560, 250, 30, 0.04), 1.5, 10)}" fill="#1b1a33"/>`);
     dark.fade(0);
     const outL = S.layer({ par: 0.5, sh: 5 });
-    const outs = OUT.map((o, i) => ({ i, p: S.puppet(outL.add(person(c, { ...o, pose: 'kneel' }))), x: [480, 1110, 1200][i], y: 780 + (i % 2) * 10 }));
+    const outs = OUT.map((o, i) => ({ i, p: S.puppet(outL.add(person(c, { ...o, pose: 'kneel' }))), x: (P ? [545, 1065, 925] : [480, 1110, 1200])[i], y: 780 + (i % 2) * 10 }));
     const tears = Array.from({ length: 6 }, (_, i) => ({ i, el: outL.add(`<g opacity="0"><path d="${c.cut([[0, -6], [3, 1], [0, 4], [-3, 1]], 0.1, 2)}" fill="${C.skyVeil}"/></g>`) }));
     /* the line that turns about */
     const line = S.layer({ par: 0.5, sh: 0, flat: true });
@@ -137,10 +140,10 @@ export default {
       const inQ = es(t, 2.0, 2.15);
       const turn = es(t, 2.3, 2.36);
       const go = es(t, 2.4, 2.66);
-      pose(lightR, { x: 1110, y: QY - 110, o: inQ * (1 - es(t, 2.2, 2.34)) });
-      pose(lightL, { x: 470, y: QY - 110, o: es(t, 2.22, 2.36) });
+      pose(lightR, { x: P ? 1060 : 1110, y: QY - 110, o: inQ * (1 - es(t, 2.2, 2.34)) });
+      pose(lightL, { x: P ? 540 : 470, y: QY - 110, o: es(t, 2.22, 2.36) });
       Q.forEach((q) => {
-        const x = SLOT[q.i] - (q.i === 4 ? go * 110 : go * 16);
+        const x = SL[q.i] - (q.i === 4 ? go * (P ? 90 : 110) : go * 16);
         q.p.set({ x, y: QY, s: 1.0, flip: turn > 0.5, walk: (go > 0.02 && go < 0.98 && q.i === 4) || (inQ > 0.02 && inQ < 0.98) ? x * 0.05 : undefined, armF: 20, armB: 10 + (q.i === 4 ? es(t, 2.6, 2.72) * 140 : 0), head: q.i === 0 ? -4 + es(t, 2.4, 2.6) * 20 : -4, o: inQ, blink: blinkAt(T, q.i + 3) });
       });
       S.cam.x = 0;
