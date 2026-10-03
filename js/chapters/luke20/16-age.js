@@ -71,7 +71,7 @@ export default {
         pose(el, { x, y, s: Math.max(0.001, on * (1 - u * 0.5)), r: u * (i ? 200 : -200), o: on > 0.01 ? 1 - es(t, 1.55, 1.75) : 0 });
       });
       /* v36 — like the angels; children of the resurrection */
-      angels.forEach((el, i) => dropIn(el, t, 2.08 + i * 0.08, undefined, i ? 1080 : 520, 330, { T, d: 0.3, sw: 1.5 }));
+      angels.forEach((el, i) => dropIn(el, t, 2.08 + i * 0.08, undefined, S.portrait ? (i ? 1025 : 575) : (i ? 1080 : 520), 330, { T, d: 0.3, sw: 1.5 }));
       dropIn(word, t, 2.3, undefined, CQ.JX, 150, { d: 0.25 });
       const up = bump(t, 1.1, 2.9);
       Q.pose(t, T,

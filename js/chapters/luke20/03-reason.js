@@ -18,10 +18,11 @@ export default {
     const Q = courtSet(S);
     const c = Q.c;
     const heavenIn = `<g transform="translate(-50 -4) scale(.62)">${choicePlate(c, 'heaven', tr('z nieba', 'from heaven')).replace(/<path d="M0 -1600V[^"]*"[^>]*\/>/, '')}</g>`;
-    const t1 = Q.W.add(`<g opacity="0">${bigThought(c, heavenIn, { w: 230, h: 120 })}</g>`);
+    const TDX = S.portrait ? -70 : 0;   // phone: the clouds float a little left, clear of the thread
+    const t1 = Q.W.add(`<g opacity="0">${bigThought(c, heavenIn, { w: 230, h: 120, dx: TDX })}</g>`);
     const finger = Q.W.add(`<g opacity="0"><g transform="scale(-.55 .55)">${pointHand(c, { cuff: '#d98b7a' })}</g><g transform="translate(-10 -28)">${qMark(c, 30)}</g></g>`);
     const menIn = [stoner(c, 'lk20-st1', { x: -62, y: 48, s: 0.46 }), stoner(c, 'lk20-st3', { x: 62, y: 48, s: 0.46, flip: true }), stoner(c, 'lk20-st2', { x: 0, y: 54, s: 0.5 })].join('');
-    const t2 = Q.W.add(`<g opacity="0">${bigThought(c, menIn, { w: 230, h: 120 })}</g>`);
+    const t2 = Q.W.add(`<g opacity="0">${bigThought(c, menIn, { w: 230, h: 120, dx: TDX })}</g>`);
     const medal = Q.flyL.add(`<g><path d="M0 -1600V-56" stroke="rgba(74,54,34,.55)" stroke-width="1.2" fill="none"/>${johnMedal(c, S.id('jm'), 50)}<g transform="translate(0 78)">${label(c, tr('prorok', 'a prophet'), { size: 18 })}</g></g>`);
 
     return (t, time) => {
@@ -44,10 +45,10 @@ export default {
       /* v5 — "from heaven" → "why did you not believe him?" */
       const [hx, hy] = oppHead(1);
       popAt(t1, t, 0.2, 1.08, hx, hy - 20, { d: 0.12 });
-      popAt(finger, t, 0.5, 1.08, hx + 44, hy - 106, { d: 0.1 });
+      popAt(finger, t, 0.5, 1.08, hx + 44 + TDX, hy - 106, { d: 0.1 });
       /* v6 — "from men" → the people will stone us; John the prophet over the crowd */
       popAt(t2, t, 1.12, undefined, hx, hy - 20, { d: 0.12 });
-      dropIn(medal, t, 1.45, undefined, 520, 350, { T, d: 0.3 });
+      dropIn(medal, t, 1.45, undefined, S.portrait ? 590 : 520, 350, { T, d: 0.3 });
       Q.amaze(0);
 
       S.cam.x = kf(t, [[0, 30], [0.4, 70], [1.4, 70], [1.8, 30]]);

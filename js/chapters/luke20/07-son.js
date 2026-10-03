@@ -24,6 +24,8 @@ export default {
   cam: { x: [-20, 30], y: [0, 40], z: [1, 1.16] },
   build(S) {
     const c = S.c;
+    // phone: the far land hangs further in, clear of the frame and the progress thread
+    const AB = S.portrait ? [990, 236] : VY.ABROAD;
     const set = vineyardSet(S);
     vineBack(set);
     const veil = S.layer({ par: 0.4, sh: 1, flat: true });
@@ -45,11 +47,11 @@ export default {
       const T = time;
       const dusk = es(t, 2.1, 3.6);
       veil.fade(dusk);
-      set.update(t, T, { sunX: 700 - es(t, 2, 4) * 200, sunY: 150 + es(t, 2, 4) * 240 });
+      set.update(t, T, { sunX: 700 - es(t, 2, 4) * (S.portrait ? 130 : 200), sunY: 150 + es(t, 2, 4) * 240 });
 
       /* v13 — the plate comes close: "what shall I do?"; the beloved son; the heart */
       const big = es(t, 0.05, 0.35) * (1 - es(t, 1.62, 1.9));
-      pose(set.plateEl, { x: lerp(VY.ABROAD[0], 800, big), y: lerp(VY.ABROAD[1], 300, big), s: 1 + big * 1.1, r: T ? Math.sin(T * 0.8) * 1.2 * (1 - big) : 0 });
+      pose(set.plateEl, { x: lerp(AB[0], 800, big), y: lerp(AB[1], 300, big), s: 1 + big * 1.1, r: T ? Math.sin(T * 0.8) * 1.2 * (1 - big) : 0 });
       const ponder = es(t, 0.2, 0.4) * (1 - es(t, 1.05, 1.2));
       const sonIn = es(t, 1.05, 1.25);
       const sonGone = seg(t, 1.86, 1.9);

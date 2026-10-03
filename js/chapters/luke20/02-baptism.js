@@ -25,12 +25,14 @@ export default {
     const heaven = Q.flyL.add(`<g>${choicePlate(c, 'heaven', tr('z nieba?', 'from heaven?'))}</g>`);
     const men = Q.flyL.add(`<g>${choicePlate(c, 'men', tr('od ludzi?', 'from men?'))}</g>`);
     const q = Q.W.add(`<g opacity="0">${question(c)}</g>`);
+    // phone: the two plates hang over the panel's top corners instead of at the edges of the screen
+    const [HX, MX, CY] = S.portrait ? [650, 950, 90] : [540, 1060, 250];
 
     return (t, time) => {
       const T = time;
       /* v3 — "I also will ask you a question" */
       const up = es(t, 0.05, 0.35, ease.in);
-      pose(full, { x: 1075, y: lerp(370, -1500, up), r: T ? Math.sin(T * 0.9) * 1.2 : 0, o: up < 0.999 ? 1 : 0 });
+      pose(full, { x: S.portrait ? 1010 : 1075, y: lerp(370, -1500, up), r: T ? Math.sin(T * 0.9) * 1.2 : 0, o: up < 0.999 ? 1 : 0 });
       pose(empty, { x: CQ.JX, y: lerp(330, -1500, up), r: T ? Math.sin(T * 0.8 + 1) * 1.2 : 0, o: up < 0.999 ? 1 : 0 });
       const finger = es(t, 0.2, 0.4) * (1 - es(t, 1.1, 1.3) * 0.5);
       const [jx, jy] = jHead();
@@ -40,10 +42,10 @@ export default {
       const sw = bump(t, 1.4, 1.95);
       const tilt = Math.sin(seg(t, 1.4, 1.95) * Math.PI * 2) * 5 * sw;
       pose(pan, { x: CQ.JX, y: lerp(-1500, 290, pk), r: tilt, o: pk > 0.002 ? 1 : 0 });
-      const hk = dropIn(heaven, t, 1.2, undefined, 540, 250, { T, d: 0.25 });
-      const mk = dropIn(men, t, 1.3, undefined, 1060, 250, { T, d: 0.25 });
-      pose(heaven, { x: 540, y: lerp(-1500, 250, hk), s: 1 + bump(t, 1.4, 1.67) * 0.12, r: T ? Math.sin(T * 0.9) * 1.2 : 0, o: hk > 0.002 ? 1 : 0 });
-      pose(men, { x: 1060, y: lerp(-1500, 250, mk), s: 1 + bump(t, 1.67, 1.95) * 0.12, r: T ? Math.sin(T * 0.8 + 2) * 1.2 : 0, o: mk > 0.002 ? 1 : 0 });
+      const hk = dropIn(heaven, t, 1.2, undefined, HX, CY, { T, d: 0.25 });
+      const mk = dropIn(men, t, 1.3, undefined, MX, CY, { T, d: 0.25 });
+      pose(heaven, { x: HX, y: lerp(-1500, CY, hk), s: 1 + bump(t, 1.4, 1.67) * 0.12, r: T ? Math.sin(T * 0.9) * 1.2 : 0, o: hk > 0.002 ? 1 : 0 });
+      pose(men, { x: MX, y: lerp(-1500, CY, mk), s: 1 + bump(t, 1.67, 1.95) * 0.12, r: T ? Math.sin(T * 0.8 + 2) * 1.2 : 0, o: mk > 0.002 ? 1 : 0 });
       const look = es(t, 1.1, 1.3);
       Q.pose(t, T,
         { armF: 16 + finger * 84 + look * 20, armB: 8 + look * 30, head: -look * 4, blink: blinkAt(T, 2) },

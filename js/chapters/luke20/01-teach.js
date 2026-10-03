@@ -66,7 +66,7 @@ export default {
       /* v2 — "by what authority?": his sealed scroll high; the empty seal over Jesus */
       const [hx, hy] = oppHead(0);
       popAt(ask, t, 2.18, undefined, hx - 30, hy - 30, { d: 0.12 });
-      dropIn(full, t, 2.12, undefined, 1075, 370, { T, d: 0.25 });
+      dropIn(full, t, 2.12, undefined, S.portrait ? 1010 : 1075, 370, { T, d: 0.25 });
       dropIn(empty, t, 2.38, undefined, CQ.JX, 330, { T, d: 0.28 });
 
       S.cam.x = kf(t, [[0, 0], [1.2, 0], [1.8, 20], [2.2, 30]]);

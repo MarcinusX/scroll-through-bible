@@ -19,9 +19,11 @@ export default {
     { v: 11, cont: true, text: 'Lecz i tego obili, znieważyli i odesłali z niczym.' },
     { v: 12 },
   ],
-  cam: { x: [-20, 60], y: [0, 40], z: [1, 1.16] },
+  cam: { x: [-20, 560], y: [0, 40], z: [1, 1.16] },
   build(S) {
     const c = S.c;
+    // phone: the far land hangs further in, clear of the frame and the progress thread
+    const AB = S.portrait ? [990, 236] : VY.ABROAD;
     const set = vineyardSet(S);
     vineBack(set);
     const pl = S.layer({ par: 0.5, sh: 5 });
@@ -42,7 +44,7 @@ export default {
     return (t, time) => {
       const T = time;
       set.update(t, T, { sunX: 710, sunY: 150 });
-      pose(set.plateEl, { x: VY.ABROAD[0], y: VY.ABROAD[1], r: T ? Math.sin(T * 0.8) * 1.2 : 0 });
+      pose(set.plateEl, { x: AB[0], y: AB[1], r: T ? Math.sin(T * 0.8) * 1.2 : 0 });
       const send = Math.max(bump(t, 0.05, 0.45), bump(t, 2.0, 2.3));
       set.pOwner.set({ x: 0, y: 0, s: 1, flip: true, armF: 30 + send * 70, head: send * 6, blink: blinkAt(T, 4) });
       set.pSon.set({ x: 0, y: 0, s: 1, o: 0 });
@@ -73,7 +75,7 @@ export default {
       const off = seg(t, 1.12, 1.16);
       const out2 = es(t, 1.45, 1.95);
       let x2 = lerp(1440, STOP, in2);
-      if (t > 1.45) x2 = lerp(STOP, 1420, out2);
+      if (t > 1.45) x2 = lerp(STOP, S.portrait ? 1100 : 1420, out2);   // phone: still on screen as he goes
       const face = out2 <= 0;
       const pose2 = { x: x2 + hit2 * 12, y: G + 2, s: 1, flip: face, walk: (in2 > 0 && in2 < 1) || (out2 > 0 && out2 < 1) ? x2 * 0.06 : undefined, armF: 20 + es(t, 0.6, 0.72) * (1 - es(t, 1.0, 1.1)) * 60 + (out2 > 0 ? 60 : 0), armB: 10 + hit2 * 70, head: hit2 * 12 + (out2 > 0 ? 12 : 0), lean: -hit2 * 10 + out2 * 6, blink: blinkAt(T, 3) };
       const vis2 = (in2 > 0 ? 1 : 0) * (1 - seg(t, 1.94, 1.98));
@@ -95,14 +97,14 @@ export default {
       const fly = es(t, 2.6, 2.78);
       const land = es(t, 2.78, 2.86);
       let x3 = lerp(1440, STOP, in3), y3 = G + 2, r3 = 0;
-      if (t > 2.6) { x3 = lerp(STOP, 1250, fly); y3 = G + 2 - Math.sin(fly * Math.PI) * 190; r3 = fly * 100 - land * 10; }
+      if (t > 2.6) { x3 = lerp(STOP, S.portrait ? 1120 : 1250, fly); y3 = G + 2 - Math.sin(fly * Math.PI) * 190; r3 = fly * 100 - land * 10; }
       const vis3 = in3 > 0 ? 1 : 0;
       const bk = seg(t, 2.47, 2.5);
       const p3 = { x: x3 + hit3 * 10, y: y3 + land * 4, s: 1, flip: true, r: r3, walk: in3 > 0 && in3 < 1 ? x3 * 0.06 : undefined, armF: 20 + es(t, 2.28, 2.36) * 50 + fly * 60, armB: 10 + hit3 * 90 + fly * 80, head: hit3 * 14, lean: -hit3 * 10, blink: blinkAt(T, 5) };
       sv3.set({ ...p3, o: vis3 * (1 - bk) });
       sv3w.set({ ...p3, o: vis3 * bk });
       sv3.mood({ sad: es(t, 2.3, 2.4) });
-      pose(b3, { x: t > 2.6 ? lerp(STOP - 30, 1180, fly) : x3 - 30, y: t > 2.6 ? lerp(G - 100, G - 20, fly) - Math.sin(fly * Math.PI) * 120 : G - 100, r: fly * 260, s: 0.95, o: vis3 });
+      pose(b3, { x: t > 2.6 ? lerp(STOP - 30, S.portrait ? 1230 : 1180, fly) : x3 - 30, y: t > 2.6 ? lerp(G - 100, G - 20, fly) - Math.sin(fly * Math.PI) * 120 : G - 100, r: fly * 260, s: 0.95, o: vis3 });
       const bursts3 = [[1.05, 1.28, STOP - 10, G - 150], [1.12, 1.34, STOP + 18, G - 120], [2.3, 2.46, STOP - 6, G - 146], [2.38, 2.54, STOP + 20, G - 118]];
       bursts.forEach((b, i) => {
         const [a, z, x, y] = bursts3[i];
@@ -112,7 +114,8 @@ export default {
 
       S.cam.z = 1.12;
       S.cam.y = 40;
-      S.cam.x = kf(t, [[0, 10], [2.5, 20], [2.8, 50]]);
+      S.cam.x = kf(t, [[0, 10], [2.5, 20], [2.8, S.portrait ? 560 : 50]]);
+      if (S.portrait) fr.fg.fade(1 - es(t, 2.55, 2.7));   // phone: the near bush would swing into the corner with the pan
     };
   },
 };

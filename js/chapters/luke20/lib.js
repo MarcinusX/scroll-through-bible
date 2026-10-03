@@ -104,8 +104,12 @@ export function dropIn(el, t, t0, t1, x, y, { d = 0.3, T = 0, sw = 1.2, s = 1 } 
  * the court), rayFx (flat, behind the crowd), backFx (flat, behind the actors), act, W (words over the people).
  */
 export const CQ = { JX: 800, FEET: 704, DX: [560, 640], PX: [990, 1070, 1150], IW: 580, PY: 660 };
+/** phone (portrait): the questioners stand closer in, clear of the frame and the progress thread */
+const PX_PORTRAIT = [930, 995, 1060];
+let pxNow = CQ.PX;
 export function courtSet(S, { skyCols = COURT_DAY, sky2 = null, dis = ['peter', 'john'], opp = LEADERS, crowd = true, crowdSeeds = ['lk20-cL', 'lk20-cR'], crowdN = 9, rise = 1 } = {}) {
   const c = S.c;
+  pxNow = S.portrait ? PX_PORTRAIT : CQ.PX;
   const q = makeCutter('lk20-court');
   const sk = sky(S, skyCols);
   const sk2 = sky2 ? sky(S, sky2, { name: 'sky2', rise: 0 }) : null;
@@ -158,7 +162,7 @@ export function courtSet(S, { skyCols = COURT_DAY, sky2 = null, dis = ['peter', 
   const act = S.layer({ par: 0.5, sh: 5, rise });
   act.add(sheet().p(q.cut([[CQ.JX - 110, CQ.FEET + 2], [CQ.JX - 96, CQ.FEET - 14], [CQ.JX + 96, CQ.FEET - 14], [CQ.JX + 110, CQ.FEET + 2]], 0.5, 8), C.stone2).p(q.cut([[CQ.JX - 116, CQ.FEET], [CQ.JX + 116, CQ.FEET], [CQ.JX + 116, CQ.FEET + 16], [CQ.JX - 116, CQ.FEET + 16]], 0.4, 8), shade(C.stone2, -0.08)).out());
   const disc = dis.map((k, i) => ({ k, i, x: CQ.DX[i], seed: q.rr(0, 9), p: S.puppet(act.add(person(c, { ...CAST[k] }))) }));
-  const phs = opp.map((mk, i) => ({ i, x: CQ.PX[i], seed: q.rr(0, 9), p: S.puppet(act.add(typeof mk === 'function' ? mk(c, i) : person(c, mk))) }));
+  const phs = opp.map((mk, i) => ({ i, x: pxNow[i], seed: q.rr(0, 9), p: S.puppet(act.add(typeof mk === 'function' ? mk(c, i) : person(c, mk))) }));
   const jesus = S.puppet(act.add(person(c, { ...CAST.jesus })));
   const W = S.layer({ par: 0.52, sh: 3 });
   return {
@@ -177,7 +181,7 @@ export function courtSet(S, { skyCols = COURT_DAY, sky2 = null, dis = ['peter', 
   };
 }
 /** the head of an opponent standing at slot i (for words and thoughts) */
-export const oppHead = (i, dx = 0) => [CQ.PX[i] - 2 * 0.96 + dx, CQ.FEET + (i % 2 ? -4 : 4) - 167 * 0.96];
+export const oppHead = (i, dx = 0) => [pxNow[i] - 2 * 0.96 + dx, CQ.FEET + (i % 2 ? -4 : 4) - 167 * 0.96];
 /** Jesus' head on His step */
 export const jHead = () => [CQ.JX + 2, CQ.FEET - 14 - 167 * 1.04];
 

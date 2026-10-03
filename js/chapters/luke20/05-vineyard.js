@@ -25,6 +25,8 @@ export default {
   cam: { x: [-20, 30], y: [0, 40], z: [1, 1.16] },
   build(S) {
     const c = S.c;
+    // phone: the far land hangs further in, clear of the frame and the progress thread
+    const AB = S.portrait ? [990, 236] : VY.ABROAD;
     const set = vineyardSet(S);
     set.wallB.forEach((w) => pose(w.el, { x: w.x, y: w.y }));
     set.tower.forEach((el) => pose(el, { o: 0 }));
@@ -55,7 +57,7 @@ export default {
 
     return (t, time) => {
       const T = time;
-      set.update(t, T, { sunX: 470 + es(t, 0, 3) * 240, sunY: 170 - es(t, 0, 1.5) * 20 });
+      set.update(t, T, { sunX: (S.portrait ? 540 : 470) + es(t, 0, 3) * 240, sunY: 170 - es(t, 0, 1.5) * 20 });
       /* v9b — plants, lets it out, goes away */
       let ox = kf(t, walkKeys, (u) => u);
       const give = es(t, 0.44, 0.52);
@@ -75,13 +77,13 @@ export default {
       const sail = seg(t, 0.62, 0.95);
       pose(set.shipEl, { x: lerp(820, 1260, sail), y: 436, s: lerp(0.9, 0.35, sail), o: t > 0.62 ? 1 - seg(t, 0.92, 0.97) : 0 });
       const plateDrop = es(t, 0.55, 0.72, ease.out);
-      pose(set.plateEl, { x: VY.ABROAD[0], y: lerp(-800, VY.ABROAD[1], plateDrop), r: T ? Math.sin(T * 0.8) * 1.2 : 0 });
+      pose(set.plateEl, { x: AB[0], y: lerp(-800, AB[1], plateDrop), r: T ? Math.sin(T * 0.8) * 1.2 : 0 });
       const send = Math.max(bump(t, 1.2, 1.6), bump(t, 2.1, 2.5) * 0.5);
       set.pOwner.set({ x: 0, y: 0, s: 1, flip: true, armF: 30 + send * 70, head: send * 6, blink: blinkAt(T, 4) });
       set.pSon.set({ x: 0, y: 0, s: 1, o: 0 });
       // the long time: the hourglass turns over, and over
       const gk = es(t, 0.6, 0.74, ease.out);
-      pose(glass, { x: VY.ABROAD[0] - 150, y: lerp(-800, 250, gk), r: T ? Math.sin(T * 0.9) * 1.5 : 0 });
+      pose(glass, { x: AB[0] - 150, y: lerp(-800, 250, gk), r: T ? Math.sin(T * 0.9) * 1.5 : 0 });
       pose(glassIn, { s: 1.6, r: 180 * (es(t, 0.74, 0.86) + es(t, 0.9, 1.02)) });
 
       /* the tenants */
@@ -116,7 +118,7 @@ export default {
       const hit = Math.max(bump(t, 2.05, 2.25), bump(t, 2.22, 2.42));
       const away = es(t, 2.42, 2.96);
       let sx = lerp(1440, STOP, inK);
-      if (t > 2.42) sx = lerp(STOP, 1420, away);
+      if (t > 2.42) sx = lerp(STOP, S.portrait ? 1060 : 1420, away);   // phone: still on screen as he goes
       const holdOut = es(t, 1.6, 1.75) * (1 - es(t, 2.0, 2.1));
       sv.set({
         x: sx + hit * 12, y: G + 2, s: 1, flip: away <= 0, walk: (inK > 0 && inK < 1) || (away > 0 && away < 1) ? sx * 0.06 : undefined,

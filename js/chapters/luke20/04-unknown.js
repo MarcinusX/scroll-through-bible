@@ -40,7 +40,7 @@ export default {
       const shrug = es(t, 0.25, 0.45) * (1 - es(t, 1.2, 1.4) * 0.6);
       const down = es(t, 1.4, 1.6);
       const up = es(t, 0.05, 0.4, ease.in);
-      pose(medal, { x: 520, y: lerp(350, -1500, up), r: T ? Math.sin(T * 0.9) * 1.2 : 0, o: up < 0.999 ? 1 : 0 });
+      pose(medal, { x: S.portrait ? 590 : 520, y: lerp(350, -1500, up), r: T ? Math.sin(T * 0.9) * 1.2 : 0, o: up < 0.999 ? 1 : 0 });
       qs.forEach((el, i) => { const [hx, hy] = oppHead(i); popAt(el, t, 0.35 + i * 0.07, 2.2, hx + (i - 1) * 6, hy - 44 + (T ? Math.sin(T * 1.7 + i) * 3 : 0), { d: 0.1 }); });
       /* v8 — the answer stays sealed */
       const sk = es(t, 1.05, 1.35, ease.out) * (1 - es(t, 2.05, 2.35, ease.in));

@@ -21,9 +21,13 @@ export default {
     { v: 15, cont: true, text: 'Co więc uczyni z nimi właściciel winnicy?' },
     { v: 16, text: 'Przyjdzie i wytraci tych rolników, a winnicę da innym».' },
   ],
-  cam: { x: [-20, 40], y: [0, 40], z: [1, 1.18] },
+  cam: { x: [-20, 540], y: [0, 40], z: [1, 1.18] },
   build(S) {
     const c = S.c;
+    // phone: the far land hangs further in; the shadow play outside the gate ends nearer, and the camera follows it
+    const AB = S.portrait ? [990, 236] : VY.ABROAD;
+    const CE = S.portrait ? [1090, 1180] : [1160, 1290];
+    const OUT = S.portrait ? 1140 : 1230;
     const set = vineyardSet(S);
     vineBack(set);
     const veil1 = S.layer({ par: 0.4, sh: 1, flat: true });
@@ -55,23 +59,23 @@ export default {
       veil2.fade(deep);
       sunL.fade(deep);
       pose(bigSun, { x: 1180, y: 600 });
-      set.update(t, T, { sunX: 500, sunY: lerp(420, 160, dawn) });
+      set.update(t, T, { sunX: S.portrait ? 570 : 500, sunY: lerp(420, 160, dawn) });
 
       /* v15a — shadow play: seized, carried out at the gate, falls; the cloth */
       const shadow = 1 - seg(t, 0.93, 0.97);
       const seize = es(t, 0.05, 0.2), carry = es(t, 0.22, 0.55), fall = es(t, 0.55, 0.64, ease.in);
-      const cx = lerp(SX + 30, 1230, carry);
+      const cx = lerp(SX + 30, OUT, carry);
       sonSh.set({ x: carry > 0 ? cx : SX, y: carry < 1 ? (carry > 0 ? G - 70 : G + 2) : G + 2, s: 0.98, flip: true, r: carry > 0 && carry < 1 ? 88 : fall * 86, armF: 20 + seize * 60, o: 1 - es(t, 0.86, 0.9) });
       const ck = es(t, 0.66, 0.84, ease.out);
-      pose(cloth, { x: 1215, y: lerp(G - 420, G + 6, ck), o: ck > 0.001 ? 1 : 0 });
+      pose(cloth, { x: S.portrait ? OUT + 95 : OUT - 15, y: lerp(G - 420, G + 6, ck), o: ck > 0.001 ? (S.portrait ? 1 - es(t, 1.0, 1.15) : 1) : 0 });   // phone: gone once the camera leaves it at the edge
 
       /* the tenants: in the shadow play, then back in colour; lifted off at the end */
       const lift = es(t, 2.3, 2.62, ease.in) * 2.6;
       ten.forEach((m) => {
         let x = TX[m.i] + seize * [180, 150, 100][m.i];
-        if (carry > 0 && m.i < 2) x = lerp(TX[m.i] + [180, 150][m.i], [1160, 1290][m.i], carry);
+        if (carry > 0 && m.i < 2) x = lerp(TX[m.i] + [180, 150][m.i], CE[m.i], carry);
         const back = es(t, 0.66, 0.92);
-        if (t > 0.66) x = lerp(m.i < 2 ? [1160, 1290][m.i] : TX[m.i] + 100, TX[m.i], back);
+        if (t > 0.66) x = lerp(m.i < 2 ? CE[m.i] : TX[m.i] + 100, TX[m.i], back);
         const walking = (carry > 0 && carry < 1 && m.i < 2) || (back > 0 && back < 1);
         const common = {
           x, y: G + (m.i === 1 ? 6 : 0) - lift * 560, s: 0.96, flip: t > 0.66 && t < 0.92, walk: walking ? x * 0.05 + m.i : undefined, blink: blinkAt(T, m.seed),
@@ -87,7 +91,7 @@ export default {
       /* v15b — what will the owner do? */
       const qk = es(t, 1.05, 1.35, ease.out) * (1 - es(t, 1.95, 2.1));
       pose(qEl, { x: 800, y: lerp(-1500, 230, qk), r: T ? Math.sin(T * 1.2) * 3 : 0, o: qk > 0.002 ? 1 : 0 });
-      pose(set.plateEl, { x: VY.ABROAD[0], y: VY.ABROAD[1] - es(t, 1.9, 2.1, ease.in) * 1100, r: T ? Math.sin(T * 0.8) * 1.2 : 0 });
+      pose(set.plateEl, { x: AB[0], y: AB[1] - es(t, 1.9, 2.1, ease.in) * 1100, r: T ? Math.sin(T * 0.8) * 1.2 : 0 });
       const rise = es(t, 1.35, 1.6);
       set.pOwner.set({ x: 0, y: 0, s: 1, flip: true, armF: 20 + rise * 60, armB: rise * 120, head: -rise * 8, blink: blinkAt(T, 4) });
       set.pSon.set({ x: 0, y: 0, s: 1, o: 0 });
@@ -104,9 +108,10 @@ export default {
       const kk = es(t, 2.76, 2.9);
       pose(keyEl, { x: lerp(ox - 44, TX[2] + 110, kk), y: G - 104 - Math.sin(kk * Math.PI) * 30, r: 20 - kk * 30, s: 0.9, o: t > 2.7 ? 1 : 0 });
 
+      if (S.portrait) fr.fg.fade(1 - es(t, 0.3, 0.45) * (1 - es(t, 1.0, 1.15)));   // phone: the near bush would swing into the corner with the pan
       S.cam.z = kf(t, [[0, 1.14], [0.9, 1.14], [1.2, 1.08], [2.0, 1.1]]);
       S.cam.y = kf(t, [[0, 40], [0.9, 40], [1.2, 10], [2.0, 40]]);
-      S.cam.x = kf(t, [[0, 30], [0.9, 30], [1.2, 0], [2.0, 10]]);
+      S.cam.x = S.portrait ? kf(t, [[0, 30], [0.15, 30], [0.5, 540], [0.9, 540], [1.2, 0], [2.0, 10]]) : kf(t, [[0, 30], [0.9, 30], [1.2, 0], [2.0, 10]]);
     };
   },
 };

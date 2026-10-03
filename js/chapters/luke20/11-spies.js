@@ -57,7 +57,7 @@ export default {
       const s2 = Q.phs[2];
       const x2 = lerp(s2.x + 330 + 80, s2.x, walk);
       pose(netEl, { x: x2 + 16 + bow * 20, y: CQ.FEET - 4 - 70, r: -bow * 10, o: es(t, 1.2, 1.35) });
-      dropIn(gov, t, 1.2, 2.1, 1030, 320, { d: 0.25 });
+      dropIn(gov, t, 1.2, 2.1, S.portrait ? 960 : 1030, 320, { d: 0.25 });
       /* v21 — flattery; the way of God */
       const [hx, hy] = oppHead(0);
       popAt(sweet, t, 2.1, 3.0, hx - 20, hy - 20, { d: 0.1 });

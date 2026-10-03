@@ -51,7 +51,7 @@ export default {
       const T = time;
       /* v16b — "Never!" */
       const cry = es(t, 0.1, 0.25) * (1 - es(t, 0.95, 1.15));
-      cries.forEach((el, i) => popAt(el, t, 0.15 + i * 0.08, 1.05, i ? 1150 : 450, 470 + (T ? Math.sin(T * 2 + i) * 3 : 0), { d: 0.1 }));
+      cries.forEach((el, i) => popAt(el, t, 0.15 + i * 0.08, 1.05, S.portrait ? (i ? 1050 : 545) : (i ? 1150 : 450), (S.portrait ? 440 : 470) + (T ? Math.sin(T * 2 + i) * 3 : 0), { d: 0.1 }));
       /* v17a — He looks at them */
       const look = es(t, 1.05, 1.3);
       /* v17b — the panel of the rejected stone */

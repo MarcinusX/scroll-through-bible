@@ -44,6 +44,8 @@ export default {
     const noRes = Q.W.add(`<g opacity="0">${thought(c, tomb, { w: 96, h: 76 })}</g>`);
     const law = Q.flyL.add(panel(S, lawInner(S, c), { w: PW, h: PH, word: tr('Mojżesz napisał', 'Moses wrote') }));
     const crad = Q.flyL.add(`<g>${cradle(c)}</g>`);
+    // phone: the long flat a little smaller, as in the next scene
+    const K = S.portrait ? 0.82 : 1, SK = S.portrait ? { s: K } : {};
     const row = Q.flyL.add(panel(S, rowInner(S, c), { w: ROW.W, h: ROW.H, word: tr('siedmiu braci', 'seven brothers') }));
     const bros = BROTHERS.map((o, i) => ({ i, el: Q.flyL.add(`<g>${figure(c, o, { s: ROW.S, flip: i > 3, head: i === 3 ? 0 : (i < 3 ? 4 : -4) })}</g>`) }));
 
@@ -59,9 +61,9 @@ export default {
       const ck = es(t, 1.45, 1.6, ease.back);
       pose(crad, { x: CQ.JX + 14, y: ly + 76, s: Math.max(0.001, ck), o: ck > 0.01 && lk > 0.98 ? 1 : 0 });
       /* v29a — seven brothers */
-      const rk = dropIn(row, t, 2.1, undefined, ROW.X, ROW.Y, { d: 0.3 });
+      const rk = dropIn(row, t, 2.1, undefined, ROW.X, ROW.Y, { d: 0.3, s: K });
       const ry = lerp(-1500, ROW.Y, rk);
-      bros.forEach((b) => pose(b.el, { x: ROW.X + (b.i - 3) * ROW.DX, y: ry + ROW.FEET, o: rk > 0.002 ? 1 : 0 }));
+      bros.forEach((b) => pose(b.el, { x: ROW.X + (b.i - 3) * ROW.DX * K, y: ry + ROW.FEET * K, o: rk > 0.002 ? 1 : 0, ...SK }));
       Q.pose(t, T,
         { armF: 16 + es(t, 1.0, 1.2) * 10, armB: 8, head: -bump(t, 1.1, 2.9) * 6, blink: blinkAt(T, 2) },
         (d) => ({ head: -4 - bump(t, 1.1, 2.9) * 8, blink: blinkAt(T, d.seed) }),

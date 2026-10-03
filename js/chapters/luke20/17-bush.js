@@ -49,7 +49,8 @@ export default {
       const el = Q.flyL.add(`<g><path d="M0 -1600V-40" stroke="rgba(74,54,34,.55)" stroke-width="1.2" fill="none"/>${alive.defs}${dead.defs}<g data-part="alive" opacity="0">${alive.front}</g><g data-part="dead">${dead.front}</g><g transform="translate(0 52)">${label(c, names[i], { size: 13 })}</g></g>`);
       return { i, el, alive: el.querySelector('[data-part="alive"]'), dead: el.querySelector('[data-part="dead"]'), x: [700, 800, 900][i] };
     });
-    const lamps = LAMPS.map(([x, y], i) => ({ i, x, y, el: Q.rayFx.add(`<g opacity="0">${tinyFlame(c, 22)}</g>`) }));
+    // phone: the lamps gather in from the edges of the court
+    const lamps = LAMPS.map(([x, y], i) => ({ i, x: S.portrait ? 800 + (x - 800) * 0.86 : x, y, el: Q.rayFx.add(`<g opacity="0">${tinyFlame(c, 22)}</g>`) }));
     const well = Q.W.add(`<g opacity="0">${bubble(c, [tr('Nauczycielu,', 'Teacher,'), tr('dobrze powiedziałeś!', 'You speak well!')], { size: 18, tail: 1 })}</g>`);
     const qs = [0, 1, 2].map(() => Q.W.add(`<g opacity="0">${question(c)}</g>`));
 

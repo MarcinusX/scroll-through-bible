@@ -7,7 +7,7 @@
 import { C, blinkAt, pose, lerp } from '../kit.js';
 import { courtSet, CQ, SPY, snare, denarius, taxChest, glowHeart, glowDisc, dots, speech, popAt, dropIn, oppHead, kf, tr, es, ease, bump, seg, PI } from './lib.js';
 
-const CHX = 1110, CHY = 470;
+const CHY = 470;
 
 export default {
   id: 'lk20-caesar',
@@ -20,6 +20,7 @@ export default {
   build(S) {
     const Q = courtSet(S, { opp: SPY });
     const c = Q.c;
+    const CHX = S.portrait ? 1040 : 1110;   // phone: Caesar's chest clear of the thread
     const holy = Q.holyL.add(`<g opacity="0">${glowDisc(260, 'halo-glow', 1)}</g>`);
     const chest = Q.flyL.add(`<g><path d="M-40 -1600V-60M40 -1600V-60" stroke="rgba(74,54,34,.55)" stroke-width="1.2" fill="none"/>${taxChest(c)}</g>`);
     const big = Q.flyL.add(`<g><path d="M0 -1600V-100" stroke="rgba(74,54,34,.55)" stroke-width="1.2" fill="none"/>${denarius(c, 100)}</g>`);

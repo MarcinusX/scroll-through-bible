@@ -67,7 +67,7 @@ export default {
       const press = es(t, 1.28, 1.5);
       const hold = es(t, 1.5, 1.68);
       /* v19b — the mirror */
-      const mk = dropIn(mir, t, 2.05, undefined, 1070, 330, { T, d: 0.28 });
+      const mk = dropIn(mir, t, 2.05, undefined, S.portrait ? 1000 : 1070, 330, { T, d: 0.28 });
       const recoil = es(t, 2.3, 2.45);
       Q.pose(t, T,
         { armF: 16 + (1 - press) * 30, armB: 8, head: reach * 4, blink: blinkAt(T, 2) },
@@ -78,7 +78,7 @@ export default {
         }));
       Q.amaze(press * (1 - es(t, 2.2, 2.5) * 0.7));
       Q.CROWD.forEach((g, i) => { const dx = (i ? -1 : 1) * press * 60; g.calm.set({ x: g.x + dx, o: g.calm.o }); g.wow.set({ x: g.x + dx, o: g.wow.o }); });
-      bangs.forEach((el, i) => popAt(el, t, 2.32 + i * 0.06, undefined, 1000 + i * 150, 460, { d: 0.08 }));
+      bangs.forEach((el, i) => popAt(el, t, 2.32 + i * 0.06, undefined, S.portrait ? 940 + i * 130 : 1000 + i * 150, 460, { d: 0.08 }));
       void mk;
 
       S.cam.x = kf(t, [[0, 0], [1.0, 0], [1.3, 20], [2.0, 30], [2.3, 50]]);

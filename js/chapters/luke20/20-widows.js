@@ -57,11 +57,11 @@ export default {
       /* v47b — the scales of judgement; the cloud; the widow comes into the court */
       const sk = es(t, 1.1, 1.4, ease.out);
       const tilt = es(t, 1.4, 1.65, ease.back) * 16;
-      poseScales(sc, CQ.JX, lerp(-1500, S.portrait ? -70 : 130, sk), -tilt, sk > 0.002 ? 1 : 0, 1, 110);
+      poseScales(sc, CQ.JX, lerp(-1500, S.portrait ? 330 : 130, sk), -tilt, sk > 0.002 ? 1 : 0, 1, 110);
       const ck = es(t, 1.4, 1.7);
-      pose(cloud, { x: 1090 + (T ? Math.sin(T * 0.4) * 6 : 0), y: lerp(-400, 250, ck), s: 0.55, o: ck > 0.01 ? 1 : 0 });
+      pose(cloud, { x: (S.portrait ? 990 : 1090) + (T ? Math.sin(T * 0.4) * 6 : 0), y: lerp(-400, S.portrait ? 390 : 250, ck), s: 0.55, o: ck > 0.01 ? 1 : 0 });
       const wi = es(t, 1.35, 1.8);
-      const wx = lerp(200, 390, wi);
+      const wx = S.portrait ? lerp(300, 480, wi) : lerp(200, 390, wi);   // phone: the widow comes in on the screen
       widow2.set({ x: wx, y: CQ.FEET + 10, s: 0.9, walk: wi > 0 && wi < 1 ? wx * 0.05 : undefined, head: 8, armF: 10, blink: blinkAt(T, 7), o: wi > 0 ? 1 : 0 });
       const bowd = es(t, 1.6, 1.8);
       Q.pose(t, T,
