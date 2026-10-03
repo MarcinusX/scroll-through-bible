@@ -22,10 +22,12 @@ export default {
     { v: 39 },
     { v: 40 },
   ],
-  cam: { x: [-30, 60], y: [0, 50], z: [1, 1.14] },
+  cam: { x: [-30, 200], y: [0, 50], z: [1, 1.14] },
   build(S) {
     const F = footSet(S);
     const c = S.c;
+    // phone: the nine who could not stand closer, and at their sentence the camera turns to them; the tag stays clear of the thread
+    const PH = S.portrait;
 
     /* the plate of the fits */
     const plL = S.layer({ par: 0.3, sh: 5 });
@@ -43,7 +45,7 @@ export default {
     /* people */
     const act = S.layer({ par: 0.5, sh: 5 });
     const THREE = ['john', 'james', 'peter'].map((k, i) => ({ k, i, seed: c.rr(0, 9), p: S.puppet(act.add(person(c, TW9[k]))) }));
-    const N = NINE.map((d, i) => ({ ...d, i, seed: c.rr(0, 9), p: S.puppet(act.add(withFace(person(c, TW9[d.k]), faceBits(c)))) }));
+    const N = NINE.map((d, i) => ({ ...d, ...(PH ? { x: 1110 + i * 50 } : {}), i, seed: c.rr(0, 9), p: S.puppet(act.add(withFace(person(c, TW9[d.k]), faceBits(c)))) }));
     N.forEach((d) => { d.sad = d.p.el.querySelector('[data-part="sad"]'); });
     const boy = S.puppet(act.add(person(c, BOY)));
     const boyWisp = act.add(`<g opacity="0">${wisp(c, 1.2, '#463a52')}</g>`);
@@ -89,7 +91,7 @@ export default {
       const ck = es(t, 1.08, 1.25, ease.back) * (1 - es(t, 1.9, 2.0));
       pose(cry, { x: fhx - 50, y: fhy - 30, s: ck, o: ck > 0.01 ? 1 : 0 });
       const ok = es(t, 1.3, 1.6, ease.back) * (1 - es(t, 2.0, 2.2));
-      pose(only, { x: 1010, y: lerp(-1500, 440, ok), r: Math.sin(T * 0.9) * 2, oy: 0, o: ok > 0.002 ? 1 : 0 });
+      pose(only, { x: PH ? 960 : 1010, y: lerp(-1500, 440, ok), r: Math.sin(T * 0.9) * 2, oy: 0, o: ok > 0.002 ? 1 : 0 });
 
       /* v39 — the plate of his fits; the wisp about him */
       const mk = es(t, 2.05, 2.35, ease.back) * (1 - es(t, 2.95, 3.2));
@@ -103,7 +105,7 @@ export default {
       const nk = es(t, 3.08, 3.25, ease.back) * (1 - es(t, 3.9, 4.0));
       pose(couldnt, { x: fhx - 10, y: fhy - 40, s: nk, o: nk > 0.01 ? 1 : 0 });
 
-      S.cam.x = kf(t, [[0, -20], [0.7, 0], [1.0, 16], [3.0, 16], [3.3, 30]]);
+      S.cam.x = kf(t, [[0, -20], [0.7, 0], [1.0, 16], [3.0, 16], [3.3, PH ? 200 : 30]]);
       S.cam.z = kf(t, [[0, 1.02], [0.7, 1.04], [1.1, 1.1], [3.9, 1.1]]);
       S.cam.y = kf(t, [[0, 20], [1.1, 40]]);
     };

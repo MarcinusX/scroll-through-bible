@@ -39,7 +39,8 @@ export default {
 
     /* people */
     const act = S.layer({ par: 0.5, sh: 5 });
-    const D = DIS.map((d, i) => ({ ...d, i, flip: d.x > JX, seed: c.rr(0, 9), p: S.puppet(act.add(person(c, TW9[d.k]))) }));
+    // phone: the disciples close up round Him (the outermost were sliced by the frame and the thread)
+    const D = DIS.map((d) => (S.portrait ? { ...d, x: 772 + (d.x - 780) * 0.74 } : d)).map((d, i) => ({ ...d, i, flip: d.x > JX, seed: c.rr(0, 9), p: S.puppet(act.add(person(c, TW9[d.k]))) }));
     const J = D.find((d) => d.k === 'andrew');
     J.kn = S.puppet(act.add(person(c, { ...TW9.andrew, pose: 'kneel' })));
     const jesus = S.puppet(act.add(person(c, { ...CAST.jesus })));

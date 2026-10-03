@@ -29,6 +29,7 @@ export default {
     const G = galSet(S);
     const c = S.c;
     const { ROAD } = G;
+    const P = S.portrait;   // phone: the ring of the Twelve and the two tags drawn in from the edges
 
     /* the spirits over the villages */
     const SP = [];
@@ -44,7 +45,8 @@ export default {
     /* the Twelve and Jesus */
     const act = S.layer({ par: 0.5, sh: 5 });
     const T12 = LK12.map((m) => {
-      const [dx, y, s] = SLOT[m.k];
+      const [dx0, y, s] = SLOT[m.k];
+      const dx = P ? dx0 * 0.8 : dx0;
       const pair = Math.floor(m.i / 2);
       return { ...m, dx, y, s, pair, second: m.i % 2 === 1, road: GO[pair][0], delay: GO[pair][1], seed: c.rr(0, 9) };
     }).sort((a, b) => a.y - b.y);
@@ -102,8 +104,8 @@ export default {
 
       /* the two tags */
       const tg = es(t, 1.4, 1.62, ease.back) * (1 - es(t, 2.0, 2.2));
-      pose(tagD, { x: 560, y: lerp(-1500, 200, tg), r: Math.sin(T * 0.8) * 2, oy: 0, o: tg > 0.002 ? 1 : 0 });
-      pose(tagH, { x: 1040, y: lerp(-1500, 210, es(t, 1.46, 1.68, ease.back) * (1 - es(t, 2.0, 2.2))), r: Math.sin(T * 0.8 + 1) * 2, oy: 0, o: tg > 0.002 ? 1 : 0 });
+      pose(tagD, { x: P ? 610 : 560, y: lerp(-1500, 200, tg), r: Math.sin(T * 0.8) * 2, oy: 0, o: tg > 0.002 ? 1 : 0 });
+      pose(tagH, { x: P ? 990 : 1040, y: lerp(-1500, 210, es(t, 1.46, 1.68, ease.back) * (1 - es(t, 2.0, 2.2))), r: Math.sin(T * 0.8 + 1) * 2, oy: 0, o: tg > 0.002 ? 1 : 0 });
 
       /* the spirits over the villages shrink and flee */
       SP.forEach((sp) => {

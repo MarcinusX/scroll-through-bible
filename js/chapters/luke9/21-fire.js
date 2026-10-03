@@ -56,7 +56,8 @@ export default {
       /* v54 — "fire from heaven?" */
       const want = es(t, 0.1, 0.3) * (1 - es(t, 1.2, 1.5));
       const fk = es(t, 0.3, 0.7) * (1 - es(t, 1.25, 1.7));
-      pose(fireCloud, { x: 1120, y: lerp(-1500, 505, es(t, 0.3, 0.7, ease.out)), s: 0.4 + fk * 0.6, r: Math.sin(T * 0.9) * 1.5, oy: 0, o: fk > 0.01 ? Math.min(1, fk * 1.5) : 0 });
+      // phone: the cloud of fire hangs over the village inside the screen, a little smaller
+      pose(fireCloud, { x: S.portrait ? 995 : 1120, y: lerp(-1500, 505, es(t, 0.3, 0.7, ease.out)), s: (0.4 + fk * 0.6) * (S.portrait ? 0.85 : 1), r: Math.sin(T * 0.9) * 1.5, oy: 0, o: fk > 0.01 ? Math.min(1, fk * 1.5) : 0 });
       /* v55 — He turns and rebukes them */
       const turn = es(t, 1.05, 1.12);
       const rebuke = bump(t, 1.1, 1.95);

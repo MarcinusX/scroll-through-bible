@@ -22,6 +22,7 @@ export default {
   cam: { x: [-40, 60], y: [0, 50], z: [1, 1.12] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;   // phone: the line of followers closes up behind Him; the sun's day stays on screen
     sky(S, DAY9);
     const nightL = sky(S, ['#3a3f70', '#8e7c9e', '#d9a996'], { name: 'eve', rise: 0 }).layer;
     nightL.fade(0);
@@ -47,7 +48,7 @@ export default {
     const F = [
       { o: TW9.peter, x: 770 }, { o: folk(c, false, { robe: C.skyVeil }), x: 705, giver: true }, { o: TW9.john, x: 640 },
       { o: folk(c, true), x: 575 }, { o: TW9.andrew, x: 510 }, { o: { ...folk(c, true), robe: C.plumRobe, mantle: C.ochre, belt: C.sun }, x: 445, keeper: true },
-    ].map((f, i) => ({ ...f, i, seed: c.rr(0, 9) }));
+    ].map((f, i) => ({ ...f, ...(PH ? { x: 790 - i * 58 } : {}), i, seed: c.rr(0, 9) }));
     F.forEach((f) => {
       f.p = S.puppet(act.add(person(c, f.o)));
       f.b = act.add(`<g><g transform="scale(1.5)">${bundle(c)}</g></g>`);
@@ -69,10 +70,10 @@ export default {
       const night = bump(t, 0.58, 0.72);
       nightL.fade(night * 0.85);
       dayL.fade(night * 0.25);
-      const arc = (u) => [lerp(460, 1200, u), 370 - Math.sin(u * PI) * 160];
+      const arc = (u) => [PH ? lerp(500, 1030, u) : lerp(460, 1200, u), 370 - Math.sin(u * PI) * 160];
       const [sx, sy] = t < 0.65 ? arc(d1) : arc(d2);
       const sOn = t < 0.3 ? 0 : 1;
-      pose(sunEl, { x: t < 0.3 ? 1240 : sx, y: t < 0.3 ? 170 : sy, r: Math.sin(T * 0.6), oy: 0, o: t < 0.3 ? 1 : sOn * (1 - night) });
+      pose(sunEl, { x: t < 0.3 ? (PH ? 1030 : 1240) : sx, y: t < 0.3 ? 170 : sy, r: Math.sin(T * 0.6), oy: 0, o: t < 0.3 ? 1 : sOn * (1 - night) });
       swing(cl, 500 + Math.sin(T * 0.1) * 20, 150, T, 1.2, 0.6, 1);
 
       /* v23 — deny himself (the bundles down), take up the cross daily, follow */

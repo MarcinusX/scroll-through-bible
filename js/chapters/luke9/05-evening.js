@@ -27,6 +27,10 @@ export default {
   build(S) {
     const B = bethSet(S, { eveCols: ['#7d78a6', '#e3a78b', '#f4cf9f'] });
     const c = S.c;
+    // phone: the sun sets inside the screen, and the five stand closer to Him (the last one clear of the thread)
+    const PH = S.portrait;
+    const SUNX = PH ? 1000 : 1180;
+    const BANG = PH ? [0, 2, 3] : [0, 2, 4];
     const gy = (x) => B.gfn(x) + 18;
     const CR = bethCrowd(B);
     CR.forEach((m) => m.sp.set({ x: m.x, y: m.y }));
@@ -42,7 +46,7 @@ export default {
 
     /* the Twelve (five in front) and Jesus */
     const act = S.layer({ par: 0.5, sh: 5 });
-    const D = DIS.map((d, i) => ({ ...d, i, seed: c.rr(0, 9), p: S.puppet(act.add(person(c, { ...d.o, ...(d.k === 'andrew' ? {} : {}) }))) }));
+    const D = DIS.map((d, i) => ({ ...d, ...(PH ? { x: 862 + i * 48 } : {}), i, seed: c.rr(0, 9), p: S.puppet(act.add(person(c, { ...d.o, ...(d.k === 'andrew' ? {} : {}) }))) }));
     const jesus = S.puppet(act.add(person(c, { ...CAST.jesus })));
     const basketEl = act.add(`<g>${basket(c, { w: 50, h: 30 })}</g>`);
 
@@ -61,7 +65,7 @@ export default {
       /* v12a — the day wears away */
       const eve = es(t, 0.05, 0.9);
       B.eve.fade(eve * 0.85);
-      B.update(T, { sunX: 1180 - eve * 60, sunY: 150 + eve * 250 });
+      B.update(T, { sunX: SUNX - eve * 60, sunY: 150 + eve * 250 });
       const lit = es(t, 1.35, 1.65);
       LIT.forEach((l) => pose(l.el, { x: l.x, y: l.y, o: Math.max(eve * 0.3, lit) * (l.i === 0 ? 1 : 0.9) }));
 
@@ -88,7 +92,7 @@ export default {
       const yk = es(t, 2.08, 2.25, ease.back) * (1 - es(t, 2.9, 3.0));
       pose(youB, { x: jhx - 40, y: jhy - 50, s: yk, o: yk > 0.01 ? 1 : 0 });
       bangs.forEach((b, i) => {
-        const d = D[i * 2];
+        const d = D[BANG[i]];
         const k = es(t, 2.3 + i * 0.06, 2.45 + i * 0.06, ease.back) * (1 - es(t, 2.92, 3.0));
         const [hx, hy] = headAt(d.x_, gy(d.x_) + d.dy, 0.94, true);
         pose(b, { x: hx - 12, y: hy - 22, s: k, o: k > 0.01 ? 1 : 0 });

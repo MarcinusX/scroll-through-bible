@@ -24,11 +24,15 @@ export default {
   build(S) {
     const R = restSet(S);
     const c = S.c;
+    // phone: the disciples, the angels and the ashamed man drawn in from the edges; the shining mountain slid into view
+    const PH = S.portrait;
+    const IN = (x, k = 0.78) => (PH ? 800 + (x - 800) * k : x);
     const gold = sky(S, ['#e9d9b0', '#f8ebc6', '#fff4da'], { name: 'gold', rise: 0 }).layer;
     gold.fade(0);
     // the far mountain that will shine (v27): on its own layer behind the hills
     const peakL = S.layer({ par: 0.1, sh: 2 });
     peakL.el.parentNode.insertBefore(peakL.el, R.mid.el);
+    if (PH) peakL.shift(-250, 0);
     const peakGlow = peakL.add(`<g opacity="0">${halo(160, 1)}${rayBurst(c, { n: 14, r0: 20, r1: 240, spread: 0.05, o: 0.5 })}</g>`);
     peakL.add(sheet().p(c.cut([[1000, 560], [1120, 470], [1200, 400], [1250, 380], [1300, 398], [1400, 470], [1540, 560]], 1, 10), mix(C.hillFar, C.lavender, 0.35)).p(c.cut([[1200, 400], [1250, 380], [1300, 398], [1270, 410], [1240, 404], [1220, 414]], 0.5, 6), C.cream).out());
 
@@ -45,11 +49,11 @@ export default {
     const glowL = S.layer({ par: 0.5, sh: 1, flat: true });
     const glory = glowL.add(`<g opacity="0">${rayBurst(c, { n: 22, r0: 60, r1: 520, spread: 0.045, o: 0.6 })}<g transform="scale(1.1)">${radiance(c, 120)}</g></g>`);
     const angL = S.layer({ par: 0.35, sh: 5 });
-    const ANG = [[470, 300, false], [600, 230, false], [1000, 230, true], [1130, 300, true]].map(([x, y, flip], i) => ({ x, y, flip, i, el: hanging(angL, `<g transform="scale(${flip ? -0.72 : 0.72} .72)">${angel(c)}</g>`, { x: 0, y: -1500, len: 1400 }) }));
+    const ANG = [[470, 300, false], [600, 230, false], [1000, 230, true], [1130, 300, true]].map(([x, y, flip], i) => ({ x: IN(x, 0.72), y, flip, i, el: hanging(angL, `<g transform="scale(${flip ? -0.72 : 0.72} .72)">${angel(c)}</g>`, { x: 0, y: -1500, len: 1400 }) }));
 
     /* people */
     const act = S.layer({ par: 0.5, sh: 5 });
-    const D = REST_SIT.map((d, i) => ({ ...d, i, seed: c.rr(0, 9), p: S.puppet(act.add(person(c, { ...TW9[d.k], pose: 'sit' }))) })).sort((a, b) => a.y - b.y);
+    const D = REST_SIT.map((d, i) => ({ ...d, x: IN(d.x), i, seed: c.rr(0, 9), p: S.puppet(act.add(person(c, { ...TW9[d.k], pose: 'sit' }))) })).sort((a, b) => a.y - b.y);
     // the man who is ashamed, with a grey knot of mockers behind him (v26)
     const mem = [-1, 0, 1].map((k) => ({ x: k * 34, y: Math.abs(k) * 4, s: 1, flip: true, o: { ...silhouette(folk(c), mix(C.stone2, C.storm, 0.35)) }, armF: 60 + k * 20, head: 6 }));
     const mockers = act.add(`<g opacity="0"><g transform="scale(.8)">${stillGroup(c, mem)}</g></g>`);
@@ -76,8 +80,8 @@ export default {
       const turn = es(t, 1.2, 1.3);
       const glowK = es(t, 1.4, 1.7) * (1 - es(t, 2.05, 2.4));
       gold.fade(glowK * 0.9);
-      ashamed.set({ x: 470, y: 724, s: 0.92, flip: turn > 0.5, o: ashK * (1 - es(t, 2.1, 2.3)), armF: 30 + turn * 90, armB: 20 + turn * 10, head: turn * 14, lean: turn * 6, blink: blinkAt(T, 7) });
-      pose(mockers, { x: 390, y: 708, o: ashK * (1 - es(t, 1.5, 1.7)) });
+      ashamed.set({ x: PH ? 530 : 470, y: 724, s: 0.92, flip: turn > 0.5, o: ashK * (1 - es(t, 2.1, 2.3)), armF: 30 + turn * 90, armB: 20 + turn * 10, head: turn * 14, lean: turn * 6, blink: blinkAt(T, 7) });
+      pose(mockers, { x: PH ? 470 : 390, y: 708, o: ashK * (1 - es(t, 1.5, 1.7)) });
       pose(glory, { x: JX, y: JY - 150, s: 0.6 + glowK * 0.5, r: T * 3, o: glowK });
       ANG.forEach((a) => {
         const k = es(t, 1.45 + a.i * 0.06, 1.75 + a.i * 0.06, ease.back) * (1 - es(t, 2.05, 2.35));

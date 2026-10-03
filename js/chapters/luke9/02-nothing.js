@@ -28,6 +28,8 @@ export default {
     const G = galSet(S);
     const c = S.c;
     const { ROAD } = G;
+    const P = S.portrait;   // phone: the four and the five tags drawn in from the edges
+    const DSC = P ? DISCS.map(([x, y]) => [800 + (x - 800) * 0.8, y]) : DISCS;
 
     /* the villagers who come out, and the signs over the villages (v6) */
     const vilL = S.layer({ par: 0.18, sh: 3 });
@@ -39,15 +41,15 @@ export default {
     /* the four, loaded, and Jesus */
     const act = S.layer({ par: 0.5, sh: 5 });
     const FOUR = [
-      { k: 'andrew', x: 498, y: 736, road: 0 }, { k: 'peter', x: 612, y: 724, road: 1 },
-      { k: 'james', x: 988, y: 724, road: 2 }, { k: 'john', x: 1102, y: 736, road: 3 },
+      { k: 'andrew', x: P ? 556 : 498, y: 736, road: 0 }, { k: 'peter', x: P ? 652 : 612, y: 724, road: 1 },
+      { k: 'james', x: P ? 948 : 988, y: 724, road: 2 }, { k: 'john', x: P ? 1044 : 1102, y: 736, road: 3 },
     ].map((d, i) => ({ ...d, i, flip: d.x > JX, seed: c.rr(0, 9), p: S.puppet(act.add(person(c, TW9[d.k]))) }));
     const jesus = S.puppet(act.add(person(c, { ...CAST.jesus })));
     // the things they carry (each its own cut-out, so it can fly up to its tag)
     /* the five tags */
     const flies = S.layer({ par: 0.3, sh: 5 });
     const LAB = [tr('laska', 'staff'), tr('torba', 'wallet'), tr('chleb', 'bread'), tr('pieniądze', 'money'), tr('dwie suknie', 'two coats')];
-    const TAGS = DISCS.map(([x, y], i) => ({ i, x, y, el: hanging(flies, disc(c, '', { r: 40 }) + `<g transform="translate(0 62)">${labelTag(LAB[i], 16)}</g>`, { x: 0, y: -1500, len: 800 }), X: flies.add(`<g opacity="0">${crossX(c, 26)}</g>`) }));
+    const TAGS = DSC.map(([x, y], i) => ({ i, x, y, el: hanging(flies, disc(c, '', { r: 40 }) + `<g transform="translate(0 62)">${labelTag(LAB[i], 16)}</g>`, { x: 0, y: -1500, len: 800 }), X: flies.add(`<g opacity="0">${crossX(c, 26)}</g>`) }));
 
     const kitL = S.layer({ par: 0.4, sh: 5 });
     const kit = (m) => kitL.add(m);
@@ -101,7 +103,7 @@ export default {
       ITEMS.forEach((it, i) => {
         const d = FOUR[it.who];
         const k = es(t, 0.12 + i * 0.12, 0.3 + i * 0.12, ease.io);
-        const [tx, ty] = DISCS[i];
+        const [tx, ty] = DSC[i];
         const sx = d.x + (d.flip ? -it.dx : it.dx), sy = d.y + it.dy;
         pose(it.el, { x: lerp(sx, tx, k), y: lerp(sy, ty, k) - Math.sin(k * PI) * 60, r: lerp(it.r, 0, k), s: it.s * (1 - k * 0.3), o: 1 - es(t, 0.95, 1.05) });
       });

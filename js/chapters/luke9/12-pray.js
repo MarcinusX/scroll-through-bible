@@ -25,7 +25,7 @@ export default {
     { v: 28 },
     { v: 29 },
   ],
-  cam: { x: [-40, 20], y: [0, 50], z: [1, 1.16] },
+  cam: { x: [-330, 20], y: [0, 50], z: [1, 1.16] },
   build(S) {
     const M = summitSet(S);
     const c = S.c;
@@ -40,7 +40,8 @@ export default {
 
     /* the four */
     const act = S.layer({ par: 0.4, sh: 5 });
-    const D = THREE.map((d, i) => ({ ...d, i, seed: c.rr(0, 9), w: S.puppet(act.add(person(c, TW9[d.k]))), s: S.puppet(act.add(person(c, { ...TW9[d.k], pose: 'sit' }))) }));
+    // phone: the three sit inside the screen
+    const D = THREE.map((d, i) => ({ ...d, ...(S.portrait ? { x: { james: 525, peter: 615, john: 1035 }[d.k] } : {}), i, seed: c.rr(0, 9), w: S.puppet(act.add(person(c, TW9[d.k]))), s: S.puppet(act.add(person(c, { ...TW9[d.k], pose: 'sit' }))) }));
     const jW = S.puppet(act.add(person(c, { ...CAST.jesus })));
     const jK = S.puppet(act.add(person(c, { ...CAST.jesus, pose: 'kneel' })));
     const jKW = S.puppet(act.add(person(c, { ...JESUS_WHITE, pose: 'kneel' })));
@@ -84,7 +85,8 @@ export default {
         d.s.set({ x: d.x, y: d.y, s: 0.96, flip: d.x > SUM.JX, o: sit, armF: 30 + look * 60, armB: 10 + look * 100, head: drowse * 14 - look * 16, lean: drowse * 6, blink: blinkAt(T, d.seed) });
       });
 
-      S.cam.x = kf(t, [[0, -30], [0.6, -20], [1.0, 0]]);
+      // phone: the camera looks down the path, so the three climbing behind Him are on screen
+      S.cam.x = S.portrait ? kf(t, [[0, -330], [0.8, -330], [1.08, 0]]) : kf(t, [[0, -30], [0.6, -20], [1.0, 0]]);
       S.cam.z = kf(t, [[0, 1.04], [0.9, 1.06], [1.3, 1.12], [1.9, 1.14]]);
       S.cam.y = kf(t, [[0, 40], [0.9, 40], [1.3, 30], [1.9, 20]]);
     };

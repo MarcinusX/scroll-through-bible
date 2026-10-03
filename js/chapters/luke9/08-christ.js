@@ -26,10 +26,13 @@ export default {
   build(S) {
     const R = restSet(S);
     const c = S.c;
+    // phone: the disciples and the portraits drawn in from the edges
+    const PH = S.portrait;
+    const IN = (x, k = 0.78) => (PH ? 800 + (x - 800) * k : x);
 
     /* the portraits of what the crowds say, the crown of light, the gold words, the seal */
     const flies = S.layer({ par: 0.3, sh: 5 });
-    const POR = [[0, 560, 196], [1, 1040, 196], [2, 800, 150]].map(([i, x, y]) => ({ i, x, y, el: hanging(flies, whoPortrait(S, i), { x: 0, y: -1500, len: 900 }) }));
+    const POR = [[0, 560, 196], [1, 1040, 196], [2, 800, 150]].map(([i, x, y]) => ({ i, x: IN(x, 0.8), y, el: hanging(flies, whoPortrait(S, i), { x: 0, y: -1500, len: 900 }) }));
     const crownEl = hanging(flies, lightCrown(c, 40), { x: 0, y: -1500, len: 900 });
     const words = hanging(flies, goldWord(c, tr('Mesjasz Boży', 'the Christ of God'), { size: 30 }), { x: 0, y: -1500, len: 900 });
     const seal = hanging(flies, `<g transform="scale(2.1)">${sealedScroll(c, 80)}</g>`, { x: 0, y: -1500, len: 900 });
@@ -38,7 +41,7 @@ export default {
     const glowL = S.layer({ par: 0.5, sh: 1, flat: true });
     const prayGlow = glowL.add(`<g opacity="0">${rayBurst(c, { n: 16, r0: 20, r1: 300, spread: 0.04, o: 0.55 })}${halo(170, 0.9)}</g>`);
     const act = S.layer({ par: 0.5, sh: 5 });
-    const D = SIT.map((d, i) => ({ ...d, i, seed: c.rr(0, 9), p: S.puppet(act.add(person(c, { ...TW9[d.k], pose: 'sit' }))) })).sort((a, b) => a.y - b.y);
+    const D = SIT.map((d, i) => ({ ...d, x: IN(d.x), i, seed: c.rr(0, 9), p: S.puppet(act.add(person(c, { ...TW9[d.k], pose: 'sit' }))) })).sort((a, b) => a.y - b.y);
     const P = D.find((d) => d.k === 'peter');
     P.up = S.puppet(act.add(person(c, TW9.peter)));
     P.kn = S.puppet(act.add(person(c, { ...TW9.peter, pose: 'kneel' })));

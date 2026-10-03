@@ -24,9 +24,10 @@ export default {
     { v: 9, cont: true, text: 'Któż więc jest Ten, o którym takie rzeczy słyszę?»' },
     { v: 9, cont: true, text: 'I chciał Go zobaczyć.' },
   ],
-  cam: { x: [-40, 130], y: [0, 60], z: [1, 1.16] },
+  cam: { x: [-40, 320], y: [0, 60], z: [1, 1.16] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;   // phone: the courtiers stand inside the screen; at the end the camera turns to the window
     sky(S, COURT9);
 
     /* ---------- the land outside the windows, with a crowd round Someone far away ---------- */
@@ -90,7 +91,7 @@ export default {
 
     /* ---------- the court ---------- */
     const act = S.layer({ par: 0.55, sh: 5 });
-    const COURT = [[430, 0], [520, 1], [1080, 3], [1170, 4]].map(([x, i]) => ({ x, i, seed: c.rr(0, 6), p: S.puppet(act.add(person(c, noble(c, i)))) }));
+    const COURT = (P ? [[478, 0], [552, 1], [1010, 3], [1064, 4]] : [[430, 0], [520, 1], [1080, 3], [1170, 4]]).map(([x, i]) => ({ x, i, seed: c.rr(0, 6), p: S.puppet(act.add(person(c, noble(c, i)))) }));
     const messenger = S.puppet(act.add(person(c, { robe: C.wheatRobe, belt: C.leather, hair: C.hair2, hairStyle: 'short', beard: 'none', skin: C.skin3 })));
     const messengerK = S.puppet(act.add(person(c, { robe: C.wheatRobe, belt: C.leather, hair: C.hair2, hairStyle: 'short', beard: 'none', skin: C.skin3, pose: 'kneel' })));
     const hMark = (o) => withFace(withFace(person(c, o), crown(c)), faceBits(c));
@@ -178,10 +179,11 @@ export default {
 
       /* v9c — far off, the crowd round Him, lit */
       const far = es(t, 5.2, 5.55);
-      pose(farGlow, { x: 1090, y: vfn(1090) + 2, s: 0.6 + far * 0.5, o: far });
-      pose(farCrowd, { x: 1090, y: vfn(1090) + 8, o: far });
+      const FX = P ? 1062 : 1090;
+      pose(farGlow, { x: FX, y: vfn(FX) + 2, s: 0.6 + far * 0.5, o: far });
+      pose(farCrowd, { x: FX, y: vfn(FX) + 8, o: far });
 
-      S.cam.x = kf(t, [[0, -30], [0.9, 0], [1.3, -10], [1.95, -10], [2.2, 20], [2.9, 10], [3.0, 0], [5.05, 0], [5.6, 60]]);
+      S.cam.x = kf(t, [[0, -30], [0.9, 0], [1.3, -10], [1.95, -10], [2.2, 20], [2.9, 10], [3.0, 0], [5.05, 0], [5.6, P ? 300 : 60]]);
       S.cam.z = kf(t, [[0, 1.04], [0.9, 1.06], [1.3, 1.02], [3.0, 1.02], [3.4, 1.1], [4.0, 1.1], [4.3, 1.02], [5.05, 1.02], [5.6, 1.14]]);
       S.cam.y = kf(t, [[0, 30], [0.9, 40], [1.3, 10], [3.0, 10], [3.4, 40], [4.0, 40], [4.3, 10], [5.05, 10], [5.6, 20]]);
     };

@@ -13,7 +13,7 @@ import { ox } from '../john2/lib.js';
 const { JY } = ROAD9;
 const JX = 660;
 const PY = 704;                 // the line the plough cuts
-const P0 = 840, P1 = 940, P2 = 1050;   // where the ploughing starts, where he turns his face, where it ends
+const PL = [840, 940, 1050];   // where the ploughing starts, where he turns his face, where it ends
 
 /** a wooden plough (an ard): origin at the tip of the share, in the ground; the beam runs forward (+x) to the yoke */
 function plough(c) {
@@ -31,10 +31,12 @@ export default {
     { v: 61 },
     { v: 62 },
   ],
-  cam: { x: [-20, 60], y: [0, 60], z: [1, 1.14] },
+  cam: { x: [-20, 120], y: [0, 60], z: [1, 1.14] },
   build(S) {
     const R = roadSet(S, { village: false, field: true });
     const c = S.c;
+    // phone: a shorter field run and the camera a little to the right, so the ox, the plough and the waving family stay on screen
+    const [P0, P1, P2] = S.portrait ? [800, 880, 960] : PL;
     const [hx0, hy0] = R.houseAt;
     /* the family at the house door */
     const famL = S.layer({ par: 0.4, sh: 4 });
@@ -105,7 +107,7 @@ export default {
       pose(aura, { x: JX, y: JY - 150, o: 0.6 });
       DIS.forEach((d) => d.p.set({ x: d.x, y: d.y, s: 1.0, armF: 20, head: -4, blink: blinkAt(T, d.seed) }));
 
-      S.cam.x = kf(t, [[0, 30], [1.0, 30], [1.9, 30]]);
+      S.cam.x = S.portrait ? 120 : kf(t, [[0, 30], [1.0, 30], [1.9, 30]]);
       S.cam.z = kf(t, [[0, 1.08], [1.0, 1.08], [1.9, 1.04]]);
       S.cam.y = kf(t, [[0, 40], [1.9, 50]]);
     };

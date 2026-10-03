@@ -65,7 +65,8 @@ export default {
     const moses = S.puppet(act.add(person(c, { ...MOSES, holdF: `<g transform="translate(8 -4)">${tablets(c, { w: 18, h: 30 })}</g>` })));
     const elijah = S.puppet(act.add(person(c, ELIJAH)));
     const jesus = S.puppet(act.add(person(c, JESUS_WHITE)));
-    const D = THREE.map((d, i) => ({ ...d, i, seed: c.rr(0, 9), a: S.puppet(act.add(person(c, { ...TW9[d.k], pose: 'sit' }))), z: S.puppet(act.add(person(c, { ...TW9[d.k], pose: 'sit', eyes: 'closed' }))) }));
+    // phone: the three sit inside the screen
+    const D = THREE.map((d, i) => ({ ...d, ...(S.portrait ? { x: { james: 525, peter: 615, john: 1035 }[d.k] } : {}), i, seed: c.rr(0, 9), a: S.puppet(act.add(person(c, { ...TW9[d.k], pose: 'sit' }))), z: S.puppet(act.add(person(c, { ...TW9[d.k], pose: 'sit', eyes: 'closed' }))) }));
     M.front();
     const tags = S.layer({ par: 0.4, sh: 5 });
     const tagM = hanging(tags, `${nameTag(c, tr('Mojżesz', 'Moses'), { size: 19 })}<g transform="translate(0 78) scale(.9)">${tablets(c, { w: 20, h: 32 })}</g>`, { x: 0, y: -1500, len: 900 });

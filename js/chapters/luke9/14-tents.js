@@ -59,7 +59,7 @@ export default {
     const low = [[560, 650, 300], [1040, 656, 300], [800, 590, 320], [680, 610, 240], [920, 616, 240]].map(([x, y, w], i) => ({ x, y, i, el: hanging(cloudL, cloud(c, w, '#f8f3e7', '#e4dac8'), { x: 0, y: -1500, len: 1800 }) }));
     const dL = S.layer({ par: 0.44, sh: 5 });
     const D = THREE.map((d, i) => ({
-      ...d, i, seed: c.rr(0, 9),
+      ...d, ...(S.portrait ? { x: { james: 525, peter: 615, john: 1035 }[d.k] } : {}), i, seed: c.rr(0, 9),   // phone: the three sit inside the screen
       sit: S.puppet(dL.add(withFace(person(c, { ...TW9[d.k], pose: 'sit' }), faceBits(c)))),
       st: S.puppet(dL.add(withFace(person(c, TW9[d.k]), faceBits(c)))),
       kn: S.puppet(dL.add(withFace(person(c, { ...TW9[d.k], pose: 'kneel' }), faceBits(c)))),

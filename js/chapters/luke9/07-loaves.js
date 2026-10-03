@@ -39,7 +39,8 @@ export default {
     const D = CARRY.map((d, i) => ({ ...d, i, seed: c.rr(0, 9), p: S.puppet(act.add(person(c, { ...TW9[d.k], holdF: bk }))) }));
     const BASK = Array.from({ length: 12 }, (_, i) => {
       const side = i < 6 ? -1 : 1, k = i % 6;
-      const x = side < 0 ? 420 + k * 50 : 890 + k * 50;
+      // phone: the two rows of baskets close up, inside the screen
+      const x = S.portrait ? (side < 0 ? 505 + k * 38 : 885 + k * 38) : side < 0 ? 420 + k * 50 : 890 + k * 50;
       return { i, x, y: 740 - (k % 2) * 8, el: act.add(`<g opacity="0">${basket(c, { w: 46, h: 28, full: true })}</g>`) };
     }).sort((a, b) => a.y - b.y);
     const jesus = S.puppet(act.add(person(c, { ...CAST.jesus })));
@@ -51,7 +52,7 @@ export default {
 
     return (t, time) => {
       const T = time;
-      B.update(T, { sunX: 1110, sunY: 420 });
+      B.update(T, { sunX: S.portrait ? 940 : 1110, sunY: 420 });   // phone: the setting sun stays inside the screen
 
       /* v16 — takes, looks up, blesses, breaks, gives to the disciples to set before the crowd */
       const lift = es(t, 0.02, 0.18) * (1 - es(t, 0.36, 0.46));
@@ -69,7 +70,8 @@ export default {
         const out = es(t, 0.56 + d.i * 0.025, 0.8 + d.i * 0.025);
         const back = es(t, 2.02 + d.i * 0.03, 2.3 + d.i * 0.03);
         const tx = r[0] + (r[0] < JX ? 80 : -80);
-        const x = lerp(lerp(d.x0, tx, out), d.x0 + (d.x0 < JX ? -150 : 150), back);
+        const x0_ = lerp(lerp(d.x0, tx, out), d.x0 + (d.x0 < JX ? -150 : 150), back);
+        const x = S.portrait ? Math.min(1060, Math.max(530, x0_)) : x0_;   // phone: the carriers stay inside the screen
         const moving = (out > 0 && out < 1) || (back > 0 && back < 1);
         d.p.set({ x, y: gy(x) + 6 + (d.i % 2) * 8, s: 0.9, flip: moving ? (back > 0 ? d.x0 > JX : tx < d.x0) : d.x0 > JX, walk: moving ? x * 0.07 : undefined, armF: 70 + bump(t, 0.9, 1.05) * 20, armB: bump(t, 0.9, 1.05) * 40, lean: bump(t, 0.9, 1.05) * 10, blink: blinkAt(T, d.seed) });
       });

@@ -22,7 +22,10 @@ export default {
   ],
   cam: { x: [-40, 40], y: [0, 60], z: [1, 1.12] },
   build(S) {
-    const B = bethSet(S, { pads: [SHIFT * 0.35 + 20, SHIFT * 0.6 + 20, SHIFT + 20], townAt: BETH.TX + SHIFT * 0.35 });
+    // phone: Bethsaida and its name stop inside the screen; the Twelve close up round Him; the sick come in from the edge
+    const P = S.portrait;
+    const TP = P ? 150 : 0, DS = P ? 60 : 0;
+    const B = bethSet(S, { pads: [SHIFT * 0.35 + 20, SHIFT * 0.6 + 20, SHIFT + 20], townAt: BETH.TX + SHIFT * 0.35 - TP, sunAt: P ? [850, 190] : undefined });
     const c = S.c;
     const gy = (x) => B.gfn(x) + 18;
     const nameTag = hanging(B.mid, `<g transform="scale(1.2)">${labelTag(tr('Betsaida', 'Bethsaida'), 20)}</g>`, { x: 0, y: -1500, len: 900 });
@@ -43,7 +46,7 @@ export default {
     const AP = [
       { k: 'andrew', a: 540, b: 1150 }, { k: 'peter', a: 630, b: 900 }, { k: 'philip', a: 460, b: 1085 },
       { k: 'james', a: 960, b: 965 }, { k: 'john', a: 1040, b: 1030 }, { k: 'matthew', a: 1130, b: 1215 },
-    ].map((d, i) => ({ ...d, i, from: d.a < JX ? -300 - i * 40 : 1900 + i * 40, dy: (i % 2) * 10, seed: c.rr(0, 9), p: S.puppet(act.add(person(c, TW9[d.k]))) }));
+    ].map((d) => (P ? { ...d, a: JX + (d.a - JX) * 0.76, b: JX + (d.b - JX) * 0.65 } : d)).map((d, i) => ({ ...d, i, from: d.a < JX ? -300 - i * 40 : 1900 + i * 40, dy: (i % 2) * 10, seed: c.rr(0, 9), p: S.puppet(act.add(person(c, TW9[d.k]))) }));
     const glowL = S.layer({ par: 0.5, sh: 1, flat: true });
     const aura = glowL.add(`<g opacity="0">${halo(160, 0.9)}</g>`);
     const J = S.layer({ par: 0.5, sh: 5 });
@@ -73,7 +76,7 @@ export default {
       B.slopeL.shift(-SHIFT * 0.6 * wk, 0);
       B.G.shift(-SHIFT * wk, 0);
       const tn = es(t, 1.6, 1.85, ease.back) * (1 - es(t, 2.4, 2.7));
-      pose(nameTag, { x: BETH.TX + SHIFT * 0.35 - 70, y: lerp(-1500, 250, tn), r: Math.sin(T * 0.9) * 2, oy: 0, o: tn > 0.002 ? 1 : 0 });
+      pose(nameTag, { x: BETH.TX + SHIFT * 0.35 - 70 - TP, y: lerp(-1500, 250, tn), r: Math.sin(T * 0.9) * 2, oy: 0, o: tn > 0.002 ? 1 : 0 });
 
       /* Jesus */
       const welcome = es(t, 3.02, 3.25);
@@ -118,18 +121,18 @@ export default {
       // the woman on her mat, the lame man, at the front on the left
       const sick = es(t, 2.4, 2.7);
       const rise = es(t, 3.4, 3.46);
-      pose(matEl, { x: 560, y: gy(560) + 4, o: sick });
-      pose(lying, { x: 560 - 60, y: gy(560) - 6, o: sick * (1 - rise) });
-      risen.set({ x: 560, y: gy(560) + 6, s: 0.86, flip: false, armF: 60 + es(t, 3.46, 3.7) * 60, armB: 30 + es(t, 3.46, 3.7) * 110, head: -8, o: rise, blink: blinkAt(T, 4) });
-      const LX = kf(t, [[2.3, 180], [2.8, 440]]);
+      pose(matEl, { x: 560 + DS, y: gy(560 + DS) + 4, o: sick });
+      pose(lying, { x: 560 + DS - 60, y: gy(560 + DS) - 6, o: sick * (1 - rise) });
+      risen.set({ x: 560 + DS, y: gy(560 + DS) + 6, s: 0.86, flip: false, armF: 60 + es(t, 3.46, 3.7) * 60, armB: 30 + es(t, 3.46, 3.7) * 110, head: -8, o: rise, blink: blinkAt(T, 4) });
+      const LX = kf(t, [[2.3, 180], [2.8, 440 + DS]]);
       const free = es(t, 3.55, 3.6);
       lame.set({ x: LX, y: gy(LX) + 12, s: 0.9, walk: t > 2.3 && t < 2.8 ? LX * 0.04 : undefined, amt: 0.4, lean: 6, armF: 20, o: (t > 2.28 ? 1 : 0) * (1 - free), blink: blinkAt(T, 5) });
-      lameFree.set({ x: 440, y: gy(440) + 12, s: 0.9, armF: 130 * es(t, 3.6, 3.75), armB: 150 * es(t, 3.6, 3.75), head: -10, o: free, blink: blinkAt(T, 5) });
+      lameFree.set({ x: 440 + DS, y: gy(440 + DS) + 12, s: 0.9, armF: 130 * es(t, 3.6, 3.75), armB: 150 * es(t, 3.6, 3.75), head: -10, o: free, blink: blinkAt(T, 5) });
       const fl = seg(t, 3.58, 3.98);
-      pose(flying, { x: 470 + fl * 90, y: gy(440) - 100 - Math.sin(fl * PI) * 180, r: fl * 400, s: 0.9, o: fl > 0 && fl < 1 ? 1 : 0 });
+      pose(flying, { x: 470 + DS + fl * 90, y: gy(440 + DS) - 100 - Math.sin(fl * PI) * 180, r: fl * 400, s: 0.9, o: fl > 0 && fl < 1 ? 1 : 0 });
       sparks.forEach((sp, i) => {
         const k = bump(t, 3.42 + i * 0.12, 3.95);
-        pose(sp, { x: i ? 440 : 560, y: gy(500) - 190, s: k, r: T * 40, o: k });
+        pose(sp, { x: (i ? 440 : 560) + DS, y: gy(500 + DS) - 190, s: k, r: T * 40, o: k });
       });
 
       S.cam.x = kf(t, [[0, 0], [2.0, 0], [2.6, -30], [3.0, -30], [3.4, -10]]);

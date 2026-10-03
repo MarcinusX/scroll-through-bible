@@ -40,7 +40,7 @@ export default {
 
     return (t, time) => {
       const T = time;
-      B.update(T, { sunX: 1120, sunY: 400 });
+      B.update(T, { sunX: S.portrait ? 940 : 1120, sunY: 400 });   // phone: the setting sun stays inside the screen
 
       /* v14a — about five thousand */
       const fill = es(t, 0.05, 0.6);

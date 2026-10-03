@@ -27,6 +27,9 @@ export default {
   build(S) {
     const R = restSet(S, { skyCols: ['#b9c9cf', '#ecd9c0', '#f4d9b8'], nightCols: ['#433f6b', '#8b6f8a', '#c79a8e'] });
     const c = S.c;
+    // phone: the screen hangs a little left (its city clear of the thread), the disciples sit closer
+    const SXp = S.portrait ? 772 : SX;
+    const IN = (x) => (S.portrait ? 800 + (x - 800) * 0.78 : x);
     const starL = S.layer({ par: 0.02, sh: 1, flat: true, rise: 0 });
     starL.add(stars(c, { x0: -600, x1: 2200, y0: -400, y1: 380, n: 60 }));
     starL.fade(0);
@@ -56,7 +59,7 @@ export default {
 
     /* ---------- Jesus and the disciples ---------- */
     const act = S.layer({ par: 0.5, sh: 5 });
-    const D = REST_SIT.map((d, i) => ({ ...d, i, seed: c.rr(0, 9), p: S.puppet(act.add(person(c, { ...TW9[d.k], pose: 'sit' }))) })).sort((a, b) => a.y - b.y);
+    const D = REST_SIT.map((d, i) => ({ ...d, x: IN(d.x), i, seed: c.rr(0, 9), p: S.puppet(act.add(person(c, { ...TW9[d.k], pose: 'sit' }))) })).sort((a, b) => a.y - b.y);
     const jesus = S.puppet(act.add(person(c, { ...CAST.jesus, pose: 'sit' })));
 
     return (t, time) => {
@@ -69,9 +72,9 @@ export default {
       /* the screen comes down */
       const down = es(t, -0.3, 0.12, ease.back);
       const sy = STOP - (1 - down) * 900;
-      pose(screen, { x: SX, y: sy });
-      pose(hillCover, { x: SX, y: sy });
-      const P = (x, y) => [SX + x, sy + y];
+      pose(screen, { x: SXp, y: sy });
+      pose(hillCover, { x: SXp, y: sy });
+      const P = (x, y) => [SXp + x, sy + y];
 
       /* v22a — the long road, the thorns, stooping lower */
       const u = seg(t, 0.05, 0.9);
@@ -92,7 +95,7 @@ export default {
       const cr = es(t, 2.05, 2.2);
       const [cx, cy] = P(40, 182);
       pose(crossS, { x: cx, y: cy, s: 0.4 + cr * 0.6, o: cr });
-      pose(darkS, { x: SX, y: sy, o: dark });
+      pose(darkS, { x: SXp, y: sy, o: dark });
       MOONS.forEach((m, i) => {
         const k = seg(t, 2.16 + i * 0.08, 2.32 + i * 0.08);
         const [mx, my] = P(lerp(-240, 240, k), 60 - Math.sin(k * PI) * 30);

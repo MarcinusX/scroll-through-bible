@@ -25,7 +25,7 @@ export default {
     { v: 59, cont: true, text: 'Ten zaś odpowiedział: «Panie, pozwól mi najpierw pójść i pogrzebać mojego ojca!»' },
     { v: 60 },
   ],
-  cam: { x: [-40, 40], y: [0, 50], z: [1, 1.14] },
+  cam: { x: [-150, 260], y: [0, 50], z: [1, 1.14] },
   build(S) {
     const R = roadSet(S, { village: false, bank: true });
     const c = S.c;
@@ -122,7 +122,8 @@ export default {
         pose(w.el, { x: ox + 30 + q * 80, y: oy - 150 - q * 60, s: 0.7, r: Math.sin(T * 2 + w.i) * 10, o: es(t, 4.5, 4.7) * Math.sin(q * PI) });
       });
 
-      S.cam.x = kf(t, [[0, 10], [1.0, 20], [2.0, 20], [2.5, -20], [4.2, -20], [4.8, 10]]);
+      // phone: the camera turns right to the fox's hole and the nest (v58), then left to the man who would first bury his father (v59b)
+      S.cam.x = S.portrait ? kf(t, [[0, 10], [1.0, 260], [2.0, 260], [2.5, -150], [4.2, -150], [4.8, 10]]) : kf(t, [[0, 10], [1.0, 20], [2.0, 20], [2.5, -20], [4.2, -20], [4.8, 10]]);
       S.cam.z = kf(t, [[0, 1.06], [1.0, 1.06], [1.5, 1.1], [2.0, 1.1], [2.5, 1.06]]);
       S.cam.y = kf(t, [[0, 30], [2.5, 30]]);
     };
