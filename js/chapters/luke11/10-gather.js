@@ -65,7 +65,7 @@ export default {
       const wx = kf(t, WK);
       const bend = bump(t, 1.2, 1.5) + bump(t, 1.45, 1.75) + bump(t, 1.7, 2.0);
       withM.set({ x: wx, y: Y + 6, s: 1.18, walk: moving(t, WK) ? wx * 0.06 : undefined, armF: 20 + bend * 60, armB: 10 + bend * 30, lean: bend * 16, head: 4 + bend * 10, blink: blinkAt(T, 2) });
-      const AK = [[-0.5, 1180], [0.25, JX + 170], [0.5, JX + 170], [1.2, JX + 170], [1.7, 1120]];
+      const AK = [[-0.5, 1180], [0.25, JX + 170], [0.5, JX + 170], [1.2, JX + 170], [1.7, S.portrait ? 1010 : 1120]];   // phone: he scatters inside the screen
       const ax = kf(t, AK);
       const turned = es(t, 0.45, 0.5);
       const fold = es(t, 0.5, 0.65) * (1 - es(t, 1.15, 1.25));
@@ -77,7 +77,7 @@ export default {
       /* v23b — sheaves rise beside them; his armful scatters in the wind */
       SHEAVES.forEach((sh) => {
         const k = es(t, 1.3 + sh.i * 0.15, 1.45 + sh.i * 0.15, ease.back);
-        pose(sh.el, { x: 450 + sh.i * 62, y: Y + 22 + (sh.i % 2) * 8, s: k * 1.15, o: k > 0.01 ? 1 : 0 });
+        pose(sh.el, { x: (S.portrait ? 530 : 450) + sh.i * (S.portrait ? 46 : 62), y: Y + 22 + (sh.i % 2) * 8, s: k * 1.15, o: k > 0.01 ? 1 : 0 });
       });
       const blow = es(t, 1.3, 1.45);
       pose(armful, { r: -70, x: 0, y: 20, s: 0.7 * (1 - blow * 0.8), o: 1 - blow });

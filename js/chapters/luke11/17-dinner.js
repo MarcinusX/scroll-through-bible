@@ -19,13 +19,13 @@ export default {
     { v: 37, cont: true, text: 'Poszedł więc i zajął miejsce za stołem.' },
     { v: 38 },
   ],
-  cam: { x: [-60, 140], y: [0, 160], z: [0.84, 1.2] },
+  cam: { x: [-60, 220], y: [0, 160], z: [0.84, 1.2] },
   build(S) {
     const c = S.c;
     const roomLs = [];
     const mkLayer = S.layer;
     S.layer = (o) => { const Ly = mkLayer(o); roomLs.push(Ly); return Ly; };
-    const D = dinnerSet(S);
+    const D = dinnerSet(S, S.portrait ? { ceilTop: 0 } : {});   // phone: the ceiling is an eave band, not a third of the screen of planks
     const R = D.R;
     const jWalk = S.puppet(R.frontL.add(person(c, CAST.jesus)));
     const servant = S.puppet(R.frontL.add(person(c, { ...HOUSEBOY, holdF: `<g transform="rotate(-40) translate(-8 14)">${ewer(c)}</g>` })));
@@ -47,18 +47,19 @@ export default {
       const T = time;
       roomLs.forEach((Ly) => Ly.fade(seg(t, 0.9, 0.96)));
       /* v37a — still speaking, He comes along the street; the Pharisee invites Him */
-      const JK = [[-0.5, 200], [0.4, 610]];
+      const PO = S.portrait ? 40 : 0;   // phone: the street group a little to the right, so its followers are not sliced at the left edge
+      const JK = [[-0.5, 200], [0.4, 610 + PO]];
       const jx = kf(t, JK);
       jStreet.set({ x: jx, y: 742, s: 1.04, walk: moving(t, JK) ? jx * 0.045 : undefined, amt: 0.8, flip: t < 0.45 ? false : false, armF: 30 + bump(t, -0.4, 0.4) * 30 + bump(t, 0.55, 0.95) * 20, armB: 8, head: -4, blink: blinkAt(T) });
       const [jhx, jhy] = headAt(jx, 742, 1.04);
       talk(jhx, jhy, t < 0.4 ? 0.8 : 0, T, { dir: -1, spread: 1.6 });
-      crowdS.forEach((p, i) => { const x = jx - 130 - i * 70; p.set({ x, y: 742 + (i % 2) * 8, s: 0.96, walk: moving(t, JK) ? x * 0.05 + i : undefined, armF: 14, head: -4, blink: blinkAt(T, i) }); });
-      const SK = [[0.2, 790], [0.4, 740]];
+      crowdS.forEach((p, i) => { const x = S.portrait ? jx - 100 - i * 58 : jx - 130 - i * 70; p.set({ x, y: 742 + (i % 2) * 8, s: 0.96, o: S.portrait && i === 2 ? 0 : 1, walk: moving(t, JK) ? x * 0.05 + i : undefined, armF: 14, head: -4, blink: blinkAt(T, i) }); });
+      const SK = [[0.2, 790 + PO], [0.4, 740 + PO]];
       const sx = kf(t, SK);
       const bow = bump(t, 0.4, 0.6);
       const wave = es(t, 0.5, 0.65);
       hStreet.set({ x: sx, y: 742, s: 1.02, flip: true, o: seg(t, 0.16, 0.22), walk: moving(t, SK) ? sx * 0.05 : undefined, armF: 20 + wave * 40, armB: 10 + wave * 90, lean: bow * 14, head: bow * 16, blink: blinkAt(T, 3) });
-      const [shx, shy] = headAt(740, 742, 1.02, true);
+      const [shx, shy] = headAt(740 + PO, 742, 1.02, true);
       const ib = es(t, 0.45, 0.58, ease.back) * (1 - es(t, 0.92, 0.98));
       pose(invite, { x: shx - 20, y: shy - 30, s: ib, o: ib > 0.02 ? 1 : 0 });
       drop.shift(0, -es(t, 0.96, 1.18, ease.in) * 1450);
@@ -90,7 +91,7 @@ export default {
       S.cam.x = kf(t, [[0, 0], [1.0, 0], [1.2, 60], [1.9, 60], [2.2, 110]]);
       S.cam.z = kf(t, [[0, 1.04], [1.0, 1.06], [1.3, 1.14], [2.2, 1.16]]);
       S.cam.y = kf(t, [[0, 20], [1.0, 20], [1.3, 140]]);
-      if (S.portrait && t > 1.1) { S.cam.x = kf(t, [[1.1, 20], [1.9, 20], [2.2, 130]]); S.cam.z = 0.86; }
+      if (S.portrait && t > 1.1) { S.cam.x = kf(t, [[1.1, 20], [1.45, 170], [1.9, 170], [2.2, 210]]); S.cam.z = 0.84; }   // phone: the host at the far end inside the screen
     };
   },
 };

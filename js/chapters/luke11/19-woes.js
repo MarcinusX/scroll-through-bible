@@ -32,10 +32,10 @@ export default {
     { v: 43 },
     { v: 44 },
   ],
-  cam: { x: [0, 140], y: [60, 160], z: [0.84, 1.2] },
+  cam: { x: [0, 220], y: [60, 160], z: [0.84, 1.2] },
   build(S) {
     const c = S.c;
-    const D = dinnerSet(S);
+    const D = dinnerSet(S, S.portrait ? { ceilTop: 0 } : {});   // phone: the ceiling is an eave band, not a third of the screen of planks
     const PL = S.layer({ par: 0.3, sh: 6, rise: 0 });
     const B = S.layer({ par: 0.3, sh: 5, rise: 0 });
     const tags = ROMAN.map((n) => hanging(PL, woeTag(c, n), { x: 0, y: -1500, len: 900 }));
@@ -131,7 +131,7 @@ export default {
       S.cam.x = kf(t, [[0, 100]]);
       S.cam.y = kf(t, [[0, 100]]);
       S.cam.z = kf(t, [[0, 1.06]]);
-      if (S.portrait) { S.cam.x = 120; S.cam.z = 0.88; }
+      if (S.portrait) { S.cam.x = 210; S.cam.z = 0.84; }   // phone: the host at the far end inside the screen
     };
   },
 };

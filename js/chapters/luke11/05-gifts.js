@@ -69,7 +69,7 @@ export default {
     /* the people */
     const P = S.layer({ par: 0.42, sh: 5 });
     P.add(sheet().p(c.cut([[FX - 60, GY - 54], [FX + 70, GY - 54], [FX + 70, GY - 42], [FX - 60, GY - 42]], 0.4, 6), C.wood).p(c.cut(c.rect(FX - 54, GY - 44, 12, 44), 0.3, 4) + c.cut(c.rect(FX + 52, GY - 44, 12, 44), 0.3, 4), C.wood2).out());
-    P.add(`<g transform="translate(${FX + 120} ${GY + 4}) scale(1.25)">${basket(c, { w: 70, h: 40, full: true })}</g>`);
+    P.add(`<g transform="translate(${FX + (S.portrait ? 98 : 120)} ${GY + 4}) scale(1.25)">${basket(c, { w: 70, h: 40, full: true })}</g>`);
     const mother = S.puppet(P.add(person(c, WIFE)));
     const motherK = S.puppet(P.add(person(c, { ...WIFE, pose: 'kneel' })));
     const father = S.puppet(P.add(person(c, { ...FATHER, pose: 'sit' })));
@@ -145,6 +145,7 @@ export default {
       S.cam.y = kf(t, [[0, 90], [3.0, 90], [3.4, -30]]);
       S.cam.z = kf(t, [[0, 1.3], [3.0, 1.3], [3.4, 1.06]]);
       S.cam.x = kf(t, [[0, 10], [3.0, 10], [3.4, 0]]);
+      if (S.portrait) S.cam.z = kf(t, [[0, 1.16], [3.0, 1.16], [3.4, 1.06]]);   // phone: the father's basket clear of the thread
     };
   },
 };

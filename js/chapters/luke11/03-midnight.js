@@ -50,7 +50,7 @@ export default {
     { v: 7, cont: true, text: 'Nie mogę wstać i dać tobie".' },
     { v: 8 },
   ],
-  cam: { x: [-90, 110], y: [-20, 60], z: [1, 1.2] },
+  cam: { x: [-170, 380], y: [-20, 60], z: [1, 1.2] },
   build(S) {
     const c = S.c;
     sky(S, NIGHT);
@@ -193,6 +193,8 @@ export default {
       S.cam.x = kf(t, [[-0.5, 0], [0.4, 20], [1.05, 20], [1.3, -60], [1.9, -60], [2.1, 90], [4.9, 90], [5.2, 40]]);
       S.cam.z = kf(t, [[-0.5, 1.06], [0.4, 1.1], [1.3, 1.14], [1.9, 1.14], [2.1, 1.18], [4.9, 1.18], [5.2, 1.08]]);
       S.cam.y = kf(t, [[-0.5, 20], [0.4, 30], [2.1, 50], [4.9, 50], [5.2, 30]]);
+      // phone: the two houses don't fit side by side — look at the door and the friend's bed, then the traveller, then the bed again
+      if (S.portrait) S.cam.x = kf(t, [[-0.5, 0], [0.4, 220], [1.05, 220], [1.3, -150], [1.9, -150], [2.1, 360], [4.9, 360], [5.2, 100]]);
     };
   },
 };

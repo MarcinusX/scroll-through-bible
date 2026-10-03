@@ -47,9 +47,9 @@ export default {
       const [hx, hy] = headAt(WX, F + 12, 0.96, true);
       pose(cry, { x: hx - 16, y: hy - 18, s: ck, o: ck > 0.01 ? 1 : 0 });
       const pk = es(t, 0.3, 0.6, ease.out);
-      pose(plate, { x: 1000, y: lerp(-600, 270, pk), r: T ? Math.sin(T * 0.8) * 1.2 : 0, o: pk > 0.004 ? 1 : 0 });
+      pose(plate, { x: S.portrait ? 915 : 1000, y: lerp(-600, 270, pk), r: T ? Math.sin(T * 0.8) * 1.2 : 0, o: pk > 0.004 ? 1 : 0 });
       const kk = es(t, 1.55, 1.7, ease.back);
-      pose(kept, { x: 1000 + 12, y: 270 - 8, s: kk, o: kk > 0.01 ? 1 : 0 });
+      pose(kept, { x: (S.portrait ? 915 : 1000) + 12, y: 270 - 8, s: kk, o: kk > 0.01 ? 1 : 0 });
 
       /* v28 — the word goes out; those who hear keep it */
       const speak = es(t, 1.0, 1.15);

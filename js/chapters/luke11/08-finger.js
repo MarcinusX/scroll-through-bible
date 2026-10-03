@@ -29,7 +29,7 @@ export default {
     { v: 19, cont: true, text: 'Dlatego oni będą waszymi sędziami.' },
     { v: 20 },
   ],
-  cam: { x: [-20, 60], y: [-70, 50], z: [1, 1.12] },
+  cam: { x: [-20, 160], y: [-70, 50], z: [1, 1.12] },
   build(S) {
     const Q = villageSet(S, { sky2: HEAVEN });
     const c = Q.c;
@@ -113,6 +113,7 @@ export default {
       sp.forEach((s, i) => pose(s, { x: [620, 800, 980][i], y: [520, 360, 520][i], s: bump(t, 2.85 + i * 0.05, 3.0), r: T * 40, o: es(t, 2.85 + i * 0.05, 2.95 + i * 0.05) }));
 
       S.cam.x = kf(t, [[-0.5, 30], [1.9, 30], [2.1, 0]]);
+      if (S.portrait) S.cam.x = kf(t, [[-0.5, 140], [1.9, 140], [2.1, 0]]);   // phone: the sons and the scales clear of the thread
       S.cam.y = kf(t, [[-0.5, 30], [1.0, 20], [1.9, 20], [2.1, 30], [2.5, -30]]);
       S.cam.z = kf(t, [[-0.5, 1.08], [1.9, 1.08], [2.1, 1.1], [2.5, 1.02]]);
     };

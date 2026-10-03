@@ -25,10 +25,10 @@ export default {
     { v: 51, text: 'od krwi Abla aż do krwi Zachariasza, który zginął między ołtarzem a przybytkiem.' },
     { v: 51, cont: true, text: 'Tak, mówię wam, na tym plemieniu będzie pomszczona.' },
   ],
-  cam: { x: [0, 140], y: [60, 160], z: [0.84, 1.2] },
+  cam: { x: [0, 220], y: [60, 160], z: [0.84, 1.2] },
   build(S) {
     const c = S.c;
-    const D = dinnerSet(S);
+    const D = dinnerSet(S, S.portrait ? { ceilTop: 0 } : {});   // phone: the ceiling is an eave band, not a third of the screen of planks
     const FS = S.portrait ? 0.74 : 1;
     const PL = S.layer({ par: 0.3, sh: 6, rise: 0 });
     const B = S.layer({ par: 0.3, sh: 5, rise: 0 });
@@ -111,7 +111,7 @@ export default {
       S.cam.x = kf(t, [[0, 110]]);
       S.cam.y = kf(t, [[0, 100], [0.9, 100], [1.2, 80], [3.2, 80], [3.5, 110]]);
       S.cam.z = kf(t, [[0, 1.06], [0.9, 1.06], [1.2, 1.02], [3.2, 1.02], [3.5, 1.08]]);
-      if (S.portrait) { S.cam.x = 110; S.cam.z = 0.86; }
+      if (S.portrait) { S.cam.x = 210; S.cam.z = 0.84; }   // phone: the host at the far end inside the screen
     };
   },
 };

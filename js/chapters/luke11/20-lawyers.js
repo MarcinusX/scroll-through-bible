@@ -24,10 +24,10 @@ export default {
     { v: 47 },
     { v: 48 },
   ],
-  cam: { x: [0, 140], y: [60, 160], z: [0.84, 1.2] },
+  cam: { x: [0, 220], y: [60, 160], z: [0.84, 1.2] },
   build(S) {
     const c = S.c;
-    const D = dinnerSet(S);
+    const D = dinnerSet(S, S.portrait ? { ceilTop: 0 } : {});   // phone: the ceiling is an eave band, not a third of the screen of planks
     const R = D.R;
     const lawyerUp = S.puppet(R.backL.add(person(c, LAWYER)));
     const insult = R.fx.add(`<g opacity="0">${say(c, [tr('Nauczycielu, i nam', 'Teacher, you insult'), tr('ubliżasz!', 'us too!')], { size: 18, side: -1 })}</g>`);
@@ -118,7 +118,7 @@ export default {
       S.cam.x = kf(t, [[0, 110]]);
       S.cam.y = kf(t, [[0, 100]]);
       S.cam.z = kf(t, [[0, 1.06]]);
-      if (S.portrait) { S.cam.x = 120; S.cam.z = 0.88; }
+      if (S.portrait) { S.cam.x = 210; S.cam.z = 0.84; }   // phone: the host at the far end inside the screen
     };
   },
 };

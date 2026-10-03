@@ -98,13 +98,14 @@ export default {
       pose(freeGlow, { x: 562, y: Y - 110, o: out * (1 - es(t, 0.9, 1.2)) });
       const wob = T ? Math.sin(T * 2.2) * 6 : 0;
       let lx, ly, lr = 0;
+      const RX = S.portrait ? 900 : 1020;   // phone: the spirit rests and speaks inside the screen
       if (t < 1.1) {
         const a = es(t, 0.05, 0.4), b = es(t, 0.5, 0.85);
         const jit = (bump(t, 0.38, 0.55) + bump(t, 0.85, 1.05)) * Math.sin(t * 90) * 6;
-        lx = lerp(lerp(580, 790, a), 1020, b) + jit; ly = lerp(lerp(Y - 140, 630, a), 560, b) - Math.sin(a * PI) * 90 - Math.sin(b * PI) * 70 + wob; lr = jit * 2 + (T ? Math.sin(T * 1.5) * 10 : 0);
+        lx = lerp(lerp(580, 790, a), RX, b) + jit; ly = lerp(lerp(Y - 140, 630, a), 560, b) - Math.sin(a * PI) * 90 - Math.sin(b * PI) * 70 + wob; lr = jit * 2 + (T ? Math.sin(T * 1.5) * 10 : 0);
       } else {
-        const k = es(t, 1.45, 1.95, ease.in);
-        lx = lerp(1020, 1500, k); ly = lerp(560, 360, k) + wob; lr = k * 30;
+        const k = es(t, S.portrait ? 1.8 : 1.45, 1.95, ease.in);   // phone: it says it at rest, then goes
+        lx = lerp(RX, 1500, k); ly = lerp(560, 360, k) + wob; lr = k * 30;
       }
       if (t > 2) {
         const a = es(t, 2.05, 2.4), b = es(t, 3.05, 3.4);

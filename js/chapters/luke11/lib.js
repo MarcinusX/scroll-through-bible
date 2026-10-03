@@ -366,9 +366,10 @@ export const TABLE_GUESTS = () => [phOpts(0), phOpts(2), LAWYER7];
  * the host on his cushion at the far end, Jesus on the couch at the near end, His legs stretched back. The lamps are
  * out (it is day) unless lit is given to update(). Returns the house handles plus puppets and a pose helper.
  */
-export function dinnerSet(S, { skyCols = NOONHALL, sky2 = DUSKHALL, host = true } = {}) {
+export function dinnerSet(S, { skyCols = NOONHALL, sky2 = DUSKHALL, host = true, ceilTop } = {}) {
   const c = S.c;
-  const R = simonHouseM(S, { skyCols, sky2 });
+  // ceilTop (optional, phone): where the ceiling sheet ends above, so the top of a tall screen is sky, not planks
+  const R = simonHouseM(S, ceilTop === undefined ? { skyCols, sky2 } : { skyCols, sky2, ceilTop });
   const { FLOOR, JX, SEAT, TOP } = SHM;
   const G = TABLE_GUESTS();
   const guests = G.map((o, i) => ({ i, x: SHM.GUESTS[i], p: S.puppet(R.backL.add(person(c, { ...o, pose: 'sit' }))), seed: c.rr(0, 9) }));

@@ -106,7 +106,7 @@ export default {
       const [ahx, ahy] = headAt(HL.X - 150, H.kfn(HL.X - 150) + 8, 0.92);
       pose(ask, { x: ahx - 10, y: ahy - 18, s: ak, o: ak > 0.01 ? 1 : 0 });
       const jk = es(t, 1.6, 1.9, ease.out) * (1 - es(t, 2.0, 2.25, ease.in));
-      pose(jplate, { x: 1030, y: lerp(-700, 330, jk), r: T ? Math.sin(T * 0.8) * 1.4 : 0, o: jk > 0.004 ? 1 : 0 });
+      pose(jplate, { x: S.portrait ? 930 : 1030, y: lerp(-700, 330, jk), r: T ? Math.sin(T * 0.8) * 1.4 : 0, o: jk > 0.004 ? 1 : 0 });
 
       /* v2a — heaven opens; "Father" */
       const open = es(t, 2.08, 2.6);
@@ -129,7 +129,7 @@ export default {
       /* v2c — the gate of the kingdom comes down and opens; the grove flowers */
       const gd = es(t, 4.05, 4.45, ease.out);
       const gy = lerp(HL.LY + 40, GY, gd);
-      const gx = lerp(HL.LX, GX, gd);
+      const gx = lerp(HL.LX, S.portrait ? 980 : GX, gd);   // phone: the gate clear of the thread
       const gOn = es(t, 4.02, 4.1);
       const sc = lerp(0.4, 1, gd);
       pose(gFrame, { x: gx, y: gy, s: sc, o: gOn });

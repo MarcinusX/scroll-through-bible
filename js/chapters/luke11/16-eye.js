@@ -71,7 +71,8 @@ export default {
     const litId = S.id('litg'), darkId = S.id('dkg');
     S.defs(`<radialGradient id="${litId}" cx=".5" cy=".45" r=".6"><stop offset="0" stop-color="#fff6d8"/><stop offset=".6" stop-color="#ffe3a1"/><stop offset="1" stop-color="#f3c16b"/></radialGradient>`);
     S.defs(`<linearGradient id="${darkId}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1b1830"/><stop offset="1" stop-color="#2d2540"/></linearGradient>`);
-    const F = FIG.map((f, i) => {
+    const FIGS = S.portrait ? [{ ...FIG[0], x: 640 }, { ...FIG[1], x: 962 }] : FIG;   // phone: the dark one clear of the thread
+    const F = FIGS.map((f, i) => {
       const P = bodyPts(c, f.x, HY, f.flip);
       fig.add(`<g>${sheet().p(c.cut(P, 0.6, 8), mix(paper, C.parchment, 0.45)).out()}</g>`);
       const cid = S.id('clip' + i);
@@ -124,6 +125,7 @@ export default {
       S.cam.x = kf2(t, [[0, 40], [3.9, 40], [4.3, 0]]);
       S.cam.z = kf2(t, [[0, 1.0], [3.9, 1.0], [4.3, 1.04]]);
       S.cam.y = kf2(t, [[0, 10], [3.9, 10], [4.3, 20]]);
+      if (S.portrait) S.cam.x = 40;   // phone: no pan at the end, the dark one stays clear of the thread
     };
   },
 };

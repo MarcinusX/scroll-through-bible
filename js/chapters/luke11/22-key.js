@@ -28,10 +28,10 @@ export default {
     { v: 53 },
     { v: 54 },
   ],
-  cam: { x: [0, 140], y: [60, 160], z: [0.84, 1.2] },
+  cam: { x: [0, 220], y: [60, 160], z: [0.84, 1.2] },
   build(S) {
     const c = S.c;
-    const D = dinnerSet(S);
+    const D = dinnerSet(S, S.portrait ? { ceilTop: 0 } : {});   // phone: the ceiling is an eave band, not a third of the screen of planks
     const R = D.R;
     const PL = S.layer({ par: 0.3, sh: 6, rise: 0 });
     const B = S.layer({ par: 0.3, sh: 5, rise: 0 });
@@ -107,7 +107,7 @@ export default {
       });
       /* v54 — they lie in wait to catch Him in His words */
       lurk.forEach((m) => {
-        const x = [1060, 1160][m.i];
+        const x = (S.portrait ? [990, 1080] : [1060, 1160])[m.i];   // phone: the two who lie in wait inside the screen
         const snatch = bump(t, 3.35, 3.65) * (m.i === 0 ? 1 : 0);
         m.p.set({ x, y: FLOOR + 6, s: 0.94, flip: true, o: lurking, armF: 60 + snatch * 40, armB: 20 + m.i * 60, lean: -10 - snatch * 8, head: -10, blink: blinkAt(T, 4 + m.i) });
       });
@@ -121,7 +121,7 @@ export default {
       S.cam.x = kf(t, [[0, 110], [2.0, 110], [2.4, 60]]);
       S.cam.y = kf(t, [[0, 100], [2.0, 100], [2.4, 150]]);
       S.cam.z = kf(t, [[0, 1.06], [2.0, 1.06], [2.4, 1.12]]);
-      if (S.portrait) { S.cam.x = kf(t, [[0, 110], [2.0, 110], [2.4, 60]]); S.cam.z = 0.88; }
+      if (S.portrait) { S.cam.x = kf(t, [[0, 210], [2.0, 210], [2.4, 150]]); S.cam.z = 0.84; }   // phone: the host and the lurkers inside the screen
     };
   },
 };

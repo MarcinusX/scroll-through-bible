@@ -9,6 +9,7 @@
 import { C, person, blinkAt, pose, lerp, sky, hanging, sheet, shade, mix } from '../kit.js';
 import { sun as sunA, band, bush } from '../../assets/nature.js';
 import { es, ease, bump, seg } from '../../core/anim.js';
+import { makeCutter } from '../../core/paper.js';
 import { QUIET, WIFE, CHILD, manOf, loaf, sinKnot, secretShaft, smallLamp, iou, iouHalf, purse, sparkle, headP, handAt, kf, moving, label, tr, PI, NIGHT } from './lib.js';
 
 const GY = 668;                         // the floor line where they sit
@@ -53,7 +54,7 @@ export default {
     { v: 4, text: 'i przebacz nam nasze grzechy, bo i my przebaczamy każdemu, kto nam zawini;' },
     { v: 4, cont: true, text: 'i nie dopuść, byśmy ulegli pokusie».' },
   ],
-  cam: { x: [-30, 90], y: [-50, 60], z: [1, 1.14] },
+  cam: { x: [-60, 270], y: [-50, 60], z: [1, 1.14] },
   build(S) {
     const c = S.c;
     sky(S, ['#c7d8d6', '#f2dcbc', '#f8e6c6']);
@@ -74,7 +75,9 @@ export default {
     const rs = sheet();
     const win = c.rect(380, 250, 90, 84);
     rs.p(c.cut([[WX0, WT], [WX1, WT], [WX1, GY], [WX0, GY]], 0.5, 10) + c.hole(win, 0.3, 6), wall);
-    rs.p(c.cut([[-1100, -1400], [WX1 + 40, -1400], [WX1 + 40, WT], [-1100, WT]], 0.5, 12), mix(C.roof, C.wood2, 0.3));
+    const roof = c.cut([[-1100, -1400], [WX1 + 40, -1400], [WX1 + 40, WT], [-1100, WT]], 0.5, 12);
+    // phone: the ceiling as a band under the open sky, not a sheet filling the top third (own cutter: the seeded cuts stay)
+    rs.p(S.portrait ? makeCutter('lk11-bread-roof').cut([[-1100, WT - 110], [WX1 + 40, WT - 104], [WX1 + 40, WT], [-1100, WT]], 0.5, 12) : roof, mix(C.roof, C.wood2, 0.3));
     rs.p(c.cut([[-1100, WT], [WX0, WT], [WX0, GY], [-1100, GY]], 0.5, 12), mix(C.plaster2, C.dawn, 0.2));
     let beams = '';
     for (let x = WX0 + 10; x < WX1; x += 56) beams += c.cut(c.rect(x, WT, 14, 14), 0.2, 4);
@@ -96,7 +99,7 @@ export default {
 
     /* the dark of night inside the room, and the lamp's light */
     const dimL = S.layer({ par: 0.4, sh: 0, flat: true });
-    dimL.add(`<rect x="${WX0 - 1400}" y="-1500" width="${WX1 - WX0 + 1440}" height="3600" fill="${mix(C.night, C.plumRobe, 0.3)}" opacity=".5"/>`);
+    dimL.add(`<rect x="${WX0 - 1400}" y="${S.portrait ? WT - 110 : -1500}" width="${WX1 - WX0 + 1440}" height="${S.portrait ? 2100 : 3600}" fill="${mix(C.night, C.plumRobe, 0.3)}" opacity=".5"/>`);
     dimL.fade(0);
     const lampOn = dimL.add(`<g opacity="0">${smallLamp(c)}<circle cx="26" cy="-22" r="200" fill="url(#warm-glow)" opacity=".5"/></g>`);
 
@@ -212,7 +215,7 @@ export default {
       S.cam.x = kf(t, [[0, -20], [1.0, -10], [1.3, 40], [2.0, 40], [2.3, 90]]);
       S.cam.z = kf(t, [[0, 1.12], [1.0, 1.12], [1.3, 1.14], [2.0, 1.14], [2.3, 1.12]]);
       S.cam.y = kf(t, [[0, 40], [1.0, 50], [2.0, 50], [2.3, 50]]);
-      if (S.portrait) { S.cam.z = 1.0; S.cam.x = kf(t, [[0, -20], [2.0, 0], [2.3, 90]]); }
+      if (S.portrait) { S.cam.z = 1.0; S.cam.x = kf(t, [[0, -50], [2.0, -40], [2.3, 260]]); }   // phone: the wife whole, then the snare clear of the thread
     };
   },
 };
