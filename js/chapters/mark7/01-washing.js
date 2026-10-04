@@ -29,27 +29,31 @@ export default {
     { v: 4, text: 'I [gdy wrócą] z rynku, nie jedzą, dopóki się nie obmyją.' },
     { v: 4, cont: true, text: 'Jest jeszcze wiele innych [zwyczajów], które przejęli i których przestrzegają, jak obmywanie kubków, dzbanków, naczyń miedzianych.' },
   ],
-  cam: { x: [camFor(540), 40], y: [-60, 40], z: [1, 1.1] },
+  cam: { x: [camFor(540), 160], y: [-60, 40], z: [0.95, 1.1] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;
     const SKY = ['#cfe2dd', '#f0e7cf', '#f8ecd6'];
     const sk = sky(S, SKY);
 
     /* ---------- the flies: sun, clouds, birds ---------- */
     const hangL = S.layer({ par: 0.05, sh: 5 });
-    const sunEl = hanging(hangL, sun(c, 46), { x: 440, y: 150, len: 700 });
+    const SUNX = P ? 560 : 440, CL2X = P ? 1050 : 1130;   // phone: the sun and the far cloud inside the frame
+    const sunEl = hanging(hangL, sun(c, 46), { x: SUNX, y: 150, len: 700 });
     const cl1 = hanging(hangL, cloud(c, 190), { x: 760, y: 140, len: 600 });
-    const cl2 = hanging(hangL, cloud(c, 130), { x: 1130, y: 200, len: 700 });
+    const cl2 = hanging(hangL, cloud(c, 130), { x: CL2X, y: 200, len: 700 });
     const birds = flock(S, hangL, 4, (cc) => bird(cc, { color: C.bird }), { y: 220, speed: 40, scale: 0.5 });
 
     /* ---------- far hills with Jerusalem on the right, the road coming down ---------- */
     const far = S.layer({ par: 0.1, sh: 2 });
     const h1 = band(c, { y: 360, amps: [30, 10, 3], lens: [1300, 420, 140], color: C.hillFar });
     far.add(h1.markup);
-    const CITY = { x: 1150, y: h1.fn(1150) + 8 };
+    const CX = P ? 1000 : 1150;   // phone: Jerusalem and its name tag inside the frame
+    const CITY = { x: CX, y: h1.fn(CX) + 8 };
     far.add(`<g transform="translate(${CITY.x} ${CITY.y})">${farCity(c, 0.62)}</g>`);
     // the road winding down from the city gate
-    const road = [[CITY.x - 10, CITY.y + 2], [1080, 392], [1170, 408], [1040, 424], [990, 440]];
+    const RD = CX - 1150;
+    const road = [[CITY.x - 10, CITY.y + 2], [1080 + RD, 392], [1170 + RD, 408], [1040 + RD, 424], [990 + RD, 440]];
     far.add(sheet().p(c.ribbon(road, (t) => 4 + t * 7), mix(C.sand, C.hillFar, 0.3)).out());
     const walkers = [0, 1, 2, 3].map((i) => ({ i, p: S.puppet(far.add(person(c, { ...townsfolk(c), robe: [C.linen2, C.stone, C.plumRobe, C.tealRobe][i], hairStyle: 'wrap', veil: C.linen }))) }));
     const jTag = hanging(far, nameTag(c, tr('Jerozolima', 'Jerusalem'), { size: 16 }), { x: CITY.x, y: 250, len: 600 });
@@ -100,6 +104,8 @@ export default {
       { i: 0, x: 1010, from: 1560 }, { i: 1, x: 1062, from: 1620 }, { i: 2, x: 1114, from: 1680 },
       { i: 3, x: 1150, from: 1740 }, { i: 4, x: 1196, from: 1800 },
     ].map((m) => ({ ...m, seed: c.rr(0, 9), p: S.puppet(standL.add(pharisee(c, m.i))) }));
+    // phone: the Pharisees stand closer together, the last one clear of the thread
+    if (P) PH.forEach((m) => { m.x = [966, 994, 1020, 1046, 1072][m.i]; });
     const market = { p: S.puppet(standL.add(pharisee(c, 2, { robe: C.wheatRobe }))), seed: c.rr(0, 9) };
     const basketEl = standL.add(`<g>${marketBasket(c, 46)}</g>`);
 
@@ -109,6 +115,8 @@ export default {
       { o: CAST.peter, x: 668, flip: false }, { o: CAST.andrew, x: 732, flip: false },
       { o: CAST.james, x: 924, flip: true }, { o: CAST.john, x: 984, flip: true },
     ].map((d, i) => ({ ...d, i, seed: c.rr(0, 9), p: S.puppet(eatL.add(person(c, { ...d.o, pose: 'sit' }))) }));
+    // phone: James and John sit a little closer, so John stays clear of the thread at the basin
+    if (P) { D[2].x = 906; D[3].x = 944; }
     const jesus = S.puppet(eatL.add(person(c, { ...CAST.jesus, pose: 'sit' })));
     // the cloth spread on the ground with bread
     const cl = sheet();
@@ -130,6 +138,7 @@ export default {
     const tradTag = hanging(fx, `<g transform="translate(0 0)">${nameTag(c, tr(['tradycja', 'starszych'], ['the tradition', 'of the elders']), { size: 17 })}</g><g transform="translate(0 -40) scale(.55)">${scrollOpen(c, 80, 50)}</g>`, { x: 520, y: 300, len: 700 });
     // the washing line: a rope on two strings, vessels pegged along it, all dripping
     const LINE = { x0: 340, x1: 1200, y: 240 };
+    const LSX = P ? 0.78 : 1, LCX = P ? 830 : 800;   // phone: the line and its vessels drawn in to fit the width
     const lineEl = fx.add(`<g>${hang2(`<path d="${c.ribbon(c.qbez([LINE.x0 - 800, 0], [0, 26], [LINE.x1 - 800, 0], 20), 2.4)}" fill="${C.rope}"/>`, 400, 400)}</g>`);
     const V = [
       { m: cup(c, C.pot), x: 400, s: 1.6, flipY: true }, { m: jug(c, C.pot), x: 460, s: 0.78, flipY: true },
@@ -157,9 +166,9 @@ export default {
       const T = time;
       cur.set(es(t, 0.05, 0.85), T);
       sk.blend(SKY, ['#d6e6df', '#f4ead2', '#f9efdc'], seg(t, 1, 6));
-      swing(sunEl, 440, 150 - es(t, 0, 3) * 24, T, 1.1, 0.7);
+      swing(sunEl, SUNX, 150 - es(t, 0, 3) * 24, T, 1.1, 0.7);
       swing(cl1, 760 + Math.sin(T * 0.1) * 26, 140, T, 1.4, 0.6, 1);
-      swing(cl2, 1130 + Math.sin(T * 0.13 + 2) * 26, 200, T, 1.4, 0.8, 2);
+      swing(cl2, CL2X + Math.sin(T * 0.13 + 2) * 26, 200, T, 1.4, 0.8, 2);
       birds(T, 1);
 
       /* v1 — tiny figures come down the road from Jerusalem, then the full-size men walk in */
@@ -174,14 +183,14 @@ export default {
       const point = es(t, 2.05, 2.35) * (1 - es(t, 3.0, 3.2));
       const leave0 = t >= 3.0;
       PH.forEach((m) => {
-        const pr = seg(t, 1.3 + m.i * 0.06, 1.85 + m.i * 0.06);
+        const pr = P ? seg(t, 1.2 + m.i * 0.04, 1.58 + m.i * 0.04) : seg(t, 1.3 + m.i * 0.06, 1.85 + m.i * 0.06);   // phone: all five are in by x.75
         let x = lerp(m.from, m.x, ease.out(pr)), y = FLOOR, flip = true, walk = pr > 0 && pr < 1 ? x * 0.05 : undefined;
         let armF = 0, armB = 0, head = 0;
         if (m.i === 0) {
           armF = point * 95;
           if (leave0) {
             // walk over to the basin and wash (v3), then step back and watch (v4)
-            const keys = [[3.0, 1010], [3.32, 632], [4.0, 632], [4.2, 700]];
+            const keys = [[3.0, m.x], [3.32, 632], [4.0, 632], [4.2, 700]];
             x = kf(t, keys);
             walk = (t > 3.0 && t < 3.32) || (t > 4.0 && t < 4.2) ? x * 0.05 : undefined;
             flip = true;
@@ -208,7 +217,7 @@ export default {
       });
       jesus.set({ x: 826, y: MATY + 2, s: 0.9, flip: t > 4.5, armF: 26 + bump(t, 0.9, 1.9) * 30 + es(t, 5.1, 5.5) * 20, armB: 10, head: t < 3 ? 4 : -4, blink: blinkAt(T, 2) });
       const plateIn = es(t, 2.1, 2.45, ease.back) * (1 - es(t, 4.2, 4.6));
-      const plx = lerp(1010, 640, es(t, 2.95, 3.4));
+      const plx = lerp(1010, P ? 660 : 640, es(t, 2.95, 3.4));
       swing(handPlate, plx, 250 - (1 - plateIn) * 1150, T, 1.2, 0.8, 1);
       const clean = es(t, 3.3, 3.5);
       fade(dirtyG, 1 - clean); fade(cleanG, clean);
@@ -221,7 +230,7 @@ export default {
 
       /* v3 — the servant pours; hands washed over the basin; the tradition of the elders */
       const tagK = es(t, 3.05, 3.4, ease.back) * (1 - es(t, 5.0, 5.3));
-      swing(tradTag, 470, 300 - (1 - tagK) * 1150, T, 1.3, 0.8, 2);
+      swing(tradTag, P ? 530 : 470, 300 - (1 - tagK) * 1150, T, 1.3, 0.8, 2);
       const pour = es(t, 3.3, 3.42) * (1 - es(t, 3.95, 4.05)) + es(t, 4.55, 4.65) * (1 - es(t, 5.1, 5.25));
       const SV = { x: 516, y: FLOOR - 26 };
       const svArm = 46 + pour * 38;
@@ -256,24 +265,27 @@ export default {
       /* v4b — the washing line comes down, everything on it dripping */
       const lineK = es(t, 5.0, 5.45, ease.out);
       const ly = LINE.y - (1 - lineK) * 1150;
-      pose(lineEl, { x: 800, y: ly, o: lineK > 0.01 ? 1 : 0 });
+      pose(lineEl, { x: LCX, y: ly, sx: LSX, o: lineK > 0.01 ? 1 : 0 });
       V.forEach((v) => {
         const k = es(t, 5.12 + v.i * 0.04, 5.4 + v.i * 0.04, ease.back);
         const yy = ly + v.sag + 8;
         const sw = Math.sin(T * 1.6 + v.seed) * 4 * k;
-        pose(v.el, { x: v.x, y: yy - (1 - k) * 60, r: sw, o: lineK > 0.01 ? Math.min(1, k * 3) : 0 });
+        const vx = LCX + (v.x - 800) * LSX;
+        pose(v.el, { x: vx, y: yy - (1 - k) * 60, r: sw, o: lineK > 0.01 ? Math.min(1, k * 3) : 0 });
         v.dr.forEach((d, j) => {
           const q = ((T * 0.9 + v.ph + j * 0.5) % 1);
           const bottom = yy + v.bottom;
-          pose(d, { x: v.x + (j ? 6 : -5), y: bottom + q * q * 90, s: 1 - q * 0.4, o: k > 0.9 ? (1 - q) * 0.9 : 0 });
+          pose(d, { x: vx + (j ? 6 : -5), y: bottom + q * q * 90, s: 1 - q * 0.4, o: k > 0.9 ? (1 - q) * 0.9 : 0 });
         });
       });
 
       /* camera: the courtyard → over to the washing corner → up to the line */
-      const toBasin = es(t, 2.9, 3.35) * (1 - es(t, 5.0, 5.5) * 0.6);
-      S.cam.x = es(t, 0.7, 1.4) * 30 * (1 - es(t, 2.9, 3.35)) + toBasin * camFor(560);
+      // phone: look further right while the Pharisees arrive, less far left at the basin (Jesus stays in),
+      // and all the way back for the washing line
+      const toBasin = es(t, 2.9, 3.35) * (1 - es(t, 5.0, 5.5) * (P ? 1 : 0.6));
+      S.cam.x = es(t, 0.7, 1.4) * (P ? 150 : 30) * (1 - es(t, 2.9, 3.35)) + toBasin * camFor(P ? 792 : 560) + (P ? es(t, 5.0, 5.5) * 60 : 0);
       S.cam.y = es(t, 0.7, 1.6) * 20 + es(t, 2.9, 3.4) * 10 - es(t, 5.0, 5.5) * 70;
-      S.cam.z = 1 + es(t, 0.7, 1.6) * 0.04 + es(t, 2.9, 3.4) * 0.05 - es(t, 5.0, 5.5) * 0.08;
+      S.cam.z = 1 + es(t, 0.7, 1.6) * 0.04 + es(t, 2.9, 3.4) * (P ? -0.06 : 0.05) - es(t, 5.0, 5.5) * (P ? -0.03 : 0.08);
     };
   },
 };

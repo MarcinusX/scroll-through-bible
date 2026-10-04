@@ -27,6 +27,8 @@ export default {
   cam: { x: [-40, 40], y: [-60, 40], z: [1, 1.12] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;
+    const MX = P ? 760 : MINI.x;   // phone: the little stage hangs further right, wholly inside the frame
     const sk = sky(S, ['#bdb6d8', '#ecd2c4', '#f5e0cc']);
     // the sea through the window
     const out = S.layer({ par: 0.1, sh: 1 });
@@ -106,29 +108,29 @@ export default {
       /* the little stage comes down */
       const mK = es(t, -0.2, 0.3, ease.out) * (1 - es(t, 2.55, 2.95, ease.in));
       const my = MINI.y - (1 - mK) * 1150 + Math.sin(T * 0.8) * 2;
-      pose(miniEl, { x: MINI.x, y: my });
+      pose(miniEl, { x: MX, y: my });
       const eat = (i) => Math.max(0, Math.sin(T * 3 + i * 1.7));
       kidP.forEach((k, i) => {
-        k.p.set({ x: MINI.x + k.x * MS, y: my, s: 0.5 * MS, flip: k.flip, armF: 40 + eat(i) * 60, armB: 10, head: 4 - eat(i) * 4, blink: blinkAt(T, k.seed), o: mK > 0.01 ? 1 : 0 });
+        k.p.set({ x: MX + k.x * MS, y: my, s: 0.5 * MS, flip: k.flip, armF: 40 + eat(i) * 60, armB: 10, head: 4 - eat(i) * 4, blink: blinkAt(T, k.seed), o: mK > 0.01 ? 1 : 0 });
       });
       // v27 — the children's loaf lifts, drifts toward the puppies… and goes back to the children
       const lift = bump(t, 0.4, 0.95);
       const toward = bump(t, 0.45, 0.9);
-      pose(bigLoaf, { x: MINI.x + (-40 + toward * 70) * MS + Math.sin(t * 40) * 3 * (t > 0.7 && t < 0.8 ? 1 : 0), y: my + (-64 - lift * 40 + toward * 22) * MS, s: MS, o: t > 0.4 && t < 0.95 ? 1 : 0, r: toward * 10 });
+      pose(bigLoaf, { x: MX + (-40 + toward * 70) * MS + Math.sin(t * 40) * 3 * (t > 0.7 && t < 0.8 ? 1 : 0), y: my + (-64 - lift * 40 + toward * 22) * MS, s: MS, o: t > 0.4 && t < 0.95 ? 1 : 0, r: toward * 10 });
       // v28 — crumbs fall, the puppies catch them, tails wag
       const crumbsOn = es(t, 1.15, 1.3) * (1 - es(t, 2.5, 2.6));
       crumbs.forEach((cr) => {
         const k = ((T * 0.7 + cr.ph) % 1);
-        pose(cr.el, { x: MINI.x + (cr.dx * 0.6 + cr.dx * 0.1 * k) * MS, y: my + (-58 + k * k * 36) * MS, s: MS, o: crumbsOn * (1 - k * 0.5) });
+        pose(cr.el, { x: MX + (cr.dx * 0.6 + cr.dx * 0.1 * k) * MS, y: my + (-58 + k * k * 36) * MS, s: MS, o: crumbsOn * (1 - k * 0.5) });
       });
       pups.forEach((p, i) => {
         const happy = es(t, 1.2, 1.4);
         const look = es(t, 0.45, 0.6) * (1 - es(t, 0.95, 1.1)) + happy;
-        pose(p.el, { x: MINI.x + p.x * MS, y: my, s: MS, sx: p.flip ? -1 : 1, o: mK > 0.01 ? 1 : 0 });
+        pose(p.el, { x: MX + p.x * MS, y: my, s: MS, sx: p.flip ? -1 : 1, o: mK > 0.01 ? 1 : 0 });
         pose(p.tail, { x: -24 * 1.1, y: -26 * 1.1, r: Math.sin(T * (8 + i)) * (6 + happy * 22) });
         pose(p.head, { x: 24 * 1.1, y: -32 * 1.1 - Math.max(0, Math.sin(T * 4 + i)) * 4 * happy, r: -look * 30 + Math.sin(T * 5 + i) * 5 * happy });
         const hk = es(t, 1.6 + i * 0.15, 1.8 + i * 0.15, ease.back) * (1 - es(t, 2.5, 2.6));
-        pose(hearts[i], { x: MINI.x + (p.x + (p.flip ? -20 : 20)) * MS, y: my + (-56 - hk * 10) * MS, s: hk * MS, o: hk > 0.02 ? 1 : 0 });
+        pose(hearts[i], { x: MX + (p.x + (p.flip ? -20 : 20)) * MS, y: my + (-56 - hk * 10) * MS, s: hk * MS, o: hk > 0.02 ? 1 : 0 });
       });
 
       /* the people */
@@ -144,8 +146,8 @@ export default {
       wKneel.set({ x: WX, y: FLOOR + 2, s: 1.06, o: 1 - rise, armF: 60 + her * 70, armB: 30 + her * 20, head: -8 - her * 10 + es(t, 2.1, 2.3) * 6, lean: 10 - her * 6, blink: blinkAt(T, 3) });
       const wx = lerp(WX, 205, es(t, 2.6, 3.05, ease.in));
       wStand.set({ x: wx, y: FLOOR, s: 1.06, flip: t > 2.62, o: rise * (1 - es(t, 2.95, 3.05)), walk: t > 2.6 ? wx * 0.06 : undefined, head: t < 2.62 ? -6 : 0, blink: blinkAt(T, 3) });
-      peter.set({ x: 1040, y: FLOOR - 6, s: 1.0, flip: true, head: -bump(t, 1.2, 2.2) * 6, armF: bump(t, 2.1, 2.8) * 40, blink: blinkAt(T, 4) });
-      john.set({ x: 1104, y: FLOOR - 10, s: 0.98, flip: true, head: bump(t, 1.2, 2.2) * 8, blink: blinkAt(T, 7) });
+      peter.set({ x: P ? 994 : 1040, y: FLOOR - 6, s: 1.0, flip: true, head: -bump(t, 1.2, 2.2) * 6, armF: bump(t, 2.1, 2.8) * 40, blink: blinkAt(T, 4) });
+      john.set({ x: P ? 1044 : 1104, y: FLOOR - 10, s: 0.98, flip: true, head: bump(t, 1.2, 2.2) * 8, blink: blinkAt(T, 7) });
 
       /* v29 — the word: light goes out towards home; the dark cloud melts */
       const pK = es(t, 2.05, 2.25, ease.back) * (1 - es(t, 2.5, 2.62));

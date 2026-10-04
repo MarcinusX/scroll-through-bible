@@ -28,12 +28,18 @@ export default {
   cam: { x: [-40, 40], y: [-60, 20], z: [1, 1.1] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;
+    // phone: the parents' home slides right and the Temple corner left, so the set fits the width
+    const HX = P ? 64 : 0, TX = P ? -64 : 0;
+    const wrap = (m, dx) => (dx ? `<g transform="translate(${dx} 0)">${m}</g>` : m);
+    const CH = { x: CHEST.x + TX, y: CHEST.y };
+    const SUNX = P ? 510 : 420, CLX = P ? 1060 : 1180;
     const SKY = ['#e9dcc8', '#f3e6cc', '#f8eed9'];
     const DARK = ['#b8adb8', '#d9cbbd', '#ece0cb'];
     const sk = sky(S, SKY);
     const hangL = S.layer({ par: 0.05, sh: 4 });
-    const sunEl = hanging(hangL, sun(c, 38), { x: 420, y: 150, len: 700 });
-    const cl = hanging(hangL, cloud(c, 150), { x: 1180, y: 190, len: 700 });
+    const sunEl = hanging(hangL, sun(c, 38), { x: SUNX, y: 150, len: 700 });
+    const cl = hanging(hangL, cloud(c, 150), { x: CLX, y: 190, len: 700 });
 
     /* ---------- a painted flat: hills, Jerusalem's walls in the distance ---------- */
     const back = S.layer({ par: 0.15, sh: 2 });
@@ -54,10 +60,10 @@ export default {
     hs.p(c.cut(c.rect(380, FLOOR - 8, 320, 12), 0.5, 10), mix(C.clay, C.sand2, 0.5));
     // pillars of the cut-away edge
     hs.p(c.cut(c.rect(372, 392, 16, FLOOR - 388), 0.4, 8) + c.cut(c.rect(692, 392, 16, FLOOR - 388), 0.4, 8), C.plaster);
-    home.add(hs.out());
+    home.add(wrap(hs.out(), HX));
     const bench = sheet().p(c.cut(c.rect(430, FLOOR - 40, 170, 9), 0.4, 8), C.wood).p(c.cut(c.rect(440, FLOOR - 31, 8, 32), 0.3, 4) + c.cut(c.rect(582, FLOOR - 31, 8, 32), 0.3, 4), C.wood2).out();
-    home.add(bench);
-    const candleEl = home.add(`<g transform="translate(652 ${FLOOR - 6}) scale(.6)">${candle(c, 40)}</g>`);
+    home.add(wrap(bench, HX));
+    const candleEl = home.add(`<g transform="translate(${652 + HX} ${FLOOR - 6}) scale(.6)">${candle(c, 40)}</g>`);
     const flame = candleEl.querySelector('.flame'), cGlow = candleEl.querySelector('.glow');
     const father = S.puppet(home.add(person(c, { ...LOOK.father, pose: 'sit' })));
     const mother = S.puppet(home.add(person(c, { ...LOOK.mother, pose: 'sit', holdF: `<g transform="translate(6 4) rotate(-80)">${bowl(c, { w: 30, food: null })}</g>` })));
@@ -72,15 +78,15 @@ export default {
     ts.p(c.cut([[900, 356], [1216, 356], [1216, 362], [900, 362]], 0.3, 8), C.sun);
     ts.p(c.cut(c.rect(976, FLOOR - 44, 140, 48), 0.5, 8), C.stone2);
     ts.x(c.ribbon([[976, FLOOR - 22], [1116, FLOOR - 22]], 1.4), shade(C.stone2, -0.2), 'opacity=".6"');
-    tmp.add(ts.out());
+    tmp.add(wrap(ts.out(), TX));
     const chestS = sheet();
     chestS.p(c.cut(c.rect(-50, -58, 100, 58), 0.5, 7), C.wood);
     chestS.p(c.cut([[-54, -58], [54, -58], [48, -74], [-48, -74]], 0.4, 6), C.wood2);
     chestS.p(c.ribbon([[-50, -40], [50, -40]], 5) + c.ribbon([[-50, -14], [50, -14]], 5), C.sun);
     chestS.p(c.cut(c.rect(-8, -52, 16, 18), 0.3, 4), C.ochre);
     chestS.x(c.ribbon([[-14, -66], [14, -66]], 3), C.soilDark);
-    tmp.add(`<g transform="translate(${CHEST.x} ${CHEST.y + 58 - 44})">${chestS.out()}</g>`);
-    const PHS = [{ i: 0, x: 1128 }, { i: 1, x: 1186, back: true }, { i: 2, x: 1240, back: true }].map((m) => ({ ...m, seed: c.rr(0, 9), p: S.puppet(tmp.add(pharisee(c, m.i))) }));
+    tmp.add(`<g transform="translate(${CH.x} ${CHEST.y + 58 - 44})">${chestS.out()}</g>`);
+    const PHS = [{ i: 0, x: P ? 1022 : 1128 }, { i: 1, x: P ? 1050 : 1186, back: true }, { i: 2, x: P ? 1034 : 1240, back: true }].map((m) => ({ ...m, seed: c.rr(0, 9), p: S.puppet(tmp.add(pharisee(c, m.i))) }));
 
     /* ---------- the son ---------- */
     const sonL = S.layer({ par: PAR, sh: 5 });
@@ -107,8 +113,8 @@ export default {
       const T = time;
       const dim = bump(t, 1.05, 2.1) * 0.8;
       sk.blend(SKY, DARK, dim);
-      swing(sunEl, 420, 150, T, 1, 0.6);
-      swing(cl, 1180 + Math.sin(T * 0.1) * 20, 190, T, 1.2, 0.7, 1);
+      swing(sunEl, SUNX, 150, T, 1, 0.6);
+      swing(cl, CLX + Math.sin(T * 0.1) * 20, 190, T, 1.2, 0.7, 1);
 
       /* the tablets hang over everything; the fourth commandment glows */
       const tabK = es(t, -0.3, 0.3, ease.out);
@@ -117,7 +123,7 @@ export default {
       fade(tabGlow, es(t, 0.25, 0.5) * (1 - es(t, 1.0, 1.2)) + bump(t, 1.1, 1.9) * 0.6 + es(t, 2.0, 2.3) * 0.35 * (1 - covered));
 
       /* v10a — the son brings bread to his father and mother */
-      const walkKeys = [[0.1, 860], [0.5, 690], [2.1, 690], [2.45, 900], [3.05, 900], [3.25, 930]];
+      const walkKeys = [[0.1, 860], [0.5, 690 + HX], [2.1, 690 + HX], [2.45, 900 + TX], [3.05, 900 + TX], [3.25, 930 + TX]];
       const sx = kfLin(t, walkKeys);
       const walking = (t > 0.1 && t < 0.5) || (t > 2.1 && t < 2.45) || (t > 3.05 && t < 3.25);
       const give = bump(t, 0.5, 0.95);
@@ -126,23 +132,23 @@ export default {
       // the basket on his back arm, until he sets it on the gift chest (v12)
       const [bx, by] = hand(sx, FLOOR, 0.92, !facingRight, 24 - blocked * 10);
       const onChest = es(t, 3.1, 3.3);
-      pose(basketEl, { x: lerp(bx + (facingRight ? -6 : 6), CHEST.x, onChest), y: lerp(by + 34, CHEST.y - 18, onChest) - Math.sin(onChest * PI) * 30 });
+      pose(basketEl, { x: lerp(bx + (facingRight ? -6 : 6), CH.x, onChest), y: lerp(by + 34, CH.y - 18, onChest) - Math.sin(onChest * PI) * 30 });
       const [gx, gy] = hand(sx, FLOOR, 0.92, true, 70);
       const gk = seg(t, 0.55, 0.9);
-      pose(gift, { x: lerp(gx, 590, ease.io(gk)), y: lerp(gy, FLOOR - 104, ease.io(gk)) - Math.sin(gk * PI) * 20, o: t > 0.5 && t < 2.3 ? 1 : 0 });
+      pose(gift, { x: lerp(gx, 590 + HX, ease.io(gk)), y: lerp(gy, FLOOR - 104, ease.io(gk)) - Math.sin(gk * PI) * 20, o: t > 0.5 && t < 2.3 ? 1 : 0 });
       const loveK = es(t, 0.8, 1.0, ease.back) * (1 - es(t, 1.05, 1.2));
-      pose(love, { x: 560, y: 470 - loveK * 20, s: loveK, o: loveK > 0.02 ? 1 : 0 });
+      pose(love, { x: 560 + HX, y: 470 - loveK * 20, s: loveK, o: loveK > 0.02 ? 1 : 0 });
       const sad = es(t, 3.4, 3.8);
-      father.set({ x: 500, y: FLOOR - 32, s: 0.86, armF: bump(t, 0.7, 1.4) * 60 + sad * 10, head: -sad * 14 + bump(t, 0.7, 1.4) * 4, blink: blinkAt(T, 1) });
-      mother.set({ x: 566, y: FLOOR - 32, s: 0.86, armF: 50 + bump(t, 0.4, 1.0) * 20 + sad * 22, head: sad * 16, blink: blinkAt(T, 5) });
+      father.set({ x: 500 + HX, y: FLOOR - 32, s: 0.86, armF: bump(t, 0.7, 1.4) * 60 + sad * 10, head: -sad * 14 + bump(t, 0.7, 1.4) * 4, blink: blinkAt(T, 1) });
+      mother.set({ x: 566 + HX, y: FLOOR - 32, s: 0.86, armF: 50 + bump(t, 0.4, 1.0) * 20 + sad * 22, head: sad * 16, blink: blinkAt(T, 5) });
 
       /* v10b — whoever curses father or mother: a shadow, a jagged word, a lowered drape */
       const shK = es(t, 1.05, 1.25) * (1 - es(t, 1.9, 2.05));
-      shadowSon.set({ x: 780, y: FLOOR, s: 0.92, flip: true, o: shK, armF: 80, armB: 40, head: -6 });
+      shadowSon.set({ x: 780 + HX / 2, y: FLOOR, s: 0.92, flip: true, o: shK, armF: 80, armB: 40, head: -6 });
       const cK = es(t, 1.15, 1.35, ease.back) * (1 - es(t, 1.6, 1.75));
-      pose(curse, { x: 700, y: 440, s: cK, o: cK > 0.02 ? 1 : 0 });
+      pose(curse, { x: 700 + HX, y: 440, s: cK, o: cK > 0.02 ? 1 : 0 });
       const drop_ = es(t, 1.45, 1.7, ease.out) * (1 - es(t, 1.95, 2.25, ease.in));
-      pose(drape, { x: 780, y: 440 - (1 - drop_) * 1150 });
+      pose(drape, { x: 780 + HX / 2, y: 440 - (1 - drop_) * 1150 });
       const snuff = es(t, 1.55, 1.7) * (1 - es(t, 2.2, 2.4));
       fade(flame, 1 - snuff); fade(cGlow, 1 - snuff);
       son.set({
@@ -163,14 +169,14 @@ export default {
       const tagMove = es(t, 2.55, 2.85);
       const tagK = es(t, 2.2, 2.4);
       pose(tag, { x: lerp(tx - 6, bx + (facingRight ? -6 : 6), tagMove), y: lerp(ty - 10, by - 10, tagMove) - Math.sin(tagMove * PI) * 40, r: Math.sin(T * 2) * 4, o: tagK });
-      if (t > 3.1) pose(tag, { x: lerp(bx, CHEST.x, onChest) + 30, y: lerp(by - 10, CHEST.y - 70, onChest), r: -10 + Math.sin(T * 1.5) * 3, o: 1 - es(t, 5.6, 5.9) * 0 });
+      if (t > 3.1) pose(tag, { x: lerp(bx, CH.x, onChest) + 30, y: lerp(by - 10, CH.y - 70, onChest), r: -10 + Math.sin(T * 1.5) * 3, o: 1 - es(t, 5.6, 5.9) * 0 });
       const sayK = es(t, 2.6, 2.8, ease.back) * (1 - es(t, 3.05, 3.2));
       const [hx, hy] = headAt(sx, FLOOR, 0.92, false);
       pose(say, { x: hx - 40, y: hy - 24, s: sayK, o: sayK > 0.02 ? 1 : 0 });
 
       /* v12 — a rope between the son and his parents */
       const ropeK = es(t, 3.35, 3.7, ease.out);
-      pose(ropeEl, { x: 790, y: 470 - (1 - ropeK) * 1150 + Math.sin(T * 0.9) * 2, o: ropeK > 0.01 ? 1 : 0 });
+      pose(ropeEl, { x: 790 + (HX + TX) / 2, y: 470 - (1 - ropeK) * 1150 + Math.sin(T * 0.9) * 2, o: ropeK > 0.01 ? 1 : 0 });
 
       /* v13a — scrolls passed from hand to hand, stuck over the tablets */
       covers.forEach((cv) => {
@@ -186,7 +192,7 @@ export default {
       rain.forEach((r) => {
         const k = seg(t, 5.05 + r.d, 5.75 + r.d * 0.5);
         const y = lerp(40, r.y1, ease.out(k));
-        pose(r.el, { x: r.x + Math.sin(k * 7 + r.i) * 20 * (1 - k), y, r: r.r + k * 200 * r.sp, s: 0.9, o: k > 0.01 ? 1 : 0 });
+        pose(r.el, { x: (P ? 480 + (r.x - 420) * 0.83 : r.x) + Math.sin(k * 7 + r.i) * 20 * (1 - k), y, r: r.r + k * 200 * r.sp, s: 0.9, o: k > 0.01 ? 1 : 0 });
       });
 
       S.cam.z = 1 + es(t, 0, 1) * 0.03 + es(t, 4.0, 4.6) * 0.03;

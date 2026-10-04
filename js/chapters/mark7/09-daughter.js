@@ -11,7 +11,7 @@ const PI = Math.PI;
 const FLOOR = 690;
 const BED = { x: 720, y: 680, s: 1.1 };
 const GIRL = { x: 750, y: 610, s: 0.62 };
-const WIN = { x: 480, y: 400 };
+const WIN0 = { x: 480, y: 400 };
 
 export default {
   id: 'm7-daughter',
@@ -22,6 +22,9 @@ export default {
   cam: { x: [-60, 40], y: [0, 120], z: [1, 1.2] },
   build(S) {
     const c = S.c;
+    // phone: the window (where the spirit leaves and the light comes in) moves inward, the shelf with it
+    const WIN = S.portrait ? { x: 565, y: 400 } : WIN0;
+    const SH = S.portrait ? 85 : 0;
     const SKY = ['#cbd9e0', '#f3e2cc', '#f9ecd8'];
     const sk = sky(S, SKY);
     const out = S.layer({ par: 0.1, sh: 1 });
@@ -47,9 +50,9 @@ export default {
     for (let y = 330; y < 520; y += 44) for (let x = 986; x < 1120; x += 40) st += c.cut(c.star(x + (y % 88 ? 20 : 0), y, 7, 3, 4, 0), 0.2, 3);
     w.x(st, C.cream, 'opacity=".7"');
     w.p(c.ribbon([[950, 298], [1150, 298]], 6), C.wood2);
-    w.p(c.cut(c.rect(600, 330, 120, 7), 0.3, 6), C.wood2);
-    w.p(c.cut([[614, 330], [610, 308], [620, 298], [630, 308], [626, 330]], 0.3, 4), C.pot);
-    w.p(c.cut(c.circ(676, 310, 8, 10), 0.3, 3) + c.cut([[666, 330], [670, 316], [682, 316], [686, 330]], 0.3, 3), C.roseRobe);
+    w.p(c.cut(c.rect(600 + SH, 330, 120, 7), 0.3, 6), C.wood2);
+    w.p(c.cut([[614 + SH, 330], [610 + SH, 308], [620 + SH, 298], [630 + SH, 308], [626 + SH, 330]], 0.3, 4), C.pot);
+    w.p(c.cut(c.circ(676 + SH, 310, 8, 10), 0.3, 3) + c.cut([[666 + SH, 330], [670 + SH, 316], [682 + SH, 316], [686 + SH, 330]], 0.3, 3), C.roseRobe);
     w.p(c.cut([[-900, FLOOR - 46], [2500, FLOOR - 46], [2500, FLOOR + 6], [-900, FLOOR + 6]], 0.8, 14) + c.hole(door.map(([x, y]) => [x, Math.max(y, FLOOR - 46)]), 0.3, 6), shade(wcol, -0.05));
     roomL.add(w.out());
     roomL.add(sheet().p(c.cut([[-900, FLOOR], [2500, FLOOR], [2500, 1700], [-900, 1700]], 1, 30), mix(C.clay, C.sand2, 0.55)).out());

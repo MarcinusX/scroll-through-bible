@@ -28,6 +28,8 @@ export default {
   cam: { x: [-40, 360], y: [-80, 40], z: [1, 1.3] },
   build(S) {
     const c = S.c;
+    // phone: the map hangs a little smaller and lower, so it fits the width and hides the people below it
+    const MS = S.portrait ? 0.84 : 1, MY = S.portrait ? 470 : MAP.y;
     const SKY = ['#cde1e2', '#eee7cf', '#f7ebd4'];
     const HEAV = ['#e9eed9', '#fbf1d4', '#fbf0da'];
     const sk = sky(S, SKY);
@@ -90,13 +92,13 @@ export default {
 
       /* v31 — the journey on the map */
       const up = es(t, 0.82, 1.08, ease.in);
-      const my = MAP.y - up * 1300;
-      pose(mapEl, { x: MAP.x, y: my });
+      const my = MY - up * 1300;
+      pose(mapEl, { x: MAP.x, y: my, s: MS });
       const k = es(t, 0.1, 0.8, (x) => x);
       attr(routeEl, 'stroke-dashoffset', (routeLen * (1 - k)).toFixed(1));
-      pose(routeEl, { x: MAP.x, y: my });
+      pose(routeEl, { x: MAP.x, y: my, s: MS });
       const [px, py] = along(ROUTE, k);
-      pose(token, { x: MAP.x + px, y: my + py, s: 1 + Math.sin(T * 4) * 0.06, o: t < 1.05 ? 1 : 0 });
+      pose(token, { x: MAP.x + px * MS, y: my + py * MS, s: 1 + Math.sin(T * 4) * 0.06, o: t < 1.05 ? 1 : 0 });
 
       /* v32 — they bring the deaf man and beg */
       const ears = es(t, 3.05, 3.25) * (1 - es(t, 3.45, 3.55));

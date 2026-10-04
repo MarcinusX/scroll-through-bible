@@ -26,6 +26,7 @@ export default {
   cam: { x: [-30, 30], y: [-110, 30], z: [1, 1.1] },
   build(S) {
     const c = S.c;
+    const EAR = S.portrait ? 205 : 260;   // phone: the two ears inside the frame, clear of the thread
     const SKY = ['#cfe1de', '#efe6cd', '#f7ebd4'];
     const sk = sky(S, SKY);
     const hangL = S.layer({ par: 0.05, sh: 4 });
@@ -140,11 +141,11 @@ export default {
       /* v16 — ears to hear */
       ears.forEach((e, i) => {
         const k = es(t, 4.0 + i * 0.1, 4.35 + i * 0.1, ease.back);
-        swing(e.el, DOLL.x + e.side * 260, 260 - (1 - k) * 1150, T, 1.4, 0.8, i);
+        swing(e.el, DOLL.x + e.side * EAR, 260 - (1 - k) * 1150, T, 1.4, 0.8, i);
       });
       const on = es(t, 4.3, 4.5);
-      earRings(DOLL.x - 260, 300, on, T);
-      earRings2(DOLL.x + 260, 300, on, T);
+      earRings(DOLL.x - EAR, 300, on, T);
+      earRings2(DOLL.x + EAR, 300, on, T);
 
       S.cam.y = -es(t, 1.8, 2.3) * 100 + es(t, 4.0, 4.4) * 20;
       S.cam.z = 1 + es(t, 0.2, 1.0) * 0.03 + es(t, 1.05, 1.3) * 0.03 - es(t, 1.8, 2.3) * 0.04;
