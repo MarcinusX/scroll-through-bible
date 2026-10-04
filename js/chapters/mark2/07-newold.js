@@ -25,12 +25,13 @@ export default {
     { v: 22, cont: true, text: 'W przeciwnym razie wino rozerwie bukłaki; i wino przepadnie, i bukłaki.' },
     { v: 22, cont: true, text: 'Lecz młode wino [należy wlewać] do nowych bukłaków».' },
   ],
-  cam: { x: [camFor(620), camFor(1030)], y: [-20, 50], z: [1, 1.18] },
+  cam: { x: [camFor(550), camFor(1030)], y: [-20, 50], z: [1, 1.18] },
   build(S) {
     const c = S.c;
     sky(S, ['#d2e3dc', '#f1e8cf', '#f8eed8']);
     const hangL = S.layer({ par: 0.05, sh: 4 });
-    const sunEl = hanging(hangL, sun(c, 44), { x: 1200, y: 140, len: 700 });
+    const SUNX = S.portrait ? 1010 : 1200;   // phone: not half under the progress thread
+    const sunEl = hanging(hangL, sun(c, 44), { x: SUNX, y: 140, len: 700 });
     const cl1 = hanging(hangL, cloud(c, 170), { x: 360, y: 150, len: 700 });
 
     /* hills with rows of vines */
@@ -108,7 +109,7 @@ export default {
 
     return (t, time) => {
       const T = time;
-      swing(sunEl, 1200, 140, T, 1, 0.6);
+      swing(sunEl, SUNX, 140, T, 1, 0.6);
       swing(cl1, 360 + Math.sin(T * 0.1) * 20, 150, T, 1.2, 0.6, 1);
 
       /* the cloak: patch sewn on, washed, shrinks, tears */
@@ -189,7 +190,8 @@ export default {
         pose(spk, { x: sk.x + (i < 2 ? -30 : 30), y: sk.y + 10 - i * 12, s: k * 0.9, r: T * 30, o: k > 0.01 ? 1 : 0 });
       });
 
-      S.cam.x = kf(t, [[-0.5, camFor(600)], [1.9, camFor(600)], [2.3, camFor(1000)]]);
+      const TX = camFor(S.portrait ? 555 : 600);   // phone: the tailor and her bolt of cloth clear of the left edge
+      S.cam.x = kf(t, [[-0.5, TX], [1.9, TX], [2.3, camFor(1000)]]);
       S.cam.z = kf(t, [[-0.5, 1.12], [0.9, 1.16], [1.9, 1.16], [2.3, 1.14], [3.3, 1.14], [3.5, 1.06], [4.0, 1.12]]);
       S.cam.y = kf(t, [[-0.5, 10], [1.9, 20], [2.3, 30]]);
     };

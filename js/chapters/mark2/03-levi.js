@@ -145,7 +145,8 @@ export default {
       });
 
       /* the fisherman pays and goes */
-      const fKeys = [[-0.5, BOOTH - 160], [1.8, BOOTH - 160], [2.3, BOOTH - 600]];
+      const FX = S.portrait ? BOOTH - 215 : BOOTH - 160;   // phone: clear of the edge and the thread
+      const fKeys = [[-0.5, FX], [1.8, FX], [2.3, BOOTH - 600]];
       const fx = kf(t, fKeys, (u) => u);
       const leaving = t > 1.8;
       fisher.set({ x: fx, y: Y + 6, s: 0.96, flip: leaving, walk: leaving && t < 2.3 ? fx * 0.05 : undefined, armF: bump(t, 0.6, 1.5) * 70, armB: 30, o: 1 - seg(t, 2.2, 2.3), blink: blinkAt(T, 5) });
@@ -179,7 +180,8 @@ export default {
       });
 
       /* camera: the shore → the booth → following them */
-      S.cam.x = kf(t, [[0, camFor(700)], [2.0, camFor(700)], [2.6, camFor(1010)], [4.2, camFor(1010)], [4.95, camFor(820)]]);
+      const AT = camFor(S.portrait ? 1045 : 1010);   // phone: the name tag and the booth clear of the thread
+      S.cam.x = kf(t, [[0, camFor(700)], [2.0, camFor(700)], [2.6, AT], [4.2, AT], [4.95, camFor(820)]]);
       S.cam.z = 1.02 + es(t, 2.2, 2.7) * 0.08 - es(t, 4.2, 4.8) * 0.06;
       S.cam.y = 20 + es(t, 2.2, 2.7) * 30 - es(t, 4.2, 4.8) * 20;
     };

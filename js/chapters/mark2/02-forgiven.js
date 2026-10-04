@@ -29,7 +29,7 @@ export default {
     { v: 12, text: 'On wstał, wziął zaraz swoje łoże i wyszedł na oczach wszystkich.' },
     { v: 12, cont: true, text: 'Zdumieli się wszyscy i wielbili Boga mówiąc: «Jeszcze nigdy nie widzieliśmy czegoś podobnego».' },
   ],
-  cam: { x: [-150, 110], y: [-60, 40], z: [0.96, 1.16] },
+  cam: { x: [-240, 110], y: [-60, 40], z: [0.96, 1.16] },
   build(S) {
     const c = S.c;
     const sk = sky(S, ['#c9dfdc', '#e9e6cf', '#f5ead4']);
@@ -99,7 +99,8 @@ export default {
 
     /* ---------- people along the back wall ---------- */
     const backP = S.layer({ par: 0.45, sh: 4 });
-    const BACK = [[606, 0.8], [668, 0.82], [966, 0.82], [1030, 0.8], [1100, 0.78], [540, 0.78]].map(([x, s], i) => ({ x, s, y: FLOOR - 26, i, flip: x > JX, seed: c.rr(0, 9), p: S.puppet(backP.add(person(c, townsfolk(c)))) }));
+    const PH = S.portrait;   // phone: the people on the right stand closer to Jesus, clear of the progress thread
+    const BACK = [[606, 0.8], [668, 0.82], [PH ? 930 : 966, 0.82], [PH ? 980 : 1030, 0.8], [PH ? 1028 : 1100, 0.78], [540, 0.78]].map(([x, s], i) => ({ x, s, y: FLOOR - 26, i, flip: x > JX, seed: c.rr(0, 9), p: S.puppet(backP.add(person(c, townsfolk(c)))) }));
 
     /* ---------- scribes on a bench, Jesus, the crowd on the right ---------- */
     const mid = S.layer({ par: 0.55, sh: 5 });
@@ -113,7 +114,7 @@ export default {
       return { x, y: FLOOR - 20, s: 0.95, i, p, hx, hy, seed: c.rr(0, 9) };
     });
     const jesus = S.puppet(mid.add(person(c, { ...CAST.jesus })));
-    const RIGHT = [[1010, 668, 0.95], [1090, 664, 0.93], [1170, 670, 0.96], [1236, 664, 0.92]].map(([x, y, s], i) => ({ x, y, s, i, seed: c.rr(0, 9), p: S.puppet(mid.add(person(c, townsfolk(c)))) }));
+    const RIGHT = [[PH ? 940 : 1010, 668, 0.95], [PH ? 985 : 1090, 664, 0.93], [PH ? 1030 : 1170, 670, 0.96], [PH ? 1180 : 1236, 664, 0.92]].map(([x, y, s], i) => ({ x, y, s, i, seed: c.rr(0, 9), p: S.puppet(mid.add(person(c, townsfolk(c)))) }));
 
     /* ---------- the man on his mat ---------- */
     const matL = S.layer({ par: 0.6, sh: 6 });
@@ -126,7 +127,7 @@ export default {
       return { i, x: MAT.x + lerp(-60, 90, u) * MAT.s + c.rr(-8, 8), y: MAT.y - c.rr(30, 58) * MAT.s, r: c.rr(0, 360), el: matL.add(`<g>${scrap(c, c.rr(10, 15))}</g>`), sp: matL.add(`<g>${spark(c, 9)}</g>`), drift: c.rr(-60, 60) };
     });
     // two people in the way, who step aside
-    const PATH = [[1060, 708, 0.98], [1170, 712, 1.0]].map(([x, y, s], i) => ({ x, y, s, i, seed: c.rr(0, 9), p: S.puppet(matL.add(person(c, townsfolk(c)))) }));
+    const PATH = [[PH ? 995 : 1060, 708, 0.98], [PH ? 1160 : 1170, 712, 1.0]].map(([x, y, s], i) => ({ x, y, s, i, seed: c.rr(0, 9), p: S.puppet(matL.add(person(c, townsfolk(c)))) }));
     // the man standing up, the rolled mat on his shoulder
     const standing = S.puppet(matL.add(person(c, MAN)));
     const kneeling = S.puppet(matL.add(person(c, { ...MAN, pose: 'kneel' })));
@@ -297,7 +298,9 @@ export default {
       });
 
       /* camera */
-      S.cam.x = kf(t, [[1.6, 0], [2.1, -120], [4.9, -120], [5.3, -60], [6.9, -60], [7.2, 0], [11.3, 0], [11.7, 90], [12.05, 90], [12.4, 0]]);
+      // phone: further left while the scribes on their bench (x 330–630) are the subject
+      const SL = S.portrait ? -230 : -120, SM = S.portrait ? -200 : -60;
+      S.cam.x = kf(t, [[1.6, 0], [2.1, SL], [4.9, SL], [5.3, SM], [6.9, SM], [7.2, 0], [11.3, 0], [11.7, 90], [12.05, 90], [12.4, 0]]);
       S.cam.z = kf(t, [[-0.5, 1.02], [0.6, 1.08], [1.6, 1.1], [2.1, 1.12], [4.9, 1.12], [5.3, 1.04], [6.9, 1.04], [7.2, 1.0], [9.0, 1.0], [9.4, 1.06], [11.3, 1.06], [11.7, 1.04], [12.05, 1.04], [12.4, 0.98]]);
       S.cam.y = kf(t, [[-0.5, 0], [0.6, -30], [1.1, 10], [2.1, 20], [4.9, 20], [6.9, 10], [7.2, -40], [9.0, -40], [9.4, 10], [12.05, 10], [12.4, -20]]);
     };

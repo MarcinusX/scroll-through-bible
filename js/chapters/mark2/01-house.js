@@ -35,7 +35,7 @@ export default {
     { v: 4, cont: true, text: 'odkryli dach nad miejscem, gdzie Jezus się znajdował,' },
     { v: 4, cont: true, text: 'i przez otwór spuścili łoże, na którym leżał paralityk.' },
   ],
-  cam: { x: [-40, 80], y: [-70, 60], z: [1, 1.22] },
+  cam: { x: [-40, 470], y: [-70, 60], z: [1, 1.22] },
   build(S) {
     const c = S.c;
     const SKY = ['#cfe0dc', '#efe5cb', '#f7ead3'];
@@ -210,7 +210,8 @@ export default {
 
     /* ---------- foreground ---------- */
     const fg = S.layer({ par: 0.9, sh: 6 });
-    fg.add(bush(c, 1330, 850, 200, C.sage, C.moss) + bush(c, 250, 860, 220, C.moss, C.sage) + bush(c, 120, 880, 160, C.sage));
+    fg.add(bush(c, S.portrait ? 1720 : 1330, 850, 200, C.sage, C.moss) +   // phone: out of the way of the pan to the right
+       bush(c, 250, 860, 220, C.moss, C.sage) + bush(c, 120, 880, 160, C.sage));
 
     const cur = curtains(S);
 
@@ -377,7 +378,11 @@ export default {
       /* camera: the whole house → up to the roof → into the room */
       S.cam.z = 1 + es(t, 0.8, 1.8) * 0.04 + es(t, 3.9, 4.8) * 0.02 - es(t, 5.8, 6.3) * 0.04 + es(t, 7.05, 7.8) * 0.16;
       S.cam.y = es(t, 0.8, 1.8) * 20 - es(t, 5.8, 6.3) * 70 + es(t, 7.05, 7.8) * 90;
-      S.cam.x = es(t, 3.9, 4.6) * 60 - es(t, 6.3, 6.9) * 60 - es(t, 7.05, 7.8) * 20;
+      // phone: pan further right so the four friends with the mat (x ≈ 1150–1320) are on screen
+      const PAN = S.portrait ? 470 : 60;
+      // phone: while the crowd presses at the door, lean right so the people on the steps are clear of the thread
+      const STEP = S.portrait ? 100 : 0;
+      S.cam.x = es(t, 1.8, 2.4) * STEP + es(t, 3.9, 4.6) * (PAN - STEP) - es(t, 6.3, 6.9) * (PAN - STEP) - es(t, 7.05, 7.8) * 20;
     };
   },
 };
