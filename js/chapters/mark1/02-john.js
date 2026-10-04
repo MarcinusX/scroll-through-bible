@@ -26,10 +26,12 @@ export default {
   cam: { x: [-150, 60], y: [-20, 270], z: [0.92, 2.35] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;   // phone: labels pulled inward, a gentler close-up, the crowd kept in view
     const SKY = ['#cfe0da', '#f1e5c9', '#f7e9cf'];
     sky(S, SKY);
     const hangL = S.layer({ par: 0.04, sh: 5 });
-    const sunEl = hanging(hangL, sun(c, 50), { x: 1180, y: 170, len: 700 });
+    const SUNX = PH ? 1030 : 1180;   // phone: the sun not half under the progress thread
+    const sunEl = hanging(hangL, sun(c, 50), { x: SUNX, y: 170, len: 700 });
     const cl1 = hanging(hangL, cloud(c, 190), { x: 560, y: 150, len: 700 });
 
     /* ---------- the mountains of Moab, Jerusalem on its hill ---------- */
@@ -92,7 +94,7 @@ export default {
     const pourEl = R.add(`<g>${drops(c, 5, C.lake2)}</g>`);
     const kneel = S.puppet(R.add(person(c, { robe: C.dustyBlue, hairStyle: 'short', hair: C.hair2, beard: 'short', skin: C.skin2, pose: 'kneel' })));
     const queue = [{ robe: C.roseRobe, hairStyle: 'veil', veil: C.blushVeil, skin: C.skin }, { robe: C.sageRobe, hairStyle: 'curly', hair: C.hair3, beard: 'full', skin: C.skin4, belt: C.leather }]
-      .map((o, i) => ({ p: S.puppet(R.add(person(c, o))), x: 1035 + i * 95, i }));
+      .map((o, i) => ({ p: S.puppet(R.add(person(c, o))), x: PH ? 962 + i * 62 : 1035 + i * 95, i }));
     const wl = sheet();
     wl.p(c.ridge(c.wave(648, [2.5, 1.2], [160, 60]), -1300, 2600, 1700, 10, 0.6), mix(C.lake, C.lake2, 0.4));
     let fl = '';
@@ -109,7 +111,9 @@ export default {
     N.add(grass(c, { x0: -1300, x1: 2600, y: 708, fn: nbFn, n: 40, h: 16, color: C.olive }) + rock(c, 640, 760, 70, 24, C.rock2));
     const nearL = crowd(S, N, [{ y: 772, s: 0.82, n: 3, x0: 400, x1: 640 }]);
     const nearR = crowd(S, N, [{ y: 774, s: 0.82, n: 3, x0: 980, x1: 1210 }]);
+    if (PH) nearL.forEach((m) => { m.x = 640 - (640 - m.x) * 0.55; });
     nearL.forEach((m, i) => { m.from = m.x - 600; m.flip = false; });
+    if (PH) nearR.forEach((m) => { m.x = 930 + (m.x - 980) * 0.4; });
     nearR.forEach((m, i) => { m.from = m.x + 600; m.flip = true; });
     const johnB = S.puppet(N.add(person(c, { ...JOHN_B })));
     const voice = voiceRings(N, c, { n: 3, color: C.clay, r: 40, w: 6 });
@@ -117,10 +121,10 @@ export default {
     /* ---------- labels ---------- */
     const T = S.layer({ par: P, sh: 5 });
     const tags = [
-      { el: T.add(tagOnString(tr('sierść wielbłądzia', 'camel’s hair'), { size: 17, dx: 116, dy: 58 })), x: 660, y: 500, a: 4.15, b: 5.05 },
-      { el: T.add(tagOnString(tr('pas skórzany', 'leather belt'), { size: 17, dx: -120, dy: 70 })), x: 960, y: 530, a: 4.35, b: 5.05 },
-      { el: T.add(tagOnString(tr('szarańcza', 'locusts'), { size: 17, dx: 0, dy: 46 })), x: 655, y: 520, a: 5.15, b: 9 },
-      { el: T.add(tagOnString(tr('miód leśny', 'wild honey'), { size: 17, dx: 0, dy: 36 })), x: 978, y: 452, a: 5.35, b: 9 },
+      { el: T.add(tagOnString(tr('sierść wielbłądzia', 'camel’s hair'), { size: 17, dx: 116, dy: 58 })), x: PH ? 712 : 660, y: 500, a: 4.15, b: 5.05 },
+      { el: T.add(tagOnString(tr('pas skórzany', 'leather belt'), { size: 17, dx: -120, dy: 70 })), x: PH ? 905 : 960, y: 530, a: 4.35, b: 5.05 },
+      { el: T.add(tagOnString(tr('szarańcza', 'locusts'), { size: 17, dx: 0, dy: 46 })), x: PH ? 705 : 655, y: 520, a: 5.15, b: 9 },
+      { el: T.add(tagOnString(tr('miód leśny', 'wild honey'), { size: 17, dx: PH ? 48 : 0, dy: 36 })), x: PH ? 925 : 978, y: 452, a: 5.35, b: 9 },
     ];
 
     /* ---------- foreground reeds ---------- */
@@ -128,7 +132,7 @@ export default {
     fg.add(reeds(c, 150, 960, 16, 260, C.moss) + reeds(c, 1480, 950, 14, 240, C.moss) + rock(c, 1360, 980, 220, 90, C.rock2));
 
     return (t, time) => {
-      swing(sunEl, 1180, 170, time, 1, 0.6);
+      swing(sunEl, SUNX, 170, time, 1, 0.6);
       swing(cl1, 560 + Math.sin(time * 0.1) * 25, 150, time, 1.2, 0.6, 1);
       flow.shift((time * 18) % 200 - 100, 0);
 
@@ -217,8 +221,8 @@ export default {
       });
 
       /* v6: camel's hair and a leather belt — a camel ambles past; locusts and wild honey */
-      const cw = seg(t, 3.95, 5.1);
-      const cx = lerp(1500, 180, cw);
+      const cw = seg(t, 3.95, PH ? 4.65 : 5.1);   // phone: the camel has passed out of view by the still moment
+      const cx = PH ? lerp(1300, 300, cw) : lerp(1500, 180, cw);
       pose(camelEl, { x: cx, y: fbFn(cx) + 8, s: 0.72, sx: -0.72, sy: 0.72, o: cw > 0 && cw < 1 ? 1 : 0 });
       walkCamel(camelEl, cx * 0.06, cw > 0 && cw < 1 ? 1 : 0);
       tags.forEach((tg) => {
@@ -239,8 +243,8 @@ export default {
 
       /* camera: widen for the crowds, close in on John for his clothes and food */
       const close = es(t, 4.0, 4.6);
-      S.cam.z = 1.02 - es(t, 1.9, 2.4) * 0.1 + es(t, 2.9, 3.3) * 0.1 + close * 1.3;
-      S.cam.x = -es(t, 1.9, 2.4) * 140 * (1 - es(t, 2.9, 3.3)) + close * 20;
+      S.cam.z = 1.02 - es(t, 1.9, 2.4) * 0.1 + es(t, 2.9, 3.3) * 0.1 + close * (PH ? 1.0 : 1.3);
+      S.cam.x = -es(t, 1.9, 2.4) * (PH ? 50 : 140) * (1 - es(t, 2.9, 3.3)) + close * (PH ? 60 : 20);
       S.cam.y = 30 + close * 190 - es(t, 5.0, 5.4) * 50;
     };
   },

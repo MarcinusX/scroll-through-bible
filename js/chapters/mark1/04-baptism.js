@@ -25,6 +25,7 @@ export default {
   cam: { x: [(START - 800) / P, 0], y: [-60, 30], z: [0.96, 1.08] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;   // phone: the onlookers stand closer, inside the screen
 
     /* ---------- behind the sky: gold ---------- */
     sky(S, ['#f4c877', '#f9dca0', '#fcebc6'], { name: 'gold' });
@@ -91,6 +92,7 @@ export default {
     riverPts.push([505, 597], [462, 590], [428, 586], [446, 598], [470, 630], [482, 700], [2600, 700]);
     L.add(sheet().p(c.cut(riverPts, 0.6, 10), C.lake).out());
     const people = crowd(S, L, [{ y: 584, s: 0.42, n: 7, x0: 930, x1: 1440 }]).filter((m) => Math.abs(m.x - 1420) > 40);
+    if (PH) people.forEach((m) => { m.x = 900 + (m.x - 930) * 0.4; });
 
     /* ---------- people in the river ---------- */
     const R = S.layer({ par: P, sh: 4 });
@@ -125,6 +127,7 @@ export default {
     N.add(reeds(c, 478, 716, 12, 90) + reeds(c, 440, 712, 8, 70, C.moss));
     N.add(`<g transform="translate(-300 758)">${signpost(c, tr('Nazaret', 'Nazareth'), { dir: -1 })}</g>` + `<g transform="translate(420 752)">${signpost(c, tr('Jordan', 'Jordan'))}</g>`);
     const nearCrowd = crowd(S, N, [{ y: 770, s: 0.8, n: 3, x0: 1000, x1: 1220 }]);
+    if (PH) nearCrowd.forEach((m) => { m.x = 950 + (m.x - 1000) * 0.45; });
     const jesusB = S.puppet(N.add(person(c, { ...CAST.jesus })));
 
     /* ---------- the dove and the voice ---------- */

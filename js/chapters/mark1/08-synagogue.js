@@ -21,6 +21,7 @@ export default {
   cam: { x: [-30, 30], y: [0, 40], z: [1, 1.1] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;   // phone: the benches' people, the disciples and the scribes sit closer to the middle
     // while the street drop hangs in front, the room behind it stays hidden (so it never flashes through during the set change)
     const room = [];
     const mkLayer = S.layer;
@@ -29,8 +30,9 @@ export default {
     const L = S.layer({ par: I.P, sh: 4 });
     const [BACK, FRONT] = I.benchY;
     const back = I.congregation(L);
+    if (PH) back.forEach((m) => { m.x = m.x < 800 ? 497 + (m.x - 250) * 0.36 : 955 + (m.x - 1000) * 0.24; });
     const DIS = [
-      { cast: CAST.peter, x: 440 }, { cast: CAST.andrew, x: 530 }, { cast: CAST.james, x: 360 }, { cast: CAST.john, x: 610 },
+      { cast: CAST.peter, x: PH ? 547 : 440 }, { cast: CAST.andrew, x: PH ? 593 : 530 }, { cast: CAST.james, x: PH ? 502 : 360 }, { cast: CAST.john, x: PH ? 638 : 610 },
     ].map((d, i) => ({ ...d, p: S.puppet(L.add(person(c, { ...d.cast, pose: 'sit' }))), i }));
     const frontR = crowd(S, L, [{ y: FRONT, s: 0.86, n: 2, x0: 1250, x1: 1420, pose: 'sit' }]);
     // the reading desk with an open scroll
@@ -40,7 +42,7 @@ export default {
     const glow = L.add(`<circle r="190" fill="url(#halo-glow)" opacity="0"/>`);
     const jesus = S.puppet(L.add(person(c, { ...CAST.jesus })));
     const sp = scrollParts(c, { w: 70, h: 60, lines: 4 });
-    const scribes = [{ x: 1085, s: 0.96 }, { x: 1180, s: 0.92 }].map((o, i) => ({ ...o, i, p: S.puppet(L.add(person(c, { ...SCRIBE, robe: i ? C.stone2 : C.plumRobe, holdF: `<g transform="translate(-4 -2) rotate(80) scale(.7)">${sp.sheet}</g>` }))) }));
+    const scribes = [{ x: PH ? 975 : 1085, s: 0.96 }, { x: PH ? 1028 : 1180, s: 0.92 }].map((o, i) => ({ ...o, i, p: S.puppet(L.add(person(c, { ...SCRIBE, robe: i ? C.stone2 : C.plumRobe, holdF: `<g transform="translate(-4 -2) rotate(80) scale(.7)">${sp.sheet}</g>` }))) }));
     const jVoice = voiceRings(L, c, { n: 3, color: C.sun, r: 44, w: 6 });
     const sVoice = scribes.map(() => voiceRings(L, c, { n: 2, color: C.rock2, r: 22, w: 3 }));
     const wows = [...back, ...DIS.map((d) => ({ ...d, y: FRONT, s: 0.86 }))].filter((m, i) => i % 2 === 0).slice(0, 7).map((m, i) => ({ m, el: L.add(`<g opacity="0">${paperLabel('!', { size: 24, w: 30 })}</g>`), i }));
@@ -61,7 +63,9 @@ export default {
       walkers.forEach((w) => {
         const k = es(t, 0.02 + w.i * 0.04, 0.72 + w.i * 0.03);
         const inK = es(t, 0.76 + w.i * 0.04, 0.92 + w.i * 0.04);
-        const x = lerp(-60 - w.i * 110, 700 - w.i * 105, k) + inK * (800 - (700 - w.i * 105));
+        const gap = PH ? 57 : 105;   // phone: they walk closer together, all five on screen
+        const end = PH ? 740 : 700, from = PH ? -60 - w.i * gap : -60 - w.i * 110;
+        const x = lerp(from, end - w.i * gap, k) + inK * (800 - (end - w.i * gap));
         const y = lerp(730 + (w.i % 2) * 10, 640, inK);
         const moving = (k > 0 && k < 1) || (inK > 0 && inK < 1);
         w.p.set({ x, y, s: lerp(1, 0.8, inK), o: 1 - es(t, 0.86 + w.i * 0.04, 0.94 + w.i * 0.04), walk: moving ? x * 0.05 : undefined, armF: w.i === 0 ? bump(t, 0.75, 1.05) * 80 : 10, blink: blinkAt(time, w.i) });

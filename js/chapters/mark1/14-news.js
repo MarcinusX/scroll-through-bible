@@ -24,9 +24,11 @@ export default {
     { v: 45, cont: true, text: 'tak że Jezus nie mógł już jawnie wejść do miasta, lecz przebywał w miejscach pustynnych.' },
     { v: 45, cont: true, text: 'A ludzie zewsząd schodzili się do Niego.' },
   ],
-  cam: { x: [(420 - 800) / P, (DESERT - 60 - 800) / P], y: [0, 90], z: [0.94, 1.2] },
+  cam: { x: [(420 - 800) / P, (DESERT - 60 - 800) / P], y: [0, 90], z: [0.82, 1.2] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;   // phone: the disciples, the priest's plate and the late-comers come inside the screen
+    const PLX = PH ? 935 : 1020;
     sky(S, ['#c7dcd7', '#ecebd6', '#f5ead0']);
     const warm = sky(S, ['#e8c9a4', '#f4dcb6', '#f8e7c9'], { name: 'warm' }).layer;
     warm.fade(0);
@@ -74,21 +76,22 @@ export default {
     /* ---------- people ---------- */
     const L = S.layer({ par: P, sh: 5 });
     const towns = crowd(S, L, [{ y: 712, s: 0.78, n: 9, x0: GATE - 300, x1: GATE + 330 }, { y: 760, s: 0.9, n: 4, x0: GATE - 200, x1: GATE + 300 }]);
-    towns.forEach((m, i) => { m.d = (m.x - GATE + 300) / 700; m.gx = DESERT - 330 + (i % 7) * 42 + (i > 6 ? 20 : 0); m.gy = 748 + (i % 3) * 8; m.bub = L.add(`<g opacity="0">${bubble(i % 3 === 1 ? '?!' : '!', { size: 20, w: 32 })}</g>`); });
+    towns.forEach((m, i) => { m.d = (m.x - GATE + 300) / 700; m.gx = PH ? DESERT - 300 + (i % 7) * 36 + (i > 6 ? 18 : 0) : DESERT - 330 + (i % 7) * 42 + (i > 6 ? 20 : 0); m.gy = 748 + (i % 3) * 8; m.bub = L.add(`<g opacity="0">${bubble(i % 3 === 1 ? '?!' : '!', { size: 20, w: 32 })}</g>`); });
     const fromRight = crowd(S, L, [{ y: 752, s: 0.9, n: 6, x0: DESERT + 100, x1: DESERT + 420 }]);
+    if (PH) fromRight.forEach((m) => { m.x = DESERT + 56 + (m.x - DESERT - 100) * 0.24; });
     fromRight.forEach((m, i) => { m.from = m.x + 700; m.d = i * 0.06; });
     const man = S.puppet(L.add(person(c, LEPER_HEALED)));
     const manB = [0, 1, 2].map((i) => L.add(`<g opacity="0">${bubble('!', { size: 22, w: 30 })}</g>`));
     const jesus = S.puppet(L.add(person(c, { ...CAST.jesus })));
     L.add(rock(c, DESERT - 14, FEET - 16, 118, 46, C.rock2));
     const jSit = S.puppet(L.add(person(c, { ...CAST.jesus, pose: 'sit' })));
-    const DIS = [CAST.john, CAST.james, CAST.andrew, CAST.peter].map((cast, i) => ({ p: S.puppet(L.add(person(c, cast))), x: 380 + i * 85, i }));
+    const DIS = [CAST.john, CAST.james, CAST.andrew, CAST.peter].map((cast, i) => ({ p: S.puppet(L.add(person(c, cast))), x: PH ? 522 + i * 45 : 380 + i * 85, i }));
     const jVoice = voiceRings(L, c, { n: 3, color: C.clay, r: 38, w: 5 });
     const hush = L.add(`<g opacity="0">${bubble(tr('Nikomu nic nie mów!', 'Say nothing to anybody!'), { size: 20, fill: C.halo })}</g>`);
 
     /* ---------- the inset: the priest and the offering ---------- */
     const PL = S.layer({ par: 0.3, sh: 7 });
-    const inset = hanging(PL, `<g transform="scale(1.15)">${priestPlate(c)}</g>`, { x: 1020, y: 270, len: 800 });
+    const inset = hanging(PL, `<g transform="scale(1.15)">${priestPlate(c)}</g>`, { x: PLX, y: 270, len: 800 });
 
     return (t, time) => {
       swing(sunEl, 1280, 150, time, 1, 0.6);
@@ -101,9 +104,10 @@ export default {
       const send = bump(t, 0.5, 1.0);
       const toPlate = es(t, 2.1, 2.4) * (1 - es(t, 2.9, 3.1));
       const leave = es(t, 4.02, 4.9);
-      const jx = t < 4 ? JX : lerp(JX, DESERT, leave);
+      const step = PH ? es(t, 3.05, 3.45) * 95 : 0;   // phone: He turns to go and steps out of the town view
+      const jx = t < 4 ? JX + step : lerp(JX + step, DESERT, leave);
       const sit = es(t, 4.9, 4.97);
-      jesus.set({ x: jx, y: FEET, s: 1.05, flip: false, o: 1 - sit, walk: leave > 0 && leave < 1 ? jx * 0.045 : undefined, armF: 14 + send * 76 + toPlate * 90 - es(t, 1.05, 1.2) * 0 , armB: 10 + stern * 130 * (1 - toPlate), head: stern * 6 - toPlate * 10, blink: blinkAt(time) });
+      jesus.set({ x: jx, y: FEET, s: 1.05, flip: false, o: 1 - sit, walk: (leave > 0 && leave < 1) || (PH && t > 3.05 && t < 3.45) ? jx * 0.045 : undefined, armF: 14 + send * 76 + toPlate * 90 - es(t, 1.05, 1.2) * 0 , armB: 10 + stern * 130 * (1 - toPlate), head: stern * 6 - toPlate * 10, blink: blinkAt(time) });
       const welcome = es(t, 5.3, 5.7);
       jSit.set({ x: DESERT, y: FEET - 60, s: 1.0, o: sit, armF: 40 + welcome * 40, armB: 20 + welcome * 60, head: -welcome * 4, blink: blinkAt(time) });
       const [hx, hy] = headAt(JX, FEET, 1.05);
@@ -111,7 +115,7 @@ export default {
       const hb = es(t, 1.15, 1.35, ease.back) * (1 - es(t, 1.9, 2.05));
       pose(hush, { x: hx + 40, y: hy - 110, s: hb, o: hb > 0 ? 1 : 0 });
       const pIn = es(t, 2.05, 2.35, ease.out), pOut = es(t, 2.9, 3.15, ease.in);
-      swing(inset, 1020, lerp(-420, 280, pIn) - pOut * 800, time, 1, 0.7);
+      swing(inset, PLX, lerp(-420, 280, pIn) - pOut * 800, time, 1, 0.7);
       fade(inset, pIn > 0 ? 1 : 0);
 
       /* v45a: but he goes and tells everyone */
@@ -135,9 +139,10 @@ export default {
         m.p.set({ x, y, s: lerp(m.s, 0.9, go) * lerp(0.85, 1, out), o: seg(t, 3.15 + m.d * 0.3, 3.25 + m.d * 0.3), flip: moving ? (out < 1 ? m.x < GATE : false) : talk > 0.5 ? m.i % 2 === 0 : false, walk: moving ? x * 0.06 : undefined, armF: talk * 60 + (go >= 1 ? 30 : 0), armB: talk * (m.i % 2 ? 100 : 20), head: talk * Math.sin(time * 3 + m.i) * 4, blink: blinkAt(time, m.seed) });
       });
       fromRight.forEach((m) => {
-        const k = es(t, 5.05 + m.d, 5.7 + m.d);
+        const dd = PH ? m.d * 0.5 : m.d;   // phone: they have all arrived (clear of the thread) by the still moment
+        const k = es(t, 5.05 + dd, (PH ? 5.5 : 5.7) + dd);
         const x = lerp(m.from, m.x, k);
-        m.p.set({ x, y: m.y, s: m.s, flip: true, o: seg(t, 5.0 + m.d, 5.1 + m.d), walk: k > 0 && k < 1 ? x * 0.06 : undefined, armF: k >= 1 ? 30 : 10, blink: blinkAt(time, m.seed) });
+        m.p.set({ x, y: m.y, s: m.s, flip: true, o: seg(t, 5.0 + dd, 5.1 + dd), walk: k > 0 && k < 1 ? x * 0.06 : undefined, armF: k >= 1 ? 30 : 10, blink: blinkAt(time, m.seed) });
       });
       hillWalkers.forEach((m) => {
         const u = seg(t, 5.05 + m.i * 0.08, 5.75 + m.i * 0.08);
@@ -154,10 +159,10 @@ export default {
 
       /* camera: the meeting on the road → the running man and the town → the desert */
       let cx = 820;
-      if (t >= 3.0 && t < 4.0) cx = lerp(820, 450, es(t, 3.0, 3.8));
-      else if (t >= 4.0) cx = lerp(450, DESERT - 90, es(t, 4.0, 4.95, ease.sine));
+      if (t >= 3.0 && t < 4.0) cx = lerp(820, PH ? 415 : 450, es(t, 3.0, 3.8));
+      else if (t >= 4.0) cx = lerp(PH ? 415 : 450, DESERT - (PH ? 75 : 90), es(t, 4.0, 4.95, ease.sine));
       S.cam.x = (cx - 800) / P;
-      S.cam.z = 1.1 - es(t, 3.0, 3.6) * 0.08 + es(t, 4.0, 4.9) * 0.04 - es(t, 5.0, 5.8) * 0.12;
+      S.cam.z = 1.1 - es(t, 3.0, 3.6) * 0.08 + es(t, 4.0, 4.9) * 0.04 - es(t, 5.0, 5.8) * (PH ? 0.24 : 0.12);
       S.cam.y = 60 - es(t, 5.0, 5.8) * 30;
     };
   },

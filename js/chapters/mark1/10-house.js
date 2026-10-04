@@ -24,6 +24,8 @@ export default {
   cam: { x: [-20, 40], y: [0, 160], z: [1, 1.6] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;   // phone: the bed and the sick woman move left, inside the screen; a gentler zoom
+    const DX = PH ? -60 : 0;
     // while the street drop hangs in front, the room behind it stays hidden (so it never flashes through during the set change)
     const roomLs = [];
     const mkLayer = S.layer;
@@ -67,18 +69,19 @@ export default {
     /* ---------- the sick woman on her bed ---------- */
     const B = S.layer({ par: P, sh: 4 });
     const fever = B.add(`<ellipse rx="170" ry="110" fill="url(#${fid})"/>`);
-    B.add(`<g transform="translate(${BEDX} ${BEDY})">${bed(c, 250)}</g>`);
+    B.add(`<g transform="translate(${BEDX + DX} ${BEDY})">${bed(c, 250)}</g>`);
     const lying = S.puppet(B.add(person(c, { ...MIL, eyes: 'closed' })));
-    const blanket = B.add(sheet().p(c.cut([[925, 646], [1075, 640], [1086, 692], [918, 694]], 0.8, 8), C.skyVeil).x(c.ribbon([[930, 660], [1076, 654]], 3), C.cream, 'opacity=".6"').out());
+    const blanketM = sheet().p(c.cut([[925, 646], [1075, 640], [1086, 692], [918, 694]], 0.8, 8), C.skyVeil).x(c.ribbon([[930, 660], [1076, 654]], 3), C.cream, 'opacity=".6"').out();
+    const blanket = B.add(PH ? `<g><g transform="translate(${DX} 0)">${blanketM}</g></g>` : blanketM);
     const sitting = S.puppet(B.add(person(c, { ...MIL, pose: 'sit' })));
-    const waves = [0, 1, 2, 3].map((i) => ({ el: B.add(`<g opacity="0">${heatWave(c, 60 + (i % 2) * 20)}</g>`), x: 905 + i * 42, i }));
+    const waves = [0, 1, 2, 3].map((i) => ({ el: B.add(`<g opacity="0">${heatWave(c, 60 + (i % 2) * 20)}</g>`), x: 905 + DX + i * 42, i }));
     const cool = [0, 1, 2, 3, 4].map((i) => B.add(`<g opacity="0">${sparkle(c, 12 + (i % 2) * 6, '#e8f3f1')}</g>`));
 
     /* ---------- people ---------- */
     const PL = S.layer({ par: P, sh: 5 });
     const dis = [
       { cast: CAST.john, x: 300 }, { cast: CAST.james, x: 390 }, { cast: CAST.andrew, x: 480 }, { cast: CAST.peter, x: 570 },
-    ].map((d, i) => ({ ...d, p: S.puppet(PL.add(person(c, d.cast))), i }));
+    ].map((d, i) => (PH ? { ...d, x: [430, 490, 545, 600][i] } : d)).map((d, i) => ({ ...d, p: S.puppet(PL.add(person(c, d.cast))), i }));   // phone: the two who speak stay whole on screen
     const jesus = S.puppet(PL.add(person(c, { ...CAST.jesus })));
     const standing = S.puppet(PL.add(person(c, { ...MIL, holdF: `<g data-k="tray" transform="translate(4 -2)">${tray(c)}</g>` })));
     const trayEl = S.$('tray');
@@ -106,9 +109,9 @@ export default {
       const up = es(t, 3.42, 3.5);          // lying → sitting
       const stand = es(t, 3.78, 3.86);      // sitting → standing
       const hot = 1 - es(t, 4.05, 4.5);
-      lying.set({ x: 1062, y: 648 + Math.sin(time * 2.2) * 0.8, s: 0.95, r: -90, o: 1 - up, armF: 10, armB: 0, head: 0 });
+      lying.set({ x: 1062 + DX, y: 648 + Math.sin(time * 2.2) * 0.8, s: 0.95, r: -90, o: 1 - up, armF: 10, armB: 0, head: 0 });
       fade(blanket, 1 - up);
-      pose(fever, { x: 990, y: 640, s: 1 + Math.sin(time * 3) * 0.05, o: hot * 0.9 });
+      pose(fever, { x: 990 + DX, y: 640, s: 1 + Math.sin(time * 3) * 0.05, o: hot * 0.9 });
       waves.forEach((w) => {
         const k = time ? ((time * 0.5 + w.i * 0.27) % 1) : (w.i + 0.5) / 4;
         const fly = es(t, 4.05, 4.45);
@@ -116,13 +119,13 @@ export default {
       });
       cool.forEach((cl, i) => {
         const k = bump(t, 4.2 + i * 0.05, 4.9 + i * 0.05);
-        pose(cl, { x: 900 + i * 32, y: 600 - (i % 2) * 40 - seg(t, 4.2, 4.9) * 40, s: k, r: time * 40 + i * 30, o: k });
+        pose(cl, { x: 900 + DX + i * 32, y: 600 - (i % 2) * 40 - seg(t, 4.2, 4.9) * 40, s: k, r: time * 40 + i * 30, o: k });
       });
 
       /* Jesus: listens, goes to her, takes her hand and raises her */
       const go = es(t, 3.02, 3.38);
       const back = es(t, 4.95, 5.3);
-      const jx = lerp(700, 830, go) - back * 130;
+      const jx = lerp(700, 830 + DX, go) - back * (PH ? 105 : 130);
       const lift = es(t, 3.4, 3.85);
       jesus.set({
         x: jx, y: FEET, s: 1.05, flip: back > 0 && back < 0.97,
@@ -131,11 +134,11 @@ export default {
         armB: 10 + es(t, 4.2, 4.5) * 30 * (1 - back),
         lean: es(t, 3.3, 3.42) * 14 * (1 - lift), head: es(t, 3.3, 3.42) * 10 * (1 - lift) - es(t, 5.4, 5.7) * 4, blink: blinkAt(time),
       });
-      sitting.set({ x: 928, y: 690, s: 0.95, flip: true, o: up * (1 - stand), armF: 30 + lift * 60, armB: 10, head: -lift * 6, blink: blinkAt(time, 3) });
+      sitting.set({ x: 928 + DX, y: 690, s: 0.95, flip: true, o: up * (1 - stand), armF: 30 + lift * 60, armB: 10, head: -lift * 6, blink: blinkAt(time, 3) });
 
       /* v31c: she gets up and serves them */
       const serve = es(t, 5.05, 5.55);
-      const sx = lerp(905, 815, serve);
+      const sx = lerp(905 + DX, 815 + DX * 0.5, serve);
       const offer = es(t, 5.55, 5.8);
       const sArm = 20 + es(t, 4.4, 4.7) * 30 + es(t, 5.0, 5.1) * 40 + offer * 25;
       pose(trayEl, { x: 4, y: -2, r: sArm });
@@ -151,12 +154,12 @@ export default {
         const reach = d.cast === CAST.peter ? offer : 0;
         d.p.set({ x: d.x + shift, y: FEET + (d.i % 2) * 6, s: 1.0, flip: false, armF: 12 + (teller ? tell * 80 : 0) + glad * (d.i % 2 ? 30 : 60) * (1 - reach) + reach * 70, armB: teller ? tell * 40 : glad * (d.i % 2 ? 100 : 0), head: teller ? -tell * 4 : -glad * 6, walk: back > 0 && back < 1 ? (d.x + shift) * 0.05 : undefined, blink: blinkAt(time, d.i + 1) });
       });
-      const [phx, phy] = headAt(570, FEET, 1.0);
+      const [phx, phy] = headAt(PH ? 600 : 570, FEET, 1.0);
       talk(phx, phy, tell, time, { dir: 1, spread: 1.6 });
 
       const inside = es(t, 0.95, 1.4);
-      S.cam.z = 1.04 + inside * 0.4 + es(t, 3.0, 3.5) * 0.1 - es(t, 4.9, 5.4) * 0.1;
-      S.cam.x = es(t, 3.0, 3.5) * 30 * (1 - es(t, 4.9, 5.4));
+      S.cam.z = 1.04 + inside * (PH ? 0.3 : 0.4) + es(t, 3.0, 3.5) * 0.1 - es(t, 4.9, 5.4) * 0.1;
+      S.cam.x = es(t, 3.0, 3.5) * (PH ? 0 : 30) * (1 - es(t, 4.9, 5.4));
       S.cam.y = 20 + inside * 120;
     };
   },

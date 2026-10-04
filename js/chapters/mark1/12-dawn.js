@@ -29,6 +29,8 @@ export default {
   cam: { x: [-40, 60], y: [0, 60], z: [1, 1.12] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;   // phone: the disciples, their words, the rising sun and the map come inside the screen
+    const SUNX = PH ? 530 : 420;
     sky(S, [C.night2, C.night, '#40477e']);
     const pre = sky(S, ['#3a3f76', '#8a7fae', '#d7a9a4'], { name: 'pre' }).layer;
     const dawn = sky(S, ['#b9cfd6', '#f3d7b4', '#f9e2bf'], { name: 'dawn' }).layer;
@@ -39,7 +41,7 @@ export default {
     const moonEl = hanging(hangL, `<circle r="100" fill="url(#halo-glow)" opacity=".4"/>${moon(c, 30)}`, { x: 1180, y: 160, len: 900 });
     const sunGlow = hangL.add(`<circle r="300" fill="url(#warm-glow)" opacity="0"/>`);
     const sunRays = hangL.add(`<g opacity="0">${rays(c, { n: 18, r0: 60, r1: 900, spread: 0.045, color: '#fff3cf' })}</g>`);
-    const sunEl = hanging(hangL, sun(c, 52), { x: 420, y: 620, len: 900 });
+    const sunEl = hanging(hangL, sun(c, 52), { x: SUNX, y: 620, len: 900 });
 
     /* ---------- far hills with villages that light up at "let us go elsewhere" ---------- */
     const far = S.layer({ par: 0.1, sh: 2 });
@@ -79,10 +81,10 @@ export default {
     const jStand = S.puppet(L.add(person(c, { ...CAST.jesus })));
     const lampM = `<g transform="translate(0 4)">${handLamp(c)}</g>`;
     const party = [
-      { cast: { ...CAST.peter, holdB: lampM }, x: 930, d: 0 },
-      { cast: CAST.andrew, x: 1030, d: 0.08 },
-      { cast: CAST.james, x: 1120, d: 0.14 },
-      { cast: CAST.john, x: 1200, d: 0.2 },
+      { cast: { ...CAST.peter, holdB: lampM }, x: PH ? 868 : 930, d: 0 },
+      { cast: CAST.andrew, x: PH ? 913 : 1030, d: 0.08 },
+      { cast: CAST.james, x: PH ? 958 : 1120, d: 0.14 },
+      { cast: CAST.john, x: PH ? 1002 : 1200, d: 0.2 },
     ].map((q, i) => ({ ...q, p: S.puppet(L.add(person(c, q.cast))), i }));
     const said = L.add(`<g opacity="0">${bubble(tr('Wszyscy Cię szukają!', 'Everyone is looking for you!'), { size: 21, flip: true })}</g>`);
     const jVoice = voiceRings(L, c, { n: 3, color: C.sun, r: 38, w: 5 });
@@ -90,7 +92,7 @@ export default {
     /* ---------- the journeys: the map with the road drawn town to town ---------- */
     const mapL = S.layer({ par: 0.3, sh: 8, pad: 1400 });
     const map = galileeMap(c);
-    const MS = 0.95, MCX = 800, MCY = 430;
+    const MS = PH ? 0.74 : 0.95, MCX = 800, MCY = 430;
     mapL.add(`<g transform="translate(${MCX} ${MCY}) scale(${MS})">${hang2(map.markup, 300, 800)}</g>`);
     const T = Object.fromEntries(map.towns.map((tw) => [tw.k, tw]));
     const route = ['kaf', 'kor', 'kan', 'naz', 'nai', 'tyb', 'mag', 'kaf'].map((k) => T[k]);
@@ -112,10 +114,10 @@ export default {
       tint.fade(0.35 * (1 - preK * 0.5) * (1 - dawnK));
       swing(moonEl, 1180 + seg(t, 0, 5) * 80, 160 + seg(t, 0, 5) * 200, time, 0.8, 0.5, 1);
       const sy = lerp(640, 420, es(t, 4.4, 5.6));
-      swing(sunEl, 420, sy, time, 0.8, 0.5);
+      swing(sunEl, SUNX, sy, time, 0.8, 0.5);
       fade(sunEl, seg(t, 4.1, 4.3));
-      pose(sunGlow, { x: 420, y: sy, s: 0.5 + dawnK, o: dawnK * 0.9 });
-      pose(sunRays, { x: 420, y: sy, s: 0.4 + dawnK * 0.8, r: t * 4, o: es(t, 4.8, 5.4) * 0.35 });
+      pose(sunGlow, { x: SUNX, y: sy, s: 0.5 + dawnK, o: dawnK * 0.9 });
+      pose(sunRays, { x: SUNX, y: sy, s: 0.4 + dawnK * 0.8, r: t * 4, o: es(t, 4.8, 5.4) * 0.35 });
       villages.forEach((v) => fade(v.el, es(t, 4.2 + v.i * 0.12, 4.4 + v.i * 0.12)));
 
       /* v35: He goes out in the dark and prays on the hill */
@@ -136,7 +138,7 @@ export default {
 
       /* v36–37: Simon and the others come hurrying with a lamp and find Him */
       party.forEach((q) => {
-        const k = es(t, 2.02 + q.d, 2.85 + q.d);
+        const k = es(t, 2.02 + q.d, (PH ? 2.62 : 2.85) + q.d);   // phone: the last one has arrived by the still moment
         const x = lerp(1500 + q.i * 90, q.x, k);
         const y = hillY(x) + 4 + q.i * 3;
         const talking = q.i === 0 ? es(t, 3.05, 3.25) * (1 - es(t, 3.9, 4.05)) : 0;
@@ -145,7 +147,7 @@ export default {
           armF: 16 + talking * 40 + (q.i === 0 ? 0 : es(t, 4.3, 4.6) * 20), armB: q.i === 0 ? 60 - talking * 30 : 10, head: q.i ? -es(t, 4.2, 4.5) * 6 : -talking * 4, blink: blinkAt(time, q.i + 1) });
       });
       const sb = es(t, 3.1, 3.3, ease.back) * (1 - es(t, 3.95, 4.1));
-      pose(said, { x: 1010, y: 420, s: sb, o: sb > 0 ? 1 : 0 });
+      pose(said, { x: PH ? 910 : 1010, y: 420, s: sb, o: sb > 0 ? 1 : 0 });
       searchers.forEach((s) => { const k = es(t, 3.2 + s.i * 0.08, 3.35 + s.i * 0.08, ease.back) * (1 - es(t, 4.0, 4.2)); pose(s.el, { x: s.x, y: s.y + Math.sin(time * 2 + s.i) * 3, s: k, o: k > 0 ? 1 : 0 }); });
 
       /* v39: throughout Galilee — the road on the map */
@@ -170,7 +172,7 @@ export default {
       });
 
       S.cam.z = 1.04 + es(t, 1.0, 1.5) * 0.05 - es(t, 1.9, 2.3) * 0.05;
-      S.cam.x = es(t, 1.9, 2.4) * 40 * (1 - es(t, 4.0, 4.5)) - es(t, 4.1, 4.6) * 30;
+      S.cam.x = PH ? 0 : es(t, 1.9, 2.4) * 40 * (1 - es(t, 4.0, 4.5)) - es(t, 4.1, 4.6) * 30;
       S.cam.y = 30;
     };
   },

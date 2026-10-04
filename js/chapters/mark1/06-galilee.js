@@ -23,6 +23,8 @@ export default {
   cam: { x: [-30, 30], y: [-20, 50], z: [1, 1.12] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;   // phone: the hourglass and the listeners come inward
+    const HGX = PH ? 965 : 1040;
     sky(S, ['#c4dcd6', '#e9eed8', '#f4ecd2']);
 
     /* ---------- the light of the Kingdom rises behind the hills ---------- */
@@ -33,7 +35,7 @@ export default {
     const cl1 = hanging(hangL, cloud(c, 200), { x: 480, y: 160, len: 700 });
     const cl2 = hanging(hangL, cloud(c, 140), { x: 1130, y: 200, len: 700 });
     const hg = hourglassParts(c, 130);
-    const glassEl = hanging(hangL, `<g>${hg.frame}<g data-k="hgTop">${hg.top}</g><g data-k="hgBot" transform="translate(0 ${hg.h / 2 - 10})">${hg.bottom}</g><g data-k="hgStream">${hg.stream}</g></g><g data-k="hgShine" opacity="0">${sparkle(c, 22)}</g>`, { x: 1040, y: 250, len: 700 });
+    const glassEl = hanging(hangL, `<g>${hg.frame}<g data-k="hgTop">${hg.top}</g><g data-k="hgBot" transform="translate(0 ${hg.h / 2 - 10})">${hg.bottom}</g><g data-k="hgStream">${hg.stream}</g></g><g data-k="hgShine" opacity="0">${sparkle(c, 22)}</g>`, { x: HGX, y: 250, len: 700 });
     const hgTop = S.$('hgTop'), hgBot = S.$('hgBot'), hgStream = S.$('hgStream'), hgShine = S.$('hgShine');
 
     /* ---------- Galilee: the lake far off, hills, a village ---------- */
@@ -57,6 +59,7 @@ export default {
     const PL = S.layer({ par: P, sh: 4 });
     const folk = crowd(S, PL, [{ y: 700, s: 0.72, n: 6, x0: 330, x1: 700 }, { y: 706, s: 0.72, n: 6, x0: 900, x1: 1290 }, { y: 760, s: 0.86, n: 4, x0: 400, x1: 1220 }])
       .filter((m) => Math.abs(m.x - JX) > 110);
+    if (PH) folk.forEach((m) => { const d = Math.abs(m.x - JX); m.x = JX + Math.sign(m.x - JX) * (92 + (d - 110) * 0.42); });
     folk.forEach((m, i) => { m.away = i % 3 === 0; m.side = m.x < JX ? -1 : 1; m.d = c.rr(0, 0.4); });
     const jesus = S.puppet(PL.add(person(c, { ...CAST.jesus })));
     const voice = voiceRings(PL, c, { n: 3, color: C.clay, r: 40, w: 6 });
@@ -115,7 +118,7 @@ export default {
           flip = m.side < 0 ? turn < 0.5 : turn >= 0.5 ? true : false;
           if (m.side < 0) flip = turn < 0.5; else flip = turn >= 0.5;
           const come = es(t, 3.3 + m.d * 0.6, 3.75 + m.d * 0.6);
-          x = m.x + m.side * (60 - come * 90) + (1 - arrive) * m.side * 500;
+          x = m.x + m.side * ((PH ? 30 : 60) - come * (PH ? 60 : 90)) + (1 - arrive) * m.side * 500;
           if ((come > 0 && come < 1) || (arrive > 0 && arrive < 1)) walk = x * 0.06;
         }
         const glad = es(t, 3.5, 3.9);
@@ -124,7 +127,7 @@ export default {
 
       /* v15a: the time is fulfilled — the hourglass runs full; the Kingdom's light rises */
       const hgIn = es(t, 1.9, 2.15, ease.out);
-      swing(glassEl, 1040, lerp(-300, 250, hgIn), time, 1.2, 0.7);
+      swing(glassEl, HGX, lerp(-300, 250, hgIn), time, 1.2, 0.7);
       fade(glassEl, hgIn > 0 ? 1 : 0);
       const run = es(t, 2.1, 2.6);
       pose(hgTop, { s: 1 - run, ox: 0, oy: -4, x: 0, y: -4 });

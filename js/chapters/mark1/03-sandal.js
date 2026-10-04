@@ -23,13 +23,16 @@ export default {
   cam: { x: [-40, 60], y: [0, 80], z: [1, 1.22] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;   // phone: the listeners sit closer together, inside the screen
+    const SXP = PH ? 962 : SX, KXP = PH ? 800 : KX;   // phone: the sandal clear of the progress thread, John kneeling beside it
     const SKY = ['#d4dfd6', '#f3e2c2', '#f6e3c4'];
     sky(S, SKY);
     const goldSky = sky(S, ['#f3cf8f', '#f8dfae', '#fbecc9'], { name: 'gold' }).layer;
     goldSky.fade(0);
     const hangL = S.layer({ par: 0.04, sh: 5 });
     const horizonGlow = hangL.add(`<circle r="300" fill="url(#warm-glow)" opacity="0"/>`);
-    const sunEl = hanging(hangL, sun(c, 44), { x: 1190, y: 230, len: 700 });
+    const SUNX = S.portrait ? 990 : 1190;   // phone: the sun not half under the progress thread
+    const sunEl = hanging(hangL, sun(c, 44), { x: SUNX, y: 230, len: 700 });
     const cl1 = hanging(hangL, cloud(c, 170), { x: 430, y: 170, len: 700 });
     const cl2 = hanging(hangL, cloud(c, 120), { x: 1000, y: 120, len: 700 });
 
@@ -67,13 +70,13 @@ export default {
       { robe: C.sageRobe, hairStyle: 'curly', hair: C.hair3, beard: 'full', skin: C.skin4, pose: 'sit', x: 492, y: GY + 10 },
       { robe: C.ochreRobe, hairStyle: 'short', hair: C.hair, beard: 'short', skin: C.skin2, pose: 'sit', x: 580, y: GY + 2 },
       { robe: C.tealRobe, mantle: C.stone, hairStyle: 'wrap', veil: C.linen2, beard: 'full', beardColor: C.greyHair, skin: C.skin3, pose: 'stand', x: 318, y: GY - 6, s: 0.92 },
-    ].map((o, i) => ({ ...o, p: S.puppet(P.add(person(c, o))), i, seed: c.rr(0, 9) }));
+    ].map((o, i) => (PH ? { ...o, x: [566, 624, 682, 512][i] } : o)).map((o, i) => ({ ...o, p: S.puppet(P.add(person(c, o))), i, seed: c.rr(0, 9) }));
     const shellM = `<g data-k="shell" transform="rotate(-20)">${shell(c, 15)}</g>`;
     const john = S.puppet(P.add(person(c, { ...JOHN_B, holdF: shellM })));
     const shellEl = S.$('shell');
     const johnK = S.puppet(P.add(person(c, { ...JOHN_B, pose: 'kneel' })));
     const voice = voiceRings(P, c, { n: 3, color: C.clay, r: 38, w: 5 });
-    const water = Array.from({ length: 9 }, (_, i) => ({ el: P.add(`<g>${drops(c, 1, i % 2 ? C.lake2 : C.lake)}</g>`), i, tx: 390 + (i % 4) * 70 + c.rr(-20, 20), ty: GY - 110 + c.rr(-10, 10) }));
+    const water = Array.from({ length: 9 }, (_, i) => ({ el: P.add(`<g>${drops(c, 1, i % 2 ? C.lake2 : C.lake)}</g>`), i, tx: (PH ? 520 : 390) + (i % 4) * (PH ? 50 : 70) + c.rr(-20, 20), ty: GY - 110 + c.rr(-10, 10) }));
     const flames = LIS.map((l) => ({ el: P.add(`<g>${flame(c, 28)}</g>`), l }));
     const jFlame = P.add(`<g>${flame(c, 30)}</g>`);
 
@@ -94,7 +97,7 @@ export default {
     fg.add(reeds(c, 110, 960, 14, 240, C.moss) + reeds(c, 1500, 960, 12, 220, C.moss) + rock(c, 1400, 985, 220, 90, C.rock));
 
     return (t, time) => {
-      swing(sunEl, 1190, 230, time, 1, 0.6);
+      swing(sunEl, SUNX, 230, time, 1, 0.6);
       swing(cl1, 430 + Math.sin(time * 0.1) * 20, 170, time, 1.2, 0.6, 1);
       swing(cl2, 1000 + Math.sin(time * 0.12 + 1) * 20, 120 - es(t, 2.9, 3.3) * 400, time, 1.2, 0.7, 2);
 
@@ -109,13 +112,13 @@ export default {
       /* v7b: the sandal comes down; John kneels, reaches — and draws back */
       const down = es(t, 1.02, 1.32, ease.out), up = es(t, 2.0, 2.3, ease.in);
       const sy = lerp(-420, 744, down) - up * 1200;
-      pose(sandalEl, { x: SX, y: sy, r: Math.sin(time * 0.8) * 0.6 * (1 - down) + bump(t, 1.28, 1.45) * 1.5 });
+      pose(sandalEl, { x: SXP, y: sy, r: Math.sin(time * 0.8) * 0.6 * (1 - down) + bump(t, 1.28, 1.45) * 1.5 });
       pose(thong, { x: -400 * 0.4 * 0.46, y: -400 * 0.4, r: Math.sin(time * 1.6) * 5 + bump(t, 1.5, 1.72) * 22 });
-      pose(sGlow, { x: SX, y: sy - 200, s: 1, sx: 0.8, sy: 1.8, o: down * (1 - up) * 0.7 });
+      pose(sGlow, { x: SXP, y: sy - 200, s: 1, sx: 0.8, sy: 1.8, o: down * (1 - up) * 0.7 });
 
       const toSandal = es(t, 1.08, 1.34), back = es(t, 2.02, 2.3);
       const kneel = es(t, 1.36, 1.42) * (1 - es(t, 2.0, 2.06));
-      const jx = lerp(JX, KX, toSandal) - back * 20;
+      const jx = lerp(PH ? 748 : JX, KXP, toSandal) - back * 20;
       const preach = es(t, -0.2, 0.15) * (1 - es(t, 0.3, 0.45));
       const point = es(t, 0.35, 0.6) * (1 - es(t, 1.05, 1.2));
       const pour = es(t, 2.15, 2.4) * (1 - es(t, 2.95, 3.1));
@@ -131,7 +134,7 @@ export default {
       fade(shellEl, es(t, 2.05, 2.15) * (1 - es(t, 3.0, 3.1)));
       const reach = es(t, 1.45, 1.62) * (1 - es(t, 1.68, 1.85));
       const bow = es(t, 1.7, 1.9);
-      johnK.set({ x: KX, y: GY, s: 1.05, o: kneel, armF: 30 + reach * 50 - bow * 10, armB: 10 + bow * 50, head: bow * 20 - reach * 10, lean: bow * 8, blink: blinkAt(time, 2) });
+      johnK.set({ x: KXP, y: GY, s: 1.05, o: kneel, armF: 30 + reach * 50 - bow * 10, armB: 10 + bow * 50, head: bow * 20 - reach * 10, lean: bow * 8, blink: blinkAt(time, 2) });
       const [hx, hy] = headAt(jx, GY, 1.05, faceLeft);
       voice(hx, hy, Math.max(preach, point * 0.8) * seg(t, -0.2, 0), time);
 
@@ -173,8 +176,8 @@ export default {
         });
       });
 
-      S.cam.z = 1.12 + es(t, 1.0, 1.4) * 0.08 - es(t, 1.95, 2.3) * 0.08 + spirit * 0.02;
-      S.cam.x = es(t, 1.0, 1.4) * 50 * (1 - es(t, 1.95, 2.3));
+      S.cam.z = (PH ? 1.02 : 1.12) + es(t, 1.0, 1.4) * 0.08 - es(t, 1.95, 2.3) * 0.08 + spirit * 0.02;
+      S.cam.x = es(t, 1.0, 1.4) * (PH ? 0 : 50) * (1 - es(t, 1.95, 2.3));
       S.cam.y = 70 - es(t, 1.0, 1.4) * 30 * (1 - es(t, 1.95, 2.3)) - spirit * 20;
     };
   },

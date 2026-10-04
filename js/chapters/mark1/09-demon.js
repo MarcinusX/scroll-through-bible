@@ -26,13 +26,15 @@ export default {
   cam: { x: [-40, 20], y: [0, 40], z: [1, 1.12] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;   // phone: the benches' people sit closer to the middle; a smaller map
     const I = synagogueInterior(S);
     const tint = S.layer({ par: 0, sh: 1, flat: true });
     tint.add(`<rect x="-3000" y="-3000" width="8000" height="8000" fill="#241c30"/>`);
     tint.fade(0);
     const L = S.layer({ par: I.P, sh: 4 });
     const back = I.congregation(L);
-    const DIS = [CAST.peter, CAST.andrew, CAST.james, CAST.john].map((cast, i) => ({ p: S.puppet(L.add(person(c, { ...cast, pose: 'sit' }))), x: 1060 + i * 82, i }));
+    if (PH) back.forEach((m) => { m.x = m.x < 800 ? 497 + (m.x - 250) * 0.36 : 955 + (m.x - 1000) * 0.24; });
+    const DIS = [CAST.peter, CAST.andrew, CAST.james, CAST.john].map((cast, i) => ({ p: S.puppet(L.add(person(c, { ...cast, pose: 'sit' }))), x: PH ? 955 + i * 28 : 1060 + i * 82, i }));
     const desk = sheet().p(c.cut([[-40, 0], [-30, -90], [30, -90], [40, 0]], 0.5, 6), C.wood).p(c.cut([[-54, -86], [54, -100], [50, -88], [-50, -76]], 0.4, 6), C.wood2)
       .p(c.cut([[-44, -96], [44, -106], [42, -96], [-42, -86]], 0.3, 6), C.parchment).out();
     L.add(`<g transform="translate(900 ${FEET})">${desk}</g>`);
@@ -60,7 +62,7 @@ export default {
     /* the news runs through Galilee */
     const mapL = S.layer({ par: 0.3, sh: 8, pad: 1400 });
     const map = galileeMap(c);
-    const MS = 0.95, MCX = 800, MCY = 430;
+    const MS = PH ? 0.78 : 0.95, MCX = 800, MCY = 430;
     mapL.add(`<g transform="translate(${MCX} ${MCY}) scale(${MS})">${hang2(map.markup, 300, 800)}</g>`);
     const kaf = map.towns[0];
     const lights = map.towns.map((tw) => ({ tw, d: Math.hypot(tw.x - kaf.x, tw.y - kaf.y), el: mapL.add(`<g opacity="0"><circle r="34" fill="url(#warm-glow)"/><path d="${c.poly(c.star(0, -4, 12, 4, 4, 0))}" fill="${C.sunDeep}"/></g>`) }));
