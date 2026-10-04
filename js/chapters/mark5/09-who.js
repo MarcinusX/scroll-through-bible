@@ -52,7 +52,7 @@ export default {
     /* ---------- words ---------- */
     const wL = S.layer({ par: 0.52, sh: 4 });
     const who = wL.add(`<g>${bubble(c, [tr('Kto się dotknął', 'Who touched'), tr('mojego płaszcza?', 'my clothes?')], { size: 21, dir: 1 })}</g>`);
-    const pet = wL.add(`<g>${bubble(c, [tr('Widzisz, że tłum zewsząd Cię ściska,', 'You see the multitude pressing against you,'), tr('a pytasz: Kto się Mnie dotknął?', 'and you say, ‘Who touched me?’')], { size: 18, dir: -1 })}</g>`);
+    const pet = wL.add(`<g>${bubble(c, [tr('Widzisz, że tłum zewsząd Cię ściska,', 'You see the multitude pressing against you,'), tr('a pytasz: Kto się Mnie dotknął?', 'and you say, ‘Who touched me?’')], { size: S.portrait ? 16 : 18, dir: S.portrait ? 1 : -1 })}</g>`);   // phone: the disciples' answer opens to the left, inside the screen
     const moon = sheet().p(c.cut(c.circ(0, 0, 7, 12), 0.2, 3), C.moon).p(c.cut(c.circ(3, -1, 6, 12), 0.2, 3), mix(C.stone2, C.storm, 0.25)).out();
     const hemIcon = sheet().p(c.cut([[-12, -14], [10, -14], [14, 10], [-14, 10]], 0.4, 4), C.jesusMantle).x(c.ribbon([[-14, 8], [14, 8]], 2), shade(C.jesusMantle, 0.3)).out();
     const icons = [

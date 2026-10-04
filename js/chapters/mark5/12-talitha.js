@@ -53,7 +53,9 @@ export default {
 
     /* ---------- people behind the bed ---------- */
     const backP = S.layer({ par: 0.45, sh: 4 });
-    const THREE = [[CAST.peter, 1010], [CAST.james, 1080], [CAST.john, 1150]].map(([cast, x], i) => ({ i, x, seed: c.rr(0, 9), p: S.puppet(backP.add(person(c, { ...cast }))) }));
+    const P = S.portrait;
+    const JAX = P ? 530 : 430;   // phone: the father and the three disciples a step in from the frame and the thread
+    const THREE = (P ? [[CAST.peter, 955], [CAST.james, 1005], [CAST.john, 1055]] : [[CAST.peter, 1010], [CAST.james, 1080], [CAST.john, 1150]]).map(([cast, x], i) => ({ i, x, seed: c.rr(0, 9), p: S.puppet(backP.add(person(c, { ...cast }))) }));
     const glow = backP.add(`<circle r="160" fill="url(#halo-glow)"/>`);
     const jesus = S.puppet(backP.add(person(c, { ...CAST.jesus })));
 
@@ -125,13 +127,13 @@ export default {
       THREE.forEach((d) => d.p.set({ x: d.x, y: FLOOR - 30 - d.i * 6, s: 1.02, flip: true, armF: 12 + amaze * (d.i % 2 ? 60 : 100) + bump(t, 2.4, 3.0) * 20, armB: 8 + amaze * (d.i === 1 ? 140 : 30), head: -amaze * 8, lean: -amaze * 4, blink: blinkAt(T, d.seed) }));
       const hug = es(t, 3.0, 3.4) * (1 - es(t, 6.05, 6.3));
       const bring = es(t, 6.0, 6.3);
-      const mx = kf(t, [[0, 520], [2.9, 520], [3.3, 604], [6.0, 604], [6.3, 610]]);
+      const mx = kf(t, [[0, P ? 570 : 520], [2.9, P ? 570 : 520], [3.3, 604], [6.0, 604], [6.3, 610]]);
       const mArm = 50 + hug * 40 - bring * 20 + amaze * 30;
       pose(tray, { r: mArm, o: es(t, 5.95, 6.1) * (1 - es(t, 6.3, 6.4)) });
       mother.set({ x: mx, y: FLOOR + 16, s: 1.08, flip: false, armF: mArm, armB: 30 + hug * 50 + amaze * 60 * (1 - hug), head: 6 - amaze * 10, lean: hug * 6, walk: (t > 2.9 && t < 3.3) || (t > 6.0 && t < 6.3) ? mx * 0.07 : undefined, blink: blinkAt(T, 3) });
-      jairus.set({ x: 430, y: FLOOR + 20, s: 1.1, flip: false, armF: 30 + amaze * 90, armB: 20 + amaze * 120, head: -amaze * 10, blink: blinkAt(T, 5) });
+      jairus.set({ x: JAX, y: FLOOR + 20, s: 1.1, flip: false, armF: 30 + amaze * 90, armB: 20 + amaze * 120, head: -amaze * 10, blink: blinkAt(T, 5) });
       wow.forEach((g, i) => {
-        const xs = [430, 520, 1010, 1080, 1150];
+        const xs = [JAX, 520, ...THREE.map((d) => d.x)];
         const k = es(t, 4.08 + i * 0.05, 4.28 + i * 0.05, ease.back) * (1 - es(t, 4.85, 5.0));
         pose(g, { x: xs[i] + 30, y: FLOOR - 250 - (i % 2) * 20, s: k, r: k > 0.02 ? Math.sin(T * 6 + i) * 8 : 0, o: k > 0.02 ? 1 : 0 });
       });
@@ -152,9 +154,10 @@ export default {
         pose(h, { x: 700 + (i - 1) * 40 + Math.sin(k * 5 + i) * 8, y: FLOOR - 220 - k * 70, s: 0.8 + k * 0.3, o: bump(t, 6.35 + i * 0.1, 6.85 + i * 0.1) });
       });
 
-      S.cam.x = 20 - stand * 60 + es(t, 5, 5.5) * 30 - es(t, 6, 6.6) * 40;
+      // phone: a smaller turn to the left once she stands, so John (and his '!') stays clear of the thread
+      S.cam.x = 20 - stand * (P ? 15 : 60) + es(t, 5, 5.5) * 30 - es(t, 6, 6.6) * (P ? 30 : 40);
       S.cam.y = 30 - es(t, 2.2, 3) * 10;
-      S.cam.z = 1.1 - es(t, 2.2, 3) * 0.06 - es(t, 4, 4.5) * 0.04 + es(t, 6, 6.6) * 0.08;
+      S.cam.z = 1.1 - (P ? 0.05 * (1 - es(t, 2.2, 3)) : 0) - es(t, 2.2, 3) * 0.06 - es(t, 4, 4.5) * 0.04 + es(t, 6, 6.6) * 0.08;
     };
   },
 };

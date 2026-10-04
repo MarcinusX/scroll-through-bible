@@ -25,6 +25,8 @@ export default {
   cam: { x: [-40, 120], y: [-60, 60], z: [1, 1.2] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;
+    const DX = 0;   // phone: the disciples stand closer together, a step in from the frame (see DIS)
     const set = shoreSet(S, { skyCols: ['#b9c6d2', '#efd9bf', '#f6dab0'], sunAt: [1300, 250], sunR: 40 });
 
     /* ---------- the boat pulled up, the disciples ---------- */
@@ -33,7 +35,7 @@ export default {
     back.add(`<g transform="translate(250 752) scale(.86)">${B.back}${B.front}</g>`);
     const DIS = [
       { cast: CAST.james, x: 470 }, { cast: CAST.andrew, x: 530 }, { cast: CAST.john, x: 590 }, { cast: CAST.peter, x: 648 },
-    ].map((d, i) => ({ ...d, i, seed: c.rr(0, 9), p: S.puppet(back.add(person(c, { ...d.cast }))) }));
+    ].map((d, i) => ({ ...d, x: S.portrait ? 532 + i * 41 : d.x, i, seed: c.rr(0, 9), p: S.puppet(back.add(person(c, { ...d.cast }))) }));
 
     /* ---------- the man and his shadow ---------- */
     const manL = S.layer({ par: 0.5, sh: 4 });
@@ -61,17 +63,17 @@ export default {
     const imps = Array.from({ length: N }, (_, i) => {
       const a = (i / N) * PI * 2 + c.rr(-0.1, 0.1);
       const row = i % 3;
-      const hx = c.rr(1000, 1560);
+      const hx0 = c.rr(1000, 1560), hx = P ? 900 + (hx0 - 1000) * 0.4 : hx0;   // phone: they cling to the hills on screen
       return {
         i, el: swarmL.add(`<g>${spirit(c, c.rr(0.7, 1.15))}</g>`), ph: c.rr(0, 6),
         home: [MX + Math.cos(a) * c.rr(10, 50), 520 + Math.sin(a) * c.rr(20, 70)],
-        out: [lerp(560, 1240, ((i * 7) % N) / N) + c.rr(-30, 30), 200 + row * 70 + c.rr(-30, 30)],
+        out: [lerp(560, P ? 1060 : 1240, ((i * 7) % N) / N) + c.rr(-30, 30), 200 + row * 70 + c.rr(-30, 30)],
         cling: [hx, set.hfn(hx) - c.rr(6, 40)],
         d: c.rr(0, 0.35),
       };
     });
     const tagL = S.layer({ par: 0.3, sh: 5 });
-    const legionTag = hanging(tagL, tag(c, tr('LEGION', 'LEGION'), { size: 30, italic: false, weight: 600, fill: mix(C.storm2, C.stone2, 0.3), face: '#43384d', ink: C.cream }), { x: 1070, y: 120, len: 500 });
+    const legionTag = hanging(tagL, tag(c, tr('LEGION', 'LEGION'), { size: 30, italic: false, weight: 600, fill: mix(C.storm2, C.stone2, 0.3), face: '#43384d', ink: C.cream }), { x: P ? 960 : 1070, y: 120, len: 500 });
 
     /* ---------- foreground ---------- */
     const fg = S.layer({ par: 0.95, sh: 6 });
@@ -118,18 +120,20 @@ export default {
       DIS.forEach((d) => {
         const fear = es(t, 1.1, 1.4) * (1 - es(t, 4, 4.5));
         const awe = es(t, 5.1, 5.5);
-        d.p.set({ x: d.x - fear * 16, y: FEET - 12 + d.i * 3, s: 0.92, flip: false, armF: 10 + fear * (d.i % 2 ? 90 : 40) + awe * 60, armB: 8 + fear * (d.i % 2 ? 40 : 110) + awe * (d.i % 2 ? 130 : 20), lean: -fear * 5, head: -awe * 10, blink: blinkAt(T, d.seed) });
+        d.p.set({ x: d.x + DX - fear * 16, y: FEET - 12 + d.i * 3, s: 0.92, flip: false, armF: 10 + fear * (d.i % 2 ? 90 : 40) + awe * 60, armB: 8 + fear * (d.i % 2 ? 40 : 110) + awe * (d.i % 2 ? 130 : 20), lean: -fear * 5, head: -awe * 10, blink: blinkAt(T, d.seed) });
       });
 
       /* bubbles */
       const [mhx, mhy] = headAt(MX, FEET, 1, true, 46);
       const show = (el, a, b, x, y, s = 1) => { const k = es(t, a, a + 0.2, ease.back) * (1 - es(t, b - 0.12, b)); pose(el, { x, y, s: k * s, r: k > 0.02 ? Math.sin(T * 7) * (el === b3 || el === b4 ? 0 : 2) : 0, o: k > 0.02 ? 1 : 0 }); };
-      show(b1, 1.08, 2.0, mhx + 16, mhy - 38, 1);
-      show(b2, 2.08, 3.0, mhx + 16, mhy - 40, 1.05);
+      // phone: the spirit's cries sit further left and a little higher, so they end before the thread
+      const BX = P ? -135 : 0, BY = P ? -26 : 0;
+      show(b1, 1.08, 2.0, mhx + 16 + BX, mhy - 38 + BY, 1);
+      show(b2, 2.08, 3.0, mhx + 16 + BX, mhy - 40 + BY, 1.05);
       show(b3, 3.1, 4.0, JX - 4, FEET - 230, 1);
       show(b4, 4.08, 5.0, JX - 4, FEET - 230, 1);
-      show(b5, 5.2, 6.0, mhx + 16, mhy - 40, 1);
-      show(b6, 6.1, 7.2, mhx + 16, mhy - 40, 1);
+      show(b5, 5.2, 6.0, mhx + 16 + BX, mhy - 40 + BY, 1);
+      show(b6, 6.1, 7.2, mhx + 16 + BX, mhy - 40 + BY, 1);
 
       /* the swarm: hidden in the shadow → bursts out on "Legion" → clings to the hills */
       imps.forEach((m) => {
@@ -141,7 +145,7 @@ export default {
         const wig = 1 - clingK * 0.7;
         pose(m.el, { x: x + Math.cos(ph) * 8 * wig, y: y + Math.sin(ph * 1.3) * 6 * wig, r: Math.sin(ph) * 12, s: 0.6 + outK * 0.4, o: seg(t, 5.1, 5.2) });
       });
-      swing(legionTag, 1070, 120 + es(t, 5.2, 5.6, ease.back) * 150 - es(t, 6.9, 7.2) * 60, T, 1.6, 0.9);
+      swing(legionTag, P ? 960 : 1070, 120 + es(t, 5.2, 5.6, ease.back) * 150 - es(t, 6.9, 7.2) * 60, T, 1.6, 0.9);
       tagL.fade(seg(t, 5.15, 5.3) * (1 - es(t, 6.8, 7)));
 
       /* camera */

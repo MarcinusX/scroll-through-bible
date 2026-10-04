@@ -23,7 +23,7 @@ export default {
   build(S) {
     const c = S.c;
     const SKY = ['#d6dcd6', '#f2e2c6', '#f6dcb4'];
-    const set = streetSet(S, { skyCols: SKY, sunAt: [1180, 190] });
+    const set = streetSet(S, { skyCols: SKY, sunAt: S.portrait ? [1000, 60] : [1180, 190] });   // phone: the sun hangs inward, not as a sliver under the thread
     const dim = S.layer({ par: 0, sh: 1, flat: true });
     dim.add(`<rect x="-3000" y="-3000" width="8000" height="8000" fill="#3b3450"/>`);
 
@@ -64,7 +64,7 @@ export default {
       dim.fade(sad * 0.22);
 
       /* v35 — messengers run in from the house */
-      const mEnd = [1030, 1100];
+      const mEnd = S.portrait ? [995, 1048] : [1030, 1100];   // phone: the second messenger clear of the thread
       MSG.forEach((m) => {
         const x = kf(t, [[0.05 + m.i * 0.12, 1700 + m.i * 60], [0.75 + m.i * 0.12, mEnd[m.i]]], ease.out);
         const tellK = es(t, 1.05, 1.3) * (1 - es(t, 1.9, 2.1));

@@ -9,7 +9,7 @@ import { tr } from '../../core/i18n.js';
 import { LOOK, kf, streetSet, bubble, thinkBubble, sorrowCloud, purse, jar, coin, spark, heart, tag, townsfolk } from './lib.js';
 
 const PI = Math.PI;
-const FEET = 722, WX = 470;
+const FEET = 722, WX0 = 470;
 
 export default {
   id: 'm5-woman',
@@ -26,6 +26,9 @@ export default {
   cam: { x: [-220, 60], y: [-40, 60], z: [1, 1.2] },
   build(S) {
     const c = S.c;
+    // phone: she and her physicians stand a step in and the camera starts further left, so none of them
+    // is cut by the frame (the third one stood off-screen)
+    const P = S.portrait, WX = P ? 540 : WX0;
     const SKY = ['#c6dcdb', '#eee6cc', '#f6e9cf'];
     const set = streetSet(S, { skyCols: SKY });
 
@@ -48,9 +51,9 @@ export default {
     /* ---------- the woman, the physicians ---------- */
     const wL = S.layer({ par: 0.55, sh: 5 });
     const DOC = [
-      { from: 120, x: 360, dir: 1, jar: C.skyVeil },
-      { from: 900, x: 590, dir: -1, jar: C.sage2 },
-      { from: -60, x: 300, dir: 1, jar: C.blushVeil },
+      { from: 120, x: P ? 462 : 360, dir: 1, jar: C.skyVeil },
+      { from: 900, x: P ? 625 : 590, dir: -1, jar: C.sage2 },
+      { from: -60, x: P ? 402 : 300, dir: 1, jar: C.blushVeil },
     ].map((d, i) => ({ ...d, i, seed: c.rr(0, 9), p: S.puppet(wL.add(person(c, { ...LOOK.doctor, robe: [C.parchment, C.linen2, C.stone][i], mantle: [C.teal2, shade(C.plumRobe, -0.15), C.clayMantle][i], beard: i === 1 ? 'short' : 'full', holdF: `<g transform="translate(0 6)">${jar(c, d.jar)}</g>` }))) }));
     const purseMark = `<g class="pfull">${purse(c, 1)}</g><g class="pempty" opacity="0">${purse(c, 0.05)}</g>`;
     const ill = S.puppet(wL.add(person(c, { ...LOOK.ill, holdF: purseMark })));
@@ -171,7 +174,7 @@ export default {
 
       /* camera: with her at first, then over to Him */
       const toHim = es(t, 3.85, 4.6);
-      S.cam.x = -190 + toHim * 200 + es(t, 7.2, 7.9) * -30;
+      S.cam.x = (P ? -220 + toHim * 230 : -190 + toHim * 200) + es(t, 7.2, 7.9) * -30;
       S.cam.y = 20 + bump(t, 0, 3.9) * 10 + es(t, 4.5, 5.2) * 30;
       S.cam.z = 1.06 + es(t, 4.5, 5.2) * 0.1 - es(t, 7.2, 7.9) * 0.06;
     };

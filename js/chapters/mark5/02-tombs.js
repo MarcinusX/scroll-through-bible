@@ -24,13 +24,15 @@ export default {
   cam: { x: [-40, 120], y: [-40, 60], z: [1, 1.2] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;
+    const MOONX = P ? 1020 : 1120, SUNX = P ? 590 : 520;   // phone: moon and sun clear of the thread and the frame
     sky(S, ['#171d44', '#2b3470', '#56608f'], { name: 'night' });
     const daySky = sky(S, ['#bcd3d4', '#e9e0c6', '#f3e2c2'], { name: 'day' }).layer;
     const starL = S.layer({ par: 0.02, sh: 1, flat: true });
     starL.add(stars(c, { x0: -700, x1: 2300, y0: -500, y1: 420, n: 130 }));
     const hangL = S.layer({ par: 0.04, sh: 5 });
-    const moonEl = hanging(hangL, `<circle r="110" fill="url(#halo-glow)" opacity=".45"/>${moon(c, 36)}`, { x: 1120, y: 160, len: 900 });
-    const sunEl = hanging(hangL, sun(c, 42), { x: 520, y: 160, len: 900 });
+    const moonEl = hanging(hangL, `<circle r="110" fill="url(#halo-glow)" opacity=".45"/>${moon(c, 36)}`, { x: MOONX, y: 160, len: 900 });
+    const sunEl = hanging(hangL, sun(c, 42), { x: SUNX, y: 160, len: 900 });
 
     /* ---------- hills behind, the rock face with tombs ---------- */
     S.layer({ par: 0.1, sh: 2 }).add(band(c, { y: 420, amps: [30, 12, 4], lens: [900, 330, 120], color: mix(C.hillFar, C.duskViolet, 0.3) }).markup);
@@ -59,8 +61,9 @@ export default {
     ground.add(boulders(c, gfn, -500, 2100, 16, { col: C.rock2 }));
     ground.add(grass(c, { x0: -600, x1: 2200, y: FEET, fn: gfn, n: 24, h: 12, color: C.olive }));
     // the high rock he climbs to cry out from ("on the mountains")
-    const crag = [1060, FEET - 96];
-    ground.add(sheet().p(c.cut([[960, FEET + 10], [990, FEET - 70], [1030, FEET - 100], [1090, FEET - 104], [1130, FEET - 70], [1160, FEET + 10]], 1.4, 8), C.rock2).x(c.ribbon([[1000, FEET - 60], [1040, FEET - 90]], 3), shade(C.rock2, 0.25), 'opacity=".6"').out());
+    const CG = P ? -70 : 0;   // phone: the crag stands further in, so he and his shadow stay clear of the thread
+    const crag = [1060 + CG, FEET - 96];
+    ground.add(sheet().p(c.cut([[960 + CG, FEET + 10], [990 + CG, FEET - 70], [1030 + CG, FEET - 100], [1090 + CG, FEET - 104], [1130 + CG, FEET - 70], [1160 + CG, FEET + 10]], 1.4, 8), C.rock2).x(c.ribbon([[1000 + CG, FEET - 60], [1040 + CG, FEET - 90]], 3), shade(C.rock2, 0.25), 'opacity=".6"').out());
 
     /* ---------- the man ---------- */
     const manL = S.layer({ par: 0.45, sh: 4 });
@@ -106,8 +109,8 @@ export default {
       daySky.fade(day);
       starL.fade(1 - day);
       tint.fade(0.2 * (1 - day) + 0.03);
-      swing(moonEl, 1120, 160 + day * 500, T, 0.8, 0.5);
-      swing(sunEl, 520, 160 + (1 - day) * 560, T, 0.8, 0.5, 1);
+      swing(moonEl, MOONX, 160 + day * 500, T, 0.8, 0.5);
+      swing(sunEl, SUNX, 160 + (1 - day) * 560, T, 0.8, 0.5, 1);
 
       /* v3a — he lives in the tombs: eyes glint in the dark doorways */
       eyes.forEach((e, i) => fade(e, bump(t, 0.2 + i * 0.12, 1.4 + i * 0.1) * 0.9 + (t > 5 && t < 7 ? bump(t, 5.05 + i * 0.1, 6.9) * 0.6 : 0)));

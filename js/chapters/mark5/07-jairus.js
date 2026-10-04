@@ -25,6 +25,7 @@ export default {
   cam: { x: [-80, 220], y: [-30, 60], z: [1, 1.16] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;
     const SKY = ['#c6dcdb', '#eee6cc', '#f6e9cf'];
     const sk = sky(S, SKY);
     const hangL = S.layer({ par: 0.05, sh: 5 });
@@ -87,8 +88,8 @@ export default {
 
     /* ---------- the plea ---------- */
     const wL = S.layer({ par: 0.52, sh: 4 });
-    const plea = wL.add(`<g>${bubble(c, [tr('Moja córeczka dogorywa…', 'My little daughter is dying…'), tr('Przyjdź, połóż na nią ręce!', 'Come and lay your hands on her!')], { size: 19, dir: -1 })}</g>`);
-    const pic = hanging(wL, card(c, `<g transform="scale(1.3)">${sickGirlIcon(c, LOOK.girl)}</g>`, { w: 170, h: 120 }), { x: 1060, y: -1000, len: 600 });
+    const plea = wL.add(`<g>${bubble(c, [tr('Moja córeczka dogorywa…', 'My little daughter is dying…'), tr('Przyjdź, połóż na nią ręce!', 'Come and lay your hands on her!')], { size: P ? 16 : 19, dir: -1 })}</g>`);   // phone: a smaller plea that ends before the thread
+    const pic = hanging(wL, card(c, `<g transform="scale(1.3)">${sickGirlIcon(c, LOOK.girl)}</g>`, { w: 170, h: 120 }), { x: P ? 600 : 1060, y: -1000, len: 600 });
 
     /* ---------- foreground ---------- */
     const w1 = S.layer({ par: 0.7, sh: 3, pad: 170 });
@@ -106,7 +107,7 @@ export default {
 
       const walkX = es(t, 5.1, 7.0, (u) => u);
       /* v21a — the boat crosses back and lands */
-      const [bx, by] = kf(t, [[0, [-280, 744]], [0.7, [470, 752]]], ease.out);
+      const [bx, by] = kf(t, [[0, [-280, 744]], [0.7, [P ? 600 : 470, 752]]], ease.out);   // phone: it lands further in, so Andrew at the stern is not cut by the frame
       const afloat = 1 - es(t, 0.65, 0.8);
       pose(boatG, { x: bx, y: by + Math.sin(T * 1.3) * 2 * afloat, s: 0.9, r: Math.sin(T * 1.1) * 0.8 * afloat });
       const out = es(t, 0.8, 0.86);
@@ -161,8 +162,9 @@ export default {
       jairusK.set({ x: 918, y: FEET + 4, s: 1, flip: true, o: kneel, armF: 60 + bow * 30 + plead * (20 + Math.sin(t * 14) * 8), armB: 50 + plead * 60, lean: 10 + bow * 18 - plead * 14, head: bow * 10 - plead * 16, blink: blinkAt(T, 5) });
       swing(nameTag, 1000, -1000 + es(t, 2.1, 2.5, ease.back) * 1260 - es(t, 3.0, 3.3) * 1260, T, 1.6, 0.9);
       const pk = es(t, 4.05, 4.25, ease.back) * (1 - es(t, 4.9, 5.05));
-      pose(plea, { x: 905, y: FEET - 172, s: pk, o: pk > 0.02 ? 1 : 0 });
-      swing(pic, 1080, -1000 + es(t, 4.15, 4.55, ease.back) * 1220 - es(t, 4.9, 5.2) * 1220, T, 1.4, 0.8, 1);
+      pose(plea, { x: P ? 868 : 905, y: FEET - 172, s: pk, o: pk > 0.02 ? 1 : 0 });
+      swing(pic, P ? 600 : 1080,   // phone: the dying girl's picture hangs over the left of the crowd
+        -1000 + es(t, 4.15, 4.55, ease.back) * 1220 - es(t, 4.9, 5.2) * 1220, T, 1.4, 0.8, 1);
 
       /* camera follows them as they set off */
       S.cam.x = -60 + es(t, 0.3, 1.3) * 60 + walkX * 190;

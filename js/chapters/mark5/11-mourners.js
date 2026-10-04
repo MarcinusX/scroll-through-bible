@@ -26,9 +26,10 @@ export default {
     { v: 40, cont: true, text: 'Lecz On odsunął wszystkich,' },
     { v: 40, cont: true, text: 'wziął z sobą tylko ojca, matkę dziecka oraz tych, którzy z Nim byli, i wszedł tam, gdzie dziecko leżało.' },
   ],
-  cam: { x: [-160, 220], y: [-40, 70], z: [0.96, 1.28] },
+  cam: { x: [-160, 300], y: [-40, 70], z: [0.96, 1.28] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;
     const SKY = ['#cbd2d6', '#efd9bd', '#f3cfa4'];
     const sk = sky(S, SKY);
     const hangL = S.layer({ par: 0.05, sh: 5 });
@@ -229,11 +230,12 @@ export default {
       zs.forEach((z, i) => {
         const zo = es(t, 3.2, 3.5) * (1 - es(t, 6.4, 6.8));
         const k = zo > 0 ? ((T * 0.35 + i / 3) % 1) : 0.5;
-        pose(z, { x: BED + 70 + i * 12 + k * 16, y: FLOOR - 110 - k * 60 - i * 8, o: es(t, 3.2, 3.5) * (1 - es(t, 6.4, 6.8)) * Math.sin(k * PI) });
+        pose(z, { x: BED + (P ? 10 : 70) + i * 12 + k * 16, y: FLOOR - 110 - k * 60 - i * 8, o: es(t, 3.2, 3.5) * (1 - es(t, 6.4, 6.8)) * Math.sin(k * PI) });
       });
 
       /* camera: the street → into the front room → through to the child's room */
-      S.cam.x = -120 + es(t, 0.6, 1.6) * 60 + es(t, 2.9, 3.4) * 60 - es(t, 3.9, 4.3) * 40 - es(t, 5.0, 5.5) * 30 + es(t, 6.1, 6.9) * 260;
+      // phone: lean further toward the sleeping child, and follow Him all the way into her room
+      S.cam.x = -120 + es(t, 0.6, 1.6) * 60 + es(t, 2.9, 3.4) * (P ? 190 : 60) - es(t, 3.9, 4.3) * (P ? 120 : 40) - es(t, 5.0, 5.5) * 30 + es(t, 6.1, 6.9) * (P ? 290 : 260);
       S.cam.y = 10 + es(t, 0.6, 1.6) * 20;
       S.cam.z = 1.0 + es(t, 0.6, 1.6) * 0.12 - es(t, 5.0, 5.5) * 0.06 + es(t, 6.1, 6.9) * 0.14;
     };

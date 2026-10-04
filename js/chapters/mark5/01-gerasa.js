@@ -25,6 +25,7 @@ export default {
   cam: { x: [-110, 120], y: [-40, 60], z: [1, 1.16] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;
     const NIGHT = ['#161c42', '#2a336e', '#4f5a92'];
     sky(S, NIGHT, { name: 'night' });
     const dawn = sky(S, ['#8d86b0', '#e3ab93', '#f5d2a4'], { name: 'dawn' });
@@ -112,7 +113,7 @@ export default {
     const cur = curtains(S);
 
     // the boat's course: from out on the lake to the beach
-    const boatKeys = [[0.6, [-260, 700, 0.74]], [1.85, [596, 716, 0.9]]];
+    const boatKeys = [[0.6, [-260, 700, 0.74]], [1.85, [P ? 640 : 596, 716, 0.9]]];   // phone: the stern and Andrew stay on screen
 
     return (t, time) => {
       const T = time;
@@ -167,7 +168,8 @@ export default {
         const n = pathPts.length - 1, f = Math.min(n - 1e-6, u * n), i = Math.floor(f), k = f - i;
         return [lerp(pathPts[i][0], pathPts[i + 1][0], k), lerp(pathPts[i][1], pathPts[i + 1][1], k)];
       };
-      const [mx, my] = along(run * 0.72);
+      const [mx0, my] = along(run * 0.72);
+      const mx = mx0 - (P ? 80 * run : 0);   // phone: he runs out toward the middle, clear of the thread
       const ms = lerp(0.5, 0.6, run);
       const on = seg(t, 3.02, 3.1);
       man.set({
@@ -185,7 +187,7 @@ export default {
       });
 
       /* camera: from the lake to the shore, then toward the hillside */
-      S.cam.x = -90 + es(t, 0.9, 2.2) * 90 + es(t, 3.0, 3.8) * 110;
+      S.cam.x = -90 + es(t, 0.9, 2.2) * 90 + es(t, 3.0, 3.8) * (P ? 60 : 110);
       S.cam.y = 20 + es(t, 1.8, 2.6) * 30 - es(t, 3.0, 3.8) * 40;
       S.cam.z = 1 + es(t, 1.8, 2.6) * 0.1 + es(t, 3.0, 3.8) * 0.02;
     };

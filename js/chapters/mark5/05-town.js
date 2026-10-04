@@ -24,12 +24,16 @@ export default {
   cam: { x: [-20, 300], y: [-80, 50], z: [0.95, 1.12] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;
+    // phone: the hill, the town and its road a step to the left, the crowd closer together, the disciples a step in
+    const HS = P ? -150 : 0, DX = P ? 40 : 0;
     const SKY = ['#bfd7da', '#f0e5cb', '#f7e8cc'];
-    const set = shoreSet(S, { skyCols: SKY, sunAt: [1180, 110], sunR: 44 });
+    const set = shoreSet(S, { skyCols: SKY, sunAt: [P ? 1060 : 1180, 110], sunR: 44, hillShift: HS });
 
     /* ---------- the town on the hill, farmsteads on its slopes ---------- */
     const townL = S.layer({ par: 0.3, sh: 3 });
     const TOWN = [[1230, 0], [1290, 1], [1350, 2], [1420, 3], [1490, 4], [1560, 5]].map(([x, i]) => {
+      x += HS;
       const y = set.hfn(x) - 60 + i * 2;
       return { x, y };
     });
@@ -37,6 +41,7 @@ export default {
     TOWN.forEach((h, i) => { tm += house(c, h.x - 30, h.y + (i % 2) * 6, c.rr(42, 58), c.rr(30, 40), { stairs: i % 2 === 0 }); });
     townL.add(tm);
     const FARMS = [[1050, 0.8], [1150, 0.75], [1660, 0.8]].map(([x, sc], i) => {
+      x += HS;
       const y = set.hfn(x) + 2;
       townL.add(house(c, x - 22, y, 44 * sc, 32 * sc, { stairs: false }) + sheet().p(c.ribbon([[x - 40, y + 2], [x + 40, y + 2]], 3), C.wood2).out());
       return { x, y };
@@ -69,13 +74,13 @@ export default {
       const row = i % 3;
       return {
         i, row, seed: c.rr(0, 9), d: c.rr(0, 0.5),
-        home: [990 + Math.floor(i / 3) * 62 + row * 26 + c.rr(-8, 8), FEET - 16 + row * 12],
+        home: [(P ? 912 + Math.floor(i / 3) * 42 + row * 18 : 990 + Math.floor(i / 3) * 62 + row * 26) + c.rr(-8, 8), FEET - 16 + row * 12],
         p: null, o: townsfolk(c, i % 4 === 0 ? { man: true } : {}),
       };
     }).sort((a, b) => a.home[1] - b.home[1]);
     folk.forEach((f) => { f.p = S.puppet(pL.add(person(c, f.o))); });
     // the road down from the town
-    const road = [[1300, set.hfn(1300) - 58], [1230, set.hfn(1230) + 6], [1160, 670], [1100, FEET - 4]];
+    const road = [[1300 + HS, set.hfn(1300 + HS) - 58], [1230 + HS, set.hfn(1230 + HS) + 6], [1160 + HS, 670], [1100 + HS * 0.6, FEET - 4]];
 
     /* ---------- words ---------- */
     const wL = S.layer({ par: 0.52, sh: 3 });
@@ -108,9 +113,9 @@ export default {
         const u = es(t, 0.05 + h.i * 0.08, 0.75 + h.i * 0.08, (x) => x);
         const back = es(t, 1.2 + h.i * 0.1, 1.9 + h.i * 0.1, (x) => x);
         const ru = u - back;
-        const [x, y] = along([[1000 + h.i * 50, FEET + 4], ...road.slice().reverse().slice(1)], Math.max(0, ru));
+        const [x, y] = along([[1000 + HS * 0.6 + h.i * 50, FEET + 4], ...road.slice().reverse().slice(1)], Math.max(0, ru));
         const tellK = es(t, 4.05, 4.3) * (1 - es(t, 4.9, 5.1));
-        const hx = back > 0 ? lerp(x, 960 + h.i * 48, es(t, 1.85, 2.2)) : x;
+        const hx = back > 0 ? lerp(x, (P ? 915 : 960) + h.i * 48, es(t, 1.85, 2.2)) : x;
         const running = (u > 0 && u < 1) || (back > 0 && back < 1);
         h.p.set({
           x: hx, y: back >= 1 ? FEET + 2 + h.i * 6 : y, s: lerp(0.96, 0.46, Math.max(0, ru)), flip: back > 0 && back < 1 ? true : back >= 1 ? true : false, o: 1 - bump(t, 0.9, 1.3) * 0.0,
@@ -131,7 +136,7 @@ export default {
         const u = es(t, 1.05 + f.d, 1.85 + f.d, (x) => x);
         const [rx, ry] = along([...road, f.home], u);
         const walking = u > 0 && u < 1;
-        const x = rx + afraid * (30 + f.row * 10) - beg * 20;
+        const x = rx + afraid * (30 + f.row * 10) * (P ? 0.4 : 1) - beg * 20;
         const fromTop = 1 - seg(t, 1.05 + f.d, 1.4 + f.d);
         f.p.set({
           x, y: ry, s: lerp(0.46, 0.92, u), flip: true, o: seg(t, 1.0 + f.d, 1.1 + f.d),
@@ -156,7 +161,7 @@ export default {
       const give = bump(t, 1.55, 2.0);
       john.set({ x: jx, y: FEET - 8, s: 0.94, flip: t > 2.05, walk: (t > 1.1 && t < 1.6) || (t > 2.1 && t < 2.5) ? jx * 0.06 : undefined, armF: 30 + give * 60, armB: 10 + give * 40, lean: give * 8, blink: blinkAt(T, 7) });
       pose(cloth, { x: 6, y: 18, s: 1, o: 1 - dress });
-      DIS.forEach((d) => d.p.set({ x: d.x, y: FEET - 12 + d.i * 3, s: 0.92, flip: false, armF: 10 + afraid * 20, armB: 8, head: -2, blink: blinkAt(T, d.seed) }));
+      DIS.forEach((d) => d.p.set({ x: d.x + DX, y: FEET - 12 + d.i * 3, s: 0.92, flip: false, armF: 10 + afraid * 20, armB: 8, head: -2, blink: blinkAt(T, d.seed) }));
 
       /* Jesus */
       const turn = es(t, 5.6, 5.8);
@@ -164,13 +169,14 @@ export default {
 
       /* bubbles */
       const show = (el, a, b, x, y) => { const k = es(t, a, a + 0.2, ease.back) * (1 - es(t, b - 0.12, b)); pose(el, { x, y, s: k, o: k > 0.02 ? 1 : 0 }); };
-      show(tell2, 4.1, 4.62, 1000, FEET - 226);
-      show(tell, 4.55, 5.05, 980, FEET - 230);
-      show(leave, 5.12, 6.0, 1040, FEET - 220);
+      const BX = P ? -120 : 0;   // phone: the words end before the thread
+      show(tell2, 4.1, 4.62, 1000 + BX, FEET - 226);
+      show(tell, 4.55, 5.05, 980 + BX, FEET - 230);
+      show(leave, 5.12, 6.0, 1040 + BX - 20, FEET - 220);
 
       /* camera: up the hill to the town, back down to the shore */
       const far = S.portrait ? 270 : 150;
-      S.cam.x = far * es(t, 0, 0.6) - (far - 40) * es(t, 1.3, 2.1) + es(t, 3.9, 4.4) * 30;
+      S.cam.x = far * es(t, 0, 0.6) - (far - 40) * es(t, 1.3, 2.1) + es(t, 3.9, 4.4) * (P ? 0 : 30);
       S.cam.y = -60 * es(t, 0, 0.6) + 80 * es(t, 1.3, 2.1);
       S.cam.z = 1.0 - es(t, 0, 0.6) * 0.04 + es(t, 1.3, 2.1) * 0.08 + bump(t, 2.1, 3.1) * 0.04;
     };
