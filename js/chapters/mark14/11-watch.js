@@ -29,9 +29,12 @@ export default {
     { v: 41, cont: true, text: 'oto Syn Człowieczy będzie wydany w ręce grzeszników.' },
     { v: 42 },
   ],
-  cam: { x: [-80, 260], y: [-40, 200], z: [1, 1.5] },
+  cam: { x: [-80, 320], y: [-40, 200], z: [1, 1.5] },
   build(S) {
     const c = S.c;
+    const PT = S.portrait;
+    const CUPX = PT ? ROCK - 70 : ROCK + 30;   // phone: the cup over Him at prayer, clear of the progress thread
+    const MKX = PT ? 940 : 1000;                // phone: the marks' string not across the moon
     const G = garden(S, { moonAt: [1000, 160], rockX: ROCK + 40, city: true });
     const cl = hanging(G.hang, cloud(c, 230, mix(C.storm2, C.indigo, 0.3), mix(C.storm2, C.night, 0.4)), { x: 1400, y: 180, len: 700 });
     // torches far off on the hill (v41c–42)
@@ -45,7 +48,7 @@ export default {
     const hg = hourglassParts(c, 100);
     const hour = hanging(hangL2, `<g>${hg.frame}<g class="top">${hg.top}</g><g class="bot" transform="translate(0 ${hg.h / 2 - 12})">${hg.bottom}</g><g class="strm">${hg.stream}</g></g>`, { x: 900, y: 290, len: 600 });
     const hTop = hour.querySelector('.top'), hBot = hour.querySelector('.bot'), hStream = hour.querySelector('.strm');
-    const cupEl = hanging(hangL2, `<g transform="scale(.7)">${cupOfLight(c, 60)}</g>`, { x: ROCK, y: 320, len: 700 });
+    const cupEl = hanging(hangL2, `<g transform="scale(.7)">${cupOfLight(c, 60)}</g>`, { x: CUPX, y: 320, len: 700 });
     const marks = hanging(hangL2, `${sheet().p(c.cut(c.rect(-44, 0, 88, 50), 0.5, 6), C.cream).out()}<g transform="translate(-12 40)">${tally(c, 3, C.ink, 28)}</g>`, { x: 900, y: 300, len: 700 });
 
     // the three: asleep (eyes closed) and awake
@@ -54,7 +57,8 @@ export default {
       const asleep = S.puppet(P.add(person(c, { ...TW[d.k], pose: 'sit', eyes: 'closed' })));
       const wEl = P.add(withFace(person(c, { ...TW[d.k], pose: 'sit' }), faceBits(c)));
       const stand = S.puppet(P.add(person(c, TW[d.k])));
-      return { ...d, i, seed: c.rr(0, 9), asleep, awake: S.puppet(wEl), sad: wEl.querySelector('[data-part="sad"]'), stand };
+      return { ...d, x: PT ? d.x + 26 : d.x, i, seed: c.rr(0, 9), asleep,   // phone: the three a little in from the left edge
+        awake: S.puppet(wEl), sad: wEl.querySelector('[data-part="sad"]'), stand };
     });
     const jStand = S.puppet(P.add(withFace(person(c, CAST.jesus), faceBits(c))));
     const jSad = jStand.el.querySelector('[data-part="sad"]');
@@ -101,7 +105,7 @@ export default {
       fade(jSad, es(t, 5.4, 5.7) * 0.8 + es(t, 9.05, 9.3) * 0.5);
       jKneel.set({ x: ROCK - 30, y: GY, s: 1.04, flip: false, o: kneelK, armF: 70, armB: 120, head: -14, blink: blinkAt(T) });
       const cup = (1 - es(t, 0.05, 0.3)) + bump(t, 4.45, 5.0);
-      vis(cupEl, { x: ROCK + 30, y: 300 - (1 - Math.min(1, cup)) * 600, r: Math.sin(T * 0.7) * 2, o: cup > 0.01 ? 1 : 0 });
+      vis(cupEl, { x: CUPX, y: 300 - (1 - Math.min(1, cup)) * 600, r: Math.sin(T * 0.7) * 2, o: cup > 0.01 ? 1 : 0 });
       words.forEach((w) => {
         const k = ((T * 0.35 + w.i / 5) % 1);
         const on = es(t, 4.55, 4.7) * (1 - es(t, 4.9, 5.0));
@@ -157,7 +161,7 @@ export default {
       pose(hBot, { x: 0, y: hg.h / 2 - 12, sy: 0.15 + sand * 0.85 });
       fade(hStream, sand >= 0.999 ? 0 : 1);
       const mk = es(t, 7.1, 7.4, ease.out) * (1 - es(t, 7.9, 8.1));
-      vis(marks, { x: 1000, y: 300 - (1 - mk) * 700, r: Math.sin(T * 1.1) * 2, o: mk > 0.01 ? 1 : 0 });
+      vis(marks, { x: MKX, y: 300 - (1 - mk) * 700, r: Math.sin(T * 1.1) * 2, o: mk > 0.01 ? 1 : 0 });
 
       // v41c — into the hands of sinners: dark hands reach up; torches appear far off
       hands.forEach((h) => {
@@ -175,8 +179,11 @@ export default {
         if (k > 0.01) pose(b.fl, { x: 0, y: -60, sy: 1 + Math.sin(T * 8 + b.i) * 0.1 });
       });
 
-      S.cam.x = kf(t, [[-0.5, 220], [0.1, 220], [0.8, 20], [4.05, 20], [4.5, 220], [4.95, 220], [5.4, 20], [6.9, 20], [7.2, 120], [7.6, 20], [10.0, 20], [10.6, -40]]);
-      S.cam.z = kf(t, [[-0.5, 1.1], [0.8, 1.2], [1.1, 1.36], [2.0, 1.3], [3.0, 1.4], [4.05, 1.3], [4.5, 1.2], [5.4, 1.3], [6.9, 1.36], [8.0, 1.2], [9.0, 1.1], [10.0, 1.1]]);
+      // phone: at His prayer by the rock the camera goes a little further right and less close (Him clear of the thread)
+      S.cam.x = kf(t, PT ? [[-0.5, 300], [0.1, 300], [0.8, 20], [4.05, 20], [4.5, 300], [4.95, 300], [5.4, 20], [6.9, 20], [7.2, 120], [7.6, 20], [10.0, 20], [10.6, -40]]
+        : [[-0.5, 220], [0.1, 220], [0.8, 20], [4.05, 20], [4.5, 220], [4.95, 220], [5.4, 20], [6.9, 20], [7.2, 120], [7.6, 20], [10.0, 20], [10.6, -40]]);
+      S.cam.z = kf(t, PT ? [[-0.5, 1.04], [0.1, 1.04], [0.8, 1.2], [1.1, 1.36], [2.0, 1.3], [3.0, 1.4], [4.05, 1.3], [4.5, 1.06], [4.95, 1.06], [5.4, 1.3], [6.9, 1.36], [8.0, 1.2], [9.0, 1.1], [10.0, 1.1]]
+        : [[-0.5, 1.1], [0.8, 1.2], [1.1, 1.36], [2.0, 1.3], [3.0, 1.4], [4.05, 1.3], [4.5, 1.2], [5.4, 1.3], [6.9, 1.36], [8.0, 1.2], [9.0, 1.1], [10.0, 1.1]]);
       S.cam.y = kf(t, [[-0.5, 60], [0.8, 110], [1.1, 170], [2.0, 150], [3.0, 180], [4.05, 150], [4.5, 110], [5.4, 150], [6.9, 170], [8.0, 110], [9.0, 60], [10.0, 80]]);
     };
   },

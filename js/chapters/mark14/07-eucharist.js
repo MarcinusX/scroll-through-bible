@@ -54,8 +54,11 @@ export default {
     const vineEl = vineL.add(`<defs><clipPath id="${vineClip}"><circle data-k="vr" cx="800" cy="700" r="10"/></clipPath></defs><g clip-path="url(#${vineClip})">${vine}</g>`);
     const vr = S.$('vr');
 
+    // the light of the lifted cup is a sheet behind the people at the table (it used to be laid over Him)
+    const cupGlowL = S.layer({ par: 0.57, sh: 0, flat: true });
     const seatL = S.layer({ par: 0.52, sh: 5 });
     const at = seatAll(S, seatL);
+    if (S.portrait) at.forEach((m) => { m.x = 800 + (m.x - 800) * 0.7; });   // phone: the thirteen sit closer so the table fits
     const J = at.find((m) => m.k === 'jesus');
     const tabL = S.layer({ par: 0.55, sh: 6 });
     tabL.add(`<g transform="translate(800 ${FLOOR - 4})">${supperTable(c, 860)}</g>`);
@@ -68,7 +71,7 @@ export default {
     const halfL = fx.add(`<g>${H.left}</g>`), halfR = fx.add(`<g>${H.right}</g>`);
     const others = at.filter((m) => m.k !== 'jesus');
     const pieces = others.map((m, n) => ({ m, n, el: fx.add(`<g><circle r="22" fill="url(#halo-glow)"/>${sheet().p(c.cut(c.blob(0, -4, 10, 6, 8, 0.25), 0.3, 3), C.wheat2).out()}</g>`) }));
-    const cupGlow = fx.add(`<g><circle r="120" fill="url(#halo-glow)"/><g opacity=".45">${glory(c, 120, 18).replace('<circle', '<circle opacity="0"')}</g></g>`);
+    const cupGlow = cupGlowL.add(`<g><circle r="120" fill="url(#halo-glow)"/><g opacity=".45">${glory(c, 120, 18).replace('<circle', '<circle opacity="0"')}</g></g>`);
     const cupEl = fx.add(`<g>${chalice(c, 46)}</g>`);
     const motes = Array.from({ length: 20 }, (_, i) => ({ i, el: fx.add(`<g><circle r="9" fill="url(#warm-glow)"/><path d="${c.poly(c.star(0, 0, 4.5, 1.6, 4, 0))}" fill="#fff4d6"/></g>`), side: i % 2 ? 1 : -1, off: c.rr(0, 1), dy: c.rr(-30, 30) }));
     // the Kingdom: a golden table with the new cup
@@ -156,8 +159,9 @@ export default {
       const kin = es(t, 4.5, 4.85, ease.out);
       vis(kingdom, { x: 800, y: 300 - (1 - kin) * 700, r: Math.sin(T * 0.8) * 1.5, o: kin > 0.01 ? 1 : 0 });
 
-      S.cam.x = 0;
-      S.cam.z = kf(t, [[-0.5, 1.5], [0.4, 1.9], [1.3, 1.8], [1.6, 1.4], [2.1, 1.8], [2.45, 1.3], [3.0, 1.34], [3.3, 1.7], [4.0, 1.6], [4.6, 1.2]]);
+      S.cam.x = S.portrait ? 40 : 0;   // phone: the row sits clear of the progress thread
+      const zk = kf(t, [[-0.5, 1.5], [0.4, 1.9], [1.3, 1.8], [1.6, 1.4], [2.1, 1.8], [2.45, 1.3], [3.0, 1.34], [3.3, 1.7], [4.0, 1.6], [4.6, 1.2]]);
+      S.cam.z = S.portrait ? Math.max(1, zk - 0.32) : zk;   // phone: wider, so the whole table shows
       S.cam.y = kf(t, [[-0.5, 180], [0.4, 270], [1.3, 260], [1.6, 200], [2.1, 260], [2.45, 190], [3.0, 190], [3.3, 230], [4.0, 200], [4.6, 40]]);
     };
   },

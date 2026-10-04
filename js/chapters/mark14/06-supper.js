@@ -25,6 +25,9 @@ export default {
   cam: { x: [-60, 120], y: [-40, 300], z: [1, 2.0] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;
+    const tight = (x) => (PH ? 800 + (x - 800) * 0.76 : x);   // phone: the thirteen sit closer so the table fits
+    const CANDLE = tight(900);
     const R = upperRoom(S, { skyCols: ['#6d6a9e', '#c7959c', '#eab596'] });
     const { SEAT, TOP, FLOOR } = R;
 
@@ -37,19 +40,20 @@ export default {
     const walkL = S.layer({ par: 0.5, sh: 5 });
     const order = ['jesus', ...SEATS.filter(([k]) => k !== 'jesus').map(([k]) => k).reverse()];
     const walkers = order.map((k, n) => {
-      const x = SEATS.find((s) => s[0] === k)[1];
+      const x = tight(SEATS.find((s) => s[0] === k)[1]);
       const o = k === 'jesus' ? CAST.jesus : TW[k];
       return { k, n, x, p: S.puppet(walkL.add(person(c, o))), seed: c.rr(0, 9) };
     });
     // at table
     const seatL = S.layer({ par: 0.52, sh: 5 });
     const at = seatAll(S, seatL);
+    if (PH) at.forEach((m) => { m.x = tight(m.x); });
     const J = at.find((m) => m.k === 'jesus'), JU = at.find((m) => m.k === 'judas');
     // the table and the supper, the dish, a candle before Judas
     const tabL = S.layer({ par: 0.55, sh: 6 });
     tabL.add(`<g transform="translate(800 ${FLOOR - 4})">${supperTable(c, 860)}</g>`);
     tabL.add(`<g transform="translate(${DISH} ${TOP - 2})">${bowl(c, { w: 40, food: 'stew', color: mix(C.pot, C.clay, 0.4) })}</g>`);
-    const cand = tabL.add(`<g transform="translate(900 ${TOP - 2}) scale(.55)">${candle(c, 40)}</g>`);
+    const cand = tabL.add(`<g transform="translate(${CANDLE} ${TOP - 2}) scale(.55)">${candle(c, 40)}</g>`);
     const cFlame = cand.querySelector('.flame'), cGlow = cand.querySelector('.glow');
     const smoke = tabL.add(`<g><path d="${c.ribbon(Array.from({ length: 12 }, (_, i) => [Math.sin(i * 0.9) * 5, -i * 6]), (u) => 2.4 - u * 1.8)}" fill="#e8e2da" opacity=".8"/></g>`);
 
@@ -134,15 +138,17 @@ export default {
       vis(scroll, { x: 800, y: 340 - (1 - sc) * 700, r: Math.sin(T * 0.8) * 1.5, o: sc > 0.01 ? 1 : 0 });
 
       /* v21b — woe: Judas's shadow grows on the wall; v21c — the candle before him goes out */
-      jShadow.set({ x: 862 + 20, y: SEAT - 10, s: 0.88 * (1.3 + woe * 0.8), flip: true, head: woe * 18 });
+      jShadow.set({ x: JU.x + 20, y: SEAT - 10, s: 0.88 * (1.3 + woe * 0.8), flip: true, head: woe * 18 });
       fade(jShadowG, woe * 0.22);
       const out = es(t, 7.1, 7.35);
       pose(cFlame, { x: 0, y: -60, sy: (1 - out) * (1 + Math.sin(T * 8) * 0.08), sx: 1 - out * 0.6 });
       fade(cGlow, (1 - out) * (0.8 - dark * 0.2));
-      vis(smoke, { x: 900, y: TOP - 40 - out * 10, sy: out, o: out * (1 - es(t, 7.8, 8)) * 0.8 });
+      vis(smoke, { x: CANDLE, y: TOP - 40 - out * 10, sy: out, o: out * (1 - es(t, 7.8, 8)) * 0.8 });
 
-      S.cam.x = kf(t, [[-0.5, -30], [0.9, 0], [2.0, 0], [3.0, 0], [4.05, 40], [4.9, 40], [5.2, 0], [6.0, 0], [6.4, 60], [7.0, 40], [7.5, 0]]);
-      S.cam.z = kf(t, [[-0.5, 1.1], [0.9, 1.2], [2.0, 1.3], [2.5, 1.5], [3.0, 1.26], [4.05, 1.9], [4.9, 1.9], [5.2, 1.2], [6.0, 1.2], [6.4, 1.7], [7.0, 1.7], [7.5, 1.6]]);
+      S.cam.x = kf(t, [[-0.5, -30], [0.9, 0], [2.0, 0], [3.0, 0], [4.05, 40], [4.9, 40], [5.2, 0], [6.0, 0], [6.4, 60], [7.0, 40], [7.5, 0]]) + (PH ? 16 : 0);   // phone: the row sits clear of the progress thread
+      const zk = kf(t, [[-0.5, 1.1], [0.9, 1.2], [2.0, 1.3], [2.5, 1.5], [3.0, 1.26], [4.05, 1.9], [4.9, 1.9], [5.2, 1.2], [6.0, 1.2], [6.4, 1.7], [7.0, 1.7], [7.5, 1.6]]);
+      // phone: wider, so the whole table shows (and stays wide while each of them asks "Is it I?")
+      S.cam.z = PH ? kf(t, [[-0.5, 1.0], [0.9, 1.0], [2.0, 1.1], [2.5, 1.3], [3.0, 1.0], [3.95, 1.0], [4.15, 1.6], [4.9, 1.6], [5.2, 1.0], [6.0, 1.0], [6.4, 1.4], [7.0, 1.4], [7.5, 1.3]]) : zk;
       S.cam.y = kf(t, [[-0.5, 60], [0.9, 130], [2.5, 200], [3.0, 150], [4.05, 270], [4.9, 270], [5.2, 60], [6.0, 90], [6.4, 240], [7.5, 230]]);
     };
   },

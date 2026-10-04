@@ -38,7 +38,8 @@ export default {
     // the hour, hanging in the dark
     const hgL = S.layer({ par: 0.3, sh: 4 });
     const hg = hourglassParts(c, 110);
-    const hour = hanging(hgL, `<g>${hg.frame}<g class="top">${hg.top}</g><g class="bot" transform="translate(0 ${hg.h / 2 - 12})">${hg.bottom}</g>${hg.stream}</g>`, { x: 1080, y: 300, len: 600 });
+    const HX = S.portrait ? 1000 : 1080;   // phone: the hourglass clear of the progress thread
+    const hour = hanging(hgL, `<g>${hg.frame}<g class="top">${hg.top}</g><g class="bot" transform="translate(0 ${hg.h / 2 - 12})">${hg.bottom}</g>${hg.stream}</g>`, { x: HX, y: 300, len: 600 });
     const hTop = hour.querySelector('.top'), hBot = hour.querySelector('.bot');
     // the cup of light
     const cupL = S.layer({ par: 0.4, sh: 3 });
@@ -82,7 +83,7 @@ export default {
       fade(kSad, Math.max(prone, lift * 0.8));
       fade(kTear, es(t, 0.5, 0.8) * (1 - es(t, 2.6, 2.9)));
       const hIn = es(t, 0.3, 0.7, ease.out) * (1 - es(t, 1.2, 1.5, ease.in));
-      vis(hour, { x: 1080, y: 300 - (1 - hIn) * 600, r: Math.sin(T * 0.8) * 2, o: hIn > 0.01 ? 1 : 0 });
+      vis(hour, { x: HX, y: 300 - (1 - hIn) * 600, r: Math.sin(T * 0.8) * 2, o: hIn > 0.01 ? 1 : 0 });
       const sand = seg(t, 0.4, 1.3);
       pose(hTop, { x: 0, y: -4, sy: 1 - sand * 0.6, oy: -4 });
       pose(hBot, { x: 0, y: hg.h / 2 - 12, sy: 0.3 + sand * 0.5 });

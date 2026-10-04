@@ -36,9 +36,11 @@ export default {
     const { HALL, YARD, SEATX } = R;
     const JX = 1030;
 
-    const hallL = S.layer({ par: R.P, sh: 5 });
+    // the light of "I am" is a sheet behind the people in the hall (it used to be laid over Him)
     const glowL = S.layer({ par: R.P, sh: 0, flat: true });
+    const hallL = S.layer({ par: R.P, sh: 5 });
     const burst = glowL.add(`<g><circle r="150" fill="url(#halo-glow)"/><g opacity=".4">${glory(c, 200, 22)}</g></g>`);
+    // (phone: the two beyond the high priest's seat would only show as slivers under the thread, so they are left out)
     const COUNCIL = [
       { m: () => scribe(c, 0), x: 680 }, { m: () => priest(c, 1), x: 738 }, { m: () => scribe(c, 3), x: 796 },
       { m: () => priest(c, 3), x: 1310, flip: true }, { m: () => scribe(c, 2), x: 1375, flip: true },
@@ -144,7 +146,9 @@ export default {
       const condemn = es(t, 8.05, 8.35);
       COUNCIL.forEach((m) => {
         const shock = es(t, 3.1, 3.4);
-        m.p.set({ x: m.x, y: HALL, s: m.s, flip: !!m.flip, armF: 16 + shock * 30 * (1 - condemn) + condemn * 60, armB: condemn * 150 + shock * 20 * (1 - condemn), head: 4 - shock * 6 - condemn * 6, lean: -shock * 4, blink: blinkAt(T, m.seed) });
+        // phone: when they condemn Him, the three on the left step in from the edge of the screen
+        const step = S.portrait && m.x < 1000 ? es(t, 7.1, 7.6) * 90 : 0;
+        m.p.set({ x: m.x + step, y: HALL, walk: step > 0 && step < 90 ? (m.x + step) * 0.05 : undefined, s: m.s, flip: !!m.flip, o: S.portrait && m.x > 1250 ? 0 : 1, armF: 16 + shock * 30 * (1 - condemn) + condemn * 60, armB: condemn * 150 + shock * 20 * (1 - condemn), head: 4 - shock * 6 - condemn * 6, lean: -shock * 4, blink: blinkAt(T, m.seed) });
       });
       WIT.forEach((w) => {
         const go = es(t, 6.2 + w.i * 0.08, 6.9 + w.i * 0.08);
@@ -164,7 +168,8 @@ export default {
       const b4 = es(t, 3.15, 3.35, ease.back) * (1 - es(t, 3.9, 4.05));
       vis(iam, { x: jhx + 8, y: jhy - 30, s: b4, o: b4 > 0.01 ? 1 : 0 });
       // the vision comes down from the flies
-      vis(visionEl, { x: JX, y: 70 - (1 - vision) * 700, r: Math.sin(T * 0.6) * 1, o: vision > 0.01 ? 1 : 0 });
+      // phone: the vision a little to the left and smaller, so its frame is clear of the progress thread
+      vis(visionEl, { x: S.portrait ? JX - 25 : JX, y: 70 - (1 - vision) * 700, s: S.portrait ? 0.94 : 1, r: Math.sin(T * 0.6) * 1, o: vision > 0.01 ? 1 : 0 });
       const roll = es(t, 4.1, 4.9);
       const bobV = vision > 0.01 ? 1 : 0;
       pose(clL, { x: lerp(-PW / 2 - 200, -150, roll), y: PH - 6 + Math.sin(T * 0.8) * 3 * bobV });
