@@ -35,6 +35,8 @@ export default {
   cam: { x: [-40, 60], y: [-40, 30], z: [1, 1.12] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;   // phone: cart, bubbles and the six stones kept inside the screen
+    const BX = P ? MX - 70 : MX - 30;
     const R = roadSet(S, { jer: 0.22, jerX: 1170, roadX: 820, trees: 18, clouds: [[480, 150, 170], [1000, 120, 120]] });
     const lightL = S.layer({ par: 0.04, sh: 1, flat: true });
     const heaven = lightL.add(`<g opacity="0">${rays(c, { n: 16, r0: 40, r1: 700, spread: 0.05, color: '#fff3cf' })}<circle r="200" fill="url(#halo-glow)"/></g>`);
@@ -44,14 +46,14 @@ export default {
     // his cart, loaded, waiting at the roadside
     const cartL = S.layer({ par: 0.42, sh: 4 });
     const K = cart(c, 190);
-    cartL.add(`<g transform="translate(1180 ${GY - 70}) scale(.8)">${K.body}<g transform="translate(-40 0)">${K.wheel}</g><g transform="translate(50 0)">${K.wheel}</g></g>`);
-    cartL.add(`<g transform="translate(1080 ${GY - 34}) scale(.9)">${sack(c, 44)}</g>`);
+    cartL.add(`<g transform="translate(${P ? 1025 : 1180} ${GY - 70}) scale(.8)">${K.body}<g transform="translate(-40 0)">${K.wheel}</g><g transform="translate(50 0)">${K.wheel}</g></g>`);
+    cartL.add(`<g transform="translate(${P ? 975 : 1080} ${GY - 34}) scale(.9)">${sack(c, 44)}</g>`);
 
     /* hanging: the tablets of the Law and the six small stones */
     const hangL = S.layer({ par: 0.3, sh: 5 });
     const law = hanging(hangL, `<g transform="translate(0 150)">${lawTablets(c, { w: 76, h: 110 })}</g>`, { x: 800, y: 110, len: 900 });
     const CM = COMMANDMENTS();
-    const XS = [535, 655, 775, 895, 1015, 1135];
+    const XS = P ? [600, 800, 1000, 600, 800, 1000] : [535, 655, 775, 895, 1015, 1135];
     const stones = CM.map((lines, i) => {
       const el = hanging(hangL, tablet(c, lines, { w: 112, size: lines.length > 1 ? 14 : 15 }), { x: XS[i], y: 110, len: 900 });
       const tk = hangL.add(`<g opacity="0">${tick(c, 17)}</g>`);
@@ -89,7 +91,7 @@ export default {
       const tick_ = seg(t, 6.1, 6.8);
       const proud = es(t, 6.02, 6.25);
       kneeler.set({ x: MX, y: GY, s: 0.96, flip: true, o: kneel, armF: 40 + say1 * 50 + proud * (60 + Math.sin(tick_ * Math.PI * 6) * 15), armB: say1 * 70 + proud * 20, head: -6 - say1 * 4 - proud * 6 + es(t, 4.02, 4.3) * -8, blink: blinkAt(T, 4) });
-      pose(ask, { x: MX - 30, y: GY - 150, s: es(t, 1.02, 1.25, ease.back), o: t > 1.02 && t < 2.05 ? 1 - es(t, 1.9, 2.05) : 0 });
+      pose(ask, { x: BX, y: GY - 150, s: es(t, 1.02, 1.25, ease.back), o: t > 1.02 && t < 2.05 ? 1 - es(t, 1.9, 2.05) : 0 });
 
       /* Jesus: stops, answers, lifts his hand to heaven, points to the Law */
       const toHeaven = es(t, 3.02, 3.3) * (1 - es(t, 3.9, 4.1));
@@ -112,12 +114,12 @@ export default {
       swing(law, 800, 190 - (1 - ld) * 1100 - lu * 1100, T, 0.8, 0.6);
       stones.forEach((st) => {
         const d = es(t, 5.02 + st.i * 0.1, 5.3 + st.i * 0.1, ease.back);
-        const y = 226 + (st.i % 2) * 36 - (1 - d) * 1100;
+        const y = (P ? 190 + Math.floor(st.i / 3) * 100 : 226 + (st.i % 2) * 36) - (1 - d) * 1100;   // phone: two rows of three
         swing(st.el, st.x, y, T, 1.4, 0.8, st.i);
         const tk = es(t, 6.1 + st.i * 0.1, 6.25 + st.i * 0.1, ease.back);
         pose(st.tk, { x: st.x + 40, y: y + st.h - 12, s: tk, r: -8, o: tk > 0.02 ? 1 : 0 });
       });
-      pose(kept, { x: MX - 30, y: GY - 150, s: es(t, 6.02, 6.25, ease.back), o: t > 6.02 ? 1 : 0 });
+      pose(kept, { x: BX, y: GY - 150, s: es(t, 6.02, 6.25, ease.back), o: t > 6.02 ? 1 : 0 });
 
       S.cam.z = 1 + es(t, 0.6, 1.2) * 0.05 - es(t, 4.8, 5.3) * 0.04;
       S.cam.y = -es(t, 2.9, 3.4) * 30 * (1 - es(t, 3.9, 4.3)) - es(t, 4.8, 5.3) * 20;

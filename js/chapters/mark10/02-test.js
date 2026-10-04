@@ -10,7 +10,8 @@ import { roadSet, pharisee, TWELVE, LOOK, doll, scissors, snip, stoneHeart, scro
 
 const GY = 668;
 const JX = 740;
-const PH = [{ x: 950, s: 0.98 }, { x: 1045, s: 0.94 }, { x: 1135, s: 0.9 }];
+const PH_W = [{ x: 950, s: 0.98 }, { x: 1045, s: 0.94 }, { x: 1135, s: 0.9 }];
+const PH_P = [{ x: 925, s: 0.98 }, { x: 1005, s: 0.94 }, { x: 1080, s: 0.9 }];   // phone: clear of the thread
 
 /** a fish-hook: the trap in a testing question */
 function hook(c) {
@@ -29,6 +30,10 @@ export default {
   cam: { x: [-40, 60], y: [-20, 40], z: [1, 1.1] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;
+    const PH = P ? PH_P : PH_W;
+    // phone: Moses, the card and the scroll hang closer together, inside the screen
+    const MX = P ? 555 : 590, CX = P ? 775 : 830, SX = P ? 1005 : 1085;
     const R = roadSet(S, { jer: 0.1, jerX: 1180, roadX: 820, trees: 18, clouds: [[420, 140, 180], [1060, 120, 130]] });
     const vil = S.layer({ par: 0.28, sh: 3 });
     vil.add(house(c, 250, 590, 90, 64) + house(c, 350, 596, 70, 50) + house(c, 180, 600, 60, 44) + olive(c, 470, 600, 0.9) + olive(c, 1330, 600, 0.8) + bush(c, 1250, 604, 60, C.sage, C.moss));
@@ -55,7 +60,7 @@ export default {
     const mosesP = S.puppet(moses.querySelector('.fig'));
     // the bill of divorce
     const sc = scrollParts(c, { w: 190, h: 150, title: tr('list rozwodowy', 'certificate'), lines: 5 });
-    const scrollEl = hanging(hangL, `<g><g class="sheet">${sc.sheet.replace('font-size="30"', 'font-size="22"').replace('y="42"', 'y="36"')}</g><g>${sc.rod}</g></g>`, { x: 1060, y: 150, len: 800 });
+    const scrollEl = hanging(hangL, `<g${P ? ' transform="scale(.8)"' : ''}><g class="sheet">${sc.sheet.replace('font-size="30"', 'font-size="22"').replace('y="42"', 'y="36"')}</g><g>${sc.rod}</g></g>`, { x: 1060, y: 150, len: 800 });
     const scrollSheet = scrollEl.querySelector('.sheet');
     const heavy = hangL.add(`<g opacity="0"><g transform="scale(1.9)">${stoneHeart(c, 22)}</g></g>`);
 
@@ -101,33 +106,33 @@ export default {
       /* beat 1: the question — the card of the two dolls, scissors hovering */
       const card = es(t, 1.0, 1.4, ease.back);
       const cy = 175 - (1 - card) * 1100;
-      swing(cardEl, 830, cy, T, 0.8, 0.6);
+      swing(cardEl, CX, cy, T, 0.8, 0.6);
       const part = es(t, 3.3, 3.8);
-      pose(hisDoll, { x: 800 - part * 16, y: cy + 150, s: 1, r: part * -3 });
-      pose(herDoll, { x: 860 + part * 60, y: cy + 150, s: 1, r: part * 6, o: 1 - part * 0.35 });
-      pose(tie, { x: 830, y: cy + 104, o: part > 0.02 ? 0 : 1 });
-      pose(tieCut, { x: 830 - part * 16, y: cy + 104 + part * 6, r: part * -20, o: part > 0.02 ? 1 : 0 });
-      pose(tieCut2, { x: 830 + part * 60, y: cy + 104 + part * 10, r: part * 24, o: part > 0.02 ? 1 : 0 });
+      pose(hisDoll, { x: CX - 30 - part * 16, y: cy + 150, s: 1, r: part * -3 });
+      pose(herDoll, { x: CX + 30 + part * 60, y: cy + 150, s: 1, r: part * 6, o: 1 - part * 0.35 });
+      pose(tie, { x: CX, y: cy + 104, o: part > 0.02 ? 0 : 1 });
+      pose(tieCut, { x: CX - part * 16, y: cy + 104 + part * 6, r: part * -20, o: part > 0.02 ? 1 : 0 });
+      pose(tieCut2, { x: CX + part * 60, y: cy + 104 + part * 10, r: part * 24, o: part > 0.02 ? 1 : 0 });
       const sIn = es(t, 1.2, 1.7);
       const cut = bump(t, 3.1, 3.45);
-      pose(sciss, { x: lerp(1070, 930, sIn) - cut * 30, y: cy + 74 + cut * 8 + Math.sin(T * 1.3) * 3 * sIn, r: 166, s: 0.9, o: sIn * (1 - es(t, 4.4, 4.8)) });
+      pose(sciss, { x: lerp(CX + 240, CX + 100, sIn) - cut * 30, y: cy + 74 + cut * 8 + Math.sin(T * 1.3) * 3 * sIn, r: 166, s: 0.9, o: sIn * (1 - es(t, 4.4, 4.8)) });
       snip(sciss, 36 - cut * 34 + Math.sin(T * 2) * 3 * sIn * (1 - cut));
       pose(ask, { x: PH[0].x - 44, y: GY - 216, s: es(t, 1.05, 1.3, ease.back), o: t > 1.05 && t < 2 ? 1 - es(t, 1.85, 2) : 0 });
 
       /* beat 2: "What did Moses command you?" — Moses comes down on strings */
       pose(jq, { x: JX + 30, y: GY - 222, s: es(t, 2.02, 2.25, ease.back), o: t > 2.02 && t < 3 ? 1 - es(t, 2.85, 3) : 0 });
       const mo = es(t, 2.2, 2.7, ease.back);
-      swing(moses, 590, 100 - (1 - mo) * 1100, T, 1, 0.7, 1);
+      swing(moses, MX, 100 - (1 - mo) * 1100, T, 1, 0.7, 1);
       mosesP.set({ x: 0, y: 0, s: 1, armF: 70, armB: 20, head: -4, blink: blinkAt(T, 5) });
-      pose(q2, { x: 680, y: 120 - (1 - mo) * 1100, o: bump(t, 2.3, 3.0), r: Math.sin(T) * 6 });
+      pose(q2, { x: MX + 90, y: 120 - (1 - mo) * 1100, o: bump(t, 2.3, 3.0), r: Math.sin(T) * 6 });
 
       /* beat 3: "Moses allowed a bill of divorce" — the scroll unrolls and the dolls are cut apart */
       const sc = es(t, 3.0, 3.4, ease.back);
-      swing(scrollEl, 1085, 130 - (1 - sc) * 1100, T, 1, 0.6, 2);
+      swing(scrollEl, SX, 130 - (1 - sc) * 1100, T, 1, 0.6, 2);
       pose(scrollSheet, { sy: 0.05 + 0.95 * es(t, 3.2, 3.6) });
 
       /* beat 4: hardness of heart */
-      pose(heavy, { x: 1085, y: 300 - (1 - es(t, 4.25, 4.6, ease.back)) * 60, o: es(t, 4.25, 4.4), r: Math.sin(T * 0.8) * 3 });
+      pose(heavy, { x: SX, y: 300 - (1 - es(t, 4.25, 4.6, ease.back)) * 60, o: es(t, 4.25, 4.4), r: Math.sin(T * 0.8) * 3 });
 
       S.cam.z = 1 + es(t, 0.6, 1.4) * 0.05 + es(t, 3.9, 4.6) * 0.04;
       S.cam.y = -es(t, 0.6, 1.4) * 10;

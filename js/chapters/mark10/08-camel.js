@@ -12,7 +12,7 @@ import { roadSet, TWELVE, camel, walkCamel, bigNeedle, cart, sack, say, bang, qm
 
 const GY = 672;
 const JX = 740;
-const NX = 1010, NH = 340, NTIP = GY + 96;          // the needle: x, height, where its point is
+const NX_W = 1010, NH = 340, NTIP = GY + 96;          // the needle: x, height, where its point is
 const EYE_Y = NTIP - NH + 63;
 
 /** a camel's load: two bulging sacks and a chest with gold; drawn in camel coords (facing right) */
@@ -49,6 +49,10 @@ export default {
   cam: { x: [-40, 80], y: [-50, 30], z: [1, 1.14] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;
+    // phone: the needle stands nearer to Jesus and the camel is smaller, so both stay inside the screen;
+    // the far gate comes in from under the thread; the needle waits higher, out of sight
+    const NX = P ? 900 : NX_W, CS0 = P ? 0.66 : 0.86, NOSE = P ? 77 : 100, BOUNCE = P ? 40 : 60;
     const R = roadSet(S, { jer: 0.28, jerX: 1180, roadX: 860, trees: 18, clouds: [[480, 140, 170], [1020, 110, 120]] });
     const lightL = S.layer({ par: 0.04, sh: 1, flat: true });
     const heaven = lightL.add(`<g opacity="0">${rays(c, { n: 18, r0: 40, r1: 900, spread: 0.05, color: '#fff3cf' })}<circle r="260" fill="url(#halo-glow)"/></g>`);
@@ -92,10 +96,10 @@ export default {
       /* beat 0–1: he looks around; far off, the rich man's cart cannot pass the narrow gate */
       const lookK = seg(t, 0.05, 0.9);
       const looking = lookK > 0 && lookK < 1;
-      const gx = 1150, gy = R.gy(1150) + 6;
+      const gx = P ? 1060 : 1150, gy = R.gy(gx) + 6;
       pose(gate, { x: gx, y: gy, s: 0.8, o: es(t, 1.0, 1.3) * (1 - es(t, 3.9, 4.2)) });
       const roll = es(t, -0.5, 1.5);
-      const tx = lerp(900, gx - 70, roll);
+      const tx = lerp(P ? 840 : 900, gx - 70, roll);
       const jam = bump(t, 1.45, 1.75) * 5;
       pose(tiny, { x: tx + jam, y: gy - 10, s: 0.26, o: 1 - es(t, 3.9, 4.2) });
       tinyMan.set({ x: tx + 46 + jam, y: gy, s: 0.26, o: 1 - es(t, 3.9, 4.2), walk: roll > 0 && roll < 1 ? tx * 0.2 : undefined, lean: 10, armF: 70, armB: 60 });
@@ -124,15 +128,15 @@ export default {
 
       /* beat 4: the needle comes down; the loaded camel tries to squeeze through its eye */
       const nd = es(t, 3.95, 4.25, ease.back);
-      swing(needle, NX, NTIP - NH - (1 - nd) * 800, T, 0.6, 0.6);
+      swing(needle, NX, NTIP - NH - (1 - nd) * (P ? 1300 : 800), T, 0.6, 0.6);
       const walkIn = es(t, 4.05, 4.4);
       const push = bump(t, 4.35, 4.65);
       const bounce = es(t, 4.6, 4.8, ease.back) * (1 - es(t, 8.1, 8.2));
       // beat 8: lifted in light, shrinks, floats through the eye and lands on the other side
       const lift = es(t, 8.15, 8.45), through = es(t, 8.45, 8.65), land = es(t, 8.65, 8.9);
-      const nose = 100;
-      let cx = lerp(1500, NX + nose, walkIn) - push * 14 + bounce * 60, cy = GY;
-      let cs = 0.86;
+      const nose = NOSE;
+      let cx = lerp(1500, NX + nose, walkIn) - push * 14 + bounce * BOUNCE, cy = GY;
+      let cs = CS0;
       cx = lerp(cx, NX + 30, lift); cy = lerp(cy, EYE_Y + 10, lift); cs = lerp(cs, 0.1, lift);
       cx = lerp(cx, NX - 30, through);
       cx = lerp(cx, NX - 110, land); cy = lerp(cy, GY + 30, land); cs = lerp(cs, 0.62, land);

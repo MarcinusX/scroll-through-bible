@@ -78,7 +78,8 @@ export default {
     const ORDER = [...TWELVE.filter((d) => d.k !== 'james' && d.k !== 'john'), TWELVE[1], TWELVE[2]];
     const DIS = ORDER.map((d, i) => {
       const el = pL.add(withFace(person(c, { ...d.o, holdF: d.k === 'john' ? `<g transform="translate(0 8) rotate(-20) scale(1.25)">${ewer(c)}</g>` : d.k === 'james' ? `<g transform="translate(0 4) rotate(-10) scale(1.7)">${cup(c)}</g>` : '' }), faceBits(c)));
-      const [x, y] = POS[d.k];
+      const [x0, y] = POS[d.k];
+      const x = S.portrait ? JX + (x0 - JX) * 0.8 : x0;   // phone: both groups closer to him, clear of the edge and the thread
       return { ...d, i, el, p: S.puppet(el), x, y, seed: c.rr(0, 9), flip: x > JX };
     });
     const byK = Object.fromEntries(DIS.map((d) => [d.k, d]));
@@ -112,7 +113,7 @@ export default {
         // James & John go round the others with the jug and a cup
         const route = isJJ ? serve : 0;
         if (isJJ) {
-          x = lerp(x, d.k === 'john' ? 560 : 1030, route);
+          x = lerp(x, d.k === 'john' ? (S.portrait ? 600 : 560) : (S.portrait ? 990 : 1030), route);
           y = lerp(y, GY + 44, route);
         }
         const amazed = es(t, 5.1, 5.4) * (1 - open);

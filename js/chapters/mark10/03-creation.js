@@ -99,7 +99,7 @@ export default {
       /* beat 1: the parents slide in; he bows to them and walks to his wife */
       const hs = es(t, 0.9, 1.2);
       const leave = es(t, 1.45, 1.95);
-      const hx = lerp(-300, 400, hs);
+      const hx = lerp(-300, S.portrait ? 490 : 400, hs);   // phone: the parents stand inside the screen
       pose(home, { x: hx, y: GY - 6 });
       father.set({ x: hx + 60, y: GY, s: 0.94, armF: bump(t, 1.3, 2.1) * 90 + es(t, 1.6, 1.9) * 30, armB: bump(t, 1.4, 2.2) * 120, head: -4, blink: blinkAt(T, 1) });
       mother.set({ x: hx + 118, y: GY + 2, s: 0.9, armF: bump(t, 1.25, 1.8) * 70 + es(t, 1.6, 1.9) * 50, head: -6, blink: blinkAt(T, 2) });
@@ -108,7 +108,7 @@ export default {
       const bow = bump(t, 1.25, 1.55);
       const join = es(t, 2.0, 2.35);
       let mx = lerp(700, MX, leave);
-      mx = lerp(mx, 590, toParents * 0.4);
+      mx = lerp(mx, S.portrait ? 640 : 590, toParents * 0.4);
       const walking = (t > 1.1 && t < 1.35) || (t > 1.45 && t < 1.95);
       pose(manW, { x: mx, y: GY, sy: popM, o: seg(t, 0.2, 0.3) });
       man.set({ x: 0, y: 0, s: 1, flip: toParents > 0.5 && leave < 0.5, walk: walking ? mx * 0.07 : undefined, lean: bow * -8, head: bow * 10 - join * 3, armF: 8 + join * 58 + bump(t, 0.6, 1.0) * 30, armB: bump(t, 0.6, 1.0) * 60, blink: blinkAt(T, 3) });
