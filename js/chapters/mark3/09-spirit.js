@@ -32,6 +32,7 @@ export default {
   cam: { x: [-20, 40], y: [-60, 20], z: [1, 1.1] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;   // phone: the people, the scribes and their cry come inward, clear of the frame and the thread
     const DAY = ['#d4e2dc', '#efe6cf', '#f4e2c6'];
     const GLOW = [mix('#d4e2dc', C.halo, 0.3), mix(C.cream, C.halo, 0.4), C.dawn];
     const sk = sky(S, DAY);
@@ -57,7 +58,8 @@ export default {
     /* the people (left) with their tags; the scribes (right) with theirs */
     const folkL = S.layer({ par: 0.42, sh: 3 });
     const tagL = S.layer({ par: 0.42, sh: 4 });
-    const FOLK = [[395, 612, 0.72, 'stand'], [455, 606, 0.7, 'stand'], [515, 614, 0.74, 'stand'], [575, 608, 0.72, 'stand'], [425, 652, 0.82, 'sit'], [495, 658, 0.84, 'sit'], [565, 654, 0.82, 'sit'], [635, 650, 0.8, 'sit']].map(([x, y, s, p], i) => {
+    const FOLK = [[395, 612, 0.72, 'stand'], [455, 606, 0.7, 'stand'], [515, 614, 0.74, 'stand'], [575, 608, 0.72, 'stand'], [425, 652, 0.82, 'sit'], [495, 658, 0.84, 'sit'], [565, 654, 0.82, 'sit'], [635, 650, 0.8, 'sit']].map(([x0, y, s, p], i) => {
+      const x = x0 + (P ? 60 : 0);
       const m = { x, y, s, pose: p, i, seed: c.rr(0, 9), p: S.puppet(folkL.add(person(c, { ...crowdPerson(c), pose: p }))) };
       const [hx, hy] = headAt(x, y, s, false, p);
       m.tx = hx; m.ty = hy - 70 * s - 30;
@@ -68,7 +70,7 @@ export default {
     });
     const act = S.layer({ par: 0.5, sh: 5 });
     const SCR = [0, 1, 2].map((i) => {
-      const m = { i, x: [960, 1040, 1116][i], y: [664, 672, 660][i], s: [0.96, 0.98, 0.94][i], seed: c.rr(0, 9), p: S.puppet(act.add(person(c, scribe(c, i)))) };
+      const m = { i, x: (P ? [912, 978, 1044] : [960, 1040, 1116])[i], y: [664, 672, 660][i], s: [0.96, 0.98, 0.94][i], seed: c.rr(0, 9), p: S.puppet(act.add(person(c, scribe(c, i)))) };
       const [hx, hy] = headAt(m.x, m.y, m.s, true);
       m.tx = hx; m.ty = hy - 70 * m.s - 30;
       m.tag = tagL.add(`<g>${sinTag(c)}</g>`);
@@ -121,7 +123,7 @@ export default {
         pose(m.tag, { x: m.tx + (back > 0.5 ? 0 : 0), y: m.ty + 26, o: 1 });
       });
       fade(shadow, es(t, 2.3, 2.6) * 0.9);
-      pose(accuse, { x: 1010, y: 470 + Math.sin(T * 2) * 2, s: es(t, 3.15, 3.35, ease.back), o: t > 3.12 ? 1 : 0 });
+      pose(accuse, { x: P ? 930 : 1010, y: 470 + Math.sin(T * 2) * 2, s: es(t, 3.15, 3.35, ease.back), o: t > 3.12 ? 1 : 0 });
 
       /* the Holy Spirit */
       const d = es(t, 2.02, 2.5, ease.out);

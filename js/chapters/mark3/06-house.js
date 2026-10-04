@@ -27,6 +27,7 @@ export default {
   cam: { x: [-60, 10], y: [-60, 30], z: [1, 1.1] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;   // phone: his family, the "!" and the gossip stay inside the screen
     sky(S, ['#cfe0dc', '#efe4cb', '#f6e7cf']);
     const hangL = S.layer({ par: 0.05, sh: 4 });
     const sunEl = hanging(hangL, cloud(c, 130), { x: 1180, y: 110, len: 700 });
@@ -78,9 +79,9 @@ export default {
     // his family, come down from the village to take him home
     const rope = `<g transform="translate(0 8)">${sheet().p(c.ribbon(c.arc(0, 0, 12, 12, 0, PI * 2, 16), 4) + c.ribbon(c.arc(1, 2, 8, 8, 0, PI * 2, 12), 3.4), C.rope).out()}</g>`;
     const KIN = [
-      { o: { ...KINLOOK[0], holdF: rope }, x: 470, s: 0.9 },
-      { o: KINLOOK[1], x: 540, s: 0.86 },
-      { o: KINLOOK[2], x: 405, s: 0.88 },
+      { o: { ...KINLOOK[0], holdF: rope }, x: P ? 532 : 470, s: 0.9 },
+      { o: KINLOOK[1], x: P ? 590 : 540, s: 0.86 },
+      { o: KINLOOK[2], x: P ? 476 : 405, s: 0.88 },
     ].map((k, i) => ({ ...k, i, y: 704, seed: c.rr(0, 9), p: S.puppet(outL.add(withFace(person(c, k.o), i === 0 ? faceBits(c) : ''))) }));
     KIN.forEach((k) => { k.angry = k.p.el.querySelector('[data-part="angry"]'); });
     const messenger = S.puppet(outL.add(person(c, man(c, { robe: C.roseRobe, beard: 'none' }))));
@@ -89,7 +90,7 @@ export default {
     const ROOF = [[660, 0.62], [780, 0.6], [900, 0.62]].map(([x, s], i) => ({ x, s, i, seed: c.rr(0, 9), p: S.puppet(outL.add(person(c, { ...crowdPerson(c), pose: 'kneel' }))) }));
     const gossip = [
       { x: 560, y: 478, el: outL.add(`<g opacity="0">${bubble(c, tr('Odszedł od zmysłów!', 'He is insane!'), { size: 18, tail: -1 })}<g transform="translate(0 -84)">${spiral(c, 13)}</g></g>`) },
-      { x: 1000, y: 214, el: outL.add(`<g opacity="0">${bubble(c, tr('Odszedł od zmysłów!', 'He is insane!'), { size: 18, tail: -1 })}<g transform="translate(0 -84)">${spiral(c, 13)}</g></g>`) },
+      { x: P ? 950 : 1000, y: 214, el: outL.add(`<g opacity="0">${bubble(c, tr('Odszedł od zmysłów!', 'He is insane!'), { size: 18, tail: -1 })}<g transform="translate(0 -84)">${spiral(c, 13)}</g></g>`) },
     ];
 
     const fg = S.layer({ par: 0.85, sh: 6 });
@@ -145,7 +146,7 @@ export default {
       const run = es(t, 0.95, 1.3);
       const mxx = lerp(620, 250, run);
       messenger.set({ x: mxx, y: 712, s: 0.7, flip: true, o: bump(t, 0.9, 1.6) > 0 ? Math.min(1, bump(t, 0.9, 1.6) * 4) : 0, walk: run > 0 && run < 1 ? mxx * 0.1 : undefined, armF: 40 + es(t, 1.3, 1.4) * 50, blink: 0 });
-      pose(bang, { x: 380, y: 470, s: es(t, 1.2, 1.35, ease.back), o: t > 1.2 && t < 1.9 ? 1 : 0 });
+      pose(bang, { x: P ? 480 : 380, y: 470, s: es(t, 1.2, 1.35, ease.back), o: t > 1.2 && t < 1.9 ? 1 : 0 });
       KIN.forEach((k) => {
         const go = es(t, 1.35 + k.i * 0.06, 1.8 + k.i * 0.06);
         const x = lerp(k.x - 420, k.x, go);

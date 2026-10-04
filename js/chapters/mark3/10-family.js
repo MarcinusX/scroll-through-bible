@@ -167,7 +167,8 @@ export default {
       LABELS.forEach((l) => pose(l.el, { x: l.m.hx, y: l.m.hy - 58 * l.m.s - 10, s: es(t, 6.1 + l.k * 0.07, 6.3 + l.k * 0.07, ease.back), r: -3 + l.k * 2, o: t > 6.1 ? 1 : 0 }));
       pose(outGlow, { x: 632, y: 540, o: es(t, 6.3, 6.7) * 0.8 });
 
-      S.cam.x = -es(t, -0.3, 0.4) * 50 + es(t, 0.9, 1.4) * 40 + es(t, 5.9, 6.4) * -20;
+      // phone: a little to the right, so the people sitting by the right wall clear the thread
+      S.cam.x = -es(t, -0.3, 0.4) * 50 + es(t, 0.9, 1.4) * 40 + es(t, 5.9, 6.4) * -20 + (S.portrait ? 25 : 0);
       S.cam.z = 1 + es(t, 0.9, 1.4) * 0.06 + es(t, 3.9, 4.3) * 0.05 - es(t, 5.9, 6.4) * 0.1;
       S.cam.y = es(t, 0.9, 1.4) * 20 + es(t, 3.9, 4.3) * 10 - es(t, 5.9, 6.4) * 30;
     };
