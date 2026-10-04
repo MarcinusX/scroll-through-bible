@@ -96,8 +96,9 @@ export default {
       const jK = [[-0.3, [420, JY]], [0.6, [JX, JY]], [7.1, [JX, JY]], [7.8, [1010, JY]]];
       const [jx, jy] = kf(t, jK);
       const jw = moving(t, jK) ? jx * 0.05 : undefined;
-      const aK = [[-0.3, [560, JY + 4]], [0.6, [960, JY + 4]], [0.9, [1150, JY + 6]], [6.9, [1150, JY + 6]], [7.2, [1000, JY + 4]], [7.8, [1200, JY + 4]]];
-      const bK = [[-0.3, [260, JY + 6]], [0.6, [640, JY + 6]], [0.9, [450, JY + 8]], [6.9, [450, JY + 8]], [7.2, [620, JY + 6]], [7.8, [840, JY + 6]]];
+      const AX = S.portrait ? 1045 : 1150, BX = S.portrait ? 520 : 450;   // phone: the two guards stand inside the frame
+      const aK = [[-0.3, [560, JY + 4]], [0.6, [960, JY + 4]], [0.9, [AX, JY + 6]], [6.9, [AX, JY + 6]], [7.2, [1000, JY + 4]], [7.8, [1200, JY + 4]]];
+      const bK = [[-0.3, [260, JY + 6]], [0.6, [640, JY + 6]], [0.9, [BX, JY + 8]], [6.9, [BX, JY + 8]], [7.2, [620, JY + 6]], [7.8, [840, JY + 6]]];
       const [ax, ay] = kf(t, aK), [bx, by] = kf(t, bK);
       solA.set({ x: ax, y: ay, s: 1, flip: (t > 0.6 && t < 7.0), walk: moving(t, aK) ? ax * 0.06 : undefined, armF: 34, armB: 10 + bump(t, 7.0, 7.3) * 40, blink: blinkAt(T, 3) });
       solB.set({ x: bx, y: by, s: 1, flip: t > 0.6 && t < 7.0, walk: moving(t, bK) ? bx * 0.06 : undefined, armF: 34, armB: 10 + bump(t, 7.0, 7.3) * 40, blink: blinkAt(T, 4) });

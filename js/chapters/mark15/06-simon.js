@@ -69,9 +69,10 @@ export default {
 
       /* keyframes */
       const jK = [[-0.3, [560, GY]], [0.9, [770, GY]], [2.2, [790, GY]], [2.75, [800, GY]], [3.9, [1110, GY]]];
-      const sK = [[-0.3, [1420, GY + 4]], [0.7, [1000, GY + 4]], [2.05, [1000, GY + 4]], [2.4, [700, GY - 4]], [2.75, [650, GY - 4]], [3.9, [960, GY - 4]]];
+      const sK = [[-0.3, [1420, GY + 4]], [0.7, [1000, GY + 4]], [2.05, [1000, GY + 4]], [2.4, [S.portrait ? 730 : 700, GY - 4]], [2.75, [S.portrait ? 700 : 650, GY - 4]], [3.9, [960, GY - 4]]];   // phone: Simon takes the cross a little further in, so it isn't sliced by the frame
       const aK = [[-0.3, [700, GY + 8]], [0.55, [930, GY + 8]], [2.6, [930, GY + 8]], [3.9, [1250, GY + 8]]];
-      const bK = [[-0.3, [380, GY + 6]], [0.9, [590, GY + 6]], [2.3, [590, GY + 6]], [2.6, [500, GY + 6]], [3.9, [810, GY + 6]]];
+      const bK = [[-0.3, [380, GY + 6]], [0.9, [S.portrait ? 515 : 590, GY + 6]], [2.3, [S.portrait ? 515 : 590, GY + 6]],   // phone: the rear soldier waits just out of frame, not sliced by it
+        [2.6, [500, GY + 6]], [3.9, [810, GY + 6]]];
       const [jx, jy] = kf(t, jK), [sx, sy] = kf(t, sK), [ax, ay] = kf(t, aK), [bx, by] = kf(t, bK);
       const taken = es(t, 2.3, 2.6);
       const halt = es(t, 0.45, 0.6) * (1 - es(t, 2.45, 2.6));
@@ -106,12 +107,12 @@ export default {
       swing(simTag, hsx, 300 - (1 - st) * 700, T, 1.2, 0.9, 1);
       boyTags.forEach((bt, i) => {
         const k = es(t, 1.05 + i * 0.12, 1.4 + i * 0.12) * (1 - es(t, 2.1, 2.4));
-        swing(bt, 1080 + i * 64 + (i ? 26 : -20), 420 + i * 22 - (1 - k) * 700, T, 1.4, 1, 2 + i);
+        swing(bt, 1080 + i * 64 + (i ? (S.portrait ? 0 : 26) : -20), 420 + i * 22 - (1 - k) * 700, T, 1.4, 1, 2 + i);
       });
       const gt = es(t, 3.1, 3.5);
       swing(golTag, 1270, 170 - (1 - gt) * 700, T, 1.1, 0.8, 3);
 
-      S.cam.x = es(t, 2.7, 3.9) * 420;
+      S.cam.x = es(t, 2.7, 3.9) * 420 + (S.portrait ? 190 * (1 - es(t, 2.7, 3.9)) : 0);   // phone: Simon's boys and their tags off the thread
       S.cam.y = 10 + es(t, 0.3, 1.0) * 20 - es(t, 2.9, 3.8) * 40;
       S.cam.z = 1.02 + es(t, 0.3, 1.0) * 0.04;
     };

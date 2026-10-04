@@ -27,16 +27,16 @@ export default {
     const P = G.P;
     // passers-by on the road
     const walkers = [
-      { o: man(c, { robe: C.dustyBlue, belt: C.leather }), K: [[-0.4, [150, RY]], [0.5, [490, RY]]], seed: 1 },
+      { o: man(c, { robe: C.dustyBlue, belt: C.leather }), K: [[-0.4, [150, RY]], [0.5, [S.portrait ? 530 : 490, RY]]], seed: 1 },   // phone: he stops inside the frame, not sliced by it
       { o: woman(c, { robe: C.roseRobe }), K: [[-0.2, [1300, RY + 6]], [0.7, [650, RY + 6]]], seed: 2 },
       { o: man(c, { robe: C.ochreRobe, hairStyle: 'bald', beard: 'full' }), K: [[0, [20, RY + 10]], [0.8, [370, RY + 10]]], seed: 3 },
     ].map((w, i) => ({ ...w, i, p: S.puppet(P.add(person(c, w.o))) }));
-    // the chief priests and scribes, on the right
+    // the chief priests and scribes, on the right (closer together on a phone, clear of the thread)
     const lords = [
-      { el: priest(c, 0), x: 960, f: false },
-      { el: scribe(c, 1), x: 1036, f: true },
-      { el: priest(c, 2), x: 1112, f: true },
-      { el: scribe(c, 2), x: 1184, f: true },
+      { el: priest(c, 0), x: S.portrait ? 855 : 960, f: false },
+      { el: scribe(c, 1), x: S.portrait ? 920 : 1036, f: true },
+      { el: priest(c, 2), x: S.portrait ? 985 : 1112, f: true },
+      { el: scribe(c, 2), x: S.portrait ? 1050 : 1184, f: true },
     ].map((l, i) => ({ ...l, i, p: S.puppet(P.add(l.el)), seed: c.rr(0, 9) }));
     const fx = G.fx;
     const T_ = (pl, en, side = 1) => fx.add(`<g>${taunt(c, tr(pl, en), { size: 20, side })}</g>`);
@@ -99,7 +99,7 @@ export default {
         const k = seg(t, tt.k0 - 0.02, tt.k0 + 1.1);
         const src = w.K ? kf(Math.min(t, tt.k0), w.K) : [w.x, RY + 4];
         const [hx, hy] = headAt(src[0], src[1], 1, false);
-        const OFF = [[-150, 60], [150, 20], [-170, 20], [160, 90], [150, 10], [170, 100], [140, 20], [190, 110]][i];
+        const OFF = (S.portrait && i === 0 ? [-110, 150] : [[-150, 60], [150, 20], [-170, 20], [160, 90], [150, 10], [170, 100], [140, 20], [190, 110]][i]);   // phone: the first taunt lands below the sun, not over it
         const tx = lerp(hx, HX + OFF[0], 0.85), ty = HY + OFF[1];
         const fly = Math.min(1, k / 0.55), fall = Math.max(0, (k - 0.55) / 0.45);
         const x = lerp(hx, tx, ease.out(fly)), y = lerp(hy - 30, ty, ease.out(fly)) - Math.sin(fly * PI) * 40 + fall * fall * 260;
@@ -114,7 +114,7 @@ export default {
         pose(sc.el, { x: lerp(x0, lerp(x0, HX, 0.6), fly), y: y0 - 20 - Math.sin(fly * PI) * 30 + fall * fall * 200, s: 0.8, r: fall * (sc.i % 2 ? 40 : -40), o: k > 0 && k < 1 ? 1 - fall : 0 });
       });
 
-      S.cam.x = es(t, 2.9, 3.4) * 90 * (1 - es(t, 5.9, 6.3));
+      S.cam.x = es(t, 2.9, 3.4) * 90 * (1 - es(t, 5.9, 6.3) * (S.portrait ? 0.5 : 1));   // phone: the camera stays a little right at the end, so the lords aren't under the thread
       S.cam.y = 20 + es(t, 2.9, 3.4) * 30 * (1 - es(t, 5.9, 6.3)) - es(t, 5.9, 6.3) * 30;
       S.cam.z = 1.02 + es(t, 2.9, 3.4) * 0.05 * (1 - es(t, 5.9, 6.3)) + es(t, 5.9, 6.4) * 0.06;
     };

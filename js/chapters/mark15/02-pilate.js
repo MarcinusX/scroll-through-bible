@@ -36,6 +36,14 @@ export default {
     const c = S.c;
     const H = hallSet(S);
     const P = H.charL;
+    // phone: the judgement seat, dais and standards (and Pilate with them) stand 60 further left, clear of the thread
+    const PX = S.portrait ? -60 : 0;
+    if (PX) {
+      H.props.shift(PX, 0);
+      // …except the eagle standard, which stays where it was (out at the edge) instead of standing under the thread
+      const eagle = H.props.el.querySelector('g[transform="translate(1236 612)"]');
+      if (eagle) eagle.setAttribute('transform', `translate(${1236 - PX} 612)`);
+    }
     // a soft light that grows around Jesus when He answers
     const shine = P.add(`<g><circle r="150" fill="url(#halo-glow)"/></g>`);
     const pr = [0, 1, 2].map((i) => ({ i, p: S.puppet(P.add(priest(c, i))), x: [470, 560, 650][i], seed: c.rr(0, 9) }));
@@ -81,9 +89,9 @@ export default {
       const rise = es(t, 3.9, 3.98);
       const q1 = es(t, 0.9, 1.3) * (1 - es(t, 2.0, 2.3));
       const wonder = es(t, 6.05, 6.4);
-      pSit.set({ x: 1116, y: 566, s: 1, flip: true, o: 1 - rise, armF: 30 + q1 * 50 + bump(t, 0, 0.6) * 20, armB: 10 + q1 * 20, lean: q1 * -6, head: -4 + bump(t, 2.1, 2.9) * 6 - bump(t, 3, 3.8) * 6, blink: blinkAt(T, 1) });
+      pSit.set({ x: 1116 + PX, y: 566, s: 1, flip: true, o: 1 - rise, armF: 30 + q1 * 50 + bump(t, 0, 0.6) * 20, armB: 10 + q1 * 20, lean: q1 * -6, head: -4 + bump(t, 2.1, 2.9) * 6 - bump(t, 3, 3.8) * 6, blink: blinkAt(T, 1) });
       const sweep = es(t, 5.05, 5.4) * (1 - es(t, 5.9, 6.1));
-      pSt.set({ x: 1060, y: 600, s: 1, flip: true, o: rise, armF: 40 + es(t, 4.05, 4.3) * 40 * (1 - sweep) + sweep * 40 - wonder * 30, armB: 10 + sweep * 60 + wonder * 90, lean: -es(t, 4.05, 4.3) * 5 + wonder * 5, head: -wonder * 8 + Math.sin(T * 0.7) * 1.5 * wonder, blink: blinkAt(T, 1) });
+      pSt.set({ x: 1060 + PX, y: 600, s: 1, flip: true, o: rise, armF: 40 + es(t, 4.05, 4.3) * 40 * (1 - sweep) + sweep * 40 - wonder * 30, armB: 10 + sweep * 60 + wonder * 90, lean: -es(t, 4.05, 4.3) * 5 + wonder * 5, head: -wonder * 8 + Math.sin(T * 0.7) * 1.5 * wonder, blink: blinkAt(T, 1) });
 
       /* Jesus */
       const answer = es(t, 2.05, 2.35) * (1 - es(t, 2.95, 3.2));
@@ -103,18 +111,22 @@ export default {
 
       /* the chief priests and a scribe */
       const acc = es(t, 3.0, 3.25) * (1 - es(t, 3.9, 4.2));
+      // phone: once the guard has gone, the accusers close up (570/630/690) so none is sliced by the frame
+      const inK = S.portrait ? es(t, 0.95, 1.4) : 0;
+      const inP = (m) => inK * (100 - m.i * 30) - (S.portrait && m.i === 0 ? 50 * (1 - inK) : 0);   // the first waits just out of frame, not sliced
       pr.forEach((m) => {
-        const ax2 = m.x + acc * 50;
-        m.p.set({ x: ax2, y: 684 - m.i * 4, s: 0.96, flip: false, armF: 30 + bump(t, 0, 0.8) * 50 + acc * (60 + Math.sin(T * 7 + m.i * 2) * 20), armB: 10 + acc * (40 + m.i * 30), head: -3 + acc * -4, lean: acc * 4, blink: blinkAt(T, m.seed) });
+        const ax2 = m.x + inP(m) + acc * 50;
+        m.p.set({ x: ax2, y: 684 - m.i * 4, s: 0.96, flip: false, walk: inK > 0 && inK < 1 ? ax2 * 0.05 : undefined, armF: 30 + bump(t, 0, 0.8) * 50 + acc * (60 + Math.sin(T * 7 + m.i * 2) * 20), armB: 10 + acc * (40 + m.i * 30), head: -3 + acc * -4, lean: acc * 4, blink: blinkAt(T, m.seed) });
       });
-      sc.set({ x: 380, y: 690, s: 0.94, flip: false, armF: 30 + acc * 40, armB: 10, head: -4, blink: blinkAt(T, 9) });
+      sc.set({ x: S.portrait ? 290 : 380, y: 690,   // phone: kept out of the frame rather than sliced at its edge
+        s: 0.94, flip: false, armF: 30 + acc * 40, armB: 10, head: -4, blink: blinkAt(T, 9) });
 
       /* v3 — accusations fly and pile up at His feet; v4b they rise in a fan around Him; v5 they fall away */
       const fanK = es(t, 5.1, 5.5) * (1 - es(t, 6.0, 6.5));
       const fall = es(t, 6.0, 6.7);
       slips.forEach((sl) => {
         const k = seg(t, 3.02 + sl.i * 0.05, 3.32 + sl.i * 0.05);
-        const fx0 = pr[sl.from].x + 70, fy0 = 520;
+        const fx0 = pr[sl.from].x + inP(pr[sl.from]) + 70, fy0 = 520;
         const lx = JX + sl.dx, ly = 700 + sl.land;
         const x = lerp(fx0, lx, k), y = lerp(fy0, ly, k) - Math.sin(k * PI) * 110;
         const a = (sl.i / slips.length) * PI * 1.1 + PI * 0.95;
@@ -125,13 +137,13 @@ export default {
       });
 
       /* bubbles */
-      const [phx, phy] = headAt(1116, 566, 1, true, 62);
+      const [phx, phy] = headAt(1116 + PX, 566, 1, true, 62);
       const b1 = es(t, 1.05, 1.3, ease.back) * (1 - es(t, 1.9, 2.05));
       pose(askB, { x: phx - 26, y: phy - 20, s: b1, o: b1 > 0.02 ? 1 : 0 });
       const [jhx, jhy] = headAt(jx, jy, 1.02, false);
       const b2 = es(t, 2.1, 2.35, ease.back) * (1 - es(t, 2.9, 3.05));
       pose(yesB, { x: jhx + 26, y: jhy - 24, s: b2, o: b2 > 0.02 ? 1 : 0 });
-      const [p2x, p2y] = headAt(1060, 600, 1, true);
+      const [p2x, p2y] = headAt(1060 + PX, 600, 1, true);
       const b3 = es(t, 4.1, 4.35, ease.back) * (1 - es(t, 4.95, 5.1));
       pose(ask2, { x: p2x - 24, y: p2y - 22, s: b3, o: b3 > 0.02 ? 1 : 0 });
       const b4 = es(t, 6.1, 6.3);
@@ -142,7 +154,7 @@ export default {
       S.cam.x = 30 + es(t, 0.8, 1.3) * 30 - es(t, 2.0, 2.4) * 30 + es(t, 3.95, 4.3) * 30;
       S.cam.z = 1.02 + es(t, 0.6, 1.3) * 0.05 - es(t, 2.9, 3.3) * 0.04 + es(t, 5.9, 6.6) * 0.06;
       S.cam.y = 10 + es(t, 0.6, 1.3) * 20 + es(t, 5.9, 6.6) * 20;
-      if (S.portrait) S.cam.x += 70;
+      if (S.portrait) S.cam.x += 50;   // phone: with the seat moved in (PX), the camera needn't go so far right
     };
   },
 };
