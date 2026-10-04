@@ -71,7 +71,8 @@ export default {
 
     /* Jesus and the Eleven */
     const PL = S.layer({ par: 0.5, sh: 5 });
-    const XS = [430, 505, 580, 650, 1010, 1085, 1160, 460, 560, 1050, 1140];
+    // phone: the Eleven drawn in round Jesus, so the outermost are not sliced by the frame and the thread
+    const XS = [430, 505, 580, 650, 1010, 1085, 1160, 460, 560, 1050, 1140].map((x) => (S.portrait ? JX + (x - JX) * (x > JX ? 0.7 : 0.75) : x));   // phone: the right side a little tighter, clear of the thread
     const YS = [GY - 30, GY - 36, GY - 40, GY - 44, GY - 44, GY - 40, GY - 36, GY + 30, GY + 36, GY + 36, GY + 30];
     const M = ELEVEN.map((m, i) => ({ ...m, i, x: XS[i], y: YS[i], s: YS[i] > GY ? 1.02 : 0.9, flip: XS[i] > JX, seed: c.rr(0, 9) })).sort((a, b) => a.y - b.y);
     M.forEach((m) => { m.p = S.puppet(PL.add(person(c, { ...m.o }))); });
@@ -116,7 +117,8 @@ export default {
 
       /* v16a: believed and baptised — into the water, up into light */
       const pL = es(t, 2.05, 2.4, ease.out);
-      swing(plateL, 545, lerp(-1000, 250, pL), time, 0.8, 0.6, 1);
+      swing(plateL, S.portrait ? 610 : 545,   // phone: both plates inside the screen
+        lerp(-1000, 250, pL), time, 0.8, 0.6, 1);
       const walkIn = es(t, 2.25, 2.45), down = es(t, 2.45, 2.58), rise = es(t, 2.62, 2.8, ease.out);
       const mx = lerp(-72, 14, walkIn);
       plMan.set({ x: mx, y: lerp(186, 206, walkIn) + down * 36 - rise * 34, s: 0.4, flip: false, walk: walkIn > 0 && walkIn < 1 ? mx * 0.3 : undefined, armF: 20 + rise * 120, armB: 10 + rise * 140, head: -rise * 12, blink: blinkAt(time, 7) });
@@ -124,7 +126,8 @@ export default {
       pose(plSun, { x: 0, y: 0, o: 0.6 + rise * 0.4 });
       /* v16b: will not believe — he turns away from the lit door; it closes */
       const pR = es(t, 3.02, 3.35, ease.out);
-      swing(plateR, 1055, lerp(-1000, 250, pR), time, 0.8, 0.6, 2);
+      swing(plateR, S.portrait ? 990 : 1055,
+        lerp(-1000, 250, pR), time, 0.8, 0.6, 2);
       const turn = es(t, 3.3, 3.36), away = es(t, 3.36, 3.7);
       const rx = lerp(30, -64, away);
       prMan.set({ x: rx, y: 204, s: 0.4, flip: turn > 0.5, walk: away > 0 && away < 1 ? rx * 0.3 : undefined, armF: 10, armB: 6, head: 8 * turn, blink: blinkAt(time, 8) });

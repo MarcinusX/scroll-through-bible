@@ -33,6 +33,8 @@ export default {
       { o: CAST.andrew, x: 560, y: F + 80, s: 1.2, flip: false },
       { o: CAST.matthew, x: 960, y: F + 80, s: 1.2, flip: true },
     ].map((m, i) => {
+      // phone: the circle drawn in towards the candle, so Thomas and Philip keep their whole bodies
+      if (S.portrait) m.x = 760 + (m.x - 760) * 0.86;
       const el = PL.add(withFace(person(c, { ...m.o, pose: 'sit' }), faceBits(c)));
       return { ...m, i, seed: c.rr(0, 9), p: S.puppet(el), sad: el.querySelector('[data-part="sad"]'), tear: el.querySelector('[data-part="tear"]') };
     });
@@ -51,13 +53,14 @@ export default {
       pose(R.door, { x: ROOM.doorX + ROOM.doorW, y: ROOM.doorTop, sx: 1 - open * 0.85 });
       fade(lightFloor, open * 0.45);
       const inK = es(t, 0.2, 0.6, ease.out);
-      const mx = lerp(ROOM.doorX + 50, 1120, inK);
+      const mx = lerp(ROOM.doorX + 50, S.portrait ? 1060 : 1120, inK);   // phone: she stops clear of the thread
       const tell = es(t, 0.55, 0.7);
       const droop = es(t, 2.4, 2.8);
       mary.set({ x: mx, y: F + 40, s: 1.18, flip: true, o: seg(t, 0.15, 0.22), walk: inK > 0 && inK < 1 ? mx * 0.06 : undefined, amt: 1.2, armF: 30 + tell * 70 * (1 - droop * 0.6) + Math.sin(time * 2) * 6 * tell * (1 - droop), armB: 10 + tell * 100 * (1 - droop), head: -tell * 4 + droop * 10, blink: blinkAt(time, 2) });
       const [mhx, mhy] = headAt(mx, F + 40, 1.18, true);
       const nb = es(t, 0.6, 0.85, ease.back) * (1 - es(t, 2.6, 2.9) * 0.6);
-      pose(news, { x: mhx - 18, y: mhy - 24, s: nb, o: nb > 0.01 ? 1 : 0, r: droop * -6 });
+      pose(news, { x: mhx - 18 + (S.portrait ? droop * 14 : 0), y: mhy - 24 - (S.portrait ? droop * 46 : 0), s: nb,   // phone: lifted clear of Philip's doubt
+        o: nb > 0.01 ? 1 : 0, r: droop * -6 });
 
       pose(cand, { x: 760, y: F + 120, s: 1.3 });
       pose(flame, { x: 0, y: -54, sx: 1 + Math.sin(time * 7) * 0.08, sy: 1 + Math.sin(time * 5.3) * 0.1 });

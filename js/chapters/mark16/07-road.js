@@ -21,7 +21,7 @@ export default {
     { v: 13, text: 'Oni powrócili i oznajmili pozostałym.' },
     { v: 13, cont: true, text: 'Lecz im też nie uwierzyli.' },
   ],
-  cam: { x: [-420, 280], y: [0, 40], z: [1, 1.1] },
+  cam: { x: [-500, 280], y: [0, 40], z: [1, 1.1] },
   build(S) {
     const c = S.c;
     const sk = sky(S, DAYP);
@@ -114,7 +114,7 @@ export default {
       /* v13b: they don't believe them either */
       const shake = es(t, 3.05, 3.2) * (1 - es(t, 3.85, 3.95));
       others.forEach((m) => {
-        const come = es(t, 2.55 + m.i * 0.05, 2.8 + m.i * 0.05);
+        const come = es(t, 2.4 + m.i * 0.04, 2.6 + m.i * 0.04);   // they are all there (not half-faded) by the middle of the beat
         m.p.set({ x: m.x, y: GY - 10 - (m.i % 2) * 8, s: 0.98, flip: false, o: come, armF: 30 + es(t, 3.05, 3.3) * (m.i % 2 ? 50 : 20), armB: 20 + es(t, 3.05, 3.3) * (m.i % 2 ? 60 : 0), head: Math.sin(time * 9 + m.i) * 10 * shake + 6 * es(t, 3.2, 3.5), blink: blinkAt(time, m.seed) });
       });
       doubts.forEach(({ m, el }, i) => {
@@ -123,7 +123,7 @@ export default {
         pose(el, { x: hx + 6, y: hy - 20, s: b * 0.9, o: b > 0.01 ? 1 : 0 });
       });
 
-      S.cam.x = kf(t, [[0, -240], [1.0, -120], [1.9, 260], [2.1, 260], [2.85, -400]]);
+      S.cam.x = kf(t, [[0, -240], [1.0, -120], [1.9, 260], [2.1, 260], [2.85, S.portrait ? -480 : -400]]);   // phone: the others by the house are all on the screen
       S.cam.y = 20;
       S.cam.z = 1.03 + es(t, 2.9, 3.4) * 0.05;
     };

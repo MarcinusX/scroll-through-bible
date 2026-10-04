@@ -22,7 +22,7 @@ export default {
     { v: 3, cont: true, text: '«Kto nam odsunie kamień od wejścia do grobu?»' },
     { v: 4 },
   ],
-  cam: { x: [-800, 440], y: [-20, 40], z: [1, 1.1] },
+  cam: { x: [-1600, 600], y: [-20, 40], z: [0.8, 1.1] },
   build(S) {
     const c = S.c;
     const sk = sky(S, NIGHT);
@@ -61,12 +61,13 @@ export default {
       birds(time, es(t, 1.2, 1.8));
 
       /* the walk along the garden path */
-      const lead = lerp(0.3, 0.45, es(t, 0, 1, ease.sine)) + es(t, 1, 2, ease.sine) * 0.17 + es(t, 2, 3.9, ease.sine) * 0.15 + es(t, 4, 4.3) * 0.02;
+      // phone: at the look-up they come a few steps nearer, so they and the whole stone share the screen
+      const lead = lerp(0.3, 0.45, es(t, 0, 1, ease.sine)) + es(t, 1, 2, ease.sine) * 0.17 + es(t, 2, 3.9, ease.sine) * 0.15 + es(t, 4, 4.3) * (S.portrait ? 0.085 : 0.02);
       const walking = t < 3.95 || (t > 4 && t < 4.3);
       const up = es(t, 4.02, 4.2);
       const heads = [];
       W.forEach((w) => {
-        const [x, y] = along(GARDEN_PATH, lead - w.i * 0.055);
+        const [x, y] = along(GARDEN_PATH, lead - w.i * (S.portrait ? 0.055 - es(t, 4, 4.3) * 0.015 : 0.055));
         const s = pathS(y) * 1.02;
         const turnBack = w.i === 0 ? bump(t, 2.05, 2.95) : 0; // Mary Magdalene turns to talk to the others
         const say = bump(t, 2.05 + w.i * 0.25, 2.5 + w.i * 0.25);
@@ -107,9 +108,10 @@ export default {
       const camL = lerp(-380, -170, es(t, 0, 1.2)) + es(t, 1, 3.6) * 140 + es(t, 4.0, 4.5) * 450;
       // phones see a narrow slice: follow the three women until they look up
       const gx = (W[0].cx + W[1].cx + W[2].cx) / 3;
-      S.cam.x = S.portrait ? lerp(Math.max(-800, Math.min(440, (gx - 800) / 0.52 + 40)), camL, es(t, 3.9, 4.5)) : camL;
+      // (and at the start they are further left than -800 allowed; at the end the camera takes in the stone)
+      S.cam.x = S.portrait ? lerp(Math.max(-1600, Math.min(440, (gx - 800) / 0.52 + 40)), camL + 170, es(t, 3.9, 4.5)) : camL;
       S.cam.y = 30 - es(t, 0.8, 2) * 30 + es(t, 4.0, 4.5) * 20;
-      S.cam.z = 1 + es(t, 2, 3.6) * 0.04 + es(t, 4.0, 4.6) * 0.04;
+      S.cam.z = (1 + es(t, 2, 3.6) * 0.04 + es(t, 4.0, 4.6) * 0.04) * (S.portrait ? 1 - es(t, 3.9, 4.5) * 0.25 : 1);
     };
   },
 };
