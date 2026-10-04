@@ -43,6 +43,9 @@ export default {
   cam: { x: [-30, 110], y: [-60, 40], z: [0.94, 1.12] },
   build(S) {
     const c = S.c;
+    // phone: the sun hangs inside the screen, and the city comes in further left so the gate's banner is read whole
+    const P = S.portrait;
+    const SUNX = P ? 520 : 420, SUNY = P ? 20 : 140;
     const SKY = ['#cfe3e0', '#f4e6c6', '#f9ecd4'];
     const sk = sky(S, SKY);
 
@@ -50,7 +53,7 @@ export default {
     const heav = S.layer({ par: 0.02, sh: 1, flat: true });
     const burst = heav.add(`<g>${rays(c, { n: 26, r0: 40, r1: 1400, spread: 0.05, color: '#fff3cf' })}<circle r="260" fill="url(#halo-glow)"/></g>`);
     const hangL = S.layer({ par: 0.04, sh: 5 });
-    const sunEl = hanging(hangL, sun(c, 46), { x: 420, y: 140, len: 700 });
+    const sunEl = hanging(hangL, sun(c, 46), { x: SUNX, y: SUNY, len: 700 });
     const cl1 = hanging(hangL, cloud(c, 200), { x: 700, y: 110, len: 700 });
     const cl2 = hanging(hangL, cloud(c, 150), { x: 1180, y: 170, len: 700 });
 
@@ -135,7 +138,7 @@ export default {
     let pen = `<path d="${c.ribbon(Array.from({ length: 21 }, (_, i) => [-span / 2 + (i / 20) * span, sag(i / 20)]), 2)}" fill="${C.rope}"/>`;
     LET.forEach((ch, i) => { const u = (i + 0.5) / LET.length; pen += `<g transform="translate(${-span / 2 + u * span - 21} ${sag(u) + 1}) rotate(${(u - 0.5) * -14})">${pennant(c, ch, PC[i % PC.length])}</g>`; });
     const penEl = fx.add(`<g>${hang2(pen, span / 2, 500)}</g>`);
-    const david = hanging(fx, plate(c, davidIcon(c), { r: 56, rim: C.sun }), { x: 790, y: 318, len: 800 });
+    const david = hanging(fx, plate(c, davidIcon(c), { r: 56, rim: C.sun }), { x: P ? 625 : 790, y: 318, len: 800 });
     const conf = Array.from({ length: 22 }, (_, i) => ({ i, el: fx.add(`<g>${i % 3 ? `<path d="${c.cut(c.ell(0, 0, 10, 4, 10, c.rr(0, 3)), 0.2, 3)}" fill="${[C.leaf, C.moss, C.sage][i % 3]}"/>` : `<path d="${c.cut(c.star(0, 0, 7, 3, 5, c.rr(0, 6)), 0.2, 3)}" fill="${[C.cream, C.jesusMantle, C.sun][i % 3]}"/>`}</g>`), x: c.rr(420, 1180), ph: c.rr(0, 1), sp: c.rr(0.6, 1.2), r: c.rr(-200, 200) }));
     const voiceL = S.layer({ par: 0.5, sh: 2 });
     const voices = [0, 1, 2].map(() => voiceRings(voiceL, c, { n: 3, r: 30, w: 5, color: shade(C.terracotta, 0.3) }));
@@ -149,7 +152,7 @@ export default {
       const T = time;
       const high = es(t, 4.05, 4.5);
       sk.blend(SKY, ['#e6eee2', '#fbf0d2', '#fcf2dc'], high);
-      swing(sunEl, 420, 140, T, 1, 0.7);
+      swing(sunEl, SUNX, SUNY, T, 1, 0.7);
       swing(cl1, 700 + Math.sin(T * 0.1) * 26, 110 - high * 40, T, 1.3, 0.6, 1);
       swing(cl2, 1180 + Math.sin(T * 0.12 + 1) * 26, 170 - high * 40, T, 1.3, 0.7, 2);
       pose(burst, { x: 800, y: -60, s: 0.4 + high * 0.8, r: t * 6, o: high * 0.55 });
@@ -157,7 +160,7 @@ export default {
       /* the procession advances: the road and the city slide towards us */
       const adv = t / 5;
       roadL.shift(260 - adv * 560, 0);
-      cityL.shift(300 - es(t, 0, 5, ease.sine) * 300, 0);
+      cityL.shift((P ? 50 : 300) - es(t, 0, 5, ease.sine) * 300, 0);
       palmsL.shift(360 - es(t, 0, 5, ease.sine) * 380, 0);
       fg.shift(200 - adv * 400, 0);
       const step = t * 9;
@@ -196,7 +199,7 @@ export default {
       pose(glint, { x: JX, y: ROAD - 280, s: bump(t, 2.1, 2.8) * 1.4 + 0.001, r: t * 60, o: bump(t, 2.1, 2.8) });
       /* v10a — the crown of David comes down */
       const dv = es(t, 3.05, 3.45, ease.back) * (1 - es(t, 4.4, 4.8));
-      swing(david, 790, 318 - (1 - dv) * 700, T, 1.6, 0.8, 2);
+      swing(david, P ? 625 : 790, 318 - (1 - dv) * 700, T, 1.6, 0.8, 2);
       /* v10b — confetti of leaves and petals thrown up high */
       conf.forEach((f) => {
         const k = seg(t, 4.1 + f.ph * 0.4, 4.9 + f.ph * 0.1);

@@ -10,7 +10,7 @@ import { figTree, figs, thought, plate, hand, headAt, voiceRings, strip, questio
 
 const PI = Math.PI;
 const ROAD = 660;
-const TREE = [1150, 610];
+const TREE0 = [1150, 610];
 
 /** an empty bowl (hunger) */
 function emptyBowl(c) {
@@ -40,9 +40,12 @@ export default {
     { v: 14, text: 'Wtedy rzekł do drzewa: «Niech nikt nigdy nie je owocu z ciebie!»' },
     { v: 14, cont: true, text: 'Słyszeli to Jego uczniowie.' },
   ],
-  cam: { x: [-60, 300], y: [-60, 40], z: [0.96, 1.16] },
+  cam: { x: [-60, 340], y: [-60, 40], z: [0.96, 1.16] },
   build(S) {
     const c = S.c;
+    // phone: the fig tree stands further in, Jesus stops before it, the disciples walk closer together
+    const P = S.portrait;
+    const TREE = P ? [1060, 610] : TREE0;
     const DAWN = ['#c9c6d8', '#f1d6bf', '#f7e3cb'], DAY = ['#d3e2dc', '#f2e6c8', '#f8ebd3'];
     const sk = sky(S, DAWN);
     const hangL = S.layer({ par: 0.04, sh: 5 });
@@ -77,7 +80,7 @@ export default {
 
     /* ---------- Jesus and the disciples ---------- */
     const L = S.layer({ par: 0.5, sh: 5 });
-    const DIS = [CAST.peter, CAST.john, CAST.james, CAST.andrew, CAST.thomas, CAST.matthew].map((o, i) => ({ o, i, seed: c.rr(0, 9), p: S.puppet(L.add(person(c, o))), dx: -80 - i * 58 - (i % 2) * 14, dy: (i % 2) * -14 }));
+    const DIS = [CAST.peter, CAST.john, CAST.james, CAST.andrew, CAST.thomas, CAST.matthew].map((o, i) => ({ o, i, seed: c.rr(0, 9), p: S.puppet(L.add(person(c, o))), dx: -80 - i * (P ? 46 : 58) - (i % 2) * 14, dy: (i % 2) * -14 }));
     const jesus = S.puppet(L.add(person(c, { ...CAST.jesus })));
 
     /* ---------- thoughts & signs ---------- */
@@ -99,7 +102,7 @@ export default {
       /* v12 — out of Bethany; He is hungry */
       const w1 = es(t, 0.0, 0.7, ease.out);
       const w2 = es(t, 1.2, 1.95);
-      const jx = lerp(420, 640, w1) + w2 * 420;
+      const jx = lerp(420, 640, w1) + w2 * (P ? 330 : 420);
       const walking = (w1 > 0 && w1 < 1) || (w2 > 0 && w2 < 1);
       const hungry = es(t, 0.45, 0.65) * (1 - es(t, 1.1, 1.3));
       const see = es(t, 1.02, 1.2) * (1 - es(t, 1.4, 1.5));
@@ -141,7 +144,7 @@ export default {
         pose(e, { x: ex - 4, y: ey - 50, s: 0.42 * k, r: Math.sin(T * 2 + i) * 6, o: k > 0.02 ? 1 : 0 });
       });
 
-      S.cam.x = lerp(-40, 0, w1) + w2 * 260 - es(t, 3.2, 3.6) * 40 + es(t, 4.9, 5.3) * -80;
+      S.cam.x = lerp(-40, 0, w1) + w2 * (P ? 320 : 260) - es(t, 3.2, 3.6) * 40 + es(t, 4.9, 5.3) * (P ? -20 : -80);
       S.cam.y = 10 - sd * 30;
       S.cam.z = 1.04 + es(t, 2.0, 2.4) * 0.06 - es(t, 4.9, 5.3) * 0.06;
     };

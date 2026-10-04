@@ -30,6 +30,8 @@ export default {
   cam: { x: [-60, 140], y: [-70, 40], z: [0.95, 1.14] },
   build(S) {
     const c = S.c;
+    // phone: the huddle of leaders and their thoughts stand 140 further in
+    const P = S.portrait, HX = P ? -140 : 0;
     const SKY = ['#d0e2dd', '#f1e6c9', '#f8ebd3'];
     const { sk, sunEl, cl1 } = templeCourt(S, { skyCols: SKY, floorY: FLOOR + 40, sanctX: 800, sunAt: [1230, 140] });
 
@@ -47,7 +49,7 @@ export default {
     const LEADERS = [
       { m: priest(c, 0), x: 900 }, { m: scribe(c, 0), x: 1060 }, { m: priest(c, 1), x: 960 },
       { m: elder(c, 0), x: 1120 }, { m: scribe(c, 2), x: 1010 }, { m: elder(c, 1), x: 1180 },
-    ].map((d, i) => ({ ...d, i, seed: c.rr(0, 9), y: FLOOR - (i % 2 ? 18 : 4), p: S.puppet(LD.add(withFace(d.m, faceBits(c)))) }));
+    ].map((d, i) => ({ ...d, x: d.x + HX, i, seed: c.rr(0, 9), y: FLOOR - (i % 2 ? 18 : 4), p: S.puppet(LD.add(withFace(d.m, faceBits(c)))) }));
     LEADERS.forEach((d) => { d.sad = d.p.el.querySelector('[data-part="sad"]'); d.angry = d.p.el.querySelector('[data-part="angry"]'); });
 
     /* ---------- Jesus and the disciples ---------- */
@@ -76,7 +78,7 @@ export default {
       const turnBack = es(t, 3.0, 3.15);
       const shrug = es(t, 3.1, 3.35) * (1 - es(t, 3.9, 4.2));
       LEADERS.forEach((d) => {
-        const cx = 1040;
+        const cx = 1040 + HX;
         const x = lerp(d.x, cx + (d.x - cx) * 0.55, huddle) + fear * 30;
         const faceIn = d.x < cx;
         d.p.set({ x, y: d.y, s: 0.9, flip: turnBack > 0.5 ? true : faceIn ? false : true, lean: huddle * (faceIn ? 8 : -8) - fear * 4, head: huddle * 10 - fear * 6, armF: huddle * (d.i % 3 === 0 ? 40 : 10) + shrug * 70 + fear * 20, armB: shrug * 60, blink: blinkAt(T, d.seed) });
@@ -84,9 +86,9 @@ export default {
         fade(d.sad, fear + shrug * 0.6);
       });
       const t1 = es(t, 0.15, 0.4, ease.back) * (1 - es(t, 0.95, 1.1));
-      pose(think1, { x: 1000, y: 470, s: t1, o: t1 > 0.02 ? 1 : 0 });
+      pose(think1, { x: 1000 + HX, y: 470, s: t1, o: t1 > 0.02 ? 1 : 0 });
       const t2 = es(t, 1.1, 1.35, ease.back) * (1 - es(t, 1.95, 2.1));
-      pose(think2, { x: 1030, y: 470, s: t2, o: t2 > 0.02 ? 1 : 0 });
+      pose(think2, { x: 1030 + HX, y: 470, s: t2, o: t2 > 0.02 ? 1 : 0 });
       // the cards answer the thoughts: the sky card lifts and glows, then the men card
       swing(skyCard, 610, 190 - bump(t, 0.1, 1.0) * 30 - es(t, 3.2, 3.6) * 700, T, 1.2 + bump(t, 0.1, 1.0) * 2, 1.1, 1);
       swing(menCard, 990, 190 - bump(t, 1.1, 2.9) * 30 - es(t, 3.2, 3.6) * 700, T, 1.2 + bump(t, 1.1, 2.0) * 2, 1.1, 2);

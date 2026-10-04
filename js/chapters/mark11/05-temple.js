@@ -110,14 +110,16 @@ export default {
       pray.forEach((m) => m.p.set({ x: m.x, y: 632, s: 0.62, flip: true, armB: 140, armF: 70, head: -12, blink: blinkAt(T, m.seed), o: 1 - es(t, 2.1, 2.4) }));
       traders.forEach((m) => {
         const pack = es(t, 2.1 + m.i * 0.06, 2.4 + m.i * 0.06);
-        m.p.set({ x: m.x + pack * (m.flip ? 60 : -60), y: m.y, s: 0.9, flip: pack > 0.5 ? !m.flip : m.flip, walk: pack > 0 && pack < 1 ? t * 30 + m.i : undefined, armF: 30 + bump(t, 1.0, 1.6) * 20, head: lookR * (m.i === 0 ? 10 : 0), blink: blinkAt(T, m.seed), o: 1 - es(t, 2.5, 2.8) });
+        const inset = S.portrait ? [-110, 0, -200][m.i] : 0;   // phone: the near traders stand clear of the progress thread (the far one stays off-screen)
+        m.p.set({ x: m.x + inset + pack * (m.flip ? 60 : -60), y: m.y, s: 0.9, flip: pack > 0.5 ? !m.flip : m.flip, walk: pack > 0 && pack < 1 ? t * 30 + m.i : undefined, armF: 30 + bump(t, 1.0, 1.6) * 20, head: lookR * (m.i === 0 ? 10 : 0), blink: blinkAt(T, m.seed), o: 1 - es(t, 2.5, 2.8) });
       });
       lamps.forEach((l, i) => {
         const lit = es(t, 2.12 + i * 0.05, 2.25 + i * 0.05);
         fade(l.glow, lit);
         swing(l.el, l.x, FLOOR - 270, T, 1.4, 0.9, i);
       });
-      pose(sign, { x: 470, y: FLOOR + 30, o: es(t, 2.3, 2.5), s: 1 });
+      pose(sign, { x: S.portrait ? 590 : 470, y: FLOOR + 30,   // phone: the signpost stands inside the screen
+      o: es(t, 2.3, 2.5), s: 1 });
 
       S.cam.x = -20 + es(t, 0, 0.7) * 20 + lookR * 60 * (1 - lookUp) + lookFar * 60 - es(t, 2.45, 2.98) * 60;
       S.cam.y = 10 - lookUp * 50 + es(t, 2.45, 2.98) * 20;

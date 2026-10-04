@@ -7,7 +7,7 @@ import { templeCourt, courtFront, changerTable, coinStack, coin, balance, cage, 
 
 const PI = Math.PI;
 const FLOOR = 676;
-const TABLES = [{ x: 930, w: 150 }, { x: 1120, w: 150 }];
+const TABLES0 = [{ x: 930, w: 150 }, { x: 1120, w: 150 }];
 const BENCH = { x: 560, w: 170 };
 
 /** a striped market awning on two poles (origin: floor centre) */
@@ -32,9 +32,12 @@ export default {
     { v: 15, cont: true, text: 'i ławki tych, którzy sprzedawali gołębie,' },
     { v: 16 },
   ],
-  cam: { x: [-80, 120], y: [-50, 40], z: [0.96, 1.14] },
+  cam: { x: [-80, 290], y: [-50, 40], z: [0.96, 1.14] },
   build(S) {
     const c = S.c;
+    // phone: the second money table stands closer, and the camera follows the overturning further right
+    const PH = S.portrait;
+    const TABLES = PH ? [{ x: 930, w: 140 }, { x: 1080, w: 140 }] : TABLES0;
     const SKY = ['#d0e2dd', '#f1e6c9', '#f8ebd3'];
     const { sk, sunEl, cl1 } = templeCourt(S, { skyCols: SKY, floorY: FLOOR + 40, sanctX: 800, sunAt: [1220, 140] });
 
@@ -111,7 +114,7 @@ export default {
         pose(tb.el, { x: tb.x + tb.w / 2 + f * 30, y: FLOOR - 4 + f * 4, r: f * 96, ox: tb.w / 2, oy: 0 });
         const ch = changers[i];
         const flee = es(t, 2.2 + i * 0.22, 2.9 + i * 0.2, ease.in);
-        const cx = tb.x + 30 + flee * 520;
+        const cx = tb.x + (PH && i ? -50 : 30) + flee * 520;   // phone: the second changer stands at the near end of his table, clear of the thread
         ch.p.set({ x: cx, y: FLOOR - 26, s: 0.9, flip: flee < 0.05, walk: flee > 0 && flee < 1 ? cx * 0.08 : undefined, armB: bump(t, 2.1 + i * 0.22, 2.6 + i * 0.22) * 150 + flee * 60, armF: 40 + bump(t, 2.1 + i * 0.22, 2.6 + i * 0.22) * 80, head: -bump(t, 2.1, 2.6) * 10, blink: blinkAt(T, ch.seed), o: 1 - seg(t, 2.95 + i * 0.1, 3.1 + i * 0.1) });
         tb.coins.forEach((co) => {
           const k = seg(t, 2.18 + i * 0.22 + co.d, 2.55 + i * 0.22 + co.d);
@@ -149,11 +152,11 @@ export default {
       });
 
       /* v16 — a porter tries to cut through with his jar: Jesus stops him; he turns back */
-      const pin = es(t, 4.0, 4.3), back = es(t, 4.5, 4.95, ease.in);
+      const pin = es(t, 4.0, 4.3), back = PH ? es(t, 4.82, 5.1, ease.in) : es(t, 4.5, 4.95, ease.in);   // phone: he turns back only after the beat's pause
       const px = lerp(1500, 1010, pin) + back * 540;
       porter.p.set({ x: px, y: FLOOR + 6, s: 0.94, flip: back < 0.02, walk: (pin > 0 && pin < 1) || (back > 0 && back < 1) ? px * 0.06 : undefined, armB: bump(t, 4.3, 4.6) * 70, armF: 55, head: bump(t, 4.3, 4.6) * 8, blink: blinkAt(T, porter.seed), o: seg(t, 3.95, 4.02) });
 
-      S.cam.x = -40 + inK * 40 + es(t, 2.0, 2.4) * 90 - es(t, 2.9, 3.2) * 150 + es(t, 3.85, 4.2) * 110;
+      S.cam.x = -40 + inK * 40 + es(t, 2.0, 2.4) * (PH ? 280 : 90) - es(t, 2.9, 3.2) * (PH ? 340 : 150) + es(t, 3.85, 4.2) * 110;
       S.cam.z = 1.02 + es(t, 2.0, 2.3) * 0.06 - es(t, 3.6, 3.9) * 0.05;
       S.cam.y = es(t, 3.35, 3.7) * -30 + es(t, 3.9, 4.2) * 30;
     };

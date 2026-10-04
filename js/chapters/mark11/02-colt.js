@@ -21,9 +21,11 @@ export default {
     { v: 6, text: 'Oni zaś odpowiedzieli im tak, jak Jezus polecił.' },
     { v: 6, cont: true, text: 'I pozwolili im.' },
   ],
-  cam: { x: [-60, 40], y: [-20, 60], z: [1, 1.2] },
+  cam: { x: [-60, 200], y: [-20, 60], z: [1, 1.2] },
   build(S) {
     const c = S.c;
+    // phone: the camera pans further right while the neighbours ask, and the lad and the '?' stand inside the screen
+    const PH = S.portrait;
     const SKY = ['#d8e3d9', '#f2e8cc', '#f8edd8'];
     const sk = sky(S, SKY);
     const hangL = S.layer({ par: 0.04, sh: 5 });
@@ -206,21 +208,22 @@ export default {
       const lets = es(t, 4.0, 4.25);
       owner.p.set({ x: 1040, y: ST - 30, s: 0.95, flip: true, armF: askK * 70 + lets * (60 + Math.sin(T * 3) * 10) * (1 - away * 0.5), armB: askK * 30, head: -look * 4 + bump(t, 3.1, 3.9) * 8 + lets * 6, blink: blinkAt(T, owner.seed) });
       const wIn = es(t, 1.4, 1.9);
-      wife.p.set({ x: lerp(1195, 1130, wIn), y: ST - 2, s: 0.9, flip: true, o: seg(t, 1.35, 1.45), walk: wIn > 0 && wIn < 1 ? t * 30 : undefined, armB: 150, armF: bump(t, 2.1, 2.8) * 60 + lets * 40, head: bump(t, 2.2, 2.8) * -8, blink: blinkAt(T, wife.seed) });
+      wife.p.set({ x: lerp(1195, PH ? 1090 : 1130, wIn), y: ST - 2, s: 0.9, flip: true, o: seg(t, 1.35, 1.45), walk: wIn > 0 && wIn < 1 ? t * 30 : undefined, armB: 150, armF: bump(t, 2.1, 2.8) * 60 + lets * 40, head: bump(t, 2.2, 2.8) * -8, blink: blinkAt(T, wife.seed) });
       const lIn = es(t, 1.5, 2.0);
-      lad.p.set({ x: lerp(1420, 1240, lIn), y: ST + 14, s: 0.86, flip: true, walk: lIn > 0 && lIn < 1 ? t * 30 + 1 : undefined, armF: bump(t, 2.2, 2.9) * 90 + lets * 30, head: -bump(t, 2.2, 2.9) * 6, blink: blinkAt(T, lad.seed) });
+      lad.p.set({ x: lerp(1420, PH ? 1140 : 1240, lIn), y: ST + 14, s: 0.86, flip: true, walk: lIn > 0 && lIn < 1 ? t * 30 + 1 : undefined, armF: bump(t, 2.2, 2.9) * 90 + lets * 30, head: -bump(t, 2.2, 2.9) * 6, blink: blinkAt(T, lad.seed) });
 
       const [ohx, ohy] = headAt(1040, ST - 30, 0.95, true, 62);
       pose(ask, { x: ohx - 30, y: ohy - 30, s: askK, o: askK > 0.02 ? 1 : 0 });
       const q2K = es(t, 2.3, 2.5, ease.back) * (1 - es(t, 2.95, 3.1));
-      pose(q2, { x: 1220, y: ST - 190, s: q2K, o: q2K > 0.02 ? 1 : 0 });
+      pose(q2, { x: PH ? 1125 : 1220, y: ST - 190, s: q2K, o: q2K > 0.02 ? 1 : 0 });
       const repK = es(t, 3.05, 3.3, ease.back) * (1 - es(t, 3.95, 4.1));
       const [phx, phy] = headAt(px, ST + 18, 0.96, true);
       pose(reply, { x: phx + 20, y: phy - 30, s: repK, o: repK > 0.02 ? 1 : 0 });
       const okK = es(t, 4.05, 4.25, ease.back) * (1 - es(t, 4.75, 4.9));
       pose(ok, { x: ohx - 30, y: ohy - 30, s: okK, o: okK > 0.02 ? 1 : 0 });
 
-      S.cam.x = -es(t, 0, 0.8) * 20 + es(t, 1.8, 2.4) * 60 - es(t, 2.9, 3.4) * 40 - es(t, 4.2, 4.9) * 60;
+      S.cam.x = -es(t, 0, 0.8) * 20 + es(t, 1.8, 2.4) * 60 - es(t, 2.9, 3.4) * 40 - es(t, 4.2, 4.9) * 60
+        + (PH ? es(t, 1.8, 2.4) * 150 + es(t, 4.2, 4.9) * 60 : 0);   // phone: no pan back as they leave, so the neighbours who let them go stay clear of the thread
       S.cam.z = 1.02 + es(t, 0.6, 1.2) * 0.1 - es(t, 1.8, 2.4) * 0.06 + es(t, 2.9, 3.4) * 0.02;
       S.cam.y = es(t, 0.6, 1.2) * 30 - es(t, 1.8, 2.4) * 20;
     };

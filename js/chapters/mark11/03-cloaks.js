@@ -23,10 +23,12 @@ export default {
   cam: { x: [-40, 120], y: [-40, 60], z: [0.96, 1.16] },
   build(S) {
     const c = S.c;
+    // phone: the sun hangs inside the screen
+    const SUNX = S.portrait ? 550 : 480;
     const SKY = ['#d4e2dc', '#f1e7cc', '#f8ecd6'];
     const sk = sky(S, SKY);
     const hangL = S.layer({ par: 0.04, sh: 5 });
-    const sunEl = hanging(hangL, sun(c, 46), { x: 480, y: 130, len: 700 });
+    const sunEl = hanging(hangL, sun(c, 46), { x: SUNX, y: 130, len: 700 });
     const cl1 = hanging(hangL, cloud(c, 200), { x: 1000, y: 110, len: 700 });
     const birds = flock(S, hangL, 3, (cc) => bird(cc, { color: C.bird }), { y: 190, speed: 36, scale: 0.42 });
 
@@ -48,8 +50,9 @@ export default {
     const TREES = [[400, 'olive'], [560, 'palm'], [1040, 'palm'], [1200, 'olive'], [1360, 'palm'], [250, 'palm']];
     TREES.forEach(([x, k]) => fieldL.add(k === 'palm' ? palm(c, x, fb.fn(x) + 8, 190) : olive(c, x, fb.fn(x) + 8, 0.85)));
     fieldL.add(cypress(c, 900, fb.fn(900) + 6, 120) + cypress(c, 700, fb.fn(700) + 6, 90));
-    // the cutters in the fields, and the branches they cut
-    const cutters = [[430, 0], [590, 1], [1010, 2], [1230, 3], [1330, 4]].map(([x, i]) => ({ x, i, y: fb.fn(x) + 14, seed: c.rr(0, 9), p: S.puppet(fieldL.add(person(c, townsfolk(c, { man: i % 2 === 0, holdB: `<g transform="rotate(-20)">${i % 2 ? oliveBranch(c, 60) : frond(c, 70)}</g>` })))) }));
+    // the cutters in the fields, and the branches they cut (up the slope, so they show over the crowd on the road)
+    // (wide screen: higher up the slope, so the crowd on the road does not hide them)
+    const cutters = [[430, 0], [590, 1], [1010, 2], [1230, 3], [1330, 4]].map(([x, i]) => ({ x, i, y: fb.fn(x) - (S.portrait ? 70 : 115), seed: c.rr(0, 9), p: S.puppet(fieldL.add(person(c, townsfolk(c, { man: i % 2 === 0, holdB: `<g transform="rotate(-20)">${i % 2 ? oliveBranch(c, 60) : frond(c, 70)}</g>` })))) }));
     cutters.forEach((m) => { m.hold = m.p.el.querySelector('.armBr .hold'); });
 
     /* ---------- the road ---------- */
@@ -105,7 +108,7 @@ export default {
     return (t, time) => {
       const T = time;
       sk.blend(SKY, ['#d0e1dd', '#efe8cf', '#f7edd9'], seg(t, 0, 5));
-      swing(sunEl, 480, 130, T, 1, 0.7);
+      swing(sunEl, SUNX, 130, T, 1, 0.7);
       swing(cl1, 1000 + Math.sin(T * 0.1) * 26, 110, T, 1.3, 0.6, 1);
       birds(T, 1);
 
@@ -180,7 +183,7 @@ export default {
         const cut = bump(t, t0, t0 + 0.35);
         const have = es(t, t0 + 0.25, t0 + 0.32);
         fade(m.hold, have);
-        m.p.set({ x: m.x, y: m.y, s: 0.56, flip: m.x > 800, armB: 150 * (cut > 0 ? 1 : have) - (have ? 10 : 0), armF: cut * 120, head: -cut * 20, blink: blinkAt(T, m.seed) });
+        m.p.set({ x: m.x, y: m.y, s: 0.5, flip: m.x > 800, armB: 150 * (cut > 0 ? 1 : have) - (have ? 10 : 0), armF: cut * 120, head: -cut * 20, blink: blinkAt(T, m.seed) });
       });
       brs.forEach((b) => {
         const t0 = 4.3 + b.i * 0.045;
