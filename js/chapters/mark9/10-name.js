@@ -64,6 +64,9 @@ export default {
 
     /* ---------- Jesus, the child, the disciples ---------- */
     const mainL = S.layer({ par: P, sh: 5 });
+    // phone: the right-hand group drawn in, so the stranger who joins them (v40) is on the screen
+    const PH = S.portrait;
+    const AX = PH ? 985 : 1080, JX = PH ? 925 : 1000, SX = PH ? 1045 : 1180;
     const bench = sheet().p(c.cut(c.rect(-70, -40, 140, 40), 0.5, 8), C.stone).p(c.cut(c.rect(-76, -46, 152, 10), 0.4, 8), C.stone2).out();
     mainL.add(`<g transform="translate(800 ${FEET + 2})">${bench}</g>`);
     const peter = S.puppet(mainL.add(person(c, { ...CAST.peter, pose: 'sit' })));
@@ -109,23 +112,23 @@ export default {
       jesus.set({ x: 800, y: FEET - 30, s: 1, armF: 20 + answer * 50 + welcome * 60 + es(t, 5.4, 5.7) * 20, armB: 10 + answer * 120 + welcome * 60, head: -4, blink: blinkAt(T, 1) });
       pose(stop, { x: 850, y: FEET - 250, s: es(t, 2.1, 2.3, ease.back), o: bump(t, 2.05, 2.95) > 0.05 ? 1 : 0 });
       peter.set({ x: 520, y: FEET, s: 0.94, head: -6 - bump(t, 0.1, 2) * 4, armF: 20, blink: blinkAt(T, 4) });
-      andrew.set({ x: 1080, y: FEET + 4, s: 0.9, flip: true, head: -4, armF: 14, blink: blinkAt(T, 6) });
+      andrew.set({ x: AX, y: FEET + 4, s: 0.9, flip: true, head: -4, armF: 14, blink: blinkAt(T, 6) });
 
       /* v40: the ring widens; the stranger comes and stands with them */
       const widen = es(t, 4.1, 4.8);
-      pose(ring, { x: 800, y: FEET + 4, sx: 0.8 + widen * 0.62, sy: 0.9 + widen * 0.25, o: es(t, 4.05, 4.3) * (1 - es(t, 5.6, 6) * 0.5) });
+      pose(ring, { x: 800, y: FEET + 4, sx: 0.8 + widen * (PH ? 0.5 : 0.62), sy: 0.9 + widen * 0.25, o: es(t, 4.05, 4.3) * (1 - es(t, 5.6, 6) * 0.5) });
       const come = es(t, 4.25, 4.85);
-      const sx = lerp(1360, 1180, come);
+      const sx = lerp(SX + 180, SX, come);
       stranger.set({ x: sx, y: FEET - 4, s: 0.94, flip: true, o: es(t, 4.2, 4.3), walk: come > 0 && come < 1 ? sx * 0.06 : undefined, armF: 20 + es(t, 4.8, 5) * 30, head: -4, blink: blinkAt(T, 7) });
-      pose(strangerHeart, { x: 1176, y: FEET - 250, s: es(t, 4.8, 5, ease.back), o: es(t, 4.75, 4.85) * (1 - es(t, 5.3, 5.5)) });
+      pose(strangerHeart, { x: SX - 4, y: FEET - 250, s: es(t, 4.8, 5, ease.back), o: es(t, 4.75, 4.85) * (1 - es(t, 5.3, 5.5)) });
 
       /* v41: the child brings a cup of water to a disciple; a little reward shines */
       const walk = es(t, 5.05, 5.45);
-      const cx = lerp(880, 950, walk);
+      const cx = PH ? lerp(840, 882, walk) : lerp(880, 950, walk);
       child.set({ x: cx, y: FEET + 4, s: 0.56, flip: false, walk: walk > 0 && walk < 1 ? cx * 0.1 : undefined, armF: 20 + es(t, 5.05, 5.2) * 50, head: -4, blink: blinkAt(T, 8) });
       const [hx, hy] = [cx + 36 * 0.56 + 26 * es(t, 5.05, 5.2), FEET - 110];
       pose(cup, { x: hx, y: hy + 12, o: es(t, 5.02, 5.12) });
-      james.set({ x: 1000, y: FEET, s: 0.94, flip: true, head: -6 + es(t, 5.4, 5.6) * 6, armF: 20 + bump(t, 1.2, 2) * 20 + es(t, 5.4, 5.6) * 50, blink: blinkAt(T, 5) });
+      james.set({ x: JX, y: FEET, s: 0.94, flip: true, head: -6 + es(t, 5.4, 5.6) * 6, armF: 20 + bump(t, 1.2, 2) * 20 + es(t, 5.4, 5.6) * 50, blink: blinkAt(T, 5) });
       pose(reward, { x: hx + 6, y: FEET - 200 - es(t, 5.5, 5.9) * 30, s: es(t, 5.5, 5.75, ease.back), r: T * 15, o: es(t, 5.5, 5.6) });
 
       S.cam.z = 1 + es(t, 4.1, 4.8) * 0.04 + es(t, 5, 5.6) * 0.04;

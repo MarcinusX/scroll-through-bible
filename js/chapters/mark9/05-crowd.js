@@ -22,7 +22,7 @@ export default {
     { v: 19, text: 'On zaś rzekł do nich: «O plemię niewierne, dopóki mam być z wami? Dopóki mam was cierpieć?' },
     { v: 19, cont: true, text: 'Przyprowadźcie go do Mnie!»' },
   ],
-  cam: { x: [-20, 140], y: [0, 50], z: [1, 1.14] },
+  cam: { x: [-20, 200], y: [0, 50], z: [1, 1.14] },
   build(S) {
     const c = S.c;
     const set = plainSet(S);
@@ -34,15 +34,17 @@ export default {
 
     /* ---------- the nine and the scribes arguing ---------- */
     const mainL = S.layer({ par: 0.5, sh: 5 });
+    const PH = S.portrait;   // phone: the argument drawn together so the scribes are on the screen too
     const NINE = TWELVE.filter((d) => !['peter', 'james', 'john'].includes(d.k)).slice(0, 6);
-    const dis = NINE.map((d, i) => ({ ...d, i, x: 980 + i * 38 + (i % 2) * 6, y: FEET - 22 + (i % 2) * 12, s: 0.94, seed: c.rr(0, 9), p: S.puppet(mainL.add(withFace(person(c, d.o), faceBits(c)))) }));
+    const dis = NINE.map((d, i) => ({ ...d, i, x: PH ? 870 + i * 27 : 980 + i * 38 + (i % 2) * 6, y: FEET - 22 + (i % 2) * 12, s: 0.94, seed: c.rr(0, 9), p: S.puppet(mainL.add(withFace(person(c, d.o), faceBits(c)))) }));
     dis.forEach((d) => { d.sad = d.p.el.querySelector('[data-part="sad"]'); });
-    const scribes = [0, 1, 2].map((i) => ({ i, x: 1220 + i * 52, y: FEET - 16 + (i % 2) * 10, s: 0.98, seed: c.rr(0, 9), p: S.puppet(mainL.add(scribe(c, i))) }));
+    const scribes = [0, 1, 2].map((i) => ({ i, x: PH ? 1012 + i * 32 : 1220 + i * 52, y: FEET - 16 + (i % 2) * 10, s: 0.98, seed: c.rr(0, 9), p: S.puppet(mainL.add(scribe(c, i))) }));
     const words = [
       { el: mainL.add(`<g opacity="0">${shout('?!', { size: 26, jag: true, c })}</g>`), x: 1250, y: 440 },
       { el: mainL.add(`<g opacity="0">${shout('!', { size: 28, jag: true, c, flip: true })}</g>`), x: 1080, y: 450 },
       { el: mainL.add(`<g opacity="0">${shout('?', { size: 26, jag: true, c })}</g>`), x: 1190, y: 420 },
     ];
+    if (PH) words.forEach((w) => { w.x -= 130; });
 
     /* ---------- the father and his son ---------- */
     const father = S.puppet(mainL.add(withFace(person(c, LOOK.father), faceBits(c))));
@@ -73,7 +75,7 @@ export default {
       set.clouds.forEach((cl) => swing(cl.el, cl.x + Math.sin(T * 0.1 + cl.i) * 20, cl.y, T, 1.3, 0.6, cl.i));
 
       /* Jesus comes in from the left (beat 0), the crowd runs to him (beat 1) */
-      const jx = kf(t, [[0, 260], [0.9, 560], [1.4, 640], [2, 700]]);
+      const jx = kf(t, PH ? [[0, 470], [0.9, 640], [1.4, 650], [2, 700]] : [[0, 260], [0.9, 560], [1.4, 640], [2, 700]]);
       const jWalk = (t > 0.02 && t < 0.9) || (t > 1.05 && t < 1.95);
       const sighK = es(t, 6.05, 6.4) * (1 - es(t, 6.9, 7.1));
       const beckon = es(t, 7.05, 7.35);
@@ -103,7 +105,7 @@ export default {
       scribes.forEach((m) => {
         const gest = argue * (Math.sin(T * 2.6 + m.seed) * 0.5 + 0.5);
         const back = es(t, 3, 3.5);
-        m.p.set({ x: m.x + back * 40, y: m.y, s: m.s, flip: true, armF: 20 + gest * 60 + es(t, 5.1, 5.4) * 20, armB: 10 + gest * 40, head: -4 - es(t, 5.1, 5.5) * 6, blink: blinkAt(T, m.seed) });
+        m.p.set({ x: m.x + back * (PH ? 12 : 40), y: m.y, s: m.s, flip: true, armF: 20 + gest * 60 + es(t, 5.1, 5.4) * 20, armB: 10 + gest * 40, head: -4 - es(t, 5.1, 5.5) * 6, blink: blinkAt(T, m.seed) });
       });
 
       /* the crowd greets him */
@@ -133,7 +135,7 @@ export default {
       pose(mboy, { x: lerp(0, -30, fall), y: lerp(40, 36, fall), r: -fall * 84 + shake });
       pose(mshards, { x: 0, y: 10, r: T * 25, s: 0.8 + Math.sin(T * 3) * 0.1, o: es(t, 4.25, 4.45) });
 
-      S.cam.x = kf(t, [[0, 140], [0.6, 120], [1.3, 20], [2, 0], [3.3, 60], [6, 20], [7.5, 40]]);
+      S.cam.x = kf(t, PH ? [[0, 200], [0.6, 190], [1.3, 20], [2, 0], [3.3, 60], [6, 20], [7.5, 40]] : [[0, 140], [0.6, 120], [1.3, 20], [2, 0], [3.3, 60], [6, 20], [7.5, 40]]);
       S.cam.z = 1.06 + es(t, 5.9, 6.4) * 0.05 - es(t, 7.1, 7.6) * 0.03;
       S.cam.y = 24 + es(t, 5.9, 6.4) * 16;
     };

@@ -23,7 +23,8 @@ export default {
     const sk = sky(S, SKY);
 
     const hangL = S.layer({ par: 0.04, sh: 4 });
-    const sunEl = hanging(hangL, sun(c, 46), { x: 1190, y: 170, len: 800 });
+    const SUNX = S.portrait ? 1030 : 1190;   // phone: the sun clear of the progress thread
+    const sunEl = hanging(hangL, sun(c, 46), { x: SUNX, y: 170, len: 800 });
     const cl1 = hanging(hangL, cloud(c, 200), { x: 500, y: 150, len: 600 });
     const cl2 = hanging(hangL, cloud(c, 140), { x: 1000, y: 230, len: 700 });
     const birds = flock(S, hangL, 4, (cc) => bird(cc, { color: C.bird }), { y: 240, speed: 50, scale: 0.5 });
@@ -82,7 +83,7 @@ export default {
       cur.set(es(t, 0.05, 0.85), T);
       const power = es(t, 2.05, 2.8);
       sk.blend(SKY, GOLD, power * 0.8);
-      swing(sunEl, 1190, 170, T, 1.1, 0.7);
+      swing(sunEl, SUNX, 170, T, 1.1, 0.7);
       swing(cl1, 500 + Math.sin(T * 0.1) * 24, 150, T, 1.4, 0.6, 1);
       swing(cl2, 1000 + Math.sin(T * 0.12 + 2) * 24, 230, T, 1.4, 0.7, 2);
       birds(T, 1 - power);

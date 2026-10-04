@@ -57,8 +57,9 @@ export default {
 
     /* ---------- the people ---------- */
     const pL = S.layer({ par: PAR, sh: 4 });
+    // phone: the nine who stay below stand close together inside the frame, not sliced by its left edge
     const REST = TWELVE.filter((d) => !['peter', 'james', 'john'].includes(d.k));
-    const others = REST.map((d, i) => ({ i, x: 190 + i * 44 + (i % 2) * 8, y: FOOT + 6 + (i % 2) * 8, s: 0.6 + (i % 3) * 0.02, seed: c.rr(0, 9), p: S.puppet(pL.add(person(c, d.o))) }));
+    const others = REST.map((d, i) => ({ i, x: S.portrait ? 512 + i * 18 + (i % 2) * 6 : 190 + i * 44 + (i % 2) * 8, y: FOOT + 6 + (i % 2) * 8, s: 0.6 + (i % 3) * 0.02, seed: c.rr(0, 9), p: S.puppet(pL.add(person(c, d.o))) }));
     const THREE = [CAST.peter, CAST.james, CAST.john].map((o, i) => ({ i, o, xe: 700 + i * 62, seed: c.rr(0, 9), p: S.puppet(pL.add(person(c, o))) }));
     THREE.forEach((d) => { d.path = [[d.xe, FOOT + 8], ...PATH.slice(1)]; });
     const jesus = S.puppet(pL.add(person(c, CAST.jesus)));

@@ -41,9 +41,10 @@ export default {
     const people = crowd(S, crowdL, PLAIN_ROWS);
     const runners = crowd(S, crowdL, [{ y: 632, s: 0.58, n: 8, x0: 300, x1: 1500 }]).filter((m) => Math.abs(m.x - 900) > 220);
     runners.forEach((m) => { m.from = m.x < 900 ? m.x - 700 : m.x + 700; });
+    const PH = S.portrait;   // phone: the plates and the crowd's words inside the screen
     const saying = [
-      { x: 520, y: 470, el: crowdL.add(`<g opacity="0">${bubble(c, tr('On umarł!', 'He is dead!'), { size: 18, tail: 1 })}</g>`) },
-      { x: 1250, y: 480, el: crowdL.add(`<g opacity="0">${bubble(c, tr('Umarł…', 'Dead…'), { size: 18, tail: -1 })}</g>`) },
+      { x: PH ? 580 : 520, y: 470, el: crowdL.add(`<g opacity="0">${bubble(c, tr('On umarł!', 'He is dead!'), { size: 18, tail: 1 })}</g>`) },
+      { x: PH ? 1060 : 1250, y: 480, el: crowdL.add(`<g opacity="0">${bubble(c, tr('Umarł…', 'Dead…'), { size: 18, tail: -1 })}</g>`) },
     ];
 
     /* ---------- disciples on the left, scribes on the right ---------- */
@@ -53,9 +54,10 @@ export default {
 
     /* ---------- the plates of the father's story ---------- */
     const plL = S.layer({ par: 0.1, sh: 5 });
-    const cradleP = hanging(plL, plate(c, `<g transform="translate(0 26) scale(1.2)">${cradle(c, 64)}</g>`, { r: 66 }), { x: 1060, y: 250, len: 900 });
-    const fireP = hanging(plL, dangerPlate(c, 'fire', 56), { x: 960, y: 250, len: 900 });
-    const waterP = hanging(plL, dangerPlate(c, 'water', 56), { x: 1140, y: 262, len: 900 });
+    const CRX = PH ? 975 : 1060, FIX = PH ? 890 : 960, WAX = PH ? 1040 : 1140;
+    const cradleP = hanging(plL, plate(c, `<g transform="translate(0 26) scale(1.2)">${cradle(c, 64)}</g>`, { r: 66 }), { x: CRX, y: 250, len: 900 });
+    const fireP = hanging(plL, dangerPlate(c, 'fire', 56), { x: FIX, y: 250, len: 900 });
+    const waterP = hanging(plL, dangerPlate(c, 'water', 56), { x: WAX, y: 262, len: 900 });
 
     /* ---------- the main group ---------- */
     const mainL = S.layer({ par: 0.5, sh: 5 });
@@ -122,10 +124,10 @@ export default {
 
       /* the plates: cradle, fire and water */
       const cp = es(t, 3.1, 3.35, ease.back) * (1 - es(t, 3.9, 4.1));
-      swing(cradleP, 1060, lerp(-1000, 250, cp), T, 1.1, 0.8, 1);
+      swing(cradleP, CRX, lerp(-1000, 250, cp), T, 1.1, 0.8, 1);
       const dp = es(t, 4.05, 4.3, ease.back) * (1 - es(t, 4.9, 5.1));
-      swing(fireP, 960, lerp(-1000, 250, dp), T, 1.4, 0.9, 2);
-      swing(waterP, 1140, lerp(-1000, 262, es(t, 4.15, 4.4, ease.back) * (1 - es(t, 4.9, 5.1))), T, 1.4, 0.9, 3);
+      swing(fireP, FIX, lerp(-1000, 250, dp), T, 1.4, 0.9, 2);
+      swing(waterP, WAX, lerp(-1000, 262, es(t, 4.15, 4.4, ease.back) * (1 - es(t, 4.9, 5.1))), T, 1.4, 0.9, 3);
 
       /* the father */
       const fx = lerp(1180, FX, brought);

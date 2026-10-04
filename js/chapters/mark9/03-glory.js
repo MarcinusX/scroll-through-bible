@@ -15,6 +15,7 @@ const TOP = 606;         // where Jesus stands
 const SIDE = 628;        // Moses & Elijah
 const LEDGE = 752;       // the three disciples, nearer to us
 const TENTS = [[600, 0.78], [800, 0.84], [1000, 0.78]];
+const TENTS_P = [[685, 0.78], [800, 0.84], [915, 0.78]];   // phone: the three tents clear of the kneeling disciples
 
 export default {
   id: 'm9-glory',
@@ -47,7 +48,8 @@ export default {
 
     // the fuller's plate (v3) and, later, the words of the voice hang from the flies
     const hangL = S.layer({ par: 0.05, sh: 5 });
-    const fuller = hanging(hangL, `<g>${fullerPlate(c, 70)}</g><g transform="translate(0 102)">${strip(c, tr('żaden folusznik…', 'no launderer…'), { size: 17 })}</g>`, { x: 1130, y: 240, len: 800 });
+    const FX = S.portrait ? 985 : 1130;   // phone: the fuller's plate inside the screen
+    const fuller = hanging(hangL, `<g>${fullerPlate(c, 70)}</g><g transform="translate(0 102)">${strip(c, tr('żaden folusznik…', 'no launderer…'), { size: 17 })}</g>`, { x: FX, y: 240, len: 800 });
 
     /* ---------- glory behind Jesus ---------- */
     const glowL = S.layer({ par: P, sh: 1, flat: true });
@@ -65,8 +67,9 @@ export default {
 
     /* ---------- Moses and Elijah ---------- */
     const visL = S.layer({ par: P, sh: 4 });
+    const MX = S.portrait ? 645 : 590, EX = S.portrait ? 960 : 1010;   // phone: Moses and Elijah a step closer to him
     const pillar = (x) => visL.add(`<g opacity="0"><path d="${c.cut([[x - 60, SIDE + 6], [x - 30, -400], [x + 30, -400], [x + 60, SIDE + 6]], 0.5, 20)}" fill="#fff4d6" opacity=".55"/><ellipse cx="${x}" cy="${SIDE}" rx="90" ry="18" fill="url(#halo-glow)"/></g>`);
-    const pilM = pillar(590), pilE = pillar(1010);
+    const pilM = pillar(MX), pilE = pillar(EX);
     const wheel = visL.add(`<g opacity="0">${fireWheel(c, 34)}</g>`);
     const moses = S.puppet(visL.add(person(c, { ...LOOK.moses, holdF: `<g transform="translate(8 -4)">${tablets(c, { w: 18, h: 30 })}</g>` })));
     const elijah = S.puppet(visL.add(person(c, LOOK.elijah)));
@@ -87,14 +90,15 @@ export default {
 
     /* ---------- the tents Peter would build ---------- */
     const tentL = S.layer({ par: 0.5, sh: 4 });
-    const tents = TENTS.map(([x, s], i) => ({ x, s, i, el: tentL.add(`<g>${tent(c, { col: [C.wheatRobe, C.linen2, C.sand2][i], stripe: [C.terracotta, C.dustyBlue, C.clay][i] })}</g>`) }));
+    const tents = (S.portrait ? TENTS_P : TENTS).map(([x, s], i) => ({ x, s, i, el: tentL.add(`<g>${tent(c, { col: [C.wheatRobe, C.linen2, C.sand2][i], stripe: [C.terracotta, C.dustyBlue, C.clay][i] })}</g>`) }));
 
     /* ---------- Peter, James and John ---------- */
     const dL = S.layer({ par: 0.6, sh: 5 });
+    const PH = S.portrait;   // phone: the three witnesses drawn in from the edges of the screen
     const DIS = [
-      { k: 'james', o: CAST.james, x: 390, flip: false },
-      { k: 'peter', o: CAST.peter, x: 488, flip: false },
-      { k: 'john', o: CAST.john, x: 1128, flip: true },
+      { k: 'james', o: CAST.james, x: PH ? 532 : 390, flip: false },
+      { k: 'peter', o: CAST.peter, x: PH ? 594 : 488, flip: false },
+      { k: 'john', o: CAST.john, x: PH ? 1035 : 1128, flip: true },
     ].map((d, i) => ({
       ...d, i, seed: c.rr(0, 9),
       st: S.puppet(dL.add(withFace(person(c, d.o), faceBits(c)))),
@@ -126,7 +130,7 @@ export default {
       pose(glory, { x: 800, y: TOP - 150, s: 0.5 + shine * 0.6 + bump(t, 0.2, 1.1) * 0.15, r: t * 5, o: shine * (1 - cloudIn * 0.35) });
       // v3: the fuller's plate comes down beside him, then flies away
       const fl = es(t, 1.05, 1.4, ease.back) * (1 - es(t, 1.95, 2.3));
-      swing(fuller, 1130, lerp(-1000, 240, fl), T, 1.2, 0.8, 1);
+      swing(fuller, FX, lerp(-1000, 240, fl), T, 1.2, 0.8, 1);
 
       /* Jesus: transfigured (swap to the white cut-out) and back */
       const white = es(t, 0.3, 0.37) * (1 - es(t, 8.2, 8.27));
@@ -146,9 +150,9 @@ export default {
       pose(pilM, { o: bump(t, 2.0, 2.9) });
       pose(pilE, { o: bump(t, 2.15, 3.05) });
       const mo = mIn * (1 - gone), eo = eIn * (1 - gone);
-      moses.set({ x: 590, y: SIDE - (1 - mIn) * 30, s: 1.02, o: mo, armF: 30 + Math.sin(T * 1.1) * 8 * mo, armB: 10 + talk * 30 * (Math.sin(T * 1.7) > 0 ? 1 : 0.3), head: -3 + Math.sin(T * 0.8) * 2, blink: blinkAt(T, 3) });
-      elijah.set({ x: 1010, y: SIDE - (1 - eIn) * 30, s: 1.02, flip: true, o: eo, armF: 20 + talk * 50 * (Math.sin(T * 1.3 + 2) > 0 ? 1 : 0.4), armB: 20, head: -3 + Math.sin(T * 0.9 + 1) * 2, blink: blinkAt(T, 5) });
-      pose(wheel, { x: 1068, y: SIDE - 30, s: 0.9, r: T * 30, o: bump(t, 2.15, 3.3) * 0.9 * (1 - gone) });
+      moses.set({ x: MX, y: SIDE - (1 - mIn) * 30, s: 1.02, o: mo, armF: 30 + Math.sin(T * 1.1) * 8 * mo, armB: 10 + talk * 30 * (Math.sin(T * 1.7) > 0 ? 1 : 0.3), head: -3 + Math.sin(T * 0.8) * 2, blink: blinkAt(T, 3) });
+      elijah.set({ x: EX, y: SIDE - (1 - eIn) * 30, s: 1.02, flip: true, o: eo, armF: 20 + talk * 50 * (Math.sin(T * 1.3 + 2) > 0 ? 1 : 0.4), armB: 20, head: -3 + Math.sin(T * 0.9 + 1) * 2, blink: blinkAt(T, 5) });
+      pose(wheel, { x: EX + 58, y: SIDE - (S.portrait ? 120 : 30), s: 0.9, r: T * 30, o: bump(t, 2.15, 3.3) * 0.9 * (1 - gone) });
 
       /* the tents pop up (v5b) and fold away when the cloud comes */
       tents.forEach((tn) => {
@@ -180,9 +184,9 @@ export default {
         d.kn.set({ x: x + shake, y: LEDGE, s: 1.06, flip: turn, o: kneel, armF: 30 + bow * 60 + shield * 20, armB: 150 * shield + 40 * fear * (1 - bow) + bow * 70, head: -10 - shield * 4 + bow * 16 + lookAround * 10, lean: bow * 22 + fear * 3, blink: blinkAt(T, d.seed) });
         d.sad.forEach((el) => pose(el, { o: fear }));
       });
-      const pX = 488;
+      const pX = DIS[1].x;
       pose(peterSays, { x: pX + 50, y: LEDGE - 200, s: es(t, 3.15, 3.35, ease.back) * (1 - es(t, 3.9, 4)), o: t > 3.1 && t < 4 ? 1 : 0 });
-      pose(peterQ, { x: 500, y: LEDGE - 140, s: es(t, 5.15, 5.4, ease.back), o: es(t, 5.1, 5.2) * (1 - es(t, 5.85, 6)) });
+      pose(peterQ, { x: pX + 12, y: LEDGE - 140, s: es(t, 5.15, 5.4, ease.back), o: es(t, 5.1, 5.2) * (1 - es(t, 5.85, 6)) });
 
       /* camera */
       S.cam.z = 1 + es(t, 0.1, 0.9) * 0.08 - es(t, 1.9, 2.5) * 0.1 + es(t, 7, 7.5) * 0.03 + es(t, 8.2, 8.9) * 0.06;

@@ -11,6 +11,8 @@ import { TWELVE, plate, reachingHand, thought, GLYPH, kf, silhouette } from './l
 const PI = Math.PI;
 const P = 0.45;
 const ROAD = 668;
+const SPOTS_L = [[690, -1, 1], [630, -1, 1], [560, -1, 0], [500, -1, 0], [910, 1, 1], [970, 1, 1], [1040, 1, 0], [1100, 1, 0]];
+const SPOTS_P = [[700, -1, 1], [648, -1, 1], [595, -1, 0], [545, -1, 0], [900, 1, 1], [952, 1, 1], [1003, 1, 0], [1053, 1, 0]];   // phone: the circle drawn in
 
 export default {
   id: 'm9-galilee',
@@ -31,8 +33,12 @@ export default {
     const starL = S.layer({ par: 0.02, sh: 1, flat: true });
     starL.add(stars(c, { x0: -600, x1: 2200, y0: -400, y1: 420, n: 120 }));
     const hangL = S.layer({ par: 0.04, sh: 4 });
-    const sunDown = hanging(hangL, sun(c, 40, { rays: C.sunDeep, disc: '#f0a868', inner: '#f5c08a' }), { x: 1180, y: 330, len: 900 });
-    const moons = [0, 1, 2].map((i) => ({ i, x: 860 + i * 150, el: hanging(hangL, `<circle r="90" fill="url(#halo-glow)" opacity=".45"/>${moon(c, 30)}`, { x: 860 + i * 150, y: 170, len: 900 }) }));
+    // phone: the setting sun and the third moon inside the screen, clear of the progress thread
+    const PH = S.portrait;
+    const SUNX = PH ? 1020 : 1180;
+    const MOONX = (i) => (PH ? 830 + i * 120 : 860 + i * 150);
+    const sunDown = hanging(hangL, sun(c, 40, { rays: C.sunDeep, disc: '#f0a868', inner: '#f5c08a' }), { x: SUNX, y: 330, len: 900 });
+    const moons = [0, 1, 2].map((i) => ({ i, x: MOONX(i), el: hanging(hangL, `<circle r="90" fill="url(#halo-glow)" opacity=".45"/>${moon(c, 30)}`, { x: MOONX(i), y: 170, len: 900 }) }));
     const dawnL = S.layer({ par: 0.05, sh: 1, flat: true });
     const dawnRays = dawnL.add(`<g opacity="0"><circle r="300" fill="url(#warm-glow)"/>${rays(c, { n: 18, r0: 60, r1: 700, spread: 0.05, color: '#fff1c8' })}</g>`);
     const risingSun = hanging(hangL, sun(c, 50), { x: 1000, y: 470, len: 1000 });
@@ -43,8 +49,9 @@ export default {
     const h2 = hillsWith(c, { y: 530, amps: [18, 8, 3], lens: [900, 300, 110], color: mix(C.hillMid, C.duskViolet, 0.2), trees: 22, treeColor: mix(C.sage, C.duskViolet, 0.2), treeH: 20 });
     hills.add(h2.markup);
     const villageL = S.layer({ par: 0.3, sh: 3 });
-    villageL.add(town(c, { x: 1260, y: 600, n: 7, spread: 300, sc: 0.8, lit: true }));
-    const villagers = [[1130, 604], [1330, 606], [1410, 600]].map(([x, y], i) => ({ x, y, i, seed: c.rr(0, 9), p: S.puppet(villageL.add(person(c, { ...TWELVE[(i * 5) % 12].o, robe: [C.roseRobe, C.ochreRobe, C.sageRobe][i], mantle: null, hairStyle: i === 1 ? 'veil' : 'wrap', veil: C.linen2, beard: i === 1 ? 'none' : 'short' }))) }));
+    // phone: the village (and the villagers who must not notice them) inside the screen, not under the thread
+    villageL.add(town(c, { x: PH ? 1030 : 1260, y: 600, n: 7, spread: PH ? 220 : 300, sc: 0.8, lit: true }));
+    const villagers = (PH ? [[945, 604], [1025, 606], [1090, 600]] : [[1130, 604], [1330, 606], [1410, 600]]).map(([x, y], i) => ({ x, y, i, seed: c.rr(0, 9), p: S.puppet(villageL.add(person(c, { ...TWELVE[(i * 5) % 12].o, robe: [C.roseRobe, C.ochreRobe, C.sageRobe][i], mantle: null, hairStyle: i === 1 ? 'veil' : 'wrap', veil: C.linen2, beard: i === 1 ? 'none' : 'short' }))) }));
 
     /* ---------- the road and the hedge that hides them ---------- */
     const roadL = S.layer({ par: P, sh: 3 });
@@ -84,7 +91,7 @@ export default {
       const dawn = es(t, 3.72, 3.95);
       if (dawn > 0) sk.blend(NIGHT, DAWN, dawn); else sk.blend(DUSK, NIGHT, night * 0.9 + es(t, 0, 2.8) * 0.2);
       starL.fade(night);
-      swing(sunDown, 1180, 330 + es(t, 0, 3.1) * 400, T, 1, 0.6);
+      swing(sunDown, SUNX, 330 + es(t, 0, 3.1) * 400, T, 1, 0.6);
       moons.forEach((m) => {
         const on = es(t, 3.18 + m.i * 0.16, 3.3 + m.i * 0.16, ease.back) * (1 - es(t, 3.7, 3.85));
         swing(m.el, m.x, lerp(-1000, 170, on), T, 1, 0.6, m.i);
@@ -94,15 +101,16 @@ export default {
       pose(dawnRays, { x: 1000, y: lerp(620, 300, up), s: 0.5 + up * 0.6, r: t * 6, o: up * (1 - es(t, 4.4, 4.9) * 0.6) });
 
       /* beat 0–1: walking along the road; beat 1: past the village, half hidden */
-      const walkX = kf(t, [[0, 120], [1.9, 720], [2.1, 800]], (x) => x);
+      // phone: the walk starts nearer, so the little band is on the screen while they travel
+      const walkX = kf(t, PH ? [[0, 640], [1.9, 790], [2.1, 800]] : [[0, 120], [1.9, 720], [2.1, 800]], (x) => x);
       const walking = t < 2.05;
       const hush = bump(t, 1.1, 1.95);
       jesus.set({ x: walkX, y: ROAD, s: 0.9, o: 1 - es(t, 2.08, 2.14), walk: walking ? walkX * 0.05 : undefined, amt: 0.8, armF: 12 + hush * 30, head: -2 + hush * 4, blink: blinkAt(T, 1) });
       const teach = es(t, 2.1, 2.4) * (1 - es(t, 4.1, 4.3));
       jSit.set({ x: 800, y: ROAD - 16, s: 0.98, o: es(t, 2.08, 2.14), armF: 20 + teach * (30 + Math.sin(T * 1.4) * 12) + es(t, 3.05, 3.3) * 20 * (1 - es(t, 3.7, 3.9)) + es(t, 3.75, 4) * 70 * (1 - es(t, 4.3, 4.6)), armB: 10 + teach * 20 + es(t, 3.75, 4) * 90 * (1 - es(t, 4.3, 4.6)), head: -2 + es(t, 3.1, 3.4) * 8 * (1 - es(t, 3.7, 3.9)) - es(t, 3.75, 4) * 6, blink: blinkAt(T, 1) });
-      const SPOTS = [[690, -1, 1], [630, -1, 1], [560, -1, 0], [500, -1, 0], [910, 1, 1], [970, 1, 1], [1040, 1, 0], [1100, 1, 0]];
+      const SPOTS = PH ? SPOTS_P : SPOTS_L;
       DIS.forEach((d, i) => {
-        const trail = walkX - 70 - i * 58;
+        const trail = walkX - 70 - i * (PH ? 32 : 58);
         const [sx, side, sits] = SPOTS[i];
         const settle = es(t, 1.95 + i * 0.03, 2.4 + i * 0.03);
         const seated = sits ? es(t, 2.4 + i * 0.03, 2.46 + i * 0.03) : 0;
@@ -122,8 +130,8 @@ export default {
         const on = es(t, 4.08 + i * 0.07, 4.28 + i * 0.07, ease.back);
         pose(el, { x: d.x + 4, y: ROAD - (SPOTS[d.i][2] ? 130 : 186), s: on * 0.9, o: on > 0.01 ? 1 : 0 });
       });
-      // the villagers look away, busy at their doors; nobody notices
-      villagers.forEach((v) => v.p.set({ x: v.x, y: v.y, s: 0.5, flip: v.i !== 1, head: -6, armF: 30 + Math.sin(T * 1.2 + v.seed) * 10 * es(t, 0.9, 1.2) , blink: blinkAt(T, v.seed) }));
+      // the villagers look away, busy at their doors; nobody notices (phone: then they go in, out of the way of the circle)
+      villagers.forEach((v) => v.p.set({ x: v.x, y: v.y, s: 0.5, o: PH ? 1 - es(t, 1.95, 2.2) : 1, flip: v.i !== 1, head: -6, armF: 30 + Math.sin(T * 1.2 + v.seed) * 10 * es(t, 0.9, 1.2) , blink: blinkAt(T, v.seed) }));
 
       /* the plate: into the hands of men; the light goes out; then rises again */
       const pl = es(t, 2.1, 2.35, ease.back) * (1 - es(t, 4.05, 4.3));
