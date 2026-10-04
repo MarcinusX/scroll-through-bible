@@ -10,7 +10,7 @@ import { kf, moving, headAt, hand, speech, heart, scrap, spark, wordSlip, oilFla
 const PI = Math.PI;
 const Y = 700;
 const GATE = 1090;
-const PAIR_X = [470, 580, 690, 910, 1020, 1130];
+const PAIR_X_ = [470, 580, 690, 910, 1020, 1130];
 
 export default {
   id: 'm6-return',
@@ -22,10 +22,13 @@ export default {
   cam: { x: [-60, 60], y: [0, 60], z: [1, 1.16] },
   build(S) {
     const c = S.c;
+    // phone: the outer pairs and the sun stay inside the screen
+    const PAIR_X = S.portrait ? [565, 642, 720, 880, 958, 1035] : PAIR_X_;
+    const SUNX = S.portrait ? 1000 : 1180;
     const SKY = ['#c3dcdc', '#ebe6cf', '#f6ead3'];
     sky(S, SKY);
     const hangL = S.layer({ par: 0.05, sh: 5 });
-    const sunEl = hanging(hangL, sun(c, 46), { x: 1180, y: 160, len: 700 });
+    const sunEl = hanging(hangL, sun(c, 46), { x: SUNX, y: 160, len: 700 });
     const cl1 = hanging(hangL, cloud(c, 190), { x: 620, y: 140, len: 600 });
     const birds = flock(S, hangL, 3, (cc) => bird(cc, { color: C.bird }), { y: 220, speed: 40, scale: 0.5 });
     S.layer({ par: 0.08, sh: 2 }).add(band(c, { y: 400, amps: [16, 7, 3], lens: [1100, 400, 140], color: C.hillFar }).markup);
@@ -73,7 +76,7 @@ export default {
       const pi = PAIRS.findIndex((p) => p.includes(i));
       const second = PAIRS[pi][1] === i;
       const left = PAIR_X[pi] < 800;
-      return { ...a, i, pi, second, left, x: PAIR_X[pi] + (second ? 22 : -22) * (left ? 1 : -1), y: Y + (second ? 10 : -4), seed: c.rr(0, 6) };
+      return { ...a, i, pi, second, left, x: PAIR_X[pi] + (second ? 1 : -1) * (S.portrait ? 16 : 22) * (left ? 1 : -1), y: Y + (second ? 10 : -4), seed: c.rr(0, 6) };
     }).sort((a, b) => a.y - b.y);
     twelve.forEach((m) => { m.p = S.puppet(act.add(person(c, { ...m.o, holdF: staff(c, 200, 20) }))); });
     const jesus = S.puppet(act.add(person(c, { ...CAST.jesus })));
@@ -96,7 +99,7 @@ export default {
 
     return (t, time) => {
       const T = time;
-      swing(sunEl, 1180, 160, T, 1.1, 0.6);
+      swing(sunEl, SUNX, 160, T, 1.1, 0.6);
       swing(cl1, 620 + Math.sin(T * 0.1) * 30, 140, T, 1.4, 0.6, 1);
       birds(T, 1);
 
@@ -143,7 +146,7 @@ export default {
       const up = bump(t, 2.15, 2.6);
       pose(bread, { x: 330 + up * 70, y: Y - 60 - up * 50, o: 1 });
 
-      S.cam.z = kf(t, [[0, 1.06], [1.0, 1.1], [1.9, 1.1], [2.2, 1.02]]);
+      S.cam.z = kf(t, S.portrait ? [[0, 1.03], [1.0, 1.05], [1.9, 1.05], [2.2, 1.02]] : [[0, 1.06], [1.0, 1.1], [1.9, 1.1], [2.2, 1.02]]);   // phone: a smaller push-in keeps the outer pairs off the frame and the thread
       S.cam.y = kf(t, [[0, 30], [1.0, 40], [2.2, 20]]);
     };
   },

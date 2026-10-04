@@ -91,7 +91,8 @@ export default {
     const wv = S.layer({ par: 0.72, sh: 4, pad: 200 });
     wv.add(waveStrip(c, { y: 800, len: 160, amp: 10, color: C.lake2, x0: -1400, x1: 3400 }));
 
-    const bKeys = [[0.05, 470], [0.9, 640], [2.0, 1000], [2.9, 1250]];
+    // phone: the boat lingers so it is still in sight while the shore watches it go
+    const bKeys = S.portrait ? [[0.05, 470], [0.9, 560], [2.0, 760], [2.9, 1250]] : [[0.05, 470], [0.9, 640], [2.0, 1000], [2.9, 1250]];
     return (t, time) => {
       const T = time;
       swing(sunEl, 800 + S.cam.x * 0.05, 150, T, 1.1, 0.6);
@@ -151,7 +152,7 @@ export default {
         pose(w.el, { x: lerp(JX + 20, w.to[0], k), y: lerp(510, w.to[1], k) - Math.sin(k * PI) * 50, r: Math.sin(T * 2 + w.seed) * 12, s: 0.5 + k * 0.5, o: teach * Math.sin(k * PI) });
       });
 
-      S.cam.x = kf(t, [[0, -540], [1.0, -500], [1.9, -440], [2.8, 900], [3.1, 1240]]);
+      S.cam.x = kf(t, [[0, -540], [1.0, -500], [1.9, S.portrait ? -480 : -440], [2.8, S.portrait ? 1000 : 900], [3.1, 1240]]);
       S.cam.z = kf(t, [[0, 1.04], [2.8, 1.0], [3.2, 1.08], [4.2, 1.12], [5.2, 1.06]]);
       S.cam.y = kf(t, [[0, 30], [3.2, 40], [4.2, 60], [5.2, 40]]);
     };

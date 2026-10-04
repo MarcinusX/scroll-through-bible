@@ -82,7 +82,7 @@ export default {
     const pB = [S.puppet(act.add(W(CAST.james))), S.puppet(act.add(W(CAST.john)))];
     // the square
     const SQ = [
-      { o: woman(c), x: 560, y: Y + 6 }, { o: man(c), x: 616, y: Y + 12 }, { o: woman(c, { robe: C.sageRobe }), x: 1000, y: Y + 8 }, { o: man(c, { hairStyle: 'bald', hair: C.greyHair }), x: 1062, y: Y + 12 },
+      { o: woman(c), x: 560, y: Y + 6 }, { o: man(c), x: 616, y: Y + 12 }, { o: woman(c, { robe: C.sageRobe }), x: S.portrait ? 965 : 1000, y: Y + 8 }, { o: man(c, { hairStyle: 'bald', hair: C.greyHair }), x: S.portrait ? 1022 : 1062, y: Y + 12 },   // phone: the right pair a step in from the thread
     ].map((m, i) => ({ ...m, i, seed: c.rr(0, 6), p: S.puppet(act.add(person(c, m.o))) }));
     const possessed = S.puppet(act.add(person(c, { robe: C.stone2, hair: C.hair3, hairStyle: 'wild', beard: 'short', skin: C.skin2, belt: C.leather })));
     const pC = [S.puppet(act.add(W(LOOK.philip))), S.puppet(act.add(W(LOOK.bartholomew)))];
@@ -104,7 +104,8 @@ export default {
     const healSpark = fx.add(`<g>${spark(c, 14)}</g>`);
 
     const fg = S.layer({ par: 0.9, sh: 6 });
-    fg.add(bush(c, -40, 880, 240, C.sage, C.moss) + bush(c, 1640, 880, 240, C.moss, C.sage) + rock(c, 420, 900, 140, 50, C.rock2) + rock(c, 1200, 905, 120, 46) + flowers(c, { x0: 500, x1: 1100, y: 880, n: 16 }));
+    // phone: the corner bushes sit further out, so the long camera moves don't show half a bush at the frame
+    fg.add(bush(c, S.portrait ? -130 : -40, 880, 240, C.sage, C.moss) + bush(c, S.portrait ? 1800 : 1640, 880, 240, C.moss, C.sage) + rock(c, 420, 900, 140, 50, C.rock2) + rock(c, 1200, 905, 120, 46) + flowers(c, { x0: 500, x1: 1100, y: 880, n: 16 }));
 
     // pair A: arrive → greeted → in the house → come out; pair B: preach → rebuffed → leave shaking dust
     const aKeys = [[-0.4, 120], [0.18, 380], [0.3, 380], [0.4, LH.door + 6], [0.86, LH.door + 6], [0.98, 330]];
@@ -217,7 +218,8 @@ export default {
       const hs = bump(t, 5.5, 5.95);
       pose(healSpark, { x: 930, y: Y - 180, s: hs, r: T * 40, o: hs > 0.02 ? 1 : 0 });
 
-      S.cam.x = kf(t, [[-0.5, -420], [0.9, -420], [1.2, 480], [2.4, 480], [2.9, 0]]);
+      // phone: the last of the deaf villagers, and both ends of the square, inside the screen
+      S.cam.x = S.portrait ? kf(t, [[-0.5, -420], [0.9, -420], [1.2, 540], [2.4, 540], [2.9, -40]]) : kf(t, [[-0.5, -420], [0.9, -420], [1.2, 480], [2.4, 480], [2.9, 0]]);
       S.cam.z = kf(t, [[-0.5, 1.12], [0.9, 1.12], [1.2, 1.12], [2.9, 1.06], [4.0, 1.1], [5.0, 1.14]]);
       S.cam.y = kf(t, [[-0.5, 40], [2.9, 30], [5.0, 50]]);
     };

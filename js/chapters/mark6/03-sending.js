@@ -9,10 +9,10 @@ import { kf, moving, headAt, hand, spark, scrap, wordSlip, loaf, staff, bag, pur
 
 const PI = Math.PI;
 const GY = 704;                   // the meadow where the Twelve stand
-const VX = [450, 800, 1150];      // villages on the hill
+const VX_ = [450, 800, 1150];     // villages on the hill
 const HILL = (x) => 548 + Math.sin(x * 0.006) * 10;
 // where each pair stands (centre x), and which side faces Jesus
-const PAIR_X = [470, 580, 690, 910, 1020, 1130];
+const PAIR_X_ = [470, 580, 690, 910, 1020, 1130];
 
 export default {
   id: 'm6-sending',
@@ -27,10 +27,14 @@ export default {
   cam: { x: [-40, 40], y: [0, 70], z: [1, 1.16] },
   build(S) {
     const c = S.c;
+    // phone: the third village, the outer pairs and the sun stay inside the screen
+    const VX = S.portrait ? [520, 800, 1070] : VX_;
+    const PAIR_X = S.portrait ? [565, 642, 720, 880, 958, 1035] : PAIR_X_;
+    const SUNX = S.portrait ? 1000 : 1180, SUNY = S.portrait ? 30 : 170;   // phone: the sun also hangs higher, above the medallions
     const SKY = ['#c6dcdc', '#ece6cf', '#f7ebd4'];
     sky(S, SKY);
     const hangL = S.layer({ par: 0.05, sh: 5 });
-    const sunEl = hanging(hangL, sun(c, 50), { x: 1180, y: 170, len: 700 });
+    const sunEl = hanging(hangL, sun(c, 50), { x: SUNX, y: SUNY, len: 700 });
     const cl1 = hanging(hangL, cloud(c, 200), { x: 640, y: 130, len: 600 });
     const cl2 = hanging(hangL, cloud(c, 140), { x: 980, y: 230, len: 700 });
     const birds = flock(S, hangL, 3, (cc) => bird(cc, { color: C.bird }), { y: 220, speed: 40, scale: 0.5 });
@@ -51,7 +55,7 @@ export default {
     hills.add(cypress(c, 620, HILL(620) - 10, 70) + cypress(c, 980, HILL(980) - 10, 80) + olive(c, 280, HILL(280) - 8, 0.45) + olive(c, 1320, HILL(1320) - 8, 0.45));
     // villagers who come out to listen
     const folk = [];
-    VX.forEach((vx, v) => [-46, -24, 26, 48].forEach((dx, j) => {
+    VX.forEach((vx, v) => (S.portrait ? [-40, -20, 22, 40] : [-46, -24, 26, 48]).forEach((dx, j) => {
       folk.push({ v, j, x: vx + dx, p: S.puppet(hills.add(person(c, j % 2 ? woman(c) : man(c)))), seed: c.rr(0, 6) });
     }));
     const jMid = S.puppet(hills.add(person(c, { ...CAST.jesus })));
@@ -76,7 +80,7 @@ export default {
       const second = PAIRS[pi][1] === i;
       const px = PAIR_X[pi];
       const left = px < 800;
-      const x = px + (second ? 22 : -22) * (left ? 1 : -1);
+      const x = px + (second ? 1 : -1) * (S.portrait ? 16 : 22) * (left ? 1 : -1);
       return { ...a, i, pi, second, x, y: GY + (second ? 10 : -4), left, from: left ? -200 - i * 40 : 1800 + i * 40, seed: c.rr(0, 6) };
     }).sort((a, b) => a.y - b.y);
     twelve.forEach((m) => {
@@ -113,7 +117,7 @@ export default {
 
     return (t, time) => {
       const T = time;
-      swing(sunEl, 1180, 170, T, 1.1, 0.6);
+      swing(sunEl, SUNX, SUNY, T, 1.1, 0.6);
       swing(cl1, 640 + Math.sin(T * 0.1) * 30, 130, T, 1.4, 0.6, 1);
       swing(cl2, 980 + Math.sin(T * 0.13 + 2) * 30, 230, T, 1.4, 0.8, 2);
       birds(T, 1);
@@ -171,13 +175,13 @@ export default {
         pose(it.mark, { x: it.x + (it.ok ? 30 : 0), y: lerp(-600, it.y, k) + (it.ok ? -30 : 0), s: mk, o: mk > 0.01 && k > 0.01 ? 1 : 0 });
       });
       const sp = es(t, 5.6, 5.95);
-      pose(spare, { x: lerp(974, 1300, sp), y: 244 - Math.sin(sp * PI) * 80 - sp * 300, r: sp * 60, s: 0.62, o: t > 5.55 && sp < 1 ? 1 : 0 });
+      pose(spare, { x: lerp(974, S.portrait ? 1060 : 1300, sp), y: 244 - Math.sin(sp * PI) * 80 - sp * (S.portrait ? 700 : 300), r: sp * 60, s: 0.62, o: t > 5.55 && sp < 1 ? 1 : 0 });
       twelve.forEach((m, i) => {
         const g = bump(t, 5.1 + (i % 6) * 0.04, 5.6);
         pose(sandalGlow[i], { x: m.x, y: m.y - 2, s: g, o: g });
       });
 
-      S.cam.z = kf(t, [[0, 1.0], [0.9, 1.0], [1.3, 1.1], [2.9, 1.08], [3.2, 1.12]]);
+      S.cam.z = kf(t, S.portrait ? [[0, 1.0], [0.9, 1.0], [1.3, 1.05], [2.9, 1.04], [3.2, 1.06]] : [[0, 1.0], [0.9, 1.0], [1.3, 1.1], [2.9, 1.08], [3.2, 1.12]]);   // phone: a smaller push-in keeps the outer pairs off the frame and the thread
       S.cam.y = kf(t, [[0, 10], [0.9, 10], [1.3, 50], [3.2, 60]]);
     };
   },

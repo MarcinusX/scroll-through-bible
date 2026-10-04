@@ -34,7 +34,7 @@ export default {
     const GOLD = ['#b99ab8', '#f0b384', '#f7d6a4'];
     const sk = sky(S, SKY);
     const hangL = S.layer({ par: 0.05, sh: 5 });
-    const sunEl = hanging(hangL, sun(c, 50, { rays: C.sunDeep, disc: '#f0b060', inner: '#f5ca8a' }), { x: 1180, y: 390, len: 900 });
+    const sunEl = hanging(hangL, sun(c, 50, { rays: C.sunDeep, disc: '#f0b060', inner: '#f5ca8a' }), { x: S.portrait ? 1000 : 1180, y: 390, len: 900 });
     const cl1 = hanging(hangL, cloud(c, 200, C.cream, C.peach), { x: 480, y: 150, len: 600 });
     const birds = flock(S, hangL, 3, (cc) => bird(cc, { color: C.bird }), { y: 220, speed: 30, scale: 0.5 });
     const heaven = hangL.add(`<g>${rays(c, { n: 12, r0: 10, r1: 700, spread: 0.035, color: '#fff3cf' })}</g>`);
@@ -56,7 +56,8 @@ export default {
     hill.add(sheet().p(c.ridge(hfn, -900, 2500, 1700, 12, 1), mix(C.hillNear, C.sand, 0.3)).out());
     const BEDS = [];
     [[572, 0.34, [300, 470, 640, 960, 1130, 1300]], [620, 0.42, [360, 560, 1040, 1240]], [672, 0.5, [300, 470, 1130, 1300]]].forEach(([y, s, xs], row) => {
-      xs.forEach((x) => BEDS.push({ x, y, s, row, w: 140 + row * 20, i: BEDS.length }));
+      // phone: the beds drawn a little closer together, so more of their tags are in sight
+      xs.forEach((x) => BEDS.push({ x: S.portrait ? 800 + (x - 800) * 0.85 : x, y, s, row, w: 140 + row * 20, i: BEDS.length }));
     });
     BEDS.forEach((b) => {
       b.bed = hill.add(`<g>${sheet().p(c.cut(c.blob(b.x, b.y + 2, b.w / 2, 12 + b.row * 3, 16, 0.06), 0.6, 8), mix(C.leaf, C.moss, 0.3)).x(c.ribbon([[b.x - b.w * 0.42, b.y - 1], [b.x + b.w * 0.42, b.y - 2]], 2), C.wheatGreen, 'opacity=".6"').out()}</g>`);
@@ -94,7 +95,7 @@ export default {
     const glowEl = act.add(`<g><circle r="90" fill="url(#halo-glow)"/></g>`);
     const BASK = Array.from({ length: 12 }, (_, i) => {
       const side = i < 6 ? -1 : 1, k = i % 6;
-      return { i, x: side < 0 ? 470 + k * 42 : 900 + k * 42, y: 738 + (k % 2) * 6, el: act.add(basket(c, { w: 40, h: 24, full: true })) };
+      return { i, x: S.portrait ? (side < 0 ? 520 + k * 36 : 900 + k * 36) : side < 0 ? 470 + k * 42 : 900 + k * 42, y: 738 + (k % 2) * 6, el: act.add(basket(c, { w: 40, h: 24, full: true })) };
     });
 
     /* ---------- the flying bread and fish, tags, joy ---------- */
@@ -114,7 +115,7 @@ export default {
       const gold = es(t, 4, 7.5);
       sk.blend(SKY, GOLD, gold);
       warm.fade(0.1 + gold * 0.06);
-      swing(sunEl, 1180, 390 + gold * 40, T, 1, 0.6);
+      swing(sunEl, S.portrait ? 1000 : 1180, 390 + gold * 40, T, 1, 0.6);   // phone: the sun clear of the thread
       swing(cl1, 480 + Math.sin(T * 0.1) * 30, 150, T, 1.4, 0.6, 1);
       birds(T, 1);
 
@@ -126,7 +127,7 @@ export default {
         pose(b.bed, { o: green });
         pose(b.people, { o: sit, y: (1 - sit) * -6 });
         const k = es(t, 1.1 + i * 0.05, 1.3 + i * 0.05, ease.back) * (1 - es(t, 1.95, 2.1));
-        pose(tags[i], { x: b.x, y: lerp(-400, b.y - 90 * b.s * 2.2, k), r: Math.sin(T * 1.3 + i) * 3, o: k > 0.01 ? 1 : 0 });
+        pose(tags[i], { x: S.portrait ? 800 + (b.x - 800) * 0.9 : b.x, y: lerp(S.portrait ? -600 : -400, b.y - 90 * b.s * 2.2, k), r: Math.sin(T * 1.3 + i) * 3, o: k > 0.01 && !(S.portrait && Math.abs(b.x - 800) > 320) ? 1 : 0 });   // phone: no half tags at the edges
         const j = bump(t, 5.05 + (i % 5) * 0.08, 5.95);
         pose(joys[i], { x: b.x + Math.sin(T * 2 + i) * 10, y: b.y - 90 * b.s * 1.6 - j * 20, s: j * (0.7 + b.row * 0.15), o: j > 0.02 ? 1 : 0 });
       });

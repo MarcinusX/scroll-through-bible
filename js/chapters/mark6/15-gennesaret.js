@@ -11,7 +11,7 @@ const PI = Math.PI;
 const Y = 700;
 const MAT_Y = 742;
 const SHORE = 470;          // the water's edge
-const MATS = [720, 860, 1140, 1280];
+const MATS_ = [720, 860, 1140, 1280];
 
 export default {
   id: 'm6-gennesaret',
@@ -26,6 +26,7 @@ export default {
   cam: { x: [-520, 420], y: [0, 70], z: [1, 1.16] },
   build(S) {
     const c = S.c;
+    const MATS = S.portrait ? [700, 840, 1030, 1130] : MATS_;   // phone: all four mats in sight
     const SKY = ['#cfe2df', '#f2e6cb', '#f8e8cf'];
     const sk = sky(S, ['#d8c9d6', '#f5d9bd', '#f8e5cc']);
     const hangL = S.layer({ par: 0.05, sh: 5 });
@@ -74,7 +75,7 @@ export default {
     const onb = ONB.map((d) => ({ ...d, p: S.puppet(S.$('gb' + d.i).firstElementChild) }));
     const ashore = ONB.map((d) => ({ ...d, p: S.puppet(act.add(person(c, d.o))) }));
     // villagers who recognise him
-    const folk = [[700, 0], [760, 1], [940, 2], [1000, 3], [1180, 4], [1240, 5]].map(([x, i]) => ({ x, i, seed: c.rr(0, 6), p: S.puppet(act.add(person(c, i % 2 ? woman(c) : man(c)))) }));
+    const folk = [[700, 0], [760, 1], [940, 2], [1000, 3], [1180, 4], [1240, 5]].map(([x, i]) => ({ ox: x, x: S.portrait && i > 1 && i < 4 ? x - 70 - (i - 2) * 15 : x, i, seed: c.rr(0, 6), p: S.puppet(act.add(person(c, i % 2 ? woman(c) : man(c)))) }));
     // carriers bringing the sick on mats
     const CARRY = MATS.map((mx, i) => {
       const side = i < 2 ? -1 : 1;
@@ -104,7 +105,7 @@ export default {
     const fg = S.layer({ par: 0.9, sh: 6 });
     fg.add(bush(c, 1700, 890, 240, C.moss, C.sage) + rock(c, 1500, 910, 130, 50, C.rock2) + flowers(c, { x0: 1300, x1: 1800, y: 872, n: 14 }));
 
-    const jKeys = [[1.05, SHORE - 60], [1.4, 600], [2.9, 600], [3.3, 790], [4.05, 790], [4.9, 1010]];
+    const jKeys = [[1.05, SHORE - 60], [1.4, 600], [2.9, 600], [3.3, 790], [4.05, 790], [4.9, S.portrait ? 945 : 1010]];
     return (t, time) => {
       const T = time;
       sk.blend(['#d8c9d6', '#f5d9bd', '#f8e5cc'], SKY, es(t, 0, 2));
@@ -137,8 +138,8 @@ export default {
       folk.forEach((f) => {
         const see = es(t, 1.15 + f.i * 0.05, 1.35 + f.i * 0.05);
         const run = es(t, 2.0 + f.i * 0.05, 2.6 + f.i * 0.05);
-        const x = f.x + run * (f.i % 2 ? 700 : -900) * (f.x > 900 ? 1 : 0.4);
-        f.p.set({ x, y: Y - 6 + (f.i % 2) * 10, s: 0.86, flip: run > 0.02 ? (f.x > 900 ? false : true) : true, o: es(t, 0.8, 1.0) * (1 - es(t, 2.5, 2.8)), walk: run > 0 && run < 1 ? x * 0.07 : undefined, amt: 1.3, armF: see * 90 * (1 - run), armB: see * 40 * (1 - run), blink: blinkAt(T, f.seed) });
+        const x = f.x + run * (f.i % 2 ? 700 : -900) * (f.ox > 900 ? 1 : 0.4);
+        f.p.set({ x, y: Y - 6 + (f.i % 2) * 10, s: 0.86, flip: run > 0.02 ? (f.ox > 900 ? false : true) : true, o: es(t, 0.8, 1.0) * (1 - es(t, 2.5, 2.8)), walk: run > 0 && run < 1 ? x * 0.07 : undefined, amt: 1.3, armF: see * 90 * (1 - run), armB: see * 40 * (1 - run), blink: blinkAt(T, f.seed) });
       });
       bangs.forEach((b, i) => {
         const f = folk[i];
@@ -183,7 +184,8 @@ export default {
       const fg_ = es(t, 4.1, 4.3) * (1 - es(t, 5.6, 5.9));
       pose(fringeGlow, { x: jx - 34, y: Y - 2, s: 0.8 + Math.sin(T * 3) * 0.08, o: fg_ });
 
-      S.cam.x = kf(t, [[0, -440], [1.0, -380], [1.9, -300], [2.4, 0], [3.0, 0], [3.4, 60], [4.0, 60], [4.9, 360]]);
+      // phone: the boat, the folk who know him, and the mats inside the screen
+      S.cam.x = S.portrait ? kf(t, [[0, -520], [1.0, -480], [1.4, -170], [1.9, -170], [2.4, 110], [3.0, 110], [3.4, 140], [4.0, 140], [4.9, 330]]) : kf(t, [[0, -440], [1.0, -380], [1.9, -300], [2.4, 0], [3.0, 0], [3.4, 60], [4.0, 60], [4.9, 360]]);
       S.cam.z = kf(t, [[0, 1.04], [1.9, 1.08], [2.4, 1.0], [3.4, 1.04], [4.2, 1.1], [5.2, 1.06]]);
       S.cam.y = kf(t, [[0, 30], [2.4, 20], [4.2, 60], [5.2, 50]]);
     };

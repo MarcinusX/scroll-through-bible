@@ -46,7 +46,7 @@ export default {
     { v: 5 },
     { v: 6, text: 'Dziwił się też ich niedowiarstwu.' },
   ],
-  cam: { x: [-180, 180], y: [-40, 60], z: [1, 1.24] },
+  cam: { x: [-240, 180], y: [-40, 60], z: [1, 1.24] },
   build(S) {
     const c = S.c;
     sky(S, ['#bcd6d6', '#e2ecdf', '#f3ead3']);
@@ -146,7 +146,8 @@ export default {
     /* ---------- bubbles, tags, sparks ---------- */
     const fx = S.layer({ par: 0.58, sh: 4 });
     const words = Array.from({ length: 8 }, (_, i) => ({ el: fx.add(wordSlip(c, c.rr(26, 34))), i, to: [lerp(420, 1180, i / 7) + c.rr(-20, 20), i % 2 ? c.rr(430, 470) : c.rr(500, 530)], seed: c.rr(0, 6) }));
-    const asks = [back[1], back[6], RIGHT[3], back[3]].map((m, i) => ({ m, i, el: fx.add(`<g>${speech(c, GLYPH.q(c), { w: 42, h: 38, flip: (m.x ?? 0) > 800 })}</g>`) }));
+    const asks = [back[1], back[6], RIGHT[S.portrait ? 2 : 3], back[3]].map(   // phone: a questioner clear of the thread
+      (m, i) => ({ m, i, el: fx.add(`<g>${speech(c, GLYPH.q(c), { w: 42, h: 38, flip: (m.x ?? 0) > 800 })}</g>`) }));
     const handSparks = [0, 1, 2].map(() => fx.add(`<g>${spark(c, 9)}</g>`));
     const famTags = FAM.map((f) => hanging(fx, labelTag(f.name, 17), { x: 0, y: 0, len: 500 }));
     const sisTag = hanging(fx, labelTag(tr('siostry', 'sisters'), 18), { x: 0, y: 0, len: 500 });
@@ -160,7 +161,8 @@ export default {
     const fg = S.layer({ par: 0.9, sh: 8 });
     const colm = (x) => { const s = sheet(); s.p(c.cut(c.rect(x - 60, -1400, 120, 2600), 0.8, 20), C.stone2); s.p(c.cut(c.rect(x - 76, 900, 152, 40), 0.6, 10) + c.cut(c.rect(x - 70, 40, 140, 30), 0.6, 10), shade(C.stone2, -0.1)); s.x(c.ribbon([[x - 30, 80], [x - 30, 880]], 5) + c.ribbon([[x + 18, 80], [x + 18, 880]], 5), shade(C.stone2, -0.15), 'opacity=".5"'); return s.out(); };
     fg.add(colm(90) + colm(1510));
-    fg.add(sheet().p(c.cut([[-1200, -1400], [2800, -1400], [2800, 50], [-1200, 62]], 0.8, 16), C.wood2).out());
+    // phone: the ceiling is a beam, not a sheet filling the top of the tall screen
+    fg.add(sheet().p(c.cut([[-1200, S.portrait ? -16 : -1400], [2800, S.portrait ? -16 : -1400], [2800, 50], [-1200, 62]], 0.8, 16), C.wood2).out());
 
     return (t, time) => {
       const T = time;
@@ -276,7 +278,8 @@ export default {
       const sk = es(t, 8.2, 8.5, ease.back);
       pose(stone, { x: jx + 18, y: FLOOR - 190, s: sk * 0.95, r: Math.sin(T * 1.3) * 3, o: sk > 0.02 ? 1 : 0 });
 
-      S.cam.x = kf(t, [[0, 0], [2.9, 0], [3.2, -120], [3.95, -120], [4.25, 130], [4.9, 130], [5.2, 0], [6.9, 0], [7.2, 80], [7.95, 80], [8.2, 0]]);
+      S.cam.x = kf(t, [[0, 0], [2.9, 0], [3.2, S.portrait ? -230 : -120], [3.95, S.portrait ? -230 : -120],   // phone: Simon and his name in sight
+         [4.25, 130], [4.9, 130], [5.2, 0], [6.9, 0], [7.2, 80], [7.95, 80], [8.2, 0]]);
       S.cam.z = kf(t, [[0, 1.14], [0.9, 1.1], [2.9, 1.1], [3.2, 1.2], [4.9, 1.2], [5.2, 1.08], [6.9, 1.08], [7.2, 1.16], [7.95, 1.16], [8.3, 1.2]]);
       S.cam.y = kf(t, [[0, 40], [3.2, 50], [4.9, 50], [5.2, 30], [8.3, 50]]);
     };

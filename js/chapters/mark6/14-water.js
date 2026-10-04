@@ -39,7 +39,7 @@ export default {
     { v: 51 },
     { v: 52 },
   ],
-  cam: { x: [-40, 80], y: [-20, 60], z: [1, 1.2] },
+  cam: { x: [-80, 80], y: [-20, 60], z: [1, 1.2] },
   build(S) {
     const c = S.c;
     sky(S, ['#141a3d', '#26306a', '#4b5791'], { name: 'night' });
@@ -53,7 +53,8 @@ export default {
 
     S.layer({ par: 0.08, sh: 2 }).add(band(c, { y: 450, amps: [14, 7, 3], lens: [1100, 380, 140], color: '#3a4270' }).markup);
     const mtn = S.layer({ par: 0.12, sh: 2 });
-    mtn.add(sheet().p(c.cut([[1150, 480], [1300, 380], [1350, 372], [1500, 470], [1700, 480], [1700, 700], [1150, 700]], 1.2, 10), '#434b78').out());
+    const MX = S.portrait ? -250 : 0;   // phone: the mountain he watches from, in sight
+    mtn.add(sheet().p(c.cut([[1150, 480], [1300, 380], [1350, 372], [1500, 470], [1700, 480], [1700, 700], [1150, 700]].map(([x, y]) => [x + MX, y]), 1.2, 10), '#434b78').out());
     const jFar = S.puppet(mtn.add(person(c, { ...CAST.jesus })));
     const water = S.layer({ par: 0.3, sh: 2 });
     water.add(band(c, { y: 480, amps: [3, 1.5], lens: [300, 90], color: '#4f6f8f', x0: -1400, x1: 3200, step: 10, j: 0.6 }).markup);
@@ -118,7 +119,7 @@ export default {
       const stroke = Math.sin(T * 2.6) * row;
       pose(oarB, { x: -40, y: -60, r: 50 + stroke * 22 });
       pose(oarF, { x: 70, y: -54, r: 50 + stroke * 22 });
-      jFar.set({ x: 1330, y: 378, s: 0.24, flip: true, o: 1 - es(t, 0.9, 1.1), armF: 40, blink: 0 });
+      jFar.set({ x: 1330 + MX, y: 378, s: 0.24, flip: true, o: 1 - es(t, 0.9, 1.1), armF: 40, blink: 0 });
 
       const see = es(t, 2.05, 2.25);
       const fear = es(t, 2.1, 2.3) * (1 - es(t, 4.1, 4.5));
@@ -133,7 +134,7 @@ export default {
       });
 
       /* v48b — in the fourth watch he comes walking on the water, as if to pass them by */
-      const jKeys = [[1.15, 1500], [2.0, 900], [2.2, 880], [4.9, 880], [5.1, BX + 60]];
+      const jKeys = [[1.15, S.portrait ? 1180 : 1500], [2.0, 900], [2.2, 880], [4.9, 880], [5.1, BX + 60]];
       const jx = kf(t, jKeys, (u) => u);
       const inBoat = es(t, 5.08, 5.14);
       const speak = bump(t, 4.05, 5.0);
@@ -176,7 +177,7 @@ export default {
         pose(h, { x: BX + d.x + 4, y: BY - 105, s: k, o: k > 0.01 ? 1 : 0 });
       });
 
-      S.cam.x = kf(t, [[0, 40], [1.0, 60], [2.0, 40], [4.9, 40], [5.4, 0]]);
+      S.cam.x = S.portrait ? -70 : kf(t, [[0, 40], [1.0, 60], [2.0, 40], [4.9, 40], [5.4, 0]]);   // phone: the whole boat in sight
       S.cam.z = kf(t, [[0, 1.04], [1.0, 1.02], [2.2, 1.1], [3.9, 1.12], [4.3, 1.06], [5.4, 1.08], [6.2, 1.14]]);
       S.cam.y = kf(t, [[0, 20], [2.2, 40], [6.2, 50]]);
     };

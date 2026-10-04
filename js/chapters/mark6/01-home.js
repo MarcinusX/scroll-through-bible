@@ -119,7 +119,8 @@ export default {
       const hold = m.hold ? `<g transform="translate(-6 -58) scale(.5)">${jug(c, C.pot)}</g>` : '';
       return { ...m, i, seed: c.rr(0, 6), p: S.puppet(act.add(person(c, { ...m.o, pose: m.pose || 'stand', holdB: hold }))) };
     });
-    const dis = DIS.map((d, i) => ({ ...d, i, seed: c.rr(0, 6), p: S.puppet(act.add(person(c, { ...d.o }))) }));
+    const dis = DIS.map((d, i) => ({ ...d, x: S.portrait ? 690 - (690 - d.x) * 0.65 : d.x, i,   // phone: the last of them not cut by the edge
+      seed: c.rr(0, 6), p: S.puppet(act.add(person(c, { ...d.o }))) }));
     const jesus = S.puppet(act.add(person(c, { ...CAST.jesus })));
     // a little glow of memory over the bench
     const memo = act.add(`<g><circle r="90" fill="url(#warm-glow)"/></g>`);
@@ -157,7 +158,7 @@ export default {
       pose(memo, { x: 905, y: 600, s: 0.6 + touch * 0.6, o: touch * 0.8 });
       // the town sign comes down as he arrives
       const sg = es(t, 1.0, 1.35, ease.back);
-      pose(sign, { x: 1150, y: lerp(-300, 205, sg), r: Math.sin(T * 1.1) * 2.5, o: sg > 0.01 ? 1 : 0 });
+      pose(sign, { x: S.portrait ? 1020 : 1150, y: lerp(S.portrait ? -600 : -300, 205, sg), r: Math.sin(T * 1.1) * 2.5, o: sg > 0.01 ? 1 : 0 });
 
       // neighbours come out of their doors and look
       far.forEach((f) => {
