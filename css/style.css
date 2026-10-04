@@ -395,3 +395,97 @@ body {
   .toc-line { font-size: 17px; }
 }
 @media (prefers-reduced-motion: reduce) { .book-card, .toc-n { transition: none; } }
+
+/* ---------- the narrator: a paper mixer top right, an invitation on the title page ---------- */
+.player {
+  position: fixed; top: calc(var(--frame) + 12px); right: calc(var(--frame) + 14px); z-index: 12;
+  display: flex; align-items: center; gap: 2px; padding: 5px 6px;
+  filter: drop-shadow(0 5px 6px var(--shade));
+  opacity: 0; transform: translateY(-12px); visibility: hidden; pointer-events: none;
+  transition: opacity .5s ease, transform .5s ease, visibility 0s .5s;
+}
+/* the bar's paper is a layer of its own, so the volume slips can hang below it without being clipped */
+.player::before {
+  content: ''; position: absolute; inset: 0; z-index: -1; background: var(--cream);
+  clip-path: polygon(3% 8%, 40% 0, 98% 6%, 100% 55%, 97% 96%, 55% 100%, 2% 94%, 0 45%);
+}
+.player.shown { opacity: 1; transform: none; visibility: visible; pointer-events: auto; transition: opacity .5s ease .15s, transform .5s ease .15s; }
+.player button {
+  appearance: none; display: grid; place-items: center; width: 34px; height: 34px; padding: 0; border: 0; border-radius: 50%;
+  background: transparent; color: var(--ink-soft); cursor: pointer; transition: color .2s, transform .3s cubic-bezier(.3, 1.6, .5, 1), background-color .2s;
+}
+.player button:hover { color: var(--ink); transform: translateY(-1px) rotate(-3deg); }
+.player button:focus-visible { outline: 2px dashed var(--terracotta); outline-offset: 1px; }
+.player svg { width: 20px; height: 20px; display: block; }
+.player .pl-play { width: 40px; height: 40px; background: #efe3c7; color: var(--terracotta); }
+.player .pl-play svg { width: 22px; height: 22px; }
+.player .pl-play.on { background: var(--terracotta); color: var(--cream); }
+/* the reader has the scroll: the narrator waits to pick up where they stop */
+.player.following .pl-play { animation: waiting 1.1s ease-in-out infinite; }
+@keyframes waiting { 50% { opacity: .45; } }
+/* volume: a slider on a paper slip that drops down under its button on hover */
+.pl-ch { position: relative; }
+.pl-pop {
+  position: absolute; top: 100%; left: 50%; z-index: 1; padding-top: 8px; translate: -50% 0;
+  opacity: 0; visibility: hidden; transform: translateY(-6px) rotate(-2deg);
+  transition: opacity .15s, transform .2s ease, visibility 0s .15s;
+}
+.pl-pop::before {
+  content: ''; position: absolute; inset: 8px 0 0; z-index: -1; background: var(--cream);
+  clip-path: polygon(10% 3%, 55% 0, 94% 4%, 100% 50%, 92% 98%, 45% 100%, 6% 96%, 0 52%);
+}
+/* open: on hover (mouse only), while dragging, on keyboard focus, or tapped open on a touch screen */
+.pl-ch.drag .pl-pop, .pl-ch.open .pl-pop, .pl-ch:has(:focus-visible) .pl-pop { opacity: 1; visibility: visible; transform: none; transition: opacity .15s, transform .25s cubic-bezier(.3, 1.6, .5, 1); }
+@media (hover: hover) { .pl-ch:hover .pl-pop { opacity: 1; visibility: visible; transform: none; transition: opacity .15s, transform .25s cubic-bezier(.3, 1.6, .5, 1); } }
+.pl-slider { display: block; width: 38px; height: 124px; padding: 14px 0; cursor: pointer; touch-action: none; outline: none; }
+.pl-track { position: relative; display: block; width: 4px; height: 100%; margin: 0 auto; border-radius: 2px; background: rgba(122, 78, 40, .22); }
+.pl-fill { position: absolute; left: 0; right: 0; bottom: 0; height: var(--v, 50%); border-radius: 2px; background: var(--terracotta); }
+.pl-thumb { position: absolute; left: 50%; bottom: var(--v, 50%); width: 14px; height: 14px; border-radius: 50%; background: var(--terracotta); box-shadow: 0 1px 3px var(--shade); translate: -50% 50%; transition: scale .15s; }
+.pl-slider:hover .pl-thumb, .pl-ch.drag .pl-thumb { scale: 1.2; }
+.pl-slider:focus-visible .pl-track { outline: 2px dashed var(--terracotta); outline-offset: 8px; }
+.pl-sep { width: 1px; height: 22px; margin: 0 4px; background: rgba(122, 78, 40, .25); }
+.player [aria-pressed] .off { display: none; }
+.player [aria-pressed="false"] svg { opacity: .5; }
+.player [aria-pressed="false"] .on { display: none; }
+.player [aria-pressed="false"] .off { display: inline; }
+
+.listen-cta {
+  position: fixed; left: 50%; bottom: calc(var(--frame) + 86px); z-index: 11; translate: -50% 0;
+  display: flex; align-items: center; gap: 9px; padding: 9px 20px 9px 14px; border: 0; cursor: pointer;
+  font: italic 19px var(--serif); color: var(--ink); background: var(--cream);
+  clip-path: polygon(2% 6%, 30% 0, 62% 4%, 99% 1%, 100% 52%, 98% 96%, 64% 100%, 34% 97%, 1% 100%, 0 48%);
+  filter: drop-shadow(0 5px 6px var(--shade));
+  transition: opacity .6s, transform .25s cubic-bezier(.3, 1.6, .5, 1);
+}
+.listen-cta svg { width: 22px; height: 22px; color: var(--terracotta); }
+.listen-cta:hover { transform: translateY(-2px) rotate(-1deg); }
+.listen-cta.on svg { color: var(--ink-soft); }
+.listen-cta.gone { opacity: 0; pointer-events: none; visibility: hidden; transition: opacity .6s, visibility 0s .6s; }
+.loading .listen-cta, .loading .player, .turning .listen-cta { visibility: hidden !important; }
+/* the library or the closed curtain in front of the stage: no mixer */
+.lib-on .listen-cta, .lib-on .player, .drape-on .listen-cta, .drape-on .player { opacity: 0 !important; visibility: hidden !important; pointer-events: none !important; }
+.player.invite .pl-play { animation: invite 1.6s ease-in-out infinite; }
+@keyframes invite { 50% { transform: scale(1.12); box-shadow: 0 0 0 5px rgba(200, 100, 45, .18); } }
+
+/* the word being read, inked; and a little moving mark by the reference while the narrator speaks */
+.cap-text .w { transition: color .18s; }
+.cap-text .w.now { color: var(--terracotta); }
+.cap-ref::after {
+  content: ''; display: inline-block; width: 13px; height: 9px; margin-left: 8px; vertical-align: -1px; opacity: 0;
+  background: linear-gradient(currentColor, currentColor) 0 100% / 3px 40% no-repeat, linear-gradient(currentColor, currentColor) 5px 100% / 3px 100% no-repeat, linear-gradient(currentColor, currentColor) 10px 100% / 3px 60% no-repeat;
+  transition: opacity .3s;
+}
+.caption.speaking .cap-ref::after { opacity: .8; animation: talk .9s steps(3) infinite; }
+@keyframes talk { 33% { background-size: 3px 100%, 3px 50%, 3px 80%; } 66% { background-size: 3px 60%, 3px 80%, 3px 35%; } }
+
+@media (max-width: 700px) {
+  /* prev / next are the taps on the left and right of the stage */
+  .player .pl-prev, .player .pl-next, .pl-sep { display: none; }
+  .player { right: calc(var(--frame) + 8px); padding: 3px 4px; gap: 0; }
+  .player button { width: 29px; height: 29px; }
+  .player .pl-play { width: 33px; height: 33px; }
+  .player svg { width: 18px; height: 18px; }
+  .narrated .tag { max-width: calc(100vw - 2 * var(--frame) - 118px); }
+  .listen-cta { bottom: calc(var(--frame) + 80px); font-size: 18px; }
+}
+@media (prefers-reduced-motion: reduce) { .player.invite .pl-play, .player.following .pl-play, .caption.speaking .cap-ref::after { animation: none; } }
