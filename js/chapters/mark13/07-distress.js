@@ -9,7 +9,6 @@ import { tr } from '../../core/i18n.js';
 import { olivesSet, circle, SKIES, JX, JY, tint, dayCard, lightHand, scissorsBig, soulLight, pointer, mask, addToHead, sparkle, voiceRings, handLamp, ashlar, emptyBowl, crownIcon, banner, dove, shoot, flake, globe, hourglass, PI } from './lib.js';
 
 const LX0 = 520, LX1 = 1150, LY = 206, N = 15, CUT = 10;
-const lineY = (x) => LY + Math.sin(((x - LX0) / (LX1 - LX0)) * PI) * 46;
 
 export default {
   id: 'm13-distress',
@@ -25,6 +24,12 @@ export default {
   cam: { x: [-30, 30], y: [-60, 40], z: [1, 1.08] },
   build(S) {
     const c = S.c;
+    // phone: the line of days, the signposts, the prophets and the scroll closed up inside the screen;
+    // the line flown well out of sight
+    const PH = S.portrait;
+    const L0 = PH ? 470 : LX0, L1 = PH ? 1060 : LX1;
+    const lineY = (x) => LY + Math.sin(((x - L0) / (L1 - L0)) * PI) * 46;
+    const GONE = PH ? 900 : 500, SSc = PH ? 0.84 : 1;
     const TK = 0.42, NIGHTC = mix(C.night, C.duskViolet, 0.3);
     const set = olivesSet(S, { skyCols: SKIES.night, tintCol: NIGHTC, tintK: TK, moonXY: [1220, 120], templeGlow: 0.25 });
 
@@ -34,13 +39,13 @@ export default {
 
     /* the line of days */
     const lineL = S.layer({ par: 0.24, sh: 5 });
-    const ropeD = (x1) => { const pts = []; for (let x = LX0 - 60; x <= x1; x += 20) pts.push([x, lineY(x)]); return c.ribbon(pts, 2.2); };
-    const rope = lineL.add(`<g><path d="M${LX0 - 60} ${lineY(LX0 - 60)}L${LX0 - 60} -1500M${LX1 + 60} ${lineY(LX1 + 60)}L${LX1 + 60} -1500" stroke="rgba(240,225,200,.35)" stroke-width="1.2"/><path d="${ropeD(LX1 + 60)}" fill="${C.rope}"/></g>`);
-    const ropeCut = lineL.add(`<g><path d="${ropeD(LX0 + ((CUT - 0.5) / (N - 1)) * (LX1 - LX0))}" fill="${C.rope}"/></g>`);
+    const ropeD = (x1) => { const pts = []; for (let x = L0 - 60; x <= x1; x += 20) pts.push([x, lineY(x)]); return c.ribbon(pts, 2.2); };
+    const rope = lineL.add(`<g><path d="M${L0 - 60} ${lineY(L0 - 60)}L${L0 - 60} -1500M${L1 + 60} ${lineY(L1 + 60)}L${L1 + 60} -1500" stroke="rgba(240,225,200,.35)" stroke-width="1.2"/><path d="${ropeD(L1 + 60)}" fill="${C.rope}"/></g>`);
+    const ropeCut = lineL.add(`<g><path d="${ropeD(L0 + ((CUT - 0.5) / (N - 1)) * (L1 - L0))}" fill="${C.rope}"/></g>`);
     const creation = `<g transform="translate(0 20)"><circle r="7" fill="${C.sun}"/><path d="${c.poly(c.star(0, 0, 11, 7, 10, 0))}" fill="${C.sunDeep}" opacity=".6"/></g><g transform="translate(0 34)"><path d="${c.cut(c.ell(0, 0, 12, 4, 10), 0.2, 3)}" fill="${C.moss}"/></g>`;
     const CARDS = Array.from({ length: N }, (_, i) => {
       const dark = i >= 6;
-      const x = lerp(LX0, LX1, i / (N - 1));
+      const x = lerp(L0, L1, i / (N - 1));
       const w = dark ? 40 : 32, h = dark ? 54 : 42;
       let inner = dayCard(c, dark, w, h);
       if (i === 0) inner = dayCard(c, false, 38, 50).replace(/<path d="[^"]*" fill="#e9b25f" opacity=".8"\/>/, '') + creation;
@@ -61,11 +66,11 @@ export default {
     /* "here!" — "there!"; masked prophets with their glitter */
     const fx = S.layer({ par: 0.4, sh: 5 });
     const posts = [
-      { x: 470, dir: -1, text: tr('Oto tu!', 'Look, here!') },
-      { x: 1130, dir: 1, text: tr('Oto tam!', 'Look, there!') },
+      { x: PH ? 610 : 470, dir: -1, text: tr('Oto tu!', 'Look, here!') },
+      { x: PH ? 980 : 1130, dir: 1, text: tr('Oto tam!', 'Look, there!') },
     ].map((p, i) => ({ ...p, i, el: fx.add(`<g>${pointer(c, p.text, { dir: p.dir, size: 20, col: C.ochre })}</g>`) }));
     const PROPH = [[C.plumRobe, C.sun, 520], [C.indigo, C.halo, 1080], [C.terracotta, C.sun, 620], [C.teal2, C.halo, 980]].map(([robe, gold, x], i) => ({
-      i, x, p: S.puppet(fx.add(addToHead(person(c, { robe, mantle: gold, hairStyle: 'wrap', veil: robe, veil2: gold, beard: 'none', skin: C.skin2, belt: gold }), `<g transform="translate(6 0)">${mask(c, { col: gold, r: 22, stick: false })}</g>`))),
+      i, x: PH ? 800 + (x - 800) * 0.84 : x, p: S.puppet(fx.add(addToHead(person(c, { robe, mantle: gold, hairStyle: 'wrap', veil: robe, veil2: gold, beard: 'none', skin: C.skin2, belt: gold }), `<g transform="translate(6 0)">${mask(c, { col: gold, r: 22, stick: false })}</g>`))),
       bursts: [0, 1, 2].map((k) => fx.add(`<g>${sparkle(c, 16, k % 2 ? C.halo : C.star)}</g>`)),
     }));
 
@@ -100,21 +105,21 @@ export default {
       const ropeOn = es(t, -0.3, 0.1);
       const cutK = es(t, 2.3, 2.4);
       const gone = es(t, 3.0, 3.3);
-      pose(rope, { x: 0, y: -(1 - ropeOn) * 400 - gone * 500, o: cutK > 0.5 ? 0 : 1 });
-      pose(ropeCut, { x: 0, y: -(1 - ropeOn) * 400 - gone * 500, o: cutK > 0.5 ? 1 : 0 });
+      pose(rope, { x: 0, y: -(1 - ropeOn) * 400 - gone * GONE, o: cutK > 0.5 ? 0 : 1 });
+      pose(ropeCut, { x: 0, y: -(1 - ropeOn) * 400 - gone * GONE, o: cutK > 0.5 ? 1 : 0 });
       CARDS.forEach((cd) => {
         const at = cd.i < 6 ? 0.05 + cd.i * 0.06 : cd.i < 10 ? 0.5 + (cd.i - 6) * 0.1 : 1.1 + (cd.i - 10) * 0.12;
         const k = es(t, at, at + 0.2, ease.back);
         const falls = cd.i >= CUT ? es(t, 2.4 + (cd.i - CUT) * 0.03, 2.9 + (cd.i - CUT) * 0.03, ease.in) : 0;
         const rattle = cd.dark ? Math.sin(T * 3 + cd.seed) * 4 * (1 - falls) : Math.sin(T * 1.2 + cd.seed) * 1.5;
-        pose(cd.el, { x: cd.x + falls * cd.fall * 60, y: lineY(cd.x) - 4 - (1 - k) * 60 + falls * 700 - gone * 500, r: rattle + falls * cd.fall * 200, s: k, o: k > 0.01 ? 1 - (cd.i >= CUT ? es(t, 2.75, 2.95) : 0) : 0 });
+        pose(cd.el, { x: cd.x + falls * cd.fall * 60, y: lineY(cd.x) - 4 - (1 - k) * 60 + falls * 700 - gone * GONE, r: rattle + falls * cd.fall * 200, s: k, o: k > 0.01 ? 1 - (cd.i >= CUT ? es(t, 2.75, 2.95) : 0) : 0 });
       });
       const dw = es(t, 2.55, 2.8, ease.back);
-      const dwx = lerp(LX0, LX1, CUT / (N - 1)) - 22;
-      pose(dawnCard, { x: dwx, y: lineY(dwx) - 4 - (1 - dw) * 60 - gone * 500, s: dw, r: Math.sin(T * 1.2) * 2, o: dw > 0.01 ? 1 : 0 });
+      const dwx = lerp(L0, L1, CUT / (N - 1)) - 22;
+      pose(dawnCard, { x: dwx, y: lineY(dwx) - 4 - (1 - dw) * 60 - gone * GONE, s: dw, r: Math.sin(T * 1.2) * 2, o: dw > 0.01 ? 1 : 0 });
       // the hand of light with the scissors (beat 2)
       const hk = es(t, 2.0, 2.3, ease.out) * (1 - es(t, 2.6, 2.9));
-      const cx = lerp(LX0, LX1, (CUT - 0.5) / (N - 1));
+      const cx = lerp(L0, L1, (CUT - 0.5) / (N - 1));
       pose(hand, { x: cx + 40, y: lineY(cx) - 80 - (1 - hk) * 400, o: hk > 0.01 ? 1 : 0 });
       pose(sc, { x: cx, y: lineY(cx) - (1 - hk) * 400, r: 90, o: hk > 0.01 ? 1 : 0 });
       const snip = 1 - bump(t, 2.22, 2.42);
@@ -147,9 +152,9 @@ export default {
       const un = es(t, 6.05, 6.55);
       const sIn = es(t, 5.95, 6.15);
       const sy = lerp(-300, SY, sIn);
-      pose(scrollPaper, { x: SX, y: sy, sx: Math.max(0.001, un), o: sIn > 0.01 ? 1 : 0 });
-      pose(rodL, { x: SX - (SW / 2) * un - 6, y: sy, o: sIn > 0.01 ? 1 : 0 });
-      pose(rodR, { x: SX + (SW / 2) * un + 6, y: sy, o: sIn > 0.01 ? 1 : 0 });
+      pose(scrollPaper, { x: SX, y: sy, s: SSc, sx: Math.max(0.001, un), o: sIn > 0.01 ? 1 : 0 });
+      pose(rodL, { x: SX - (SW / 2) * un * SSc - 6, y: sy, s: SSc, o: sIn > 0.01 ? 1 : 0 });
+      pose(rodR, { x: SX + (SW / 2) * un * SSc + 6, y: sy, s: SSc, o: sIn > 0.01 ? 1 : 0 });
 
       /* the lamp in the circle */
       pose(lampEl, { x: 734, y: 712, s: 1 });

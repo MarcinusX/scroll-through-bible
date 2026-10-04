@@ -17,7 +17,9 @@ export default {
   build(S) {
     const c = S.c;
     const TK = 0.22;
-    const set = olivesSet(S, { skyCols: SKIES.dusk, tintK: TK, sunXY: [1150, 250] });
+    const PH = S.portrait;   // phone: the sun clear of the thread, the Temple's label parked out of sight
+    const set = olivesSet(S, { skyCols: SKIES.dusk, tintK: TK, sunXY: [PH ? 1005 : 1150, 250] });
+    const UP = PH ? 800 : 300;
     const T = (m, k = TK * 0.5) => tint(m, C.duskViolet, k);
 
     // the Temple is named on a string over it
@@ -54,7 +56,7 @@ export default {
       const Tm = time;
       set.sk.blend(SKIES.dusk, SKIES.twilight, es(t, 0, 3.4) * 0.45);
       set.update(t, Tm, { sun: 250 + es(t, -0.5, 3.4) * 90, sunO: 1, glow: 0.7 + bump(t, 2.1, 3) * 0.3, starsO: es(t, 1, 3) * 0.3 });
-      pose(lab, { x: set.TEMPLE[0], y: set.TEMPLE[1] - 95 - (1 - es(t, -0.3, 0.3, ease.back)) * 300 + es(t, 0.9, 1.3) * -300, r: Math.sin(Tm * 0.8) * 1.5 });
+      pose(lab, { x: set.TEMPLE[0], y: set.TEMPLE[1] - 95 - (1 - es(t, -0.3, 0.3, ease.back)) * UP + es(t, 0.9, 1.3) * -UP, r: Math.sin(Tm * 0.8) * 1.5 });
 
       OTH.forEach((m) => m.p.set({ x: m.x, y: 610 + (m.i % 2) * 6, s: 0.52, flip: m.x > 800, head: 4, blink: blinkAt(Tm, m.seed) }));
 

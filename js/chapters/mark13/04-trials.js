@@ -84,6 +84,8 @@ export default {
   cam: { x: [-40, 40], y: [-40, 40], z: [1, 1.1] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;   // phone: the council, the thrones and the people closed up inside the screen
+    const CFX = PH ? -170 : 0, TX = PH ? [880, 1020] : [1040, 1200], DDX = PH ? 30 : 0;
     const sk = sky(S, [HALL, HALL, HALL2]);
     const back = S.layer({ par: 0.12, sh: 3 });
     back.add(hall(c));
@@ -93,12 +95,12 @@ export default {
     const flats = S.layer({ par: 0.3, sh: 6 });
     const council = flats.add(`<g>${councilFlat(c)}</g>`);
     const daisEl = flats.add(`<g>${dais(c)}</g>`);
-    const thr = [1040, 1200].map((x) => flats.add(`<g><g transform="scale(-1 1)">${throne(c)}</g></g>`));
+    const thr = TX.map((x) => flats.add(`<g><g transform="scale(-1 1)">${throne(c)}</g></g>`));
     const GOV = { robe: C.linen, mantle: C.terracotta, hair: C.hair2, hairStyle: 'short', beard: 'none', skin: C.skin2, belt: C.sun };
     const KING = { robe: C.plumRobe, mantle: C.sun, hair: C.hair3, hairStyle: 'curly', beard: 'full', skin: C.skin3, belt: C.sun };
     const rulers = [
-      { p: S.puppet(flats.add(addToHead(person(c, { ...GOV, pose: 'sit' }), `<g transform="translate(0 -4)">${wreath(c)}</g>`))), x: 1040 },
-      { p: S.puppet(flats.add(addToHead(person(c, { ...KING, pose: 'sit' }), `<g transform="translate(-1 2)">${crown(c)}</g>`))), x: 1200 },
+      { p: S.puppet(flats.add(addToHead(person(c, { ...GOV, pose: 'sit' }), `<g transform="translate(0 -4)">${wreath(c)}</g>`))), x: TX[0] },
+      { p: S.puppet(flats.add(addToHead(person(c, { ...KING, pose: 'sit' }), `<g transform="translate(-1 2)">${crown(c)}</g>`))), x: TX[1] },
     ];
 
     /* the synagogue, as a shadow play (restrained: one raised rod, then a cloth comes down) */
@@ -114,7 +116,9 @@ export default {
     const gL = S.layer({ par: 0.3, sh: 6 });
     const R = 108;
     const gGlow = gL.add(`<g><circle r="${R * 2.4}" fill="url(#halo-glow)"/></g>`);
-    const globeEl = gL.add(`<g><path d="M0 -1500V${-R}" stroke="rgba(240,220,190,.4)" stroke-width="1.2"/>${globe(c, R)}</g>`);
+    // the string is its own piece, so it hangs straight while the globe turns
+    const gString = gL.add(`<g><path d="M0 -1500V${-R}" stroke="rgba(240,220,190,.4)" stroke-width="1.2"/></g>`);
+    const globeEl = gL.add(`<g>${globe(c, R)}</g>`);
     const LANDS = [[-36, -34], [30, 10], [-40, 50], [44, -20], [10, 40], [-20, -10], [36, 40]];
     const lights = LANDS.map(([x, y], i) => ({ x, y, i, el: gL.add(`<g><circle r="16" fill="url(#warm-glow)"/><path d="${c.poly(c.star(0, 0, 6, 2.2, 4, 0))}" fill="${C.star}"/></g>`) }));
     const NATIONS = Array.from({ length: 11 }, (_, i) => {
@@ -151,10 +155,10 @@ export default {
       const T = time;
       /* flats in and out */
       const cIn = es(t, 1.0, 1.3, ease.out) * (1 - es(t, 2.0, 2.25));
-      pose(council, { x: 0, y: -(1 - cIn) * 700, o: cIn > 0.001 ? 1 : 0 });
+      pose(council, { x: CFX, y: -(1 - cIn) * 700, o: cIn > 0.001 ? 1 : 0 });
       const dIn = es(t, 2.15, 2.45, ease.out) * (1 - es(t, 3.0, 3.25)) + es(t, 5.0, 5.3, ease.out);
-      pose(daisEl, { x: 0, y: -(1 - dIn) * 700, o: dIn > 0.001 ? 1 : 0 });
-      thr.forEach((el, i) => pose(el, { x: [1040, 1200][i] + 20, y: 642 - (1 - dIn) * 700, o: dIn > 0.001 ? 1 : 0 }));
+      pose(daisEl, { x: TX[0] - 1040, y: -(1 - dIn) * 700, o: dIn > 0.001 ? 1 : 0 });
+      thr.forEach((el, i) => pose(el, { x: TX[i] + 20, y: 642 - (1 - dIn) * 700, o: dIn > 0.001 ? 1 : 0 }));
       const listen = es(t, 2.5, 2.9) * (1 - es(t, 3, 3.1)) + es(t, 6.3, 6.7);
       rulers.forEach((r, i) => r.p.set({ x: r.x + 12, y: 594 - (1 - dIn) * 700, s: 0.92, flip: true, o: dIn > 0.001 ? 1 : 0, lean: -listen * (i ? 7 : 4), head: listen * 6, armF: 20 + (i === 0 ? bump(t, 5.3, 5.9) * 50 : 0), blink: blinkAt(T, i + 3) }));
 
@@ -171,6 +175,7 @@ export default {
       /* the globe (beat 3) */
       const gIn = es(t, 3.05, 3.4, ease.back) * (1 - es(t, 4.0, 4.3));
       const gx = 800, gy = lerp(-400, 300, gIn), gOn = gIn > 0.001 ? 1 : 0;
+      pose(gString, { x: gx, y: gy, o: gOn });
       pose(globeEl, { x: gx, y: gy, r: -t * 8, o: gOn });
       const lit = es(t, 3.3, 3.85);
       pose(gGlow, { x: gx, y: gy, s: 0.4 + lit * 0.7, o: gOn * lit });
@@ -196,23 +201,23 @@ export default {
       /* the four: arrive, look about; led, bowed; stand before rulers; go out; step back while Peter is led */
       dis.forEach((d) => {
         const enter = seg(t, -0.4 + d.i * 0.08, 0.4 + d.i * 0.08);
-        let x = lerp(-200 - d.i * 70, d.x, ease.out(enter));
+        let x = lerp(-200 - d.i * 70, d.x + DDX, ease.out(enter));
         let walking = enter > 0 && enter < 1, flip = false, armF = 0, armB = 0, head = 0, o = 1;
         // look about warily (beat 0)
         const wary = es(t, 0.45, 0.6) * (1 - es(t, 1.0, 1.15));
         head = Math.sin(T * 1.6 + d.seed) * 8 * wary;
         if (wary > 0.5 && Math.sin(T * 0.8 + d.seed) > 0.4) flip = true;
         // led forward before the council (beat 1): Peter and John
-        if (d.k === 'peter' || d.k === 'john') { const f = es(t, 1.05, 1.5) * (1 - es(t, 3, 3.4)); x += f * 120; walking = walking || (t > 1.05 && t < 1.5); head += es(t, 1.7, 1.9) * 12 * (1 - es(t, 2.1, 2.3)); }
+        if (d.k === 'peter' || d.k === 'john') { const f = es(t, 1.05, 1.5) * (1 - es(t, 3, 3.4)); x += f * (PH ? 60 : 120); walking = walking || (t > 1.05 && t < 1.5); head += es(t, 1.7, 1.9) * 12 * (1 - es(t, 2.1, 2.3)); }
         // before governors and kings (beat 2): James and Andrew step up, lights in their hands
-        if (d.k === 'james' || d.k === 'andrew') { const f = es(t, 2.2, 2.6) * (1 - es(t, 3, 3.4)); x += f * (d.k === 'james' ? 170 : 300); walking = walking || (t > 2.2 && t < 2.6) || (t > 3 && t < 3.4); armF += f * 70; }
+        if (d.k === 'james' || d.k === 'andrew') { const f = es(t, 2.2, 2.6) * (1 - es(t, 3, 3.4)); x += f * (d.k === 'james' ? (PH ? 100 : 170) : (PH ? 250 : 300)); walking = walking || (t > 2.2 && t < 2.6) || (t > 3 && t < 3.4); armF += f * 70; }
         // to all nations (beat 3): they turn outwards, arms open towards the globe
         const out = es(t, 3.3, 3.6) * (1 - es(t, 4, 4.2));
         armB += out * 120; head -= out * 10;
         // beat 4–6: the others step back into the shadows; Peter is led to the ruler
         if (d.k === 'peter') {
           const led = es(t, 4.05, 4.6);
-          x = lerp(x, 800, led); walking = walking || (t > 4.05 && t < 4.6);
+          x = lerp(x, PH ? 740 : 800, led); walking = walking || (t > 4.05 && t < 4.6);
           const calm = es(t, 4.82, 5.0);
           head += es(t, 4.2, 4.4) * 10 * (1 - calm) - calm * 4;
           armF += es(t, 5.4, 5.7) * 55;             // receives the scroll
@@ -230,7 +235,7 @@ export default {
       guards.forEach((g) => {
         const inn = es(t, 0.5, 0.9) * (1 - es(t, 3.0, 3.3));
         const lead = es(t, 4.05, 4.6) * (1 - es(t, 6.8, 7));
-        const x = g.i === 0 ? lerp(lerp(lerp(1500, 1000, inn), 1290, es(t, 1.0, 1.4)), 700, lead) : lerp(lerp(-300, 380, inn), -300, es(t, 1.9, 2.4));
+        const x = g.i === 0 ? lerp(lerp(lerp(PH ? 1300 : 1500, PH ? 960 : 1000, inn), 1290, es(t, 1.0, 1.4)), PH ? 640 : 700, lead) : lerp(lerp(-300, 380, inn), -300, es(t, 1.9, 2.4));
         const walking = (t > 0.5 && t < 0.9) || (t > 4.05 && t < 4.6) || (g.i === 0 && t > 1 && t < 1.4) || (g.i === 1 && t > 1.9 && t < 2.4) || (t > 3 && t < 3.3);
         g.p.set({ x, y: GY + 4, s: 0.98, flip: g.i === 0 && lead < 0.5, walk: walking ? x * 0.05 : undefined, armF: 12, armB: g.i === 0 ? lead * 40 : 0, blink: blinkAt(T, g.seed) });
       });
@@ -261,7 +266,7 @@ export default {
       wordsL.forEach((w) => {
         const on = es(t, 6.3, 6.5);
         const k = T ? ((T * 0.35 + w.i / 6) % 1) : (w.i + 0.5) / 6;
-        const x = lerp(px + 30, 1040, k), y = lerp(py + 10, 520, k) - Math.sin(k * PI) * 60;
+        const x = lerp(px + 30, TX[0], k), y = lerp(py + 10, 520, k) - Math.sin(k * PI) * 60;
         pose(w.el, { x, y, r: -10 + k * 20, s: 0.8 + 0.3 * Math.sin(k * PI), o: on * Math.sin(k * PI) });
       });
 

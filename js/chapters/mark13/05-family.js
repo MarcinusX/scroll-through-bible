@@ -64,6 +64,8 @@ export default {
     groundL.add(sheet().p(c.ridge(gfn, -1400, 3000, 1800, 12, 1), mix(C.hillNear, C.night2, 0.45)).out() + sheet().p(c.cut([[-1400, 676], [3000, 668], [3000, 716], [-1400, 724]], 1.2, 14), mix(C.sand2, C.night2, 0.45)).out() + grass(c, { x0: -800, x1: 2400, y: 640, fn: gfn, n: 34, h: 12, color: mix(C.olive, C.night2, 0.4) }) + olive(c, 250, 650, 0.9, { trunk: mix(C.wood2, C.night2, 0.4), leaf: mix(C.olive, C.night2, 0.45), leaf2: mix(C.sage, C.night2, 0.45) }));
 
     /* the portrait and its torn pieces */
+    const PHONE = S.portrait;   // phone: a smaller portrait inside the screen, flown well out; the shadows closer in
+    const PSc = PHONE ? 0.98 : PS, DRc = PHONE ? 0.45 : 1, UPc = PHONE ? 1100 : 620;
     const pL = S.layer({ par: 0.3, sh: 6 });
     const frame = pL.add(`<g>${plate(c, PW, PH, { face: C.parchment })}</g>`);
     const { pieces, defs } = tornPieces(c, family(c), [-PW / 2 + 12, 12, PW / 2 - 12, PH - 12], [-50, 110], S.id('tear'));
@@ -78,7 +80,7 @@ export default {
     const P = S.layer({ par: 0.5, sh: 5 });
     const shadows = [
       { x: 420, flip: false }, { x: 500, flip: false }, { x: 1110, flip: true }, { x: 1190, flip: true }, { x: 560, flip: false }, { x: 1040, flip: true },
-    ].map((m, i) => ({ ...m, i, seed: c.rr(0, 9), p: S.puppet(P.add(shadowPerson(c, i % 2 ? woman(c) : crowdPerson(c), mix(INK, C.night2, 0.4)))) }));
+    ].map((m, i) => ({ ...m, x: PHONE ? 800 + (m.x - 800) * 0.66 : m.x, i, seed: c.rr(0, 9), p: S.puppet(P.add(shadowPerson(c, i % 2 ? woman(c) : crowdPerson(c), mix(INK, C.night2, 0.4)))) }));
     const lamp = handLamp(c, { glowR: 150 });
     const dis = S.puppet(P.add(person(c, { ...CAST.john, holdF: `<g transform="translate(-4 4)">${lamp}</g>` })));
     const flameEl = P.el.querySelector('.flame'), lampGlow = P.el.querySelector('.glow');
@@ -98,24 +100,24 @@ export default {
       dawnL.fade(dawn);
       clouds.forEach((cl) => {
         const up = es(t, 3.4, 3.95);
-        pose(cl.el, { x: cl.x + Math.sin(T * 0.3 + cl.i) * 20 + es(t, 2.8, 3.4) * (cl.i - 1) * 40, y: cl.y - up * 500, r: Math.sin(T * 0.8 + cl.i) * 1.5 });
+        pose(cl.el, { x: cl.x + Math.sin(T * 0.3 + cl.i) * 20 + es(t, 2.8, 3.4) * (cl.i - 1) * 40, y: cl.y - up * (PHONE ? 900 : 500), r: Math.sin(T * 0.8 + cl.i) * 1.5 });
       });
 
       /* the portrait: hangs whole, then tears (beat 0), tears again (beat 1), flies out (beat 2) */
       const pin = es(t, -0.4, 0.1, ease.back);
       const out = es(t, 2.0, 2.35);
-      const py = lerp(-500, PY, pin) - out * 620;
+      const py = lerp(-500, PY, pin) - out * UPc;
       const t1 = es(t, 0.3, 0.6), t2 = es(t, 1.3, 1.6);
       fade(whole, t1 > 0 ? 0 : 1);
-      pose(whole, { x: PX, y: py, s: PS });
-      pose(frame, { x: PX, y: py, s: PS, o: 1 - es(t, 0.3, 0.45) });
+      pose(whole, { x: PX, y: py, s: PSc });
+      pose(frame, { x: PX, y: py, s: PSc, o: 1 - es(t, 0.3, 0.45) });
       P3.forEach((p) => {
         // piece 0 (father, brother) goes left; piece 1 (brother, child) right; piece 2 (mother) further right in beat 1
         const dx = p.k === 0 ? -t1 * 80 - t2 * 24 : p.k === 1 ? t1 * 40 - t2 * 34 : t1 * 40 + t2 * 80;
         const r = p.k === 0 ? -t1 * 6 - t2 * 3 : p.k === 1 ? -t2 * 5 : t2 * 9;
         const dy = p.k === 1 ? t2 * 16 : p.k === 2 ? -t2 * 10 : t1 * 6;
         const wob = p.k === 0 ? t1 : t2;
-        pose(p.el, { x: PX + (p.cx + dx) * PS, y: py + (p.cy + dy) * PS + Math.sin(T * 0.8 + p.k) * 2 * wob, s: PS, r: r + Math.sin(T * 0.7 + p.k * 2) * 0.8 * wob, ox: p.cx, oy: p.cy, o: t1 > 0 ? 1 : 0 });
+        pose(p.el, { x: PX + (p.cx + dx * DRc) * PSc, y: py + (p.cy + dy) * PSc + Math.sin(T * 0.8 + p.k) * 2 * wob, s: PSc, r: r + Math.sin(T * 0.7 + p.k * 2) * 0.8 * wob, ox: p.cx, oy: p.cy, o: t1 > 0 ? 1 : 0 });
         attr(p.dim, 'opacity', (t1 * 0.2 + t2 * 0.3));
       });
 

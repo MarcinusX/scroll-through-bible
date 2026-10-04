@@ -9,7 +9,7 @@ import { seg, es, ease, bump, fade } from '../../core/anim.js';
 import { tr } from '../../core/i18n.js';
 import { jerusalem, skyStar, glory, angel, soulLight, PI } from './lib.js';
 
-const SUN = [610, 175], MOON = [1110, 150];
+const SUN = [610, 175], MOON0 = [1110, 150];
 
 export default {
   id: 'm13-heavens',
@@ -25,6 +25,9 @@ export default {
   cam: { x: [-30, 30], y: [-60, 40], z: [0.96, 1.1] },
   build(S) {
     const c = S.c;
+    // phone: the moon clear of the thread; the angels fly out only as far as the screen's edges
+    const PH = S.portrait;
+    const MOON = PH ? [1000, 140] : MOON0;
     const TWI = ['#3d4775', '#6d6f96', '#b49aa4'];
     const DARK = ['#15182e', '#1f2340', '#2c2c46'];
     const GLORY = ['#6b5a86', '#e3b98a', '#f8e4b8'];
@@ -64,6 +67,7 @@ export default {
     G.add(sheet().p(c.ridge(gfn, -1400, 3000, 1800, 12, 1), mix(C.hillNear, C.night2, 0.4)).out() + grass(c, { x0: -800, x1: 2400, y: 676, fn: gfn, n: 34, h: 12, color: mix(C.olive, C.night2, 0.4) }) + olive(c, 230, 690, 0.9, { trunk: mix(C.wood2, C.night2, 0.4), leaf: mix(C.olive, C.night2, 0.4), leaf2: mix(C.sage, C.night2, 0.4) }));
     const P = S.layer({ par: 0.42, sh: 4 });
     const people = crowd(S, P, [{ y: 700, s: 0.5, n: 9, x0: 380, x1: 700 }, { y: 700, s: 0.5, n: 8, x0: 900, x1: 1240 }, { y: 724, s: 0.58, n: 5, x0: 300, x1: 560 }, { y: 724, s: 0.58, n: 5, x0: 1050, x1: 1330 }]);
+    if (PH) people.forEach((m) => { m.x = 800 + (m.x - 800) * 0.55; });   // phone: the watchers closed up, none at the frame or under the thread
 
     /* the Son of Man on the clouds, the angels, the gathered */
     const heaven = S.layer({ par: 0.16, sh: 6 });
@@ -71,7 +75,7 @@ export default {
     const J = S.puppet(heaven.add(person(c, { ...CAST.jesus, robe: C.linen, mantle: mix(C.jesusMantle, C.halo, 0.35) })));
     const cloudFront = heaven.add(`<g>${cloud(c, 360, '#fffaf0', '#f1e6cc')}</g>`);
     const cloudSide = [-1, 1].map((d) => heaven.add(`<g>${cloud(c, 240, '#f8f0de', '#ebdcbc')}</g>`));
-    const CORNERS = [[300, 380], [1290, 190], [430, 640], [1170, 640]];
+    const CORNERS = PH ? [[565, 350], [1030, 210], [585, 600], [1010, 600]] : [[300, 380], [1290, 190], [430, 640], [1170, 640]];
     const angels = CORNERS.map(([x, y], i) => ({ i, x, y, p: S.puppet(heaven.add(angel(c))) }));
     const elect = [];
     CORNERS.forEach(([x, y], ci) => { for (let k = 0; k < 5; k++) elect.push({ ci, k, x: x + c.rr(-60, 60), y: y + c.rr(-30, 40), el: heaven.add(`<g>${soulLight(c, 8)}</g>`), a: (ci * 5 + k) / 20 * PI * 2 }); });

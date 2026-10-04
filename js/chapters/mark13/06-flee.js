@@ -76,9 +76,11 @@ export default {
     { v: 17 },
     { v: 18 },
   ],
-  cam: { x: [-120, 120], y: [-40, 40], z: [1, 1.12] },
+  cam: { x: [-160, 160], y: [-40, 40], z: [1, 1.12] },
   build(S) {
     const c = S.c;
+    const PH = S.portrait;   // phone: the scroll inside the screen; the camera goes further to the roof and the field
+    const PAN = PH ? 155 : 110;
     const SKY = ['#b7b3a8', '#dccdb0', '#eadcc0'];
     const WINTER = ['#9fa7b3', '#c9ccd0', '#e3e3e0'];
     const sk = sky(S, SKY);
@@ -153,7 +155,7 @@ export default {
       const dk = es(t, 0.05, 0.5, ease.out);
       pose(dark, { x: TX, y: TY + 34, sy: Math.max(0.001, dk), s: 0.62 + Math.sin(T * 0.9) * 0.01 * dk, o: dk > 0.01 ? 1 : 0 });
       const rd = es(t, 0.5, 0.8, ease.back) * (1 - es(t, 1.05, 1.3));
-      pose(scroll, { x: 1010, y: lerp(-300, 230, rd), r: Math.sin(T * 1.2) * 4, o: rd > 0.01 ? 1 : 0 });
+      pose(scroll, { x: PH ? 930 : 1010, y: lerp(-300, 230, rd), r: Math.sin(T * 1.2) * 4, o: rd > 0.01 ? 1 : 0 });
 
       /* people stream out and up the mountains (beat 1, and they keep going) */
       runners.forEach((r) => {
@@ -164,16 +166,18 @@ export default {
 
       /* v15: on the roof — a step toward the stair, a look down at the door, then away over the hill */
       const toStair = es(t, 2.05, 2.3), away = seg(t, 2.45, 2.95);
-      const rx = away > 0 ? lerp(lerp(430, 548, toStair), 120, ease.in(away)) : lerp(430, 548, toStair);
+      const rx = away > 0 ? lerp(lerp(430, 548, toStair), PH ? 260 : 120, ease.in(away)) : lerp(430, 548, toStair);
       const ry = 520 - away * 60;
       roofMan.p.set({ x: rx, y: ry, s: 0.82, flip: away > 0, walk: (toStair > 0 && toStair < 1) || (away > 0 && away < 1) ? rx * 0.06 : undefined, amt: away > 0 ? 1.4 : 1, head: bump(t, 2.28, 2.5) * 16, armF: away > 0 ? 40 : 10, lean: away > 0 ? -6 : 0, o: away < 0.98 ? 1 : 0, blink: blinkAt(T, roofMan.seed) });
 
       /* v16: in the field — the hoe drops, he runs for the mountains; the cloak stays on its post */
       const drop = es(t, 3.05, 3.2), run = seg(t, 3.25, 4.05);
-      const fx = lerp(1120, 1540, ease.in(run));
-      hoeHeld.set({ x: 1120, y: 700, s: 0.9, flip: true, o: 1 - drop, armF: 40 + Math.sin(T * 2) * 6 * (1 - drop), blink: blinkAt(T, farmer.seed) });
+      const FX0 = PH ? 1075 : 1120;   // phone: he stands a little nearer his cloak, clear of the thread
+      const fx = lerp(FX0, PH ? 1270 : 1540, ease.in(run));
+      hoeHeld.set({ x: FX0, y: 700, s: 0.9, flip: true, o: (PH && t < 2.85 ? 0 : 1) * (1 - drop),   // phone: not standing under the thread before the camera comes to his field
+        armF: 40 + Math.sin(T * 2) * 6 * (1 - drop), blink: blinkAt(T, farmer.seed) });
       farmer.p.set({ x: fx, y: 700 - run * 40, s: 0.9, flip: false, o: drop > 0 && run < 0.97 ? 1 : 0, walk: run > 0 ? fx * 0.06 : undefined, amt: 1.4, lean: -6, armF: 30, armB: 20, blink: blinkAt(T, farmer.seed) });
-      pose(hoeDown, { x: 1100, y: lerp(640, 700, drop), r: lerp(-10, -80, drop), o: drop > 0 ? 1 : 0 });
+      pose(hoeDown, { x: FX0 - 20, y: lerp(640, 700, drop), r: lerp(-10, -80, drop), o: drop > 0 ? 1 : 0 });
       const wind = 1 + cold * 1.5;
       pose(cloakEl, { x: 1016, y: 600, r: Math.sin(T * 1.8) * 5 * wind + 4, sx: 1 + Math.sin(T * 2.3) * 0.04 });
 
@@ -198,7 +202,7 @@ export default {
       snow.shift(Math.sin(T * 0.4) * 30, ((T * 60) % 600) - 300);
 
       /* the camera: the city, the roof, the field, the path */
-      S.cam.x = -es(t, 1.9, 2.2) * 110 * (1 - es(t, 2.9, 3.1)) + es(t, 2.95, 3.2) * 110 * (1 - es(t, 3.9, 4.15));
+      S.cam.x = -es(t, 1.9, 2.2) * PAN * (1 - es(t, 2.9, 3.1)) + es(t, 2.95, 3.2) * PAN * (1 - es(t, 3.9, 4.15));
       S.cam.z = 1 + es(t, -0.2, 0.4) * 0.08 * (1 - es(t, 0.9, 1.3)) + es(t, 1.9, 2.2) * 0.05 * (1 - es(t, 3.9, 4.15));
       S.cam.y = -es(t, -0.2, 0.4) * 30 * (1 - es(t, 0.9, 1.3)) + es(t, 1.9, 2.2) * 20 * (1 - es(t, 3.9, 4.15));
     };

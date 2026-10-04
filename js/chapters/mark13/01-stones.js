@@ -128,7 +128,8 @@ export default {
 
     /* pilgrims going up to the Temple, on the right */
     const people = S.layer({ par: 0.5, sh: 5 });
-    const pil = [{ x: 1030, s: 0.86 }, { x: 1108, s: 0.92 }, { x: 1184, s: 0.84 }].map((m, i) => ({ ...m, i, seed: c.rr(0, 9), p: S.puppet(people.add(person(c, crowdPerson(c)))) }));
+    const PH0 = S.portrait;   // phone: pilgrims clear of the thread, the disciples closed up inside the screen
+    const pil = [{ x: PH0 ? 955 : 1030, s: 0.86 }, { x: PH0 ? 1007 : 1108, s: 0.92 }, { x: PH0 ? 1058 : 1184, s: 0.84 }].map((m, i) => ({ ...m, i, seed: c.rr(0, 9), p: S.puppet(people.add(person(c, crowdPerson(c)))) }));
 
     /* Jesus and the disciples coming out of the gate */
     const GX = (GATE[0] + GATE[1]) / 2;
@@ -140,7 +141,7 @@ export default {
       { o: CAST.james, x: 506, s: 0.94 },
       { o: CAST.thomas, x: 440, s: 0.92 },
       { o: CAST.matthew, x: 378, s: 0.9 },
-    ].map((m, i) => ({ ...m, i, seed: c.rr(0, 9), t0: 1.0 + i * 0.09, y: GY + (i % 2) * 6 }));
+    ].map((m, i) => ({ ...m, x: PH0 ? 836 - (836 - m.x) * 0.74 : m.x, i, seed: c.rr(0, 9), t0: 1.0 + i * 0.09, y: GY + (i % 2) * 6 }));
     // the last ones in, first drawn (so the ones ahead overlap them)
     [...GROUP].reverse().forEach((m) => { m.p = S.puppet(people.add(person(c, m.o))); });
     const J = GROUP[0], JOHN = GROUP[1];
