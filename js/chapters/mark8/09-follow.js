@@ -62,7 +62,7 @@ export default {
       { o: CAST.peter, x: 700, from: 300, bund: false }, { o: man(c), x: 640, from: 200, bund: true }, { o: crowdPerson(c), x: 580, from: 150, bund: false },
       { o: CAST.john, x: 905, from: 1400, bund: false }, { o: man(c), x: 970, from: 1450, bund: true }, { o: crowdPerson(c), x: 1035, from: 1500, bund: true },
       { o: CAST.andrew, x: 520, from: 100, bund: false },
-    ].map((f, i) => ({ ...f, i, seed: c.rr(0, 9), u0: 0.06 + (i % 3) * 0.08 }));
+    ].map((f, i) => ({ ...f, x: S.portrait ? (f.x < 800 ? 700 - (700 - f.x) * 0.85 : 800 + (f.x - 800) * 0.85) : f.x, i, seed: c.rr(0, 9), u0: 0.06 + (i % 3) * 0.08 }));   // phone: both groups a little closer in, clear of the edge and the thread
     F.forEach((f) => {
       f.p = S.puppet(P.add(person(c, { ...f.o, holdB: '' })));
       if (f.bund) f.b = P.add(`<g>${bundle(c)}</g>`);
@@ -127,7 +127,7 @@ export default {
       });
 
       /* v35 — save it and lose it / lose it and save it */
-      const KX = S.portrait ? 540 : 470, GX = S.portrait ? 1080 : 1130, VY = GY + 60;
+      const KX = S.portrait ? 625 : 470, GX = S.portrait ? 1080 : 1130, VY = GY + 60;
       const vIn = es(t, 2.95, 3.15);
       keeper.set({ x: KX - (1 - vIn) * 300, y: VY, s: 0.95, flip: false, walk: vIn < 1 && vIn > 0 ? KX * 0.05 + vIn * 10 : undefined, armF: 30 + bump(t, 3.2, 3.6) * 40, armB: 20 + bump(t, 3.2, 3.6) * 30, head: 16, lean: bump(t, 3.2, 3.6) * 10, blink: blinkAt(T, 4) });
       pose(chestBase, { x: KX + 80, y: VY, o: vIn });
@@ -146,7 +146,7 @@ export default {
         pose(sp.el, { x: GX - 50 + Math.cos(a) * 70, y: VY - 160 + Math.sin(a) * 40, s: back * (0.7 + Math.sin(T * 4 + sp.i) * 0.3), o: back > 0.05 ? 1 : 0 });
       });
 
-      S.cam.x = es(t, 2.2, 2.95) * 110 - es(t, 2.95, 3.3) * 60;
+      S.cam.x = es(t, 2.2, 2.95) * 110 - es(t, 2.95, 3.3) * (S.portrait ? 0 : 60);   // phone: stay with Him up the hill
       S.cam.z = 1.06 + es(t, 0.9, 1.3) * 0.06 - es(t, 2.9, 3.3) * 0.08;
       S.cam.y = 20 + es(t, 0.9, 1.3) * 30 - es(t, 2.2, 2.9) * 40 + es(t, 2.9, 3.3) * 50;
     };

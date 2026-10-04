@@ -29,7 +29,8 @@ export default {
     const SKY = ['#cfe2df', '#eee8d2', '#f6ead3'];
     const sk = sky(S, SKY);
     const hangL = S.layer({ par: 0.05, sh: 5 });
-    const sunEl = hanging(hangL, sun(c, 48), { x: 1180, y: 160, len: 800 });
+    const SUNX = S.portrait ? 1010 : 1180;   // phone: the sun clear of the thread
+    const sunEl = hanging(hangL, sun(c, 48), { x: SUNX, y: 160, len: 800 });
     const cl1 = hanging(hangL, cloud(c, 200), { x: 450, y: 150, len: 700 });
     const cl2 = hanging(hangL, cloud(c, 150), { x: 1150, y: 250, len: 700 });
     const birds = flock(S, hangL, 4, (cc) => bird(cc, { color: C.bird }), { y: 240, speed: 45, scale: 0.5 });
@@ -96,7 +97,7 @@ export default {
     return (t, time) => {
       const T = time;
       sk.blend(SKY, ['#c3e0e2', '#f3ecd4', '#f8efd8'], es(t, 5.9, 6.3));
-      swing(sunEl, 1180, 160, T, 1.1, 0.7);
+      swing(sunEl, SUNX, 160, T, 1.1, 0.7);
       swing(cl1, 450 + Math.sin(T * 0.1) * 26, 150, T, 1.4, 0.6, 1);
       swing(cl2, 1150 + Math.sin(T * 0.13 + 2) * 26, 250, T, 1.4, 0.8, 2);
       birds(T, 1);
@@ -107,7 +108,7 @@ export default {
       const jw = moving(t, jKeys, 1);
       // disciples follow him in and stay by the gate
       dis.forEach((d) => {
-        const keys = [[0.08 + d.i * 0.06, 1260 + d.i * 70], [0.8 + d.i * 0.06, 780 + d.i * 60], [2.3, 780 + d.i * 60], [3.0, 610 + d.i * 55]];
+        const keys = [[0.08 + d.i * (S.portrait ? 0.04 : 0.06), 1260 + d.i * 70], [(S.portrait ? 0.56 : 0.8) + d.i * (S.portrait ? 0.04 : 0.06), 780 + d.i * 60], [2.3, 780 + d.i * 60], [3.0, S.portrait ? 680 + d.i * 50 : 610 + d.i * 55]]   // phone: they wait in view;
         const x = kf(t, keys, (u) => u);
         const w = moving(t, keys, 1);
         const lookAt = t > 2.9 ? x < HEAL : true;

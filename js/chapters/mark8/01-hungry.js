@@ -25,9 +25,11 @@ export default {
     { v: 3, cont: true, text: 'bo niektórzy z nich przyszli z daleka».' },
     { v: 4 },
   ],
-  cam: { x: [-80, 60], y: [-90, 90], z: [0.94, 1.2] },
+  cam: { x: [-130, 60], y: [-90, 90], z: [0.94, 1.2] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;
+    const SUNX = P ? 1010 : 1180;   // phone: the resting sun clear of the thread
     const DAY = ['#d6e2d8', '#f1e7cc', '#f5e2c1'];
     const sk = sky(S, DAY);
     const nightL = sky(S, ['#1d2349', '#2f3768', '#6a5f84'], { name: 'night' }).layer;
@@ -36,11 +38,11 @@ export default {
 
     /* ---------- the fly system: sun, moon, clouds, three day-tags ---------- */
     const hangL = S.layer({ par: 0.05, sh: 5 });
-    const sunEl = hanging(hangL, sun(c, 50), { x: 1180, y: 170, len: 800 });
+    const sunEl = hanging(hangL, sun(c, 50), { x: SUNX, y: 170, len: 800 });
     const moonEl = hanging(hangL, `<circle r="110" fill="url(#halo-glow)" opacity=".5"/>${moon(c, 36)}`, { x: 300, y: -300, len: 900 });
     const cl1 = hanging(hangL, cloud(c, 190), { x: 480, y: 160, len: 700 });
     const cl2 = hanging(hangL, cloud(c, 130), { x: 1000, y: 230, len: 700 });
-    const days = [0, 1, 2].map((i) => hanging(hangL, `${sun(c, 16)}<g transform="translate(0 24)">${tag(c, tr(`dzień ${i + 1}`, `day ${i + 1}`), { size: 15, w: 70 })}</g>`, { x: 690 + i * 110, y: 150, len: 700 }));
+    const days = [0, 1, 2].map((i) => hanging(hangL, `${sun(c, 16)}<g transform="translate(0 24)">${tag(c, tr(`dzień ${i + 1}`, `day ${i + 1}`), { size: 15, w: 70 })}</g>`, { x: (P ? 600 : 690) + i * 110, y: 150, len: 700 }));
 
     /* ---------- the deserted place ---------- */
     const land = desert(S, { farY: 410, midY: 468 });
@@ -58,7 +60,10 @@ export default {
     groundL.add(shrub(c, 250, GY - 14, 46) + shrub(c, 1420, GY - 16, 40) + shrub(c, 1180, GY - 20, 30) + rock(c, 470, GY - 12, 60, 24, C.rock2) + rock(c, 1300, GY - 18, 44, 18));
     groundL.add(grass(c, { x0: -600, x1: 2200, y: GY - 22, fn: gfn, n: 26, h: 10, color: C.olive }));
     // the long dotted trail from the far town down to the travellers
-    const trailPts = [...c.qbez([TX, TY + 6], [760, 420], [560, 436], 10), ...c.qbez([540, 437], [330, 440], [380, 452], 8).slice(1), ...c.qbez([380, 452], [430, 470], [455, 590], 12).slice(1)];
+    // phone: the trail stays inside the screen and ends at the travellers
+    const trailPts = P
+      ? [...c.qbez([TX, TY + 6], [760, 420], [560, 436], 10), ...c.qbez([540, 437], [420, 440], [455, 452], 8).slice(1), ...c.qbez([455, 452], [490, 470], [485, 590], 12).slice(1)]
+      : [...c.qbez([TX, TY + 6], [760, 420], [560, 436], 10), ...c.qbez([540, 437], [330, 440], [380, 452], 8).slice(1), ...c.qbez([380, 452], [430, 470], [455, 590], 12).slice(1)];
 
     /* ---------- the great crowd ---------- */
     const crowdL = S.layer({ par: 0.34, sh: 3 });
@@ -90,8 +95,8 @@ export default {
 
     /* ---------- Jesus and the disciples ---------- */
     const frontL = S.layer({ par: 0.55, sh: 5 });
-    const travs = [[430, 0.66], [482, 0.7]].map(([x, s], i) => ({ p: S.puppet(frontL.add(person(c, traveller(c)))), x, s, i, y: FY - 30 + i * 12, seed: c.rr(0, 9) }));
-    const dis = DIS.map((d, i) => ({ ...d, i, p: S.puppet(frontL.add(person(c, d.o))), seed: c.rr(0, 9) }));
+    const travs = (P ? [[455, 0.66], [505, 0.7]] : [[430, 0.66], [482, 0.7]]).map(([x, s], i) => ({ p: S.puppet(frontL.add(person(c, traveller(c)))), x, s, i, y: FY - 30 + i * 12, seed: c.rr(0, 9) }));
+    const dis = DIS.map((d, i) => ({ ...d, x: P ? 800 + (d.x - 800) * 0.82 : d.x, i, p: S.puppet(frontL.add(person(c, d.o))), seed: c.rr(0, 9) }));
     const jesus = S.puppet(frontL.add(person(c, { ...CAST.jesus })));
     const heartEl = frontL.add(`<g>${heart(c, 13)}</g>`);
     const bubL = S.layer({ par: 0.55, sh: 4 });
@@ -119,7 +124,7 @@ export default {
       nightL.fade(night);
       starL.fade(night);
       sk.blend(DAY, ['#dcd9cf', '#f3dcbc', '#f4d8b4'], es(t, 4, 6));
-      const sx = cycling ? lerp(260, 1340, ph) : 1180, sy = cycling ? 380 - Math.sin(ph * PI) * 260 : 170;
+      const sx = cycling ? lerp(260, P ? 1120 : 1340, ph) : SUNX, sy = cycling ? 380 - Math.sin(ph * PI) * 260 : 170;
       swing(sunEl, sx, cycling ? sy : 170, T, 1.1, 0.7);
       const mph = (ph + 0.5) % 1;
       swing(moonEl, lerp(260, 1340, mph), cycling ? 380 - Math.sin(mph * PI) * 240 : -400, T, 0.8, 0.5, 1);
@@ -127,7 +132,7 @@ export default {
       swing(cl2, 1000 + Math.sin(T * 0.13 + 2) * 26, 230 - bump(t, 3, 3.9) * 400, T, 1.4, 0.8, 2);
       days.forEach((d, i) => {
         const on = es(t, 3.05 + i * 0.26, 3.3 + i * 0.26, ease.back) * (1 - es(t, 4.1, 4.5));
-        swing(d, 690 + i * 110, 150 - (1 - on) * 420, T, 1.5, 0.9, i);
+        swing(d, (P ? 600 : 690) + i * 110, 150 - (1 - on) * (P ? 760 : 420), T, 1.5, 0.9, i);   // phone: parked out of sight
       });
 
       /* the crowd: quiet, weary; some hold up empty bowls (v1) */
@@ -147,7 +152,7 @@ export default {
 
       /* the vision of the road home (v3a) */
       const vOn = es(t, 4.0, 4.35) * (1 - es(t, 5.0, 5.35));
-      swing(vis, S.portrait ? 870 : 1050, (S.portrait ? 230 : 190) - (1 - vOn) * 700, T, 0.8, 0.7, 3);
+      swing(vis, S.portrait ? 870 : 1050, (S.portrait ? 230 : 190) - (1 - vOn) * (S.portrait ? 1000 : 700), T, 0.8, 0.7, 3);
       walkers.forEach((w) => {
         const x = -130 + w.i * 60 + seg(t, 4.2, 4.95) * 140;
         const faint = w.i === 1 ? es(t, 4.6, 4.66) : 0;
@@ -195,7 +200,7 @@ export default {
       /* camera */
       S.cam.z = 1 + es(t, 0.6, 1.8) * 0.16 - es(t, 2.9, 3.1) * 0.16 + es(t, 3.85, 4.2) * 0.04 + es(t, 6, 6.6) * 0.04;
       S.cam.y = es(t, 0.6, 1.8) * 70 - es(t, 2.9, 3.1) * 130 + es(t, 3.85, 4.2) * 110;
-      S.cam.x = es(t, 4.8, 5.3) * -60 * (1 - es(t, 5.9, 6.3));
+      S.cam.x = es(t, 4.8, 5.3) * (P ? -125 : -60) * (1 - es(t, 5.9, 6.3));   // phone: further, to see who came from far
     };
   },
 };

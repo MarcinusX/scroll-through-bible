@@ -56,7 +56,7 @@ export default {
 
     /* ---------- people ---------- */
     const P = S.layer({ par: 0.5, sh: 5 });
-    const scoffers = [0, 1, 2, 3, 4].map((i) => ({ i, p: S.puppet(P.add(person(c, { ...crowdPerson(c), robe: [C.stone2, C.storm, C.plumRobe, C.rock2, C.wood3][i], mantle: null }))), x: 1010 + i * 52, y: GY - 16 + (i % 2) * 12, seed: c.rr(0, 9) }));
+    const scoffers = [0, 1, 2, 3, 4].map((i) => ({ i, p: S.puppet(P.add(person(c, { ...crowdPerson(c), robe: [C.stone2, C.storm, C.plumRobe, C.rock2, C.wood3][i], mantle: null }))), x: S.portrait ? 880 + i * 40 : 1010 + i * 52, y: GY - 16 + (i % 2) * 12, seed: c.rr(0, 9) }));
     const holder = { ...man(c), robe: C.tealRobe, mantle: C.ochreRobe, belt: C.leather };
     const manA = S.puppet(P.add(person(c, { ...holder, holdB: `<g transform="rotate(80)">${scrollRolled(c, 40)}</g>` })));
     const jCloud = P.add(`<g>${cloud(c, 260, C.cream, C.halo)}</g>`);
@@ -66,7 +66,8 @@ export default {
 
     /* ---------- the holy angels ---------- */
     const angL = S.layer({ par: 0.2, sh: 6 });
-    const angels = [[430, 250, false], [590, 170, false], [1010, 170, true], [1170, 250, true]].map(([x, y, flip], i) => {
+    // phone: all four angels inside the screen
+    const angels = (S.portrait ? [[570, 320, false], [650, 150, false], [950, 150, true], [1025, 320, true]] : [[430, 250, false], [590, 170, false], [1010, 170, true], [1170, 250, true]]).map(([x, y, flip], i) => {
       const el = hanging(angL, `<g data-k="ang${i}">${angel(c)}</g>`, { x, y, len: 1100 });
       return { i, x, y, flip, el, p: S.puppet(S.$('ang' + i).firstElementChild), wings: S.$('ang' + i).querySelector('.wings') };
     });
@@ -113,7 +114,7 @@ export default {
       });
       jeers.forEach((j, i) => {
         const k = es(t, 2.25 + i * 0.08, 2.4 + i * 0.08, ease.back) * (1 - es(t, 2.95, 3.05));
-        pose(j, { x: 1040 + i * 60, y: GY - 210, s: k, o: k > 0.02 ? 1 : 0, r: Math.sin(T * 3 + i) * 5 });
+        pose(j, { x: S.portrait ? 900 + i * 48 : 1040 + i * 60, y: GY - 210, s: k, o: k > 0.02 ? 1 : 0, r: Math.sin(T * 3 + i) * 5 });
       });
 
       /* Jesus: teaching; then coming in glory, raised on a cloud */
@@ -126,7 +127,7 @@ export default {
 
       angels.forEach((an) => {
         const d = es(t, 3.15 + an.i * 0.08, 3.6 + an.i * 0.08, ease.back);
-        swing(an.el, an.x, an.y - (1 - d) * 700, T, 1.4, 0.7, an.i);
+        swing(an.el, an.x, an.y - (1 - d) * (S.portrait ? 1100 : 700), T, 1.4, 0.7, an.i);
         an.p.set({ x: 0, y: 150, s: 0.72, flip: an.flip, armF: 60 + Math.sin(T * 1.5 + an.i) * 10, armB: 140, head: -8, blink: blinkAt(T, an.i) });
         pose(an.wings, { x: 0, y: -128, sy: 1 + Math.sin(T * 3 + an.i) * 0.08, oy: -128 });
       });

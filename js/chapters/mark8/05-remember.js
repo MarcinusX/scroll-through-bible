@@ -8,7 +8,7 @@ import { seg, es, ease, bump, fade } from '../../core/anim.js';
 import { tr } from '../../core/i18n.js';
 import { loaf, speech, GLYPH, spark, basket, crewBoat, memoryCard, say, tag, hand, headAt, FONT, PI } from './lib.js';
 
-const BXc = 800, BYc = 745, BS = 1.5;
+const BXc = 800, BYc = 745, BS0 = 1.5;
 
 export default {
   id: 'm8-remember',
@@ -26,6 +26,7 @@ export default {
   cam: { x: [-20, 20], y: [-60, 90], z: [1, 1.22] },
   build(S) {
     const c = S.c;
+    const BS = S.portrait ? 1.4 : BS0;   // phone: the boat a touch smaller, its bow clear of the thread
     const SKY = ['#b9a3c4', '#eab596', '#f5d4ac'];
     const sk = sky(S, SKY);
     const hangL = S.layer({ par: 0.04, sh: 5 });
@@ -42,8 +43,9 @@ export default {
     })();
     const lid = sheet().p(c.cut([...c.arc(0, 18, 41, 35, PI * 1.12, PI * 1.88, 12), [36, 1], [-36, 1]], 0.4, 4), C.skin2).x(c.ribbon(c.arc(0, 0, 36, 5, 0, PI, 10), 2), C.inkSoft).out();
     const earM = sheet().p(c.cut(c.circ(0, 0, 58, 30), 0.5, 5), C.ochre).p(c.cut(c.circ(0, 0, 52, 30), 0.5, 5), C.cream).out() + `<g transform="scale(.95)">${ear(c, C.skin2)}</g>`;
-    const eyeEl = hanging(hangL, `${eyeM}<g class="lid">${lid}</g>`, { x: 560, y: 230, len: 900 });
-    const earEl = hanging(hangL, `${earM}<g class="plug"><path d="${c.cut(c.blob(4, -2, 10, 12, 9, 0.2), 0.4, 3)}" fill="${C.wood3}"/></g>`, { x: 1040, y: 230, len: 900 });
+    const EX = S.portrait ? [610, 990] : [560, 1040];   // phone: the eye and the ear clear of the edge and the thread
+    const eyeEl = hanging(hangL, `${eyeM}<g class="lid">${lid}</g>`, { x: EX[0], y: 230, len: 900 });
+    const earEl = hanging(hangL, `${earM}<g class="plug"><path d="${c.cut(c.blob(4, -2, 10, 12, 9, 0.2), 0.4, 3)}" fill="${C.wood3}"/></g>`, { x: EX[1], y: 230, len: 900 });
     const lidEl = eyeEl.querySelector('.lid'), plugEl = earEl.querySelector('.plug');
 
     /* ---------- two memory cards ---------- */
@@ -61,9 +63,12 @@ export default {
       const clip = S.id('mc' + nLoaves);
       return `${memoryCard(c, CW, CH)}<defs><clipPath id="${clip}"><rect x="${-CW / 2}" y="0" width="${CW}" height="${CH}"/></clipPath></defs><g clip-path="url(#${clip})" opacity=".85">${hill}${crowdM}</g>${loaves}${bks}<g transform="translate(${CW / 2 - 50} 12)">${tag(c, label, { size: 18, w: 76, fill: C.parchment })}</g>`;
     };
+    // phone: both cards a little smaller and closer together, so neither is sliced by the frame or the thread
+    const CX = S.portrait ? [618, 958] : [560, 1040];
+    const card = (m) => (S.portrait ? `<g transform="scale(.84)">${m}</g>` : m);
     const cards = [
-      { x: 560, n: 5, el: hanging(cardL, mkCard(5, 30, '5000', 12), { x: 560, y: 150, len: 900 }) },
-      { x: 1040, n: 7, el: hanging(cardL, mkCard(7, 24, '4000', 7), { x: 1040, y: 150, len: 900 }) },
+      { x: CX[0], n: 5, el: hanging(cardL, card(mkCard(5, 30, '5000', 12)), { x: CX[0], y: 150, len: 900 }) },
+      { x: CX[1], n: 7, el: hanging(cardL, card(mkCard(7, 24, '4000', 7)), { x: CX[1], y: 150, len: 900 }) },
     ];
     cards.forEach((cd, j) => {
       cd.lf = Array.from(cd.el.querySelectorAll('.lf'));
@@ -106,8 +111,8 @@ export default {
 
       /* eye & ear (v18a) */
       const ee = es(t, 2.02, 2.35, ease.back) * (1 - es(t, 2.95, 3.3));
-      swing(eyeEl, 560, 230 - (1 - ee) * 600, T, 1.2, 0.9, 1);
-      swing(earEl, 1040, 230 - (1 - ee) * 600, T, 1.2, 0.9, 2);
+      swing(eyeEl, EX[0], 230 - (1 - ee) * (S.portrait ? 900 : 600), T, 1.2, 0.9, 1);
+      swing(earEl, EX[1], 230 - (1 - ee) * (S.portrait ? 900 : 600), T, 1.2, 0.9, 2);
       const shut = es(t, 2.3, 2.5) * (1 - es(t, 2.75, 2.9)) ;
       pose(lidEl, { x: 0, y: 0, sy: 0.05 + shut * 0.95, o: shut > 0.02 ? 1 : 0 });
       pose(plugEl, { x: -2, y: -4, s: es(t, 2.55, 2.7) });
@@ -116,7 +121,7 @@ export default {
       cards.forEach((cd) => {
         const down = es(t, 3.1 + cd.j * 0.15, 3.5 + cd.j * 0.15, ease.back) * (1 - es(t, 8.05, 8.4));
         const focus = cd.j === 0 ? es(t, 4, 4.3) * (1 - es(t, 6, 6.3)) : es(t, 6, 6.3) * (1 - es(t, 8, 8.2));
-        swing(cd.el, cd.x, 150 - (1 - down) * 680 + focus * 16, T, 1, 0.7, cd.j);
+        swing(cd.el, cd.x, 150 - (1 - down) * (S.portrait ? 900 : 680) + focus * 16, T, 1, 0.7, cd.j);
         const t0 = cd.j === 0 ? 4.05 : 6.05, tb = cd.j === 0 ? 5.05 : 7.05;
         cd.lf.forEach((l, i) => {
           const k = es(t, t0 + i * 0.07, t0 + 0.14 + i * 0.07, ease.back);
