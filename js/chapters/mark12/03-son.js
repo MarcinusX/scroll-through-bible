@@ -24,14 +24,18 @@ export default {
     { v: 9, text: 'Cóż uczyni właściciel winnicy?' },
     { v: 9, cont: true, text: 'Przyjdzie i wytraci rolników, a winnicę odda innym.' },
   ],
-  cam: { x: [-20, 20], y: [0, 40], z: [1, 1.18] },
+  cam: { x: [-20, 130], y: [0, 40], z: [1, 1.18] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;
     const set = vineyardSet(S);
+    // phone: the tower, the far-land plate and the sun come in from the edges (as in m12-vineyard)
+    const TOWER = P ? 560 : VY.TOWER;
+    const AB = P ? [990, 290] : VY.ABROAD;
     // the vineyard is complete: pose everything once (still pieces stay cached)
     const stocks = [...set.backRow];
     set.wallB.forEach((w) => pose(w.el, { x: w.x, y: w.y }));
-    set.tower.forEach((el) => pose(el, { x: VY.TOWER, y: 606 }));
+    set.tower.forEach((el) => pose(el, { x: TOWER, y: 606 }));
     pose(set.gateBack, { x: VY.GATE0, y: VY.WALL_F - 4 });
     set.grapesB.forEach((g) => pose(g.el, { x: g.x, y: g.y }));
     stocks.forEach((v) => pose(v.el, { x: v.x, y: v.y }));
@@ -86,11 +90,11 @@ export default {
       veil2.fade(k2 * 0.9);
       sunL.fade(Math.min(1, deep * 1.2) * (1 - es(t, 5.0, 5.6)));
       pose(bigSun, { x: 830, y: lerp(560, 600, seg(t, 4, 5)) });
-      set.update(t, T, { sunX: 560 - es(t, 0, 4) * 200, sunY: 180 + es(t, 1, 3.8) * 300 - dawn * 300 });
+      set.update(t, T, { sunX: (P ? 600 : 560) - es(t, 0, 4) * 200, sunY: 180 + es(t, 1, 3.8) * 300 - dawn * 300 });
 
       /* v6a — the plate comes close: father and son, a heart between them */
       const big = es(t, 0.05, 0.4) * (1 - es(t, 1.3, 1.6));
-      pose(set.plateEl, { x: lerp(VY.ABROAD[0], 800, big), y: lerp(VY.ABROAD[1], 300, big), s: 1 + big * 1.1, r: Math.sin(T * 0.8) * 1.2 * (1 - big) });
+      pose(set.plateEl, { x: lerp(AB[0], 800, big), y: lerp(AB[1], 300, big), s: 1 + big * 1.1, r: Math.sin(T * 0.8) * 1.2 * (1 - big) });
       const sonGone = seg(t, 1.45, 1.5);
       const sendOut = bump(t, 1.2, 1.7);
       set.pOwner.set({ x: 0, y: 0, s: 1, flip: false, armF: 40 + big * 50 + sendOut * 40, armB: 20, head: big * 8, blink: blinkAt(T, 4) });
@@ -98,34 +102,35 @@ export default {
       const hk = es(t, 0.35, 0.55, ease.back) * (1 - es(t, 1.2, 1.35));
       pose(heartEl, { x: 790, y: 150 + Math.sin(T * 2) * 3, s: hk * (1 + Math.sin(T * 3) * 0.05), o: hk > 0.02 ? 1 : 0 });
       const sk = es(t, 1.05, 1.2, ease.back) * (1 - es(t, 1.9, 2.0));
-      pose(says, { x: lerp(620, VY.ABROAD[0] - 150, es(t, 1.3, 1.6)), y: lerp(210, VY.ABROAD[1] + 30, es(t, 1.3, 1.6)), s: sk, o: sk > 0.02 ? 1 : 0 });
+      pose(says, { x: lerp(620, AB[0] - (P ? 165 : 150), es(t, 1.3, 1.6)), y: lerp(210, AB[1] + 30, es(t, 1.3, 1.6)), s: sk, o: sk > 0.02 ? 1 : 0 });
 
       /* v6b — the son walks in at the gate */
-      const inK = es(t, 1.5, 1.95);
+      const inK = P ? es(t, 1.45, 1.8) : es(t, 1.5, 1.95);   // phone: he is through the gate by the pause
       const shadow = seg(t, 4.02, 4.08) * (1 - seg(t, 5.02, 5.08));
       const seize = es(t, 4.12, 4.3) * (1 - es(t, 4.9, 5.2)), fall = es(t, 4.32, 4.46, ease.in), carry = es(t, 4.5, 4.86);
       const sonX = lerp(1420, SX, inK);
       son.set({ x: sonX, y: G + 2, s: 0.98, flip: true, walk: inK > 0 && inK < 1 ? sonX * 0.05 : undefined, armF: 20 + bump(t, 1.95, 2.3) * 40, head: -es(t, 2.2, 2.5) * 6, blink: blinkAt(T, 3), o: (inK > 0 ? 1 : 0) * (1 - shadow) * (t < 4.5 ? 1 : 0) });
       son.mood({ sad: es(t, 3.2, 3.6) });
       // shadow play: he is seized, falls, is carried out through the gate
-      const cx = lerp(SX + 40, 1210, carry);
+      const cx = lerp(SX + 40, P ? 1075 : 1210, carry);
       sonSh.set({
         x: carry > 0 ? cx : SX + fall * 20, y: carry > 0 ? G - 70 : G + 2, s: 0.98, flip: true,
         r: carry > 0 ? 88 : fall * 80, armF: 20 + fall * 60, o: shadow * (1 - es(t, 4.84, 4.9)),
       });
       const ck = es(t, 4.82, 5.0, ease.out);
-      pose(cloth, { x: 1188, y: lerp(G - 420, G + 6, ck), o: ck > 0.001 ? 1 : 0 });
+      pose(cloth, { x: P ? 1095 : 1188, y: lerp(G - 420, G + 6, ck), o: (ck > 0.001 ? 1 : 0) * (P ? 1 - es(t, 5.0, 5.3) : 1) });   // phone: it fades as the camera swings back (it would sit at the edge)
 
       /* the tenants: whisper, plot, seize — then are lifted away */
       const huddle = es(t, 2.05, 2.3) * (1 - es(t, 3.9, 4.05));
       const lift = es(t, 6.28, 6.6, ease.in);
+      const OUT = P ? [1045, 1100] : [1150, 1280];   // where the two carry him (phone: the camera follows them to the gate)
       ten.forEach((m) => {
         let x = TX[m.i] + huddle * [30, 0, -30][m.i] + seize * [180, 140, 90][m.i];
         let y = G + (m.i === 1 ? 6 : 0);
         // two carry him out
-        if (carry > 0 && m.i < 2) x = lerp(TX[m.i] + [180, 140][m.i], [1150, 1280][m.i], carry);
+        if (carry > 0 && m.i < 2) x = lerp(TX[m.i] + [180, 140][m.i], OUT[m.i], carry);
         const back = es(t, 4.9, 5.2);
-        if (t > 4.9) x = lerp(m.i < 2 ? [1150, 1280][m.i] : TX[m.i] + 90, TX[m.i], back);
+        if (t > 4.9) x = lerp(m.i < 2 ? OUT[m.i] : TX[m.i] + 90, TX[m.i], back);
         const flip = m.i === 2 && huddle > 0.5 ? true : (t > 4.9 && t < 5.2 ? true : false);
         const walking = (carry > 0 && carry < 1 && m.i < 2) || (back > 0 && back < 1) || (seize > 0 && seize < 1);
         const common = {
@@ -166,7 +171,7 @@ export default {
 
       S.cam.z = 1.12 + big * 0.02 + es(t, 3.9, 4.2) * 0.04 * (1 - es(t, 5, 5.4));
       S.cam.y = 40;
-      S.cam.x = -10 + es(t, 3.9, 4.2) * 20 * (1 - es(t, 5, 5.4));
+      S.cam.x = -10 + es(t, 3.9, 4.2) * (P ? 140 : 20) * (1 - es(t, 5, 5.4));
     };
   },
 };

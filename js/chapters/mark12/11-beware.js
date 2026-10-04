@@ -25,10 +25,11 @@ export default {
   cam: { x: [-30, 30], y: [-30, 30], z: [1, 1.1] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;   // phone: the right-hand listeners and sitters clear of the thread
     const set = templeCourt(S);
     const F = set.FLOOR;
     const stepL = S.layer({ par: 0.45, sh: 4 });
-    const sitters = crowd(S, stepL, [{ y: 604, s: 0.66, n: 5, x0: 380, x1: 640, pose: 'sit' }, { y: 604, s: 0.66, n: 4, x0: 960, x1: 1220, pose: 'sit' }]);
+    const sitters = crowd(S, stepL, [{ y: 604, s: 0.66, n: 5, x0: 380, x1: 640, pose: 'sit' }, { y: 604, s: 0.66, n: 4, x0: 960, x1: P ? 1060 : 1220, pose: 'sit' }]);
 
     /* the panel of vignettes */
     const pan = S.layer({ par: 0.3, sh: 6 });
@@ -64,7 +65,7 @@ export default {
 
     /* people in the court */
     const pl = S.layer({ par: 0.5, sh: 5 });
-    const crowdS = crowd(S, pl, [{ y: F + 8, s: 0.86, n: 3, x0: 300, x1: 470 }, { y: F + 12, s: 0.86, n: 3, x0: 1150, x1: 1320 }]);
+    const crowdS = crowd(S, pl, [{ y: F + 8, s: 0.86, n: 3, x0: 300, x1: 470 }, { y: F + 12, s: 0.86, n: 3, x0: P ? 1010 : 1150, x1: P ? 1070 : 1320 }]);
     const scribes = [1, 2].map((i, k) => ({ k, p: S.puppet(pl.add(person(c, scribe(c, i)))), x: 980 + k * 70, seed: c.rr(0, 9) }));
     const dis = [CAST.peter, CAST.john, CAST.andrew].map((o, i) => ({ p: S.puppet(pl.add(person(c, o))), x: 600 - i * 56, i }));
     const jesus = S.puppet(pl.add(person(c, { ...CAST.jesus })));

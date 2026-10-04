@@ -22,10 +22,12 @@ export default {
   cam: { x: [-30, 30], y: [-40, 30], z: [1, 1.1] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;
+    const NBX = P ? 50 : 0;   // phone: the two neighbours stand further in
     const set = templeCourt(S);
     const F = set.FLOOR;
     const stepL = S.layer({ par: 0.45, sh: 4 });
-    const sitters = crowd(S, stepL, [{ y: 604, s: 0.66, n: 4, x0: 380, x1: 600, pose: 'sit' }, { y: 604, s: 0.66, n: 3, x0: 1080, x1: 1240, pose: 'sit' }]);
+    const sitters = crowd(S, stepL, [{ y: 604, s: 0.66, n: 4, x0: 380, x1: 600, pose: 'sit' }, { y: 604, s: 0.66, n: 3, x0: P ? 990 : 1080, x1: P ? 1110 : 1240, pose: 'sit' }]);   // phone: the last sitter clear of the thread
 
     /* the air above: law slips, the one star, the four "all"s, the two plates */
     const air = S.layer({ par: 0.3, sh: 5 });
@@ -95,13 +97,13 @@ export default {
       /* v31 — two neighbours; a bridge of light between their hearts */
       const nk = es(t, 4.05, 4.4);
       nb.forEach((n) => {
-        const x = n.i ? lerp(360, 560, nk) : lerp(250, 450, nk);
+        const x = (n.i ? lerp(360, 560, nk) : lerp(250, 450, nk)) + NBX;
         n.p.set({ x, y: F + 14, s: 0.9, flip: n.i === 1, walk: nk > 0 && nk < 1 ? x * 0.05 : undefined, armF: es(t, 4.4, 4.6) * 50, blink: blinkAt(T, n.seed), o: nk > 0 ? 1 : 0 });
         const hk = es(t, 4.45 + n.i * 0.05, 4.6 + n.i * 0.05, ease.back);
         pose(hearts[n.i], { x: x + (n.i ? -6 : 6), y: F + 14 - 120, s: hk * (1 + Math.sin(T * 3 + n.i) * 0.05), o: hk > 0.02 ? 1 : 0 });
       });
       const bk = es(t, 4.6, 4.85);
-      pose(bridge, { x: 456, y: F + 14 - 124, sx: Math.max(0.01, bk * (98 / 120)), o: bk > 0.01 ? 1 : 0 });
+      pose(bridge, { x: 456 + NBX, y: F + 14 - 124, sx: Math.max(0.01, bk * (98 / 120)), o: bk > 0.01 ? 1 : 0 });
       const pg = es(t, 5.05, 5.4, ease.out), pn = es(t, 5.15, 5.5, ease.out);
       pose(plateGod, { x: 600, y: lerp(-800, 230, pg), r: Math.sin(T * 0.8) * 1.5 });
       pose(plateNb, { x: 1000, y: lerp(-800, 230, pn), r: Math.sin(T * 0.7 + 1) * 1.5 });

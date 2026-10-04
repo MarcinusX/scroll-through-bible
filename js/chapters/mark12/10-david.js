@@ -26,7 +26,8 @@ export default {
     const set = templeCourt(S);
     const F = set.FLOOR;
     const stepL = S.layer({ par: 0.45, sh: 4 });
-    const sitters = crowd(S, stepL, [{ y: 604, s: 0.66, n: 5, x0: 380, x1: 640, pose: 'sit' }, { y: 604, s: 0.66, n: 4, x0: 960, x1: 1220, pose: 'sit' }]);
+    const P = S.portrait;
+    const sitters = crowd(S, stepL, [{ y: 604, s: 0.66, n: 5, x0: 380, x1: 640, pose: 'sit' }, { y: 604, s: 0.66, n: 4, x0: 960, x1: P ? 1060 : 1220, pose: 'sit' }]);   // phone: the last sitter clear of the thread
 
     /* the painted panel */
     const pan = S.layer({ par: 0.3, sh: 6 });
@@ -48,8 +49,8 @@ export default {
 
     /* people */
     const pl = S.layer({ par: 0.5, sh: 5 });
-    const crowdS = crowd(S, pl, [{ y: F + 8, s: 0.86, n: 3, x0: 300, x1: 470 }, { y: F + 12, s: 0.86, n: 3, x0: 1130, x1: 1300 }]);
-    const late = crowd(S, pl, [{ y: F + 18, s: 0.88, n: 4, x0: 300, x1: 560 }, { y: F + 20, s: 0.88, n: 4, x0: 1000, x1: 1260 }]);
+    const crowdS = crowd(S, pl, [{ y: F + 8, s: 0.86, n: 3, x0: 300, x1: 470 }, { y: F + 12, s: 0.86, n: 3, x0: P ? 1010 : 1130, x1: P ? 1070 : 1300 }]);   // phone: the right-hand listeners clear of the thread
+    const late = crowd(S, pl, [{ y: F + 18, s: 0.88, n: 4, x0: 300, x1: 560 }, { y: F + 20, s: 0.88, n: 4, x0: P ? 910 : 1000, x1: P ? 1060 : 1260 }]);
     late.forEach((m) => { m.from = m.x < 800 ? m.x - 500 : m.x + 500; });
     const scribes = [0, 1].map((i) => ({ i, p: S.puppet(pl.add(person(c, scribe(c, i + 1)))), x: 960 + i * 64, seed: c.rr(0, 9) }));
     const dis = [CAST.peter, CAST.john].map((o, i) => ({ p: S.puppet(pl.add(person(c, o))), x: 600 - i * 56, i }));

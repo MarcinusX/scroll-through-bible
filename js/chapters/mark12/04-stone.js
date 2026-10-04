@@ -22,12 +22,13 @@ export default {
   cam: { x: [-30, 30], y: [-40, 40], z: [1, 1.12] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;
     const set = templeCourt(S);
     const F = set.FLOOR;
 
     /* the crowd on the steps and standing about */
     const stepL = S.layer({ par: 0.45, sh: 4 });
-    const sitters = crowd(S, stepL, [{ y: 604, s: 0.66, n: 5, x0: 400, x1: 660, pose: 'sit' }, { y: 604, s: 0.66, n: 3, x0: 1000, x1: 1200, pose: 'sit' }]);
+    const sitters = crowd(S, stepL, [{ y: 604, s: 0.66, n: 5, x0: 400, x1: 660, pose: 'sit' }, { y: 604, s: 0.66, n: 3, x0: 1000, x1: P ? 1110 : 1200, pose: 'sit' }]);   // phone: the last sitter clear of the thread
 
     /* the painted panel with the arch */
     const panL = S.layer({ par: 0.3, sh: 6 });
@@ -53,7 +54,7 @@ export default {
     const people = S.layer({ par: 0.5, sh: 5 });
     const standers = crowd(S, people, [{ y: F + 4, s: 0.84, n: 3, x0: 300, x1: 450 }, { y: F + 10, s: 0.84, n: 3, x0: 1250, x1: 1420 }]);
     const dis = [CAST.john, CAST.peter, CAST.james, CAST.andrew].map((o, i) => ({ p: S.puppet(people.add(person(c, o))), x: 640 - i * 58, y: F + 10 + (i % 2) * 8, i }));
-    const leaders = [LOOK.elder, LOOK.priest, LOOK.lscribe].map((o, i) => ({ p: moodPuppet(S, people, c, o), x: 1000 + i * 66, y: F + 6 + (i % 2) * 8, i, seed: c.rr(0, 9) }));
+    const leaders = [LOOK.elder, LOOK.priest, LOOK.lscribe].map((o, i) => ({ p: moodPuppet(S, people, c, o), x: (P ? 930 : 1000) + i * (P ? 55 : 66), y: F + 6 + (i % 2) * 8, i, seed: c.rr(0, 9) }));
     const jesus = S.puppet(people.add(person(c, { ...CAST.jesus, holdF: `<g transform="translate(0 6) rotate(90) scale(.42)">${scrollOpen(c, 90, 60)}</g>` })));
     const voice = voiceRings(people, c, { n: 3, r: 26, w: 4 });
     const thinks = people.add(`<g>${thought(c, `<g transform="translate(-12 28) scale(.26)">${towerParts(c, 90, 236).join('')}</g><g transform="translate(16 -8) scale(1.6)">${grapeBunch(c, 3.4)}</g>`, { w: 104, h: 84 })}</g>`);
@@ -118,7 +119,7 @@ export default {
         l.p.mood({ angry: es(t, 3.0, 3.2) * (1 - es(t, 3.6, 3.8)) + es(t, 4.2, 4.4), sad: es(t, 3.6, 3.8) * (1 - es(t, 4.2, 4.4)) });
       });
       const th = es(t, 4.1, 4.3, ease.back) * (1 - es(t, 4.85, 5.0));
-      pose(thinks, { x: 1060, y: F - 216, s: th, o: th > 0.02 ? 1 : 0 });
+      pose(thinks, { x: P ? 990 : 1060, y: F - 216, s: th, o: th > 0.02 ? 1 : 0 });
 
       S.cam.z = 1 + es(t, 0.8, 1.6) * 0.04 * (1 - es(t, 2.9, 3.4));
       S.cam.y = 0;

@@ -7,8 +7,9 @@ import { es, ease, bump, seg, fade } from '../../core/anim.js';
 import { tr } from '../../core/i18n.js';
 import { templeCourt, sadducee, moodPuppet, voiceRings, bubble, thought, scrollOpen, flipPortrait, vignette, bigQuestion, sparkle, FONT, sheet } from './lib.js';
 
-const PX = [540, 644, 748, 852, 956, 1060, 1164], PY = 200;     // the brothers' portraits
-const WX = 852, WY = 346;                                      // the woman's portrait
+const PX0 = [540, 644, 748, 852, 956, 1060, 1164], PY = 200;    // the brothers' portraits
+const PXP = [500, 588, 676, 764, 852, 940, 1028];             // … on a phone: the whole row inside the screen, clear of the thread
+const WY = 346;                                                // the woman's portrait
 const JX = 640;
 const SX = [900, 972, 1044];
 const BRO = (i) => ({ robe: [C.dustyBlue, C.sageRobe, C.ochreRobe, C.tealRobe, C.mauve, C.wheatRobe, C.clayMantle][i], hair: [C.hair2, C.hair, C.hair2, C.hair3, C.hair2, C.hair, C.hair3][i], hairStyle: i % 3 === 2 ? 'curly' : 'short', beard: i < 2 ? 'full' : i < 5 ? 'short' : 'none', skin: [C.skin2, C.skin, C.skin3][i % 3], belt: C.leather });
@@ -31,11 +32,15 @@ export default {
   cam: { x: [-30, 30], y: [-40, 30], z: [1, 1.1] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;
+    const PX = P ? PXP : PX0, WX = P ? 764 : 852;
+    // phone: Moses' scroll and the little law picture hang inside the screen
+    const SCX = P ? 960 : 1060, LAWX = P ? 880 : 1010;
     const set = templeCourt(S);
     const F = set.FLOOR;
 
     const stepL = S.layer({ par: 0.45, sh: 4 });
-    const sitters = crowd(S, stepL, [{ y: 604, s: 0.66, n: 4, x0: 380, x1: 600, pose: 'sit' }, { y: 604, s: 0.66, n: 3, x0: 1080, x1: 1240, pose: 'sit' }]);
+    const sitters = crowd(S, stepL, [{ y: 604, s: 0.66, n: 4, x0: 380, x1: 600, pose: 'sit' }, { y: 604, s: 0.66, n: 3, x0: P ? 990 : 1080, x1: P ? 1110 : 1240, pose: 'sit' }]);   // phone: the last sitter clear of the thread
 
     /* the gallery on strings */
     const gal = S.layer({ par: 0.32, sh: 6 });
@@ -61,7 +66,7 @@ export default {
 
     /* people */
     const pl = S.layer({ par: 0.5, sh: 5 });
-    const dis = [CAST.peter, CAST.john].map((o, i) => ({ p: S.puppet(pl.add(person(c, o))), x: 500 - i * 60, i }));
+    const dis = [CAST.peter, CAST.john].map((o, i) => ({ p: S.puppet(pl.add(person(c, o))), x: (P ? 530 : 500) - i * (P ? 58 : 60), i }));
     const jesus = S.puppet(pl.add(person(c, { ...CAST.jesus })));
     const sad = [0, 1, 2].map((i) => ({ i, p: moodPuppet(S, pl, c, { ...sadducee(i), holdF: '' }), seed: c.rr(0, 9) }));
     const voice = voiceRings(pl, c, { n: 3, r: 24, w: 4 });
@@ -94,9 +99,9 @@ export default {
 
       /* v19 — the scroll of Moses; the law in a little picture */
       const sd = es(t, 1.1, 1.5, ease.out) * (1 - es(t, 1.9, 2.15, ease.in));
-      pose(scrollEl, { x: 1060, y: lerp(-800, 250, sd), r: Math.sin(T * 0.9) * 1.5 });
+      pose(scrollEl, { x: SCX, y: lerp(-800, 250, sd), r: Math.sin(T * 0.9) * 1.5 });
       const ld = es(t, 2.0, 2.3, ease.out) * (1 - es(t, 2.85, 3.05, ease.in));
-      pose(lawPic, { x: 1010, y: lerp(-900, 130, ld), s: 1.3 });
+      pose(lawPic, { x: LAWX, y: lerp(-900, 130, ld), s: 1.3 });
       const aGo = es(t, 2.3, 2.45), bIn = es(t, 2.45, 2.6), child = es(t, 2.62, 2.75, ease.back);
       pose(lawA, { x: -70, y: 150, s: 0.5, o: 1 - aGo });
       pose(lawB, { x: lerp(150, 50, bIn), y: 150, s: 0.5 });
