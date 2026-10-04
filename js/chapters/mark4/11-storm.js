@@ -45,6 +45,9 @@ export default {
   cam: { x: [-260, 420], y: [-60, 90], z: [0.78, 1.42] },
   build(S) {
     const c = S.c;
+    // phone: the sun and moon (and the moon's path on the water) hang inward, and the camera does not turn
+    // towards the stern (the sleeper is already central) so the disciples at the bow stay clear of the thread
+    const P = S.portrait, SUNX = P ? 1040 : 1180, MOONX = P ? 990 : 1120, STERN = P ? 0 : 210;
     /* ---------- three skies, crossfaded on the compositor ---------- */
     sky(S, ['#8f86ad', '#e3a58e', '#f3c79e'], { name: 'dusk' });
     const stormSky = sky(S, ['#2f3653', '#4a5373', '#6b7390'], { name: 'storm' }).layer;
@@ -53,8 +56,8 @@ export default {
     const starL = S.layer({ par: 0.02, sh: 1, flat: true });
     starL.add(stars(c, { x0: -600, x1: 2200, y0: -400, y1: 420, n: 140 }));
     const hangL = S.layer({ par: 0.04, sh: 5 });
-    const sunEl = hanging(hangL, sun(c, 46, { rays: C.sunDeep, disc: '#f0a868', inner: '#f5c08a' }), { x: 1180, y: 330, len: 900 });
-    const moonEl = hanging(hangL, `<circle r="120" fill="url(#halo-glow)" opacity=".55"/>${moon(c, 42)}`, { x: 1120, y: 170, len: 900 });
+    const sunEl = hanging(hangL, sun(c, 46, { rays: C.sunDeep, disc: '#f0a868', inner: '#f5c08a' }), { x: SUNX, y: 330, len: 900 });
+    const moonEl = hanging(hangL, `<circle r="120" fill="url(#halo-glow)" opacity=".55"/>${moon(c, 42)}`, { x: MOONX, y: 170, len: 900 });
 
     // storm clouds come down on strings
     const cloudL = S.layer({ par: 0.08, sh: 7 });
@@ -77,7 +80,8 @@ export default {
     const water = S.layer({ par: 0.34, sh: 2 });
     water.add(band(c, { y: 505, amps: [3, 1.5], lens: [300, 90], color: C.lake2, x0: -1400, x1: 3200, step: 10, j: 0.6 }).markup);
     const glitter = water.add(`<g>${Array.from({ length: 22 }, (_, i) => `<path d="${c.cut([[-26 + c.rr(-10, 10), 0], [0, -2], [26 + c.rr(-10, 10), 0], [0, 1.6]], 0.2, 6)}" fill="#fff1c4" transform="translate(${1120 + c.rr(-30, 30) * (1 + i * 0.1)} ${520 + i * 16})"/>`).join('')}</g>`);
-    const others = [[-60, 560, 0.34], [1520, 548, 0.28], [300, 585, 0.4]].map(([x, y, s], i) => {
+    // phone: the other boats sail inside the narrow frame (on desktop they sit beyond its edges)
+    const others = (P ? [[455, 554, 0.3], [960, 546, 0.28], [540, 594, 0.36]] : [[-60, 560, 0.34], [1520, 548, 0.28], [300, 585, 0.4]]).map(([x, y, s], i) => {
       const b = boat(c, { mast: true, hull: i === 1 ? C.wood2 : C.wood3, stripe: i === 2 ? C.dustyBlue : C.terracotta });
       return { el: water.add(`<g>${b.back}${b.front}</g>`), x, y, s, i };
     });
@@ -148,14 +152,14 @@ export default {
       pose(boltEl, { x: 620 + Math.round(t * 3) % 3 * 180, y: 140, o: flash > 0.25 ? 1 : 0 });
 
       /* the sun goes down, the moon comes out after the storm */
-      swing(sunEl, 1180, 330 + es(t, 0, 3) * 330, T, 1, 0.6);
-      swing(moonEl, 1120, 170 - (1 - night) * 700, T, 0.8, 0.5, 1);
+      swing(sunEl, SUNX, 330 + es(t, 0, 3) * 330, T, 1, 0.6);
+      swing(moonEl, MOONX, 170 - (1 - night) * 700, T, 0.8, 0.5, 1);
       clouds.forEach((cl) => swing(cl.el, cl.x + Math.sin(T * 0.3 + cl.i) * 30 * storm, cl.y - (1 - storm) * 900 + cl.i * 5, T, 2.5 * storm + 0.3, 0.9, cl.i));
 
       /* camera: sail away from the shore, zoom in on the sleeper, pull back into the calm */
       const travel = es(t, 1, 2.6) * 380;
       const toStern = es(t, 4.8, 5.4) - es(t, 9.2, 9.8) * 0.4;
-      S.cam.x = travel + toStern * -210;
+      S.cam.x = travel + toStern * -STERN;
       S.cam.z = 1.05 + es(t, 4.8, 5.4) * 0.33 - es(t, 6.6, 7.1) * 0.18 - es(t, 9.9, 10.9) * 0.4;
       S.cam.y = 30 + es(t, 4.8, 5.4) * 40 - es(t, 9.9, 10.9) * 60;
 
@@ -179,7 +183,7 @@ export default {
       rainL.shift(-((T * 260) % 400) * 0.8 + 200, ((T * 900) % 400) - 200);
       rainL.fade(es(t, 3.4, 4) * (1 - es(t, 7.9, 8.4)));
       fade(moonPath, night * (1 - storm));
-      pose(moonPath, { x: 1120 + S.cam.x * 0.3, y: 514 });
+      pose(moonPath, { x: MOONX + S.cam.x * 0.3, y: 514 });
 
       /* the boat rocks with the storm */
       const bx = 800 + travel * BOAT_PAR, by = 700;

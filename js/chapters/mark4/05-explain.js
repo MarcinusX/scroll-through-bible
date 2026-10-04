@@ -258,7 +258,8 @@ export default {
 
     /* ---- sky ornaments on strings ---- */
     const skyL = S.layer({ par: 0.05, sh: 4 });
-    const SUN = [1090, 168];
+    const P = S.portrait;
+    const SUN = [P ? 840 : 1090, 168];   // phone: the sun (and the scorching sun) clear of the thread
     const sunGold = skyL.add(`<g opacity="0">${rays(c, { n: 20, r0: 70, r1: 760, spread: 0.06, color: C.halo })}</g>`);
     const sunEl = hanging(skyL, sun(c, 46), { x: SUN[0], y: SUN[1], len: 620 });
     const hotSun = hanging(skyL, `<g class="spin">${sheet().p(c.cut(c.star(0, 0, 104, 66, 22), 0.6, 5), C.sunRay).out()}</g>${sheet().p(c.cut(c.circ(0, 0, 62, 40), 0.5, 5), C.sunDeep).p(c.cut(c.circ(-6, -6, 44, 30), 0.4, 5), C.sun).out()}`, { x: SUN[0], y: SUN[1], len: 620 });
@@ -576,7 +577,7 @@ export default {
 
       /* ---------- v15: the path ---------- */
       const wp = seg(t, 0.9, 2.95);
-      const px = lerp(-40, -470, wp);
+      const px = lerp(-40, P ? -380 : -470, wp);   // phone: he walks off, but not out of the frame
       pathMan.p.set({
         x: px, y: FEET, s: 1.1, flip: true, walk: wp > 0 && wp < 1 ? -px * 0.085 : undefined, amt: 1.2, lean: 4,
         head: bump(t, 1.5, 1.95) * 14 - 3, armF: 6, armB: 4, blink: blinkAt(time, 1),
@@ -585,7 +586,8 @@ export default {
       // crow swoops in from the left, takes the word
       const PS = [-236, 596];
       const cu = seg(t, 2.08, 2.86);
-      const P0 = [-720, 170], P2 = [240, 90], P1 = [2 * PS[0] - 0.5 * (P0[0] + P2[0]), 2 * (PS[1] - 10) - 0.5 * (P0[1] + P2[1])];
+      const P0 = [-720, 170], P2 = P ? [-90, 200] : [240, 90],   // phone: the crow carries the word off inside the screen
+       P1 = [2 * PS[0] - 0.5 * (P0[0] + P2[0]), 2 * (PS[1] - 10) - 0.5 * (P0[1] + P2[1])];
       const bz = (u) => [(1 - u) ** 2 * P0[0] + 2 * (1 - u) * u * P1[0] + u * u * P2[0], (1 - u) ** 2 * P0[1] + 2 * (1 - u) * u * P1[1] + u * u * P2[1]];
       const [cx, cy] = bz(cu);
       const dx = 2 * (1 - cu) * (P1[0] - P0[0]) + 2 * cu * (P2[0] - P1[0]), dy = 2 * (1 - cu) * (P1[1] - P0[1]) + 2 * cu * (P2[1] - P1[1]);

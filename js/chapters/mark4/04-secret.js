@@ -144,6 +144,8 @@ export default {
   cam: { x: [-10, 10], y: [-20, 60], z: [1, 1.12] },
   build(S) {
     const c = S.c;
+    const P = S.portrait;
+    const PARK = P ? -600 : -150;   // phone: hidden things wait well above the tall screen
     const SKY0 = [C.duskViolet, C.dusk, C.peach];
     const SKY1 = [mix(C.indigo, C.duskViolet, 0.45), mix(C.duskViolet, C.dusk, 0.35), mix(C.dusk, C.peach, 0.4)];
     const sk = sky(S, SKY0);
@@ -151,8 +153,8 @@ export default {
     /* heavens: first stars and a moon on strings */
     const hangL = S.layer({ par: 0.04, sh: 3 });
     const starsEl = hangL.add(`<g opacity="0">${stars(c, { x0: -500, x1: 2100, y0: -200, y1: 330, n: 70 })}</g>`);
-    const moonEl = hanging(hangL, moon(c, 30), { x: 1170, y: 175, len: 600 });
-    const evening = hanging(hangL, `<path d="${c.cut(c.star(0, 0, 13, 4, 4, 0), 0.2, 3)}" fill="${C.star}"/>`, { x: 470, y: 150, len: 500 });
+    const moonEl = hanging(hangL, moon(c, 30), { x: P ? 935 : 1170, y: 175, len: 600 });
+    const evening = hanging(hangL, `<path d="${c.cut(c.star(0, 0, 13, 4, 4, 0), 0.2, 3)}" fill="${C.star}"/>`, { x: P ? 520 : 470, y: P ? 110 : 150, len: 500 });
 
     /* distant hills with a sleepy town */
     const hills = S.layer({ par: 0.12, sh: 2 });
@@ -168,7 +170,8 @@ export default {
     const OUT = [
       { x: 418, s: 0.88, flip: false }, { x: 484, s: 0.93, flip: false }, { x: 548, s: 0.86, flip: false },
       { x: 1054, s: 0.87, flip: true }, { x: 1118, s: 0.94, flip: true }, { x: 1184, s: 0.88, flip: true },
-    ].map((o, i) => {
+    ].map((o, i) => (P ? { ...o, x: [478, 528, 578, 1000, 1044, 1086][i] } : o)) // phone: those outside stay inside the screen
+      .map((o, i) => {
       const base = crowdPerson(c);
       const opts = { ...base, robe: tint(base.robe), mantle: base.mantle && tint(base.mantle), skin: tint(base.skin), hair: tint(base.hair), veil: tint(base.veil), belt: base.belt && tint(base.belt) };
       return { ...o, y: 530, i, seed: c.rr(0, 9), p: S.puppet(lane.add(person(c, opts))), away: o.flip ? 1900 + i * 60 : -300 - i * 60 };
@@ -179,6 +182,7 @@ export default {
       { x: 1068, y: 262, icon: `<g transform="translate(0 36) scale(.15)">${mustardTree(c, { h: 420 }).replace(/class="grow"/g, '')}</g>` },
       { x: 1148, y: 292, icon: `<g transform="translate(8 -2) scale(.62) rotate(20)">${sickle(c)}</g>` },
     ].map((cd, i) => {
+      if (P) { cd.x = [540, 615, 985, 1060][i]; cd.y -= 70; }   // phone: inward, up in the taller sky
       cd.el = hanging(lane, card(c, cd.icon, { sealed: true }), { x: cd.x, y: cd.y, len: 400 });
       cd.cord = cd.el.querySelector('[data-part="cord"]');
       cd.seal = cd.el.querySelector('[data-part="seal"]');
@@ -243,10 +247,11 @@ export default {
     const lampFlame = lampEl.querySelector('.flame'), lampGlow = lampEl.querySelector('.glow');
     const jesus = S.puppet(midL.add(person(c, { ...CAST.jesus, pose: 'sit' })));
     [
-      { x: 468, y: 660, s: 0.8, o: CAST.james },
+      // phone: the ends of the ring a step in, the right one clear of the thread
+      { x: P ? 525 : 468, y: 660, s: 0.8, o: CAST.james },
       { x: 575, y: 668, s: 0.8, o: man() },
       { x: 1025, y: 668, s: 0.8, o: CAST.matthew },
-      { x: 1132, y: 660, s: 0.8, o: man() },
+      { x: P ? 1068 : 1132, y: 660, s: 0.8, o: man() },
     ].forEach((m) => { m.L = midL; m.pose = 'sit'; m.p = S.puppet(midL.add(person(c, { ...m.o, pose: 'sit' }))); SPEC.push(m); });
 
     /* the magic: the casket of the mystery, the sower plate, the fan of other parables */
@@ -266,10 +271,10 @@ export default {
     /* front row (closest to us) */
     const rowC = S.layer({ par: 0.72, sh: 6 });
     [
-      { x: 530, y: 748, s: 0.92, o: man() },
+      { x: P ? 552 : 530, y: 748, s: 0.92, o: man() },
       { x: 652, y: 756, s: 0.95, o: CAST.peter },
       { x: 948, y: 756, s: 0.95, o: CAST.john },
-      { x: 1070, y: 748, s: 0.92, o: man() },
+      { x: P ? 1045 : 1070, y: 748, s: 0.92, o: man() },
     ].forEach((m) => { m.L = rowC; m.pose = 'sit'; m.p = S.puppet(rowC.add(person(c, { ...m.o, pose: 'sit' }))); SPEC.push(m); });
 
     // everyone in the circle faces Jesus; head position for bubbles & sparks
@@ -287,8 +292,8 @@ export default {
       const T = time;
       sk.blend(SKY0, SKY1, es(t, 0, 5.5, ease.sine));
       fade(starsEl, 0.2 + es(t, 1, 5) * 0.8);
-      pose(moonEl, { x: 1170, y: 205 - es(t, -0.5, 6.5) * 50, r: Math.sin(T * 0.6) * 1.2 });
-      pose(evening, { x: 470, y: 150, r: Math.sin(T * 0.8 + 1) * 2, s: 1 + Math.sin(T * 2.2) * 0.08 });
+      pose(moonEl, { x: P ? 935 : 1170, y: (P ? 125 : 205) - es(t, -0.5, 6.5) * 50, r: Math.sin(T * 0.6) * 1.2 });
+      pose(evening, { x: P ? 520 : 470, y: P ? 110 : 150, r: Math.sin(T * 0.8 + 1) * 2, s: 1 + Math.sin(T * 2.2) * 0.08 });
 
       /* people outside: leave in beat 0, come back in beat 2, veiled in 3, sealed in 4, gone in 5 */
       const leave = es(t, -0.1, 0.75), back = es(t, 2.0, 2.4), gone = es(t, 5.0, 5.5);
@@ -307,7 +312,7 @@ export default {
         // veil drops in front of the eyes
         const hx = x + 2 * o.s * (o.flip ? -1 : 1), hy = o.y - 167 * o.s;
         const vDrop = es(t, 3.05 + o.i * 0.04, 3.35 + o.i * 0.04, ease.out) * (1 - gone);
-        pose(o.veil, { x: hx + (o.flip ? -8 : 8) * o.s, y: lerp(-120, hy - 3 * o.s, vDrop), s: o.s, r: Math.sin(T * 1.1 + o.seed) * 2.5, o: vDrop > 0 ? 1 : 0 });
+        pose(o.veil, { x: hx + (o.flip ? -8 : 8) * o.s, y: lerp(P ? PARK : -120, hy - 3 * o.s, vDrop), s: o.s, r: Math.sin(T * 1.1 + o.seed) * 2.5, o: vDrop > 0 ? 1 : 0 });
         // sound reaches the ears and bounces off
         const on = es(t, 3.4, 3.55) * (1 - es(t, 4.05, 4.3));
         const d = o.flip ? 1 : -1; // direction of travel toward the person
@@ -322,7 +327,7 @@ export default {
       });
       CARDS.forEach((cd) => {
         const drop = es(t, 2.25 + cd.i * 0.08, 2.65 + cd.i * 0.08, ease.back) * (1 - es(t, 5.0, 5.35));
-        pose(cd.el, { x: cd.x, y: lerp(-150, cd.y, drop), r: Math.sin(T * 0.8 + cd.i * 1.7) * 2.2, o: drop > 0 ? 1 : 0 });
+        pose(cd.el, { x: cd.x, y: lerp(PARK, cd.y, drop), r: Math.sin(T * 0.8 + cd.i * 1.7) * 2.2, o: drop > 0 ? 1 : 0 });
         const tie = es(t, 4.05 + cd.i * 0.06, 4.3 + cd.i * 0.06);
         pose(cd.cord, { sx: tie, s: 1, o: tie });
         const stamp = es(t, 4.25 + cd.i * 0.07, 4.45 + cd.i * 0.07, ease.back);
@@ -375,12 +380,12 @@ export default {
 
       /* the sower plate: which parable? then back again */
       const pIn = es(t, 0.45, 0.85, ease.back) * (1 - es(t, 1.0, 1.3)) + es(t, 5.1, 5.5, ease.back);
-      pose(plate, { x: 800, y: lerp(-160, lerp(240, 268, es(t, 5, 6)), pIn), s: 1 + fan * 0.08, r: Math.sin(T * 0.9) * 2, o: pIn > 0 ? 1 : 0 });
+      pose(plate, { x: 800, y: lerp(P ? PARK : -160, lerp(240, 268, es(t, 5, 6)), pIn), s: 1 + fan * 0.08, r: Math.sin(T * 0.9) * 2, o: pIn > 0 ? 1 : 0 });
 
       /* the casket of the mystery comes down and opens; closes and rises in beat 5 */
       const bIn = es(t, 1.0, 1.35, ease.out) * (1 - es(t, 5.0, 5.3));
       const open = es(t, 1.3, 1.6) * (1 - es(t, 4.9, 5.1));
-      pose(box, { x: 800, y: lerp(-150, 428, bIn), r: Math.sin(T * 0.8 + 1) * 1.5 * (1 - open * 0.6), o: bIn > 0 ? 1 : 0 });
+      pose(box, { x: 800, y: lerp(PARK, 428, bIn), r: Math.sin(T * 0.8 + 1) * 1.5 * (1 - open * 0.6), o: bIn > 0 ? 1 : 0 });
       pose(boxLid, { x: -37, y: -38, r: -open * 78 });
       fade(boxGlow, open * 0.9);
       pose(boxRays, { x: 0, y: -40, r: t * 12, s: 0.4 + open * 0.6, o: open * 0.8 });

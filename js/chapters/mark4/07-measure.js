@@ -105,7 +105,7 @@ export default {
     { v: 25, text: 'Bo kto ma, temu będzie dane;' },
     { v: 25, cont: true, text: 'a kto nie ma, pozbawią go i tego, co ma».' },
   ],
-  cam: { x: [-150, 140], y: [0, 40], z: [1, 1.22] },
+  cam: { x: [-280, 270], y: [0, 40], z: [1, 1.22] },
   build(S) {
     const c = S.c;
     const SKY = ['#cadfdb', '#eee5cc', '#f7ead3'];
@@ -191,8 +191,10 @@ export default {
 
     /* foreground */
     const fg = S.layer({ par: 0.9, sh: 8 });
-    fg.add(`<g transform="translate(110 940) scale(1.8)">${sack(c, 70, 84, C.linen2, C.dustyBlue)}</g>`);
-    fg.add(`<g transform="translate(250 960) scale(1.5)">${sack(c, 64, 76, C.sand, C.terracotta)}</g>`);
+    // phone: the foreground sacks sit further left, so the deeper camera turn doesn't show half a sack at the frame
+    const FGX = S.portrait ? -170 : 0;
+    fg.add(`<g transform="translate(${110 + FGX} 940) scale(1.8)">${sack(c, 70, 84, C.linen2, C.dustyBlue)}</g>`);
+    fg.add(`<g transform="translate(${250 + FGX} 960) scale(1.5)">${sack(c, 64, 76, C.sand, C.terracotta)}</g>`);
     fg.add(`<g transform="translate(1470 950) scale(1.4)">${sheaf(c, 130)}</g>`);
     fg.add(`<g transform="translate(1580 960) scale(1.9)">${bushel(c, 70, 50)}</g>`);
 
@@ -300,7 +302,7 @@ export default {
         pose(m.el, { x: m.x, y: FLOOR + 2 - (1 - p) * 60, s: m.s * p, o: seg(t, 2.52 + i * 0.1, 2.55 + i * 0.1) });
       });
       const glad = es(t, 2.3, 2.5);
-      Cp.set({ x: 1170, y: FLOOR, s: 1.05, flip: true, armF: 30 + glad * 70 + bump(t, 2.5, 2.7) * 30, armB: glad * 110, head: -hush * 4 - glad * 6, blink: blinkAt(time, 3), lean: -hush * 4 });
+      Cp.set({ x: S.portrait ? 1110 : 1170, y: FLOOR, s: 1.05, flip: true, armF: 30 + glad * 70 + bump(t, 2.5, 2.7) * 30, armB: glad * 110, head: -hush * 4 - glad * 6, blink: blinkAt(time, 3), lean: -hush * 4 });
 
       // overflow seeds (A's cup and the jar)
       spill.forEach((sp, i) => {
@@ -350,7 +352,9 @@ export default {
       /* ---------- camera ---------- */
       const toA = es(t, 0.95, 1.2) * (1 - es(t, 1.95, 2.2)), toJ = es(t, 1.95, 2.2) * (1 - es(t, 2.9, 3.15)), toD = es(t, 2.9, 3.15) * (1 - es(t, 3.88, 4.1));
       const near = toA + toJ + toD;
-      S.cam.x = -toA * 140 + toJ * 130 - toD * 140;
+      // phone: the camera goes further, so the pourer, the man with the full jar and the poor man stay on screen
+      const PH = S.portrait;
+      S.cam.x = -toA * (PH ? 270 : 140) + toJ * (PH ? 260 : 130) - toD * (PH ? 210 : 140);
       S.cam.z = 1 + es(t, 0.05, 0.4) * 0.08 * (1 - es(t, 0.9, 1.2)) + near * 0.2;
       S.cam.y = near * 36 + es(t, 0.05, 0.4) * 10 * (1 - es(t, 0.9, 1.2));
     };

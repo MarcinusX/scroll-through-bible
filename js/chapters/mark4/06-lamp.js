@@ -105,6 +105,13 @@ export default {
   cam: { x: [-50, 50], y: [0, 30], z: [1, 1.12] },
   build(S) {
     const c = S.c;
+    // phone: the hidden things (jar & coin, scroll niche, cat) and the listeners come inward, clear of the
+    // frame and the progress thread; the bushel waits a little further right to make room for the jar;
+    // the ceiling beam is a band rather than a sheet filling the top of the tall screen
+    const P = S.portrait;
+    const JAR = P ? 512 : 444, COIN = P ? 542 : 474, BUSH = P ? 610 : 540, NX = P ? 1062 : 1125, BEAM = P ? -60 : -400;
+    // phone: the bed (and the cat on it) a step left, so its head end is not under the thread
+    const BX = P ? -90 : 0, CATX = P ? 1075 + BX : 1150;
 
     /* sky seen through the window and door */
     const sk = sky(S, [C.night2, C.night, C.indigo]);
@@ -124,8 +131,8 @@ export default {
     wall.x(patch, C.plaster2, 'opacity=".55"');
     wall.p(c.cut([[-900, 540], [330, 540], [330, 598], [-900, 598]], 0.8, 10) + c.cut([[440, 540], [2500, 540], [2500, 598], [440, 598]], 0.8, 10), C.plaster2);
     // niche for the scroll
-    wall.p(c.cut([[1080, 424], [1080, 360], ...c.arc(1125, 360, 45, 36, PI, 2 * PI, 10), [1170, 424]], 0.5, 6), shade(C.plaster2, -0.12));
-    wall.p(c.cut([[1074, 424], [1176, 424], [1180, 432], [1070, 432]], 0.4, 6), C.wood3);
+    wall.p(c.cut([[NX - 45, 424], [NX - 45, 360], ...c.arc(NX, 360, 45, 36, PI, 2 * PI, 10), [NX + 45, 424]], 0.5, 6), shade(C.plaster2, -0.12));
+    wall.p(c.cut([[NX - 51, 424], [NX + 51, 424], [NX + 55, 432], [NX - 55, 432]], 0.4, 6), C.wood3);
     // window frame and bars
     wall.p(c.ribbon([[555, 302], [695, 302]], 12) + c.ribbon([[625, 172], [625, 300]], 6) + c.ribbon([[562, 250], [688, 250]], 6), C.wood2);
     // door jambs + an open door leaf
@@ -154,9 +161,9 @@ export default {
     room.add(floor.out());
     // key on a nail & scroll in the niche (animated)
     const keyEl = room.add(`<g data-k="key" transform="translate(1010 232)">${key(c)}</g>`);
-    const scrollSheetEl = room.add(`<g data-k="scrollSheet" transform="translate(1125 416)">${scrollSheet(c, 62, 84)}</g>`);
-    const rodBottom = room.add(`<g transform="translate(1125 416)">${scrollRod(c, 66)}</g>`);
-    const rodTop = room.add(`<g transform="translate(1125 414)">${scrollRod(c, 66)}</g>`);
+    const scrollSheetEl = room.add(`<g data-k="scrollSheet" transform="translate(${NX} 416)">${scrollSheet(c, 62, 84)}</g>`);
+    const rodBottom = room.add(`<g transform="translate(${NX} 416)">${scrollRod(c, 66)}</g>`);
+    const rodTop = room.add(`<g transform="translate(${NX} 414)">${scrollRod(c, 66)}</g>`);
 
     /* ---------- furniture behind the actors ---------- */
     const furn = S.layer({ par: 0.35, sh: 4 });
@@ -178,8 +185,8 @@ export default {
 
     /* ---------- bed, bushel and the cat (in front of the lamp) ---------- */
     const cover = S.layer({ par: 0.5, sh: 5 });
-    cover.add(`<g transform="translate(1095 664)">${bedDrape(c, 270)}</g>`);
-    const catEl = cover.add(`<g transform="translate(1150 602)">${cat(c)}</g>`);
+    cover.add(`<g transform="translate(${1095 + BX} 664)">${bedDrape(c, 270)}</g>`);
+    const catEl = cover.add(`<g transform="translate(${CATX} 602)">${cat(c)}</g>`);
     const catHead = S.$('catHead'), catTail = S.$('catTail'), catOpen = S.$('catEyesOpen'), catShut = S.$('catEyesShut');
     const bushEl = cover.add(`<g>${bushel(c, 90, 70)}</g>`);
 
@@ -207,7 +214,7 @@ export default {
     /* ---------- foreground: ceiling beam, a big pot and a basket ---------- */
     const fg = S.layer({ par: 0.9, sh: 8 });
     const beam = sheet();
-    beam.p(c.cut([[-900, -400], [2500, -400], [2500, 108], [-900, 122]], 0.8, 14), C.wood2);
+    beam.p(c.cut([[-900, BEAM], [2500, BEAM], [2500, 108], [-900, 122]], 0.8, 14), C.wood2);
     beam.x(c.ribbon([[-900, 110], [2500, 114]], 3) + c.ribbon([[-900, 90], [2500, 94]], 2), shade(C.wood2, -0.25), 'opacity=".6"');
     beam.p(c.ribbon([[240, 100], [240, 170]], 2) + c.ribbon([[1380, 104], [1380, 160]], 2), C.rope);
     beam.p(c.cut(c.blob(240, 186, 16, 20, 9, 0.2), 0.5, 5) + c.cut(c.blob(226, 200, 12, 14, 8, 0.2), 0.5, 5) + c.cut(c.blob(254, 202, 12, 14, 8, 0.2), 0.5, 5), C.linen2);
@@ -219,10 +226,10 @@ export default {
     /* ---------- darkness: a night overlay with a pool of lamplight cut out of it ---------- */
     const dark = S.layer({ par: 0.5, sky: true });
     const mId = S.id('mask'), gId = S.id('hole');
-    const spots = [[478, 630, 120], [1010, 262, 95], [1125, 430, 105], [1150, 590, 125]];
+    const spots = [[COIN + 4, 630, 120], [1010, 262, 95], [NX, 430, 105], [CATX, 590, 125]];
     dark.add(`<defs><radialGradient id="${gId}"><stop offset="0" stop-color="#000" stop-opacity="1"/><stop offset=".45" stop-color="#000" stop-opacity=".85"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>
       <mask id="${mId}" maskUnits="userSpaceOnUse" x="-3000" y="-3000" width="8000" height="8000"><rect x="-3000" y="-3000" width="8000" height="8000" fill="#fff"/>
-      <circle data-k="hole" cx="0" cy="0" r="1" fill="url(#${gId})"/><ellipse data-k="holeBed" cx="1070" cy="664" rx="1" ry="1" fill="url(#${gId})"/>
+      <circle data-k="hole" cx="0" cy="0" r="1" fill="url(#${gId})"/><ellipse data-k="holeBed" cx="${1070 + BX}" cy="664" rx="1" ry="1" fill="url(#${gId})"/>
       ${spots.map(([x, y, r], i) => `<circle data-k="spot" data-i="${i}" cx="${x}" cy="${y}" r="${r}" fill="url(#${gId})" opacity="0"/>`).join('')}</mask></defs>`);
     const darkRect = dark.add(`<rect x="-3000" y="-3000" width="8000" height="8000" fill="${C.night2}" mask="url(#${mId})" opacity=".8"/>`);
     const hole = S.$('hole'), holeBed = S.$('holeBed'), spotEls = S.$$('spot');
@@ -240,18 +247,18 @@ export default {
     let leak = '';
     [-1, 1].forEach((sd) => { for (let i = 0; i < 3; i++) { const a = 0.08 + i * 0.12; leak += c.poly([[sd * 30, -2], [sd * 60, -2], [sd * (60 + Math.cos(a) * 120), -2 - Math.sin(a) * 60], [sd * (34 + Math.cos(a) * 60), -2 - Math.sin(a) * 26]]); } });
     const leakBush = light.add(`<g><ellipse cx="0" cy="-20" rx="150" ry="60" fill="url(#warm-glow)" opacity=".7"/><ellipse cx="0" cy="0" rx="130" ry="20" fill="url(#warm-glow)"/><path d="${leak}" fill="${C.lampGlow}" opacity=".45"/></g>`);
-    const leakBed = light.add(`<g transform="translate(1060 ${FLOOR})"><ellipse cx="0" cy="0" rx="190" ry="22" fill="url(#warm-glow)"/><path d="${c.poly([[-125, -8], [100, -8], [96, -1], [-122, -1]])}" fill="${C.lampGlow}" opacity=".8"/></g>`);
+    const leakBed = light.add(`<g transform="translate(${1060 + BX} ${FLOOR})"><ellipse cx="0" cy="0" rx="190" ry="22" fill="url(#warm-glow)"/><path d="${c.poly([[-125, -8], [100, -8], [96, -1], [-122, -1]])}" fill="${C.lampGlow}" opacity=".8"/></g>`);
     const qEl = light.add(`<g opacity="0">${paperLabel('?', { size: 40 })}</g>`);
     const sparks = spots.map(() => light.add(`<g opacity="0">${sparkle(c, 20)}</g>`));
-    const SPARK_AT = [[462, 628], [1010, 290], [1150, 405], [1196, 548]];
+    const SPARK_AT = [[COIN - 12, 628], [1010, 290], [NX + 25, 405], [CATX + 46, 548]];
 
     return (t, time) => {
       const blink = blinkAt(time);
       /* ---------- the householder's choreography ---------- */
       let hx = 430, flip = false, armF = 55, armB = 8, lean = 0, head = 0, walk, kneel = 0, ho = seg(t, -0.05, 0.06);
       let lampX, lampY, held = 1;           // held: 1 = lamp in hand
-      const floorSpot = [690, FLOOR], bedSpot = [1060, FLOOR], standTop = [655, 463];
-      let bx = 540, by = FLOOR - 42, br = 0, bushHeld = 0;   // bushel centre & rotation
+      const floorSpot = [690, FLOOR], bedSpot = [1060 + BX, FLOOR], standTop = [655, 463];
+      let bx = BUSH, by = FLOOR - 42, br = 0, bushHeld = 0;   // bushel centre & rotation
       if (t < 0.18) { const k = seg(t, -0.02, 0.18); hx = lerp(430, 620, ease.out(k)); walk = k > 0 && k < 1 ? hx * 0.055 : undefined; }
       else hx = 620;
       // set the lamp down
@@ -271,11 +278,11 @@ export default {
       const stepBack = es(t, 1.5, 1.7);
 
       if (t >= 0.64) {
-        hx = lerp(620, 880, toBed);
+        hx = lerp(620, 880 + BX, toBed);
         if (toBed > 0 && toBed < 1) walk = hx * 0.055;
       }
       if (t >= 1.14) {
-        hx = lerp(880, 700, toStand);
+        hx = lerp(880 + BX, 700, toStand);
         flip = toStand > 0;
         if (toStand > 0 && toStand < 1) walk = hx * 0.055;
         hx = lerp(hx, 830, stepBack);
@@ -321,12 +328,12 @@ export default {
       // bushel
       if (t >= 0.27) {
         const gp = hand(hx, FEET, 1, flip, armF, lean);
-        if (cover1 <= 0) { bx = 540; by = FLOOR - 42 - grab * 8; }
+        if (cover1 <= 0) { bx = BUSH; by = FLOOR - 42 - grab * 8; }
         else {
-          bx = lerp(540, floorSpot[0], cover1); by = lerp(FLOOR - 50, FLOOR - 42, cover1) - Math.sin(cover1 * PI) * 230; br = 180 * cover1;
+          bx = lerp(BUSH, floorSpot[0], cover1); by = lerp(FLOOR - 50, FLOOR - 42, cover1) - Math.sin(cover1 * PI) * 230; br = 180 * cover1;
         }
         if (lift > 0) {
-          bx = lerp(floorSpot[0], 540, lift); by = FLOOR - 42 - Math.sin(lift * PI) * 230; br = 180 + 180 * lift;
+          bx = lerp(floorSpot[0], BUSH, lift); by = FLOOR - 42 - Math.sin(lift * PI) * 230; br = 180 + 180 * lift;
         }
         bushHeld = gp ? 1 : 0;
       }
@@ -375,20 +382,20 @@ export default {
       swing(moonEl, 650, 225, time, 1.2, 0.6);
 
       /* ---------- v22: the hidden things come to light ---------- */
-      pose(jarEl, { x: 444 - rev[0] * 4, y: FLOOR, r: -rev[0] * 80, ox: -26, oy: 0 });
+      pose(jarEl, { x: JAR - rev[0] * 4, y: FLOOR, r: -rev[0] * 80, ox: -26, oy: 0 });
       const hop = bump(t, REV[0] + 0.06, REV[0] + 0.2);
-      pose(coinEl, { x: 474, y: FLOOR - 10.5 - hop * 40, s: 1.5, sx: Math.cos(seg(t, REV[0] + 0.06, REV[0] + 0.2) * PI * 4), ox: 0, oy: -7 });
+      pose(coinEl, { x: COIN, y: FLOOR - 10.5 - hop * 40, s: 1.5, sx: Math.cos(seg(t, REV[0] + 0.06, REV[0] + 0.2) * PI * 4), ox: 0, oy: -7 });
       pose(keyEl, { x: 1010, y: 232, r: Math.sin((t - REV[1]) * 22) * 18 * bump(t, REV[1], REV[1] + 0.5) + Math.sin(time * 1.3) * 1.5 });
       const unroll = es(t, REV[2], REV[2] + 0.2);
-      pose(scrollSheetEl, { x: 1125, y: 416, sy: 0.04 + unroll * 0.96 });
-      pose(rodBottom, { x: 1125, y: 416 + unroll * 84 });
+      pose(scrollSheetEl, { x: NX, y: 416, sy: 0.04 + unroll * 0.96 });
+      pose(rodBottom, { x: NX, y: 416 + unroll * 84 });
       const wake = es(t, REV[3], REV[3] + 0.14);
       const perk = es(t, 3.3, 3.5);
       pose(catHead, { x: -32, y: -20 - wake * 8, r: 24 * (1 - wake) - perk * 6 + Math.sin(time * 0.8) * wake * 3, ox: 10, oy: 8 });
       fade(catOpen, wake > 0.5 ? 1 - blinkAt(time, 2) : 0);
       fade(catShut, wake > 0.5 ? blinkAt(time, 2) : 1);
       pose(catTail, { x: 38, y: -10, r: -30 + wake * (20 + Math.sin(time * 2.2) * 18) });
-      pose(catEl, { x: 1150, y: 602 + Math.sin(time * 1.4) * 0.8 * (1 - wake), sy: 1 + Math.sin(time * 1.4) * 0.02 * (1 - wake), ox: 0, oy: 0 });
+      pose(catEl, { x: CATX, y: 602 + Math.sin(time * 1.4) * 0.8 * (1 - wake), sy: 1 + Math.sin(time * 1.4) * 0.02 * (1 - wake), ox: 0, oy: 0 });
       sparks.forEach((sp, i) => {
         const a = REV[i] + 0.06;
         const pop = es(t, a, a + 0.12, ease.back);
@@ -404,10 +411,10 @@ export default {
         const r = rise(a);
         p.set({ x, y: FEET + (1 - r) * 330, s: 0.95, flip: fl, o: seg(t, a - 0.02, a + 0.06), lean: lean23 * (fl ? -7 : 7), head: lean23 * (fl ? 4 : -4) + Math.sin(time * 0.9 + i) * 1.5, blink: blinkAt(time, i + 1), ...extra });
       };
-      listen(d1, 370, false, 3.12, 1, { armF: 20 + lean23 * 30 });
-      listen(d2, 530, false, 3.06, 2, { armF: lean23 * 62, armB: 10 });
-      listen(d3, 1040, true, 3.09, 3, { armF: lean23 * 35 });
-      listen(d4, 1170, true, 3.15, 4, { armF: lean23 * 75 });
+      listen(d1, P ? 515 : 370, false, 3.12, 1, { armF: 20 + lean23 * 30 });
+      listen(d2, P ? 595 : 530, false, 3.06, 2, { armF: lean23 * 62, armB: 10 });
+      listen(d3, P ? 975 : 1040, true, 3.09, 3, { armF: lean23 * 35 });
+      listen(d4, P ? 1040 : 1170, true, 3.15, 4, { armF: lean23 * 75 });
       const jr = rise(3.02);
       const raiseJ = es(t, 3.22, 3.42);
       jesus.set({ x: 800, y: FEET + 2 + (1 - jr) * 340, s: 1.05, o: seg(t, 3.0, 3.08), armF: raiseJ * 112 + Math.sin(time * 1.2) * 4 * raiseJ, armB: 12 + raiseJ * 10, head: -raiseJ * 5, blink });

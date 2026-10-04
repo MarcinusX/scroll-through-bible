@@ -153,12 +153,15 @@ export default {
   cam: { x: [-20, 20], y: [-70, 50], z: [0.84, 1.2] },
   build(S) {
     const c = S.c;
+    // phone: cards, seeds and labels hang inward, clear of the frame and the thread, and wait far above the
+    // tall screen (K stretches every parking distance); the sun and the travellers come inward too
+    const P = S.portrait, K = P ? 2 : 1;
     const SKY = [C.skyBlue, mix(C.skyBlue, C.cream, 0.55), C.cream];
     const SKY2 = [mix(C.skyBlue, C.skyBlue2, 0.5), mix(C.skyBlue, C.dawn, 0.5), C.dawn];
     const sk = sky(S, SKY);
 
     const hangL = S.layer({ par: 0.05, sh: 5 });
-    const sunEl = hanging(hangL, sun(c, 46), { x: 1250, y: 150, len: 800 });
+    const sunEl = hanging(hangL, sun(c, 46), { x: P ? 1040 : 1250, y: P ? 40 : 150, len: 800 });
     const cl1 = hanging(hangL, cloud(c, 190), { x: 420, y: 150, len: 700 });
     const cl2 = hanging(hangL, cloud(c, 130), { x: 1080, y: 230, len: 700 });
 
@@ -255,18 +258,19 @@ export default {
       { opts: { robe: C.tealRobe, mantle: C.stone, hair: C.hair3, hairStyle: 'wrap', veil: C.ochreRobe, beard: 'full', skin: C.skin4 }, from: -120, x: 470, y: 648, flip: false },
       { opts: { robe: C.roseRobe, hair: C.hair, hairStyle: 'veil', veil: C.blushVeil, skin: C.skin }, from: 1720, x: 1135, y: 652, flip: true },
     ].map((tv) => ({ ...tv, walk: S.puppet(folk.add(person(c, tv.opts))), sit: S.puppet(folk.add(person(c, { ...tv.opts, pose: 'sit' }))) }));
+    if (P) { trav[0].x = 500; trav[1].x = 1085; }
 
     /* ---------- picture cards, the seed line-up, the magnifier ---------- */
     const cards = S.layer({ par: 0.55, sh: 7 });
     const ideas = [
-      { icon: crownIcon(c), x: 545, y: 300 },
+      { icon: crownIcon(c), x: P ? 590 : 545, y: 300 },
       { icon: palaceIcon(c), x: 800, y: 235 },
-      { icon: mountainIcon(c), x: 1055, y: 300 },
+      { icon: mountainIcon(c), x: P ? 1010 : 1055, y: 300 },
     ].map((d, i) => ({ ...d, i, el: hanging(cards, card(c, 140, 118, d.icon), { x: d.x, y: d.y, len: 700 }) }));
     const KINDS = [['bean', tr('fasola', 'bean')], ['olive', tr('oliwka', 'olive')], ['wheat', tr('pszenica', 'wheat')], ['lentil', tr('soczewica', 'lentil')], ['mustard', tr('gorczyca', 'mustard')]];
     const lineup = KINDS.map(([k, name], i) => {
       const inner = `<g transform="translate(0 -10)">${seedIcon(c, k)}</g><g transform="translate(0 38) scale(.5)">${paperLabel(name, { size: 30, fill: C.parchment })}</g>`;
-      return { i, x: 520 + i * 140, y: 285, el: hanging(cards, card(c, 104, 104, inner), { x: 0, y: 0, len: 700 }) };
+      return { i, x: P ? 535 + i * 114 : 520 + i * 140, y: 285, el: hanging(cards, card(c, 104, 104, inner), { x: 0, y: 0, len: 700 }) };
     });
     const smallest = hanging(cards, paperLabel(tr('najmniejsze', 'the smallest'), { size: 26, fill: C.halo }), { x: 0, y: 0, len: 800 });
     const mag = hanging(cards, magnifier(c, `<g transform="scale(6.5)">${seedIcon(c, 'mustard')}</g><circle cx="-5" cy="-5" r="4.5" fill="${C.cream}" opacity=".55"/>`), { x: 0, y: 0, len: 800 });
@@ -280,7 +284,7 @@ export default {
 
     return (t, time) => {
       sk.blend(SKY, SKY2, es(t, 3, 5));
-      pose(sunEl, { x: 1250 - es(t, 0, 5) * 60, y: 150 + Math.sin(time * 0.6) * 3, r: Math.sin(time * 0.7) * 1.2 });
+      pose(sunEl, { x: (P ? 1040 : 1250) - es(t, 0, 5) * 60, y: (P ? 40 : 150) + Math.sin(time * 0.6) * 3, r: Math.sin(time * 0.7) * 1.2 });
       pose(cl1, { x: 420 + seg(t, 0, 5) * 120 + Math.sin(time * 0.12) * 15, y: 150, r: Math.sin(time * 0.6) * 1.5 });
       pose(cl2, { x: 1080 - seg(t, 0, 5) * 90 + Math.sin(time * 0.1 + 2) * 15, y: 230, r: Math.sin(time * 0.7 + 1) * 1.5 });
       const blink = blinkAt(time);
@@ -290,7 +294,7 @@ export default {
         const inn = es(t, 0.08 + d.i * 0.12, 0.3 + d.i * 0.12, ease.back);
         const out = es(t, 0.62 + d.i * 0.04, 0.8 + d.i * 0.04);
         const doubt = bump(t, 0.5 + d.i * 0.03, 0.66 + d.i * 0.03);
-        pose(d.el, { x: d.x, y: d.y - (1 - inn) * 520 - out * 560, r: Math.sin(time * 0.9 + d.i * 2) * 2 + doubt * Math.sin(t * 90 + d.i) * 7, o: inn > 0.001 && out < 0.999 ? 1 : 0 });
+        pose(d.el, { x: d.x, y: d.y - (1 - inn) * 520 * K - out * 560 * K, r: Math.sin(time * 0.9 + d.i * 2) * 2 + doubt * Math.sin(t * 90 + d.i) * 7, o: inn > 0.001 && out < 0.999 ? 1 : 0 });
       });
       const look = t < 0.62 ? [(-1), 0, 1][Math.min(2, Math.floor(seg(t, 0.12, 0.6) * 3))] : 0;
       const seedIn = es(t, 0.72, 0.9);
@@ -301,9 +305,9 @@ export default {
       pose(plate, { x: 800, y: 470 + (1 - close) * 700, s: 0.6 + close * 0.4, r: (1 - close) * 8, o: close > 0.001 ? 1 : 0 });
       pose(hand, { x: 800, y: 530 + (1 - close) * 760 + Math.sin(time * 0.8) * 3, r: (1 - close) * -10, o: close > 0.001 ? 1 : 0 });
       const magIn = es(t, 1.25, 1.5, ease.back) * (1 - es(t, 1.85, 2.0));
-      pose(bigMag, { x: 800 - 5, y: 518 - (1 - magIn) * 700, r: Math.sin(time * 0.8) * 1.5 });
+      pose(bigMag, { x: 800 - 5, y: 518 - (1 - magIn) * 700 * K, r: Math.sin(time * 0.8) * 1.5 });
       const nameIn = es(t, 1.4, 1.6, ease.back) * (1 - es(t, 1.85, 2.0));
-      pose(gorLabel, { x: 1045, y: 330 - (1 - nameIn) * 600, r: Math.sin(time * 0.9 + 1) * 2.5 });
+      pose(gorLabel, { x: P ? 925 : 1045, y: 330 - (1 - nameIn) * 600 * K, r: Math.sin(time * 0.9 + 1) * 2.5 });
 
       /* --- beat 2: sown into the garden; the smallest of all seeds --- */
       const toss = seg(t, 2.02, 2.28);
@@ -318,12 +322,12 @@ export default {
       lineup.forEach((l) => {
         const inn = es(t, 2.3 + l.i * 0.07, 2.5 + l.i * 0.07, ease.back);
         const out = es(t, 2.9 + (4 - l.i) * 0.03, 3.08 + (4 - l.i) * 0.03);
-        pose(l.el, { x: l.x, y: l.y - (1 - inn) * 520 - out * 560, r: Math.sin(time * 0.8 + l.i * 1.7) * 2, o: inn > 0.001 && out < 0.999 ? 1 : 0 });
+        pose(l.el, { x: l.x, y: l.y - (1 - inn) * 520 * K - out * 560 * K, r: Math.sin(time * 0.8 + l.i * 1.7) * 2, o: inn > 0.001 && out < 0.999 ? 1 : 0 });
       });
       const mIn = es(t, 2.62, 2.8, ease.back) * (1 - es(t, 2.9, 3.05));
-      pose(mag, { x: 1080 + 8, y: 275 - (1 - mIn) * 600, s: 0.72, r: Math.sin(time * 0.9) * 2 });
+      pose(mag, { x: (P ? 991 : 1080) + 8, y: 275 - (1 - mIn) * 600 * K, s: 0.72, r: Math.sin(time * 0.9) * 2 });
       const sIn = es(t, 2.72, 2.88, ease.back) * (1 - es(t, 2.92, 3.06));
-      pose(smallest, { x: 1080, y: 380 - (1 - sIn) * 700, r: Math.sin(time + 2) * 3 });
+      pose(smallest, { x: P ? 965 : 1080, y: 380 - (1 - sIn) * 700 * K, r: Math.sin(time + 2) * 3 });
 
       /* --- beats 3–4: it grows past the vegetables into a great tree --- */
       const g1 = es(t, 3.15, 3.85);                  // young tree

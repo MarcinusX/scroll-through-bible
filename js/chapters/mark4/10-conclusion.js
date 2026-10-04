@@ -39,6 +39,9 @@ export default {
   cam: { x: [-10, 10], y: [0, 70], z: [1, 1.16] },
   build(S) {
     const c = S.c;
+    // phone: the sun, its glitter on the lake, the moon, the ring of parables and the outermost
+    // disciples come inward, clear of the frame and the progress thread
+    const P = S.portrait, SUNX = P ? 1000 : 1130, SUNY = P ? 340 : 230, MOONX = P ? 990 : 1260;
     const GOLD = [mix(C.skyBlue, C.dawn, 0.4), mix(C.dawn, C.sun, 0.18), C.apricot];
     const DUSK = [C.duskViolet, C.dusk, C.apricot];
     const EVE = [mix(C.indigo, C.duskViolet, 0.45), C.duskViolet, mix(C.dusk, C.duskViolet, 0.3)];
@@ -47,8 +50,8 @@ export default {
     /* heavens on strings: the sun sets on the right, the moon rises on the left */
     const hangL = S.layer({ par: 0.05, sh: 4 });
     const starsEl = hangL.add(`<g opacity="0">${stars(c, { x0: -500, x1: 2100, y0: -200, y1: 330, n: 60 })}</g>`);
-    const sunEl = hanging(hangL, sun(c, 50), { x: 1130, y: 230, len: 700 });
-    const moonEl = hanging(hangL, moon(c, 32), { x: 1260, y: 520, len: 700 });
+    const sunEl = hanging(hangL, sun(c, 50), { x: SUNX, y: SUNY, len: 700 });
+    const moonEl = hanging(hangL, moon(c, 32), { x: MOONX, y: 520, len: 700 });
     const cl1 = hanging(hangL, cloud(c, 190, C.cream, C.peach), { x: 560, y: 170, len: 600 });
     const cl2 = hanging(hangL, cloud(c, 140, C.cream, C.peach), { x: 1000, y: 130, len: 600 });
 
@@ -62,7 +65,7 @@ export default {
     const lakeL = S.layer({ par: 0.18, sh: 2 });
     lakeL.add(waterBand(c, { y: 400, color: mix(C.lake, C.dawn, 0.2), foamN: 26 }).markup);
     let glit = '';
-    for (let i = 0; i < 16; i++) { const y = 408 + i * 5 + c.rr(-2, 2), w = 60 - i * 2.4 + c.rr(-8, 8); glit += c.ribbon([[1130 - w / 2 + c.rr(-10, 10), y], [1130 + w / 2 + c.rr(-10, 10), y]], 2.2); }
+    for (let i = 0; i < 16; i++) { const y = 408 + i * 5 + c.rr(-2, 2), w = 60 - i * 2.4 + c.rr(-8, 8); glit += c.ribbon([[SUNX - w / 2 + c.rr(-10, 10), y], [SUNX + w / 2 + c.rr(-10, 10), y]], 2.2); }
     const glitter = lakeL.add(`<g><path d="${glit}" fill="${C.lampGlow}" opacity=".75"/></g>`);
     const b = boat(c, { mast: true });
     const boatEl = lakeL.add(`<g>${b.back}${b.front}</g>`);
@@ -114,7 +117,7 @@ export default {
       `<g transform="translate(0 32) scale(.13)">${mustardTree(c, { h: 420 }).replace(/class="grow"/g, '')}</g>`,
       `<g transform="translate(6 2) scale(.52) rotate(20)">${sickle(c)}</g>`,
     ];
-    const HIGH = [[445, 262], [580, 196], [712, 250], [888, 232], [1020, 190], [1155, 258]];
+    const HIGH = P ? [[515, 262], [604, 196], [705, 250], [880, 232], [978, 190], [1052, 258]] : [[445, 262], [580, 196], [712, 250], [888, 232], [1020, 190], [1155, 258]];
     const LOW = [[600, 470], [650, 400], [735, 358], [865, 358], [950, 400], [1000, 470]];
     const plates = ICONS.map((icon, i) => {
       const disc = sheet().p(c.cut(c.circ(0, 0, 42, 30), 0.6, 5), C.cream).p(c.cut(c.circ(0, 0, 36, 28), 0.4, 5), C.parchment).out();
@@ -133,12 +136,12 @@ export default {
     const jStand = S.puppet(main.add(person(c, { ...CAST.jesus })));
     const jSit = S.puppet(main.add(person(c, { ...CAST.jesus, pose: 'sit' })));
     const DIS = [
-      { o: CAST.thomas, x: 452, y: 688, s: 0.8, cx: 575, cy: 660 },
+      { o: CAST.thomas, x: P ? 515 : 452, y: 688, s: 0.8, cx: 575, cy: 660 },
       { o: CAST.peter, x: 560, y: 716, s: 0.88, cx: 648, cy: 712 },
       { o: CAST.andrew, x: 668, y: 700, s: 0.82, cx: 700, cy: 646 },
       { o: CAST.john, x: 932, y: 700, s: 0.82, cx: 900, cy: 646 },
       { o: CAST.james, x: 1040, y: 716, s: 0.88, cx: 952, cy: 712 },
-      { o: CAST.matthew, x: 1148, y: 688, s: 0.8, cx: 1025, cy: 660 },
+      { o: CAST.matthew, x: P ? 1080 : 1148, y: 688, s: 0.8, cx: 1025, cy: 660 },
     ].map((d, i) => ({ ...d, i, flip: d.x > 800, seed: c.rr(0, 9), glow: main.add(`<g opacity="0">${insight(c)}</g>`), p: S.puppet(main.add(person(c, { ...d.o, pose: 'sit' }))) }));
 
     /* foreground */
@@ -151,9 +154,9 @@ export default {
       const dusk = es(t, 1.6, 2.9), eve = es(t, 2.9, 3.8);
       if (eve > 0) sk.blend(DUSK, EVE, eve); else sk.blend(GOLD, DUSK, dusk);
       fade(starsEl, eve);
-      pose(sunEl, { x: 1130, y: lerp(230, 470, es(t, 0, 3.4, ease.sine)), r: Math.sin(T * 0.7) * 1.2 });
+      pose(sunEl, { x: SUNX, y: lerp(SUNY, 470, es(t, 0, 3.4, ease.sine)), r: Math.sin(T * 0.7) * 1.2 });
       fade(glitter, 1 - es(t, 2.4, 3.2));
-      pose(moonEl, { x: 1260, y: lerp(520, 165, es(t, 2.9, 4, ease.out)), r: Math.sin(T * 0.6 + 1) * 1.2 });
+      pose(moonEl, { x: MOONX, y: lerp(520, 165, es(t, 2.9, 4, ease.out)), r: Math.sin(T * 0.6 + 1) * 1.2 });
       pose(cl1, { x: 560 + t * 18, y: 170, r: Math.sin(T * 0.6) * 1.4 });
       pose(cl2, { x: 1000 - t * 14, y: 130, r: Math.sin(T * 0.8 + 2) * 1.4 });
       pose(boatEl, { x: 1245, y: 468 + Math.sin(T * 1.3) * 1.5, s: 0.4, r: Math.sin(T * 1.1) * 1.2 });
