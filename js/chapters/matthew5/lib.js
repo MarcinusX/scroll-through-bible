@@ -260,7 +260,7 @@ export function pack(c) {
 }
 /** a single hair, magnified on a round lens; .hairW / .hairB colours can be faded. origin: centre */
 export function hairLens(c, r = 70) {
-  const s = sheet().p(c.cut(c.circ(0, 0, r + 8, 40), 0.4, 5), C.wood2).p(c.cut(c.ribbon([[r * 0.6, r * 0.6], [r * 1.5, r * 1.5]], 16), 0.3, 6), C.wood);
+  const s = sheet().p(c.cut(c.circ(0, 0, r + 8, 40), 0.4, 5), C.wood2).p(c.ribbon([[r * 0.6, r * 0.6], [r * 1.5, r * 1.5]], 16), C.wood); // ribbon() is already a path
   const glass = `<circle r="${r}" fill="${mix(C.skin, C.dawn, 0.4)}"/><circle r="${r}" fill="url(#halo-glow)" opacity=".35"/>`;
   const path = c.qbez([-r * 0.7, r * 0.3], [0, -r * 0.6], [r * 0.7, r * 0.1], 16);
   const hairB = `<g class="hairB"><path d="${c.ribbon(path, 5)}" fill="${C.hair3}"/></g>`;
