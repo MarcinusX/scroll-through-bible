@@ -91,15 +91,18 @@ export default {
       swing(moonEl, 1000, 170 + dawnK * 400, T, 0.8, 0.5);
 
       /* v10 — the king sends; in the prison, John prays; a shadow comes; the cloth falls, the candle goes out */
-      const send = bump(t, -0.2, 0.5);
+      // the sending arm stays up, pointing at the prison, until the deed is done (so the swipe stop shows the order)
+      const send = t < 0.15 ? bump(t, -0.2, 0.5) : 1 - es(t, 0.8, 0.95);
       herod.set({ x: DOOR - 10, y: Y - 8, s: 0.98, o: 1 - es(t, 0.95, 1.1), armF: send * 95, armB: 10, head: 8, blink: blinkAt(T, 1) });
       attr(hSad, 'opacity', '0.9');
       const gKeys = [[0.0, DOOR + 40], [0.35, WIN.x + 145], [1.05, WIN.x + 145], [1.35, DOOR + 70]];
       const gx = kf(t, gKeys);
-      const inside = es(t, 0.36, 0.42) * (1 - es(t, 1.02, 1.08));
+      // in to John; out again at the door when the candle goes out (the executioner, seen at the swipe stop);
+      // back in for the platter, and out with it
+      const inside = es(t, 0.36, 0.42) * (1 - es(t, 0.68, 0.74)) + es(t, 0.88, 0.94) * (1 - es(t, 1.02, 1.08));
       const carrying = t > 1.05 ? 1 : 0;
       const handOver = es(t, 1.35, 1.42);
-      guard.set({ x: gx, y: Y + 6, s: 0.96, flip: t > 1.05, o: (1 - inside) * (1 - es(t, 1.5, 1.65)), walk: moving(t, gKeys) ? gx * 0.05 : undefined, armF: 20 + carrying * 60 * (1 - handOver), head: carrying * 14, blink: blinkAt(T, 5) });
+      guard.set({ x: gx, y: Y + 6, s: 0.96, flip: t > 0.6, o: (1 - inside) * (1 - es(t, 1.5, 1.65)), walk: moving(t, gKeys) ? gx * 0.05 : undefined, armF: 20 + carrying * 60 * (1 - handOver), head: carrying * 14, blink: blinkAt(T, 5) });
       if (guardHold) guardHold.setAttribute('opacity', String(carrying * (1 - handOver)));
       pose(johnSh, { x: WIN.x - 20, y: WIN.y + WIN.h + 4, s: 0.56, sx: -1, o: 1 - es(t, 0.66, 0.7) });
       const gs = es(t, 0.42, 0.55);

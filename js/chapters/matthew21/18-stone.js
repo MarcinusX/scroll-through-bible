@@ -131,17 +131,17 @@ export default {
 
       /* v44 — the jar falls on the stone and breaks; the stone falls on the sheaf and scatters it */
       const sIn = es(t, 4.02, 4.2, ease.out);
-      const sDrop = es(t, 4.48, 4.6, ease.in);
+      const sDrop = es(t, 4.4, 4.5, ease.in);
       const SXs = 720, SYs = 340;
       pose(bigStone, { x: lerp(SXs, 930, sDrop), y: lerp(-600, SYs, sIn) + sDrop * 60, r: sDrop * 20, o: 1 - es(t, 4.95, 5.05) });
-      const jar = es(t, 4.12, 4.28, ease.in);
-      const brk = es(t, 4.28, 4.5);
-      [potL, potR].forEach((p, i) => pose(p, { x: SXs + (i ? 1 : -1) * brk * 60, y: lerp(-300, SYs - 46, jar) + brk * 60, r: (i ? 1 : -1) * brk * 70, o: jar > 0 ? 1 - es(t, 4.7, 4.9) : 0 }));
-      shards.forEach((s) => { const k = seg(t, 4.28, 4.55); pose(s.el, { x: SXs + Math.cos(s.a) * s.v * k, y: SYs - 46 + Math.sin(s.a) * s.v * Math.sin(k * PI * 0.8) + k * 40, r: k * 400, o: k > 0 && k < 1 ? 1 : 0 }); });
-      pose(sheaf, { x: 930, y: SYs + 106, o: es(t, 4.05, 4.15) * (1 - seg(t, 4.58, 4.6)) });
+      const jar = es(t, 4.08, 4.2, ease.in);
+      const brk = es(t, 4.2, 4.34);
+      [potL, potR].forEach((p, i) => pose(p, { x: SXs + (i ? 1 : -1) * brk * 60, y: lerp(-300, SYs - 46, jar) + brk * 60, r: (i ? 1 : -1) * brk * 70, o: jar > 0 ? 1 - es(t, 4.92, 5.05) : 0 }));   // the broken halves stay by the stone to the landing
+      shards.forEach((s) => { const k = seg(t, 4.2, 4.42); pose(s.el, { x: SXs + Math.cos(s.a) * s.v * k, y: SYs - 46 + Math.sin(s.a) * s.v * Math.sin(k * PI * 0.8) + k * 40, r: k * 400, o: k > 0 && k < 1 ? 1 : 0 }); });
+      pose(sheaf, { x: 930, y: SYs + 106, o: es(t, 4.05, 4.15) * (1 - seg(t, 4.48, 4.5)) });
       chaff.forEach((ch) => {
-        const k = es(t, 4.6, 5.0, ease.out);
-        pose(ch.el, { x: 930 + Math.cos(ch.a) * ch.v * k * 1.5, y: SYs + 80 + Math.sin(ch.a) * ch.v * k, s: 0.6 + k * 0.8, r: k * 90 * (ch.i % 2 ? 1 : -1), o: k > 0 ? 1 - es(t, 4.85, 5.05) : 0 });
+        const k = es(t, 4.5, 4.68, ease.out);
+        pose(ch.el, { x: 930 + Math.cos(ch.a) * ch.v * k * 1.5, y: SYs + 80 + Math.sin(ch.a) * ch.v * k, s: 0.6 + k * 0.8, r: k * 90 * (ch.i % 2 ? 1 : -1), o: k > 0 ? 1 - es(t, 4.92, 5.05) : 0 });
       });
 
       /* v45 — the chief priests and the Pharisees see that He speaks of them */

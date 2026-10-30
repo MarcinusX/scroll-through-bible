@@ -77,8 +77,9 @@ export default {
         const [hx, hy] = headAt(x, y, 0.94, true);
         const sk = bump(t, 3.2 + b.i * 0.1, 4.1);
         pose(sparks[b.i], { x: hx - 8, y: hy - 3, s: 0.6 + sk * 0.6, r: T * 40, o: sk });
-        const bk = bump(t, 4.05, 4.6);
-        pose(bursts[b.i], { x: hx - 6, y: hy, s: 0.4 + es(t, 4.05, 4.5) * 1.0, r: t * 20, o: bk });
+        // the flash dies down to a small glow that stays on their opened eyes as they follow
+        const bk = es(t, 4.05, 4.2) * (1 - 0.6 * es(t, 4.45, 4.7));
+        pose(bursts[b.i], { x: hx - 6, y: hy, s: 0.4 + es(t, 4.05, 4.5) * 1.0 - es(t, 4.45, 4.7) * 0.75, r: t * 20, o: bk });
       });
       pose(callB, { x: JX + 20, y: G - 226, s: es(t, 0.05, 0.2, ease.back), o: t > 0.05 && t < 1 ? 1 - es(t, 0.88, 1) : 0 });
       pose(what, { x: JX + 20, y: G - 226, s: es(t, 1.05, 1.2, ease.back), o: t > 1.05 && t < 2 ? 1 - es(t, 1.88, 2) : 0 });

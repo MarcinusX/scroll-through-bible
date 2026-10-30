@@ -17,7 +17,7 @@ export default {
   id: 'mt17-galilee',
   beats: [
     { v: 22 },
-    { v: 23, text: 'Oni zabiją Go, ale trzeciego dnia zmartwychwstanie».' },
+    { v: 23, text: 'Oni zabiją Go, ale trzeciego dnia zmartwychwstanie».', land: 0.92 },   // swipe stop: the sun is up, the three moons still hang
     { v: 23, cont: true, text: 'I bardzo się zasmucili.' },
   ],
   cam: { x: [-30, 30], y: [-20, 40], z: [1, 1.12] },
@@ -31,7 +31,8 @@ export default {
     starL.add(stars(c, { x0: -600, x1: 2200, y0: -400, y1: 420, n: 120 }));
     const hangL = S.layer({ par: 0.04, sh: 4 });
     const sunDown = hanging(hangL, sun(c, 36, { rays: C.sunDeep, disc: '#f0a868', inner: '#f5c08a' }), { x: 1220, y: 360, len: 900 });
-    const moons = [0, 1, 2].map((i) => ({ i, x: 900 + i * 110, el: hanging(hangL, `<circle r="80" fill="url(#halo-glow)" opacity=".45"/>${moon(c, 26)}`, { x: 900 + i * 110, y: 170, len: 900 }) }));
+    const MX = S.portrait ? 830 : 900;   // phone: the third moon would sit half outside the frame
+    const moons = [0, 1, 2].map((i) => ({ i, x: MX + i * 110, el: hanging(hangL, `<circle r="80" fill="url(#halo-glow)" opacity=".45"/>${moon(c, 26)}`, { x: MX + i * 110, y: 170, len: 900 }) }));
     const dawnL = S.layer({ par: 0.05, sh: 1, flat: true });
     const dawnRays = dawnL.add(`<g opacity="0"><circle r="300" fill="url(#warm-glow)"/>${rays(c, { n: 18, r0: 60, r1: 700, spread: 0.05, color: '#fff1c8' })}</g>`);
     const risingSun = hanging(hangL, sun(c, 46), { x: 1010, y: 470, len: 1000 });
@@ -87,7 +88,8 @@ export default {
       starL.fade(night);
       swing(sunDown, 1220, 360 + es(t, 0, 1.1) * 300, T, 1, 0.6);
       moons.forEach((m) => {
-        const on = es(t, 1.2 + m.i * 0.12, 1.3 + m.i * 0.12, ease.back) * (1 - es(t, 1.58, 1.7));
+        // the three moons (three days) stay up into the dawn and go with the plate, so the stop shows the nights and the rising together
+        const on = es(t, 1.2 + m.i * 0.12, 1.3 + m.i * 0.12, ease.back) * (1 - es(t, 2.0, 2.2));
         swing(m.el, m.x, lerp(-1000, 170, on), T, 1, 0.6, m.i);
       });
       const up = es(t, 1.62, 1.9, ease.out) * (1 - es(t, 2.05, 2.4));

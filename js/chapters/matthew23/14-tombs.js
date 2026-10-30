@@ -76,18 +76,17 @@ export default {
       swing(cl, 1100 + (Tm ? Math.sin(Tm * 0.1) * 20 : 0), 130, Tm, 1.2, 0.7, 1);
       woe(es(t, 0.02, 0.25, ease.out) * (1 - es(t, 0.9, 1.05)), Tm);
 
-      /* v27a — whitewashing: brush strokes, then the whole façade white */
-      const wash = es(t, 0.15, 0.85);
+      /* v27a — whitewashing: brush strokes, then the whole façade white, its garland hung (all done by x.7) */
       strokes.forEach((s) => {
-        const k = es(t, 0.15 + s.i * 0.1, 0.25 + s.i * 0.1);
-        pose(s.el, { x: TX - 150 + (s.i % 2) * 150 - 70 * (s.i % 2), y: GY - 40 - s.i * 34, sx: k, sy: 1, o: (k > 0.02 ? 1 : 0) * (1 - es(t, 0.8, 0.95)) });
+        const k = es(t, 0.1 + s.i * 0.07, 0.2 + s.i * 0.07);
+        pose(s.el, { x: TX - 150 + (s.i % 2) * 150 - 70 * (s.i % 2), y: GY - 40 - s.i * 34, sx: k, sy: 1, o: (k > 0.02 ? 1 : 0) * (1 - es(t, 0.5, 0.6)) });
       });
-      pose(white, { x: TX, y: GY, o: es(t, 0.7, 0.95) });
-      const brushing = es(t, 0.1, 0.2) * (1 - es(t, 0.9, 1.0));
+      pose(white, { x: TX, y: GY, o: es(t, 0.45, 0.62) });
+      const brushing = es(t, 0.1, 0.2) * (1 - es(t, 0.58, 0.68));
       const bw = Math.sin(t * 30) * 20 * brushing;
       worker.set({ x: TX - 150, y: GY + 4, s: 0.96, armF: 60 + bw + brushing * 30, armB: 20, head: -6, lean: 4, o: 1 - es(t, 1.9, 2.05), blink: blinkAt(Tm, 1) });
       scribe.set({ x: TX + 150, y: GY + 6, s: 0.96, flip: true, armF: 60 - bw + brushing * 30, armB: 20, head: -8, lean: 4, o: 1 - es(t, 1.9, 2.05), blink: blinkAt(Tm, 3) });
-      pose(wreath, { x: TX - 55, y: lerp(-400, GY - TH * 0.5 + 6, es(t, 0.75, 0.95, ease.out)), o: es(t, 0.74, 0.8) });
+      pose(wreath, { x: TX - 55, y: lerp(-400, GY - TH * 0.5 + 6, es(t, 0.5, 0.66, ease.out)), o: es(t, 0.49, 0.55) });
 
       /* v27b — it gleams; then the stone rolls aside: dust, cobwebs, bones */
       const roll = es(t, 1.35, 1.6);

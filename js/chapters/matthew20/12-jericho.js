@@ -17,11 +17,12 @@ export default {
     { v: 31, text: 'Tłum nastawał na nich, żeby umilkli;' },
     { v: 31, cont: true, text: 'lecz oni jeszcze głośniej wołali: «Panie, ulituj się nad nami, Synu Dawida!».' },
   ],
-  cam: { x: [-280, 120], y: [-20, 30], z: [1, 1.1] },
+  cam: { x: [-580, 120], y: [-20, 30], z: [1, 1.1] },
   build(S) {
     const c = S.c;
     const J = jerichoSet(S);
     const G = JR.G;
+    if (S.portrait) J.cityL.shift(110, 0);   // phone: bring the city gate into the first frame, which he comes out of
 
     /* the great crowd (whole cut-outs that only move) */
     const crowdL = S.layer({ par: 0.5, sh: 4 });
@@ -56,9 +57,10 @@ export default {
         const x = jx + d.dx * (0.4 + out * 0.6);
         d.p.set({ x, y: G + d.dy, s: 0.86, o: seg(t, -0.15 + d.i * 0.03, 0 + d.i * 0.03), walk: walking ? x * 0.06 + d.i : undefined, blink: blinkAt(T, d.seed) });
       });
+      // phone: the crowd packs in right behind him and has settled by the landing, so the "great crowd" is in frame
       CROWD.forEach((m) => {
-        const k = es(t, 0.05 + m.i * 0.1, 0.9 + m.i * 0.1);
-        const x = lerp(JR.CITY + 40, jx + m.dx - 60, k);
+        const k = S.portrait ? es(t, 0.05 + m.i * 0.05, 0.6 + m.i * 0.05) : es(t, 0.05 + m.i * 0.1, 0.9 + m.i * 0.1);
+        const x = lerp(JR.CITY + 40, jx + (S.portrait ? -80 - m.i * 80 : m.dx) - 60, k);
         m.sp.set({ x, y: G - 30 - m.i * 10, s: 1, o: k > 0.01 ? 1 : 0 });
       });
 
@@ -70,8 +72,9 @@ export default {
         b.p.set({ x, y, s: 0.92, flip: true, armF: 40 + cry * (70 + b.i * 20) + loud * 110, armB: cry * 110 + loud * 160, head: -6 - turn * 6 - cry * 8 - loud * 12, lean: -loud * 4, blink: 0 });
       });
       hear.forEach((h, i) => {
-        const k = seg(t, 1.1 + i * 0.16, 1.62 + i * 0.16);
-        pose(h, { x: lerp(jx + 40 + i * 50, JR.B[0][0] - 20, k), y: G - 210 - i * 34 - Math.sin(k * Math.PI) * 30, r: -4 + i * 4, o: Math.sin(k * Math.PI) });
+        // the slips fly to the blind men and stay there, readable, until they cry out
+        const k = es(t, 1.1 + i * 0.12, 1.5 + i * 0.12);
+        pose(h, { x: lerp(jx + 40 + i * 50, JR.B[0][0] - 20, k), y: G - 210 - i * 34 - Math.sin(k * Math.PI) * 30, r: -4 + i * 4, o: seg(t, 1.1 + i * 0.12, 1.2 + i * 0.12) * (1 - es(t, 1.95, 2.05)) });
       });
       const [bx, by] = headAt(JR.B[0][0], JR.B[0][1], 0.92, true, 'sit');
       rings(bx - 10, by, Math.max(cry, loud * 1.2), T, { spread: 1.8 + loud, dir: 0 });
@@ -86,7 +89,9 @@ export default {
         pose(hush[n.i], { x: n.x + (n.flip ? -16 : 16), y: n.y - 196 - (S.portrait && n.i === 2 ? 44 : 0), s: k * 0.9, o: k > 0.02 ? 1 : 0 });
       });
 
-      S.cam.x = lerp(-260, 0, es(t, 0.2, 1.1)) + es(t, 1.1, 1.6) * (S.portrait ? 120 : 90);   // phone: a little further right, so the rebukers clear the progress thread
+      // phone: hold on the gate until he is out with the crowd, then pan; and end a little further right, so the
+      // rebukers clear the progress thread
+      S.cam.x = (S.portrait ? lerp(-560, 0, es(t, 0.9, 1.4)) : lerp(-260, 0, es(t, 0.2, 1.1))) + es(t, 1.1, 1.6) * (S.portrait ? 120 : 90);
       S.cam.z = 1 + es(t, 1.1, 1.6) * 0.04;
       S.cam.y = 10;
     };

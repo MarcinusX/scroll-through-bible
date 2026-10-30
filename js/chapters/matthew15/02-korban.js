@@ -17,6 +17,7 @@ const FLOOR = 690;
 const TAB = { x: 800, y: 132 };            // the tablets hang here (their string top)
 const CHEST = { x: 1046, y: FLOOR - 58 };  // the Temple gift-chest (on its plinth)
 const PAR = 0.6;
+const DRAPE_Y = 250;                       // where the curse drape stops (its fringe just above the shadow son's head)
 
 export default {
   id: 'mt15-korban',
@@ -142,10 +143,12 @@ export default {
       /* v4b — whoever curses father or mother: a shadow, a jagged word, a lowered drape */
       const shK = es(t, 1.05, 1.25) * (1 - es(t, 1.9, 2.05));
       shadowSon.set({ x: 780 + HX, y: FLOOR, s: 0.92, flip: true, o: shK, armF: 80, armB: 40, head: -6 });
-      const cK = es(t, 1.15, 1.35, ease.back) * (1 - es(t, 1.6, 1.75));
-      pose(curse, { x: 700 + HX, y: 440, s: cK, o: cK > 0.02 ? 1 : 0 });
+      // the jagged word stays up (beside the drape, toward the parents) until he turns away, so the swipe stop at 1.75 still shows the curse
+      const cK = es(t, 1.15, 1.35, ease.back) * (1 - es(t, 1.88, 1.98));
+      pose(curse, { x: 630 + HX, y: 450, s: cK, o: cK > 0.02 ? 1 : 0 });
+      // the drape comes down behind the tablets and stops above his head (it no longer hides the shadow son)
       const drop_ = es(t, 1.45, 1.7, ease.out) * (1 - es(t, 1.95, 2.25, ease.in));
-      pose(drape, { x: 780 + HX, y: 440 - (1 - drop_) * 1150 });
+      pose(drape, { x: 780 + HX, y: DRAPE_Y - (1 - drop_) * 1150 });
       const snuff = es(t, 1.55, 1.7) * (1 - es(t, 2.2, 2.4)) + es(t, 3.5, 3.7);
       fade(flame, 1 - Math.min(1, snuff)); fade(cGlow, 1 - Math.min(1, snuff));
       son.set({

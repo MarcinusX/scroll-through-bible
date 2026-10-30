@@ -106,22 +106,22 @@ export default {
       });
 
       /* v21b — "say to this mountain…": John speaks, the strings come down, it rises and falls into the sea */
-      const speak = es(t, 1.03, 1.15) * (1 - es(t, 1.6, 1.75));
-      const stringsOn = es(t, 1.12, 1.3) * (1 - es(t, 1.8, 1.85));
-      const quiver = bump(t, 1.15, 1.4) * Math.sin(t * 90) * 1.2;
-      const rise = es(t, 1.3, 1.48);
-      const over = es(t, 1.46, 1.6);
-      const drop = es(t, 1.58, 1.7, ease.in);
-      const sink = es(t, 1.68, 1.92);
-      const mx = lerp(MXp, SEAX, over), my = MY - rise * 150 * (1 - drop) + drop * 60 + sink * 330 - bump(t, 1.46, 1.6) * 40;
+      const speak = es(t, 1.03, 1.15) * (1 - es(t, 1.88, 1.98));
+      const stringsOn = es(t, 1.08, 1.18) * (1 - es(t, 1.4, 1.45));
+      const quiver = bump(t, 1.1, 1.26) * Math.sin(t * 90) * 1.2;
+      const rise = es(t, 1.12, 1.28);
+      const over = es(t, 1.26, 1.38);
+      const drop = es(t, 1.36, 1.45, ease.in);
+      const sink = es(t, 1.44, 1.6);   // settles by the landing: its peak stays above the water, an islet
+      const mx = lerp(MXp, SEAX, over), my = MY - rise * 150 * (1 - drop) + drop * 60 + sink * 200 - bump(t, 1.26, 1.38) * 40;
       pose(mt, { x: mx, y: my, r: quiver + over * 8 * (1 - drop) - drop * 4, o: 1 - seg(t, 1.97, 2.0) });
       pose(strings, { x: mx, y: my, o: stringsOn });
       drops.forEach((d) => {
-        const k = seg(t, 1.68, 1.98);
+        const k = seg(t, 1.44, 1.72);
         const x = SEAX + Math.cos(d.a) * d.v * k * 1.4, y = SEA[1] + 10 + Math.sin(d.a) * d.v * 1.6 * Math.sin(k * PI * 0.9);
         pose(d.el, { x, y, s: 1.4, r: d.a * 57, o: k > 0 && k < 1 ? 1 - k * 0.3 : 0 });
       });
-      rings.forEach((r, i) => { const k = seg(t, 1.7 + i * 0.08, 2.1 + i * 0.08); pose(r, { x: SEAX, y: SEA[1] + 14, s: 0.5 + k * 2.2, o: k > 0 && k < 1 ? (1 - k) * 0.9 : 0 }); });
+      rings.forEach((r, i) => { const k = seg(t, 1.46 + i * 0.08, 1.86 + i * 0.08); pose(r, { x: SEAX, y: SEA[1] + 14, s: 0.5 + k * 2.2, o: k > 0 && k < 1 ? (1 - k) * 0.9 : 0 }); });
       seaFront.shift(((T * 14) % 110) - 55, 0);
 
       /* v22 — whatever you ask in prayer, believing: they kneel, lights come down into their hands */
@@ -136,8 +136,8 @@ export default {
       });
       const J = PRAY[1];
       const [ohx, ohy] = headAt(J.x, J.y, 0.92, false);
-      const sh = es(t, 1.05, 1.2, ease.back) * (1 - es(t, 1.6, 1.72));
-      pose(shout, { x: ohx + (S.portrait ? 110 : 40), y: ohy - 30, s: sh, o: sh > 0.02 ? 1 : 0 });
+      const sh = es(t, 1.03, 1.12, ease.back) * (1 - es(t, 1.88, 1.98));
+      pose(shout, { x: ohx + (S.portrait ? 160 : 40), y: ohy - 30, s: sh, o: sh > 0.02 ? 1 : 0 });
       voice(ohx + 22, ohy + 4, speak, T, { dir: 1 });
       voiceJ(jhx + 22, jhy + 4, teach, T, { dir: 1 });
       gifts.forEach((g) => {
@@ -148,7 +148,7 @@ export default {
       });
 
       S.cam.x = -20 + es(t, 1.0, 1.4) * 170 - es(t, 1.9, 2.2) * 150;
-      if (S.portrait) S.cam.x = -60 + es(t, 1.3, 1.5) * 180 * (1 - es(t, 1.9, 2.2));
+      if (S.portrait) S.cam.x = -60 + es(t, 1.1, 1.3) * 180 * (1 - es(t, 1.9, 2.2));
       S.cam.y = -es(t, 1.0, 1.4) * 40 + es(t, 1.9, 2.2) * 40 - heaven * 40;
       S.cam.z = 1.0 - es(t, 1.0, 1.4) * 0.04 + es(t, 1.9, 2.2) * 0.08 - heaven * 0.06;
     };

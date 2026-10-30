@@ -43,11 +43,12 @@ export default {
 
     /* the leaders */
     const P = S.layer({ par: 0.5, sh: 5 });
+    // the light the sent come out into: behind every figure on this sheet, so it glows around them instead of washing them out
+    const light = P.add(`<g><circle r="160" fill="url(#halo-glow)"/></g>`);
     const LEAD = [[LX[0], PH, 0], [LX[1], SC, 8], [LX[2], pharisees(2), 2], [LX[3], scribes(1), 10]].map(([x, o, dy], i) => ({ x, y: F + dy, i, seed: c.rr(0, 9), p: S.puppet(P.add(vain(c, o))) }));
     P.sprite(pose3(c, [TWELVE[0].o, TWELVE[2].o, TWELVE[1].o].map((o, i) => ({ x: -i * 64, y: (i % 2) * 10, s: 0.92, flip: false, head: -4, o }))), PH_ ? 590 : 560, F + 10);
     /* the three sent */
     const SENT = [[PROPHET, { holdF: `<g transform="translate(0 -6)">${stick(c, 170)}</g>` }], [WISE, {}], [GOOD, { holdF: `<g transform="translate(4 8) rotate(-70)">${scrollOpen(c, 44, 30)}</g>` }]].map(([o, x], i) => ({ i, p: S.puppet(P.add(person(c, { ...o, ...x }))) }));
-    const light = P.add(`<g><circle r="160" fill="url(#halo-glow)"/></g>`);
     const jesus = S.puppet(P.add(person(c, { ...CAST.jesus })));
     const voice = voiceRings(P, c, { n: 3, r: 30, w: 5, color: C.clay });
 
@@ -91,7 +92,7 @@ export default {
       /* v34a — the three sent come out from behind Him into the light and go towards them */
       SENT.forEach((m) => {
         const k = es(t, 1.08 + m.i * 0.1, 1.6 + m.i * 0.1);
-        const x = lerp(JX - 40, PH_ ? 805 + m.i * 45 : 880 + m.i * 50, k);
+        const x = lerp(JX - 40, PH_ ? 785 + m.i * 40 : 880 + m.i * 50, k);
         const fade = es(t, 2.04, 2.14);
         m.p.set({ x, y: F + 14 + m.i * 4, s: 0.9, walk: k > 0.02 && k < 0.98 ? x * 0.05 + m.i : undefined, armF: 30 + (m.i === 1 ? 40 : 10), head: -4 + fade * 16, o: es(t, 1.05 + m.i * 0.1, 1.15 + m.i * 0.1) * (1 - fade), blink: blinkAt(T, m.i + 3) });
       });

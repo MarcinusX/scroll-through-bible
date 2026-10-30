@@ -43,8 +43,8 @@ export default {
     const TR = [
       [300, -20, false, -1], [410, -22, true, -1], [470, -8, false, -1], [680, -14, true, -1],
       [1010, -18, false, 1], [1240, -20, true, 1], [1350, -16, false, 1], [1420, -8, true, 1],
-    ].map(([x, dy, flip, dir], i) => ({ x, y: FLOOR + dy, flip, dir, i, seed: c.rr(0, 9), p: S.puppet(crowdL.add(person(c, townsfolk(c, { holdF: i % 3 === 0 ? `<g transform="translate(0 10) scale(.7)">${basketProp(c)}</g>` : '' })))) }));
-    const lambs = [[1180, FLOOR + 30, 1], [1250, FLOOR + 36, -1]].map(([x, y, d], i) => ({ x, y, d, i, el: crowdL.add(`<g>${lamb(c)}</g>`) }));
+    ].map(([x, dy, flip, dir], i) => ({ x: S.portrait ? 820 + (x - 800) * 0.55 : x, y: FLOOR + dy, flip, dir, i, seed: c.rr(0, 9), p: S.puppet(crowdL.add(person(c, townsfolk(c, { holdF: i % 3 === 0 ? `<g transform="translate(0 10) scale(.7)">${basketProp(c)}</g>` : '' })))) }));
+    const lambs = [[1180, FLOOR + 30, 1], [1250, FLOOR + 36, -1]].map(([x, y, d], i) => ({ x: S.portrait ? x - 200 : x, y, d, i, el: crowdL.add(`<g>${lamb(c)}</g>`) }));
 
     /* ---------- the money changers' tables and the dove benches ---------- */
     TABLES.forEach((tb) => { tb.x = S.portrait && tb.xp ? tb.xp : tb.x0; });
@@ -88,12 +88,13 @@ export default {
 
       // sellers and buyers bustle, then are driven out to both sides
       TR.forEach((m) => {
-        const go = seg(t, 0.32 + m.i * 0.015, 1.0);
+        // phone: they flee later and gather speed, so at the stop they are still running across the frame
+        const go = S.portrait ? (seg(t, 0.36 + m.i * 0.015, 1.1) ** 2) : seg(t, 0.32 + m.i * 0.015, 1.0);
         const x = m.x + m.dir * go * 380;
         const haggle = 1 - seg(t, 0.3, 0.36);
-        m.p.set({ x, y: m.y, s: 0.92, flip: go > 0.02 ? m.dir < 0 : m.flip, walk: go > 0 && go < 1 ? x * 0.08 : undefined, armF: haggle * (m.i % 2 ? 30 + bump(t, 0.05 + m.i * 0.02, 0.3 + m.i * 0.02) * 50 : 20) + (go > 0 ? 50 : 0), armB: go > 0 ? 150 : 0, head: haggle * (m.i % 3 ? 6 : -4) - (go > 0 ? 10 : 0), lean: (go > 0 ? 12 : 0) * m.dir, blink: blinkAt(T, m.seed), o: 1 - seg(t, 0.95, 1.0) });
+        m.p.set({ x, y: m.y, s: 0.92, flip: go > 0.02 ? m.dir < 0 : m.flip, walk: go > 0 && go < 1 ? x * 0.08 : undefined, armF: haggle * (m.i % 2 ? 30 + bump(t, 0.05 + m.i * 0.02, 0.3 + m.i * 0.02) * 50 : 20) + (go > 0 ? 50 : 0), armB: go > 0 ? 150 : 0, head: haggle * (m.i % 3 ? 6 : -4) - (go > 0 ? 10 : 0), lean: (go > 0 ? 12 : 0) * m.dir, blink: blinkAt(T, m.seed), o: 1 - (S.portrait ? seg(t, 1.05, 1.1) : seg(t, 0.95, 1.0)) });
       });
-      lambs.forEach((l) => { const go = es(t, 0.5 + l.i * 0.06, 0.95, ease.in); pose(l.el, { x: l.x + go * 620, y: l.y - Math.abs(Math.sin(t * 60)) * 6 * (go > 0 && go < 1 ? 1 : 0), sx: l.d, s: 0.8, o: 1 - seg(t, 0.94, 0.99) }); });
+      lambs.forEach((l) => { const go = S.portrait ? seg(t, 0.5 + l.i * 0.06, 1.05) ** 3 : es(t, 0.5 + l.i * 0.06, 0.95, ease.in); pose(l.el, { x: l.x + go * 620, y: l.y - Math.abs(Math.sin(t * 60)) * 6 * (go > 0 && go < 1 ? 1 : 0), sx: l.d, s: 0.8, o: 1 - (S.portrait ? seg(t, 1.02, 1.06) : seg(t, 0.94, 0.99)) }); });
 
       // the tables go over; coins fly and roll across the paving
       TABLES.forEach((tb, i) => {

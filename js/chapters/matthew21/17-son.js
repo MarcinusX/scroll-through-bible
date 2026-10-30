@@ -22,9 +22,9 @@ export default {
     { v: 37 },
     { v: 38, text: 'Lecz rolnicy zobaczywszy syna mówili do siebie: "To jest dziedzic;' },
     { v: 38, cont: true, text: 'chodźcie zabijmy go, a posiądziemy jego dziedzictwo".' },
-    { v: 39 },
+    { v: 39, land: 0.96 },             // swipe stop: the white cloth lies over him
     { v: 40 },
-    { v: 41, text: 'Rzekli Mu: «Nędzników marnie wytraci,' },
+    { v: 41, text: 'Rzekli Mu: «Nędzników marnie wytraci,', land: 0.95 },   // swipe stop: the wicked stand up on the cloud
     { v: 41, cont: true, text: 'a winnicę odda w dzierżawę innym rolnikom, takim, którzy mu będą oddawali plon we właściwej porze».' },
   ],
   cam: { x: [-20, 260], y: [0, 40], z: [1, 1.18] },
@@ -100,8 +100,8 @@ export default {
       /* v37 — the plate comes close: father and son, a heart between them; he sends him */
       const big = es(t, 0.05, 0.35) * (1 - es(t, 0.8, 1.0));
       pose(set.plateEl, { x: lerp(ABROAD[0], 800, big), y: lerp(ABROAD[1], 300, big), s: 1 + big * 1.1, r: Math.sin(T * 0.8) * 1.2 * (1 - big) });
-      const sonGone = seg(t, 0.5, 0.55);
-      const sendOut = bump(t, 0.4, 0.7);
+      const sonGone = seg(t, 0.36, 0.41);
+      const sendOut = bump(t, 0.28, 0.55);
       set.pOwner.set({ x: 0, y: 0, s: 1, flip: false, armF: 40 + big * 50 + sendOut * 40, armB: 20, head: big * 8, blink: blinkAt(T, 4) });
       set.pSon.set({ x: 0, y: 0, s: 1, flip: true, o: (1 - sonGone) * es(t, 0.1, 0.18), armF: big * 30, head: -big * 6, blink: blinkAt(T, 7) });
       const hk = es(t, 0.2, 0.38, ease.back) * (1 - es(t, 0.8, 0.95));
@@ -110,7 +110,7 @@ export default {
       pose(says, { x: lerp(620, ABROAD[0] - 150, es(t, 0.8, 1.0)), y: lerp(210, ABROAD[1] + 30, es(t, 0.8, 1.0)), s: sk, o: sk > 0.02 ? 1 : 0 });
 
       /* the son walks in at the gate */
-      const inK = es(t, 0.5, 0.95);
+      const inK = es(t, 0.38, 0.7);   // he stands inside the gate while the father's words are still up
       const shadow = seg(t, 3.02, 3.08) * (1 - seg(t, 4.02, 4.08));
       const seize = es(t, 3.1, 3.25);
       const drag = es(t, 3.25, 3.6);

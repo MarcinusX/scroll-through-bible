@@ -87,8 +87,11 @@ export default {
       SEATS.forEach((d) => {
         const st = { x: d.x, y: d.y, s: d.s, flip: d.flip, blink: blinkAt(T, d.seed) };
         d.p.set({ ...st, o: 1 - up, armF: 20 + bump(t, 1.05, 1.9) * 60, armB: 10, head: -6 + nod * 12 });
-        const wx = kf(t, [[3.35 + d.i * 0.05, d.x], [3.95, 330 + d.i * 30]]);
-        d.st.set({ x: wx, y: d.y - 6, s: d.s, flip: true, o: up * (1 - seg(t, 3.9, 3.98)), walk: t > 3.35 && t < 3.95 ? wx * 0.05 : undefined, blink: blinkAt(T, d.seed) });
+        // swipe stop 3.75: they have closed up behind Him at the door (phone: at the left edge); after it they go on out
+        const dx = (P ? 600 : 410) + d.i * (P ? 46 : 50);
+        const WK = [[3.2 + d.i * 0.05, d.x], [3.68, dx], [3.84, dx], [3.98, dx - 110]];
+        const wx = kf(t, WK);
+        d.st.set({ x: wx, y: d.y - 6, s: d.s, flip: true, o: up * (1 - seg(t, 3.9, 3.98)), walk: t > 3.2 && moving(t, WK) ? wx * 0.05 : undefined, blink: blinkAt(T, d.seed) });
       });
       yes.forEach((y) => {
         const k = es(t, 1.15 + y.d.i * 0.05, 1.35 + y.d.i * 0.05, ease.back) * (1 - es(t, 2.0, 2.2));
@@ -112,10 +115,12 @@ export default {
 
       /* v53 — He finishes and goes out; they follow */
       const jUp = es(t, 3.05, 3.15);
-      const JK = [[3.12, 800], [3.75, 330]];
+      // He reaches the door by 3.55 and stands there for the swipe stop (3.75), then steps out (phone: the door is off
+      // screen, so He stops at the left edge and walks out of the picture)
+      const JK = P ? [[3.12, 800], [3.55, 530], [3.82, 530], [3.98, 330]] : [[3.12, 800], [3.55, 330], [3.82, 330], [3.97, 250]];
       const jx = kf(t, JK);
       jSit.set({ x: JX, y: JY, s: 1.04, o: 1 - jUp, armF: 30 + es(t, 2.1, 2.3) * 40 * (1 - es(t, 2.9, 3.05)), armB: 12 + bump(t, 0.2, 0.9) * 60, head: -6, blink: blinkAt(T) });
-      jWalk.set({ x: jx, y: JY - 10, s: 1.04, flip: true, o: jUp * (1 - seg(t, 3.72, 3.8)), walk: moving(t, JK) ? jx * 0.05 : undefined, blink: blinkAt(T) });
+      jWalk.set({ x: jx, y: JY - 10, s: 1.04, flip: true, o: jUp * (1 - seg(t, 3.88, 3.96)), walk: moving(t, JK) ? jx * 0.05 : undefined, blink: blinkAt(T) });
       pose(R.doorLeaf, { x: 250, y: 646, sx: 1 - es(t, 3.0, 3.2) * 0.85 });
 
       S.cam.x = kf(t, [[0, 0], [2.0, 0], [2.3, P ? 300 : 20], [3.0, P ? 300 : 20], [3.4, -60]]);

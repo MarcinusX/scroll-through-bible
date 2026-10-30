@@ -77,16 +77,20 @@ export default {
       face(jesusEl, 'sad', es(t, 0.2, 0.5));
       face(jesusEl, 'tear', es(t, 0.45, 0.7));
 
-      /* v37b — far off at the gate, one of the sent sinks under stones */
-      const walk = es(t, 1.0, 1.3);
-      const hit = es(t, 1.35, 1.6);
-      const down = es(t, 1.55, 1.62);
-      const gx = lerp(GATE[0] + 120, GATE[0] + 40, walk);
-      sentOne.set({ x: gx, y: GATE[1], s: 0.34, flip: true, walk: walk > 0.02 && walk < 0.98 ? t * 40 : undefined, armB: hit * 140, armF: hit * 60, head: hit * 12, o: t > 0.95 ? 1 - down : 0 });
-      sentKneel.set({ x: gx, y: GATE[1], s: 0.34, flip: true, armF: 60, armB: 100, head: 20, lean: 12, o: down * (1 - es(t, 2.0, 2.1)) });
+      /* v37b — far off at the gate, one of the sent sinks under stones; the stones stay lying round him
+         (phone: he stands a little larger and further in from the edge, so the stoning reads at its landing) */
+      const walk = es(t, 1.0, 1.2);
+      const hit = es(t, 1.25, 1.45);
+      const down = es(t, 1.42, 1.5);
+      const gs = S.portrait ? 0.5 : 0.34;
+      const g0 = S.portrait ? GATE[0] - 50 : GATE[0];
+      const gx = lerp(g0 + 120, g0 + 40, walk);
+      sentOne.set({ x: gx, y: GATE[1], s: gs, flip: true, walk: walk > 0.02 && walk < 0.98 ? t * 40 : undefined, armB: hit * 140, armF: hit * 60, head: hit * 12, o: t > 0.95 ? 1 - down : 0 });
+      sentKneel.set({ x: gx, y: GATE[1], s: gs, flip: true, armF: 60, armB: 100, head: 20, lean: 12, o: down * (1 - es(t, 2.0, 2.1)) });
       stones.forEach((s) => {
-        const k = seg(t, 1.3 + s.i * 0.06, 1.5 + s.i * 0.06);
-        pose(s.el, { x: lerp(GATE[0] - 90 - s.i * 12, gx + 4, k), y: lerp(GATE[1] - 60, GATE[1] - 20, k) - Math.sin(k * PI) * 30, o: k > 0 && k < 1 ? 1 : 0 });
+        const k = seg(t, 1.15 + s.i * 0.05, 1.35 + s.i * 0.05);
+        const sx = gx - 26 * gs / 0.34 + s.i * 11 * gs / 0.34, sy = GATE[1] - 3 - (s.i % 2) * 3;
+        pose(s.el, { x: lerp(g0 - 90 - s.i * 12, sx, k), y: lerp(GATE[1] - 60, sy, k) - Math.sin(k * PI) * 30, s: S.portrait ? 1.4 : 1, o: k > 0 ? 1 - es(t, 2.0, 2.1) : 0 });
       });
 
       /* v37c — the hen comes down and opens her wings; the chicks run to her… then away */

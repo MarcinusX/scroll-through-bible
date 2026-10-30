@@ -22,7 +22,7 @@ export default {
     { v: 33, cont: true, text: 'w końcu oddał ją w dzierżawę rolnikom i wyjechał.' },
     { v: 34 },
     { v: 35, text: 'Ale rolnicy chwycili jego sługi i jednego obili,' },
-    { v: 35, cont: true, text: 'drugiego zabili, trzeciego zaś ukamienowali.' },
+    { v: 35, cont: true, text: 'drugiego zabili, trzeciego zaś ukamienowali.', land: 0.92 },   // swipe stop: both cloths lie on the ground
     { v: 36 },
   ],
   cam: { x: [-20, 20], y: [0, 40], z: [1, 1.18] },

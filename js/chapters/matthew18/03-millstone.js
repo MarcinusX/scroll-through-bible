@@ -38,7 +38,7 @@ function seaPanel(c) {
 export default {
   id: 'mt18-millstone',
   beats: [
-    { v: 6 },
+    { v: 6, land: 0.95 },              // swipe stop: the millstone rests on the sea bed
     { v: 7, text: 'Biada światu z powodu zgorszeń!' },
     { v: 7, cont: true, text: 'Muszą wprawdzie przyjść zgorszenia, lecz biada człowiekowi, przez którego dokonuje się zgorszenie.' },
   ],

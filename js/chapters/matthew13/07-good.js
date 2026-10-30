@@ -156,14 +156,14 @@ export default {
       pose(flapGood, { x: 0, y: FLAPB, sy: 1 - es(t, 2.45, 2.72) * 1.12, oy: FLAPB });
       /* v23b: the harvest */
       goodSeeds.forEach((el, i) => {
-        const a = seg(t, 2.55 + i * 0.06, 2.8 + i * 0.06);
+        const a = seg(t, 2.36 + i * 0.04, 2.54 + i * 0.04);   // in the furrows and sprouted by the swipe stop (2.75)
         const [x, y] = arcAt(ease.out(a), [X_G, FEET - 110], [CL[i].x, 614], 80);
-        pose(el, { x, y, s: 1.3, r: (1 - a) * 220, o: seg(t, 2.54 + i * 0.06, 2.57 + i * 0.06) * (1 - es(t, 3.05 + i * 0.05, 3.2 + i * 0.05)) });
+        pose(el, { x, y, s: 1.3, r: (1 - a) * 220, o: seg(t, 2.35 + i * 0.04, 2.38 + i * 0.04) * (1 - es(t, 3.05 + i * 0.05, 3.2 + i * 0.05)) });
       });
       const grv = seg(t, 2.7, 3.5);
       rsGood.forEach((r) => fade(r.el, clamp((grv - r.o) * 10)));
       goodSprouts.forEach((el, i) => {
-        const g = es(t, 2.8 + i * 0.05, 3.0 + i * 0.05, ease.back);
+        const g = es(t, 2.54 + i * 0.04, 2.66 + i * 0.04, ease.back);
         pose(el, { x: CL[i].x, y: 612, sy: g, sx: 0.6 + 0.4 * g, o: 1 - es(t, 3.12 + i * 0.05, 3.25 + i * 0.05) });
       });
       clusters.forEach((st, i) => st.forEach((s) => {
