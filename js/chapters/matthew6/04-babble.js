@@ -106,7 +106,7 @@ export default {
       /* the words stream out … */
       const flow = es(t, 0.1, 0.3) * (1 - es(t, 1.85, 1.98));
       SLIPS.forEach((sl) => {
-        const [hx, hy] = headAt(sl.m.x, sl.m.pose === 'kneel' ? GY + 6 : GY - 4, 0.92, false, sl.m.pose === 'kneel' ? 46 : 0);
+        const [hx, hy] = headAt(sl.m.x, sl.m.pose === 'kneel' ? GY + 6 : GY - 4, 0.92, false, sl.m.pose === 'kneel' ? 'kneel' : 'stand');
         const k = (t * 1.6 + sl.i / SLIPS.length) % 1;
         const tx = IX - 60 + ((sl.i * 37) % 120), ty = GY - 30 - Math.min(1, t / 1.7) * 200 * ((sl.i % 4) / 4);
         const x = lerp(hx + 24, tx, k), y = lerp(hy + 8, ty, k) - Math.sin(k * PI) * 90;

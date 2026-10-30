@@ -206,8 +206,8 @@ export function plainSet(S, { skyCols = DAY, sunAt = [1220, 150], sky2 = null } 
   ROADS.forEach((pts) => { P.p(c.ribbon(pts, (u) => 8 + u * 30, 1), mix(C.sand, C.stone, 0.3)); });
   // the low rise in the middle (Jesus stands on it)
   P.p(c.cut(c.blob(800, RISE + 14, 170, 30, 16, 0.08), 1, 8), shade(C.hillNear, 0.12));
-  P.x(grass(c, { x0: 650, x1: 950, y: RISE - 6, n: 16, h: 10, color: C.moss }), C.moss);
-  plain.add(P.out());
+  const tufts = grass(c, { x0: 650, x1: 950, y: RISE - 6, n: 16, h: 10, color: C.moss }); // finished markup, cut here so nothing after it changes
+  plain.add(`<g>${P.out()}${tufts}</g>`);
   plain.add(olive(c, 380, 520, 0.6) + olive(c, 1240, 522, 0.55) + bush(c, 170, 610, 70, C.sage, C.moss) + bush(c, 1450, 606, 60, C.sage2, C.sage) + flowers(c, { x0: 660, x1: 940, y: RISE, n: 14, fn: (x) => RISE - 4 + Math.abs(x - 800) * 0.08 }));
   const crowdL = S.layer({ par: 0.4, sh: 4 });
   const act = S.layer({ par: 0.4, sh: 5 });

@@ -61,7 +61,7 @@ export default {
     const land = fl.add(`<g>${landFlat(c)}</g>`);
     const vils = VIL.map(([x, y], i) => ({ i, x, y, el: fl.add(`<g>${village(c, { n: 3, w: 70, sc: 0.36, lit: true })}</g>`), bang: fl.add(`<g>${glyphTag(c, '!', { size: 16 })}</g>`) }));
     const home = fl.add(`<g>${village(c, { n: 1, w: 10, sc: 0.5 })}<circle cy="-14" r="30" fill="url(#warm-glow)"/></g>`);
-    const slips = VIL.map((v, i) => ({ i, v, el: fl.add(`<g>${wordSlip(c, 26)}</g>`) }));
+    const slips = VIL.map(([x, y], i) => ({ i, v: { x, y }, el: fl.add(`<g>${wordSlip(c, 26)}</g>`) }));
     const FLX = S.portrait ? 846 : 880, FLY = 120;     // phone: the flat clear of the progress thread
 
     return (t, time) => {

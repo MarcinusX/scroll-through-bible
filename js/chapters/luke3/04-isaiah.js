@@ -16,7 +16,7 @@ const HY = 560;                          // the far edge of the plain
 const JX0 = 512, JY = 700;               // John on his rock
 const LX = 1102;                         // where the light rises (the mountain's place)
 // the road across the plain: u 0 (front) … 1 (the horizon)
-const rw = (u) => 7 + 46 * Math.pow(1 - u, 1.2);
+const rw = (u) => 7 + 46 * Math.pow(Math.max(0, 1 - u), 1.2); // the last crooked piece overlaps u 1 a little
 const straightX = (u) => lerp(600, LX - 12, u);
 const crookX = (u) => straightX(u) + Math.sin(u * PI * 2.2) * 26 * (1 - u);
 const baseY = (u) => lerp(734, HY + 4, Math.pow(u, 0.8));
