@@ -78,6 +78,18 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
     timeline.push(entry);
   });
   const total = g0 + 0.6;
+  // Swipe mode shows one piece of a sentence per swipe, so a piece cut mid-sentence (it doesn't end
+  // the sentence and the next piece goes on in lower case) carries "…" at that cut, on both sides.
+  if (swipe) {
+    const said = timeline.flatMap((e) => e.beats).filter((b) => b.segs.length);
+    said.forEach((b, i) => {
+      const nb = said[i + 1];
+      if (!nb) return;
+      const end = b.segs[b.segs.length - 1].text.trim().replace(/[»”"’')\]>]+$/, '');
+      const start = nb.segs[0].text.trim().replace(/^[«„“"‘'(\[<]+/, '');
+      if (!/[.!?…]$/.test(end) && /^\p{Ll}/u.test(start)) { b.goesOn = true; nb.goesFrom = true; }
+    });
+  }
   // where the play proper begins: the first sentence after the title card
   const opening = timeline.flatMap((e) => e.beats).find((b) => !b.cover) || timeline[0].beats[0];
   // where a sentence is read: once its words have come in, or in swipe mode at x.75, where its picture
@@ -614,8 +626,10 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
     if (!b || b.cover) { capEl.classList.add('off'); capWords = []; return; }
     capEl.classList.remove('off');
     const html = [];
-    b.segs.forEach((s) => {
+    b.segs.forEach((s, si) => {
       if (s.first) html.push(`<sup class="vn">${s.v}</sup>`);
+      if (si === 0 && b.goesFrom) s = { ...s, text: '…' + s.text.trim() };
+      if (si === b.segs.length - 1 && b.goesOn) s = { ...s, text: s.text.trim() + ' …' };
       // editorial brackets are dimmed: [added words] and <textual variants> (Mk 9,29 «<i postem>»).
       // They can span several words, so remember whether a word starts inside one.
       // a bracket may also close a variant that opened in the previous verse (J 5,3–4 «<…»)
