@@ -715,12 +715,39 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
   const heading = () => (glide ? glide.to : pos); // swipe mode: the stop being made for
   // put the reader at t at once
   function put(t) { if (swipe) { glide = null; pos = t; } else scrollTo(0, t * unitPx); }
-  // go to t smoothly: the longer the way, the longer the glide; curve ease.out carries on from a finger's flick
-  function moveTo(t, ms, curve = ease.io) {
+  // A glide is one or two legs, each a cubic from p0 to p1 in ms that leaves at speed v0 and arrives at
+  // v1 (units per ms), so a flick carries straight on and the legs join without a jolt. Speeds are capped
+  // so a leg never overshoots its end.
+  function leg(p0, p1, ms, v0 = 0, v1 = 0) {
+    const D = p1 - p0, tan = (v) => (v * D <= 0 ? 0 : Math.sign(v) * Math.min(Math.abs(v) * ms, 3 * Math.abs(D)));
+    return { p0, p1, ms, m0: tan(v0), m1: tan(v1) };
+  }
+  // the leg under way at time now, and how far through it (0…1)
+  function under(now) {
+    const segs = glide.segs;
+    let el = now - glide.t0, i = 0;
+    while (i < segs.length - 1 && el > segs[i].ms) el -= segs[i++].ms;
+    return [segs[i], clamp(el / segs[i].ms)];
+  }
+  function speed(now = performance.now()) {
+    if (!glide) return 0;
+    const [s, u] = under(now);
+    return ((6 * u * u - 6 * u) * s.p0 + (3 * u * u - 4 * u + 1) * s.m0 + (6 * u - 6 * u * u) * s.p1 + (3 * u * u - 2 * u) * s.m1) / s.ms;
+  }
+  // go to t smoothly (v0: the speed to leave at, e.g. a finger's flick)
+  function moveTo(t, ms, v0 = 0) {
     if (!swipe) { scrollTo({ top: t * unitPx, behavior: reduced ? 'auto' : 'smooth' }); return; }
     if (reduced) { put(t); return; }
-    ms ??= clamp(520 + 360 * Math.abs(t - pos), 700, 1500);
-    glide = { from: pos, to: t, t0: performance.now(), ms, curve };
+    const b = !ms && t > pos ? beats.find((x) => rest(x) === t) : null;
+    let segs;
+    if (b && b.start > pos + 0.02) {
+      // on to the next sentence: hurry through what is left of the last one (and any change of set), then let the
+      // new one play at a pace the eye can follow, slowing into its stop, so none of its action rushes by
+      const d1 = b.start - pos, d2 = t - b.start;
+      const ms1 = clamp(200 + 250 * d1, 250, 650), ms2 = clamp(380 + 420 * d2, 650, 1150), vj = (1.3 * d2) / ms2;
+      segs = [leg(pos, b.start, ms1, v0, vj), leg(b.start, t, ms2, vj, 0)];
+    } else segs = [leg(pos, t, ms ?? clamp(520 + 360 * Math.abs(t - pos), 700, 1500), v0, 0)];
+    glide = { to: t, t0: performance.now(), segs };
   }
 
   /* ---------- the loop ---------- */
@@ -730,9 +757,9 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
     frameNo++;
     const dt = Math.min(0.1, (now - lastNow) / 1000); lastNow = now;
     if (glide) {
-      const u = clamp((now - glide.t0) / glide.ms);
-      pos = glide.from + (glide.to - glide.from) * glide.curve(u);
-      if (u >= 1) glide = null;
+      const [s, u] = under(now), u2 = u * u, u3 = u2 * u;
+      pos = (2 * u3 - 3 * u2 + 1) * s.p0 + (u3 - 2 * u2 + u) * s.m0 + (3 * u2 - 2 * u3) * s.p1 + (u3 - u2) * s.m1;
+      if (u >= 1 && s === glide.segs[glide.segs.length - 1]) { pos = glide.to; glide = null; }
     }
     if (glide || drag) lastScroll = now; // Safari's idle work waits for the reader to stop, as when scrolling
     const target = here();
@@ -919,10 +946,10 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
     for (let i = stops.length - 1; i >= 0; i--) if (stops[i] < from - 0.02) return stops[i];
     return null;
   }
-  function flick(dir, curve) {
+  function flick(dir) {
     const to = neighbour(heading(), dir);
     if (to == null) { onEdge(dir); return; }
-    moveTo(to, undefined, curve);
+    moveTo(to, undefined, speed()); // a swipe mid-glide carries on from the speed it has
   }
   if (swipe) {
     const reach = () => Math.min(H, W * 1.6) * 0.42; // a drag this long carries a whole sentence
@@ -977,8 +1004,8 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
       const dir = ev.type === 'touchcancel' ? 0 : Math.abs(k) > 0.2 || (Math.abs(v) > 0.3 && Math.sign(v) === Math.sign(k)) ? Math.sign(k) : 0;
       if (d.from == null) { if (dir) flick(dir); return; }
       const to = dir ? neighbour(d.from, dir) : null;
-      if (to == null) { moveTo(d.from, 380, ease.out); if (dir) onEdge(dir); return; }
-      moveTo(to, undefined, ease.out);
+      if (to == null) { moveTo(d.from, 380); if (dir) onEdge(dir); return; }
+      moveTo(to, undefined, ((to - d.from) * Math.max(0, v * dir)) / reach()); // carry on at the finger's speed
     }
     // a drag that ends over a button or a tap zone is not a tap
     addEventListener('click', (ev) => { if (performance.now() - dragEnd < 400) { ev.stopPropagation(); ev.preventDefault(); } }, true);
