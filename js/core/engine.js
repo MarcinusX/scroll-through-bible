@@ -81,9 +81,10 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
   // where the play proper begins: the first sentence after the title card
   const opening = timeline.flatMap((e) => e.beats).find((b) => !b.cover) || timeline[0].beats[0];
   // where a sentence is read: once its words have come in, or in swipe mode at x.75, where its picture
-  // is complete too (every beat was reviewed there). Swipe mode stops at each of them in turn, from the
-  // title card to the closing card.
-  const rest = (b) => (!swipe ? b.start + Math.min(0.55, b.len * 0.5) : b.cover ? b.start : b.start + b.len * 0.75);
+  // is complete too (every beat was reviewed there; a beat whose picture settles later says so with
+  // land: 0.9 — never under 0.5, where its words are still coming in). Swipe mode stops at each of
+  // them in turn, from the title card to the closing card.
+  const rest = (b) => (!swipe ? b.start + Math.min(0.55, b.len * 0.5) : b.cover ? b.start : b.start + b.len * clamp(b.land ?? 0.75, 0.5, 0.98));
   const stops = [...timeline.flatMap((e) => e.beats.map(rest)), total];
 
   // scene-local time from global position g
@@ -914,14 +915,30 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
     let dragEnd = -1e9;
     // the library and the chapter list scroll the ordinary way; so does everything while a page turns
     const ours = (ev) => !turning && !document.documentElement.classList.contains('lib-on') && !ev.target.closest?.('.library, .booklet');
+    // A touch's later events go to the element it began on, even after that element has left the page
+    // (a caption word, rewritten when the sentence changes mid-drag), and from there they no longer
+    // bubble up to the window. So they are listened for on that element itself.
+    let held = null;
+    function letGo() {
+      if (!held) return;
+      held.removeEventListener('touchmove', move);
+      held.removeEventListener('touchend', release);
+      held.removeEventListener('touchcancel', release);
+      held = null;
+    }
     addEventListener('touchstart', (ev) => {
       drag = null;
+      letGo();
       if (ev.touches.length !== 1 || !ours(ev)) return;
       const p = ev.touches[0];
       // a finger that lands mid-glide doesn't stop it; its swipe queues the next sentence
       drag = { x: p.clientX, y: p.clientY, from: glide ? null : pos, on: false, pts: [[p.clientY, ev.timeStamp]] };
+      held = ev.target;
+      held.addEventListener('touchmove', move, { passive: false });
+      held.addEventListener('touchend', release, { passive: true });
+      held.addEventListener('touchcancel', release, { passive: true });
     }, { passive: true });
-    addEventListener('touchmove', (ev) => {
+    function move(ev) {
       if (!drag) return;
       ev.preventDefault(); // no page scroll, no pull-to-refresh
       const y = ev.touches[0].clientY, dy = drag.y - y;
@@ -933,10 +950,11 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
       const k = dy / reach(), to = neighbour(drag.from, Math.sign(k));
       // beyond the first or last stop the paper gives a little, then holds
       pos = to == null ? drag.from + Math.sign(k) * 0.12 * (1 - Math.exp(-Math.abs(k) * 2)) : drag.from + (to - drag.from) * Math.min(1, Math.abs(k));
-    }, { passive: false });
-    const release = (ev) => {
+    }
+    function release(ev) {
       const d = drag;
       drag = null;
+      letGo();
       if (!d || !d.on) return; // a tap: the stage's click handles it
       dragEnd = performance.now();
       const [y0, t0] = d.pts[0], [y1, t1] = d.pts[d.pts.length - 1];
@@ -947,9 +965,7 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
       const to = dir ? neighbour(d.from, dir) : null;
       if (to == null) { moveTo(d.from, 380, ease.out); if (dir) onEdge(dir); return; }
       moveTo(to, undefined, ease.out);
-    };
-    addEventListener('touchend', release, { passive: true });
-    addEventListener('touchcancel', release, { passive: true });
+    }
     // a drag that ends over a button or a tap zone is not a tap
     addEventListener('click', (ev) => { if (performance.now() - dragEnd < 400) { ev.stopPropagation(); ev.preventDefault(); } }, true);
     // a mouse wheel or a trackpad gesture moves one sentence, however long it runs on

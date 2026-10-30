@@ -5,11 +5,13 @@
 // protocol, WebKit (Safari's engine) gets touch events dispatched in the page.
 // Needs Playwright:  npm i --no-save playwright && npx playwright install webkit chromium
 // Usage: node tools/swipe.mjs <url> <outDir> [--engine=chromium|webkit] [--size=390x844] [--max=N]
-//          [--mid=3] [--video] [--back=4] [--next]
+//          [--mid=3] [--late] [--video] [--back=4] [--next] [--prev]
 //   --mid=N   N frames between each pair of landings (drawn by seeking, so they are exact)
+//   --late    also the sentence's last moment (x.98), to see what still moves after the landing
 //   --video   a real-time recording of the whole run (video.mp4)
 //   --back=N  after the forward run, swipe back N times and check those landings too
 //   --next    finally swipe on past the closing card and check that the next chapter opens on its first sentence
+//   --prev    first swipe back past the title card and check that the previous chapter opens on its last sentence
 import { mkdirSync, writeFileSync, readdirSync, renameSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { join } from 'node:path';
@@ -25,7 +27,7 @@ const [url0, out] = args.filter((a) => !a.startsWith('--'));
 const engine = opt('engine', 'chromium');
 const [W, H] = opt('size', '390x844').split('x').map(Number);
 const max = +opt('max', 1e9), mid = +opt('mid', 0), back = +opt('back', 0);
-const video = args.includes('--video'), next = args.includes('--next');
+const video = args.includes('--video'), next = args.includes('--next'), prev = args.includes('--prev'), late = args.includes('--late');
 mkdirSync(out, { recursive: true });
 const url = url0 + (url0.includes('swipe=') ? '' : (url0.includes('?') ? '&' : '?') + 'swipe=1');
 
@@ -41,13 +43,23 @@ page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()); });
 const cdp = engine === 'chromium' ? await ctx.newCDPSession(page) : null;
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
+// the theatre is up (polled: waitForFunction can hang when it straddles a navigation)
+async function theatreUp(ms = 30000) {
+  for (const t0 = Date.now(); Date.now() - t0 < ms; await sleep(150)) {
+    try { if (await page.evaluate(() => !!window.__theatre && document.documentElement.classList.contains('ready'))) return; } catch { /* navigating */ }
+  }
+  const why = await page.evaluate(() => [location.href, document.documentElement.className, window.__errs]).catch((e) => String(e));
+  throw new Error('the theatre did not come up: ' + JSON.stringify(why) + ' ' + errors.join(' | '));
+}
 async function open(u) {
   await page.goto(u);
-  await page.waitForFunction(() => window.__theatre && document.documentElement.classList.contains('ready'), null, { timeout: 30000 });
+  await theatreUp();
   await sleep(900);
 }
 async function settle() {
-  await page.waitForFunction(() => !window.__theatre.moving, null, { timeout: 10000 });
+  for (const t0 = Date.now(); Date.now() - t0 < 10000; await sleep(50)) {
+    try { if (await page.evaluate(() => !window.__theatre.moving)) break; } catch { /* navigating */ }
+  }
   await sleep(250);
 }
 // a finger drag from y0 to y1 over ms milliseconds, in steps
@@ -74,7 +86,9 @@ async function drag(y0, y1, ms = 140, x = W * 0.5) {
     fire('touchend', y1);
   }, { x, y0, y1, ms, n });
 }
-const swipeUp = () => drag(H * 0.72, H * 0.38);
+// alternately from the caption card (whose words are rewritten mid-swipe) and from the picture above it
+let nSwipe = 0;
+const swipeUp = () => (nSwipe++ % 2 ? drag(H * 0.6, H * 0.26) : drag(H * 0.86, H * 0.52));
 const swipeDown = () => drag(H * 0.38, H * 0.72);
 
 // where the reader stands: scene, scene time, the caption as shown
@@ -101,10 +115,31 @@ const state = () => page.evaluate(() => {
 });
 const close = (a, b) => Math.abs(a - b) < 0.003;
 
+const report = { url, engine, size: `${W}x${H}`, landings: [], problems: [] };
+const problem = (msg) => { report.problems.push(msg); console.log('PROBLEM', msg); };
+if (prev) {
+  await open(url);
+  await swipeDown();
+  try {
+    await page.waitForURL((u) => u.href !== url, { timeout: 8000 });
+    await sleep(500);
+    await theatreUp();
+    await sleep(2600);
+    await settle();
+    const s = await state(), st = await page.evaluate(() => window.__theatre.stops);
+    await page.screenshot({ path: join(out, 'prev-chapter.jpg'), quality: 80, type: 'jpeg' });
+    report.prev = s;
+    if (Math.abs(s.g - st[st.length - 2]) > 0.003) problem(`previous chapter opened at g ${s.g.toFixed(3)}, not its last sentence ${st[st.length - 2].toFixed(3)}`);
+  } catch (e) { problem(`swiping back past the title card did not open the previous chapter (${e.message.split('\n')[0]})`); }
+}
 await open(url);
 const stops = await page.evaluate(() => window.__theatre.stops);
-const report = { url, engine, size: `${W}x${H}`, stops: stops.length, landings: [], problems: [] };
-const problem = (msg) => { report.problems.push(msg); console.log('PROBLEM', msg); };
+report.stops = stops.length;
+// the moment just before the sentence at stop i gives way to the next one
+const lateOf = (i) => page.evaluate((i) => {
+  const T = window.__theatre, b = T.timeline.flatMap((e) => e.beats).filter((b) => !b.cover)[i - 1];
+  return b ? b.start + b.len * 0.98 : null;
+}, i);
 
 // the title card first (a chapter opened by its link starts there)
 let s = await state();
@@ -130,10 +165,20 @@ for (let i = 1; i <= count; i++) {
   await page.screenshot({ path: join(out, name), quality: 80, type: 'jpeg' });
   report.landings.push({ i, ...s });
   const last = i === stops.length - 1;
+  if (late && !last) {
+    const lt = await lateOf(i);
+    if (lt != null) {
+      await page.evaluate((p) => window.__theatre.seek(p), lt);
+      await sleep(120);
+      await page.screenshot({ path: join(out, `${String(i).padStart(3, '0')}-late.jpg`), quality: 80, type: 'jpeg' });
+      await page.evaluate((p) => window.__theatre.seek(p), stops[i]);
+      await sleep(60);
+    }
+  }
   if (!close(s.g, stops[i])) problem(`swipe ${i}: landed at g ${s.g.toFixed(3)} instead of stop ${stops[i].toFixed(3)} (${s.scene}:${s.t?.toFixed(2)})`);
   if (s.scrollY !== 0) problem(`swipe ${i}: the page scrolled (scrollY ${s.scrollY})`);
   if (!last && s.capOn && s.capFull === false) problem(`swipe ${i}: caption not fully written at ${s.scene}:${s.t?.toFixed(2)} (${s.capRef})`);
-  if (!last && s.t != null && Math.abs((s.t % 1) - 0.75) > 0.01) problem(`swipe ${i}: landed at ${s.scene}:${s.t.toFixed(3)}, not at x.75`);
+  if (!last && s.t != null && (s.t % 1) < 0.5) problem(`swipe ${i}: landed at ${s.scene}:${s.t.toFixed(3)}, before its words are all in (x.5)`);
   if (last && !s.end) problem(`swipe ${i}: the last stop does not show the closing card`);
   if (!last && s.end) problem(`swipe ${i}: closing card shows already at ${s.scene}:${s.t?.toFixed(2)}`);
   process.stdout.write(`\r${i}/${count} ${s.scene}:${s.t?.toFixed(2)}        `);
@@ -168,7 +213,8 @@ if (next && count === stops.length - 1) {
   await swipeUp();
   try {
     await page.waitForURL((u) => u.search !== from, { timeout: 8000 });
-    await page.waitForFunction(() => window.__theatre && document.documentElement.classList.contains('ready'), null, { timeout: 30000 });
+    await sleep(500);
+    await theatreUp();
     await sleep(2600); // the curtain parts and the first sentence glides in
     await settle();
     s = await state();
