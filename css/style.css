@@ -147,6 +147,10 @@ body {
 .hint { position: fixed; left: 50%; bottom: calc(var(--frame) + 26px); z-index: 11; margin: 0; display: flex; align-items: center; gap: 10px; padding: 12px 24px; translate: -50% 0; font-size: 21px; font-style: italic; color: var(--cream); background: rgba(28, 55, 57, .82); clip-path: polygon(0 8%, 40% 0, 100% 6%, 99% 94%, 55% 100%, 1% 96%); transition: opacity .6s; }
 .hint svg { width: 24px; height: 24px; animation: nudge 1.6s ease-in-out infinite; }
 @keyframes nudge { 50% { transform: translateY(4px); } }
+/* swipe mode (touch screens): nothing scrolls, the theatre moves one sentence per swipe */
+.swipe, .swipe body { overflow: hidden; overscroll-behavior: none; }
+.swipe .stage { touch-action: none; }
+.swipe .hint svg { rotate: 180deg; }
 .hint.gone { opacity: 0; pointer-events: none; visibility: hidden; transition: opacity .6s, visibility 0s .6s; }
 .hint.gone svg { animation: none; }
 .end {

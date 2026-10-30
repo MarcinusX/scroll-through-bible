@@ -10,7 +10,9 @@ const PAD = 0.5;                      // beats of set-change before/after each s
 const GAP = 0.9;                      // scroll units between two scenes
 const reduceMQ = matchMedia('(prefers-reduced-motion: reduce)');
 
-export function startTheatre({ book, chapter, scenes, ui, beatText = () => undefined, root = document }) {
+// swipe: phones read like a feed, one swipe per sentence (see "swipe mode" below);
+// onEdge(dir) is told when the reader swipes on past the closing card (1) or back past the title card (-1)
+export function startTheatre({ book, chapter, scenes, ui, beatText = () => undefined, root = document, swipe = false, onEdge = () => {} }) {
   const $ = (id) => root.getElementById(id);
   const stageEl = $('scenes');
   const spaceEl = $('scroll-space');
@@ -78,6 +80,11 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
   const total = g0 + 0.6;
   // where the play proper begins: the first sentence after the title card
   const opening = timeline.flatMap((e) => e.beats).find((b) => !b.cover) || timeline[0].beats[0];
+  // where a sentence is read: once its words have come in, or in swipe mode at x.75, where its picture
+  // is complete too (every beat was reviewed there). Swipe mode stops at each of them in turn, from the
+  // title card to the closing card.
+  const rest = (b) => (!swipe ? b.start + Math.min(0.55, b.len * 0.5) : b.cover ? b.start : b.start + b.len * 0.75);
+  const stops = [...timeline.flatMap((e) => e.beats.map(rest)), total];
 
   // scene-local time from global position g
   function localT(e, g) {
@@ -103,7 +110,7 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
     const safe = portrait ? { w: 760, h: 860 } : { w: 1020, h: 760 };
     K = Math.min(W / safe.w, HL / safe.h);
     unitPx = Math.max(520, HL * 0.85);
-    spaceEl.style.height = Math.round(total * unitPx + HL) + 'px';
+    spaceEl.style.height = swipe ? '0' : Math.round(total * unitPx + HL) + 'px'; // nothing to scroll in swipe mode
   }
 
   /* ---------- per-piece paper shadows ----------
@@ -670,7 +677,7 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
       btn.innerHTML = `<span class="lbl">${h.title}</span>`;
       btn.setAttribute('aria-label', `${h.title} (${ui.ref(chapter, h.before)})`);
       // jump straight to the section with a paper page-turn — no scrolling through everything in between
-      btn.addEventListener('click', (ev) => { ev.stopPropagation(); turnTo(target.start + Math.min(0.55, target.len * 0.5)); });
+      btn.addEventListener('click', (ev) => { ev.stopPropagation(); turnTo(rest(target)); });
       railEl.appendChild(btn);
       knots.push({ btn, at: target.start });
     });
@@ -681,8 +688,24 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
     const m = location.hash.match(/^#w(\d+)/);
     if (!m) return false;
     const v = +m[1];
-    for (const e of timeline) for (const b of e.beats) if (b.vs.includes(v)) { scrollTo(0, (b.start + 0.55) * unitPx); g = b.start + 0.55; return true; }
+    for (const e of timeline) for (const b of e.beats) if (b.vs.includes(v)) { g = swipe ? rest(b) : b.start + 0.55; put(g); return true; }
     return false;
+  }
+
+  /* ---------- where the reader is ----------
+     Scrolling sets the place to be; g follows it smoothly. In swipe mode nothing scrolls: the place
+     glides from stop to stop by itself (or follows a finger), and g is the place itself. */
+  let pos = 0, glide = null, drag = null;
+  const here = () => (swipe ? pos : scrollY / unitPx);
+  const heading = () => (glide ? glide.to : pos); // swipe mode: the stop being made for
+  // put the reader at t at once
+  function put(t) { if (swipe) { glide = null; pos = t; } else scrollTo(0, t * unitPx); }
+  // go to t smoothly: the longer the way, the longer the glide; curve ease.out carries on from a finger's flick
+  function moveTo(t, ms, curve = ease.io) {
+    if (!swipe) { scrollTo({ top: t * unitPx, behavior: reduced ? 'auto' : 'smooth' }); return; }
+    if (reduced) { put(t); return; }
+    ms ??= clamp(520 + 360 * Math.abs(t - pos), 700, 1500);
+    glide = { from: pos, to: t, t0: performance.now(), ms, curve };
   }
 
   /* ---------- the loop ---------- */
@@ -691,8 +714,14 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
   function step(now = performance.now()) {
     frameNo++;
     const dt = Math.min(0.1, (now - lastNow) / 1000); lastNow = now;
-    const target = scrollY / unitPx;
-    g = reduced ? target : g + (target - g) * (1 - Math.exp(-dt * 6.5));
+    if (glide) {
+      const u = clamp((now - glide.t0) / glide.ms);
+      pos = glide.from + (glide.to - glide.from) * glide.curve(u);
+      if (u >= 1) glide = null;
+    }
+    if (glide || drag) lastScroll = now; // Safari's idle work waits for the reader to stop, as when scrolling
+    const target = here();
+    g = reduced || swipe ? target : g + (target - g) * (1 - Math.exp(-dt * 6.5));
     if (Math.abs(target - g) < 0.0005) g = target;
     const time = reduced ? 0 : now / 1000;
 
@@ -739,7 +768,8 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
     hintEl.classList.toggle('gone', g > 0.25);
     langEl?.classList.toggle('gone', g > 0.3); // the language picker lives on the home page only
     tagEl.classList.toggle('gone', g < Math.max(0.3, opening.start - 0.1)); // …and the hanging tag only once the play is on
-    endEl.classList.toggle('on', g > total - 0.9);
+    // in swipe mode the closing card waits for its own swipe, so the last sentence keeps its picture
+    endEl.classList.toggle('on', g > total - (swipe ? 0.45 : 0.9));
     liftLive();
   }
 
@@ -798,13 +828,13 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
     rT = setTimeout(() => {
       if (innerWidth === W && tallH() === HL) return; // only a toolbar moved: nothing to rebuild, and no scroll jump
       const wasPortrait = portrait;
-      const keep = g;
+      const keep = swipe ? heading() : g;
       measure();
       timeline.forEach((e) => { if (e.built) { if (wasPortrait !== portrait) destroy(e); else size(e); } });
-      scrollTo(0, keep * unitPx);
+      put(keep);
     }, 120);
   });
-  if (!jumpToHash()) g = scrollY / unitPx;
+  if (!jumpToHash()) g = here();
   addEventListener('hashchange', jumpToHash);
   requestAnimationFrame(frame);
 
@@ -815,7 +845,7 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
     const i = Math.max(0, Math.min(e.beats.length - 1, Math.floor(t)));
     const b = e.beats[i];
     const target = t < 0 ? e.start + t * GAP : t >= e.beats.length ? e.end + (t - e.beats.length) * GAP : b.start + (t - i) * b.len;
-    scrollTo(0, target * unitPx);
+    put(target);
     g = target;
     step(); step();
     return target;
@@ -824,7 +854,7 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
   let turning = false;
   function turnTo(target, label) {
     if (turning) return;
-    if (reduced || !turnEl) { scrollTo(0, target * unitPx); g = target; return; }
+    if (reduced || !turnEl) { put(target); g = target; return; }
     turning = true;
     const tb = beats.find((b) => b.start <= target && target < b.start + b.len) || beats[0];
     const sec = sectionOf(tb.vs[0] || 1);
@@ -833,7 +863,7 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
     document.body.classList.add('turning');
     turnEl.classList.add('on'); // a sheet of paper slides in from the right…
     setTimeout(() => {
-      scrollTo(0, target * unitPx);
+      put(target);
       g = target;
       step(); step();
       turnEl.classList.replace('on', 'out'); // …and slides away to the left, revealing the new set
@@ -848,19 +878,92 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
   const beats = timeline.flatMap((e) => e.beats);
   // straight into the play: stand at the first sentence, then let its words come in
   // put the reader at t at once (no glide through everything in between)
-  function seek(t) { scrollTo(0, t * unitPx); g = t; step(); step(); }
-  function enter() {
-    seek(opening.start);
-    setTimeout(() => scrollTo({ top: (opening.start + Math.min(0.55, opening.len * 0.5)) * unitPx, behavior: reduced ? 'auto' : 'smooth' }), 650);
+  function seek(t) { put(t); g = t; step(); step(); }
+  // (atEnd, in swipe mode: back from the next chapter, onto the last sentence)
+  function enter(atEnd) {
+    const b = atEnd && swipe ? beats[beats.length - 1] : opening;
+    seek(b.start);
+    setTimeout(() => moveTo(rest(b)), 650);
   }
   // move to the next / previous sentence (lands where its words have all appeared)
   function nextBeat(dir) {
+    if (swipe) { flick(dir); return; }
     const cur = scrollY / unitPx;
-    const rest = (b) => b.start + Math.min(0.55, b.len * 0.5);
     const list = dir > 0 ? beats.filter((b) => rest(b) > cur + 0.05) : beats.filter((b) => rest(b) < cur - 0.05).reverse();
     const b = list[0];
-    if (b) scrollTo({ top: rest(b) * unitPx, behavior: reduced ? 'auto' : 'smooth' });
+    if (b) moveTo(rest(b));
   }
+  /* ---------- swipe mode: the chapter as a feed ----------
+     On a phone people swipe the way they do through a feed of short videos, so each swipe up carries
+     the reader to the next sentence (down: back one) and its picture plays on the way. While a finger
+     drags, the scene follows it; let go far or fast enough and the move completes, else it springs
+     back. Past the closing card the next chapter comes in. */
+  // the stop next to `from` in direction dir (null at either end)
+  function neighbour(from, dir) {
+    if (dir > 0) return stops.find((s) => s > from + 0.02) ?? null;
+    for (let i = stops.length - 1; i >= 0; i--) if (stops[i] < from - 0.02) return stops[i];
+    return null;
+  }
+  function flick(dir, curve) {
+    const to = neighbour(heading(), dir);
+    if (to == null) { onEdge(dir); return; }
+    moveTo(to, undefined, curve);
+  }
+  if (swipe) {
+    const reach = () => Math.min(H, W * 1.6) * 0.42; // a drag this long carries a whole sentence
+    let dragEnd = -1e9;
+    // the library and the chapter list scroll the ordinary way; so does everything while a page turns
+    const ours = (ev) => !turning && !document.documentElement.classList.contains('lib-on') && !ev.target.closest?.('.library, .booklet');
+    addEventListener('touchstart', (ev) => {
+      drag = null;
+      if (ev.touches.length !== 1 || !ours(ev)) return;
+      const p = ev.touches[0];
+      // a finger that lands mid-glide doesn't stop it; its swipe queues the next sentence
+      drag = { x: p.clientX, y: p.clientY, from: glide ? null : pos, on: false, pts: [[p.clientY, ev.timeStamp]] };
+    }, { passive: true });
+    addEventListener('touchmove', (ev) => {
+      if (!drag) return;
+      ev.preventDefault(); // no page scroll, no pull-to-refresh
+      const y = ev.touches[0].clientY, dy = drag.y - y;
+      drag.pts.push([y, ev.timeStamp]);
+      while (drag.pts.length > 2 && ev.timeStamp - drag.pts[0][1] > 100) drag.pts.shift();
+      if (!drag.on && Math.abs(dy) < 10) return;
+      drag.on = true;
+      if (drag.from == null) return;
+      const k = dy / reach(), to = neighbour(drag.from, Math.sign(k));
+      // beyond the first or last stop the paper gives a little, then holds
+      pos = to == null ? drag.from + Math.sign(k) * 0.12 * (1 - Math.exp(-Math.abs(k) * 2)) : drag.from + (to - drag.from) * Math.min(1, Math.abs(k));
+    }, { passive: false });
+    const release = (ev) => {
+      const d = drag;
+      drag = null;
+      if (!d || !d.on) return; // a tap: the stage's click handles it
+      dragEnd = performance.now();
+      const [y0, t0] = d.pts[0], [y1, t1] = d.pts[d.pts.length - 1];
+      const v = (y0 - y1) / Math.max(16, t1 - t0); // px per ms, up is positive
+      const k = (d.y - y1) / reach();
+      const dir = ev.type === 'touchcancel' ? 0 : Math.abs(k) > 0.2 || (Math.abs(v) > 0.3 && Math.sign(v) === Math.sign(k)) ? Math.sign(k) : 0;
+      if (d.from == null) { if (dir) flick(dir); return; }
+      const to = dir ? neighbour(d.from, dir) : null;
+      if (to == null) { moveTo(d.from, 380, ease.out); if (dir) onEdge(dir); return; }
+      moveTo(to, undefined, ease.out);
+    };
+    addEventListener('touchend', release, { passive: true });
+    addEventListener('touchcancel', release, { passive: true });
+    // a drag that ends over a button or a tap zone is not a tap
+    addEventListener('click', (ev) => { if (performance.now() - dragEnd < 400) { ev.stopPropagation(); ev.preventDefault(); } }, true);
+    // a mouse wheel or a trackpad gesture moves one sentence, however long it runs on
+    let wheelAcc = 0, wheelT = -1e9, wheelDone = false;
+    addEventListener('wheel', (ev) => {
+      if (!ours(ev)) return;
+      ev.preventDefault();
+      if (ev.timeStamp - wheelT > 250) { wheelAcc = 0; wheelDone = false; }
+      wheelT = ev.timeStamp;
+      wheelAcc += ev.deltaY;
+      if (!wheelDone && Math.abs(wheelAcc) > 40) { wheelDone = true; flick(Math.sign(wheelAcc)); }
+    }, { passive: false });
+  }
+
   // tap the right third of the stage for the next sentence, the left third for the previous one
   $('stage').addEventListener('click', (ev) => {
     const x = ev.clientX / W;
@@ -870,6 +973,8 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
     if (ev.metaKey || ev.ctrlKey || ev.altKey) return;
     if (ev.key === 'ArrowRight') { ev.preventDefault(); nextBeat(1); }
     if (ev.key === 'ArrowLeft') { ev.preventDefault(); nextBeat(-1); }
+    if (swipe && ['ArrowDown', 'PageDown', ' '].includes(ev.key)) { ev.preventDefault(); nextBeat(1); }
+    if (swipe && ['ArrowUp', 'PageUp'].includes(ev.key)) { ev.preventDefault(); nextBeat(-1); }
   });
   // the verse the reader is on (used to keep the place when switching language)
   function verse() {
@@ -878,5 +983,5 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
     return v;
   }
 
-  return { timeline, get g() { return g; }, unitPx: () => unitPx, go, step, verse, nextBeat, turnTo, enter, seek };
+  return { timeline, get g() { return g; }, unitPx: () => unitPx, go, step, verse, nextBeat, turnTo, enter, seek, moveTo, swipe, stops, get moving() { return !!(glide || drag); } };
 }

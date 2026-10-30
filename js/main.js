@@ -23,6 +23,8 @@ const store = {
 const readSpot = (v) => { const [b, n] = (v || '').split(':'); return BOOKS[b]?.READY.includes(+n) ? { book: b, ch: +n } : null; };
 const LAST = readSpot(store.get('last'));
 const LIB = !params.get('book');
+// touch screens read like a feed: one swipe, one sentence (?swipe=1 / ?swipe=0 to choose)
+const SWIPE = params.has('swipe') ? params.get('swipe') !== '0' : matchMedia('(pointer: coarse)').matches;
 if (LIB) document.documentElement.classList.add('lib-on');
 const first = BOOK_ORDER.find((id) => BOOKS[id].READY.length);
 let BOOK = LIB ? LAST?.book || first : BOOKS[params.get('book')] ? params.get('book') : first;
@@ -32,7 +34,10 @@ const name = book.name[LANG];
 let CH = (LIB ? LAST?.ch : +params.get('ch')) || book.READY[0] || 1;
 // a chapter picked on the home page opens straight on its first scene (the flag lives for one page load only;
 // the page's head script has already set html.entering from it, so the title card never shows)
-const AUTO = store.get('autostart', sessionStorage) === `${BOOK}:${CH}`;
+// (…:end — back by a swipe down from the next chapter's title card: it opens on its last sentence)
+const START = (store.get('autostart', sessionStorage) || '').split(':');
+const AUTO = START[0] === BOOK && +START[1] === CH;
+let atEnd = AUTO && START[2] === 'end';
 store.set('autostart', null, sessionStorage);
 if (!AUTO) document.documentElement.classList.remove('entering');
 let mod = await loadChapter(BOOK, CH);
@@ -65,7 +70,7 @@ const homeUrl = () => { const q = new URLSearchParams(location.search); ['book',
 const nextBtn = document.getElementById('next');
 if (READY.includes(CH + 1)) {
   nextBtn.hidden = false;
-  nextBtn.textContent = UI.next(CH + 1);
+  nextBtn.textContent = SWIPE ? UI.next(CH + 1).replace('→', '↑') : UI.next(CH + 1); // ↑: a swipe up gets there too
   nextBtn.addEventListener('click', () => goToChapter(BOOK, CH + 1));
 }
 document.getElementById('stage').setAttribute('aria-label', UI.stage);
@@ -140,16 +145,21 @@ if (LIB || AUTO) { drapeEl.classList.add('on'); root.classList.add('drape-on'); 
 // ?only=lamp,measure — render just these scenes (handy while drawing a new one)
 const only = params.get('only');
 const scenes = only ? SCENES.filter((s) => only.split(',').includes(s.id)) : SCENES;
+root.classList.toggle('swipe', SWIPE);
+if (SWIPE) document.querySelector('#hint [data-i18n]').textContent = UI.swipeHint;
 const theatre = startTheatre({
   book: await book.text[LANG](),
   chapter: CH,
   scenes,
   ui: UI,
   beatText: LANG === 'en' ? (id, i) => BEATS_EN[id]?.[i] : () => undefined,
+  swipe: SWIPE,
+  // a swipe on past the closing card brings in the next chapter; back past the title card, the previous one
+  onEdge: (dir) => { if (!only && READY.includes(CH + dir) && !root.classList.contains('leaving')) goToChapter(BOOK, CH + dir, dir < 0); },
 });
 // "From the beginning" turns the page back to the chapter's title
 function goHome() {
-  if (theatre.g < 0.4) scrollTo({ top: 0, behavior: 'smooth' });
+  if (theatre.g < 0.4) theatre.moveTo(0);
   else theatre.turnTo(0, { title: name.plain, ref: UI.chapterName(CH) });
 }
 const homeBtn = document.getElementById('home');
@@ -187,17 +197,18 @@ document.getElementById('cover-toc').addEventListener('click', openLibrary);
 // into the play: behind the closed curtain the stage is set at the first sentence, then the curtain parts
 function enterPlay() {
   root.classList.add('entering');
-  theatre.enter();
+  theatre.enter(atEnd);
+  atEnd = false;
   setTimeout(openDrape, 250);
   setTimeout(() => root.classList.remove('entering'), 1600);
 }
-function goToChapter(b, n) {
+function goToChapter(b, n, end = false) {
   if (b === BOOK && n === CH) {
     history.pushState(null, '', chapterUrl(n));
     library.hide().then(enterPlay);
     return;
   }
-  store.set('autostart', `${b}:${n}`, sessionStorage);
+  store.set('autostart', `${b}:${n}${end ? ':end' : ''}`, sessionStorage);
   root.classList.add('leaving');
   // from the library the curtain is already closed; from a chapter's closing card it falls first
   (drapeEl.classList.contains('on') && !drapeEl.classList.contains('open') ? new Promise((r) => setTimeout(r, 320)) : closeDrape())
@@ -213,11 +224,12 @@ addEventListener('popstate', () => {
 // coming back to a page kept in memory after leaving it for another chapter
 addEventListener('pageshow', (ev) => { if (ev.persisted) root.classList.remove('leaving'); });
 // remember the chapter once the reader is into it: the library marks it, and home stands in front of it
-if (!LIB) addEventListener('scroll', function mark() {
+// (swipe mode doesn't scroll, so look now and then rather than on scroll)
+const markT = LIB ? 0 : setInterval(() => {
   if (theatre.g < 1) return;
   store.set('last', `${BOOK}:${CH}`);
-  removeEventListener('scroll', mark);
-}, { passive: true });
+  clearInterval(markT);
+}, 1000);
 
 /* ---------- language picker: two little paper flags ---------- */
 function paperFlag(lang) {

@@ -3,7 +3,9 @@
 // in turn with the first (A, B, A, B …), so background load on the machine hits both alike.
 // Needs Playwright:  npm i --no-save playwright && npx playwright install webkit
 // Usage: node tools/bench-webkit.mjs [--url=http://localhost:5178/] [--vs=http://localhost:5179/]
-//          [--dev=iphone|ipad] [--secs=14] [--rounds=2] [--reduced] mark:4 john:6 …
+//          [--dev=iphone|ipad] [--secs=14] [--rounds=2] [--reduced] [--swipe] mark:4 john:6 …
+// --swipe: swipe mode instead — the next sentence as soon as the last glide has rested 0.6 s (a quick reader);
+//          frame times are counted while the theatre glides
 let webkit;
 try { ({ webkit } = await import('playwright')); } catch {
   console.error('needs Playwright: npm i --no-save playwright && npx playwright install webkit');
@@ -32,10 +34,30 @@ for (let r = 0; r < rounds; r++) for (const spot of spots) for (const [k, base] 
   const [book, ch] = spot.split(':');
   const u = new URL(base);
   u.searchParams.set('book', book); u.searchParams.set('ch', ch);
+  u.searchParams.set('swipe', args.includes('--swipe') ? '1' : '0'); // an iPhone gets swipe mode by default
   await page.goto(u.href);
   await page.waitForFunction(() => !!window.__theatre, null, { timeout: 30000 });
   await page.waitForTimeout(1200);
-  const r1 = await page.evaluate(async (secs) => {
+  const r1 = args.includes('--swipe') ? await page.evaluate(async (secs) => {
+    const th = window.__theatre, out = [];
+    const sceneAt = (g) => (th.timeline.find((e) => g < e.end + 0.45) || th.timeline[th.timeline.length - 1]).sc.id;
+    let last = performance.now(), restSince = last, gliding = false;
+    const t0 = last;
+    await new Promise((res) => {
+      const f = (now) => {
+        if (th.moving) { out.push([now - last, sceneAt(th.g)]); gliding = true; }
+        else {
+          if (gliding) { restSince = now; gliding = false; }
+          if (now - restSince > 600) th.nextBeat(1);
+        }
+        last = now;
+        if (now - t0 > secs * 1000 || th.g >= th.stops[th.stops.length - 1] - 1e-6) return res();
+        requestAnimationFrame(f);
+      };
+      requestAnimationFrame(f);
+    });
+    return { out: out.slice(3), errs: window.__errs };
+  }, secs) : await page.evaluate(async (secs) => {
     const th = window.__theatre, total = document.documentElement.scrollHeight - innerHeight, out = [];
     const sceneAt = (g) => (th.timeline.find((e) => g < e.end + 0.45) || th.timeline[th.timeline.length - 1]).sc.id;
     let y = 0, last = performance.now();
