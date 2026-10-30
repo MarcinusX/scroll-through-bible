@@ -56,6 +56,13 @@ async function open(u) {
   await theatreUp();
   await sleep(900);
 }
+// wait until the theatre rests on one of its stops (a chapter's entry glide starts a moment after load)
+async function atStop(ms = 12000) {
+  for (const t0 = Date.now(); Date.now() - t0 < ms; await sleep(100)) {
+    try { if (await page.evaluate(() => { const T = window.__theatre; return !T.moving && T.stops.some((s) => Math.abs(s - T.g) < 0.003); })) break; } catch { /* navigating */ }
+  }
+  await sleep(250);
+}
 async function settle() {
   for (const t0 = Date.now(); Date.now() - t0 < 10000; await sleep(50)) {
     try { if (await page.evaluate(() => !window.__theatre.moving)) break; } catch { /* navigating */ }
@@ -124,8 +131,8 @@ if (prev) {
     await page.waitForURL((u) => u.href !== url, { timeout: 8000 });
     await sleep(500);
     await theatreUp();
-    await sleep(2600);
-    await settle();
+    await sleep(1500);
+    await atStop();
     const s = await state(), st = await page.evaluate(() => window.__theatre.stops);
     await page.screenshot({ path: join(out, 'prev-chapter.jpg'), quality: 80, type: 'jpeg' });
     report.prev = s;
@@ -215,8 +222,8 @@ if (next && count === stops.length - 1) {
     await page.waitForURL((u) => u.search !== from, { timeout: 8000 });
     await sleep(500);
     await theatreUp();
-    await sleep(2600); // the curtain parts and the first sentence glides in
-    await settle();
+    await sleep(1500); // the curtain parts and the first sentence glides in
+    await atStop();
     s = await state();
     const st = await page.evaluate(() => window.__theatre.stops);
     await page.screenshot({ path: join(out, 'next-chapter.jpg'), quality: 80, type: 'jpeg' });
