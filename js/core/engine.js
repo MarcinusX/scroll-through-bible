@@ -78,8 +78,8 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
     timeline.push(entry);
   });
   const total = g0 + 0.6;
-  // Swipe mode shows one piece of a sentence per swipe, so a piece cut mid-sentence (it doesn't end
-  // the sentence and the next piece goes on in lower case) carries "…" at that cut, on both sides.
+  // Swipe mode shows one piece of a sentence per swipe, so a piece cut mid-sentence (it ends on a comma,
+  // or doesn't end the sentence and the next piece goes on in lower case) carries "…" at that cut, on both sides.
   if (swipe) {
     const said = timeline.flatMap((e) => e.beats).filter((b) => b.segs.length);
     said.forEach((b, i) => {
@@ -87,7 +87,8 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
       if (!nb) return;
       const end = b.segs[b.segs.length - 1].text.trim().replace(/[»”"’')\]>]+$/, '');
       const start = nb.segs[0].text.trim().replace(/^[«„“"‘'(\[<]+/, '').replace(/^[-–—]\s*/, ''); // «…» – rzekł do …
-      if (!/[.!?…]$/.test(end) && /^\p{Ll}/u.test(start)) { b.goesOn = true; nb.goesFrom = true; }
+      // (a comma or semicolon always means the sentence goes on: «…namiestnikiem Judei,» «Herod tetrarchą Galilei,»)
+      if (/[,;]$/.test(end) || (!/[.!?…]$/.test(end) && /^\p{Ll}/u.test(start))) { b.goesOn = true; nb.goesFrom = true; }
     });
   }
   // where the play proper begins: the first sentence after the title card
