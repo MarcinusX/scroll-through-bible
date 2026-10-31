@@ -77,8 +77,9 @@ export default {
       wash.fade(0.34 * (1 - es(t, 0.9, 1.2)));
       const tk = es(t, -0.1, 0.3, ease.out) * (1 - es(t, 1.0, 1.2));
       pose(tab, { x: 800, y: lerp(-500, 150, tk) - es(t, 1.0, 1.2) * 300, r: Math.sin(T * 0.8) * 1.2, o: tk > 0.01 ? 1 : 0 });
-      const ak = es(t, 1.04, 1.26, ease.out) * (1 - es(t, 1.62, 1.85));
-      pose(ans, { x: 800, y: lerp(-300, 460, ak) - es(t, 1.62, 1.85) * 500, r: Math.sin(T * 0.9) * 1.2, o: ak > 0.01 ? 1 : 0 });
+      // the answer stays up through the landing (x.75) and leaves before the earth comes in at 2.1
+      const ak = es(t, 1.04, 1.26, ease.out) * (1 - es(t, 1.9, 2.08));
+      pose(ans, { x: 800, y: lerp(-300, 460, ak) - es(t, 1.9, 2.08) * 500, r: Math.sin(T * 0.9) * 1.2, o: ak > 0.01 ? 1 : 0 });
 
       /* v34 — heaven opens: the throne of light */
       const part = es(t, 1.3, 1.62);
@@ -98,7 +99,7 @@ export default {
 
       /* the man: swears (v33); begins to swear by heaven / earth / Jerusalem and each time lowers his hand */
       const oath = es(t, 0.2, 0.4) * (1 - es(t, 0.9, 1.1));
-      const byHeaven = bump(t, 1.12, 1.66), byEarth = bump(t, 2.1, 2.62), byCity = bump(t, 3.12, 3.62);
+      const byHeaven = es(t, 1.12, 1.39) * (1 - es(t, 1.84, 2.06)), byEarth = bump(t, 2.1, 2.62), byCity = bump(t, 3.12, 3.62);
       M.set({ x: PH ? 576 : 540, y: G + 6, s: 1.02, armB: oath * 150 + byHeaven * 140 + byCity * 30, armF: 20 + byEarth * 30 + byCity * 80, head: -oath * 6 - byHeaven * 18 + byEarth * 12 - byCity * 4 + es(t, 1.6, 1.8) * 6 * (1 - es(t, 2.0, 2.1)), blink: blinkAt(T, 1) });
 
       S.cam.y = -30 * es(t, 1.2, 1.6) + es(t, 2.9, 3.4) * 20;

@@ -70,10 +70,14 @@ export default {
 
       /* v20b — those who sought His life are dead: the dark shape breaks and falls; dawn */
       const inK = es(t, 1.6, 1.9, ease.out);
-      const fall = es(t, 2.2, 2.7, ease.in);
+      // swipe: the broken shape lies in pieces on the ground at the x.75 landing, and only then fades
+      const gone = es(t, 2.85, 2.98);
       pieces.forEach((p) => {
-        const d = fall * (1 + p.i * 0.35);
-        vpose(p.el, { x: (S.portrait ? 1050 : 1170) + (p.i % 2 ? 1 : -1) * d * 40, y: lerp(S.portrait ? -500 : -300, S.portrait ? 300 : 520, inK) + d * 420, r: (p.i % 2 ? 1 : -1) * d * 30, s: 0.9, o: inK * (1 - fall) });
+        const fall = es(t, 2.2 + p.i * 0.05, 2.45 + p.i * 0.05, ease.in), side = p.i % 2 ? 1 : -1;
+        const yc = (-200 + p.i * 60) * 0.9;           // the piece's own middle below the figure's origin
+        const y = lerp(lerp(S.portrait ? -500 : -300, S.portrait ? 300 : 520, inK), GY - 12 - yc, fall);
+        const x = (S.portrait ? 1050 : 1170) + fall * ((S.portrait ? 0.4 : 1) * side * (30 + p.i * 14) - (S.portrait ? 50 : 0));
+        vpose(p.el, { x, y, r: side * fall * (18 + p.i * 10), s: 0.9, o: inK * (1 - gone) });
       });
       const day = es(t, 2.3, 2.9);
       dawn.layer.fade(day);

@@ -56,7 +56,7 @@ export default {
     { v: 28, text: 'A o odzienie czemu się zbytnio troszczycie?' },
     { v: 28, cont: true, text: 'Przypatrzcie się liliom na polu, jak rosną: nie pracują ani przędą.' },
     { v: 29 },
-    { v: 30, text: 'Jeśli więc ziele na polu, które dziś jest, a jutro do pieca będzie wrzucone, Bóg tak przyodziewa,' },
+    { v: 30, text: 'Jeśli więc ziele na polu, które dziś jest, a jutro do pieca będzie wrzucone, Bóg tak przyodziewa,', land: 0.9 },  // swipe: stop once the oven has flared (3.72–3.85)
     { v: 30, cont: true, text: 'to czyż nie tym bardziej was, małej wiary?' },
   ],
   cam: { x: [-40, 40], y: [-80, 40], z: [1, 1.14] },

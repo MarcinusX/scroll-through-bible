@@ -130,9 +130,11 @@ export default {
       const sy = lerp(-400, SCY, sIn), sOn = sIn > 0.001 ? 1 : 0;
       pose(scr, { x: SCX, y: sy, o: sOn });
       kneel.set({ x: SCX - 30, y: sy + SH - 40, s: 0.4, o: sOn, head: 12, lean: 8 });
-      const lash = bump(t, 1.38, 1.6);
+      // (the rod goes up, strikes once and is held raised over the kneeling man through the landing (x.75);
+      // the cloth drops only as the screen lifts away in the next sentence, so the flogging stays seen to the end of this one)
+      const lash = es(t, 1.38, 1.48) - bump(t, 1.5, 1.64) * 0.55;
       rodMan.set({ x: SCX - 90, y: sy + SH - 44, s: 0.42, o: sOn, armF: 40 + lash * 110, armB: 10 });
-      const cl = es(t, 1.62, 1.86);
+      const cl = es(t, 2.0, 2.12);
       pose(cloth, { x: SCX, y: sy, sy: Math.max(0.001, cl), o: sOn * (cl > 0.001 ? 1 : 0) });
 
       /* governors and kings (beats 2–5) */

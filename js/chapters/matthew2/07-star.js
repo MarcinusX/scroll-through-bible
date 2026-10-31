@@ -86,11 +86,11 @@ export default {
 
       /* v9b — the star goes before them; v9c — it stops over the house */
       const sOn = es(t, 1.0, 1.3, ease.out);
-      const sx = kf(t, [[1.0, 560], [2.0, 900], [2.8, HX]], ease.sine);
-      const sy = kf(t, [[1.0, 150], [2.0, 190], [2.8, 250]], ease.sine);
+      const sx = kf(t, [[1.0, 560], [2.0, 900], [2.55, HX]], ease.sine);
+      const sy = kf(t, [[1.0, 150], [2.0, 190], [2.55, 250]], ease.sine);
       if (sOn <= 0.001) pose(star, { x: sx, y: -700, o: 0 });
       else pose(star, { x: sx, y: lerp(-500, sy, sOn) + Math.sin(T * 1.2) * 3, r: Math.sin(T * 0.8) * 2, oy: 0, o: 1 });
-      const stop = es(t, 2.7, 3.0);
+      const stop = es(t, 2.45, 2.68);   // swipe: stopped, beam on the house, by the x.75 landing
       vpose(beam, { x: HX, y: 262, sx: 0.3 + stop * 0.7, o: stop * 0.85 });
       const flare = es(t, 3.05, 3.4);
       vpose(gl, { x: HX, y: 250, s: 0.4 + flare * 0.6, r: T * 4, o: flare * 0.45 });
@@ -102,7 +102,7 @@ export default {
         vpose(j.el, { x: lx - 90 + Math.cos(a) * j.r * 1.4, y: 430 + Math.sin(a) * j.r * 0.5, s: k * (0.8 + Math.sin(T * 3 + j.i) * 0.2), r: T * 40, o: k });
       });
 
-      S.cam.x = kf(t, [[0, -300], [1.0, -220], [2.9, 300], [3.2, 320]], ease.sine);
+      S.cam.x = kf(t, [[0, -300], [1.0, -220], [2.6, 300], [3.2, 320]], ease.sine);
       S.cam.y = 30 - es(t, 3.0, 3.4) * 10;
       S.cam.z = 1 + es(t, 3.0, 3.4) * 0.06;
     };

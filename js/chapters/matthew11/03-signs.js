@@ -151,11 +151,11 @@ export default {
       // lepers are cleansed
       const clean = es(t, 2.48, 2.54);
       lep.set({ x: PX, y: BACK + 4, s: 0.86, armF: 70, armB: 60, head: -6, o: 1 - clean });
-      const stand = es(t, 2.76, 2.82);
+      const stand = es(t, 2.6, 2.66);   // upright and clean by the x.75 stop
       lepK.set({ x: PX, y: BACK + 4, s: 0.86, armF: 50, armB: 40, head: -10, o: clean * (1 - stand) });
       lepS.set({ x: PX, y: BACK + 4, s: 0.86, armF: 40, armB: 90 + bump(t, 2.8, 3.8) * 40, head: -8, o: stand, blink: blinkAt(T, 7) });
       flakes.forEach((f) => {
-        const k = seg(t, 2.5 + f.i * 0.015, 2.95 + f.i * 0.015);
+        const k = seg(t, 2.5 + f.i * 0.009, 2.65 + f.i * 0.009);   // all flakes gone by 2.75
         pose(f.el, { x: PX + f.x * 0.86 + k * (40 + f.dx * 80), y: BACK + 4 + f.y * 0.86 - Math.sin(k * PI) * 70 + k * k * 60, r: k * f.spin, s: 1 + k * 0.5, o: clean * (1 - seg(k, 0.6, 1)) });
       });
 

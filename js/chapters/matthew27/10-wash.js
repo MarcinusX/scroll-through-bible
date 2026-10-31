@@ -132,12 +132,12 @@ export default {
       /* v26a — Barabbas goes free */
       const opened = es(t, 4.1, 4.35);
       pose(H.door, { x: CELL.x - CELL.w / 2, y: 0, sx: 1 - opened * 0.8, ox: CELL.x - CELL.w / 2 });
-      const bK = [[4.3, [CELL.x + 2, CELL.y - 2]], [4.85, [CELL.x + (PH ? -40 : 40), CELL.y + 90]]];
+      const bK = [[4.25, [CELL.x + 2, CELL.y - 2]], [4.62, [CELL.x + (PH ? -40 : 40), CELL.y + 90]]];
       const [bx, by] = kf(t, bK);
-      const free = es(t, 4.75, 4.95);
-      K.bar.set({ x: bx, y: by, s: 0.66 + es(t, 4.3, 4.85) * 0.2, flip: false, walk: moving(t, bK) ? bx * 0.08 : undefined, armF: 24 + free * 90, armB: 14 + free * 120, head: -free * 10, blink: blinkAt(T, 8) });
+      const free = es(t, 4.52, 4.68);
+      K.bar.set({ x: bx, y: by, s: 0.66 + es(t, 4.25, 4.62) * 0.2, flip: false, walk: moving(t, bK) ? bx * 0.08 : undefined, armF: 24 + free * 90, armB: 14 + free * 120, head: -free * 10, blink: blinkAt(T, 8) });
       chains.forEach((ch, i) => {
-        const k = es(t, 4.75, 5.0, ease.in);
+        const k = es(t, 4.52, 4.74, ease.in);
         pose(ch, { x: bx + 20 + i * 14, y: by - 70 + k * 64, r: k * (i ? 80 : -60), o: free > 0.02 ? 1 - es(t, 5.4, 5.6) : 0 });
       });
       /* v26b — the curtain comes down over Him */

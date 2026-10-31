@@ -14,7 +14,7 @@ const FEET = 724, JX = 690;
 export default {
   id: 'mt8-tombs',
   beats: [
-    { v: 28, text: 'Gdy przybył na drugi brzeg do kraju Gadareńczyków,' },
+    { v: 28, text: 'Gdy przybył na drugi brzeg do kraju Gadareńczyków,', land: 0.92 },   // swipe: all four disciples ashore
     { v: 28, cont: true, text: 'wybiegli Mu naprzeciw dwaj opętani, którzy wyszli z grobów,' },
     { v: 28, cont: true, text: 'bardzo dzicy, tak że nikt nie mógł przejść tą drogą.' },
     { v: 29, text: 'Zaczęli krzyczeć: «Czego chcesz od nas, <Jezusie>, Synu Boży?' },

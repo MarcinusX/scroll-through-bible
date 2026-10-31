@@ -105,15 +105,18 @@ export default {
       fade(strip, lk * (1 - es(t, 1.9, 2.0) * 0.3));
 
       /* v13b — the darkness gathers behind him and reaches; the bell of light; it tears apart */
+      // the bell comes down and holds it off: by the landing (x.75) the darkness has shrunk back outside the light,
+      // whole and kept away; only then (1.85–1.98) does it tear apart
       const gather = es(t, 1.02, 1.3);
-      const tearK = es(t, 1.55, 1.98);
-      const cx = x - 210, cy = roadY(x) - 170;
+      const hold = es(t, 1.42, 1.62);
+      const tearK = es(t, 1.85, 1.98);
+      const cx = x - 210 - hold * (P ? 50 : 110), cy = roadY(x) - 170 - hold * 30;
       SH.forEach((sh) => {
         const d = tearK * 360 * sh.drift;
-        pose(sh.el, { x: cx + Math.cos(sh.a) * d, y: cy + Math.sin(sh.a) * d - tearK * 40, r: tearK * 120 * (sh.i % 2 ? 1 : -1), s: 0.4 + gather * 0.6, o: gather * (1 - tearK) });
+        pose(sh.el, { x: cx + Math.cos(sh.a) * d, y: cy + Math.sin(sh.a) * d - tearK * 40, r: tearK * 120 * (sh.i % 2 ? 1 : -1), s: (0.4 + gather * 0.6) * (1 - hold * 0.3), o: gather * (1 - tearK) });
       });
-      const reach = es(t, 1.2, 1.42) * (1 - tearK);
-      pose(grab, { x: cx + 60 + reach * 90, y: cy + 20, r: 60 + reach * 10, s: 0.7 + reach * 0.3, o: gather * (1 - tearK) });
+      const reach = es(t, 1.2, 1.42) * (1 - hold) * (1 - tearK);
+      pose(grab, { x: cx + 60 + reach * 90, y: cy + 20, r: 60 + reach * 10, s: (0.7 + reach * 0.3) * (1 - hold * 0.3), o: gather * (1 - tearK) });
       pose(eyes, { x: cx, y: cy - 30, o: gather * (1 - tearK) * (T ? 1 - blinkAt(T, 4) : 1) });
       const bl = es(t, 1.38, 1.58, ease.out);
       pose(bell, { x, y: roadY(x) + 10, sx: 0.6 + bl * 0.4, sy: bl, o: bl * (1 - es(t, 1.9, 2.0) * 0.4) });

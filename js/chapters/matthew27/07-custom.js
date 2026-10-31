@@ -17,7 +17,7 @@ export default {
     { v: 17 },
     { v: 18 },
   ],
-  cam: { x: [-40, 200], y: [-40, 120], z: [1, 1.3] },
+  cam: { x: [-40, 250], y: [-40, 120], z: [1, 1.3] }, // the phone pans to 250
   build(S) {
     const c = S.c;
     const H = squareSet(S);
@@ -64,7 +64,7 @@ export default {
       const glare = bump(t, 1.1, 1.8);
       K.bar.set({ x: CELL.x + 2, y: CELL.y - 2, s: 0.66, flip: true, armF: 24 + glare * 40, armB: 14 + glare * 40, head: -glare * 8, blink: blinkAt(T, 8) });
       const bt = es(t, 1.05, 1.35) * (1 - es(t, 1.9, 2.2));
-      swing(barTag, S.portrait ? CELL.x - 10 : CELL.x + 150, CELL.y - 110 - (1 - bt) * 800, T, 1.2, 0.8, 1);
+      swing(barTag, S.portrait ? CELL.x - 150 : CELL.x + 150, CELL.y - 110 - (1 - bt) * 800, T, 1.2, 0.8, 1);
 
       /* the platform */
       K.sols[0].set({ x: 640, y: PLAT, s: 0.84, flip: false, armF: 34, armB: 8, blink: blinkAt(T, 4) });
@@ -91,7 +91,7 @@ export default {
         pose(hazes[i], { x: m.x, y: m.y - 190, o: es(t, 3.15, 3.4) * 0.6 });
       });
 
-      S.cam.x = lookBar * 170 - es(t, 3.0, 3.4) * 30;
+      S.cam.x = lookBar * (S.portrait ? 250 : 170) - es(t, 3.0, 3.4) * 30;
       S.cam.y = lookBar * 110 - es(t, 2.0, 2.6) * 10;
       S.cam.z = 1.02 + lookBar * 0.24;
     };

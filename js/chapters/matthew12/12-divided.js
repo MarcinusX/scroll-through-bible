@@ -146,21 +146,21 @@ export default {
       });
 
       /* v26 — Satan against Satan; the dark crown snaps */
-      const dIn = es(t, 2.0, 2.25);
-      const tug = bump(t, 2.25, 2.55);
-      const snap = es(t, 2.5, 2.62, ease.out);
-      const fall = es(t, 2.6, 2.95);
+      const dIn = es(t, 2.0, 2.15);
+      const tug = bump(t, 2.15, 2.4);
+      const snap = es(t, 2.38, 2.48, ease.out);
+      const fall = es(t, 2.45, 2.68);     // the collapse is over (and held) by the swipe stop at 2.75
       devils.forEach((dv) => {
         const d = dv.i ? 1 : -1;
         const x = 800 + d * (120 + tug * 14 + snap * 60 + fall * 60);
-        dv.p.set({ x, y: Y + 6 + fall * 20, s: 1.05, flip: dv.i === 1, o: dIn * (1 - fall * 0.7), armF: 130 - snap * 60, armB: 110 - snap * 40, lean: d * (tug * 10 + snap * 18 + fall * 26), head: d * 8, blink: 0 });
+        dv.p.set({ x, y: Y + 6 + fall * 20, s: 1.05, flip: dv.i === 1, o: dIn * (1 - fall * 0.5), armF: 130 - snap * 60, armB: 110 - snap * 40, lean: d * (tug * 10 + snap * 18 + fall * 26), head: d * 8, blink: 0 });
       });
       [cLeft, cRight].forEach((el, i) => {
         const d = i ? 1 : -1;
-        pose(el, { x: 800 + d * (snap * 50 + fall * 40), y: 400 + fall * 180, r: d * (snap * 20 + fall * 40), ox: 800, oy: 400, o: dIn * (1 - fall * 0.8) });
+        pose(el, { x: 800 + d * (snap * 50 + fall * 40), y: 400 + fall * 180, r: d * (snap * 20 + fall * 40), ox: 800, oy: 400, o: dIn * (1 - fall * 0.5) });
       });
       dSmoke.forEach((sm, i) => {
-        const k = es(t, 2.6 + i * 0.05, 3.0 + i * 0.05);
+        const k = es(t, 2.45 + i * 0.05, 3.0 + i * 0.05);
         pose(sm, { x: [620, 700, 900, 980][i], y: Y - 120 - k * 90, s: 0.6 + k, o: k * (1 - k) * 3 * 0.8 });
       });
 

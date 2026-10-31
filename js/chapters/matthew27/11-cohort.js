@@ -127,7 +127,7 @@ export default {
         const drape = (m.i === 2 || m.i === 3) ? bump(t, 1.25, 1.6) : 0;
         const weave = m.i === 2 ? bump(t, 2.0, 2.35) : 0;
         const strike = m.i === 3 ? bump(t, 4.3, 4.95) : 0;
-        const spit = (m.i === 1 || m.i === 4) ? bump(t, 4.05, 4.6) : 0;
+        const spit = (m.i === 1 || m.i === 4) ? bump(t, 4.3, 4.95) : 0;
         const unrobe = (m.i === 2 || m.i === 3) ? bump(t, 5.0, 5.3) : 0;
         m.st.set({ x, y: FL, s: 0.95, flip: m.flip, walk: inK > 0 && inK < 1 ? x * 0.08 : undefined, armF: 30 + (strip + drape + unrobe) * 90 + weave * 70 + salute * 70 + strike * 110 + spit * 30, armB: 10 + salute * 140 + (strip + drape) * 40, head: -salute * 6 + spit * -10, lean: spit * -6, o: inK > 0.01 ? 1 - kneel : 0 });
         m.kn.set({ x, y: FL, s: 0.95, flip: m.flip, armF: 70 + Math.sin(m.seed) * 10 + salute * 40, armB: 60, head: 10, lean: 10, o: kneel });
@@ -182,7 +182,7 @@ export default {
       const aim = (Math.atan2(thy - 30 - ry, thx - rx) * 180) / PI + 90;
       pose(reedSh, { x: rx, y: ry, r: lerp(-10, aim, sb), o: es(t, 4.1, 4.2) * (1 - es(t, 4.85, 4.95)) });
       flecks.forEach((f) => {
-        const k = seg(t, 4.05 + f.i * 0.05, 4.5 + f.i * 0.05);
+        const k = seg(t, 4.35 + f.i * 0.06, 4.85 + f.i * 0.06);
         const x0 = f.from + (f.from < JX ? 40 : -40), y0 = FL - 170;
         pose(f.el, { x: lerp(x0, lerp(x0, JX, 0.55), k), y: y0 + f.dy + k * k * 140, o: k > 0 && k < 1 ? 1 - k : 0 });
       });

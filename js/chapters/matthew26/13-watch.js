@@ -32,7 +32,7 @@ export default {
     { v: 46, text: 'Wstańcie, chodźmy!' },
     { v: 46, cont: true, text: 'Oto blisko jest mój zdrajca».' },
   ],
-  cam: { x: [-120, 340], y: [-40, 200], z: [1, 1.5] },
+  cam: { x: [-320, 340], y: [-40, 200], z: [1, 1.5] },
   build(S) {
     const c = S.c;
     const RX = S.portrait ? ROCK - 50 : ROCK;   // phone: the praying rock a little nearer, so He kneels clear of the thread with the three asleep still in view
@@ -166,15 +166,16 @@ export default {
       // v46b — the betrayer at hand
       band.forEach((b) => {
         const k = es(t, 10.05 + b.i * 0.04, 10.55 + b.i * 0.04, ease.out);
-        vis(b.el, { x: lerp(-360 - b.i * 40, 60 + b.i * 44, k), y: GY - 8 + (b.i % 2) * 8, s: 0.86, o: k > 0.01 ? 1 : 0 });
+        vis(b.el, { x: lerp(-360 - b.i * 40, (S.portrait ? 180 : 60) + b.i * 44, k), y: GY - 8 + (b.i % 2) * 8, s: 0.86, o: k > 0.01 ? 1 : 0 });
       });
-      const jdK = [[10.0, [-200, GY + 6]], [10.6, [380, GY + 6]]];
+      const JDX = S.portrait ? 455 : 380;   // phone: Judas and the band stop a little further in, whole on screen
+      const jdK = [[10.0, [-200, GY + 6]], [10.6, [JDX, GY + 6]]];
       const [jdx] = kf(t, jdK, ease.out);
       judas.set({ x: jdx, y: GY + 6, s: 0.98, flip: false, o: es(t, 10.0, 10.05), walk: moving(t, jdK, 1) ? jdx * 0.05 : undefined, armF: 20, armB: 6, head: 4, blink: blinkAt(T, 2) });
 
       // phone: at the rock the camera stands wide, so He and the cup stay clear of the edge and the three asleep show whole
       const RK = S.portrait ? 160 : 220;
-      S.cam.x = kf(t, [[-0.5, RK], [0.1, RK], [0.8, 20], [4.05, 20], [4.4, RK], [4.95, RK], [5.3, 20], [6.0, 20], [6.3, RK], [6.9, RK], [7.2, 20], [9.9, 20], [10.4, -60]]);
+      S.cam.x = kf(t, [[-0.5, RK], [0.1, RK], [0.8, 20], [4.05, 20], [4.4, RK], [4.95, RK], [5.3, 20], [6.0, 20], [6.3, RK], [6.9, RK], [7.2, 20], [9.9, 20], [10.4, S.portrait ? -300 : -60]]);   // phone: further left at the end, so Judas and the torches behind him come into view
       S.cam.z = S.portrait
         ? kf(t, [[-0.5, 1.1], [0.8, 1.2], [1.1, 1.36], [2.0, 1.3], [3.0, 1.4], [4.05, 1.3], [4.4, 1.0], [4.95, 1.0], [5.3, 1.3], [6.0, 1.3], [6.3, 1.0], [6.9, 1.0], [7.2, 1.3], [8.0, 1.16], [9.0, 1.1], [10.0, 1.1]])
         : kf(t, [[-0.5, 1.1], [0.8, 1.2], [1.1, 1.36], [2.0, 1.3], [3.0, 1.4], [4.05, 1.3], [4.4, 1.34], [5.3, 1.3], [6.0, 1.3], [6.3, 1.3], [7.2, 1.3], [8.0, 1.16], [9.0, 1.1], [10.0, 1.1]]);

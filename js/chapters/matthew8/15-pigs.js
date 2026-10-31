@@ -57,7 +57,7 @@ export default {
     for (let i = 0; i < 22; i++) {
       const row = i % 2, x = 700 + Math.floor(i / 2) * 64 + row * 30 + c.rr(-10, 10), y = ridge(x) + 18 + row * 34 + c.rr(-4, 4);
       const el = mtL.add(`<g>${herd(c, 9, 66, 18, { sc: 0.46, face: -1 })}</g>`);
-      clusters.push({ i, el, x, y, d: ((x - 700) / 700) * 0.5 + c.rr(0, 0.05), jit: c.rr(0, 6) });
+      clusters.push({ i, el, x, y, d: ((x - 700) / 700) * 0.18 + c.rr(0, 0.03), jit: c.rr(0, 6) });
     }
     // the lower slopes, nearer
     const slopeL = S.layer({ par: 0.33, sh: 3 });
@@ -127,23 +127,23 @@ export default {
       /* the herd: grazing → the spirits enter → the rush */
       const enter = es(t, 3.2, 3.9);
       clusters.forEach((cl) => {
-        const u = es(t, 4.05 + cl.d, 4.75 + cl.d, (x) => x * x * (1.6 - 0.6 * x));
+        const u = es(t, 3.98 + cl.d, 4.5 + cl.d, (x) => x * x * (1.6 - 0.6 * x));
         const [x, y, r] = u > 0 ? rushPos(cl, u) : [cl.x, cl.y, 0];
         const jit = enter * (1 - u) * Math.sin(t * 60 + cl.jit) * 2;
-        const gone = seg(t, 4.66 + cl.d, 4.74 + cl.d);
+        const gone = seg(t, 4.42 + cl.d, 4.5 + cl.d);   // the whole herd is in the lake by x.75
         pose(cl.el, { x: x + jit, y: y - Math.abs(Math.sin(t * 40 + cl.jit)) * 3 * (u > 0 && u < 1 ? 1 : 0), r, s: 1, o: 1 - gone });
       });
       puffs.forEach((p, i) => {
-        const k = seg(t, 4.1 + i * 0.12, 4.5 + i * 0.12);
-        pose(p, { x: 1000 - i * 70, y: ridge(1000 - i * 70) + 10 - k * 20, s: 0.5 + k, o: bump(t, 4.1 + i * 0.12, 4.5 + i * 0.12) * 0.8 });
+        const k = seg(t, 4.0 + i * 0.08, 4.35 + i * 0.08);
+        pose(p, { x: 1000 - i * 70, y: ridge(1000 - i * 70) + 10 - k * 20, s: 0.5 + k, o: bump(t, 4.0 + i * 0.08, 4.35 + i * 0.08) * 0.8 });
       });
       splashes.forEach((sp, i) => {
-        const a = 4.6 + i * 0.1 + (i > 2 ? 0.1 : 0);
+        const a = 4.35 + i * 0.06;
         const k = seg(t, a, a + 0.35);
         pose(sp, { x: WATER[0] - 10 + (i % 3) * 22 - 20, y: WATER[1] + 4, s: 0.5 + Math.sin(k * PI) * 1.1, sy: 0.4 + Math.sin(k * PI) * 1.2, o: k > 0 && k < 1 ? 1 : 0 });
       });
       ripples.forEach((r, i) => {
-        const k = seg(t, 4.7 + i * 0.16, 5.6 + i * 0.16);
+        const k = seg(t, 4.45 + i * 0.08, 5.4 + i * 0.08);
         pose(r, { x: WATER[0] - 14 + (i % 2) * 20, y: WATER[1] + 6, s: 0.3 + k * 2.2, sy: 0.3 + k * 0.5, o: (1 - k) * 0.8 * (k > 0 ? 1 : 0) });
       });
 

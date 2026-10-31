@@ -134,9 +134,10 @@ export default {
       const ang = BASE + aHead + aLean;
       const ra = (ang * PI) / 180;
       pose(plankEl, { x: ex + Math.cos(ra) * pull * 60 - 2, y: ey + Math.sin(ra) * pull * 60, r: ang, s: 1, o: 1 - out });
-      // tossed on the woodpile
+      // tossed on the woodpile (phone: the woodpile is off-frame, so it drops on the ground in front of him)
       const toss = es(t, 2.4, 2.56, ease.out);
-      pose(tossed, { x: lerp(ex + Math.cos(ra) * 60, 176, toss), y: lerp(ey + Math.sin(ra) * 60, 612, toss) - Math.sin(toss * PI) * 120, r: lerp(ang, 360 + 0, toss), o: out });
+      const [TX, TY, TR] = S.portrait ? [600, 790, 356] : [176, 612, 360];
+      pose(tossed, { x: lerp(ex + Math.cos(ra) * 60, TX, toss), y: lerp(ey + Math.sin(ra) * 60, TY, toss) - Math.sin(toss * PI) * 120, r: lerp(ang, TR, toss), o: out });
 
       /* the sparrow lands on the plank's end — and flies off when he moves */
       const land = es(t, 0.4, 0.62), off = es(t, 1.12, 1.4);

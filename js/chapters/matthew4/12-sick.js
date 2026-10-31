@@ -22,7 +22,7 @@ export default {
     { v: 24, text: 'A wieść o Nim rozeszła się po całej Syrii.' },
     { v: 24, cont: true, text: 'Przynoszono więc do Niego wszystkich cierpiących, których dręczyły rozmaite choroby i dolegliwości,' },
     { v: 24, cont: true, text: 'opętanych, epileptyków i paralityków,' },
-    { v: 24, cont: true, text: 'a On ich uzdrawiał.' },
+    { v: 24, cont: true, text: 'a On ich uzdrawiał.', land: 0.92 },   // swipe stop: the bursts and the shadow are gone, the healed stand
   ],
   cam: { x: [-30, 30], y: [0, 60], z: [1, 1.1] },
   build(S) {

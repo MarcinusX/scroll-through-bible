@@ -14,7 +14,7 @@ const DX0 = 620, DY = 430, DR = 68;          // David's medallion
 export default {
   id: 'mt1-david',
   beats: [
-    { v: 6, text: 'a Jesse ojcem króla Dawida.' },
+    { v: 6, text: 'a Jesse ojcem króla Dawida.', land: 0.85 },   // swipe stop: the horn has gone, crown on, glory full
     { v: 6, cont: true, text: 'Dawid był ojcem Salomona, a matką była [dawna] żona Uriasza.' },
   ],
   cam: { x: [-20, 20], y: [-40, 20], z: [1, 1.06] },

@@ -88,7 +88,7 @@ export default {
       hpSit.set({ x: SEATX, y: HALL - 16, s: 0.74, flip: true, armF: 30 + search * 30, armB: 12, head: -4 + search * 6, blink: blinkAt(T, 3) });
 
       const tk = es(t, 0.3, 0.6, ease.out) * (1 - es(t, 0.85, 1.05, ease.in));
-      vis(tag, { x: SEATX - 130, y: 200 - (1 - tk) * 700, r: Math.sin(T * 0.9) * 2, o: tk > 0.01 ? 1 : 0 });
+      vis(tag, { x: PH ? SEATX - 60 : SEATX - 40, y: (PH ? 130 : 150) - (1 - tk) * 700, r: Math.sin(T * 0.9) * 2, o: tk > 0.01 ? 1 : 0 });
       /* v58 — Peter at a distance, through the gate, to the fire */
       const pK = [[0.9, [GATE - 40, YARD]], [1.8, [FIRE - 120, YARD]], [2.05, [FIRE - 110, YARD]]];
       const [px, py] = kf(t, pK, ease.sine);
@@ -133,11 +133,11 @@ export default {
       /* camera: hall — overview — courtyard — hall */
       // phone: in the hall the camera stands a little wider, so the council on the left and Caiaphas on the right both stay on screen
       S.cam.x = PH
-        ? kf(t, [[-0.5, 340], [0.8, 330], [1.05, 0], [1.4, -420], [2.9, -440], [3.2, 330], [8, 330]])
+        ? kf(t, [[-0.5, 365], [0.8, 355], [1.05, 0], [1.4, -420], [2.9, -440], [3.2, 330], [8, 330]])
         : kf(t, [[-0.5, 380], [0.8, 360], [1.05, 0], [1.4, -420], [2.9, -440], [3.2, 360], [8, 360]]);
       S.cam.y = kf(t, [[-0.5, -380], [0.8, -380], [1.05, 0], [1.4, 300], [2.9, 300], [3.2, -380], [8, -390]]);
       S.cam.z = PH
-        ? kf(t, [[-0.5, 1.32], [0.8, 1.34], [1.05, 1.0], [1.4, 1.5], [2.9, 1.55], [3.2, 1.32], [8, 1.32]])
+        ? kf(t, [[-0.5, 1.25], [0.8, 1.26], [1.05, 1.0], [1.4, 1.5], [2.9, 1.55], [3.2, 1.32], [8, 1.32]])
         : kf(t, [[-0.5, 1.5], [0.8, 1.55], [1.05, 1.0], [1.4, 1.5], [2.9, 1.55], [3.2, 1.5], [8, 1.5]]);
     };
   },

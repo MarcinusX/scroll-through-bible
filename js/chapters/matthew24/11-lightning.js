@@ -77,10 +77,11 @@ export default {
 
       /* v28 — the vultures gather and circle */
       VUL.forEach((v) => {
-        const k = es(t, 1.05 + v.d, 1.6 + v.d, ease.out);
+        const k = es(t, 1.05 + v.d * 0.4, 1.5 + v.d * 0.4, ease.out); // all seven circle by 1.62 (before the stop)
         const ph = v.ph + (T ? T * 0.45 : 0) * (v.i % 2 ? 1 : -1) * 0.9 + t * 0.8;
-        const cx = HOLLOW[0] + v.from * (1 - k) * 700, cy = HOLLOW[1] - 120 - (1 - k) * 80;
-        const rx = 120 * v.r * (0.5 + k * 0.5), ry = 34 * v.r;
+        // phone: a tighter ring a little to the left, clear of the thread at the right edge
+        const cx = HOLLOW[0] - (S.portrait ? 70 : 0) + v.from * (1 - k) * 700, cy = HOLLOW[1] - 120 - (1 - k) * 80;
+        const rx = 120 * v.r * (0.5 + k * 0.5) * (S.portrait ? 0.75 : 1), ry = 34 * v.r;
         const x = cx + Math.cos(ph) * rx * k, y = cy + Math.sin(ph) * ry * k + v.i * 6;
         const dir = k < 0.95 ? -v.from : (Math.sin(ph) * (v.i % 2 ? 1 : -1) < 0 ? 1 : -1);
         pose(v.el, { x, y, s: v.s, sx: dir, r: (Math.cos(ph) * 8) * k, o: k > 0.01 ? 1 : 0 });

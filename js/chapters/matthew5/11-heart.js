@@ -90,6 +90,8 @@ export default {
     const cards = [`<g transform="scale(1.4)">${paperEye(c, 34)}</g>`, `<g transform="translate(0 20)">${paperHand(c, C.skin2, 1.3)}</g>`].map((icon, i) => ({ i, t0: 2 + i * 2, el: flyL.add(`<g><path d="M0 -2400V0" stroke="rgba(74,54,34,.55)" stroke-width="1.2"/><g class="obj">${stumbleCard(c, icon)}</g></g>`) }));
     cards.forEach((cd) => { cd.obj = cd.el.querySelector('.obj'); });
     const sc = flyL.add(`<g>${scissors(c, 70)}</g>`);
+    // where a snipped card comes to rest: lying (r 70, a little smaller: thrown far off) in the fire pit, the flames still showing
+    const DROP = PH ? [FX + 10 - CARD[0], FY + 10 - CARD[1]] : [FX - 10 - CARD[0], FY - 12 - CARD[1]];
 
     /* the old wash, the tablet, the answer */
     const wash = S.layer({ par: 0, sh: 1, flat: true });
@@ -133,11 +135,12 @@ export default {
       let scO = 0, snipK = 0;
       cards.forEach((cd) => {
         const down = es(t, cd.t0, cd.t0 + 0.28, ease.back);
-        const fall = es(t, cd.t0 + 0.52, cd.t0 + 0.98);
-        if (t > cd.t0 - 0.1 && t < cd.t0 + 1) { scO = es(t, cd.t0 + 0.24, cd.t0 + 0.32) * (1 - es(t, cd.t0 + 0.62, cd.t0 + 0.74)); snipK = bump(t, cd.t0 + 0.36, cd.t0 + 0.54); }
+        // snipped early and thrown down by the fire, so the landing (x.75) shows the cut string and the card lying there
+        const fall = es(t, cd.t0 + 0.45, cd.t0 + 0.68);
+        if (t > cd.t0 - 0.1 && t < cd.t0 + 1) { scO = es(t, cd.t0 + 0.22, cd.t0 + 0.3) * (1 - es(t, cd.t0 + 0.5, cd.t0 + 0.6)); snipK = bump(t, cd.t0 + 0.3, cd.t0 + 0.45); }
         const gone = es(t, cd.t0 + 0.95, cd.t0 + 1.2);
         pose(cd.el, { x: CARD[0], y: lerp(-800, CARD[1], down) - gone * 1300, r: Math.sin(T * 0.8 + cd.i) * 1.2 * (1 - fall), o: down > 0.001 ? 1 : 0 });
-        pose(cd.obj, { x: fall * 150, y: fall * 360 - Math.sin(fall * PI) * 60, r: fall * 70, o: 1 - es(t, cd.t0 + 0.9, cd.t0 + 0.99) });
+        pose(cd.obj, { x: fall * DROP[0], y: fall * DROP[1] - Math.sin(fall * PI) * 60, s: 1 - fall * 0.35, r: fall * 70, o: 1 - es(t, cd.t0 + 0.9, cd.t0 + 0.99) });
       });
       pose(sc, { x: CARD[0] - 62, y: CARD[1] - 8, r: 0, o: scO });
       snip(sc, 44 * (1 - snipK));

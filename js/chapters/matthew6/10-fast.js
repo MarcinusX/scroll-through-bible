@@ -23,7 +23,7 @@ export default {
     { v: 16, text: 'Kiedy pościcie, nie bądźcie posępni jak obłudnicy.' },
     { v: 16, cont: true, text: 'Przybierają oni wygląd ponury, aby pokazać ludziom, że poszczą.' },
     { v: 16, cont: true, text: 'Zaprawdę, powiadam wam: już odebrali swoją nagrodę.' },
-    { v: 17 },
+    { v: 17, land: 0.95 },  // swipe: stop on him washed, anointed, shining and smiling (3.7–3.95)
     { v: 18, text: 'aby nie ludziom pokazać, że pościsz, ale Ojcu twemu, który jest w ukryciu.' },
     { v: 18, cont: true, text: 'A Ojciec twój, który widzi w ukryciu, odda tobie.' },
   ],

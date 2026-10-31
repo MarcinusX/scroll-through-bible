@@ -75,11 +75,11 @@ export default {
       pose(H.ovenEl.querySelector('.glow'), { x: 0, y: 0, o: 0.3 });
 
       /* v48 — at the gate, the empty road: "my lord is delaying" */
-      const drinkOn = es(t, 1.42, 1.5);
+      const drinkOn = es(t, 1.86, 1.95);
       const tossed = es(t, 0.7, 0.85);
       const toBeat = seg(t, 1.0, 1.2);
       const ex = t < 1 ? 1030 : lerp(1030, 690, ease.io(toBeat));
-      const raise = es(t, 1.2, 1.3) * (1 - es(t, 1.36, 1.42));
+      const raise = es(t, 1.2, 1.3) * (1 - es(t, 1.82, 1.9));
       standEvil.set({ x: ex, y: F + 2, s: 0.96, flip: t > 0.6, o: 1 - drinkOn, walk: toBeat > 0 && toBeat < 1 ? ex * 0.07 : undefined, armB: raise * 160 + 10, armF: 20 + bump(t, 0.6, 0.85) * 70, head: t < 0.6 ? -4 : bump(t, 0.3, 0.6) * 6 - bump(t, 0.6, 0.9) * 8, blink: blinkAt(T, 4) });
       const th = es(t, 0.15, 0.35, ease.back) * (1 - es(t, 0.95, 1.1));
       pose(think, { x: 1036, y: F - 176, s: th, o: th > 0.01 ? 1 : 0 });
@@ -88,8 +88,9 @@ export default {
       /* v49 — the fellow servant cowers; then the drinking */
       const cower = es(t, 1.15, 1.25);
       fellowUp.set({ x: 600, y: F, s: 0.92, o: 1 - cower, flip: false, armF: 20, blink: blinkAt(T, 7) });
-      fellow.set({ x: 600, y: F, s: 0.92, o: cower, flip: false, armB: 150 * (1 - es(t, 1.6, 1.9) * 0.5), armF: 90, head: 14, lean: -8 });
-      pose(puff, { x: 640, y: F - 150, s: bump(t, 1.3, 1.5) * 1.2, o: bump(t, 1.3, 1.5) });
+      fellow.set({ x: 600, y: F, s: 0.92, o: cower, flip: false, armB: 150 * (1 - es(t, 1.88, 2.05) * 0.5), armF: 90, head: 14, lean: -8 });
+      const pf = es(t, 1.3, 1.4) * (1 - es(t, 1.8, 1.9));
+      pose(puff, { x: 640, y: F - 150, s: pf * 1.2, o: pf });
       others.forEach((m, i) => m.p.set({ x: 470 - i * 70, y: F + i * 3, s: 0.9, flip: false, head: 8, armF: 20 + cower * 30, o: 1, blink: blinkAt(T, 8 + i) }));
       pose(tableEl, { x: 820, y: F + 10, o: 1 });
       pose(jars, { x: 950, y: F + 6, o: 1 });

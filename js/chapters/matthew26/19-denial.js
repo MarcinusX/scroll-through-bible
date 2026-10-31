@@ -159,7 +159,7 @@ export default {
       });
 
       /* the rooster: at once, as he swears the third time */
-      const crow = bump(t, 9.05, 9.7);
+      const crow = es(t, 9.05, 9.2) * (1 - es(t, 9.88, 10.0));   // held through the sentence, so its stop (9.75) shows the crow
       vis(roEl, { x: ROO.x, y: ROO.y, s: 0.9, o: 1 });
       pose(roHead, { x: 16, y: -58, r: -crow * 28, ox: 16, oy: -58 });
       pose(beakL, { x: 33, y: -79, r: crow * 22, ox: 33, oy: -79 });

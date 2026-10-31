@@ -38,7 +38,7 @@ export default {
     const say = fx.add(`<g opacity="0">${bubble(c, [tr('Ufaj, synu!', 'Son, cheer up!')], { size: 24, dir: -1 })}</g>`);
 
     // the carry: the bed's centre x while they walk in, then they lower it
-    const CK = [[-0.3, 1560], [0.62, BEDX]];
+    const CK = [[-0.3, 1560], [0.46, BEDX]];   // set down and stepped aside by x.75, so the man is in view at the swipe stop
     const offs = [-72, 64, -80, 74];
     const REST = S.portrait ? [-60, 26, 200, 96] : [-60, 26, 230, 136];     // where each steps to once the bed is down (phone: closer)
     return (t, time) => {
@@ -49,16 +49,16 @@ export default {
       /* v2a — they bring him */
       const cx = kf(t, CK, ease.out);
       const walking = moving(t, CK, 0.3);
-      const down = es(t, 0.66, 0.9);
+      const down = es(t, 0.46, 0.6);
       const bedY = lerp(CT.FEET - 70, CT.FEET - 14, down);
       pose(bed, { x: cx, y: bedY + (walking ? Math.abs(Math.sin(cx * 0.05)) * 2 : 0) });
       fr.forEach((f) => {
-        const x = cx + offs[f.i] + es(t, 0.9, 1.2) * REST[f.i];
+        const x = cx + offs[f.i] + es(t, 0.58, 0.74) * REST[f.i];
         const kneel = f.i === 0 ? es(t, 2.2, 2.45) * 0 : 0;
         const heartK = bump(t, 1.08 + f.i * 0.07, 1.95);
         f.p.set({
           x, y: CT.FEET + (f.i < 2 ? -6 : 6), s: 0.9, flip: true,
-          walk: walking || (t > 0.9 && t < 1.2) ? x * 0.05 + f.i : undefined,
+          walk: walking || (t > 0.58 && t < 0.74) ? x * 0.05 + f.i : undefined,
           armF: 58 * (1 - down) + 20 + heartK * 30 + kneel, armB: 34 * (1 - down) + 10 + heartK * 50,
           head: -down * 6 + heartK * -4, blink: blinkAt(T, f.seed),
         });

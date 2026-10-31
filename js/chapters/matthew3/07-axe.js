@@ -50,13 +50,14 @@ export default {
     });
     /* the barren tree (its own piece: it falls) */
     const bad = orchardTree(c, { sc: 1.08, barren: true });
-    const badEl = T.add(`<g>${bad.tree}</g>`);
+    let badEl;
     const stump = T.add(`<g opacity="0">${sheet().p(c.cut([[-16, 0], [-15, -22], [-6, -26], [6, -22], [16, -24], [17, 0]], 0.5, 4), mix(C.stone2, C.wood3, 0.3)).x(c.poly(c.ell(0, -23, 13, 4, 12)), C.wood3).out()}</g>`);
 
     /* the fire */
     const F = S.layer({ par: 0.4, sh: 5 });
     const fGlow = F.add(`<circle r="190" fill="url(#warm-glow)" opacity=".5"/>`);
     F.add(`<g transform="translate(${FX} ${GY + 14})">${firePit(c, 130)}</g>`);
+    badEl = F.add(`<g>${bad.tree}</g>`);   // in the fire layer, so it can lie on the logs, in front of the glow
     const flames = F.add(`<g>${fireFlames(c, 130)}</g>`);
 
     /* the axe, chips, the glint */
@@ -76,28 +77,28 @@ export default {
       const settle = bump(t, 0.4, 0.55);
       // at rest: head beside the trunk, blade against the root, handle down to the left
       const restX = BX - 70, restY = GY - 34, restR = 38;
-      const chop1 = bump(t, 1.04, 1.22), chop2 = bump(t, 1.22, 1.4);
+      const chop1 = bump(t, 0.98, 1.16), chop2 = bump(t, 1.16, 1.34);
       const lift = Math.max(chop1, chop2);
-      const leave = es(t, 1.4, 1.55);
+      const leave = es(t, 1.34, 1.49);
       const ax = lerp(restX - 260, restX, down) - lift * 50 - leave * 120;
       const ay = lerp(-300, restY, down) - lift * 80 - leave * 60;
-      pose(axeEl, { x: ax, y: ay, r: lerp(-80, restR, down) + settle * 4 - lift * 70 - leave * 40, o: down > 0.001 ? 1 - es(t, 1.62, 1.72) : 0 });
+      pose(axeEl, { x: ax, y: ay, r: lerp(-80, restR, down) + settle * 4 - lift * 70 - leave * 40, o: down > 0.001 ? 1 - es(t, 1.56, 1.66) : 0 });
       const gk = bump(t, 0.55, 0.95);
       pose(glint, { x: restX + 44, y: restY + 38, s: gk * 1.2, r: time * 60, o: gk });
 
       /* v10b — two strokes, chips fly, the tree falls and goes into the fire */
       chips.forEach((ch) => {
-        const a = ch.i < 3 ? 1.14 : 1.32;
+        const a = ch.i < 3 ? 1.08 : 1.26;
         const k = seg(t, a, a + 0.3);
         pose(ch.el, { x: BX - 16 + ch.vx * k, y: GY - 24 + ch.vy * k + 260 * k * k, r: k * 400, o: k > 0 && k < 1 ? 1 : 0 });
       });
-      const fall = es(t, 1.4, 1.53, ease.in);
-      const drag = es(t, 1.55, 1.7);
-      const tx = lerp(BX, FX - 30, drag), ty = GY + 6 + drag * 10;
-      pose(badEl, { x: tx, y: ty, r: fall * 82 + drag * 8, s: 1 - drag * 0.35, o: 1 - es(t, 1.64, 1.72) });
-      fade(stump, seg(t, 1.39, 1.41));
+      const fall = es(t, 1.34, 1.47, ease.in);
+      const drag = es(t, 1.48, 1.62);
+      const tx = lerp(BX, FX - 115, drag), ty = GY + 6 - drag * 2;   // the felled trunk ends up lying across the fire
+      pose(badEl, { x: tx, y: ty, r: fall * 82 - drag * 8, s: 1 - drag * 0.35, o: 1 - es(t, 1.88, 1.98) });
+      fade(stump, seg(t, 1.33, 1.35));
       pose(stump, { x: BX, y: GY + 6 });
-      const flare = bump(t, 1.62, 2.2) * 0.7 + es(t, 1.62, 1.72) * 0.4;
+      const flare = bump(t, 1.55, 2.0) * 0.7 + es(t, 1.55, 1.65) * 0.4;
       const fl = time ? 1 + Math.sin(time * 9) * 0.07 : 1;
       pose(flames, { x: FX, y: GY + 14, sx: 1 + flare * 0.4, sy: (0.8 + flare) * fl });
       pose(fGlow, { x: FX, y: GY - 30, s: 0.8 + flare * 0.8, o: 0.5 + flare * 0.4 });

@@ -15,8 +15,8 @@ export default {
   id: 'mt12-jonah',
   enter: 'fly',
   beats: [
-    { v: 40, text: 'Albowiem jak Jonasz był trzy dni i trzy noce we wnętrznościach wielkiej ryby,' },
-    { v: 40, cont: true, text: 'tak Syn Człowieczy będzie trzy dni i trzy noce w łonie ziemi.' },
+    { v: 40, text: 'Albowiem jak Jonasz był trzy dni i trzy noce we wnętrznościach wielkiej ryby,', land: 0.9 },
+    { v: 40, cont: true, text: 'tak Syn Człowieczy będzie trzy dni i trzy noce w łonie ziemi.', land: 0.98 },
   ],
   cam: { x: [-20, 20], y: [-20, 30], z: [1, 1.08] },
   build(S) {
@@ -74,7 +74,9 @@ export default {
 
       /* three days and nights, in each beat */
       const base = t < 1 ? 0.3 : 1.25;
-      const u = seg(t, base, base + 0.66);      // 0..1 across 3 days
+      const span = t < 1 ? 0.5 : 0.66;            // beat 0 is shorter: all three days done (and held) before its swipe stop
+      const step = t < 1 ? 0.083 : 0.11;
+      const u = seg(t, base, base + span);      // 0..1 across 3 days
       const dayPhase = (u * 3) % 1;
       const nightK = u > 0 && u < 1 ? Math.sin(dayPhase * PI) ** 2 : 0;
       night.layer.fade(nightK * 0.9); starL.fade(nightK);
@@ -84,7 +86,7 @@ export default {
       pose(sunEl, { x: sp < 0 ? 1180 : skyX(sp < 0.5 ? sp + 0.5 : sp - 0.5), y: sp < 0 ? 170 : arcY(sp < 0.5 ? sp + 0.5 : sp - 0.5), oy: 0, o: sp < 0 ? 1 : 1 - nightK });
       pose(moonEl, { x: sp < 0 ? 0 : skyX(sp), y: sp < 0 ? -400 : arcY(sp), oy: 0, o: sp < 0 ? 0 : nightK });
       tokens.forEach((tk, i) => {
-        const k = es(t, base + (i + 1) * 0.11, base + (i + 1) * 0.11 + 0.05, ease.back);
+        const k = es(t, base + (i + 1) * step, base + (i + 1) * step + 0.05, ease.back);
         const lastBeatHold = t < 1 ? 1 - es(t, 0.95, 1.05) : 1;
         pose(tk, { x: 710 + i * 36, y: 200, s: k, o: k > 0.01 ? lastBeatHold : 0 });
       });

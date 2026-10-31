@@ -84,10 +84,10 @@ export default {
       hangAt(sign, 780, lerp(-500, 250, sk), T, 1.2, 0.7);
 
       // the centurion steps out of his doorway, bows, asks
-      const out = es(t, 0.3, 0.8);
+      const out = es(t, 0.3, 0.62);
       const cx = lerp(HOUSE.DOOR, CX, out);
       const kneel = es(t, 3.08, 3.14);
-      const ask = es(t, 0.8, 1.0);
+      const ask = es(t, 0.6, 0.72);   // he has come up and asks by x.75, while the sign still hangs
       const point = es(t, 1.1, 1.35) * (1 - es(t, 1.9, 2.1));
       const beg = es(t, 4.1, 4.35);
       cen.set({ x: cx, y: FEET + 2, s: 1.02, flip: true, o: 1 - kneel, walk: out > 0 && out < 1 ? cx * 0.05 : undefined, armF: 14 + ask * 50 * (1 - point) + point * 20, armB: 10 + point * 110, lean: ask * 6 * (1 - point), head: ask * 6 - point * 16, blink: blinkAt(T, 4) });

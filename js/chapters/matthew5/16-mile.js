@@ -17,12 +17,14 @@ export default {
   enter: 'fly',
   beats: [
     { v: 40 },
-    { v: 41 },
+    { v: 41, land: 0.95 },   // swipe: stop after the road has rolled to milestone II (it rolls until x.9)
     { v: 42 },
   ],
   cam: { x: [-20, 20], y: [-30, 30], z: [1, 1.08] },
   build(S) {
     const c = S.c;
+    // phone: the road rolls half as far, so the soldier stays in view at milestone I (II ends where it does on desktop)
+    const RL = S.portrait ? ROLL / 2 : ROLL;
     sky(S, SKY.day);
     const hangL = S.layer({ par: 0.04, sh: 4 });
     const sunEl = hanging(hangL, sun(c, 40), { x: 1240, y: 140, len: 800 });
@@ -41,7 +43,7 @@ export default {
     r.x(joints, shade(C.stone, -0.2), 'opacity=".45"');
     roadL.add(r.out());
     roadL.add(olive(c, 300, 640, 0.8) + cypress(c, 1240, 626, 110) + olive(c, 1880, 640, 0.9) + rock(c, 2300, 650, 60, 20) + cypress(c, 2600, 626, 100) + grass(c, { x0: -800, x1: 3400, y: 612, n: 60, h: 12, color: C.olive }));
-    roadL.add(`<g transform="translate(1000 668)">${milestone(c, 'I')}</g><g transform="translate(${DX + ROLL + 110} 668)">${milestone(c, 'II')}</g>`);
+    roadL.add(`<g transform="translate(1000 668)">${milestone(c, 'I')}</g><g transform="translate(${DX + RL + 110} 668)">${milestone(c, 'II')}</g>`);
 
     /* people */
     const P = S.layer({ par: 0.34, sh: 5 });
@@ -65,7 +67,7 @@ export default {
 
       /* v41 — the road rolls past as they walk */
       const roll = es(t, 1.2, 1.9, (x) => x);
-      const sh = -roll * ROLL;
+      const sh = -roll * RL;
       roadL.shift(sh, 0);
       midL.shift(sh * 0.4, 0);
       farL.shift(sh * 0.15, 0);
@@ -85,15 +87,17 @@ export default {
       const come = es(t, 1.0, 1.2, (x) => x);
       const loaded = es(t, 1.15, 1.22);
       const passI = 1000 + sh;              // milestone I on screen
-      const solX = t < 1.0 ? 1400 : t < 1.2 ? lerp(1100, DX + 90, come) : DX - 90 + (passI < DX - 60 ? passI - (DX - 60) : 0);
+      // phone: he stays in view at milestone I, so in v42 he turns and walks back off the left edge
+      const away = S.portrait ? es(t, 2.0, 2.3, (x) => x) : 0;
+      const solX = (t < 1.0 ? 1400 : t < 1.2 ? lerp(1100, DX + 90, come) : DX - 90 + (passI < DX - 60 ? passI - (DX - 60) : 0)) - away * 420;
       const surprised = es(t, 1.6, 1.75);
-      sol.set({ x: solX, y: G + 10, s: 1.0, flip: t < 1.2, walk: (come > 0 && come < 1) || (walking && passI >= DX - 60) ? solX * 0.05 + roll * 30 : undefined, armF: 30 + surprised * 50, armB: surprised * 60, head: -surprised * 6, o: seg(t, 0.98, 1.04), blink: blinkAt(T, 3) });
-      pose(bangE, { x: solX + 20, y: G - 230, s: surprised, o: surprised > 0.01 ? 1 : 0 });
-      const trav = { x: DXs, y: G + 12, s: 1.0, walk: walking ? roll * 50 : undefined, head: -2, blink: blinkAt(T, 2) };
+      sol.set({ x: solX, y: G + 10, s: 1.0, flip: t < 1.2 || away > 0, walk: (come > 0 && come < 1) || (walking && passI >= DX - 60) || (away > 0 && away < 1) ? solX * 0.05 + roll * 30 * RL / ROLL : undefined, armF: 30 + surprised * 50 * (1 - away), armB: surprised * 60 * (1 - away), head: -surprised * 6, o: seg(t, 0.98, 1.04), blink: blinkAt(T, 3) });
+      pose(bangE, { x: solX + 20, y: G - 230, s: surprised, o: surprised > 0.01 && away < 0.15 ? 1 : 0 });
+      const trav = { x: DXs, y: G + 12, s: 1.0, walk: walking ? roll * 50 * RL / ROLL : undefined, head: -2, blink: blinkAt(T, 2) };
       pose(packE, { x: DXs + 4, y: G - 132, o: loaded * (1 - es(t, 2.0, 2.1)) });
 
       /* v42 — he gives to the beggar, and lends to his neighbour */
-      const bx = DX + ROLL + 190 + sh;
+      const bx = DX + RL + 190 + sh;
       beggar.set({ x: bx, y: G + 18, s: 0.9, flip: true, armF: 40 + es(t, 2.05, 2.2) * 40, head: 8 - es(t, 2.2, 2.4) * 12, blink: blinkAt(T, 4) });
       const gv = es(t, 2.12, 2.34);
       const [ghx, ghy] = hand(DXs, G + 12, 1.0, false, 60);

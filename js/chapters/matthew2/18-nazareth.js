@@ -12,8 +12,8 @@ import {
 
 const Y = 712;
 const CX = 820;            // where the boy stands
-const JK = [[-0.3, 180], [0.75, 640]];
-const JK2 = [[-0.3, 180], [0.75, 640], [0.85, 660], [1.15, 1230]];
+const JK = [[-0.3, 180], [0.55, 640]];            // arrived and settled by the x.75 landing
+const JK2 = [[-0.3, 180], [0.55, 640], [0.62, 660], [1.15, 1230]];
 
 export default {
   id: 'mt2-nazareth',
@@ -76,7 +76,7 @@ export default {
       /* v23a — they come to Nazareth and settle there */
       const jx = kf(t, JK, ease.out);
       const walking = moving(t, JK, 0.3);
-      const home = es(t, 0.8, 0.88);
+      const home = es(t, 0.58, 0.66);
       const jx2 = kf(t, JK2, ease.sine);
       joseph.set({ x: jx2, y: Y + 4, s: 0.92, flip: t > 1.15, walk: moving(t, JK2, 0.3) ? jx2 * 0.06 : undefined, armF: 30, armB: 30 + home * 20, head: home * 4, blink: blinkAt(T, 2) });
       const DXO = S.portrait ? 120 : 220;   // phone: the donkey stops whole inside the frame, not as a head at the edge
@@ -84,9 +84,9 @@ export default {
       donkey.set({ x: dx, y: Y + 10, s: 0.9, o: 1 - home, walk: walking ? dx * 0.05 : undefined });
       plain.set({ x: 640 - DXO, y: Y + 10, s: 0.9, o: home, nod: Math.sin(T * 0.8) * 3 - 8 });
       mary.set({ x: S.portrait ? 985 : 1070, y: Y, s: 0.95, flip: true, o: home, armF: 30 + es(t, 1.2, 1.5) * 40, armB: 20, head: 6, blink: blinkAt(T, 1) });
-      const kx = lerp(jx - 80, CX, es(t, 0.75, 1.05));
+      const kx = lerp(jx - 80, CX, es(t, 0.55, 0.72));
       const wonder = es(t, 1.3, 1.6);
-      kid.set({ x: kx, y: Y + 10, s: 0.58, walk: t < 1.05 && (walking || t > 0.75) ? kx * 0.1 : undefined, armF: 20 + wonder * 50, armB: 10 + wonder * 130, head: -wonder * 12, blink: blinkAt(T, 4) });
+      kid.set({ x: kx, y: Y + 10, s: 0.58, walk: t < 0.72 && (walking || t > 0.55) ? kx * 0.1 : undefined, armF: 20 + wonder * 50, armB: 10 + wonder * 130, head: -wonder * 12, blink: blinkAt(T, 4) });
       const nk = es(t, 0.3, 0.6, ease.out) * (1 - es(t, 1.0, 1.2, ease.in));
       hangAt(tagN, S.portrait ? 990 : 1060, lerp(-500, 260, nk), T, nk > 0.001 ? 1 : 0, 1.2, 0.9, 1);
 
