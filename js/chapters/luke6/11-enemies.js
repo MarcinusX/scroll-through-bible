@@ -109,6 +109,7 @@ export default {
     const splat = fx.add(`<g opacity="0">${mudClod(c)}</g>`);
     const pac = fx.add(`<g opacity="0">${sparkle(c, 16)}</g>`);
     const q = fx.add(`<g opacity="0">${question(c)}</g>`);
+    const welt = fx.add(`<g opacity="0"><ellipse rx="6.5" ry="4.5" fill="#d8574c" opacity=".8"/></g>`);   // the mark of the slap (no scissors: a plain shape)
     storyFrame(S);
 
     return (t, time) => {
@@ -122,15 +123,15 @@ export default {
       const hWalk = moving(t, hK);
       const pray = es(t, 1.62, 1.68) * (1 - es(t, 2.0, 2.06));
       const robbed = es(t, 3.28, 3.34);
-      const turned = es(t, 2.46, 2.54);                // offers the other cheek (turns round)
+      const turned = es(t, 2.56, 2.64);                // offers the other cheek (turns round)
       const facingE = !(turned > 0.5 && t < 3.0) && !(t > 4.1 && t < 4.75) && !(t > 0.9 && t < 1.08);
-      const struck = bump(t, 2.2, 2.42);
+      const struck = bump(t, 2.36, 2.56);
       const blessUp = es(t, 1.3, 1.45) * (1 - es(t, 1.55, 1.62));
       const carry = t < 0.8 ? 1 : 0;
       const offer = es(t, 3.46, 3.62) * (1 - es(t, 3.95, 4.05));
       const give = es(t, 4.3, 4.45) * (1 - es(t, 4.6, 4.7));
       const letGo = es(t, 4.6, 4.8);
-      const openA = es(t, 2.5, 2.6) * (1 - es(t, 2.95, 3.05));
+      const openA = es(t, 2.6, 2.68) * (1 - es(t, 2.95, 3.05));
       const hSet = { x: hx, y: GY, s: 1.0, flip: !facingE, walk: hWalk ? hx * 0.05 : undefined, armF: 14 + carry * 44 + blessUp * 60 + offer * 64 + give * 70 + letGo * 40 + openA * 40, armB: 10 + blessUp * 110 + letGo * 60 + openA * 40, head: -struck * 22 + (turned > 0.5 && t < 3 ? -10 : 0), lean: -struck * 6, blink: blinkAt(T, 3) };
       hero.set({ ...hSet, o: (1 - pray) * (1 - robbed) });
       bare.set({ ...hSet, o: (1 - pray) * robbed });
@@ -144,10 +145,10 @@ export default {
       const shout = bump(t, 1.04, 1.4);
       const kick = bump(t, 1.44, 1.56);
       const thr = bump(t, 1.5, 1.62);
-      const slap = bump(t, 2.14, 2.3);
+      const slap = bump(t, 2.3, 2.46);
       const pull = es(t, 3.1, 3.3) * (1 - es(t, 3.5, 3.6));
-      const puzzled = Math.max(es(t, 2.6, 2.72) * (1 - es(t, 2.95, 3.05)), es(t, 3.62, 3.75) * (1 - es(t, 4.4, 4.5)));
-      const halt = es(t, 2.5, 2.6) * (1 - es(t, 2.9, 3.0));
+      const puzzled = Math.max(es(t, 2.66, 2.74) * (1 - es(t, 2.95, 3.05)), es(t, 3.62, 3.75) * (1 - es(t, 4.4, 4.5)));
+      const halt = es(t, 2.6, 2.68) * (1 - es(t, 2.9, 3.0));
       const leaving = t > 4.45;
       enemy.set({ x: ex, y: GY, s: 1.0, flip: !leaving, walk: moving(t, eK) ? ex * 0.05 : undefined, armF: 20 + glare * 30 * (1 - es(t, 0.9, 1.0)) + shout * 50 + thr * 120 + slap * 100 + halt * 110 + pull * 70 + (leaving ? 40 : 0), armB: 10 + shout * 80 + kick * 10 + (leaving ? 50 : 0), head: glare * 6 * (1 - es(t, 2.9, 3.1)) - shout * 8 + puzzled * 10, lean: slap * 8 + pull * -6, blink: blinkAt(T, 7) });
       const [ehx, ehy] = headAt(ex, GY, 1.0, true);
@@ -176,7 +177,8 @@ export default {
       pose(roofGlow, { x: 1230, y: 470, o: es(t, 1.78, 1.95) * (1 - es(t, 2.0, 2.2)) });
 
       /* v29a — the slap, the other cheek */
-      pose(pac, { x: hx + 20, y: GY - 176, s: bump(t, 2.2, 2.36), r: T * 30, o: bump(t, 2.2, 2.36) });
+      pose(pac, { x: hx + 20, y: GY - 176, s: bump(t, 2.36, 2.52), r: T * 30, o: bump(t, 2.36, 2.52) });
+      pose(welt, { x: hx + 6, y: GY - 163, o: es(t, 2.56, 2.62) * (1 - es(t, 2.95, 3.05)) });   // still there at the stop: he was struck
 
       /* v29b — the cloak pulled off; the tunic held out too */
       const [ehx2, ehy2] = handAt(ex, GY, 1.0, true, 70 * pull + (leaving ? 40 : 0));

@@ -72,7 +72,7 @@ export default {
       const [hx, hy] = headAt(cx - 16 + 2, RY(cx) + 6 - 106 - 105 * 0.95, 1, false);
       rings(hx, hy, es(t, 0.1, 0.3) * 0.8, T, { spread: 2.2 });
       MED.forEach((m) => {
-        const k = es(t, 0.2 + m.i * 0.1, 0.55 + m.i * 0.1, ease.back);
+        const k = es(t, 0.12 + m.i * 0.06, 0.4 + m.i * 0.06, ease.back);   // all six hang by the pause (x.75)
         // phone: closer together, the rows staggered deeper so the names don't collide
         const x = S.portrait ? 560 + m.i * 120 : 500 + m.i * 170, y = 250 + (m.i % 2) * (S.portrait ? 84 : 44);
         pose(m.el, { x, y: lerp(-1300, y, k) + (T ? Math.sin(T * 0.8 + m.i) * 3 : 0), r: T ? Math.sin(T * 0.6 + m.i) * 2 : 0, o: k > 0.001 && t < 1.2 ? 1 - es(t, 1.02, 1.2) : 0 });

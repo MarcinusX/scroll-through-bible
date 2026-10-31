@@ -71,13 +71,13 @@ export default {
         pose(lights[w.i], { x: hx, y: hy - 52, s: lg * (1 + (T ? Math.sin(T * 3 + w.i) * 0.08 : 0)), o: lg > 0.01 ? 1 : 0 });
       });
       faces.forEach((f) => {
-        const k = es(t, 1.35 + f.i * 0.03, 1.6 + f.i * 0.03, ease.back);
+        const k = es(t, 1.2 + f.i * 0.025, 1.4 + f.i * 0.025, ease.back);
         // phone: the camera has gone with the women towards the city, so the row hangs further left to stay on screen
         const x = S.portrait ? 404 + f.i * 54 : 470 + f.i * 58, y = 206 + (f.i % 2) * 22;
         hangK(f.el, k, x, y, T, f.i);
       });
       rest.forEach((f) => {
-        const k = es(t, 1.62 + f.i * 0.04, 1.85 + f.i * 0.04, ease.back);
+        const k = es(t, 1.38 + f.i * 0.02, 1.58 + f.i * 0.02, ease.back);
         hangK(f.el, k, (S.portrait ? 450 : 520) + f.i * 100, 290 + (f.i % 2) * 14, T, f.i + 11);
       });
 

@@ -42,7 +42,7 @@ export default {
 
       /* v21 — two hands on the table, at one dish */
       const reach = es(t, 0.2, 0.45) * (1 - es(t, 1.0, 1.2));
-      const woe = es(t, 1.5, 1.8);
+      const woe = es(t, 1.3, 1.55);
       const ask = (m) => { const d = Math.abs(m.i - 6); return es(t, 2.05 + d * 0.05, 2.2 + d * 0.05); };
       at.forEach((m) => {
         if (m.k === 'jesus') {
@@ -62,11 +62,12 @@ export default {
       });
 
       /* v22 — as it was determined (the scroll); woe (the shadow, the candle) */
-      const sc = es(t, 1.05, 1.35, ease.out) * (1 - es(t, 1.5, 1.75, ease.in));
-      vis(scroll, { x: 800, y: 340 - (1 - sc) * 700, r: T ? Math.sin(T * 0.8) * 1.5 : 0, o: sc > 0.01 ? 1 : 0 });
+      // (landscape: the scroll hangs a little lower, so the zoomed camera doesn't crop it at the top)
+      const sc = es(t, 1.05, 1.35, ease.out) * (1 - es(t, 1.85, 2.05, ease.in));   // hangs through the sentence's stop, gone before v23's questions
+      vis(scroll, { x: 800, y: (S.portrait ? 340 : 400) - (1 - sc) * 700, r: T ? Math.sin(T * 0.8) * 1.5 : 0, o: sc > 0.01 ? 1 : 0 });
       jSh.set({ x: JU.x + 30, y: SEAT - 8, s: JU.s * (1.3 + woe * 0.8), flip: true, head: woe * 16 });
       fade(jShG, woe * 0.24);
-      const out = es(t, 1.6, 1.85);
+      const out = es(t, 1.4, 1.65);
       pose(cFlame, { x: 0, y: -60, sy: (1 - out * 0.85) * (1 + (T ? Math.sin(T * 8) * 0.08 : 0)), sx: 1 - out * 0.5 });
       fade(cGlow, (1 - out) * 0.8);
 

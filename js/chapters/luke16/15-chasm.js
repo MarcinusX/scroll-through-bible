@@ -66,10 +66,10 @@ export default {
       A.height.shift(-wide * 50, 0); A.abr.shift(-wide * 50, 0); A.light.shift(-wide * 50, 0);
       A.hades.shift(wide * 50, 0); A.fire.shift(wide * 50, 0); A.act.shift(wide * 50, 0); A.heat.shift(wide * 50, 0);
       A.chasm.shift(0, 0);
-      const push = es(t, 2.45, 2.6);
-      const tip = es(t, 2.6, 2.95, ease.in);
+      const push = es(t, 2.3, 2.42);
+      const tip = es(t, 2.42, 2.62, ease.out);   // it tips over the lip and stays, its far end hanging in the gap (swipe stop 2.75)
       const ex = AF.EDGE - 110 + push * 100;
-      pose(board, { x: ex + tip * 40, y: A.hfn(AF.EDGE - 20) - 2 + tip * 500, r: tip * 70, o: push > 0 ? 1 - es(t, 2.93, 2.99) : 0 });
+      pose(board, { x: ex + tip * 10, y: A.hfn(AF.EDGE - 20) - 2 + tip * 40, r: tip * 28, o: push > 0 ? 1 - es(t, 2.93, 2.99) : 0 });
       const reach = es(t, 2.5, 2.7);
       rich.set({ x: AF.RX + 10 - reach * 60, y: HY + 2, s: 1.0, flip: true, armF: 80 + reach * 20 - bump(t, 0.2, 0.9) * 40, armB: 100 + reach * 20 - bump(t, 0.2, 0.9) * 60, head: -10 + bump(t, 0.2, 0.9) * 20, blink: blinkAt(T, 2) });
 

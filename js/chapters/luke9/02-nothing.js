@@ -118,17 +118,19 @@ export default {
       const k1 = es(t, 1.02, 1.3, ease.out) * (1 - es(t, 1.98, 2.2, ease.in));
       flyTo(f1, k1, FX, FY, T, 0);
       const [ox, oy] = [FX, lerp(-1500, FY, k1)];
-      const night = es(t, 1.42, 1.56) * (1 - es(t, 1.8, 1.92));
+      // night falls while they are inside; at the stop (x.75) it is dawn — the window still lit, the moon low — and the
+      // two have just stepped out of the door; full day comes and they walk on as the flat goes up
+      const night = es(t, 1.27, 1.4) * (1 - 0.5 * es(t, 1.58, 1.7) - 0.5 * es(t, 1.82, 1.94));
       pose(nightTint, { x: ox, y: oy, o: night });
-      pose(houseGlow, { x: ox, y: oy, o: es(t, 1.5, 1.6) * (1 - es(t, 1.82, 1.92)) });
+      pose(houseGlow, { x: ox, y: oy, o: es(t, 1.34, 1.44) * (1 - 0.35 * es(t, 1.6, 1.7) - 0.65 * es(t, 1.82, 1.92)) });
       pose(moonEl, { x: ox + 150, y: oy - 70 + (1 - night) * 20, o: night });
       const doorX = ox + HX + 150 * 0.2 + 19, doorY = oy + HYb;
       pairIn.forEach((el, j) => {
-        const wIn = seg(t, 1.12 + j * 0.04, 1.42 + j * 0.04);
-        const wOut = seg(t, 1.84 + j * 0.04, 2.1);
-        const inside = t > 1.42 + j * 0.04 && t < 1.84 + j * 0.04;
-        const x = wOut > 0 ? lerp(doorX, ox + 190, wOut) : lerp(ox - 200, doorX, wIn);
-        pose(el, { x, y: doorY - 2, s: 0.4, sx: wOut > 0 ? 1 : 1, o: k1 > 0.9 && !inside && wIn > 0 ? (wIn > 0.9 && wOut === 0 ? (1 - seg(wIn, 0.9, 1)) : 1) * (wOut > 0.95 ? 0 : 1) : 0 });
+        const wIn = seg(t, 1.12 + j * 0.04, 1.32 + j * 0.04);
+        const out1 = seg(t, 1.58 + j * 0.05, 1.68 + j * 0.05), out2 = seg(t, 1.86 + j * 0.04, 2.06);
+        const inside = t > 1.32 + j * 0.04 && t < 1.58 + j * 0.05;
+        const x = out1 > 0 ? lerp(lerp(doorX, doorX + 64 - j * 30, ease.out(out1)), ox + 190, out2) : lerp(ox - 200, doorX, wIn);
+        pose(el, { x, y: doorY - 2, s: 0.4, o: k1 > 0.9 && !inside && wIn > 0 ? (out1 > 0 ? Math.min(1, out1 * 5) * (out2 > 0.95 ? 0 : 1) : 1 - seg(wIn, 0.9, 1)) : 0 });
       });
 
       /* v5 — the town that does not: the gate shuts, the dust is shaken off */

@@ -19,7 +19,7 @@ export default {
   beats: [
     { v: 5 },
     { v: 6, text: 'Pan rzekł: «Gdybyście mieli wiarę jak ziarnko gorczycy,' },
-    { v: 6, cont: true, text: 'powiedzielibyście tej morwie: "Wyrwij się z korzeniem i przesadź się w morze!",' },
+    { v: 6, cont: true, land: 0.84, text: 'powiedzielibyście tej morwie: "Wyrwij się z korzeniem i przesadź się w morze!",' },
     { v: 6, cont: true, text: 'a byłaby wam posłuszna.' },
   ],
   cam: { x: [-60, 120], y: [-40, 40], z: [1, 1.14] },

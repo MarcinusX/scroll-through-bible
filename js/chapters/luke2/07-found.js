@@ -67,7 +67,7 @@ export default {
       /* v16 — they hurry and find Mary, Joseph and the Baby lying in the manger */
       const kneelK = es(t, 0.55, 0.65);
       const leave = es(t, 4.1, 4.2);
-      const go = es(t, 4.25, 5.2, (u) => u);
+      const go = es(t, PH ? 4.82 : 4.25, PH ? 5.6 : 5.2, (u) => u);   // phone: they stand praising through the stop
       const raise = es(t, 4.15, 4.4);
       SH.forEach((sh, i) => {
         const arrive = es(t, 0.0 + i * 0.05, 0.55 + i * 0.03, ease.out);

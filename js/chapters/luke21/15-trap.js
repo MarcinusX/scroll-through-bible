@@ -40,7 +40,8 @@ export default {
   id: 'lk21-trap',
   beats: [
     { v: 34 },
-    { v: 35 },
+    { v: 35, text: 'jak potrzask.' },
+    { v: 35, cont: true, text: 'Przyjdzie on bowiem na wszystkich, którzy mieszkają na całej ziemi.' },
   ],
   cam: { x: [-20, 20], y: [-50, 30], z: [1, 1.08] },
   build(S) {
@@ -62,12 +63,12 @@ export default {
       const T = time;
       T0.update(t, T, { look: es(t, 0.1, 0.4) });
       const warn = bump(t, 0.02, 0.9);
-      T0.jesus.set({ x: JX, y: GY, s: JS, armF: 20 + warn * 50 + es(t, 1.4, 1.6) * 70, armB: 10 + warn * 110 + es(t, 1.4, 1.6) * 60, head: -warn * 4 - es(t, 1.4, 1.6) * 8, blink: blinkAt(T) });
+      T0.jesus.set({ x: JX, y: GY, s: JS, armF: 20 + warn * 50 + es(t, 2.2, 2.4) * 70, armB: 10 + warn * 110 + es(t, 2.2, 2.4) * 60, head: -warn * 4 - es(t, 2.2, 2.4) * 8, blink: blinkAt(T) });
       const [hx, hy] = headAt(JX, GY, JS, false);
       T0.voice(hx, hy, 0.7 * (warn + es(t, 1.02, 1.2)), T, { spread: 1.8 });
 
       /* the room (v34) */
-      const kF = es(t, 0.0, 0.2, ease.out) * (1 - es(t, 1.38, 1.55, ease.in));
+      const kF = es(t, 0.0, 0.2, ease.out) * (1 - es(t, 2.1, 2.28, ease.in));
       const fy = lerp(-1300, FY, kF), on = kF > 0.002 ? 1 : 0;
       pose(flatEl, { x: FX, y: fy, o: on });
       const mx = FX + MX, my = fy + GL;
@@ -87,13 +88,13 @@ export default {
       const zk = es(t, 0.8, 0.9) * (1 - es(t, 1.05, 1.08));
       pose(zz, { x: mx + 34, y: my - 120 - (T ? (T * 10) % 8 : 0), s: zk, o: on * (zk > 0.02 ? 1 : 0) });
 
-      /* v35 — the snare snaps shut; the whole earth under the net */
+      /* v35a — the snare snaps shut on him; v35b — the whole earth under the net */
       const dn = es(t, 1.02, 1.1, ease.in);
       pose(net, { x: mx + 8, y: lerp(fy - 500, my - 150, dn), s: 1, sx: 1 - bump(t, 1.08, 1.2) * 0.12, o: on * (dn > 0.01 ? 1 : 0) });
-      const kg = es(t, 1.45, 1.7, ease.out);
+      const kg = es(t, 2.18, 2.42, ease.out);
       const gy = lerp(-1300, 290, kg), gOn = kg > 0.002 ? 1 : 0;
       pose(globeEl, { x: FX, y: gy, r: T ? Math.sin(T * 0.5) * 2 : 0, o: gOn });
-      const spread = es(t, 1.65, 1.85);
+      const spread = es(t, 2.38, 2.58);
       pose(gnet, { x: FX, y: gy - G, sy: Math.max(0.01, spread), oy: -G, o: gOn * (spread > 0.01 ? 1 : 0) });
 
       S.cam.y = -es(t, 0.0, 0.4) * 30;

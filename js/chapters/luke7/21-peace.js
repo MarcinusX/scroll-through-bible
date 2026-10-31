@@ -49,7 +49,7 @@ export default {
       M.jesus.set({ x: JX, y: FLOOR, s: 1.0, flip: !toSimon, armF: 40 + bump(t, 0.1, 0.9) * 30 + bump(t, 2.1, 2.9) * 40 + bless * 45, armB: 10 + bless * 140, head: toSimon ? 4 : 8 - bless * 10, blink: blinkAt(T) });
       pose(M.legs, { x: JX, y: FLOOR, sx: -1 });
       const [jhx, jhy] = headAt(JX, FLOOR, 1.0, !toSimon, 62);
-      jv(jhx, jhy, 0.8 * (1 - seg(t, 4.6, 4.8)), T, { dir: toSimon ? 1 : -1, spread: 1.8 });
+      jv(jhx, jhy, 0.8 * (1 - seg(t, 4.76, 4.84)), T, { dir: toSimon ? 1 : -1, spread: 1.8 });
 
       /* v47a — her many sins forgiven: the dark scraps lift away and burn into light */
       const up = es(t, 4.14, 4.2);
@@ -97,13 +97,13 @@ export default {
       pose(bW, { x: SH.GUESTS[1] - 20, y: SEAT - 190, s: k2, o: k2 > 0.02 ? 1 : 0 });
 
       /* v50 — "Your faith has saved you; go in peace" — she rises and goes out into the evening */
-      const WK = [[4.2, WX], [4.9, GX + 10]];
+      const WK = [[4.2, WX], [4.7, GX + 10]];
       const wx = kf(t, WK);
       const look = bump(t, 4.2, 4.45);
       walker.set({ x: wx, y: FLOOR, s: 0.98, flip: t > 4.4, o: up * (1 - seg(t, 4.95, 5.0)), walk: moving(t, WK) ? wx * 0.05 : undefined, amt: 0.6, armF: 20 + look * 50, armB: 20 + look * 40, head: -6 - look * 6, blink: blinkAt(T, 6) });
       pose(walkHair, { r: 0 });
       pose(gateGlow, { x: GX, y: FLOOR - 150, s: 1, o: es(t, 4.2, 4.6) * 0.9 });
-      const k3 = es(t, 4.06, 4.18, ease.back) * (1 - es(t, 4.55, 4.62));
+      const k3 = es(t, 4.06, 4.18, ease.back) * (1 - es(t, 4.76, 4.84));   // held through the phone's stop (4.75), gone before the desktop's closing card
       pose(bP, { x: jhx - 40, y: jhy - 44, s: k3, o: k3 > 0.02 ? 1 : 0 });
 
       S.cam.x = kf(t, [[0, -60], [0.9, -60], [1.2, 30], [1.9, 30], [2.2, -40], [2.9, -40], [3.1, 30], [3.95, 30], [4.2, -50]]);

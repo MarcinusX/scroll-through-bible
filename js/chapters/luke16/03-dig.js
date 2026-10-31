@@ -70,6 +70,7 @@ export default {
       const raise = es(t, 1.1, 1.18);
       const strike = es(t, 1.18, 1.24, ease.in);
       const ache = es(t, 1.26, 1.34) * (1 - es(t, 1.46, 1.52));
+      const backAche = es(t, 1.26, 1.34) * (1 - es(t, 2.05, 2.15));   // the hand stays at his aching back (swipe stop 1.75)
       const hasM = lift > 0.5 && t < 1.26;
       const offer = es(t, 1.5, 1.6) * (1 - es(t, 1.62, 1.68));
       const hide = es(t, 1.64, 1.74) * (1 - es(t, 2.05, 2.15));
@@ -83,9 +84,9 @@ export default {
       stew.set({
         x: sx, y: GY, s: 1.0, flip, walk,
         armF: (hasM ? aM : 20 - ache * 10) + offer * 55 + hide * 100,
-        armB: 10 + chin * 120 - ache * 50 + up * 140 * (1 - es(t, 2.6, 2.8)),
+        armB: 10 + chin * 120 - backAche * 50 + up * 140 * (1 - es(t, 2.6, 2.8)),
         head: chin * 10 + ache * -6 + hide * 24 - up * 8 + offer * 6,
-        lean: ache * 18 + hide * 10 + strike * 6 * (1 - ache),
+        lean: Math.max(ache * 18, backAche * 8) + hide * 10 + strike * 6 * (1 - ache),
         blink: hide > 0.5 || ache > 0.5 ? 0.8 : blinkAt(T, 3),
       });
       const [hx, hy] = headAt(sx, GY, 1.0, flip);

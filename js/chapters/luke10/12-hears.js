@@ -86,24 +86,24 @@ export default {
       // the dark scraps: scoffer → the young one → Jesus → up toward the light, and back down
       darks.forEach((d) => {
         const u = seg(t, 0.6 + d.i * 0.05, 1.0 + d.i * 0.05);
-        const up = seg(t, 1.1 + d.i * 0.05, 1.45 + d.i * 0.05);
-        const back = seg(t, 1.45 + d.i * 0.05, 1.8 + d.i * 0.05);
+        const up = seg(t, 1.0 + d.i * 0.05, 1.25 + d.i * 0.05);
+        const back = seg(t, 1.25 + d.i * 0.05, 1.5 + d.i * 0.05);
         let x, y;
         if (up <= 0) [x, y] = u < 0.4 ? arc([rhx - 14, rhy], [bhx, bhy], 30, u / 0.4) : arc([bhx, bhy], [jhx + 18, jhy + 20], 80, (u - 0.4) / 0.6);
         else if (back <= 0) [x, y] = arc([jhx + 18, jhy + 20], [800 + (d.i - 2) * 30, 120], 30, up);
         else [x, y] = arc([800 + (d.i - 2) * 30, 120], [rhx + (d.i - 2) * 16, rhy - 20], 60, back);
-        pose(d.el, { x, y, r: t * 200 + d.i * 40, s: 1 - up * 0.2, o: (u > 0 ? 1 : 0) * (1 - seg(t, 1.76 + d.i * 0.05, 1.8 + d.i * 0.05)) });
+        pose(d.el, { x, y, r: t * 200 + d.i * 40, s: 1 - up * 0.2, o: (u > 0 ? 1 : 0) * (1 - seg(t, 1.46 + d.i * 0.05, 1.5 + d.i * 0.05)) });
       });
 
       /* Jesus: He receives both; then He lifts His eyes to the One who sent Him */
       const lift = es(t, 1.05, 1.3);
       jesus.set({ x: JX, y: JY, s: 1.04, flip: t > 0.55, armF: 20 + bump(t, 0.3, 0.6) * 40 + lift * 50, armB: 10 + lift * 110, head: -lift * 20, blink: blinkAt(T) });
       pose(aura, { x: JX, y: JY - 120, s: 1 + lift * 0.3, o: 0.5 + lift * 0.3 });
-      const sc = es(t, 1.7, 1.95, ease.back);
+      const sc = es(t, 1.48, 1.68, ease.back);
       pose(shadowOn, { x: RX + (S.portrait ? -24 : 6), y: GY2 - 236, s: sc * 0.8, o: sc > 0.01 ? 1 : 0 });
 
       S.cam.x = kf(t, [[0, -20], [0.5, -20], [0.6, 20], [1.0, 20], [1.2, 0], [2, 0]]);
-      S.cam.y = kf(t, [[0, 20], [1.0, 20], [1.3, -80], [1.6, -80], [1.85, 0], [2, 0]]);
+      S.cam.y = kf(t, [[0, 20], [1.0, 20], [1.2, -80], [1.42, -80], [1.65, 0], [2, 0]]);
       S.cam.z = kf(t, [[0, 1.06], [1.0, 1.06], [1.3, 1.0], [2, 1.02]]);
     };
   },

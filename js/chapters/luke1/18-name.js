@@ -97,7 +97,7 @@ export default {
       /* v63a: he asks for a tablet and writes */
       const stand = es(t, 4.05, 4.12);
       zS.set({ x: ZX, y: HGY, s: 1, flip: false, o: 1 - stand, armF: 30 + bump(t, 3.3, 3.9) * 30, armB: 10, head: -bump(t, 3.2, 3.9) * 8, blink: blinkAt(Tm, 2) });
-      const write = seg(t, 4.3, 4.85);
+      const write = seg(t, 4.25, 4.62);   // written and glowing by 4.72, before the swipe stop at 4.75
       const wr = write > 0 && write < 1 ? Math.sin(t * 70) * 6 : 0;
       zU.set({ x: ZX, y: HGY, s: 1, flip: false, o: stand, armF: 80 + wr + es(t, 5.05, 5.3) * 30, armB: 60 + es(t, 5.05, 5.3) * 60, head: -8, blink: blinkAt(Tm, 2) });
       const tk = es(t, 4.05, 4.3, ease.out);
@@ -105,7 +105,7 @@ export default {
       pose(tab, { x: TX, y: ty, s: 0.7 + tk * 0.3, o: tk > 0.01 ? 1 : 0 });
       pose(cover, { x: TX + T.w / 2 - 15, y: ty, sx: Math.max(0.001, 1 - write) * (0.7 + tk * 0.3), sy: 0.7 + tk * 0.3, o: tk > 0.01 && write < 1 ? 1 : 0 });
       pose(stylus, { x: TX - T.w / 2 + 30 + write * (T.w - 60), y: ty + 10 + Math.sin(t * 50) * 4 * (write > 0 && write < 1 ? 1 : 0), o: write > 0 && write < 1 ? 1 : 0 });
-      pose(tGlow, { x: TX, y: ty, s: 1, o: es(t, 4.8, 5.1) });
+      pose(tGlow, { x: TX, y: ty, s: 1, o: es(t, 4.55, 4.72) });
 
       /* v63b: and they all marvel */
       sparks.forEach((sp, i) => { const kk = seg(t, 5.1 + i * 0.04, 5.55 + i * 0.04); const a = (i / 6) * PI * 2; pose(sp, { x: TX + Math.cos(a) * (130 + kk * 40), y: ty + Math.sin(a) * (85 + kk * 30), s: 1 - kk * 0.5, r: t * 90, o: bump(t, 5.1 + i * 0.04, 5.55 + i * 0.04) }); });

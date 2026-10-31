@@ -38,7 +38,7 @@ export default {
   enter: 'fly',
   beats: [
     { v: 28 },
-    { v: 29 },
+    { v: 29, land: 0.98 },   // swipe: stop once the newcomers have all sat down at the table
     { v: 30 },
   ],
   cam: { x: [-20, 20], y: [0, 60], z: [1, 1.1] },

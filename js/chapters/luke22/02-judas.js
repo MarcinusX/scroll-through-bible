@@ -154,7 +154,7 @@ export default {
       });
 
       /* v6 — he consents; and watches for his chance, away from the crowd */
-      const nk = es(t, 3.08, 3.25, ease.back) * (1 - es(t, 3.4, 3.5));
+      const nk = es(t, 3.08, 3.25, ease.back) * (1 - es(t, 3.9, 3.98));   // the consent stays up to the end of the sentence
       vis(nod, { x: jhx - 6, y: jhy - 26, s: nk, o: nk > 0.01 ? 1 : 0 });
       const wIn = es(t, 3.3, 3.6, ease.out);
       vis(watch, { x: 700, y: 340 - (1 - wIn) * 700, r: T ? Math.sin(T * 0.7) * 1.5 : 0, o: wIn > 0.01 ? 1 : 0 });

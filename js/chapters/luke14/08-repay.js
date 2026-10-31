@@ -65,7 +65,7 @@ export default {
       kinRest.set({ o: (1 - lift) * (1 - gone) });
       kinInv.set({ o: lift * (1 - gone) });
       tags1.forEach((e, i) => {
-        const k = es(t, 0.14 + i * 0.12, 0.32 + i * 0.12, ease.out) * (1 - es(t, 1.9, 2.06, ease.in));
+        const k = es(t, 0.14 + i * 0.12, 0.32 + i * 0.12, ease.out) * (1 - es(t, 1.5, 1.64, ease.in));   // lift as the scrolls fly back, so 'odpłata' stands clear
         const [hx, hy] = headAt(PSEATS[i], CF.SEAT, 0.96, false, 62);
         flyTo(e, k, hx, hy - 96, T, i, 1);
       });
@@ -78,7 +78,7 @@ export default {
       });
       const got = es(t, 1.62, 1.9);
       pose(stack, { x: hhx, y: hhy - 6, o: seg(t, 1.6, 1.64) * (1 - es(t, 2.0, 2.1)) });
-      popAt(repaid, t, 1.72, 2.08, HX - 20, 500, { d: 0.12 });
+      popAt(repaid, t, 1.62, 2.08, HX - 20, 500, { d: 0.12 });
       /* v13 — the poor, the maimed, the lame, the blind come in and sit down */
       const inK = [[2.08, 250], [2.44, 0]];
       walkers.forEach((p, i) => {

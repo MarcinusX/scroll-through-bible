@@ -94,28 +94,28 @@ export default {
       vis(ask, { x: ax - 14, y: ay - 24, s: ak, o: ak > 0.01 ? 1 : 0 });
 
       /* v50 — the sword */
-      const step = es(t, 0.9, 1.3, ease.out);
+      const step = es(t, 0.85, 1.15, ease.out);
       const px = lerp(PX0, PX1, step);
-      const draw = es(t, 1.0, 1.2), strike = es(t, 1.35, 1.48), after = es(t, 1.6, 1.8);
+      const draw = es(t, 1.0, 1.12), strike = es(t, 1.18, 1.3), after = es(t, 1.85, 2.05);   // the blow lands early and holds through the sentence's stop
       const put = es(t, 2.1, 2.3), swap = es(t, 2.3, 2.36), back = es(t, 2.3, 2.6, ease.sine);
       pDraw.set({ x: px, y: GY + 4, s: 0.94, flip: true, o: 1 - swap, walk: step > 0 && step < 1 ? px * 0.06 : undefined, armF: 20 + draw * 30 + strike * 90 - after * 60 - put * 30, armB: 20 + strike * 20, lean: strike * 8 * (1 - after) - put * 3, head: -4 + put * 10, blink: blinkAt(T, 3) });
       const pxb = lerp(PX1, PX1 + 190, back);
       pSheath.set({ x: pxb, y: GY + 4, s: 0.94, flip: true, o: swap, walk: back > 0 && back < 1 ? pxb * 0.06 : undefined, armF: 18, armB: 10, head: 12, blink: blinkAt(T, 3) });
       fade(pSad, swap);
-      const hurt = es(t, 1.42, 1.52) * (1 - es(t, 3.3, 3.5));
+      const hurt = es(t, 1.26, 1.36) * (1 - es(t, 3.3, 3.5));
       const healed = es(t, 3.3, 3.5);
       malchus.set({ x: MX - hurt * 16, y: GY + 8, s: 0.98, flip: false, armF: 26 - hurt * 10, armB: 10 + hurt * 150, head: -hurt * 14 + healed * 6, lean: -hurt * 7, blink: blinkAt(T, 6) });
       fade(malSad, hurt);
-      vis(flash, { x: MX + 50, y: GY - 170, s: 0.6 + strike * 0.5, r: -30, o: bump(t, 1.38, 1.75) });
+      vis(flash, { x: MX + 50, y: GY - 170, s: 0.6 + strike * 0.5, r: -30, o: bump(t, 1.2, 2.0) });
       // the ear: falls, lies there, then flies back to its place
-      const fall = es(t, 1.48, 1.9, ease.in);
+      const fall = es(t, 1.3, 1.6, ease.in);
       const [mhx, mhy] = headAt(MX - hurt * 16, GY + 8, 0.98, false);
       const ground = [mhx + 28, GY + 4];
       const home = [mhx - 6, mhy + 2];
       const ret = es(t, 3.2, 3.42);
       const ex = ret > 0 ? lerp(ground[0], home[0], ret) : lerp(mhx - 6, ground[0], fall);
       const ey = ret > 0 ? lerp(ground[1], home[1], ret) - Math.sin(ret * PI) * 30 : lerp(mhy + 2, ground[1], fall) - Math.sin(fall * PI) * 20;
-      vis(earEl, { x: ex, y: ey, s: 1.2, r: ret > 0 ? (1 - ret) * 160 : fall * 160, o: t > 1.46 && t < 3.45 ? 1 : 0 });
+      vis(earEl, { x: ex, y: ey, s: 1.2, r: ret > 0 ? (1 - ret) * 160 : fall * 160, o: t > 1.28 && t < 3.45 ? 1 : 0 });
       vis(heal, { x: home[0], y: home[1], s: 0.7 + bump(t, 3.25, 3.9) * 0.6, o: bump(t, 3.2, 3.95) });
 
       /* v51 — "No more!" — He touches the ear */

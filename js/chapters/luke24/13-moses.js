@@ -25,7 +25,7 @@ export default {
   id: 'lk24-moses',
   beats: [
     { v: 27 },
-    { v: 28 },
+    { v: 28, land: 0.98 },   // swipe: stop once He has walked on past the door and the disciple reaches out
   ],
   cam: { x: [-400, 720], y: [-20, 40], z: [0.96, 1.1] },
   build(S) {

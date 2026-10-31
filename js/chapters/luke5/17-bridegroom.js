@@ -83,14 +83,16 @@ export default {
       /* v34 — the dance round the bridegroom; the sour man offers an upturned bowl, and they laugh */
       const dance = 1 - es(t, 1.4, 1.55);
       const takenK = es(t, 1.15, 1.7);
-      const gx = lerp(CX, 1500, es(t, 1.2, 1.75, ease.in));
-      groom.set({ x: gx, y: FLOOR, s: 1.04, flip: takenK > 0.02, walk: takenK > 0.02 && takenK < 1 ? gx * 0.05 : undefined, armF: 40 + 20 * dance, armB: 20 + 100 * dance * (1 - takenK), head: -6 * dance + takenK * 16, o: 1 - es(t, 1.7, 1.8), blink: blinkAt(T) });
+      // led to the edge of the stage and held there between the two shadows (still in view at the stop, x.75), gone at the end
+      const gx = lerp(CX, S.portrait ? 1010 : 1130, es(t, 1.2, 1.7));
+      const goneK = es(t, 1.9, 1.98);
+      groom.set({ x: gx, y: FLOOR, s: 1.04, flip: takenK > 0.02, walk: takenK > 0.02 && takenK < 1 ? gx * 0.05 : undefined, armF: 40 + 20 * dance, armB: 20 + 100 * dance * (1 - takenK), head: -6 * dance + takenK * 16, o: 1 - goneK, blink: blinkAt(T) });
       shadows.forEach((sh, i) => {
-        const x = gx + (i ? 90 : -80);
-        sh.set({ x, y: FLOOR + 4, s: 1.06, flip: true, o: es(t, 1.08, 1.18) * (1 - es(t, 1.7, 1.8)), walk: takenK > 0 && takenK < 1 ? x * 0.05 + i : undefined, armF: 60, armB: 20, head: 4 });
+        const x = gx + (i ? 80 : -76);
+        sh.set({ x, y: FLOOR + 4, s: 1.06, flip: true, o: es(t, 1.08, 1.18) * (1 - goneK), walk: takenK > 0 && takenK < 1 ? x * 0.05 + i : undefined, armF: 60, armB: 20, head: 4 });
       });
       const sitK = es(t, 1.55, 1.62);
-      const bowK = es(t, 1.62, 1.8);
+      const bowK = es(t, 1.62, 1.72);
       dancers.forEach((d) => {
         const ph = T * 2.4 + d.i * 1.3;
         const hop = dance * (T ? Math.abs(Math.sin(ph)) * 10 : 0);

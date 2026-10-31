@@ -67,10 +67,11 @@ export default {
       const gx = kf(t, inKeys, (u) => u);
       const outDoor = es(t, 0.62, 0.66);
       goM.set({ x: gx, y: HS.FLOOR, s: S_, flip: false, o: rollK * (1 - outDoor), walk: moving(t, inKeys) ? gx * 0.05 : undefined, armF: 40, armB: 50, blink: blinkAt(T, 3) });
-      const outKeys = [[0.66, [HS.DOOR, HS.FLOOR + 4]], [0.8, [HS.DOOR + 30, HS.STREET + 16]], [1.5, [1760, HS.STREET + 20]]];
+      // down the steps into the street by x.72, then a slow walk on with his hands up (the back arm high, so the face shows), so the stop at x.75 shows him praising
+      const outKeys = [[0.66, [HS.DOOR, HS.FLOOR + 4]], [0.72, [HS.DOOR + 40, HS.STREET + 24]], [1.05, [HS.DOOR + 80, HS.STREET + 24]], [1.5, [1760, HS.STREET + 24]]];
       const [ox, oy] = kf(t, outKeys, (u) => u);
-      const praise = es(t, 0.7, 0.9);
-      outM.set({ x: ox, y: oy, s: S_, flip: false, o: outDoor * (1 - es(t, 1.9, 2.1)), walk: t > 0.66 && t < 1.5 ? ox * 0.05 : undefined, armF: 40 + praise * 90, armB: 50 + praise * 100, head: -praise * 8, blink: blinkAt(T, 3) });
+      const praise = es(t, 0.67, 0.73);
+      outM.set({ x: ox, y: oy, s: S_, flip: false, o: outDoor * (1 - es(t, 1.9, 2.1)), walk: t > 0.66 && t < 1.5 ? ox * 0.05 : undefined, armF: 40 + praise * 82, armB: 50 + praise * 115, head: -praise * 14, blink: blinkAt(T, 3) });
 
       /* Jesus watches him go */
       P.jesus.set({ x: JH.x, y: HS.FLOOR, s: JH.s, flip: gx < JH.x + 10 || t < 0.4, armF: 30 + es(t, 0.05, 0.2) * 30 * (1 - es(t, 0.6, 0.9)), armB: 12 + es(t, 1.1, 1.4) * 20, head: -4, blink: blinkAt(T) });
@@ -87,7 +88,8 @@ export default {
       const sk2 = es(t, 1.2, 1.4, ease.back) * (1 - es(t, 1.95, 2.05));
       pose(say2, { x: 1060, y: HS.FLOOR - 190, s: sk2, o: sk2 > 0.01 ? 1 : 0 });
 
-      S.cam.x = kf(t, [[0, 20], [0.3, 60], [0.6, 380], [0.9, 600], [1.1, 300], [1.9, 120], [3, 120]]);
+      // phone: the camera goes on to the street and waits there, so the healed man in front of the door stays in view
+      S.cam.x = kf(t, S.portrait ? [[0, 20], [0.3, 60], [0.6, 420], [0.72, 700], [0.98, 700], [1.15, 300], [1.9, 120], [3, 120]] : [[0, 20], [0.3, 60], [0.6, 380], [0.9, 600], [1.1, 300], [1.9, 120], [3, 120]]);
       S.cam.y = kf(t, [[0, 60], [0.3, 60], [0.9, 80], [1.1, 0], [3, -20]]);
       S.cam.z = kf(t, [[0, 1.24], [0.3, 1.22], [0.9, 1.14], [1.1, 1.02], [3, 1.0]]);
     };

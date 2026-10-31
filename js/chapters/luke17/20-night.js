@@ -67,20 +67,20 @@ export default {
       pose(nicheGlow, { x: 622, y: 516, o: 0.8 + (T ? Math.sin(T * 7) * 0.05 : 0) });
 
       /* v34 — two on one mat; one is taken, the other left */
-      const lift = es(t, 1.2, 1.75, ease.in);
-      const gone = es(t, 1.55, 1.78);
+      const lift = es(t, 1.1, 1.45, ease.in);
+      const gone = es(t, 1.35, 1.5);
       const breathe = (i) => (T ? Math.sin(T * 1.4 + i * 2) * 1.2 : 0);
       sleepers.forEach((sp) => {
         const taken = sp.i === 1;
         const k = taken ? lift : 0;
-        pose(sp.el, { x: BED - 60 + sp.i * 16, y: sp.y - sp.i * 8 - k * 220 + breathe(sp.i) * 0.5, o: taken ? 1 - gone : 1 - es(t, 1.82, 1.9) });
+        pose(sp.el, { x: BED - 60 + sp.i * 16, y: sp.y - sp.i * 8 - k * 220 + breathe(sp.i) * 0.5, o: taken ? 1 - gone : 1 - es(t, 1.5, 1.58) });
       });
-      pose(takeGlows[0], { x: BED + 10, y: SLEEP[1].y - 20 - lift * 200, s: 0.6 + es(t, 1.05, 1.3) * 0.6, o: es(t, 1.05, 1.3) * (1 - es(t, 1.7, 1.9)) });
-      const woke = es(t, 1.85, 1.95);
-      sitUp.set({ x: BED - 30, y: F - 6, s: 0.92, flip: false, armF: 30 + es(t, 1.9, 2.2) * 40, armB: 10, head: -10 - es(t, 1.9, 2.2) * 10, o: woke, blink: blinkAt(T, 4) });
+      pose(takeGlows[0], { x: BED + 10, y: SLEEP[1].y - 20 - lift * 200, s: 0.6 + es(t, 1.05, 1.3) * 0.6, o: es(t, 1.05, 1.3) * (1 - es(t, 1.8, 1.95)) });
+      const woke = es(t, 1.5, 1.6);
+      sitUp.set({ x: BED - 30, y: F - 6, s: 0.92, flip: false, armF: 30 + es(t, 1.55, 1.72) * 40, armB: 10, head: -10 - es(t, 1.55, 1.72) * 10, o: woke, blink: blinkAt(T, 4) });
       zz.forEach((z, i) => {
         const k = T ? ((T * 0.3 + i * 0.5) % 1) : 0.5;
-        pose(z, { x: BED - 150 + i * 18 + k * 20, y: F - 70 - k * 40 - i * 10, o: (1 - k) * (i === 1 ? 1 - es(t, 1.1, 1.3) : 1 - es(t, 1.8, 1.9)) * (t < 2.2 ? 1 : 0) });
+        pose(z, { x: BED - 150 + i * 18 + k * 20, y: F - 70 - k * 40 - i * 10, o: (1 - k) * (i === 1 ? 1 - es(t, 1.1, 1.3) : 1 - es(t, 1.5, 1.58)) * (t < 2.2 ? 1 : 0) });
       });
 
       /* v35 — two at the mill; one taken, the other left */

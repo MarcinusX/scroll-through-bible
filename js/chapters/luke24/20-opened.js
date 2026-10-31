@@ -2,8 +2,8 @@
 // the Prophets and the Psalms must be fulfilled" — three scrolls come down on their strings, the tablets of the Law,
 // the prophet Elijah, David's harp, and light up one by one. "Then He opened their minds to understand the Scriptures":
 // a little light kindles over the head of each of them, one after another. "Thus it is written, that the Christ should
-// suffer and on the third day rise from the dead": a round plate turns over — from the cross on its hill at dusk to
-// the sunrise over the empty tomb.
+// suffer and on the third day rise from the dead": two round plates come down side by side — the cross on its hill
+// at dusk, then the sunrise over the empty tomb.
 import { C, blinkAt, pose, lerp, mix } from './lib.js';
 import { es, ease, bump, seg, fade } from './lib.js';
 import { gatherRoom, MID, headAt, bookScroll, lawTablets, harp, medallion, L9, strip, spark, discFaces, hanging, swing, hangK, STRING, tr, PI } from './lib.js';
@@ -33,8 +33,9 @@ export default {
     scrolls.forEach((s) => { s.lit = s.el.querySelector('.lit'); });
     const lamps = G.crew.map(() => fx.add(`<g>${spark(c, 9)}</g>`));
     const faces = discFaces(c, 86);
-    const disc = hanging(fx, `<g data-k="l24dF">${faces.front}</g><g data-k="l24dB" opacity="0">${faces.back}</g>`, { x: 0, y: -1500, len: 900 });
-    const dF = S.$('l24dF'), dB = S.$('l24dB');
+    // two plates side by side, so both halves of the sentence stay in view: the cross, then the sunrise
+    const disc = hanging(fx, faces.front, { x: 0, y: -1500, len: 900 });
+    const disc2 = hanging(fx, faces.back, { x: 0, y: -1500, len: 900 });
 
     return (t, T) => {
       G.RR.R.update(T, 1);
@@ -61,18 +62,15 @@ export default {
         pose(lamps[i], { x: hx, y: hy - 44, s: k * (1 + (T ? Math.sin(T * 3 + i) * 0.08 : 0)), o: k > 0.01 ? 1 : 0 });
       });
       /* v46: to suffer, and on the third day to rise */
-      const dIn = es(t, 2.05, 2.35, ease.back);
-      const flip = es(t, 2.5, 2.75);
-      const sx = Math.cos(flip * PI);
-      swing(disc, MID.x, lerp(-1000, 300, dIn), T, 1, 0.7);
-      pose(disc.querySelector('.obj'), { sx: Math.max(0.03, Math.abs(sx)) });
-      fade(dF, sx >= 0 ? 1 : 0);
-      fade(dB, sx < 0 ? 1 : 0);
+      const dIn = es(t, 2.05, 2.3, ease.back);
+      const dIn2 = es(t, 2.35, 2.6, ease.back);
+      swing(disc, MID.x - 110, lerp(-1000, 300, dIn), T, 1, 0.7);
+      swing(disc2, MID.x + 110, lerp(-1000, 300, dIn2), T, 1, 0.7, 2);
 
       S.cam.x = 0;
       S.cam.y = 40 - es(t, 0, 0.3) * 20;
       S.cam.z = S.portrait ? 0.92 : 1.02;
-      void seg; void bump; void mix;
+      void seg; void bump; void mix; void PI;
     };
   },
 };

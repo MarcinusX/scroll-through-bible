@@ -86,10 +86,10 @@ export default {
       const YY = (i, dy) => Y[i] + dy * K;
       const on = (i, v = 1) => (KK[i] > 0.002 ? v : 0);
       flats.forEach((f, i) => pose(f, { x: FX, y: Y[i], s: K, o: KK[i] > 0.002 ? 1 : 0 }));
-      /* 1: the star visits; the chains fall */
+      /* 1: the star visits; the chains fall and lie at the people's feet (all down by 1.66, before the swipe stop) */
       const vs = es(t, 1.15, 1.45, ease.out);
       pose(vstar, { x: X(0), y: YY(0, lerp(-130, -60, vs)), s: K, r: t * 8, o: on(0, vs > 0.01 ? 1 : 0) });
-      chains.forEach((ch, i) => { const f = es(t, 1.45 + i * 0.05, 1.7 + i * 0.05, ease.in); pose(ch, { x: X(-110 + i * 50), y: YY(0, 64 + f * 42), r: f * 90, s: K, o: on(0) }); });
+      chains.forEach((ch, i) => { const f = es(t, 1.3 + i * 0.04, 1.5 + i * 0.04, ease.in); pose(ch, { x: X(-110 + i * 50), y: YY(0, 64 + f * 38), r: f * 180, s: K, o: on(0) }); });
       /* 2: the horn rises from David's house */
       const hk = es(t, 2.15, 2.5, ease.out);
       pose(horn, { x: X(20), y: YY(1, lerp(40, -40, hk)), s: K * (0.6 + hk * 0.4), o: on(1, hk > 0.01 ? 1 : 0) });

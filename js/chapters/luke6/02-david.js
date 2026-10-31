@@ -18,7 +18,7 @@ export default {
   enter: 'fly',
   beats: [
     { v: 3 },
-    { v: 4, text: 'Jak wszedł do domu Bożego i wziąwszy chleby pokładne, sam jadł i dał swoim ludziom?' },
+    { v: 4, land: 0.95, text: 'Jak wszedł do domu Bożego i wziąwszy chleby pokładne, sam jadł i dał swoim ludziom?' },   // swipe: stop once all the bread is handed out and the men eat
     { v: 4, cont: true, text: 'Chociaż samym tylko kapłanom wolno je spożywać».' },
   ],
   cam: { x: [-90, 30], y: [-20, 40], z: [1, 1.12] },

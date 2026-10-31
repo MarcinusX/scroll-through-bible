@@ -66,7 +66,7 @@ export default {
       const rebuke = es(t, 5.05, 5.3) * (1 - es(t, 6.5, 6.8));
       const thrown = es(t, 6.08, 6.14);
       const risen = es(t, 6.5, 6.57);
-      const tear = es(t, 6.12, 6.6);
+      const tear = es(t, 6.12, 6.95);   // still flying out through the high windows at the stop (6.75)
       const shake = bump(t, 5.4, 6.1);
       const jit = shake * Math.sin(t * 160) * 6;
       const mx = MX + loom * 40 - cringe * 30;
@@ -79,9 +79,9 @@ export default {
         const flick = time ? Math.sin(time * 7 + sh.i * 2.1) * 0.06 : 0;
         const sz = (0.85 + loom * 0.6 + loud * 0.15 - cringe * 0.35 + point * 0.1) * (1 + flick);
         const cx = thrown > 0.5 ? 640 : mx + jit, cy = thrown > 0.5 ? 640 : FEET - 110;
-        const ex = Math.cos(sh.a) * tear * 260 * sh.drift - tear * 240, ey = Math.sin(sh.a) * tear * 160 * sh.drift - tear * 560;
+        const ex = Math.cos(sh.a) * tear * (S.portrait ? 170 : 260) * sh.drift - tear * (S.portrait ? 30 : 240), ey = Math.sin(sh.a) * tear * 160 * sh.drift - tear * 560;
         const tremble = cringe * Math.sin(time * 30 + sh.i) * 4;
-        pose(sh.el, { x: cx + ex + tremble, y: cy + ey, s: sz * (1 - tear * 0.5), r: tear * 220 * (sh.i % 2 ? 1 : -1) + Math.sin(time * 3 + sh.i) * 3, o: on * 0.92 * (1 - seg(t, 6.4, 6.62)) });
+        pose(sh.el, { x: cx + ex + tremble, y: cy + ey, s: sz * (1 - tear * 0.5), r: tear * 220 * (sh.i % 2 ? 1 : -1) + Math.sin(time * 3 + sh.i) * 3, o: on * 0.92 * (1 - seg(t, 6.8, 6.97)) });
       });
       tint.fade(on * 0.08 + loud * 0.14 + loom * 0.1 - es(t, 6.2, 6.6) * 0.32);
       const [mhx, mhy] = headAt(mx, FEET, 1.02);

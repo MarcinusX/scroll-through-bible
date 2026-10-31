@@ -11,7 +11,7 @@ import {
 export default {
   id: 'lk22-hour',
   beats: [
-    { v: 14 },
+    { v: 14, land: 0.88 },   // swipe: stop once the last apostles (walking in on a phone) have sat down
     { v: 15 },
     { v: 16 },
   ],

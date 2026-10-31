@@ -1,10 +1,11 @@
 // Łk 10,18–19 — night has come over the knoll; the village lamps glow far off. "I saw Satan fall like lightning from
 // heaven": high in the sky the dark tempter stands on a black cloud in his jagged shadow — Jesus lifts His hand, the
-// sky flashes white, and he drops like a bolt of lightning, a crooked streak down to the far hills, and is gone.
+// sky flashes white, and he drops like a bolt of lightning, a crooked streak down to the far hills, where he lies
+// fallen in the glow of the strike.
 // "Behold, I have given you authority to tread on serpents and scorpions, and over all the power of the enemy": on the
 // path at their feet snakes and scorpions come crawling, and a long dark shadow reaches out over the ground — the two
 // walk on barefoot, and under their steps the snakes go flat, the scorpions curl up and the shadow tears into scraps
-// that blow away. "And nothing shall hurt you": a ring of warm light closes round the two and all the seventy-two.
+// that drop flat and lie trodden on the path. "And nothing shall hurt you": a ring of warm light closes round the two and all the seventy-two.
 import { C, person, CAST, blinkAt, pose, lerp, sheet, mix } from '../kit.js';
 import { makeCutter } from '../../core/paper.js';
 import { countrySet, KN, glow, folk, stillGroup, barefoot, TEMPTER, tempterAura, lightning, snake, scorpion, shadowShards, sparkle, kf, moving, EVENING, NIGHT, SENT_A, SENT_B, es, ease, bump, seg, PI } from './lib.js';
@@ -32,11 +33,11 @@ export default {
     const flash = S.layer({ par: 0, sh: 1, flat: true, rise: 0 });
     flash.add(`<rect x="-3000" y="-3000" width="8000" height="8000" fill="#fffbe8"/>`);
     const TL = S.layer({ par: 0.05, sh: 5, rise: 0 });
+    const impact = TL.add(`<g>${glow(80, 1, 'warm-glow')}</g>`);   // behind him, so he lies dark against it
     const aura = TL.add(`<g>${tempterAura(c, 150)}</g>`);
     const cl = TL.add(`<g>${stormCloud(makeCutter('lk10-tcloud'), 360, C.storm2, '#2d334d')}</g>`);
     const tempter = S.puppet(TL.add(person(c, TEMPTER)));
     const bolt = TL.add(`<g>${lightning(c, 420)}</g>`);
-    const impact = TL.add(`<g>${glow(80, 1, 'warm-glow')}</g>`);
 
     /* Jesus and the seventy-two on the knoll */
     const P = S.layer({ par: 0.45, sh: 5 });
@@ -74,17 +75,17 @@ export default {
       const fall = es(t, 0.42, 0.62, ease.in);
       const [bx, by] = [SKY[0] + 70 * fall, lerp(SKY[1], 470, fall)];
       pose(cl, { x: SKY[0], y: SKY[1] + 14, s: 1, o: 1 - es(t, 0.6, 0.85) });
-      tempter.set({ x: bx, y: by, s: 0.8 * (1 - fall * 0.6), r: fall * 40, armF: 60 - fall * 40, armB: 120, head: -6, o: 1 - seg(t, 0.58, 0.64) });
+      tempter.set({ x: bx, y: by, s: 0.8 * (1 - fall * 0.4), r: fall * 75, armF: 60 - fall * 40, armB: 120, head: -6, o: 1 - seg(t, 0.93, 0.98) });   // he lies fallen where the bolt struck
       pose(aura, { x: bx, y: by, s: 1 - fall * 0.5, o: 1 - seg(t, 0.5, 0.62) });
       const fl = bump(t, 0.4, 0.52);
       flash.fade(fl * 0.8);
-      pose(bolt, { x: SKY[0] + 10, y: SKY[1] - 20, sy: 0.45, r: -22, o: es(t, 0.42, 0.46) * (1 - es(t, 0.85, 1.0)) });
-      const im = bump(t, 0.6, 0.9);
-      pose(impact, { x: SKY[0] + 80, y: 470, s: 0.6 + im, o: im });
+      pose(bolt, { x: SKY[0] + 10, y: SKY[1] - 20, sy: 0.45, r: -22, o: es(t, 0.42, 0.46) * (1 - es(t, 0.92, 1.0)) });
+      const im = es(t, 0.6, 0.7) * (1 - es(t, 0.93, 1.0));   // a held scorch where he struck
+      pose(impact, { x: SKY[0] + 80, y: 470, s: 0.6 + es(t, 0.6, 0.7) * 0.8, o: im });
       const point = es(t, 0.1, 0.3) * (1 - es(t, 0.95, 1.1));
 
       /* v19a — tread on them; the shadow tears */
-      const walk = [[1.05, 0], [1.75, 150]];
+      const walk = [[1.05, 0], [1.6, 150]];
       const w = kf(t, walk, (x) => x) * (PT ? 0.67 : 1);   // phone: they start nearer and walk less
       const walking = moving(t, walk);
       A.set({ x: (PT ? 520 : 470) + w, y: PATHY, s: 0.98, flip: false, walk: walking ? w * 0.06 : undefined, armF: 14 + es(t, 2.05, 2.2) * 20, armB: 10, head: 4, blink: blinkAt(T, 2) });
@@ -93,16 +94,17 @@ export default {
         const come = es(t, 1.0 + q.i * 0.05, 1.3 + q.i * 0.05);
         const stepped = es(t, 1.42 + q.i * 0.06, 1.5 + q.i * 0.06);
         const x = q.x + q.dir * (1 - come) * -120;
-        pose(q.el, { x, y: PATHY + 4, s: 1, sx: q.dir, sy: 1 - stepped * 0.55, o: seg(t, 0.98 + q.i * 0.05, 1.04 + q.i * 0.05) * (1 - es(t, 1.7, 1.9)) });
-        const sk = bump(t, 1.44 + q.i * 0.06, 1.7 + q.i * 0.06);
+        pose(q.el, { x, y: PATHY + 4, s: 1, sx: q.dir, sy: 1 - stepped * 0.55, o: seg(t, 0.98 + q.i * 0.05, 1.04 + q.i * 0.05) * (1 - es(t, 1.92, 2.0)) });
+        const sk = bump(t, 1.44 + q.i * 0.06, 1.95);
         pose(sparks[q.i], { x, y: PATHY - 20, s: sk, r: T * 40, o: sk });
       });
-      const creep = es(t, 1.05, 1.45);
-      const tear = es(t, 1.55, 1.95);
-      pose(shadow, { x: lerp(1400, 700, creep), y: PATHY + 8, s: 1, o: creep * (1 - seg(t, 1.55, 1.6)) });
+      const creep = es(t, 1.0, 1.3);
+      const tear = es(t, 1.45, 1.65);
+      pose(shadow, { x: lerp(1400, 700, creep), y: PATHY + 8, s: 1, o: creep * (1 - seg(t, 1.42, 1.47)) });
       shards.forEach((sh) => {
-        const ex = Math.cos(sh.a) * tear * 180, ey = Math.sin(sh.a) * tear * 60 - tear * 160;
-        pose(sh.el, { x: 860 + ex, y: PATHY + ey, r: tear * 180 * (sh.i % 2 ? 1 : -1), s: 0.8, o: seg(t, 1.55, 1.58) * (1 - tear) });
+        // torn apart, the scraps drop flat and lie scattered on the path, trodden down (gone with the creatures)
+        const ex = Math.cos(sh.a) * tear * 240, ey = Math.sin(sh.a) * tear * 26 + bump(t, 1.45, 1.65) * -60 + tear * 14;
+        pose(sh.el, { x: 860 + ex, y: PATHY + ey, r: tear * 160 * (sh.i % 2 ? 1 : -1), s: 0.8, sy: 1 - tear * 0.6, o: seg(t, 1.42, 1.45) * (1 - tear * 0.35) * (1 - es(t, 1.92, 2.0)) });
       });
 
       /* v19b — nothing shall hurt you */

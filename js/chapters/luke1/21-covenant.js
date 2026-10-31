@@ -87,7 +87,7 @@ export default {
       const wk = es(t, 2.2, 2.95);
       pose(walk, { x: X(-150 + wk * 150), y: YY(2, 110 - wk * 60), s: K, o: on(2) });
       const d1 = seg(t, 3.15, 3.5), d2 = seg(t, 3.5, 3.85);
-      pose(sunB, { x: X(lerp(-160, 160, d1)), y: YY(3, -40 - Math.sin(d1 * PI) * 34), s: K, o: on(3, d1 > 0 && d1 < 1 ? 1 : 0) });
+      pose(sunB, { x: X(lerp(-128, 128, d1)), y: YY(3, -36 - Math.sin(d1 * PI) * 30), s: K, o: on(3, d1 > 0 && d1 < 1 ? es(d1, 0, 0.12) * (1 - es(d1, 0.88, 1)) : 0) });   // the big sun stays inside the frame
       pose(moonB, { x: X(lerp(-160, 160, d2)), y: YY(3, -40 - Math.sin(d2 * PI) * 34), s: K, o: on(3, d2 > 0 ? 1 : 0) });
 
       S.cam.z = 1.04;

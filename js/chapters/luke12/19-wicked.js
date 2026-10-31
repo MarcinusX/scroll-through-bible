@@ -87,19 +87,21 @@ export default {
       pose(H.ovenEl.querySelector('.glow'), { x: 0, y: 0, o: 0.3 });
       pose(moonEl, { x: 300, y: 160, r: time ? Math.sin(T * 0.5) : 0, oy: 0 });
       /* v45 — "my lord delays"; he beats the servants; he eats, drinks, gets drunk */
-      const think = es(t, 0.05, 0.2) * (1 - es(t, 0.35, 0.45));
-      const beat = bump(t, 0.35, 0.65);
-      const sprawl = es(t, 0.68, 0.76);
+      // swipe stop (x.75) holds all three at once: the thought still over him, the servants still cowering, him sprawled with the cup
+      const think = es(t, 0.05, 0.2) * (1 - es(t, 0.9, 0.98));
+      const beat = bump(t, 0.25, 0.5);
+      const sprawl = es(t, 0.5, 0.6);
       const [shx, shy] = headAt(SX, F + 2, 0.98, false);
-      pose(tc, { x: shx + 10, y: shy - 10, s: think, o: think > 0.01 ? 1 : 0 });
-      steward.set({ x: SX, y: F + 2, s: 0.98, flip: t > 0.3, o: 1 - sprawl, armF: 20 + bump(t, 0.2, 0.35) * 40, armB: 10 + beat * 140, head: t < 0.3 ? -6 : 4, lean: beat * 6, blink: blinkAt(T, 1) });
-      const cower = bump(t, 0.38, 0.8);
+      const [dhx, dhy] = headAt(SX + 30, F + 6, 0.98, false, 62);
+      pose(tc, { x: lerp(shx, dhx, sprawl) + 10, y: lerp(shy, dhy, sprawl) - 10, s: think, o: think > 0.01 ? 1 : 0 });
+      steward.set({ x: SX, y: F + 2, s: 0.98, flip: t > 0.22, o: 1 - sprawl, armF: 20 + bump(t, 0.1, 0.22) * 40, armB: 10 + beat * 140, head: t < 0.22 ? -6 : 4, lean: beat * 6, blink: blinkAt(T, 1) });
+      const cower = es(t, 0.3, 0.4) * (1 - es(t, 0.92, 1.0));
       servA.set({ x: 540, y: F + 6, s: 0.94, o: 1 - es(t, 1.9, 2.0), armF: 20 + cower * 120, armB: 10 + cower * 130, head: 10 + cower * 14, lean: -cower * 14, blink: blinkAt(T, 3) });
       servB.set({ x: 610, y: F + 2, s: 0.92, o: 1 - es(t, 1.9, 2.0), armF: 20 + cower * 110, armB: 10 + cower * 120, head: 12 + cower * 10, lean: -cower * 10, blink: blinkAt(T, 4) });
       const surprise = es(t, 1.08, 1.18);
       const drop = es(t, 1.15, 1.3, ease.in);
       const split = es(t, 1.4, 1.6);
-      drunk.set({ x: SX + 30, y: F + 6, s: 0.98, o: sprawl * (1 - seg(t, 1.38, 1.42)), armF: 60 + bump(t, 0.76, 1.0) * 70 - surprise * 40, armB: 20 + surprise * 60, head: -20 + surprise * 10, lean: -14 + surprise * 10, blink: surprise > 0.5 ? 0 : 1 });
+      drunk.set({ x: SX + 30, y: F + 6, s: 0.98, o: sprawl * (1 - seg(t, 1.38, 1.42)), armF: 60 + bump(t, 0.6, 1.0) * 70 - surprise * 40, armB: 20 + surprise * 60, head: -20 + surprise * 10, lean: -14 + surprise * 10, blink: surprise > 0.5 ? 0 : 1 });
       pose(table, { x: SX + 110, y: F + 14, o: 1 - es(t, 1.9, 2.0) });
       const [cx0, cy0] = palm(SX + 30, F + 6, 0.98, false, 60 + 70 - 40, 62);
       pose(fallCup, { x: cx0 + drop * 20, y: lerp(cy0, F + 4, drop), r: drop * 110, o: drop > 0 && t < 1.9 ? 1 : 0 });
@@ -113,7 +115,7 @@ export default {
       pose(H.gateDoor, { x: HOUSE.GATE - 36, y: F + 38, sx: 1 - comeIn * 0.8 });
       darkL.fade(split * 0.55 * (1 - es(t, 1.9, 2.05)));
       halves.forEach((h) => {
-        const sink = es(t, 1.55, 1.95, ease.in);
+        const sink = es(t, 1.8, 1.95, ease.in);
         pose(h.el, { x: SX + 30 + (h.i ? 1 : -1) * split * 30, y: F + 6 + sink * 120, r: (h.i ? 1 : -1) * split * 14, s: 0.98, o: seg(t, 1.38, 1.42) * (1 - sink) });
       });
 

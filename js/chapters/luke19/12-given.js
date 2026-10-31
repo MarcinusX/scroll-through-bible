@@ -68,24 +68,26 @@ export default {
       kUp.set({ x: KX + 16, y: KS, s: 1.04, flip: false, armF: 30 + es(t, 0.05, 0.25) * 60 * (1 - es(t, 0.9, 1.1)) + es(t, 2.05, 2.25) * 40 * (1 - es(t, 2.9, 3.0)) + doom * 70, armB: 10 + es(t, 2.05, 2.25) * 90 * (1 - es(t, 2.9, 3.0)), head: 2, blink: blinkAt(T) });
       const [khx, khy] = headAt(KX + 16, KS, 1.04, false);
       pop(order, t, 0.05, 0.95, khx + 20, khy - 20);
-      const GK = [[0.1, 1250], [0.45, PX + 70], [0.55, PX + 70], [0.9, S1 + 60]];
+      // the hand-over is done by the pause (x.75): face to face, the coin is in the first servant's raised hand
+      const GK = [[0.05, 1250], [0.3, PX + 70], [0.38, PX + 70], [0.6, S1 - 105]];
       const gx = kf(t, GK, (x) => x);
-      const gw = (t > 0.1 && t < 0.45) || (t > 0.55 && t < 0.9);
-      const bend = bump(t, 0.43, 0.6);
-      const give = bump(t, 0.85, 1.1);
-      steward.set({ x: gx, y: FL + 14, s: 0.94, flip: t < 0.55, walk: gw ? gx * 0.06 : undefined, armF: 30 + bend * 50 + give * 60, lean: (t < 0.55 ? -1 : 1) * bend * 14, head: bend * 10, blink: blinkAt(T, 3), o: 1 - doom });
-      const [ghx, ghy] = hand(gx, FL + 14, 0.94, t < 0.55, 30 + bend * 50 + give * 60);
+      const gw = (t > 0.05 && t < 0.3) || (t > 0.38 && t < 0.6);
+      const bend = bump(t, 0.3, 0.42);
+      const give = es(t, 0.58, 0.68) * (1 - es(t, 1.0, 1.1));
+      const gf = t < 0.38;   // then he faces the first servant, who turns to him, and hands him the coin
+      steward.set({ x: gx, y: FL + 14, s: 0.94, flip: gf, walk: gw ? gx * 0.06 : undefined, armF: 30 + bend * 50 + give * 60, lean: (t < 0.38 ? -1 : 1) * bend * 14, head: bend * 10, blink: blinkAt(T, 3), o: 1 - doom });
+      const [ghx, ghy] = hand(gx, FL + 14, 0.94, gf, 30 + bend * 50 + give * 60);
       const [hx, hy] = hand(PX, FL + 12, 0.9, true, 50, 0, 46);
       // the coin: in the cloth → in the steward's hand → to the first servant → onto his heap
       const toHeap = es(t, 2.05, 2.35);
       let cx = hx - 16, cy = hy - 2;
-      if (t > 0.5) { cx = ghx; cy = ghy - 8; }
+      if (t > 0.36) { cx = ghx; cy = ghy - 8; }
       const [s1hx, s1hy] = hand(S1, FL + 10, 0.9, true, 60);
-      if (t > 1.0) { cx = s1hx - 4; cy = s1hy - 10; }
+      if (t > 0.66) { cx = s1hx - 4; cy = s1hy - 10; }
       cx = lerp(cx, TX - 30, toHeap); cy = lerp(cy, FL - 110, toHeap) - Math.sin(toHeap * PI) * 60;
       pose(coin, { x: cx, y: cy, o: toHeap < 1 ? 1 : 0 });
       pose(heap, { x: TX - 30, y: FL - 40, s: 1 + bump(t, 2.3, 2.6) * 0.08 });
-      s1.set({ x: S1, y: FL + 10, s: 0.9, flip: true, armF: 20 + es(t, 0.95, 1.05) * 40 * (1 - es(t, 2.0, 2.1)) + es(t, 2.0, 2.1) * 10, armB: 10, head: 4, blink: blinkAt(T, 4), o: 1 - doom });
+      s1.set({ x: S1, y: FL + 10, s: 0.9, flip: true, armF: 20 + es(t, 0.62, 0.72) * 40 * (1 - es(t, 2.0, 2.1)) + es(t, 2.0, 2.1) * 10, armB: 10, head: 4, blink: blinkAt(T, 4), o: 1 - doom });
       s2.set({ x: S2X, y: FL + 4, o: 1 - doom });
       /* v25 — "Lord, he has ten minas!" */
       by.forEach((p, i) => {

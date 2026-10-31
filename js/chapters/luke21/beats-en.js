@@ -36,4 +36,8 @@ export const BEATS_EN = {
     1: 'men fainting for fear, and for expectation of the things which are coming on the world:',
     2: 'for the powers of the heavens will be shaken.',
   },
+  'lk21-trap': {
+    1: 'For it will come like a snare',
+    2: 'on all those who dwell on the surface of all the earth.',
+  },
 };

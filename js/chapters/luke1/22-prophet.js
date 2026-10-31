@@ -77,8 +77,8 @@ export default {
       pose(crooked, { x: FX, y: Y[0], s: K, o: on(0, 1 - str) });
       pose(straight, { x: FX, y: Y[0], s: K, sx: K * Math.max(0.001, str), o: on(0, str > 0.01 ? 1 : 0) });
       jn.set({ x: X(-110 + wk * 150), y: YY(0, 82 - wk * 16), s: 0.5 * K, flip: false, walk: wk > 0 && wk < 1 ? t * 26 : undefined, o: on(0), armF: 20, armB: 10 });
-      /* v77: the sins fall into the water */
-      stones.forEach((s, i) => { const f = es(t, 2.35 + i * 0.07, 2.8 + i * 0.07, ease.in); pose(s, { x: X(-130 + i * 60 + 6), y: YY(1, lerp(-10, 96, f)), r: f * 120, s: K, o: on(1, 1 - es(t, 2.85 + i * 0.03, 2.95 + i * 0.03)) }); });
+      /* v77: the sins fall into the water (all down by 2.7, before the swipe stop at 2.75) */
+      stones.forEach((s, i) => { const f = es(t, 2.25 + i * 0.05, 2.5 + i * 0.05, ease.in); pose(s, { x: X(-130 + i * 60 + 6), y: YY(1, lerp(-10, 96, f)), r: f * 120, s: K, o: on(1, 1 - es(t, 2.85 + i * 0.03, 2.95 + i * 0.03)) }); });
 
       S.cam.z = 1.05;
       S.cam.y = 10;

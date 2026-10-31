@@ -17,7 +17,7 @@ export default {
     { v: 29, cont: true, text: 'i wyprowadzili aż na stok góry, na której ich miasto było zbudowane, aby Go strącić.' },
     { v: 30 },
   ],
-  cam: { x: [-40, 420], y: [-20, 60], z: [1, 1.1] },
+  cam: { x: [-40, 1100], y: [-20, 60], z: [1, 1.1] },
   build(S) {
     const c = S.c;
     sky(S, GOLDEN);
@@ -80,10 +80,10 @@ export default {
 
       /* v29b: driven to the brow, to throw Him down */
       const drive = es(t, 0.05, 0.75);
-      const pass = es(t, 1.1, 2.0, (x) => x);
+      const pass = es(t, 1.05, 1.68);   // out past the last rank by the stop (1.75): «oddalił się»
       const turn = t > 1.05;
       const jx0 = lerp(930, 640, drive);
-      const jx = turn ? lerp(640, 1020, pass) : jx0;
+      const jx = turn ? lerp(640, 1520, pass) : jx0;
       const jy = 546;
       jesus.set({ x: jx, y: jy, s: 1.0, flip: !turn, walk: (drive > 0 && drive < 1) || (pass > 0 && pass < 1) ? jx * 0.045 : undefined, lean: turn ? 0 : -drive * 6, armF: 12 + (turn ? 6 : 0), head: turn ? -2 : 8, blink: blinkAt(time) });
       const [hx, hy] = headAt(jx, jy, 1.0, !turn);
@@ -103,7 +103,7 @@ export default {
       place(rankB, -1);
       place(rankF, 1);
 
-      S.cam.x = turn ? Math.max(-20, (jx - 800) * 1.8) : lerp(80, -20, drive);
+      S.cam.x = turn ? Math.max(-20, (jx - 800) * 1.5) : lerp(80, -20, drive);
       S.cam.z = 1.03 + es(t, 0.4, 0.9) * 0.04 - es(t, 1.1, 1.5) * 0.03;
       S.cam.y = 10 + es(t, 0.4, 0.9) * 20;
     };

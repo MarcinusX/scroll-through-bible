@@ -98,10 +98,12 @@ export default {
       const sw = es(t, 0.2, 0.7);
       pose(sweep, { x: X(-160), y: YY(0, 20), sx: K * Math.max(0.001, sw), sy: K, o: on(0, sw > 0.01 ? 1 : 0) });
       proud.forEach((p) => {
-        const blow = es(t, 1.3 + p.i * 0.06, 1.95 + p.i * 0.06, ease.in);
+        // tossed up by the blast and thrown down scattered on the ground, all lying still by 1.68 (swipe stop 1.75)
+        const blow = es(t, 1.2 + p.i * 0.05, 1.58 + p.i * 0.05);
         const px = -100 + p.i * 90;
-        pose(p.el, { x: X(px + blow * (150 - p.i * 40)), y: YY(0, 108 - blow * 90), r: blow * 160, s: 0.5 * K * (1 - blow * 0.4), o: on(0, 1 - es(t, 1.9 + p.i * 0.04, 1.99 + p.i * 0.01)) });
-        pose(p.th, { x: X(px + 6), y: YY(0, 20), s: K * 0.8 * (1 - blow), o: on(0, t > 0.4 ? 1 - es(t, 1.25, 1.35) : 0) });
+        const [dx, rr] = [[40, -85], [-10, 90], [0, 85]][p.i];
+        pose(p.el, { x: X(px + blow * dx), y: YY(0, 108 - blow * 16 - Math.sin(blow * PI) * 40), r: blow * rr, s: 0.5 * K * (1 - blow * 0.15), o: on(0) });
+        pose(p.th, { x: X(px + 6), y: YY(0, 20), s: K * 0.8 * (1 - blow), o: on(0, t > 0.4 ? 1 - es(t, 1.15, 1.25) : 0) });
       });
 
       /* v52a: the king slides off his throne; v52b: the lowly woman rises to the top */

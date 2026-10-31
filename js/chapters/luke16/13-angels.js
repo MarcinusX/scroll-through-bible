@@ -65,20 +65,21 @@ export default {
       pose(lazDead, { x: LX + 150, y: GY + 6, o: seg(t, 0.12, 0.14) });
       dogs.forEach((d, i) => pose(d, { x: LX - 20 - i * 60, y: GY + 10 + i * 8, s: 0.9 - i * 0.08, sy: (0.9 - i * 0.08) * (1 - es(t, 0.15, 0.3) * 0.35) }));
       const come = es(t, 0.18, 0.4, ease.out);
-      const lift = es(t, 0.42, 0.9);
+      const lift = es(t, 0.4, 0.68);   // carried all the way to Abraham before the swipe stop (0.75)
       const path = (k) => [lerp(LX + 40, AB[0] + 30, k), lerp(GY - 40, AB[1] + 60, k)];
       const [sx, sy] = path(lift);
-      pose(soul, { x: sx + 80, y: sy, s: 1 - lift * 0.35, r: -lift * 10, o: es(t, 0.38, 0.45) * (1 - es(t, 0.95, 1.05)) });
+      pose(soul, { x: sx + 80, y: sy, s: 1 - lift * 0.35, r: -lift * 10, o: es(t, 0.38, 0.45) });   // he stays at Abraham's side
+      const part = es(t, 0.6, 0.72);   // delivered: the angels step aside so Lazarus is seen at Abraham's side
       angels.forEach((a, i) => {
-        const ax = sx + (i ? 110 : -60) * (1 - lift * 0.35), ay = sy + 20;
+        const ax = sx + (i ? 110 : -60) * (1 - lift * 0.35) + part * (i ? 30 : -60), ay = sy + 20 - part * 10;
         const fx = lerp(i ? 1000 : 500, ax, come), fy = lerp(-300, ay, come);
         a.set({ x: fx, y: fy, s: 0.84 - lift * 0.3, flip: i === 1, o: come > 0.01 ? 1 - es(t, 0.95, 1.05) : 0, armF: 80, armB: 40, head: -6, blink: blinkAt(T, 4 + i) });
       });
       pose(aglow, { x: sx + 20, y: sy - 60, o: come * (1 - es(t, 0.9, 1.0)) });
-      const hk = es(t, 0.45, 0.75);
+      const hk = es(t, 0.4, 0.62);
       pose(light, { x: AB[0], y: AB[1], s: 0.6 + hk * 0.4, o: hk * (1 - es(t, 1.05, 1.3) * 0.7) });
       pose(cl, { x: AB[0], y: AB[1] + 50, o: hk });
-      abr.set({ x: AB[0] + 10, y: AB[1] + 40, s: 0.62, o: hk, armF: 60 + es(t, 0.7, 0.85) * 30, armB: 40 + es(t, 0.7, 0.85) * 60, head: -4, blink: blinkAt(T, 1) });
+      abr.set({ x: AB[0] + 10, y: AB[1] + 40, s: 0.62, o: hk, armF: 60 + es(t, 0.56, 0.7) * 30, armB: 40 + es(t, 0.56, 0.7) * 60, head: -4, blink: blinkAt(T, 1) });
       /* v22b — the feast empties; he dies; the tomb rises */
       guests.forEach((g) => g.p.set({ x: g.x, y: FL, s: 0.94, flip: true, o: 1 - es(t, 1.1, 1.3), armF: 30, armB: 10, head: 2, blink: blinkAt(T, 3 + g.i) }));
       pose(food, { o: 1 - es(t, 1.1, 1.3) });

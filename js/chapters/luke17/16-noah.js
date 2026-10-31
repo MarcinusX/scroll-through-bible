@@ -98,10 +98,10 @@ export default {
 
       /* v26 — "Noah": the board; he knocks in the last pegs */
       flyIn(board, es(t, 0.1, 0.35, ease.back) * (1 - es(t, 1.8, 2.0)), 1010, 330, T, 1, 1);
-      const inK = es(t, 1.86, 1.93);
+      const inK = es(t, 1.6, 1.68);
       const nx = lerp(doorTop[0] - 70, doorTop[0], inK), ny = lerp(RAMP0[1] - (RAMP0[1] - doorTop[1]) * ((doorTop[0] - 70 - RAMP0[0]) / (doorTop[0] - RAMP0[0])), doorTop[1], inK);
       const hammer = t < 1 ? Math.abs(Math.sin(t * 22)) : 0;
-      noah.set({ x: nx, y: ny, s: 0.82, flip: false, armF: 40 + hammer * 70, armB: 10 + bump(t, 1.0, 1.3) * 60, head: 4, lean: 6, o: 1 - es(t, 1.92, 1.95), blink: blinkAt(T, 7) });
+      noah.set({ x: nx, y: ny, s: 0.82, flip: false, armF: 40 + hammer * 70, armB: 10 + bump(t, 1.0, 1.3) * 60, head: 4, lean: 6, o: 1 - es(t, 1.66, 1.69), blink: blinkAt(T, 7) });
 
       /* v27a — they eat and drink, marry; the animals go in two by two; the door shuts */
       const cups = T ? (Math.sin(t * 9) > 0.3 ? 1 : 0) : 0;
@@ -113,12 +113,12 @@ export default {
       bride.set({ x: CAN - 34, y: GY + 4, s: 0.9, flip: false, armF: 20 + wed * 50, armB: 10, head: 6 - wed * 4, blink: blinkAt(T, 4) });
       const rise = es(t, 2.2, 2.85);
       beasts.forEach((b) => {
-        const a = 1.12 + b.p * 0.1 + b.j * 0.04;
-        const k = es(t, a, a + 0.42, (x) => x);
+        const a = 1.06 + b.p * 0.07 + b.j * 0.03;
+        const k = es(t, a, a + 0.3, (x) => x);
         const x = lerp(RAMP0[0] - 200 + b.j * 30, doorTop[0], k), y = x < RAMP0[0] ? RAMP0[1] : lerp(RAMP0[1], doorTop[1], (x - RAMP0[0]) / (doorTop[0] - RAMP0[0]));
         pose(b.el, { x, y: y - (k > 0 && k < 1 ? Math.abs(Math.sin(k * 30)) * 3 : 0), s: 1.4, o: t > a && k < 0.98 ? 1 : 0 });
       });
-      const shut = es(t, 1.94, 2.0);
+      const shut = es(t, 1.68, 1.74);
       pose(door, { x: A.doorAt[0], y: A.doorAt[1], sx: Math.max(0.04, shut), o: 1 });
 
       /* v27b — the storm, the rain, the water over everything; the ark floats */

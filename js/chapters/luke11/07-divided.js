@@ -129,9 +129,9 @@ export default {
         const d = i ? 1 : -1;
         pose(el, { x: PX + d * split * 60, y: Y - 6 + split * 20, r: d * split * 14, ox: 0, oy: 80, o: vis * dIn * (1 - split * 0.35) });
       });
-      const cf = es(t, 2.45, 2.75, ease.in);
-      pose(dCrown, { x: PX - 36 + cf * 20, y: Y - 140 + cf * 200, r: cf * 50, o: vis * dIn * (1 - es(t, 2.72, 2.8)) });
-      dSmoke.forEach((sm, i) => pose(sm, { x: PX - 80 + i * 80, y: Y - 40 - es(t, 2.4, 2.9) * 60, s: 0.6 + es(t, 2.4, 2.9) * 0.8, o: vis * bump(t, 2.4 + i * 0.05, 3.0) * 0.8 }));
+      const cf = es(t, 2.4, 2.62, ease.in);
+      pose(dCrown, { x: PX - 36 + cf * 20, y: Y - 140 + cf * 200, r: cf * 50, o: vis * dIn * (1 - es(t, 2.9, 2.98)) });
+      dSmoke.forEach((sm, i) => pose(sm, { x: PX - 80 + i * 80, y: Y - 40 - es(t, 2.32, 2.72) * 60, s: 0.6 + es(t, 2.32, 2.72) * 0.8, o: vis * bump(t, 2.32 + i * 0.04, 2.72) * 0.8 }));
 
       /* the square: Jesus answers; their thoughts; v18b — "you say: by Beelzebul" */
       const answer = es(t, 0.05, 0.25);

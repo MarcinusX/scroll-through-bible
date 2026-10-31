@@ -11,6 +11,7 @@ import { menorah } from '../mark2/lib.js';
 const FLOOR = 676;
 const TB0 = { x: 990, w: 150 }, BN = { x: 560, w: 160 };
 const PA = [600, 300], PB = [1000, 300], PR = 104;
+const FLEE = [200, 40, 130, 30, 200, 200], DOVER = 20;   // how far each seller runs before the pause
 
 export default {
   id: 'lk19-temple',
@@ -53,35 +54,37 @@ export default {
       const sweep = bump(t, 0.2, 0.9);
       const raise = es(t, 1.05, 1.25);
       jesus.set({ x: jx, y: FLOOR + 10, s: 1.04, walk: inK > 0 && inK < 1 ? jx * 0.05 : undefined, armF: sweep * (80 + Math.sin(t * 20) * 20) + raise * 40, armB: sweep * 60 + raise * 130, lean: bump(t, 0.3, 0.7) * 6, head: -raise * 4, blink: blinkAt(T) });
+      // they flee to both edges of the court and are caught there in mid-stride at the pause (x.75); after it they run on out
+      const out = es(t, 0.92, 1.08, ease.in), gone = 1 - seg(t, 1.0, 1.08);
       TR.forEach((m) => {
-        const go = es(t, 0.3 + m.i * 0.04, 0.8 + m.i * 0.03, ease.in);
-        const x = m.x + m.dir * go * 700;
-        m.p.set({ x, y: m.y, s: 0.92, flip: go > 0.02 ? m.dir < 0 : m.flip, walk: go > 0 && go < 1 ? x * 0.08 : undefined, armF: 20 + go * 40 + (1 - seg(t, 0.2, 0.3)) * (m.i % 2) * 40, armB: go * 100, lean: go * 10 * m.dir, blink: blinkAt(T, m.i + 3), o: 1 - seg(t, 0.85, 0.95) });
+        const go = es(t, 0.25 + m.i * 0.025, 0.6 + m.i * 0.025);
+        const x = m.x + m.dir * (go * FLEE[m.i] + out * 500);
+        m.p.set({ x, y: m.y, s: 0.92, flip: go > 0.02 ? m.dir < 0 : m.flip, walk: go > 0 ? x * 0.08 : undefined, armF: 20 + go * 40 + (1 - seg(t, 0.2, 0.3)) * (m.i % 2) * 40, armB: go * 100, lean: go * 10 * m.dir, blink: blinkAt(T, m.i + 3), o: gone });
       });
-      const lg = es(t, 0.35, 0.85, ease.in);
-      pose(lambEl, { x: 1210 + lg * 600, y: FLOOR + 30 - (lg > 0 && lg < 1 ? Math.abs(Math.sin(t * 30)) * 6 : 0), s: 0.8, o: 1 - seg(t, 0.85, 0.95) });
+      const lg = es(t, 0.35, 0.6);
+      pose(lambEl, { x: 1210 + lg * 60 + out * 500, y: FLOOR + 30 - ((lg > 0 && lg < 1) || (out > 0 && out < 1) ? Math.abs(Math.sin(t * 30)) * 6 : 0), s: 0.8, o: gone });
       pose(table, { x: TB.x + TB.w / 2 + flipT * 30, y: FLOOR - 4 + flipT * 4, r: flipT * 96, ox: TB.w / 2, oy: 0 });
-      const cf = es(t, 0.4, 0.9, ease.in);
-      const cxh = TB.x + 30 + cf * 520;
-      changer.set({ x: cxh, y: FLOOR - 26, s: 0.9, flip: cf < 0.05, walk: cf > 0 && cf < 1 ? cxh * 0.08 : undefined, armB: bump(t, 0.35, 0.7) * 150 + cf * 60, armF: 40 + bump(t, 0.35, 0.7) * 80, blink: blinkAt(T, 7), o: 1 - seg(t, 0.88, 0.96) });
+      const cf = es(t, 0.38, 0.66);
+      const cxh = TB.x + 30 + cf * (S.portrait ? 140 : 130) + out * 500;   // out from behind the upturned table
+      changer.set({ x: cxh, y: FLOOR - 26, s: 0.9, flip: cf < 0.05, walk: cf > 0 ? cxh * 0.08 : undefined, armB: bump(t, 0.35, 0.7) * 150 + cf * 60, armF: 40 + bump(t, 0.35, 0.7) * 80, blink: blinkAt(T, 7), o: gone });
       coins.forEach((co) => {
-        const k = seg(t, 0.42 + co.d, 0.72 + co.d), r = seg(t, 0.7 + co.d, 1.0);
+        const k = seg(t, 0.4 + co.d * 0.6, 0.6 + co.d * 0.6), r = seg(t, 0.6 + co.d * 0.6, 0.74);
         const x = lerp(co.x0, co.x1, k) + ease.out(r) * co.roll, y = lerp(co.y0, co.y1, k) - Math.sin(k * PI) * co.h;
         pose(co.el, { x, y, r: k * 540 + r * 300, sx: k > 0 ? 0.4 + Math.abs(Math.cos(k * 9 + r * 6)) * 0.6 : 1, o: 1 });
       });
       pose(benchEl, { x: BN.x - BN.w / 2 - flipB * 20, y: FLOOR - 4, r: -flipB * 94, ox: -BN.w / 2, oy: 0 });
-      cages.forEach((cg) => { const f = es(t, 0.55 + cg.i * 0.05, 0.75 + cg.i * 0.05, ease.in); pose(cg.el, { x: BN.x + cg.dx - f * (50 + cg.i * 40), y: FLOOR - 70 + f * 58, r: -f * (70 + cg.i * 40), ox: 0, oy: -28 }); });
-      const df = es(t, 0.5, 0.9, ease.in);
-      const dxh = BN.x - 70 - df * 520;
-      dover.set({ x: dxh, y: FLOOR - 10, s: 0.92, flip: true, walk: df > 0 && df < 1 ? dxh * 0.08 : undefined, armB: bump(t, 0.45, 0.8) * 150, armF: 40, blink: blinkAt(T, 9), o: 1 - seg(t, 0.88, 0.96) });
+      cages.forEach((cg) => { const f = es(t, 0.45 + cg.i * 0.05, 0.62 + cg.i * 0.05, ease.in); pose(cg.el, { x: BN.x + cg.dx - f * (50 + cg.i * 40), y: FLOOR - 70 + f * 58, r: -f * (70 + cg.i * 40), ox: 0, oy: -28 }); });
+      const df = es(t, 0.42, 0.66);
+      const dxh = BN.x - 70 - df * DOVER - out * 500;
+      dover.set({ x: dxh, y: FLOOR - 10, s: 0.92, flip: true, walk: df > 0 ? dxh * 0.08 : undefined, armB: bump(t, 0.45, 0.8) * 150 + df * 60, armF: 40, blink: blinkAt(T, 9), o: gone });
       doves.forEach((dv) => {
-        const k = es(t, 0.6 + dv.i * 0.04, 1.0 + dv.i * 0.03, ease.in);
+        const k = es(t, 0.45 + dv.i * 0.03, 1.05 + dv.i * 0.03);   // up in the air over the court at the pause
         const sx = BN.x + (dv.i % 2 ? 30 : -46), sy = FLOOR - 50;
         const x = lerp(sx, dv.x1, k), y = lerp(sy, dv.y1, k) - Math.sin(k * PI) * 80;
         pose(dv.el, { x, y, s: 0.8 + k * 0.3, sx: dv.x1 < sx ? -1 : 1, r: k > 0 ? -16 : 0, o: k < 1 ? 1 : 0 });
         if (k > 0) flapDove(dv.el, t * 3 + dv.ph, 34, 12, -10); else flapDove(dv.el, 0, 0, 0, 0);
       });
-      dusts.forEach((d, i) => { const at = i ? 0.55 : 0.4; const k = seg(t, at, at + 0.4); pose(d, { x: i ? BN.x - 20 : TB.x + 70, y: FLOOR - 20 - k * 30, s: 0.5 + k * 1.4, o: bump(t, at, at + 0.4) * 0.8 }); });
+      dusts.forEach((d, i) => { const at = i ? 0.48 : 0.38; const k = seg(t, at, at + 0.3); pose(d, { x: i ? BN.x - 20 : TB.x + 70, y: FLOOR - 20 - k * 30, s: 0.5 + k * 1.4, o: bump(t, at, at + 0.3) * 0.8 }); });
       /* v46 — a house of prayer … a den of robbers */
       const a = es(t, 1.08, 1.35, ease.back), b = es(t, 1.4, 1.65, ease.back);
       pose(plA, { x: PA[0], y: lerp(-1300, PA[1], a), r: T ? Math.sin(T * 0.7) * 1 : 0, o: a > 0.001 ? 1 : 0 });

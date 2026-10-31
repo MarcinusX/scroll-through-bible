@@ -158,26 +158,26 @@ export default {
       const down = es(t, 3.08, 3.45, ease.out);
       const settle = bump(t, 3.4, 3.55);
       const restX = BX - 64, restY = BY - 32, restR = 38;
-      const chop1 = bump(t, 4.04, 4.2), chop2 = bump(t, 4.2, 4.36);
+      const chop1 = bump(t, 4.16, 4.3), chop2 = bump(t, 4.3, 4.44);
       const lift = Math.max(chop1, chop2);
-      const leave = es(t, 4.36, 4.5);
+      const leave = es(t, 4.44, 4.56);
       const ax = lerp(restX - 240, restX, down) - lift * 50 - leave * 110;
       const ay = lerp(-300, restY, down) - lift * 80 - leave * 60;
-      pose(axeEl, { x: ax, y: ay, r: lerp(-80, restR, down) + settle * 4 - lift * 70 - leave * 40, o: down > 0.001 ? 1 - es(t, 4.58, 4.68) : 0 });
+      pose(axeEl, { x: ax, y: ay, r: lerp(-80, restR, down) + settle * 4 - lift * 70 - leave * 40, o: down > 0.001 ? 1 - es(t, 4.6, 4.68) : 0 });
       const gk = bump(t, 3.5, 3.9);
       pose(glint, { x: restX + 44, y: restY + 36, s: gk * 1.2, r: time * 60, o: gk });
 
       /* v9b — two strokes, chips fly, the tree falls into the fire, which flares */
       chips.forEach((ch) => {
-        const a = ch.i < 3 ? 4.12 : 4.28;
+        const a = ch.i < 3 ? 4.22 : 4.36;
         const k = seg(t, a, a + 0.28);
         pose(ch.el, { x: BX - 16 + ch.vx * k, y: BY - 24 + ch.vy * k + 260 * k * k, r: k * 400, o: k > 0 && k < 1 ? 1 : 0 });
       });
-      const fall = es(t, 4.38, 4.5, ease.in);
-      const drag = es(t, 4.52, 4.66);
-      pose(badEl, { x: lerp(BX, FX - 20, drag), y: BY + 4 + drag * 10, r: fall * 80 + drag * 8, s: 1 - drag * 0.35, o: 1 - es(t, 4.6, 4.68) });
-      pose(stump, { x: BX, y: BY + 4, o: seg(t, 4.37, 4.39) });
-      const flare = bump(t, 4.6, 5.1) * 0.7 + es(t, 4.6, 4.7) * 0.4;
+      const fall = es(t, 4.45, 4.56, ease.in);
+      const drag = es(t, 4.56, 4.68);
+      pose(badEl, { x: lerp(BX, FX - 100, drag), y: BY + 4 + drag * 2, r: fall * 80 + drag * 8, s: 1 - drag * 0.45 });
+      pose(stump, { x: BX, y: BY + 4, o: seg(t, 4.44, 4.46) });
+      const flare = bump(t, 4.62, 5.1) * 0.7 + es(t, 4.62, 4.72) * 0.4;
       const fl = time ? 1 + Math.sin(time * 9) * 0.07 : 1;
       pose(flames, { x: FX, y: GY + 12, sx: 1 + flare * 0.4, sy: (0.75 + flare) * fl });
       pose(fGlow, { x: FX, y: GY - 30, s: 0.7 + flare * 0.8, o: 0.45 + flare * 0.45 });
