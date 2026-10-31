@@ -86,7 +86,7 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
       const nb = said[i + 1];
       if (!nb) return;
       const end = b.segs[b.segs.length - 1].text.trim().replace(/[»”"’')\]>]+$/, '');
-      const start = nb.segs[0].text.trim().replace(/^[«„“"‘'(\[<]+/, '');
+      const start = nb.segs[0].text.trim().replace(/^[«„“"‘'(\[<]+/, '').replace(/^[-–—]\s*/, ''); // «…» – rzekł do …
       if (!/[.!?…]$/.test(end) && /^\p{Ll}/u.test(start)) { b.goesOn = true; nb.goesFrom = true; }
     });
   }
@@ -628,7 +628,7 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
     const html = [];
     b.segs.forEach((s, si) => {
       if (s.first) html.push(`<sup class="vn">${s.v}</sup>`);
-      if (si === 0 && b.goesFrom) s = { ...s, text: '…' + s.text.trim() };
+      if (si === 0 && b.goesFrom) s = { ...s, text: '…' + s.text.trim().replace(/^[-–—]\s*/, '') }; // the … stands for the dash
       if (si === b.segs.length - 1 && b.goesOn) s = { ...s, text: s.text.trim() + ' …' };
       // editorial brackets are dimmed: [added words] and <textual variants> (Mk 9,29 «<i postem>»).
       // They can span several words, so remember whether a word starts inside one.
