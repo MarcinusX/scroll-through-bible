@@ -745,10 +745,11 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
     if (b && b.start > pos + 0.02) {
       // on to the next sentence: hurry through what is left of the last one (and any change of set), then let the
       // new one play at a pace the eye can follow, slowing into its stop, so none of its action rushes by
+      // (a swipe only sets it going: the picture then plays at its own unhurried pace, about 2 s a sentence)
       const d1 = b.start - pos, d2 = t - b.start;
-      const ms1 = clamp(200 + 250 * d1, 250, 650), ms2 = clamp(380 + 420 * d2, 650, 1150), vj = (1.3 * d2) / ms2;
+      const ms1 = clamp(400 + 500 * d1, 500, 1300), ms2 = clamp(760 + 840 * d2, 1300, 2300), vj = (1.3 * d2) / ms2;
       segs = [leg(pos, b.start, ms1, v0, vj), leg(b.start, t, ms2, vj, 0)];
-    } else segs = [leg(pos, t, ms ?? clamp(520 + 360 * Math.abs(t - pos), 700, 1500), v0, 0)];
+    } else segs = [leg(pos, t, ms ?? clamp(700 + 480 * Math.abs(t - pos), 950, 2000), v0, 0)];
     glide = { to: t, t0: performance.now(), segs };
   }
 
@@ -939,9 +940,10 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
   }
   /* ---------- swipe mode: the chapter as a feed ----------
      On a phone people swipe the way they do through a feed of short videos, so each swipe up carries
-     the reader to the next sentence (down: back one) and its picture plays on the way. While a finger
-     drags, the scene follows it; let go far or fast enough and the move completes, else it springs
-     back. Past the closing card the next chapter comes in. */
+     the reader to the next sentence (down: back one). The swipe only sets the sentence going: while a
+     finger drags, the paper leans a little after it; let go far or fast enough and the sentence plays
+     on its own at an unhurried pace, else the paper springs back. Past the closing card the next
+     chapter comes in. */
   // the stop next to `from` in direction dir (null at either end)
   function neighbour(from, dir) {
     if (dir > 0) return stops.find((s) => s > from + 0.02) ?? null;
@@ -954,7 +956,8 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
     moveTo(to, undefined, speed()); // a swipe mid-glide carries on from the speed it has
   }
   if (swipe) {
-    const reach = () => Math.min(H, W * 1.6) * 0.42; // a drag this long carries a whole sentence
+    const reach = () => Math.min(H, W * 1.6) * 0.42; // a drag this long is a full lean
+    const LEAN = 0.15;
     let dragEnd = -1e9;
     // the library and the chapter list scroll the ordinary way; so does everything while a page turns
     const ours = (ev) => !turning && !document.documentElement.classList.contains('lib-on') && !ev.target.closest?.('.library, .booklet');
@@ -991,8 +994,9 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
       drag.on = true;
       if (drag.from == null) return;
       const k = dy / reach(), to = neighbour(drag.from, Math.sign(k));
-      // beyond the first or last stop the paper gives a little, then holds
-      pos = to == null ? drag.from + Math.sign(k) * 0.12 * (1 - Math.exp(-Math.abs(k) * 2)) : drag.from + (to - drag.from) * Math.min(1, Math.abs(k));
+      // the finger only leans on the paper, a little way towards the next stop (beyond the first or last stop it
+      // gives a little and holds); the sentence itself plays after the finger lets go, not under it
+      pos = drag.from + (to == null ? Math.sign(k) * 0.12 : (to - drag.from) * LEAN) * (1 - Math.exp(-Math.abs(k) * 2));
     }
     function release(ev) {
       const d = drag;
@@ -1007,7 +1011,7 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
       if (d.from == null) { if (dir) flick(dir); return; }
       const to = dir ? neighbour(d.from, dir) : null;
       if (to == null) { moveTo(d.from, 380); if (dir) onEdge(dir); return; }
-      moveTo(to, undefined, ((to - d.from) * Math.max(0, v * dir)) / reach()); // carry on at the finger's speed
+      moveTo(to, undefined, ((to - d.from) * LEAN * Math.max(0, v * dir)) / reach()); // carry on from the lean's speed
     }
     // a drag that ends over a button or a tap zone is not a tap
     addEventListener('click', (ev) => { if (performance.now() - dragEnd < 400) { ev.stopPropagation(); ev.preventDefault(); } }, true);
