@@ -627,8 +627,9 @@ export function startTheatre({ book, chapter, scenes, ui, beatText = () => undef
     capEl.classList.remove('off');
     const html = [];
     b.segs.forEach((s, si) => {
+      // a sentence carried on from the last swipe: … first (before a new verse's number), standing in for a dash
+      if (si === 0 && b.goesFrom) { html.push('<span class="w">…</span>'); s = { ...s, text: s.text.trim().replace(/^[-–—]\s*/, '') }; }
       if (s.first) html.push(`<sup class="vn">${s.v}</sup>`);
-      if (si === 0 && b.goesFrom) s = { ...s, text: '…' + s.text.trim().replace(/^[-–—]\s*/, '') }; // the … stands for the dash
       if (si === b.segs.length - 1 && b.goesOn) s = { ...s, text: s.text.trim() + ' …' };
       // editorial brackets are dimmed: [added words] and <textual variants> (Mk 9,29 «<i postem>»).
       // They can span several words, so remember whether a word starts inside one.
