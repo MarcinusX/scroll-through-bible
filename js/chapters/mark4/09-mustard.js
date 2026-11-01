@@ -330,14 +330,14 @@ export default {
       pose(smallest, { x: P ? 965 : 1080, y: 380 - (1 - sIn) * 700 * K, r: Math.sin(time + 2) * 3 });
 
       /* --- beats 3–4: it grows past the vegetables into a great tree --- */
-      const g1 = es(t, 3.15, 3.85);                  // young tree
+      const g1 = es(t, 3.15, 3.68);                  // young tree (swipe stop: grown, branches out, by 3.7)
       const g2 = es(t, 4.0, 4.45);                   // great tree
       const ts = 0.06 + g1 * 0.42 + g2 * (TREE_S - 0.48);
       const tsx = ts * lerp(1, TREE_SX, g2);
       pose(tree, { x: TX, y: BED + 3, sx: tsx / ts, s: ts, o: g1 > 0.001 ? 1 : 0 });
       pose(seedling, { x: TX, y: BED + 2, s: sprouted * (1 - g1) * 1.3, o: sprouted > 0.01 && g1 < 1 ? 1 : 0, r: Math.sin(time * 1.4) * 4 });
       branches.forEach((b) => {
-        const k = b.i < 4 ? es(t, 3.3 + b.i * 0.12, 3.62 + b.i * 0.12, ease.back) : es(t, 4.0 + (b.i - 4) * 0.06, 4.28 + (b.i - 4) * 0.06, ease.back);
+        const k = b.i < 4 ? es(t, 3.22 + b.i * 0.08, 3.44 + b.i * 0.08, ease.back) : es(t, 4.0 + (b.i - 4) * 0.06, 4.28 + (b.i - 4) * 0.06, ease.back);
         pose(b.g, { s: Math.max(0.001, k), r: Math.sin(time * 0.6 + b.i) * 1.2 * k });
       });
       pose(crown, { s: Math.max(0.001, es(t, 4.25, 4.5, ease.back)) * 0.8, sx: 1 / lerp(1, TREE_SX, g2) * 1.3, sy: 0.85 });
@@ -365,7 +365,7 @@ export default {
       birds.forEach((b) => {
         const n = nests[b.j];
         const nx = TX + n.x * ts * (tsx / ts), ny = BED + 3 + n.y * ts - 8;
-        const k = es(t, 4.35 + b.j * 0.07, 4.72 + b.j * 0.07, ease.out);
+        const k = es(t, 4.3 + b.j * 0.05, 4.55 + b.j * 0.04, ease.out);   // swipe stop: every bird sits on its nest by 4.71
         const x = lerp(b.from[0], nx, k), y = lerp(b.from[1], ny, k) - Math.sin(k * PI) * 60;
         const settled = k >= 1;
         const faceLeft = nx < b.from[0];
@@ -395,8 +395,9 @@ export default {
         });
       });
       trav.forEach((tv, i) => {
-        const w = seg(t, 4.3 + i * 0.1, 4.72 + i * 0.1);
-        const sat = seg(t, 4.72 + i * 0.1, 4.8 + i * 0.1);
+        // swipe stop: both travellers sit down in the shade by 4.66 (they used to sit only after the stop)
+        const w = seg(t, 4.25 + i * 0.06, 4.55 + i * 0.06);
+        const sat = seg(t, 4.55 + i * 0.06, 4.6 + i * 0.06);
         tv.walk.set({ x: lerp(tv.from, tv.x, ease.out(w)), y: tv.y + 22, s: 0.92, flip: tv.flip, walk: w > 0 && w < 1 ? w * 16 : undefined, o: w > 0 ? 1 - sat : 0, armF: 10, blink });
         tv.sit.set({ x: tv.x, y: tv.y + 22, s: 0.92, flip: !tv.flip, o: sat, armF: 30, armB: 40, head: -10 + Math.sin(time * 0.5 + i) * 2, blink: blinkAt(time, 5 + i) });
       });

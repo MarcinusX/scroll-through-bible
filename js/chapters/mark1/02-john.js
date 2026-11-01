@@ -191,7 +191,7 @@ export default {
       });
 
       /* baptism in the Jordan; the confessed sins drift away downstream */
-      const pour = bump(t, 3.25, 3.75);
+      const pour = es(t, 3.2, 3.4) * (1 - es(t, 3.84, 3.97));   // swipe stop: the water is still pouring at 3.75
       const outW = es(t, 4.0, 4.4);
       const comb = es(t, 5.1, 5.3), eat = es(t, 5.45, 5.75);
       johnW.set({
@@ -204,7 +204,7 @@ export default {
       pose(splash, { x: JX, y: 650, s: bump(t, 3.02, 3.3) * 1.3, o: bump(t, 3.02, 3.3) });
       const [px, py] = hand(JX, WADE, 1.05, false, 30 + pour * 80);
       const fall = (time * 1.6) % 1;
-      pose(pourEl, { x: px + 12 + fall * 10, y: py + 6 + fall * 50, o: seg(t, 3.35, 3.45) * (1 - seg(t, 3.7, 3.78)) });
+      pose(pourEl, { x: px + 12 + fall * 10, y: py + 6 + fall * 50, o: seg(t, 3.35, 3.45) * (1 - seg(t, 3.84, 3.9)) });
       const kIn = es(t, 3.0, 3.2);
       kneel.set({ x: 905 + outW * 400, y: WADE, s: 1, flip: true, o: kIn * (1 - outW), head: 10 + bump(t, 3.3, 3.8) * 6, armF: 60 - bump(t, 3.3, 3.8) * 30, armB: 40, blink: blinkAt(time, 4) });
       queue.forEach((q) => {

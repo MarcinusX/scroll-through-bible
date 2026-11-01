@@ -90,7 +90,7 @@ export default {
       four.forEach((f) => {
         const d = es(t, 3.02 + f.i * 0.06, 3.3 + f.i * 0.06, ease.out) * (1 - es(t, 4.0, 4.25, ease.in));
         pose(f.el, { x: f.x, y: lerp(-800, 240 + (f.i % 2) * 20, d), r: Math.sin(T * 0.8 + f.i) * 1.5 });
-        const lit = es(t, 3.35 + f.i * 0.14, 3.5 + f.i * 0.14);
+        const lit = es(t, 3.28 + f.i * 0.1, 3.4 + f.i * 0.1);   // swipe stop: all four lit by 3.7 (strength lit only at 3.92 before)
         fade(f.lit, lit); fade(f.dim, 1 - lit); fade(f.glow, lit);
       });
 
@@ -99,10 +99,10 @@ export default {
       nb.forEach((n) => {
         const x = (n.i ? lerp(360, 560, nk) : lerp(250, 450, nk)) + NBX;
         n.p.set({ x, y: F + 14, s: 0.9, flip: n.i === 1, walk: nk > 0 && nk < 1 ? x * 0.05 : undefined, armF: es(t, 4.4, 4.6) * 50, blink: blinkAt(T, n.seed), o: nk > 0 ? 1 : 0 });
-        const hk = es(t, 4.45 + n.i * 0.05, 4.6 + n.i * 0.05, ease.back);
+        const hk = es(t, 4.4 + n.i * 0.04, 4.52 + n.i * 0.04, ease.back);
         pose(hearts[n.i], { x: x + (n.i ? -6 : 6), y: F + 14 - 120, s: hk * (1 + Math.sin(T * 3 + n.i) * 0.05), o: hk > 0.02 ? 1 : 0 });
       });
-      const bk = es(t, 4.6, 4.85);
+      const bk = es(t, 4.52, 4.68);   // swipe stop: the bridge of light is whole by 4.68 (was 4.85)
       pose(bridge, { x: 456 + NBX, y: F + 14 - 124, sx: Math.max(0.01, bk * (98 / 120)), o: bk > 0.01 ? 1 : 0 });
       const pg = es(t, 5.05, 5.4, ease.out), pn = es(t, 5.15, 5.5, ease.out);
       pose(plateGod, { x: 600, y: lerp(-800, 230, pg), r: Math.sin(T * 0.8) * 1.5 });

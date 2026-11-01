@@ -82,13 +82,13 @@ export default {
 
     return (t, time) => {
       const T = time;
-      const summer = es(t, 1.1, 2.0);
+      const summer = es(t, 1.1, 1.7);   // swipe stop: the branch in full leaf and summer come by 1.7 (the last leaf opened at 2.15)
       set.sk.blend(SKIES.morning, SUMMER, summer);
       set.update(t, T, { sun: 330 - es(t, 0.8, 2.2) * 150, sunO: 1, moonO: 0, glow: 0.35, starsO: 0 });
       birds(T, summer);
 
       /* the tree comes into leaf (beat 1) */
-      const lf = es(t, 1.35, 1.95);
+      const lf = es(t, 1.3, 1.65);
       pose(leaves, { x: TREE[0], y: TREE[1] - 232 - (1 - lf) * 20, s: 0.4 + lf * 0.6, o: lf, ox: 0, oy: -230 * 1.08 });
 
       /* the lens (beats 0–1) */
@@ -100,8 +100,8 @@ export default {
       const sp = es(t, 1.05, 1.45);
       pose(sap, { x: lx - 86, y: ly + 60, sx: Math.max(0.001, sp), sy: Math.max(0.001, sp), ox: -86, oy: 60, o: on * (sp > 0.01 ? 1 : 0) });
       buds.forEach((b) => {
-        const sw = es(t, 1.2 + b.i * 0.04, 1.45 + b.i * 0.04, ease.back);
-        const op = es(t, 1.45 + b.i * 0.06, 1.85 + b.i * 0.06, ease.back);
+        const sw = es(t, 1.12 + b.i * 0.03, 1.3 + b.i * 0.03, ease.back);
+        const op = es(t, 1.3 + b.i * 0.04, 1.5 + b.i * 0.04, ease.back);
         pose(b.bud, { x: lx + b.x, y: ly + b.y, r: b.r, s: 0.6 + sw * 0.6, o: on * (1 - op) });
         pose(b.leaf, { x: lx + b.x, y: ly + b.y, r: b.r + Math.sin(T * 1.3 + b.i) * 3 * op, s: op * 0.95, o: on * (op > 0.01 ? 1 : 0) });
       });

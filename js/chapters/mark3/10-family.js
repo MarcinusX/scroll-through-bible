@@ -138,10 +138,10 @@ export default {
       /* the people sitting round him */
       const settle = es(t, 1.02, 1.4);
       const toDoor = es(t, 2.15, 2.35) * (1 - es(t, 3.0, 3.3));
-      const lookK = seg(t, 4.05, 4.9);
+      const lookK = seg(t, 4.05, 4.7);   // swipe stop: He has looked round at everyone by 4.7
       const openArms = es(t, 5.05, 5.35);
       SEAT.forEach((m) => {
-        const seen = es(t, 4.05 + (m.x - 540) / 560 * 0.8, 4.2 + (m.x - 540) / 560 * 0.8);
+        const seen = es(t, 4.05 + (m.x - 540) / 560 * 0.52, 4.18 + (m.x - 540) / 560 * 0.52);   // every face lit by 4.72
         const warm = es(t, 6.05 + m.i * 0.03, 6.3 + m.i * 0.03);
         m.pp.set({ x: m.x, y: m.y, s: m.s, flip: toDoor > 0.5 ? m.x > 650 : m.flip, lean: (m.flip ? -1 : 1) * settle * 3, head: -settle * 4 + toDoor * 6 - seen * 4 - warm * 6, armF: seen * 20 + warm * (m.i % 2 ? 60 : 30), armB: warm * (m.i % 3 === 0 ? 50 : 0), blink: blinkAt(T, m.seed) });
         pose(m.glow, { x: m.hx, y: m.hy - 30 * m.s, s: m.s * 1.3, o: seen * (1 - es(t, 5.9, 6.2) * 0.4) * 0.9 });

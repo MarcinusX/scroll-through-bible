@@ -121,12 +121,13 @@ export default {
     return (t, time) => {
       const T = time;
       /* heaven and earth pass away (beat 1) */
-      const roll = es(t, 1.05, 1.7, ease.in);
-      const sink = [es(t, 1.2, 1.75, ease.in), es(t, 1.3, 1.85, ease.in), es(t, 1.4, 1.95, ease.in)];
-      sk.blend(DAY, STAGE, es(t, 1.2, 1.9));
+      // swipe stop: heaven and earth are gone and the bare stage is set by 1.66 (was 1.95)
+      const roll = es(t, 1.05, 1.5, ease.in);
+      const sink = [es(t, 1.1, 1.45, ease.in), es(t, 1.16, 1.52, ease.in), es(t, 1.22, 1.6, ease.in)];
+      sk.blend(DAY, STAGE, es(t, 1.15, 1.6));
       clothL.shift(0, -roll * 1500);
       [farL, midL, nearL].forEach((L, i) => { L.shift(0, sink[i] * 900); });
-      stageFloor.shift(0, (1 - es(t, 1.5, 1.95)) * 700);
+      stageFloor.shift(0, (1 - es(t, 1.3, 1.64)) * 700);
       pose(sunEl, { x: SUNX, y: 170 - roll * 700, r: Math.sin(T * 0.7) });
       cls.forEach((cl) => pose(cl.el, { x: cl.x, y: cl.y - es(t, 1.0, 1.5, ease.in) * 700, r: Math.sin(T * 0.6 + cl.i) * 1.3 }));
       fatherL.fade(es(t, 3.05, 3.45));
@@ -134,10 +135,10 @@ export default {
       /* this generation: stands round him (beat 0), fades with the world (beat 1) */
       GEN.forEach((g) => {
         const k = es(t, -0.3 + g.i * 0.05, 0.3 + g.i * 0.05);
-        const gone = PH ? es(t, 1.3, 1.6) : es(t, 1.3 + g.i * 0.04, 1.7 + g.i * 0.04);   // phone: all gone by the rest point (no ghosts at the edge)
+        const gone = PH ? es(t, 1.2, 1.5) : es(t, 1.22 + g.i * 0.03, 1.45 + g.i * 0.03);   // phone: all gone by the rest point (no ghosts at the edge)
         g.p.set({ x: g.x, y: GY + (g.i % 2) * 5 + gone * 60, s: g.s, flip: g.x > 800, o: k * (1 - gone), head: -4, blink: blinkAt(T, g.seed) });
       });
-      const dim = es(t, 1.3, 1.8);
+      const dim = es(t, 1.25, 1.6);
       four.forEach((m) => m.p.set({ x: m.x, y: GY + (m.i % 2) * 4, s: 0.94, flip: m.flip, o: 1 - dim * 0.35, head: -6 - es(t, 2.1, 2.4) * 6 - es(t, 3.1, 3.4) * 8, armF: m.k === 'john' ? es(t, 2.2, 2.5) * 40 : 0, blink: blinkAt(T, m.seed) }));
 
       /* Jesus: "Truly I tell you" (0), still standing when all is gone (1), holds out his words (2), looks up (3) */

@@ -76,14 +76,14 @@ export default {
 
       /* beat 1: sell, give to the poor — coins fly from the cart to the bowls and rise as stars */
       COINS.forEach((cn) => {
-        const k = seg(t, 1.05 + cn.i * 0.05, 1.4 + cn.i * 0.05);
+        const k = seg(t, 1.03 + cn.i * 0.03, 1.33 + cn.i * 0.03);   // swipe stop: coins all given by 1.6, stars all up by 1.71 (stop 1.75)
         const p = POOR[cn.to];
         const x0 = CARTX - 10, y0 = CARTY - 130, x1 = p.x + 22, y1 = p.y - 20;
         pose(cn.el, { x: lerp(x0, x1, k), y: lerp(y0, y1, k) - Math.sin(k * Math.PI) * 220, r: k * 540, o: k > 0 && k < 1 ? 1 : 0 });
       });
       const starOn = (1 - es(t, 3.05, 3.5));
       STARS.forEach((st) => {
-        const k = es(t, 1.4 + st.i * 0.05, 1.8 + st.i * 0.05);
+        const k = es(t, 1.25 + st.i * 0.03, 1.5 + st.i * 0.03);
         pose(st.el, { x: lerp(POOR[st.i % 3].x + 20, st.x, k), y: lerp(GY - 20, st.y, k), s: 0.4 + k * 0.6 + Math.sin(T * 2 + st.i) * 0.05, r: T * 10 + st.i * 20, o: (k > 0 ? Math.min(1, k * 3) : 0) * starOn });
       });
       POOR.forEach((p) => {

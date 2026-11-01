@@ -141,9 +141,10 @@ export default {
       /* the plates, each on its beat */
       const sc = es(t, 0.15, 0.4, ease.back) * (1 - es(t, 1.1, 1.4));
       swing(scrollEl, 700, lerp(-1000, 250, sc), T, 1.2, 0.8, 1);
-      const tp = es(t, 0.45, 0.7, ease.back) * (1 - es(t, 1.8, 2.05));
+      // swipe stop: the tomb plate is down and its stone rolled away by 0.7 (stop 0.75) — "until he rises"
+      const tp = es(t, 0.32, 0.52, ease.back) * (1 - es(t, 1.8, 2.05));
       swing(tombPlate, 960, lerp(-1000, 250, tp), T, 1.2, 0.8, 2);
-      const rise = es(t, 0.65, 0.95);
+      const rise = es(t, 0.48, 0.7);
       pose(dawn, { x: 0, y: 20 - rise * 44, o: rise });
       pose(tstone, { x: -rise * 34, y: 36 - 120 * 0.18 + 2, r: -rise * 120 });
       const ep = es(t, 2.1, 2.35, ease.back) * (1 - es(t, 3.85, 4.05));

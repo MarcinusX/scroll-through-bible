@@ -157,10 +157,11 @@ export default {
       const chk = es(t, 7.9, 8.15, ease.back);
       pose(chest, { x: CHX, y: F + 8, s: chk, o: chk > 0.01 ? 1 : 0 });
       pose(chestTag, { x: CHX, y: F - 120, s: chk * (1 - es(t, 9.4, 9.5)), o: chk > 0.02 ? 1 : 0 });
-      const hk = es(t, 8.3, 8.5, ease.back), up = es(t, 8.55, 8.95, ease.io);
+      // swipe stop: the heart has risen to God's door and it glows by 8.72 (was 8.95 / 9.1)
+      const hk = es(t, 8.25, 8.4, ease.back), up = es(t, 8.42, 8.66, ease.io);
       const [bx, by] = hand(JX, F, 1.02, false, 150);
       pose(heartEl, { x: lerp(bx - 60, 800, up), y: lerp(by - 20, 300, up), s: hk * (1 - up * 0.3), o: hk > 0.01 ? 1 - es(t, 9.3, 9.6) : 0 });
-      pose(doorGlow, { x: 800, y: 300, o: es(t, 8.85, 9.1) * (1 - es(t, 9.6, 9.9)) });
+      pose(doorGlow, { x: 800, y: 300, o: es(t, 8.6, 8.72) * (1 - es(t, 9.6, 9.9)) });
       sparks.forEach((el, i) => {
         const a = (i / 5) * Math.PI * 2, k = seg(t, 9.05, 9.8);
         pose(el, { x: 1040 + Math.cos(a) * (40 + k * 60), y: F - 230 + Math.sin(a) * (20 + k * 30) - k * 20, s: 1 - k * 0.4, o: bump(t, 9.05, 9.8) });

@@ -142,9 +142,10 @@ export default {
       pose(S.$('s4-fume'), { x: cx, y: cy - 22 + Math.sin(time * 2) * 2, o: 1 - clean });
       pose(S.$('s4-spark'), { x: cx, y: cy - 40, s: clean * (1 + Math.sin(time * 4) * 0.1), r: time * 30, o: clean });
       /* 5: they will lay hands on the sick, and they will recover */
-      const lay = es(t, 5.25, 5.45);
-      const get = es(t, 5.6, 5.66);
-      const glad = es(t, 5.66, 5.85);
+      // swipe stop: the sick man is up and rejoicing by x.7
+      const lay = es(t, 5.2, 5.38);
+      const get = es(t, 5.5, 5.56);
+      const glad = es(t, 5.56, 5.7);
       s5a.set({ x: -64, y: 78, s: 0.44, lean: lay * 18 * (1 - get), armF: 30 + lay * 60 * (1 - get) + glad * 40, armB: 10 + lay * 50 * (1 - get) + glad * 100, blink: blinkAt(time, 8) });
       fade(s5lie, 1 - get);
       s5up.set({ x: 10, y: 78, s: 0.44, flip: true, o: get, armF: glad * 120, armB: glad * 150, head: -glad * 10, blink: blinkAt(time, 9) });

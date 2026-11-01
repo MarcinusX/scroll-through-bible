@@ -107,7 +107,8 @@ export default {
       /* v6b — the son walks in at the gate */
       const inK = P ? es(t, 1.45, 1.8) : es(t, 1.5, 1.95);   // phone: he is through the gate by the pause
       const shadow = seg(t, 4.02, 4.08) * (1 - seg(t, 5.02, 5.08));
-      const seize = es(t, 4.12, 4.3) * (1 - es(t, 4.9, 5.2)), fall = es(t, 4.32, 4.46, ease.in), carry = es(t, 4.5, 4.86);
+      // swipe stop: seized, killed and thrown out, with the cloth over him, by 4.72 (was 4.86 / 5.0)
+      const seize = es(t, 4.1, 4.24) * (1 - es(t, 4.9, 5.2)), fall = es(t, 4.25, 4.36, ease.in), carry = es(t, 4.38, 4.62);
       const sonX = lerp(1420, SX, inK);
       son.set({ x: sonX, y: G + 2, s: 0.98, flip: true, walk: inK > 0 && inK < 1 ? sonX * 0.05 : undefined, armF: 20 + bump(t, 1.95, 2.3) * 40, head: -es(t, 2.2, 2.5) * 6, blink: blinkAt(T, 3), o: (inK > 0 ? 1 : 0) * (1 - shadow) * (t < 4.5 ? 1 : 0) });
       son.mood({ sad: es(t, 3.2, 3.6) });
@@ -115,9 +116,9 @@ export default {
       const cx = lerp(SX + 40, P ? 1075 : 1210, carry);
       sonSh.set({
         x: carry > 0 ? cx : SX + fall * 20, y: carry > 0 ? G - 70 : G + 2, s: 0.98, flip: true,
-        r: carry > 0 ? 88 : fall * 80, armF: 20 + fall * 60, o: shadow * (1 - es(t, 4.84, 4.9)),
+        r: carry > 0 ? 88 : fall * 80, armF: 20 + fall * 60, o: shadow * (1 - es(t, 4.62, 4.68)),
       });
-      const ck = es(t, 4.82, 5.0, ease.out);
+      const ck = es(t, 4.58, 4.72, ease.out);
       pose(cloth, { x: P ? 1095 : 1188, y: lerp(G - 420, G + 6, ck), o: (ck > 0.001 ? 1 : 0) * (P ? 1 - es(t, 5.0, 5.3) : 1) });   // phone: it fades as the camera swings back (it would sit at the edge)
 
       /* the tenants: whisper, plot, seize — then are lifted away */
@@ -160,14 +161,15 @@ export default {
       /* v9b — he comes; the tenants are lifted off; new tenants take the key */
       const oin = es(t, 6.0, 6.3);
       const ox = lerp(1420, 1000, oin);
-      owner.set({ x: ox, y: G + 2, s: 1.04, flip: true, walk: oin > 0 && oin < 1 ? ox * 0.05 : undefined, armF: 30 + bump(t, 6.2, 6.5) * 60 + es(t, 6.75, 6.9) * 40, armB: bump(t, 6.25, 6.55) * 120, head: -bump(t, 6.2, 6.5) * 8, blink: blinkAt(T, 1), o: oin > 0 ? 1 : 0 });
+      owner.set({ x: ox, y: G + 2, s: 1.04, flip: true, walk: oin > 0 && oin < 1 ? ox * 0.05 : undefined, armF: 30 + bump(t, 6.2, 6.5) * 60 + es(t, 6.56, 6.68) * 40, armB: bump(t, 6.25, 6.55) * 120, head: -bump(t, 6.2, 6.5) * 8, blink: blinkAt(T, 1), o: oin > 0 ? 1 : 0 });
       fresh.forEach((m) => {
-        const k = es(t, 6.5 + m.i * 0.06, 6.85 + m.i * 0.06);
+        // swipe stop: the new tenants are in and have the key by 6.72 (was 6.97)
+        const k = es(t, 6.36 + m.i * 0.05, 6.6 + m.i * 0.05);
         const x = lerp(180 - m.i * 60, TX[m.i] + 30, k);
-        m.p.set({ x, y: G + (m.i === 1 ? 6 : 0), s: 0.96, walk: k > 0 && k < 1 ? x * 0.05 + m.i : undefined, armF: 20 + es(t, 6.85, 6.95) * (m.i === 2 ? 60 : 0) + bump(t, 6.8, 7) * 40, armB: bump(t, 6.8, 7.0) * 70, head: -4, blink: blinkAt(T, m.seed), o: k > 0 ? 1 : 0 });
+        m.p.set({ x, y: G + (m.i === 1 ? 6 : 0), s: 0.96, walk: k > 0 && k < 1 ? x * 0.05 + m.i : undefined, armF: 20 + es(t, 6.62, 6.72) * (m.i === 2 ? 60 : 0) + es(t, 6.62, 6.72) * (1 - es(t, 6.9, 7)) * 40, armB: es(t, 6.62, 6.72) * (1 - es(t, 6.9, 7)) * 70, head: -4, blink: blinkAt(T, m.seed), o: k > 0 ? 1 : 0 });
       });
-      const kk = es(t, 6.82, 6.97);
-      pose(keyEl, { x: lerp(ox - 44, TX[2] + 70, kk), y: G - 104 - Math.sin(kk * Math.PI) * 30, r: 20 - kk * 30, s: 0.9, o: t > 6.75 ? 1 : 0 });
+      const kk = es(t, 6.58, 6.72);
+      pose(keyEl, { x: lerp(ox - 44, TX[2] + 70, kk), y: G - 104 - Math.sin(kk * Math.PI) * 30, r: 20 - kk * 30, s: 0.9, o: t > 6.56 ? 1 : 0 });
 
       S.cam.z = 1.12 + big * 0.02 + es(t, 3.9, 4.2) * 0.04 * (1 - es(t, 5, 5.4));
       S.cam.y = 40;

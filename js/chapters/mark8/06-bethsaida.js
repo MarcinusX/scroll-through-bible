@@ -116,7 +116,8 @@ export default {
       });
 
       /* v22b — friends bring the blind man and beg */
-      const bKeys = [[1.02, 380], [1.6, MEET - 90], [2.1, MEET - 90], [2.85, HEAL - 72], [7.05, HEAL - 72], [7.9, 1560]];
+      // swipe stop: the man sent home is still walking away in view at 7.75 (phone too), off by the scene's end
+      const bKeys = [[1.02, 380], [1.6, MEET - 90], [2.1, MEET - 90], [2.85, HEAL - 72], [7.05, HEAL - 72], [7.8, HEAL + 230], [7.98, 1560]];
       const bx = kf(t, bKeys, (u) => u);
       const bw = moving(t, bKeys, 1);
       friends.forEach((f) => {

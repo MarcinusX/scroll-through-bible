@@ -136,12 +136,13 @@ export default {
       const cx = kf(t, carryX, (u) => u);
       const cm = moving(t, carryX);
       const laid = es(t, 4.4, 4.55);
-      const roll = es(t, 4.55, 4.8);
-      const bow = es(t, 4.8, 5.0);
+      // swipe stop: the stone is rolled shut and they stand bowed by 4.72 (stop 4.75)
+      const roll = es(t, 4.5, 4.66);
+      const bow = es(t, 4.6, 4.72);
       DIS.forEach((d) => {
         const off = [-70, 58, -46, 80][d.i];
         const x = t < 4.4 ? cx + off : lerp(cx + off, TOMB - 250 + d.i * 60 - (d.i > 1 ? 30 : 0), es(t, 4.4, 4.6));
-        d.p.set({ x, y: Y + 6 + (d.i > 1 ? 8 : 0), s: 0.9, flip: t > 4.6, o: es(t, 3.9, 4.0), walk: cm || (t > 4.4 && t < 4.6) ? x * 0.05 + d.i : undefined, armF: laid < 1 ? 150 : 20 + bump(t, 4.55, 4.8) * (d.i === 1 ? 70 : 0), armB: laid < 1 ? 140 : 0, head: bow * 16, lean: bow * 6, blink: bow > 0.5 ? 0 : blinkAt(T, d.seed) });
+        d.p.set({ x, y: Y + 6 + (d.i > 1 ? 8 : 0), s: 0.9, flip: t > 4.6, o: es(t, 3.9, 4.0), walk: cm || (t > 4.4 && t < 4.6) ? x * 0.05 + d.i : undefined, armF: laid < 1 ? 150 : 20 + bump(t, 4.5, 4.66) * (d.i === 1 ? 70 : 0), armB: laid < 1 ? 140 : 0, head: bow * 16, lean: bow * 6, blink: bow > 0.5 ? 0 : blinkAt(T, d.seed) });
       });
       pose(body, { x: cx + 6 + laid * 60, y: Y - 168 + Math.abs(Math.sin(cx * 0.05)) * 2 + laid * 20, o: es(t, 3.9, 4.0) * (1 - laid) });
       pose(stoneEl, { x: TOMB + 110 - roll * 110, y: Y - 68, r: -roll * 200 });

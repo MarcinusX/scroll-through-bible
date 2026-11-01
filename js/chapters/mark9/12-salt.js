@@ -82,10 +82,11 @@ export default {
         pose(sp.el, { x: FIRE[0] + sp.dx * (20 + k * 120 * (0.3 + burst)), y: FIRE[1] - 40 - k * (140 + burst * 160), s: 1 - k * 0.6, o: (1 - k) * (0.5 + burst * 0.5) });
       });
       grains.forEach(({ d, el, glint }) => {
-        const k = es(t, 0.35 + d.i * 0.04, 0.85 + d.i * 0.04);
+        // swipe stop: the salt has landed on every head, with its glint, by 0.72 (stop 0.75)
+        const k = es(t, 0.15 + d.i * 0.018, 0.47 + d.i * 0.018);
         const [hx, hy] = [d.x + (d.flip ? -2 : 2) * d.s, 700 - (167 - (d.pose_ === 'sit' ? 62 : 46)) * d.s];
-        pose(el, { x: lerp(FIRE[0], hx, k), y: lerp(FIRE[1] - 280, hy - 30, k), s: 0.6 + k * 0.4, o: bump(t, 0.35 + d.i * 0.04, 1.2 + d.i * 0.04) });
-        pose(glint, { x: hx + 18, y: hy - 22, s: es(t, 0.8 + d.i * 0.04, 0.95 + d.i * 0.04, ease.back), r: T * 20, o: es(t, 0.8 + d.i * 0.04, 0.9 + d.i * 0.04) * (1 - es(t, 1.9, 2.2)) + es(t, 3.2, 3.5) * 0.8 });
+        pose(el, { x: lerp(FIRE[0], hx, k), y: lerp(FIRE[1] - 280, hy - 30, k), s: 0.6 + k * 0.4, o: bump(t, 0.15 + d.i * 0.018, 1.1 + d.i * 0.018) });
+        pose(glint, { x: hx + 18, y: hy - 22, s: es(t, 0.42 + d.i * 0.018, 0.52 + d.i * 0.018, ease.back), r: T * 20, o: es(t, 0.42 + d.i * 0.018, 0.5 + d.i * 0.018) * (1 - es(t, 1.9, 2.2)) + es(t, 3.2, 3.5) * 0.8 });
       });
 
       /* Jesus holds up the bowl of salt (beat 1); it turns dull (beat 2) */
@@ -110,7 +111,7 @@ export default {
       child.set({ x: 740, y: 696, s: 0.56, head: -6, armF: 20 + es(t, 3.2, 3.5) * 60, blink: blinkAt(T, 9) });
 
       /* the dove */
-      const fly = es(t, 3.1, 3.85, (x) => x);
+      const fly = es(t, 3.1, 3.68, (x) => x);   // swipe stop: the dove has arrived by 3.68 (stop 3.75)
       pose(doveEl, { x: lerp(1500, 820, fly), y: lerp(200, 380, fly) + Math.sin(fly * PI) * -40 + Math.sin(T * 1.4) * 4 * fly, s: 0.9, o: seg(t, 3.08, 3.2) });
       flapWings(doveEl, T || 1, 30, 7, fly > 0.95 ? 10 : 0);
       pose(branch, { x: lerp(1500, 820, fly) - 60, y: lerp(200, 380, fly) + Math.sin(fly * PI) * -40 + Math.sin(T * 1.4) * 4 * fly - 8, s: 0.9, o: seg(t, 3.08, 3.2) });

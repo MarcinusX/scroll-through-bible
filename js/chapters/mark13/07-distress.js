@@ -110,15 +110,16 @@ export default {
       CARDS.forEach((cd) => {
         const at = cd.i < 6 ? 0.05 + cd.i * 0.06 : cd.i < 10 ? 0.5 + (cd.i - 6) * 0.1 : 1.1 + (cd.i - 10) * 0.12;
         const k = es(t, at, at + 0.2, ease.back);
-        const falls = cd.i >= CUT ? es(t, 2.4 + (cd.i - CUT) * 0.03, 2.9 + (cd.i - CUT) * 0.03, ease.in) : 0;
+        // swipe stop: the cut-off days have fallen away, the dawn card hangs and the chosen glow by 2.7 (was 2.9+)
+        const falls = cd.i >= CUT ? es(t, 2.38 + (cd.i - CUT) * 0.02, 2.6 + (cd.i - CUT) * 0.02, ease.in) : 0;
         const rattle = cd.dark ? Math.sin(T * 3 + cd.seed) * 4 * (1 - falls) : Math.sin(T * 1.2 + cd.seed) * 1.5;
-        pose(cd.el, { x: cd.x + falls * cd.fall * 60, y: lineY(cd.x) - 4 - (1 - k) * 60 + falls * 700 - gone * GONE, r: rattle + falls * cd.fall * 200, s: k, o: k > 0.01 ? 1 - (cd.i >= CUT ? es(t, 2.75, 2.95) : 0) : 0 });
+        pose(cd.el, { x: cd.x + falls * cd.fall * 60, y: lineY(cd.x) - 4 - (1 - k) * 60 + falls * 700 - gone * GONE, r: rattle + falls * cd.fall * 200, s: k, o: k > 0.01 ? 1 - (cd.i >= CUT ? es(t, 2.56, 2.7) : 0) : 0 });
       });
-      const dw = es(t, 2.55, 2.8, ease.back);
+      const dw = es(t, 2.45, 2.66, ease.back);
       const dwx = lerp(L0, L1, CUT / (N - 1)) - 22;
       pose(dawnCard, { x: dwx, y: lineY(dwx) - 4 - (1 - dw) * 60 - gone * GONE, s: dw, r: Math.sin(T * 1.2) * 2, o: dw > 0.01 ? 1 : 0 });
       // the hand of light with the scissors (beat 2)
-      const hk = es(t, 2.0, 2.3, ease.out) * (1 - es(t, 2.6, 2.9));
+      const hk = es(t, 2.0, 2.3, ease.out) * (1 - es(t, 2.5, 2.7));
       const cx = lerp(L0, L1, (CUT - 0.5) / (N - 1));
       pose(hand, { x: cx + 40, y: lineY(cx) - 80 - (1 - hk) * 400, o: hk > 0.01 ? 1 : 0 });
       pose(sc, { x: cx, y: lineY(cx) - (1 - hk) * 400, r: 90, o: hk > 0.01 ? 1 : 0 });
@@ -128,7 +129,7 @@ export default {
       /* the little lights: faint while the dark days go on, bright again for the chosen */
       LIGHTS.forEach((l) => {
         const dim = es(t, 1.1 + l.i * 0.04, 1.6 + l.i * 0.04) * (1 - es(t, 2.4, 2.7));
-        const glow = l.chosen ? es(t, 2.5, 2.8) : 0;
+        const glow = l.chosen ? es(t, 2.45, 2.68) : 0;
         pose(l.el, { x: l.x, y: l.y, s: (0.8 + glow * 0.6) * (1 + Math.sin(T * 2 + l.i) * 0.05), o: (1 - dim * 0.8) * (1 - es(t, 5.0, 5.3) * 0.5) });
       });
 

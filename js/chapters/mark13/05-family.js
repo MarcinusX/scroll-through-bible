@@ -94,12 +94,12 @@ export default {
 
     return (t, time) => {
       const T = time;
-      const dawn = es(t, 3.35, 3.95);
+      const dawn = es(t, 3.3, 3.68);   // swipe stop: dawn, the clouds gone and the crown on him by 3.7 (was 3.95)
       sk.blend(NIGHT, DAWN, dawn);
       starL.fade(0.6 * (1 - es(t, 2.9, 3.4)));
       dawnL.fade(dawn);
       clouds.forEach((cl) => {
-        const up = es(t, 3.4, 3.95);
+        const up = es(t, 3.35, 3.68);
         pose(cl.el, { x: cl.x + Math.sin(T * 0.3 + cl.i) * 20 + es(t, 2.8, 3.4) * (cl.i - 1) * 40, y: cl.y - up * (PHONE ? 900 : 500), r: Math.sin(T * 0.8 + cl.i) * 1.5 });
       });
 
@@ -132,24 +132,24 @@ export default {
 
       /* the disciple with his lamp: stands among them, then walks on through the storm to the dawn */
       const inn = es(t, 1.95, 2.3);
-      const go = seg(t, 3.02, 3.8);
+      const go = seg(t, 3.02, 3.62);
       const x = lerp(lerp(-120, 780, inn), 960, ease.io(go));
       const walking = (t > 1.95 && t < 2.3) || (go > 0 && go < 1);
-      const storm = es(t, 2.8, 3.05) * (1 - es(t, 3.6, 3.9));
+      const storm = es(t, 2.8, 3.05) * (1 - es(t, 3.48, 3.65));
       dis.set({ x, y: GY + 2, s: 1, walk: walking ? x * 0.05 : undefined, amt: 0.8, lean: storm * 8 + hate * (1 - storm) * -2, armF: 70 + Math.sin(T * 1.6) * 3 * storm, armB: 10 + storm * 30, head: 4 * storm - dawn * 10, blink: blinkAt(T, 1), o: inn > 0.01 ? 1 : 0 });
       const gust = 1 - storm * (0.35 + 0.25 * Math.sin(T * 7));
       pose(flameEl, { x: 27, y: -12, sx: gust, sy: gust * (1 + Math.sin(T * 9) * 0.08), r: -storm * 20 });
       fade(lampGlow, 0.75 + Math.sin(T * 3) * 0.05 - storm * 0.15);
-      const cr = es(t, 3.6, 3.95, ease.back);
+      const cr = es(t, 3.48, 3.7, ease.back);
       pose(crownL, { x: x + 2, y: GY - 196 - (1 - cr) * 120, s: cr * 0.9, r: Math.sin(T * 0.8) * 3, o: cr > 0.01 ? 1 : 0 });
 
       /* rain */
-      const rOn = es(t, 2.7, 3.0) * (1 - es(t, 3.55, 3.85));
+      const rOn = es(t, 2.7, 3.0) * (1 - es(t, 3.45, 3.65));
       r1.fade(rOn * 0.9); r2.fade(rOn);
       r1.shift(((T * 60) % 200) - 100 - ((T * 60) % 200) * 0.2, ((T * 420) % 400) - 200);
       r2.shift(((T * 80) % 260) * -0.3, ((T * 560) % 520) - 260);
 
-      S.cam.x = es(t, 3.0, 3.8) * 30;
+      S.cam.x = es(t, 3.0, 3.65) * 30;
       S.cam.y = es(t, 1.9, 2.4) * 30;
       S.cam.z = 1 + es(t, 1.9, 2.4) * 0.04;
     };

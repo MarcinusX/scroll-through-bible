@@ -113,7 +113,7 @@ export default {
       const ld = es(t, 4.0, 4.35, ease.back), lu = es(t, 4.95, 5.25);
       swing(law, 800, 190 - (1 - ld) * 1100 - lu * 1100, T, 0.8, 0.6);
       stones.forEach((st) => {
-        const d = es(t, 5.02 + st.i * 0.1, 5.3 + st.i * 0.1, ease.back);
+        const d = es(t, 5.02 + st.i * 0.08, 5.28 + st.i * 0.08, ease.back);   // swipe stop: the sixth stone hangs still by 5.68 (stop 5.75)
         const y = (P ? 190 + Math.floor(st.i / 3) * 100 : 226 + (st.i % 2) * 36) - (1 - d) * 1100;   // phone: two rows of three
         swing(st.el, st.x, y, T, 1.4, 0.8, st.i);
         const tk = es(t, 6.1 + st.i * 0.1, 6.25 + st.i * 0.1, ease.back);

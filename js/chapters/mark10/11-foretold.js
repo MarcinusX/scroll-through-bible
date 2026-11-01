@@ -116,7 +116,7 @@ export default {
       swing(scrim, 800, SY0, 0, 0, 0);
       const out = es(t, 3.8, 4.02);
       const dim = es(t, 3.5, 3.75) * 0.45;
-      const rise = es(t, 4.55, 4.9);
+      const rise = es(t, 4.5, 4.7);   // swipe stop: the sun is up and the risen figure fully there by 4.7 (stop 4.75)
       fade(dark, Math.max(dim, out) * (1 - rise));
       fade(dawn, rise * 0.9);
       pose(dawnRays, { x: 800, y: FL - 60, s: 0.5 + rise * 0.6, r: t * 10, o: rise });
@@ -161,7 +161,7 @@ export default {
         pose(m.el, { x, y, o: k > 0 && k < 1 ? 1 : 0 });
         pose(m.tag, { x: 600 + m.i * 200, y: SY0 + 40, o: es(t, 4.1 + m.i * 0.16, 4.2 + m.i * 0.16) * (1 - rise) });
       });
-      risen.set({ x: 800, y: FL + 4 - (1 - es(t, 4.6, 4.9)) * 30, s: 0.8, o: es(t, 4.65, 4.85), armF: 90, armB: 150, blink: 0 });
+      risen.set({ x: 800, y: FL + 4 - (1 - es(t, 4.5, 4.7)) * 30, s: 0.8, o: es(t, 4.52, 4.66), armF: 90, armB: 150, blink: 0 });
 
       /* the listeners */
       const heavy = es(t, 3.05, 3.4) * (1 - rise);

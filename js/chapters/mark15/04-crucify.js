@@ -111,15 +111,16 @@ export default {
       pose(whatB, { x: phx - 22, y: phy - 14, s: a2, o: a2 > 0.02 ? 1 : 0 });
 
       /* v15a — Barabbas goes free */
-      const opened = es(t, 4.1, 4.35);
+      // swipe stop: he is out, arms up and his chains fallen by x.7
+      const opened = es(t, 4.05, 4.25);
       pose(H.door, { x: CELL.x - CELL.w / 2, y: 0, sx: 1 - opened * 0.8, ox: CELL.x - CELL.w / 2 });
-      const bK = [[4.3, [CELL.x + 2, CELL.y - 2]], [4.85, [CELL.x + 40, CELL.y + 90]]];
+      const bK = [[4.2, [CELL.x + 2, CELL.y - 2]], [4.58, [CELL.x + 40, CELL.y + 90]]];
       const [bx, by] = kf(t, bK);
-      const free = es(t, 4.75, 4.95);
-      K.bar.set({ x: bx, y: by, s: 0.66 + es(t, 4.3, 4.85) * 0.2, flip: false, walk: moving(t, bK) ? bx * 0.08 : undefined, armF: 24 + free * 90, armB: 14 + free * 120, head: -free * 10, blink: blinkAt(T, 8) });
+      const free = es(t, 4.52, 4.68);
+      K.bar.set({ x: bx, y: by, s: 0.66 + es(t, 4.2, 4.58) * 0.2, flip: false, walk: moving(t, bK) ? bx * 0.08 : undefined, armF: 24 + free * 90, armB: 14 + free * 120, head: -free * 10, blink: blinkAt(T, 8) });
       K.rebels.forEach((r, i) => r.set({ x: CELL.x + [-58, 58][i], y: CELL.y - 4, s: 0.6, flip: i === 1, armF: 24, armB: 10, head: 6 + bump(t, 4.3, 5) * 8, blink: blinkAt(T, 3 + i) }));
       chains.forEach((ch, i) => {
-        const k = es(t, 4.75, 5.0, ease.in);
+        const k = es(t, 4.52, 4.7, ease.in);
         pose(ch, { x: bx + 20 + i * 14, y: by - 70 + k * 64, r: k * (i ? 80 : -60), o: free > 0.02 ? 1 - es(t, 5.4, 5.6) : 0 });
       });
 

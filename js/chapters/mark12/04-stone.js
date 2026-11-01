@@ -74,23 +74,24 @@ export default {
       voice(826, F - 176, es(t, 0.05, 0.3) * (1 - es(t, 2.8, 3.0)), T, { dir: 1 });
 
       /* v10b — the builders reject the stone; it rises into the keystone */
-      const look = bump(t, 1.02, 1.3), toss = es(t, 1.28, 1.44, ease.in);
+      // swipe stop: the stone is set in the keystone by 1.66 (was 1.9, after the stop at 1.75)
+      const look = bump(t, 1.02, 1.24), toss = es(t, 1.22, 1.36, ease.in);
       bl.forEach((b) => {
         const x = b.i ? 940 : 660;
         b.p.set({ x, y: 416 + dy, s: 0.5, flip: b.i === 1, armF: b.i === 0 ? 70 + look * 30 - toss * 10 : 30 + look * 40, armB: b.i === 0 ? toss * 90 : 20, head: b.i === 1 ? look * 18 - toss * 10 : -look * 6, lean: b.i === 0 ? -toss * 10 : 0, blink: blinkAt(T, b.i) });
       });
       // path: in the builder's hands → thrown to the ground on the right → up, glowing, into the arch
       let sx, sy, sr = 0;
-      const rise = es(t, 1.55, 1.9, ease.io);
-      if (t < 1.28) { sx = 690 + look * 6; sy = 350 - look * 8; sr = look * 30; }
+      const rise = es(t, 1.4, 1.66, ease.io);
+      if (t < 1.22) { sx = 690 + look * 6; sy = 350 - look * 8; sr = look * 30; }
       else if (rise <= 0) { sx = lerp(690, 860, toss); sy = lerp(342, 398, toss) - Math.sin(toss * Math.PI) * 36; sr = 30 + toss * 170; }
       else { sx = lerp(860, AX, rise); sy = lerp(398, arch.key[1], rise) - Math.sin(rise * Math.PI) * 60; sr = lerp(200, 360, rise); }
       pose(stone, { x: sx, y: sy + dy, r: sr });
       pose(glowK, { x: sx, y: sy + dy, s: 0.6 + rise * 0.8, o: rise * (1 - es(t, 3.0, 3.2)) });
-      const click = es(t, 1.9, 2.1);
+      const click = es(t, 1.64, 1.8);
       sparks.forEach((el, i) => {
-        const a = (i / 4) * Math.PI * 2 + 0.6, k = seg(t, 1.9, 2.4);
-        pose(el, { x: AX + Math.cos(a) * (20 + k * 50), y: arch.key[1] + dy + Math.sin(a) * (20 + k * 40), s: 1 - k * 0.5, o: bump(t, 1.9, 2.5) });
+        const a = (i / 4) * Math.PI * 2 + 0.6, k = seg(t, 1.66, 2.2);
+        pose(el, { x: AX + Math.cos(a) * (20 + k * 50), y: arch.key[1] + dy + Math.sin(a) * (20 + k * 40), s: 1 - k * 0.5, o: bump(t, 1.66, 2.3) });
       });
       /* v11 — "a marvel in our eyes": light pours from the keystone */
       pose(rays, { x: AX, y: arch.key[1] + dy, s: 0.6 + es(t, 1.95, 2.6) * 0.5, r: T * 2, o: Math.max(click * 0.5, es(t, 2.0, 2.4)) * (1 - es(t, 2.95, 3.1)) });

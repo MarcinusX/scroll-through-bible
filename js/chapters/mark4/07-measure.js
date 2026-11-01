@@ -245,11 +245,12 @@ export default {
 
       /* ---------- v24b: A pours for B; B pours back, pressed down and running over ---------- */
       const exitAB = es(t, 2.0, 2.35);
-      const aRaise = es(t, 1.0, 1.1) * (1 - es(t, 1.44, 1.52));
-      const bRaise = es(t, 1.44, 1.52) * (1 - es(t, 1.9, 2.0));
-      const aTilt = es(t, 1.1, 1.18) * (1 - es(t, 1.38, 1.46));
-      const bTilt = es(t, 1.5, 1.58) * (1 - es(t, 1.78, 1.86));
-      const joyA = es(t, 1.78, 1.9);
+      // swipe stop: B pours back sooner, so the overflow and the extra sack tossed on top have landed by 1.72
+      const aRaise = es(t, 1.0, 1.1) * (1 - es(t, 1.36, 1.42));
+      const bRaise = es(t, 1.36, 1.42) * (1 - es(t, 1.9, 2.0));
+      const aTilt = es(t, 1.1, 1.18) * (1 - es(t, 1.34, 1.4));
+      const bTilt = es(t, 1.4, 1.46) * (1 - es(t, 1.6, 1.66));
+      const joyA = es(t, 1.62, 1.72);
       const ax = 400 - exitAB * 560, bx = 580 - exitAB * 620;
       const walking = exitAB > 0 && exitAB < 1;
       const armA = walking ? 60 : 60 + aRaise * 65 - bRaise * 15;
@@ -259,28 +260,28 @@ export default {
       B.set({ x: bx, y: FLOOR, s: 1.05, flip: bFlip || walking, armF: armB, armB: 10, head: -hush * 5, walk: walking ? bx * 0.05 : undefined, blink: blinkAt(time, 2), o: 1 - seg(t, 2.25, 2.35) });
       const hA = hand(ax, FLOOR, 1.05, walking, armA), hB = hand(bx, FLOOR, 1.05, bFlip || walking, armB);
       // cups: centre sits a little below the hand; tilt around the centre
-      const shake = bump(t, 1.66, 1.78) * Math.sin(t * 260) * 7;
-      const press = bump(t, 1.6, 1.68);
+      const shake = bump(t, 1.52, 1.62) * Math.sin(t * 260) * 7;
+      const press = bump(t, 1.48, 1.55);
       pose(cupA, { x: hA[0], y: hA[1] + 8 + press * 6, r: aTilt * 100 + shake, ox: 0, oy: -26, o: 1 - seg(t, 2.25, 2.35) });
       pose(cupB, { x: hB[0], y: hB[1] + 8, r: -bTilt * 100, ox: 0, oy: -26, o: 1 - seg(t, 2.25, 2.35) });
-      const pourAB = es(t, 1.16, 1.38), pourBA = es(t, 1.56, 1.76);
-      const lvlA = t < 1.5 ? 1 - pourAB * 0.85 : 0.15 + pourBA * 1.25 - press * 0.35;
-      const lvlB = t < 1.5 ? 0.15 + pourAB * 0.85 : 1 - pourBA * 0.85;
+      const pourAB = es(t, 1.16, 1.38), pourBA = es(t, 1.42, 1.6);
+      const lvlA = t < 1.4 ? 1 - pourAB * 0.85 : 0.15 + pourBA * 1.25 - press * 0.35;
+      const lvlB = t < 1.4 ? 0.15 + pourAB * 0.85 : 1 - pourBA * 0.85;
       pose(fillA, { x: 0, y: -52, sy: Math.max(0.12, lvlA), sx: 1 + Math.max(0, lvlA - 1) * 0.4 });
       pose(fillB, { x: 0, y: -52, sy: Math.max(0.12, lvlB) });
       // streams
       const lipA = [hA[0] + 22, hA[1] + 38], rimB = [hB[0], hB[1] - 20];
       setStream(sAB, flow[0], lipA, rimB, seg(t, 1.34, 1.4), seg(t, 1.15, 1.2), time);
       const lipB = [hB[0] - 22, hB[1] + 38], rimA = [hA[0], hA[1] - 20];
-      setStream(sBA, flow[1], lipB, rimA, seg(t, 1.74, 1.8), seg(t, 1.55, 1.6), time);
+      setStream(sBA, flow[1], lipB, rimA, seg(t, 1.58, 1.63), seg(t, 1.42, 1.46), time);
       // running over: grain falls from the rim and heaps at her feet
-      const over = seg(t, 1.66, 1.72) * (1 - seg(t, 1.95, 2.0));
-      const pileGrow = es(t, 1.66, 1.98) * (1 - seg(t, 2.1, 2.3));
+      const over = seg(t, 1.52, 1.56) * (1 - seg(t, 1.95, 2.0));
+      const pileGrow = es(t, 1.52, 1.72) * (1 - seg(t, 2.1, 2.3));
       pose(pileA, { x: hA[0] + 6, y: FLOOR, s: pileGrow * 1.0, sy: pileGrow, o: pileGrow > 0.01 ? 1 : 0 });
-      [-1, 1].forEach((sd, i) => setStream(sOv[i], flowOv[i], [hA[0] + sd * 30, hA[1] - 18], [hA[0] + sd * 46, FLOOR - 8], seg(t, 1.94, 2.0), seg(t, 1.66, 1.74), time));
+      [-1, 1].forEach((sd, i) => setStream(sOv[i], flowOv[i], [hA[0] + sd * 30, hA[1] - 18], [hA[0] + sd * 46, FLOOR - 8], seg(t, 1.94, 2.0), seg(t, 1.52, 1.58), time));
       // the extra: a little sack tossed on top
-      const toss = es(t, 1.82, 1.96);
-      pose(extra, { x: lerp(hB[0], hA[0] + 40, toss), y: lerp(hB[1] + 30, FLOOR + 2, toss) - Math.sin(toss * PI) * 90 + bump(t, 1.96, 2.0) * -6, r: (1 - toss) * -40, o: seg(t, 1.8, 1.83) * (1 - seg(t, 2.1, 2.3)) });
+      const toss = es(t, 1.58, 1.7);
+      pose(extra, { x: lerp(hB[0], hA[0] + 40, toss), y: lerp(hB[1] + 30, FLOOR + 2, toss) - Math.sin(toss * PI) * 90 + bump(t, 1.7, 1.74) * -6, r: (1 - toss) * -40, o: seg(t, 1.56, 1.59) * (1 - seg(t, 2.1, 2.3)) });
 
       /* ---------- v25a: the full jar receives more ---------- */
       const sackIn = es(t, 2.02, 2.18, ease.out) * (1 - es(t, 2.8, 2.98));
@@ -316,8 +317,9 @@ export default {
 
       /* ---------- v25b: the empty bowl ---------- */
       const dIn = es(t, 2.9, 3.08, ease.out);
-      const sad = es(t, 3.55, 3.85);
-      const showEmpty = es(t, 3.72, 3.86);
+      // swipe stop: the sparrows have the grains and he shows the empty bowl by 3.7
+      const sad = es(t, 3.45, 3.68);
+      const showEmpty = es(t, 3.56, 3.68);
       D.set({ x: 470, y: FLOOR + (1 - dIn) * 280, s: 1.05, o: seg(t, 2.88, 2.95), armF: 50 + showEmpty * 18, armB: 10, head: 8 * sad - bump(t, 3.15, 3.4) * 6, lean: -bump(t, 3.1, 3.4) * 3, blink: blinkAt(time, 4) });
       const hD = hand(470, FLOOR + (1 - dIn) * 280, 1.05, false, 50 + showEmpty * 18, 46);
       pose(bowlEl, { x: hD[0] + 6, y: hD[1] + 10, r: showEmpty * 35, ox: 0, oy: -8, o: seg(t, 2.88, 2.95) });
@@ -332,21 +334,21 @@ export default {
         const f = es(t, a, a + 0.14);
         const start = [hD[0] + 6 + g.dx, hD[1] - 2];
         const x = lerp(start[0], g.land, f), y = lerp(start[1], FLOOR - 4, f) - Math.sin(f * PI) * 40;
-        const taken = g.i < 2 ? seg(t, 3.66, 3.7) : g.i < 4 ? seg(t, 3.72, 3.76) : seg(t, 3.78, 3.82);
+        const taken = g.i < 2 ? seg(t, 3.56, 3.6) : g.i < 4 ? seg(t, 3.6, 3.64) : seg(t, 3.64, 3.68);
         pose(g.el, { x, y, r: f * 400, o: seg(t, 2.95, 3.0) * (1 - taken) });
       });
       sparrows.forEach((sp, i) => {
         const land = [595 + i * 50, FLOOR - 4];
-        const inK = es(t, 3.4 + i * 0.05, 3.58 + i * 0.05, ease.out);
+        const inK = es(t, 3.32 + i * 0.04, 3.48 + i * 0.04, ease.out);
         const outK = es(t, 3.7 + i * 0.06, 3.98, ease.in);
         const x = lerp(lerp(160 - i * 60, land[0], inK), -120 - i * 60, outK);
-        const y = lerp(lerp(180 + i * 40, land[1], inK), 120 + i * 30, outK) - bump(t, 3.58, 3.7) * Math.abs(Math.sin(time * 9 + i)) * 4;
+        const y = lerp(lerp(180 + i * 40, land[1], inK), 120 + i * 30, outK) - bump(t, 3.5, 3.66) * Math.abs(Math.sin(time * 9 + i)) * 4;
         const flying = (inK > 0 && inK < 1) || outK > 0;
-        pose(sp.el, { x, y, s: 0.9, sx: outK > 0 ? -1 : 1, r: inK < 1 ? 14 * (1 - inK) : bump(t, 3.58, 3.7) * 18 * Math.max(0, Math.sin(time * 8 + i)), o: seg(t, 3.38, 3.42) * (1 - seg(t, 3.94, 3.99)) });
+        pose(sp.el, { x, y, s: 0.9, sx: outK > 0 ? -1 : 1, r: inK < 1 ? 14 * (1 - inK) : bump(t, 3.5, 3.66) * 18 * Math.max(0, Math.sin(time * 8 + i)), o: seg(t, 3.3, 3.34) * (1 - seg(t, 3.94, 3.99)) });
         const f = flying ? Math.sin(time * 16 + i) * 30 : -62;
         pose(sp.wF, { x: -2, y: -5, r: f });
         pose(sp.wB, { x: -2, y: -6, r: f * 0.8 });
-        fade(sp.beak, seg(t, 3.66 + i * 0.06, 3.7 + i * 0.06));
+        fade(sp.beak, seg(t, 3.56 + i * 0.04, 3.6 + i * 0.04));
       });
 
       /* ---------- camera ---------- */

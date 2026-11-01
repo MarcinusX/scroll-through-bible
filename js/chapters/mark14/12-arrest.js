@@ -118,7 +118,7 @@ export default {
       const sg = es(t, 2.2, 2.4, ease.back) * (1 - es(t, 2.85, 2.95));
       const [jhx, jhy] = headAt(jdx, jdy, 1.0, true);
       vis(sign, { x: jhx - 8, y: jhy - 24, s: sg, o: sg > 0.01 ? 1 : 0 });
-      const rb = es(t, 3.2, 3.4, ease.back) * (1 - es(t, 3.5, 3.6));
+      const rb = es(t, 3.2, 3.4, ease.back) * (1 - es(t, 3.85, 3.95));   // swipe stop: «Rabbi!» still said at the kiss (x.75)
       vis(rabbi, { x: jhx + 10, y: jhy - 18, s: rb, o: rb > 0.01 ? 1 : 0 });
       spotL.fade(es(t, 3.4, 3.6) * (1 - es(t, 4.0, 4.2)));
 

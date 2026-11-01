@@ -70,7 +70,8 @@ export default {
 
     // group walk: key x of the middle of the group
     const GK = [[-0.3, 500], [1.0, 700], [1.75, 1000]];
-    const RK = [[2.0, 1000], [2.75, 610]];
+    // swipe stop: they are back and telling the others by x.7
+    const RK = [[2.0, 1000], [2.55, 610]];
 
     return (t, time) => {
       skyKeys(sk, t, [[1.0, DAYP], [1.95, DUSKP], [2.7, NIGHTP]]);
@@ -90,8 +91,8 @@ export default {
       const know = es(t, 1.75, 1.9);
       two.forEach((w) => {
         const x = gx + (w.i ? 80 : -80) * (back ? -0.6 : 1);
-        const arrive = back ? es(t, 2.75, 2.85) : 0;
-        const talk = w.i === 0 ? es(t, 2.8, 2.95) * (1 - es(t, 3.6, 3.8)) : 0;
+        const arrive = back ? es(t, 2.55, 2.62) : 0;
+        const talk = w.i === 0 ? es(t, 2.58, 2.7) * (1 - es(t, 3.6, 3.8)) : 0;
         const sad = es(t, 3.3, 3.6);
         w.p.set({ x, y: GY + (w.i ? 6 : -4), s: 1.05, flip: back, walk: going ? x * (back ? 0.08 : 0.05) + w.i : undefined, amt: back ? 1.3 : 1, lean: back ? 6 * (1 - arrive) : 0, armF: 20 + know * (1 - seg(t, 2.0, 2.1)) * 80 + talk * 70 - sad * 10, armB: 10 + know * (1 - seg(t, 2.0, 2.1)) * 110 + talk * 60 * (1 - sad), head: (back ? 0 : bump(t, 0.4, 1.8) * -4) - know * (1 - seg(t, 2.0, 2.1)) * 10 + sad * 12, blink: blinkAt(time, w.seed), o: seg(t, -0.5, -0.4) });
       });
@@ -109,7 +110,7 @@ export default {
 
       /* v13a: they run back and tell the others */
       const [thx, thy] = headAt(gx + 48, GY - 4, 1.05, true);
-      const tb = es(t, 2.8, 3.0, ease.back) * (1 - es(t, 3.4, 3.6) * 0.25);
+      const tb = es(t, 2.58, 2.72, ease.back) * (1 - es(t, 3.4, 3.6) * 0.25);
       pose(tell, { x: thx - 14, y: thy - 26, s: tb, o: tb > 0.01 ? 1 : 0, r: -es(t, 3.4, 3.6) * 6 });
       /* v13b: they don't believe them either */
       const shake = es(t, 3.05, 3.2) * (1 - es(t, 3.85, 3.95));
@@ -123,7 +124,7 @@ export default {
         pose(el, { x: hx + 6, y: hy - 20, s: b * 0.9, o: b > 0.01 ? 1 : 0 });
       });
 
-      S.cam.x = kf(t, [[0, -240], [1.0, -120], [1.9, 260], [2.1, 260], [2.85, S.portrait ? -480 : -400]]);   // phone: the others by the house are all on the screen
+      S.cam.x = kf(t, [[0, -240], [1.0, -120], [1.9, 260], [2.1, 260], [2.62, S.portrait ? -480 : -400]]);   // phone: the others by the house are all on the screen
       S.cam.y = 20;
       S.cam.z = 1.03 + es(t, 2.9, 3.4) * 0.05;
     };

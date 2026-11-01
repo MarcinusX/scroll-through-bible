@@ -152,7 +152,7 @@ export default {
       });
 
       /* the rooster: first crow (v68b), second crow (v72a) */
-      const crowA = bump(t, 4.35, 4.85), crowB = bump(t, 9.1, 9.7);
+      const crowA = bump(t, 4.35, 4.85), crowB = bump(t, 9.2, 9.98);   // swipe stop: the second crow still sounds at x.75
       const crow = Math.max(crowA, crowB);
       vis(roEl, { x: ROO.x, y: ROO.y, s: 0.9, o: 1 });
       pose(roHead, { x: 16, y: -58, r: -crow * 28, ox: 16, oy: -58 });

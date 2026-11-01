@@ -110,7 +110,7 @@ export default {
       });
       fade(pFull, 1 - es(t, 1.2, 1.9));
       fade(pEmpty, es(t, 1.2, 1.9));
-      const reach = es(t, 4.5, 4.85);
+      const reach = es(t, 4.48, 4.66);   // swipe stop: her hand is on His cloak (and the spark lit) by 4.7
       const lift = es(t, 6.05, 6.4);
       illK.set({ x: jx - 96, y: FEET + 6, s: 0.96, flip: false, o: down * (1 - cured), armF: 20 + reach * 62 - lift * 10, armB: 10, lean: 16 - reach * 4 - lift * 6, head: 10 - reach * 6 - lift * 10, blink: blinkAt(T, 2) });
       wellK.set({ x: jx - 96, y: FEET + 6, s: 0.96, flip: false, o: cured, armF: 72 - es(t, 7.2, 7.7) * 30, armB: 10 + es(t, 7.2, 7.7) * 60, lean: 6 - es(t, 7.1, 7.6) * 8, head: -es(t, 7.1, 7.6) * 10, blink: blinkAt(T, 2) });
@@ -167,7 +167,8 @@ export default {
       /* v29 — the power: a spark from His cloak into her hand, warmth through her */
       const sp = es(t, 6.05, 6.5);
       const hx = jx - 38, hy = FEET - 44;
-      pose(hem, { x: lerp(hx, jx - 50, sp), y: lerp(hy, FEET - 60, sp), s: bump(t, 4.75, 7.0) * (0.8 + (t > 4.75 && t < 7 ? Math.sin(T * 6) * 0.1 : 0)), r: t > 4.75 && t < 7 ? T * 20 : 0, o: bump(t, 4.75, 7.0) });
+      const hemK = t < 5.875 ? es(t, 4.6, 4.72) : bump(t, 4.75, 7.0);   // lit as her hand touches; from its old peak on as before
+      pose(hem, { x: lerp(hx, jx - 50, sp), y: lerp(hy, FEET - 60, sp), s: hemK * (0.8 + (t > 4.6 && t < 7 ? Math.sin(T * 6) * 0.1 : 0)), r: t > 4.6 && t < 7 ? T * 20 : 0, o: hemK });
       pose(glowW, { x: jx - 96, y: FEET - 90, s: 0.6 + es(t, 6.2, 7.6) * 0.8, o: es(t, 6.2, 6.6) * 0.8 * (1 - es(t, 7.7, 8) * 0.4) });
       const hk2 = es(t, 7.1, 7.4, ease.back);
       pose(inner, { x: jx - 88, y: FEET - 110, s: hk2, o: hk2 > 0.02 ? 1 : 0 });
@@ -175,8 +176,8 @@ export default {
       /* camera: with her at first, then over to Him */
       const toHim = es(t, 3.85, 4.6);
       S.cam.x = (P ? -220 + toHim * 230 : -190 + toHim * 200) + es(t, 7.2, 7.9) * -30;
-      S.cam.y = 20 + bump(t, 0, 3.9) * 10 + es(t, 4.5, 5.2) * 30;
-      S.cam.z = 1.06 + es(t, 4.5, 5.2) * 0.1 - es(t, 7.2, 7.9) * 0.06;
+      S.cam.y = 20 + bump(t, 0, 3.9) * 10 + es(t, 4.45, 4.72) * 30;   // swipe stop: the push-in is over by 4.72
+      S.cam.z = 1.06 + es(t, 4.45, 4.72) * 0.1 - es(t, 7.2, 7.9) * 0.06;
     };
   },
 };

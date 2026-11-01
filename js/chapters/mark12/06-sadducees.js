@@ -76,7 +76,7 @@ export default {
     const whose = pl.add(`<g>${bubble(c, tr('Którego żoną?', 'Whose wife?'), { size: 20, tail: -1 })}</g>`);
 
     set.front();
-    const flipK = [4.45, 5.2, 5.6, 6.1, 6.25, 6.4, 6.55];  // when each brother's portrait turns over
+    const flipK = [4.45, 5.2, 5.48, 6.1, 6.25, 6.4, 6.5];  // when each brother's portrait turns over (swipe stop: the third is turned by 5.7, the seventh by 6.72)
 
     return (t, time) => {
       const T = time;

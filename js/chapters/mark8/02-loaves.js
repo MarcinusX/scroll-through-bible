@@ -136,7 +136,7 @@ export default {
       /* far rows: sit (v6) and stand again, then leave (v9b) */
       rowL.forEach((r) => {
         const sit = es(t, 2.15 + (3 - r.ri) * 0.12, 2.25 + (3 - r.ri) * 0.12) * (1 - es(t, 9.05 + r.ri * 0.04, 9.12 + r.ri * 0.04));
-        const gone = es(t, 9.25 + (3 - r.ri) * 0.1, 9.6 + (3 - r.ri) * 0.1);
+        const gone = es(t, 9.55 + (3 - r.ri) * 0.03, 9.64 + (3 - r.ri) * 0.03);   // swipe stop: still standing at the desktop's 9.55, gone by 9.73 — no ghosts at 9.75
         r.si.fade(sit); r.st.fade((1 - sit) * (1 - gone));
         r.st.shift(0, gone * 10);
       });
@@ -161,9 +161,10 @@ export default {
       /* Jesus */
       const ask = bump(t, 0.02, 0.95);
       const down = bump(t, 2.02, 2.9);
-      const lift = es(t, 3.05, 3.3) * (1 - es(t, 3.55, 3.7));
-      const brk = es(t, 3.55, 3.7);
-      const giving = es(t, 3.7, 3.85) * (1 - es(t, 4.1, 4.3));
+      // swipe stop: lifted, broken and handed to the disciples by 3.68 (stop 3.75)
+      const lift = es(t, 3.05, 3.25) * (1 - es(t, 3.38, 3.48));
+      const brk = es(t, 3.38, 3.48);
+      const giving = es(t, 3.48, 3.6) * (1 - es(t, 4.1, 4.3));
       const bless = es(t, 6.05, 6.25) * (1 - es(t, 6.8, 7));
       const bye = bump(t, 9.05, 9.95);
       const jArmF = 14 + ask * 55 + down * 70 + lift * 60 + brk * (1 - es(t, 4.1, 4.3)) * 58 + bless * 70 + bye * 70;
@@ -172,7 +173,7 @@ export default {
       // the loaf in His hands: whole (lifted), then broken in two
       const [lx, ly] = hand(JX, FY - 4, 1, false, jArmF);
       const inHand = es(t, 3.05, 3.12) * (1 - es(t, 4.25, 4.35));
-      const split = es(t, 3.55, 3.75);
+      const split = es(t, 3.38, 3.52);
       pose(hl, { x: lx - split * 18, y: ly - 4 - lift * 0, r: -split * 16, o: inHand });
       pose(hr, { x: lx + split * 18, y: ly - 4, r: split * 16, o: inHand });
       fade(heaven, lift * 0.55 + bless * 0.35);
@@ -181,18 +182,18 @@ export default {
       loaves.forEach((l) => {
         const k = es(t, 1.08 + l.i * 0.08, 1.24 + l.i * 0.08);
         const x = lerp(700, l.x, k), y = lerp(FY - 90, l.y, k) - Math.sin(k * PI) * 60;
-        const taken = l.i === 3 ? es(t, 3.02, 3.06) : es(t, 3.9 + l.i * 0.02, 4.0 + l.i * 0.02);
+        const taken = l.i === 3 ? es(t, 3.02, 3.06) : es(t, 3.58 + l.i * 0.015, 3.66 + l.i * 0.015);
         pose(l.el, { x, y, o: k > 0.02 ? 1 - taken : 0, r: (1 - k) * 60 });
       });
 
       /* disciples: gather, carry baskets out, come back, collect seven baskets */
       dis.forEach((d) => {
-        const keys = [[3.7, d.x], [3.85, JX + (d.x > JX ? 90 : -90)], [4.0, JX + (d.x > JX ? 90 : -90)], [4.5, d.out], [5.0, d.x], [7.3, d.x], [7.6, d.back], [7.9, d.x]];
+        const keys = [[3.45, d.x], [3.6, JX + (d.x > JX ? 90 : -90)], [4.0, JX + (d.x > JX ? 90 : -90)], [4.5, d.out], [5.0, d.x], [7.3, d.x], [7.6, d.back], [7.9, d.x]];
         const x = kf(t, keys);
         const walk = moving(t, keys, 1);
         const dir = kf(t + 0.02, keys) - kf(t - 0.02, keys);
         const answer = d.k === 'andrew' ? bump(t, 1.0, 1.95) : 0;
-        const carry = es(t, 3.85, 3.95) * (1 - es(t, 4.9, 5.0)) + es(t, 7.3, 7.35) * (1 - es(t, 7.85, 7.95));
+        const carry = es(t, 3.58, 3.66) * (1 - es(t, 4.9, 5.0)) + es(t, 7.3, 7.35) * (1 - es(t, 7.85, 7.95));
         const trayUp = d.k === 'john' ? es(t, 5.05, 5.35) * (1 - es(t, 6.4, 6.6)) * 1.5 : 0;
         const aF = 20 + answer * 70 + carry * 30 + trayUp * 60;
         const fl = walk ? dir < 0 : d.x > JX;
@@ -200,7 +201,7 @@ export default {
         const [bx, by] = hand(x, FY + (d.i % 2) * 8, 0.86, fl, aF);
         const hasB = d.k === 'andrew' ? Math.max(bump(t, 0.85, 1.6) > 0 ? 1 : 0, carry) : carry;
         pose(d.bk, { x: bx, y: by + 22, o: hasB > 0.05 ? 1 : 0, s: 0.9 });
-        fade(d.heap, es(t, 3.85, 4.0) * (1 - es(t, 4.6, 4.9)) + es(t, 7.45, 7.6));
+        fade(d.heap, es(t, 3.58, 3.68) * (1 - es(t, 4.6, 4.9)) + es(t, 7.45, 7.6));
         if (d.k === 'john') pose(fishTray, { x: bx, y: by - 6, o: trayUp > 0.02 ? es(t, 5.05, 5.15) : 0, s: 1.35 });
       });
 

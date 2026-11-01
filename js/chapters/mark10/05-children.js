@@ -117,7 +117,7 @@ export default {
       });
       const [dx, dy] = [doorX, GY];
       KIDS.forEach((k) => {
-        const run = es(t, 3.25 + k.i * 0.07, 3.75 + k.i * 0.07);
+        const run = es(t, 3.2 + k.i * 0.05, 3.5 + k.i * 0.05);   // swipe stop: all five have reached him by 3.7 (stop 3.75)
         const back = block * 20;
         let x = lerp(k.x0 + 480, k.x0 + back, come);
         let y = k.y0;

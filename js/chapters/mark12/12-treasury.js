@@ -136,15 +136,15 @@ export default {
       /* v42 — the widow: slowly, two tiny coins */
       const wIn = es(t, 2.02, 2.5, (u) => u);
       const wx = lerp(1440, WX, ease.out(wIn));
-      const give = bump(t, 2.5, 2.9);
+      const give = es(t, 2.42, 2.55) * (1 - es(t, 2.82, 2.95));   // swipe stop: her hand still over the box at 2.75
       const turnOut = es(t, 6.1, 6.35);
       widow.set({ x: wx, y: F + 6, s: 0.84, flip: true, walk: wIn > 0 && wIn < 1 ? wx * 0.035 : undefined, amt: 0.6, lean: 8 - give * 4, head: 10 - bump(t, 4.2, 5.0) * 8, armF: 20 + give * 60 + turnOut * 70, armB: 10, blink: blinkAt(T, 3), o: wIn > 0 ? 1 : 0 });
       lepta.forEach((el, i) => {
-        const k = seg(t, 2.62 + i * 0.1, 2.82 + i * 0.1);
+        const k = seg(t, 2.5 + i * 0.08, 2.64 + i * 0.08);   // both coins in by 2.72
         const [hx, hy] = hand(WX, F + 6, 0.84, true, 75, 8);
         pose(el, { x: lerp(hx, CH[1] + 2 * i, k), y: lerp(hy, MOUTH + 4, k) - Math.sin(k * Math.PI) * 14, o: k > 0 && k < 1 ? 1 : 0, s: 1.3 });
       });
-      const mk = es(t, 2.7, 2.85, ease.back) * (1 - es(t, 3.3, 3.45));
+      const mk = es(t, 2.58, 2.7, ease.back) * (1 - es(t, 3.3, 3.45));
       pose(mite, { x: WX - 40, y: F - 200, s: mk, o: mk > 0.02 ? 1 : 0 });
       // her flat little purse, turned out: nothing left
       const [px, py] = hand(WX, F + 6, 0.84, true, 20 + turnOut * 70, 8);
@@ -166,13 +166,13 @@ export default {
 
       /* v43b — the balance: the heap against her two coins, and it tips to her side */
       const bd = es(t, 4.05, 4.4, ease.out);
-      const tip = lerp(-13, 14, es(t, 4.45, 4.85, ease.back));
+      const tip = lerp(-13, 14, es(t, 4.4, 4.66, ease.back));   // swipe stop: tipped to her side by 4.66 (was 4.85)
       const by = lerp(-900, BY, bd);
       const ang = (tip * Math.PI) / 180;
       pose(beamEl, { x: BX, y: by, r: tip });
       pose(panL, { x: BX - Math.cos(ang) * 150, y: by - Math.sin(ang) * 150 });
       pose(panR, { x: BX + Math.cos(ang) * 150, y: by + Math.sin(ang) * 150 });
-      fade(panRglow, Math.max(es(t, 4.7, 5.0) * 0.6, es(t, 6.1, 6.6)));
+      fade(panRglow, Math.max(es(t, 4.55, 4.7) * 0.6, es(t, 6.1, 6.6)));
       labels.forEach((el, i) => {
         const k = es(t, 5.05 + i * 1.0, 5.25 + i * 1.0, ease.back);
         const sx = i ? BX + Math.cos(ang) * 150 : BX - Math.cos(ang) * 150, sy = by + (i ? 1 : -1) * Math.sin(ang) * 150 + B.drop + 44;

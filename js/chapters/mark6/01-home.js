@@ -135,7 +135,7 @@ export default {
 
     const cur = curtains(S);
 
-    const jKeys = [[0.85, -260], [1.62, 800]];
+    const jKeys = [[0.85, -260], [1.55, 800]];
     return (t, time) => {
       const T = time;
       cur.set(es(t, 0.05, 0.85), T);
@@ -148,7 +148,7 @@ export default {
       /* v1a — he walks up the road to his home town and stops at the old workshop */
       const jx = kf(t, jKeys, (u) => u);
       const walking = moving(t, jKeys);
-      const touch = es(t, 1.66, 1.86) * (1 - es(t, 2.2, 2.4));
+      const touch = es(t, 1.56, 1.7) * (1 - es(t, 2.2, 2.4));   // swipe stop: His hand on the old workbench by 1.7 (stop 1.75)
       const turn = es(t, 2.2, 2.3);
       jesus.set({
         x: jx, y: ROADY(jx) + 2, s: 0.96, flip: turn > 0.5 && t < 2.8,

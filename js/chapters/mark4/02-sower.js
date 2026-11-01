@@ -129,10 +129,11 @@ export default {
       return seeds[seeds.length - 1];
     };
     const pathSeeds = [[-18, 612], [4, 622], [20, 604], [-2, 636], [30, 628]].map(([dx, y], i) => throwTo(PATCH.path + dx, y, 1.12 + i * 0.07));
-    rockyS.forEach((s, i) => throwTo(s.x, s.y, 3.34 + i * 0.06));
-    [[-60, 634], [70, 628]].forEach(([dx, y], i) => throwTo(PATCH.rocky + dx, y, 3.4 + i * 0.07));
+    // swipe stops: the rocky and the good seed is sown sooner, so what grows from it stands complete at x.75
+    rockyS.forEach((s, i) => throwTo(s.x, s.y, 3.28 + i * 0.04));
+    [[-60, 634], [70, 628]].forEach(([dx, y], i) => throwTo(PATCH.rocky + dx, y, 3.32 + i * 0.05));
     thornS.forEach((s, i) => throwTo(s.x, s.y, 5.32 + i * 0.06));
-    clusters.forEach((cl, i) => { throwTo(cl.x - 6, cl.y, 7.3 + i * 0.07); throwTo(cl.x + 8, cl.y + 2, 7.34 + i * 0.07); });
+    clusters.forEach((cl, i) => { throwTo(cl.x - 6, cl.y, 7.2 + i * 0.04); throwTo(cl.x + 8, cl.y + 2, 7.23 + i * 0.04); });
 
     // three birds swoop down to the path
     const birds = [0, 1, 2].map((i) => {
@@ -152,7 +153,7 @@ export default {
     fg.add(flowers(c, { x0: -1400, x1: 3000, y: 930, fn: ffn, n: 40, h: 34 }));
 
     // where the sower stands as the story moves along the field
-    const stops = [[0, PATCH.path - 250], [0.85, PATCH.path - 60], [3.0, PATCH.path - 60], [3.35, PATCH.rocky - 150], [5.0, PATCH.rocky - 150], [5.32, PATCH.thorns - 165], [7.0, PATCH.thorns - 165], [7.3, PATCH.good - 150]];
+    const stops = [[0, PATCH.path - 250], [0.85, PATCH.path - 60], [3.0, PATCH.path - 60], [3.35, PATCH.rocky - 150], [5.0, PATCH.rocky - 150], [5.32, PATCH.thorns - 165], [7.0, PATCH.thorns - 165], [7.22, PATCH.good - 150]];
     const sowerX = (t) => {
       for (let i = stops.length - 1; i >= 0; i--) {
         if (t >= stops[i][0]) {
@@ -164,7 +165,7 @@ export default {
       return stops[0][1];
     };
     const camX = (t) => {
-      const keys = [[0, PATCH.path], [3.0, PATCH.path], [3.35, PATCH.rocky], [5.0, PATCH.rocky], [5.32, PATCH.thorns], [7.0, PATCH.thorns], [7.3, PATCH.good], [8.45, PATCH.good], [8.95, P ? PATCH.good - 120 : 800]];   // phone: the harvest stays in view
+      const keys = [[0, PATCH.path], [3.0, PATCH.path], [3.35, PATCH.rocky], [5.0, PATCH.rocky], [5.32, PATCH.thorns], [7.0, PATCH.thorns], [7.3, PATCH.good], [8.4, PATCH.good], [8.7, P ? PATCH.good - 120 : 800]];   // phone: the harvest stays in view
       for (let i = keys.length - 1; i >= 0; i--) if (t >= keys[i][0]) { const nx = keys[i + 1]; return nx ? lerp(camFor(keys[i][1]), camFor(nx[1]), ease.io(seg(t, keys[i][0], nx[0]))) : camFor(keys[i][1]); }
       return camFor(keys[0][1]);
     };
@@ -183,7 +184,7 @@ export default {
       /* the sower walks along and sows */
       const sx = sowerX(t), prev = sowerX(t - 0.02);
       const moving = Math.abs(sx - prev) > 0.05;
-      const sowing = [bump(t, 1.05, 1.6), bump(t, 3.28, 3.7), bump(t, 5.26, 5.62), bump(t, 7.24, 7.6)].reduce((a, b) => Math.max(a, b), 0);
+      const sowing = [bump(t, 1.05, 1.6), bump(t, 3.24, 3.62), bump(t, 5.26, 5.62), bump(t, 7.18, 7.46)].reduce((a, b) => Math.max(a, b), 0);
       const done = es(t, 8.1, 8.5);
       sower.set({
         x: sx, y: 640, s: 1.02, flip: false,
@@ -202,7 +203,7 @@ export default {
 
       /* birds: swoop, peck, fly away */
       birds.forEach((b) => {
-        const arrive = seg(t, 2.0 + b.i * 0.06, 2.3 + b.i * 0.06), leave = seg(t, 2.72 + b.i * 0.05, 3.0 + b.i * 0.05);
+        const arrive = seg(t, 2.0 + b.i * 0.06, 2.3 + b.i * 0.06), leave = seg(t, 2.8 + b.i * 0.04, 2.97 + b.i * 0.01);   // swipe stop: all three still peck at 2.75
         const tx = b.seed.x - 14 - b.i * 4, ty = b.seed.y - 2;
         let x = lerp(tx + 420, tx, ease.out(arrive)), y = lerp(ty - 330, ty, ease.out(arrive)) - Math.sin(arrive * Math.PI) * 40;
         x = lerp(x, tx - 520, ease.in(leave)); y = lerp(y, ty - 420, ease.in(leave));
@@ -216,8 +217,8 @@ export default {
 
       /* rocky ground: sprouts pop up fast, then scorch */
       rockyS.forEach((s) => {
-        const up = es(t, 3.62 + s.i * 0.05, 3.8 + s.i * 0.05, ease.back);
-        const wilt = es(t, 4.35 + s.i * 0.08, 4.8 + s.i * 0.08);
+        const up = es(t, 3.52 + s.i * 0.04, 3.62 + s.i * 0.04, ease.back);   // swipe stop: all up by 3.74
+        const wilt = es(t, 4.25 + s.i * 0.05, 4.55 + s.i * 0.05);   // swipe stop: all withered by 4.7
         pose(s.g, { x: s.x, y: s.y, s: 1.9 * up, r: wilt * 40 * (s.i % 2 ? 1 : -1), o: 1 - wilt });
         pose(s.w, { x: s.x, y: s.y + wilt * 2, s: 1.9 * up, sy: 1.9 * up * (1 - wilt * 0.35), r: wilt * 55 * (s.i % 2 ? 1 : -1), o: wilt });
         pose(s.r, { o: up * (1 - wilt * 0.6) });
@@ -227,24 +228,25 @@ export default {
 
       /* thorns spring up and smother the young shoots */
       thornS.forEach((s) => {
-        const up = es(t, 5.6 + s.i * 0.05, 5.75 + s.i * 0.05, ease.back);
+        const up = es(t, 5.6 + s.i * 0.03, 5.68 + s.i * 0.02, ease.back);
         const wilt = es(t, 6.15 + s.i * 0.1, 6.6 + s.i * 0.1);
         pose(s.g, { x: s.x, y: s.y, s: 1.8 * up, r: wilt * 30, o: 1 - wilt });
         pose(s.w, { x: s.x, y: s.y, s: 1.8 * up, sy: 1.8 * up * (1 - wilt * 0.4), r: wilt * 60, o: wilt });
       });
       thorns.forEach((th) => {
-        const g = es(t, 5.55 + th.i * 0.06, 6.0 + th.i * 0.06);
+        const g = es(t, 5.4 + th.i * 0.03, 5.6 + th.i * 0.03);   // swipe stop: the thorns have shot up round the shoots by 5.72
         pose(th.el, { x: th.x, y: th.y, s: 0.15 + g * 0.95 + Math.sin(time * 1.4 + th.i) * 0.01 * g, sx: 1, ox: th.x, oy: th.y, o: g > 0 ? 1 : 0 });
       });
 
       /* good soil: shoots, roots, stalks, ears, and the harvest counts */
       clusters.forEach((cl, ci) => {
-        const sp = es(t, 7.55, 7.7, ease.back);
-        const grow = es(t, 7.68 + ci * 0.04, 8.05 + ci * 0.04);
+        // swipe stop: shoots, roots and stalks have all grown by 7.72; the ears come in the next beat
+        const sp = es(t, 7.42 + ci * 0.04, 7.5 + ci * 0.04, ease.back);
+        const grow = es(t, 7.5 + ci * 0.03, 7.66 + ci * 0.03);
         pose(cl.sp, { x: cl.x, y: cl.y, s: 1.9 * sp, o: 1 - grow });
         pose(cl.roots, { x: cl.x, y: FACE, sy: sp * (0.3 + grow * 0.7), ox: cl.x, oy: FACE, o: sp });
         cl.stalks.forEach((st) => {
-          const g = es(t, 7.72 + st.d * 0.4 + ci * 0.04, 8.15 + st.d * 0.4 + ci * 0.04);
+          const g = es(t, 7.5 + st.d * 0.1 + ci * 0.03, 7.64 + st.d * 0.1 + ci * 0.03);
           const sway = Math.sin(time * 1.3 + st.dx * 0.1) * 2 * g;
           pose(st.el, { x: cl.x + st.dx, y: cl.y + st.dy, sx: 0.9 + g * 0.1, sy: g, r: sway, o: g > 0.01 ? 1 : 0 });
           fade(st.ear, es(t, 8.0 + st.d * 0.3 + ci * 0.06, 8.3 + st.d * 0.3 + ci * 0.06));
@@ -254,8 +256,8 @@ export default {
       });
 
       S.cam.x = camX(t);
-      S.cam.z = 1.26 - es(t, 8.45, 8.95) * 0.44;
-      S.cam.y = 75 - es(t, 8.45, 8.95) * 25;
+      S.cam.z = 1.26 - es(t, 8.4, 8.7) * 0.44;   // swipe stop: the camera has drawn back over the harvest by 8.7
+      S.cam.y = 75 - es(t, 8.4, 8.7) * 25;
     };
   },
 };

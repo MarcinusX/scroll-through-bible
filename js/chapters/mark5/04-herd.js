@@ -125,7 +125,7 @@ export default {
       swing(cl2, 1000 + Math.sin(T * 0.12 + 2) * 24, 110, T, 1.4, 0.8, 2);
 
       /* the herd: grazing → the spirits enter → the rush */
-      const enter = es(t, 3.2, 3.9);
+      const enter = es(t, 3.15, 3.65);
       clusters.forEach((cl) => {
         const u = es(t, 4.05 + cl.d, 4.75 + cl.d, (x) => x * x * (1.6 - 0.6 * x));
         const [x, y, r] = u > 0 ? rushPos(cl, u) : [cl.x, cl.y, 0];
@@ -157,18 +157,19 @@ export default {
       /* the spirits: beg → turn toward the herd → stream up into it */
       const permit = es(t, 2.05, 2.35);
       imps.forEach((m) => {
-        const fly = es(t, 3.05 + m.d, 3.75 + m.d, ease.io);
+        // swipe stop: the whole stream has landed on the herd by 3.7 (the last ones used to fly until 4.15)
+        const fly = es(t, 3.0 + m.d * 0.5, 3.5 + m.d * 0.5, ease.io);
         const ph = (t < 3.85 ? T : 0) * 1.3 + m.ph;
         const tx = m.cl.x, ty = m.cl.y - 10;
         const x = lerp(m.home[0], tx, fly), y = lerp(m.home[1], ty, fly) - Math.sin(fly * PI) * 120;
         const lean = permit * (1 - fly) * -12;
-        pose(m.el, { x: x + Math.cos(ph) * 7 * (1 - fly), y: y + Math.sin(ph * 1.2) * 6 * (1 - fly), r: Math.sin(ph) * 10 + lean, s: 1 - fly * 0.55, o: 1 - seg(t, 3.6 + m.d, 3.8 + m.d) });
+        pose(m.el, { x: x + Math.cos(ph) * 7 * (1 - fly), y: y + Math.sin(ph * 1.2) * 6 * (1 - fly), r: Math.sin(ph) * 10 + lean, s: 1 - fly * 0.55, o: 1 - seg(t, 3.85, 3.95) });   // they sit in the herd at the stop, and sink in before the rush
       });
       const k = es(t, 1.08, 1.28, ease.back) * (1 - es(t, 1.85, 2.0));
       pose(beg, { x: P ? 790 : 590, y: 430, s: k, r: k > 0.02 ? Math.sin(T * 7) * 2 : 0, o: k > 0.02 ? 1 : 0 });
       bangs.forEach((b, i) => {
         const cl = clusters[2 + i * 3];
-        const q = es(t, 3.55 + i * 0.06, 3.7 + i * 0.06, ease.back) * (1 - es(t, 4.0, 4.1));
+        const q = es(t, 3.4 + i * 0.05, 3.55 + i * 0.05, ease.back) * (1 - es(t, 4.0, 4.1));
         pose(b, { x: cl.x, y: cl.y - 40, s: q, o: q > 0.02 ? 1 : 0 });
       });
 

@@ -127,7 +127,7 @@ export default {
       // v40a: a widow's house vanishes into his purse; his prayer unrolls to the floor
       const hIn = es(t, 3.05, 3.15, ease.back), eat = es(t, 3.2, 3.45, ease.in);
       pose(house, { x: lerp(720, vx - 22, eat), y: lerp(GROUND, GROUND - 76, eat) + dy, s: 1.3 * hIn * (1 - eat * 0.9), o: hIn > 0.01 && eat < 0.98 ? 1 : 0 });
-      const unroll = es(t, 3.55, 3.95) * (1 - es(t, 4.3, 4.6));
+      const unroll = es(t, 3.45, 3.7) * (1 - es(t, 4.3, 4.6));   // swipe stop: the long prayer is unrolled by 3.7 (was 3.95)
       pose(scrollEl, { x: vx + 56, y: GROUND - 196 + dy, sy: Math.max(0.03, unroll), o: unroll > 0.02 ? 1 : 0 });
       // v40b: the cloud of judgment
       const ck = es(t, 4.1, 4.35, ease.out);

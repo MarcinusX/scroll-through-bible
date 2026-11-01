@@ -182,7 +182,7 @@ export default {
       pose(flap, { x: HJ.x0, y: 0, sx: 1 - open * 0.92, o: 1 - open * 0.2 });
       pose(doorEl, { x: DOORX - 28, y: ST - 104, sx: (0.08 + shut * 0.92) * (1 - open), o: 1 - open });
       pose(shutter, { x: 920, y: 540, sy: (0.05 + es(t, 1.45, 1.7) * 0.95) * (1 - open), o: 1 - open });
-      const look = es(t, 4.6, 4.9);
+      const look = es(t, 4.55, 4.7);   // swipe stop: He has turned to her and the push-in is over by 4.72
       jSit.set({ x: 904, y: ST - 30, s: 0.94, flip: true, armF: 20 + look * 30 + es(t, 6.2, 6.5) * 20, armB: 10, head: look * 12, blink: blinkAt(T, 1) });
       inPeter.set({ x: 990, y: ST - 34, s: 0.8, flip: true, head: bump(t, 5.05, 5.9) * -8, armF: bump(t, 5.05, 5.9) * 30, blink: blinkAt(T, 4) });
       inJohn.set({ x: 1036, y: ST - 38, s: 0.78, flip: true, head: bump(t, 5.1, 5.9) * 10, blink: blinkAt(T, 7) });
@@ -202,8 +202,8 @@ export default {
       const follow = clamp((jx - 800) / PAR, camFor(120), 0);
       const toMother = es(t, 3.0, 3.4) * (1 - es(t, 3.75, 4.4));
       S.cam.x = t < 1.2 ? follow : lerp(0, camFor(160), toMother);
-      S.cam.y = es(t, 1.0, 1.6) * 20 + es(t, 4.5, 5.0) * 30;
-      S.cam.z = 1 + es(t, 1.0, 1.6) * 0.04 + es(t, 4.5, 5.0) * 0.08;
+      S.cam.y = es(t, 1.0, 1.6) * 20 + es(t, 4.45, 4.72) * 30;
+      S.cam.z = 1 + es(t, 1.0, 1.6) * 0.04 + es(t, 4.45, 4.72) * 0.08;
     };
   },
 };
