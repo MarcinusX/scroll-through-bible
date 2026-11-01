@@ -142,10 +142,11 @@ export default {
       });
 
       /* v1 — they come along the road; two are called forward */
-      const arrive = es(t, 1.0, 1.65, ease.out);
-      const walking = t > 1.0 && t < 1.65;
+      // swipe stop: they arrive by 1.5 and he has turned and called the two forward by 1.7 (stop at 1.75)
+      const arrive = es(t, 1.0, 1.5, ease.out);
+      const walking = t > 1.0 && t < 1.5;
       const jx = lerp(420, 800, arrive);
-      const turnBack = es(t, 1.66, 1.8) * (1 - es(t, 2.0, 2.12));
+      const turnBack = es(t, 1.5, 1.6) * (1 - es(t, 2.0, 2.12));
       const point = es(t, 2.05, 2.4) * (1 - es(t, 4.1, 4.4));
       const beckon = bump(t, 4.05, 4.95);
       const speak = es(t, 6.0, 6.2) * (1 - es(t, 6.5, 6.7));
@@ -153,7 +154,7 @@ export default {
         x: jx, y: ROAD, s: 1.0, flip: turnBack > 0.5,
         walk: walking ? jx * 0.045 : undefined,
         armF: point * 88 + turnBack * 40 + beckon * (40 + Math.sin(T * 4) * 20) + speak * 50,
-        armB: bump(t, 1.7, 2.0) * 30 + speak * 20, head: -point * 4, blink: blinkAt(T),
+        armB: es(t, 1.52, 1.65) * (1 - es(t, 1.9, 2.0)) * 30 + speak * 20, head: -point * 4, blink: blinkAt(T),
       });
       DIS.forEach((d) => {
         const x = lerp(d.x - 380, d.x, arrive);
@@ -162,16 +163,17 @@ export default {
       });
       // the two sent: they step forward on v1, listen, then set off towards the village
       two.forEach((m) => {
-        const step = es(t, 1.7, 2.0);
-        const go = es(t, 6.35 + m.i * 0.08, 6.95 + m.i * 0.08, ease.in);
+        const step = es(t, 1.52, 1.7);
+        // swipe stop: both still stand by him at 6.75 while he speaks; they set off after it
+        const go = es(t, 6.77 + m.i * 0.05, 6.94 + m.i * 0.05, ease.in);
         const x0 = lerp(880 - 380 + m.i * 70, 880 + m.i * 70, arrive);
         const x = x0 + step * 14 + go * 520;
         const nod = bump(t, 6.1, 6.35);
         m.p.set({
           x, y: ROAD + 2 - m.i * 10, s: 0.94 - m.i * 0.04, flip: step > 0.4 && go < 0.02,
-          walk: (t > 1 && t < 1.65) || (step > 0 && step < 1) || (go > 0 && go < 1) ? x * 0.05 + m.i : undefined,
-          head: nod * 10 - bump(t, 3.2, 4.8) * 10, armF: bump(t, 1.72, 2.0) * 30 + (m.i === 0 ? bump(t, 2.3, 2.9) * 70 : 0),
-          blink: blinkAt(T, m.seed), o: 1 - seg(t, 6.85, 6.99),
+          walk: (t > 1 && t < 1.5) || (step > 0 && step < 1) || (go > 0 && go < 1) ? x * 0.05 + m.i : undefined,
+          head: nod * 10 - bump(t, 3.2, 4.8) * 10, armF: es(t, 1.54, 1.66) * (1 - es(t, 1.9, 2.0)) * 30 + (m.i === 0 ? bump(t, 2.3, 2.9) * 70 : 0),
+          blink: blinkAt(T, m.seed), o: 1 - seg(t, 6.9, 6.99),
         });
       });
 
@@ -181,7 +183,7 @@ export default {
       pose(vilGlow, { x: VX, y: VIL[1] - 20, s: 1, o: es(t, 2.3, 2.6) * (1 - es(t, 3.3, 3.8)) * 0.9 });
 
       /* v2b — the plate: a colt tied at the door, that no one has ever sat on */
-      const down = es(t, 3.0, 3.5, ease.back) * (1 - es(t, 6.6, 7.0));
+      const down = es(t, 3.0, 3.5, ease.back) * (1 - es(t, 6.8, 7.0));   // swipe stop: the plate still hangs at 6.75
       swing(plateEl, 800, 250 - (1 - down) * 700, T, 1.3, 0.7);
       pose(pStar, { x: -2, y: 4 - bump(t, 3.4, 4.0) * 6, s: bump(t, 3.35, 4.0) * 1.2 + 0.001, r: t * 80, o: bump(t, 3.35, 4.0) });
       // v2c — untie it and bring it here
@@ -198,7 +200,7 @@ export default {
       fade(pArrow, es(t, 4.4, 4.7) * (1 - es(t, 6.1, 6.3)));
 
       /* v3 — "if anyone asks you why…" — "The Lord needs him" */
-      const ask = es(t, 5.05, 5.45, ease.back) * (1 - es(t, 6.6, 6.9));
+      const ask = es(t, 5.05, 5.45, ease.back) * (1 - es(t, 6.8, 6.95));   // swipe stop: still hanging at 6.75
       swing(askEl, 1000, 250 - (1 - ask) * 700, T, 2.4, 1.1, 3);
       const [hx, hy] = headAt(jx, ROAD, 1, false);
       const say = es(t, 6.0, 6.25, ease.back) * (1 - es(t, 6.8, 7));

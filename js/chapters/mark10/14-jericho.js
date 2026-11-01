@@ -34,7 +34,7 @@ export default {
     { v: 52, text: 'Jezus mu rzekł: «Idź, twoja wiara cię uzdrowiła».' },
     { v: 52, cont: true, text: 'Natychmiast przejrzał i szedł za Nim drogą.' },
   ],
-  cam: { x: [-260, 160], y: [-30, 40], z: [1, 1.14] },
+  cam: { x: [-720, 160], y: [-30, 40], z: [1, 1.14] },
   build(S) {
     const c = S.c;
     const P = S.portrait;
@@ -189,7 +189,8 @@ export default {
       pose(go_, { x: JSTOP + 20, y: GY - 226, s: es(t, 11.05, 11.3, ease.back), o: t > 11.05 && t < 12.05 ? 1 - es(t, 11.9, 12.05) : 0 });
 
       /* camera: to the city (0), along the road to him (1…), close on the two of them (9–11), then up the road (12) */
-      S.cam.x = -220 * (1 - es(t, 0.9, 1.9)) + es(t, 1.9, 2.4) * 60 + follow * 100;
+      // swipe stop (phone): at 0.75 the camera is far enough left to show Jericho's gate and Him walking up to it
+      S.cam.x = (P ? -680 : -220) * (1 - es(t, 0.9, 1.9)) + es(t, 1.9, 2.4) * 60 + follow * 100;
       S.cam.z = 1 + es(t, 1.9, 2.4) * 0.04 + es(t, 8.9, 9.4) * 0.06 * (1 - es(t, 12.2, 12.8));
       S.cam.y = es(t, 8.9, 9.4) * 20 * (1 - es(t, 12.2, 12.8));
     };

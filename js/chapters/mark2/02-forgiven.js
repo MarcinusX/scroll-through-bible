@@ -216,12 +216,13 @@ export default {
       const [shx, shy] = [mx - 8, MAT.y + 14 - 150];
       pose(roll, { x: lerp(MAT.x, shx, es(t, 11.26, 11.42)), y: lerp(MAT.y - 10, shy, es(t, 11.26, 11.42)) + (walking ? -Math.abs(Math.cos(mx * 0.05)) * 3 : 0), r: -12 * es(t, 11.26, 11.42), s: lerp(1.1, 0.8, rolled), o: rolled * (1 - es(t, 11.93, 11.98)) });
       sins.forEach((sn) => {
-        const t0 = 1.2 + sn.i * 0.045;
-        const lift = es(t, t0, t0 + 0.4);
+        // swipe stop: all nine sins have risen and turned to gold by 1.64; the sparks still shine at 1.75
+        const t0 = 1.1 + sn.i * 0.03;
+        const lift = es(t, t0, t0 + 0.3);
         const x = sn.x + sn.drift * lift, y = lerp(sn.y, CEIL + 40, lift) + Math.sin(lift * PI) * -30;
-        const gold = seg(t, t0 + 0.22, t0 + 0.42);
+        const gold = seg(t, t0 + 0.15, t0 + 0.3);
         pose(sn.el, { x, y, r: sn.r + lift * 200, s: 1 - gold * 0.6, o: 1 - gold });
-        pose(sn.sp, { x, y, s: gold * (1 - seg(t, t0 + 0.5, t0 + 0.75)) * 1.1, r: T * 40, o: gold > 0.01 ? 1 : 0 });
+        pose(sn.sp, { x, y, s: gold * (1 - seg(t, t0 + 0.7, t0 + 0.9)) * 1.1, r: T * 40, o: gold > 0.01 ? 1 : 0 });
       });
 
       fall.forEach((f) => {

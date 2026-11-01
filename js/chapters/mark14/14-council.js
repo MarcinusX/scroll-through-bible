@@ -115,7 +115,7 @@ export default {
       });
       const ts = es(t, 6.1, 6.3, ease.back) * (1 - es(t, 6.9, 7.05));
       vis(templeSay, { x: 900, y: 230, s: ts * 1.45, o: ts > 0.01 ? 1 : 0 });
-      const crumble = es(t, 6.3, 6.6), rebuild = es(t, 6.6, 6.9);
+      const crumble = es(t, 6.25, 6.45), rebuild = es(t, 6.45, 6.68);   // swipe stop: the new temple stands by x.7
       vis(tA, { x: -26, y: 18 + crumble * 16, sy: 1 - crumble * 0.85, r: crumble * 10, o: 1 - crumble * 0.6 });
       vis(tB, { x: 28, y: 18, s: rebuild, o: rebuild });
       clash.forEach((el, i) => {

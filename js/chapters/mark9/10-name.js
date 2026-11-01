@@ -117,10 +117,10 @@ export default {
       /* v40: the ring widens; the stranger comes and stands with them */
       const widen = es(t, 4.1, 4.8);
       pose(ring, { x: 800, y: FEET + 4, sx: 0.8 + widen * (PH ? 0.5 : 0.62), sy: 0.9 + widen * 0.25, o: es(t, 4.05, 4.3) * (1 - es(t, 5.6, 6) * 0.5) });
-      const come = es(t, 4.25, 4.85);
+      const come = es(t, 4.2, 4.58);   // swipe stop: he has joined them and his heart is up by 4.7 (stop 4.75)
       const sx = lerp(SX + 180, SX, come);
-      stranger.set({ x: sx, y: FEET - 4, s: 0.94, flip: true, o: es(t, 4.2, 4.3), walk: come > 0 && come < 1 ? sx * 0.06 : undefined, armF: 20 + es(t, 4.8, 5) * 30, head: -4, blink: blinkAt(T, 7) });
-      pose(strangerHeart, { x: SX - 4, y: FEET - 250, s: es(t, 4.8, 5, ease.back), o: es(t, 4.75, 4.85) * (1 - es(t, 5.3, 5.5)) });
+      stranger.set({ x: sx, y: FEET - 4, s: 0.94, flip: true, o: es(t, 4.15, 4.25), walk: come > 0 && come < 1 ? sx * 0.06 : undefined, armF: 20 + es(t, 4.55, 4.7) * 30, head: -4, blink: blinkAt(T, 7) });
+      pose(strangerHeart, { x: SX - 4, y: FEET - 250, s: es(t, 4.55, 4.7, ease.back), o: es(t, 4.52, 4.6) * (1 - es(t, 5.3, 5.5)) });
 
       /* v41: the child brings a cup of water to a disciple; a little reward shines */
       const walk = es(t, 5.05, 5.45);

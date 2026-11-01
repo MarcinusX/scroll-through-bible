@@ -57,9 +57,9 @@ export default {
       const escape = es(t, 2.05, 2.12);
       const startle = es(t, 1.2, 1.4);
       youth.set({ x: yx, y: yy, s: 0.92, flip: startle > 0.5, o: 1 - escape, walk: moving(t, yK, 1) ? yx * 0.05 : undefined, armF: 14 + startle * 40, armB: startle * 30, head: startle * -8, lean: -startle * 6, blink: blinkAt(T, 4) });
-      const run = es(t, 2.1, 2.9, ease.in);
-      const rx = lerp(yx - 10, -300, run);
-      runner.set({ x: rx, y: yy, s: 0.92, flip: true, o: escape * (1 - es(t, 2.7, 2.95)), walk: rx * 0.1, amt: 1.8, armF: 40, armB: 60, lean: 14 });
+      // swipe stop: he is still seen running off at x.75 (a little way off, then gone at the end of the beat)
+      const rx = kf(t, [[2.1, yx - 10], [2.75, 360], [3.0, -300]], ease.sine);
+      runner.set({ x: rx, y: yy, s: 0.92, flip: true, o: escape * (1 - es(t, 2.9, 3.0)), walk: rx * 0.1, amt: 1.8, armF: 40, armB: 60, lean: 14 });
       // the grabbers
       const turn = es(t, 1.05, 1.15);
       const reach = es(t, 1.1, 1.45);
@@ -72,8 +72,9 @@ export default {
       vis(cloth, { x: lerp(yx + 2, hx, lift), y: lerp(yy - 150, hy - 6, lift), s: 0.9, r: lift * -10 + Math.sin(T * 1.5) * 2 * lift, o: escape });
 
       darkL.fade(0.8);
-      // phone: the camera stands further left, so the young man (at the back of the band) is inside the screen
-      S.cam.x = kf(t, S.portrait ? [[-0.5, -220], [1.0, -240], [2.0, -250], [2.6, -80], [2.9, -50]] : [[-0.5, -40], [1.0, -60], [2.0, -80], [2.9, -60]]);
+      // phone: the camera stands further left, so the young man (at the back of the band) is inside the screen,
+      // and goes a little further left as he runs off (swipe stop: still in the picture at x.75)
+      S.cam.x = kf(t, S.portrait ? [[-0.5, -220], [1.0, -240], [2.0, -250], [2.55, -500], [2.85, -500], [3.0, -400]] : [[-0.5, -40], [1.0, -60], [2.0, -80], [2.9, -60]]);
       S.cam.z = kf(t, [[-0.5, 1.1], [1.0, 1.24], [2.0, 1.3], [2.9, 1.2]]);
       S.cam.y = kf(t, [[-0.5, 60], [1.0, 120], [2.0, 130], [2.9, 100]]);
     };

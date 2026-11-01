@@ -143,7 +143,7 @@ export default {
       pose(shadowEl, { x: roam[0] + 6, y: roam[1] + 4, s: 1.05 * (1 + es(t, 0.1, 0.8) * 0.12 + Math.sin(T * 1.6) * 0.03 + es(t, 6.2, 6.9) * 0.1), o: es(t, 0.05, 0.6) * 0.9 });
 
       /* v4 — men come and bind him with chains and fetters */
-      const bindK = es(t, 2.35, 2.85);
+      const bindK = es(t, 2.35, 2.7);   // swipe stop: bound hand and foot by 2.7, before the stop at 2.75
       MEN.forEach((m) => {
         const come = seg(t, 2.0 + m.i * 0.06, 2.4 + m.i * 0.06);
         const flee = es(t, 4.05 + m.i * 0.08, 4.7 + m.i * 0.08, (u) => u);
@@ -157,9 +157,9 @@ export default {
         });
       });
       const loop = (el, y, w, k) => pose(el, { x: MX - w / 2, y: FEET - y, sx: k, sy: 1, o: k > 0.02 && free < 0.5 ? 1 : 0 });
-      loop(loopA, 118, 88, es(t, 2.45, 2.75) * (1 - free));
-      loop(loopB, 78, 78, es(t, 2.55, 2.85) * (1 - free));
-      const fk = es(t, 2.6, 2.9) * (1 - free);
+      loop(loopA, 118, 88, es(t, 2.42, 2.6) * (1 - free));
+      loop(loopB, 78, 78, es(t, 2.48, 2.66) * (1 - free));
+      const fk = es(t, 2.52, 2.7) * (1 - free);
       pose(fetF, { x: MX + 12, y: FEET - 8, s: fk, o: fk > 0.02 ? 1 : 0 });
       pose(fetB, { x: MX - 12, y: FEET - 8, s: fk, o: fk > 0.02 ? 1 : 0 });
       pose(hobble, { x: MX - 10, y: FEET - 6, sx: fk, o: fk > 0.02 ? 1 : 0 });

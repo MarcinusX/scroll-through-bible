@@ -129,7 +129,7 @@ export default {
 
       /* v27: angels fly out to the four corners … and come back with the chosen */
       const send = es(t, 5.05, 5.7);
-      const back = es(t, 6.1, 6.85);
+      const back = es(t, 6.05, 6.62);   // swipe stop: the chosen are gathered round him by 6.7 (was 6.9)
       angels.forEach((a) => {
         const ox = 800 + (a.i % 2 ? 60 : -60), oy = 300;
         const x = lerp(lerp(ox, a.x, send), ox + (a.i % 2 ? 150 : -150), back);
@@ -138,8 +138,8 @@ export default {
         a.p.set({ x, y: y + Math.sin(t * 9 + a.i) * 6, s: 0.5, flip: back > 0 ? a.i % 2 === 1 : a.i % 2 === 0, o: send > 0.02 ? 1 : 0, lean: flying ? 22 : 8, armF: 100, armB: 130 + Math.sin(t * 20 + a.i) * 10 });
       });
       elect.forEach((e) => {
-        const on = es(t, 5.9 + e.k * 0.04, 6.15 + e.k * 0.04);
-        const k = es(t, 6.15 + e.k * 0.05, 6.9);
+        const on = es(t, 5.85 + e.k * 0.03, 6.05 + e.k * 0.03);
+        const k = es(t, 6.1 + e.k * 0.04, 6.68);
         const rx = 800 + Math.cos(e.a) * 250, ry = 330 + Math.sin(e.a) * 170;
         pose(e.el, { x: lerp(e.x, rx, k), y: lerp(e.y, ry, k) + Math.sin(t * 8 + e.a) * 4, s: 0.8 + k * 0.4, o: on });
       });

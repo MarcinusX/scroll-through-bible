@@ -139,7 +139,8 @@ export default {
       const weary = es(t, 1, 1.5);
       people.forEach((m) => m.p.set({ x: m.x, y: m.y, s: m.s, flip: m.x > 800, head: 6 * weary * ((m.i % 3) - 1), blink: blinkAt(T, m.seed) }));
       hungry.forEach((h) => {
-        const up = bump(t, 1.08 + h.i * 0.07, 1.95 + h.i * 0.04) + bump(t, 3.5, 3.98) * 0.7;
+        // swipe stop: the empty bowls are held up through the stop at 1.75, lowered after it
+        const up = es(t, 1.08 + h.i * 0.07, 1.4 + h.i * 0.07) * (1 - es(t, 1.82, 2.02)) + bump(t, 3.5, 3.98) * 0.7;
         const shake = Math.sin(T * 9 + h.i) * 10 * up;
         h.p.set({ x: h.x, y: h.y, s: h.s, flip: h.x > 800, armF: 10 + up * 150 + shake * 0.4, head: -up * 14 + weary * 6, blink: blinkAt(T, h.seed) });
         pose(h.bowl, { x: 0, y: 8, r: -up * 185 + shake });

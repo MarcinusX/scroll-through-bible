@@ -195,7 +195,7 @@ export default {
       const lk = es(t, 5.2, 5.4, ease.back);
       vis(lambDish, { x: HX + 4, y: H1 - 34, s: lk * 0.9, o: lk > 0.01 ? 1 : 0 });
       lamps.forEach((l, i) => {
-        const lit = es(t, 5.55 + i * 0.12, 5.75 + i * 0.12);
+        const lit = es(t, 5.4 + i * 0.12, 5.6 + i * 0.12);   // swipe stop: both lamps lit by x.72
         vis(l.el, { x: l.x, y: H1 - 22, s: 0.7, o: es(t, 3.5, 3.7) });
         pose(l.fl, { x: 35, y: -16, s: lit, sx: lit * (1 + Math.sin(T * 7 + i) * 0.08), sy: lit * (1 + Math.sin(T * 5.3 + i) * 0.1) });
         fade(l.gl, lit * 0.8);

@@ -211,7 +211,7 @@ export default {
         const show = seg(t, 0.4 + s.gi * 0.08, 0.6 + s.gi * 0.08);
         const throb = 1 + bump(t, 4.3, 5.0) * 0.25 * Math.max(0, Math.sin(T * 4 + s.gi));
         pose(s.el, { x, y, r: s.r + lift * 160, s: show * (1 - gold * 0.7) * throb, o: show * (1 - gold) });
-        pose(s.sp, { x, y, s: gold * (1 - seg(t, 5.6, 5.95)), r: T * 40, o: gold > 0.01 ? 1 : 0 });
+        pose(s.sp, { x, y, s: gold * (1 - seg(t, 5.8, 5.97)), r: T * 40, o: gold > 0.01 ? 1 : 0 });   // swipe stop: the gold sparks still shine at 5.75
       });
 
       /* camera */

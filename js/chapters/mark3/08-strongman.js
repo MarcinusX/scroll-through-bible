@@ -159,7 +159,7 @@ export default {
       pose(glowIn, { x: (DOOR[0] + DOOR[2]) / 2, y: GROUND - 90, s: 0.6 + open * 0.6, r: T * 3, o: open });
       pose(shine, { x: (DOOR[0] + DOOR[2]) / 2, y: 520, s: 1 + Math.sin(T * 3) * 0.1, o: bump(t, 0.4, 0.95) * 0 + open * 0.9 });
       GOODS.forEach((g, i) => {
-        const k = es(t, 2.4 + i * 0.08, 2.75 + i * 0.08);
+        const k = es(t, 2.4 + i * 0.06, 2.6 + i * 0.06);   // swipe stop: all the goods lie outside by 2.72
         pose(g.el, { x: lerp(g.x, g.tx, k), y: lerp(g.y, g.ty, k) - Math.sin(k * PI) * 40, o: open > 0.2 ? 1 : 0 });
       });
       CAGES.forEach((cg) => pose(cg.el, { x: cg.x, y: cg.y, o: 1 }));

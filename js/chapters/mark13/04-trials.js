@@ -177,18 +177,19 @@ export default {
       const gx = 800, gy = lerp(-400, 300, gIn), gOn = gIn > 0.001 ? 1 : 0;
       pose(gString, { x: gx, y: gy, o: gOn });
       pose(globeEl, { x: gx, y: gy, r: -t * 8, o: gOn });
-      const lit = es(t, 3.3, 3.85);
+      // swipe stop: every land lit and every nation round the globe by 3.72 (the last came at 3.99 / 4.1 before)
+      const lit = es(t, 3.3, 3.7);
       pose(gGlow, { x: gx, y: gy, s: 0.4 + lit * 0.7, o: gOn * lit });
       lights.forEach((l) => {
-        const k = es(t, 3.3 + l.i * 0.07, 3.5 + l.i * 0.07, ease.back);
+        const k = es(t, 3.25 + l.i * 0.05, 3.4 + l.i * 0.05, ease.back);
         const a = (-t * 8 * PI) / 180, lx = l.x * Math.cos(a) - l.y * Math.sin(a), ly = l.x * Math.sin(a) + l.y * Math.cos(a);
         pose(l.el, { x: gx + lx, y: gy + ly, s: k * (0.9 + 0.1 * Math.sin(T * 3 + l.i)), o: gOn * (k > 0.01 ? 1 : 0) });
       });
       NATIONS.forEach((n) => {
-        const k = es(t, 3.35 + n.i * 0.04, 3.6 + n.i * 0.04, ease.back);
+        const k = es(t, 3.28 + n.i * 0.025, 3.46 + n.i * 0.025, ease.back);
         const x = gx + Math.cos(n.a) * (R + 2), y = gy + Math.sin(n.a) * (R + 2);
         pose(n.el, { x, y, s: 0.2 * k, r: (n.a * 180) / PI + 90, o: gOn * (k > 0.01 ? 1 : 0) });
-        const sp = es(t, 3.55 + n.i * 0.04, 3.7 + n.i * 0.04);
+        const sp = es(t, 3.42 + n.i * 0.02, 3.52 + n.i * 0.02);
         pose(n.spark, { x: gx + Math.cos(n.a) * (R + 48), y: gy + Math.sin(n.a) * (R + 48), s: sp, o: gOn * sp });
       });
 

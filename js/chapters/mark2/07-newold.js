@@ -142,16 +142,17 @@ export default {
       pose(rip, { x: HX, y: HY - 40, s: 0.6 + r_ * 0.8, o: r_ });
 
       /* the wine: pour into the old skin, it swells and bursts; then into fresh skins */
-      const VX = kf(t, [[2.0, SK[0].x - 92], [4.05, SK[0].x - 92], [4.22, SK[1].x - 92], [4.6, SK[1].x - 92], [4.7, SK[2].x - 92]]);
+      const VX = kf(t, [[2.0, SK[0].x - 92], [4.05, SK[0].x - 92], [4.15, SK[1].x - 92], [4.39, SK[1].x - 92], [4.47, SK[2].x - 92]]);
+      // swipe stop: both fresh skins are filled by 4.68 and sparkle at 4.75 (the second used to be poured only after the stop)
       const pourOld = es(t, 2.25, 2.45) * (1 - es(t, 2.95, 3.1));
-      const pourNew1 = es(t, 4.24, 4.34) * (1 - es(t, 4.54, 4.6));
-      const pourNew2 = es(t, 4.72, 4.8) * (1 - es(t, 4.96, 5.0));
+      const pourNew1 = es(t, 4.17, 4.22) * (1 - es(t, 4.35, 4.39));
+      const pourNew2 = es(t, 4.49, 4.54) * (1 - es(t, 4.66, 4.7));
       const pour = Math.max(pourOld, pourNew1, pourNew2);
       const shock = es(t, 3.4, 3.55) * (1 - es(t, 4.0, 4.15));
-      const target = t < 3.5 ? skins[0] : t < 4.66 ? skins[1] : skins[2];
-      const lift = Math.max(es(t, 2.1, 2.3) * (1 - es(t, 3.0, 3.3)), es(t, 4.15, 4.28) * (1 - es(t, 4.98, 5.1)));
+      const target = t < 3.5 ? skins[0] : t < 4.43 ? skins[1] : skins[2];
+      const lift = Math.max(es(t, 2.1, 2.3) * (1 - es(t, 3.0, 3.3)), es(t, 4.1, 4.18) * (1 - es(t, 4.86, 4.96)));
       const armF = 30 + lift * 70 + shock * 30;
-      const walkV = (t > 4.05 && t < 4.22) || (t > 4.6 && t < 4.7);
+      const walkV = (t > 4.05 && t < 4.15) || (t > 4.39 && t < 4.47);
       vintner.set({ x: VX, y: Y - 4, s: 1.0, flip: false, walk: walkV ? VX * 0.05 : undefined, armF, armB: 20 + shock * 150, head: -4 + pour * 8 - shock * 10, lean: pour * 4 - shock * 6, blink: blinkAt(T, 4) });
       const [jhx, jhy] = hand(VX, Y - 4, 1.0, false, armF, pour * 4 - shock * 6);
       const tilt = pour * 72;
@@ -181,11 +182,11 @@ export default {
       pose(puddle, { x: skins[0].x - 10, y: CRATE + 14, sx: es(t, 3.45, 3.95), sy: es(t, 3.45, 3.95) * 0.9, o: seg(t, 3.44, 3.5) });
       // new skins: fill and stay whole
       [1, 2].forEach((i) => {
-        const f = i === 1 ? es(t, 4.35, 4.62) : es(t, 4.72, 4.98);
+        const f = i === 1 ? es(t, 4.22, 4.38) : es(t, 4.54, 4.68);
         pose(skins[i].el, { x: skins[i].x, y: CRATE, oy: 96, sx: 0.8 + f * 0.25, sy: 0.72 + f * 0.3 });
       });
       sparks.forEach((spk, i) => {
-        const k = es(t, 4.85 + i * 0.05, 5.0 + i * 0.05, ease.back);
+        const k = es(t, 4.56 + i * 0.03, 4.66 + i * 0.03, ease.back);
         const sk = skins[1 + (i % 2)];
         pose(spk, { x: sk.x + (i < 2 ? -30 : 30), y: sk.y + 10 - i * 12, s: k * 0.9, r: T * 30, o: k > 0.01 ? 1 : 0 });
       });

@@ -615,13 +615,14 @@ export default {
       const land = seg(t, 3.28, 3.5);
       {
         const [x, y] = arcAt(ease.out(land), [560, 170], [rockRootX, 600], 110);
-        pose(rockSeed, { x, y, s: 1.5, r: (1 - land) * -200, o: seg(t, 3.27, 3.3) * (1 - es(t, 5.4, 5.7) * 0.85) });
+        pose(rockSeed, { x, y, s: 1.5, r: (1 - land) * -200, o: seg(t, 3.27, 3.3) * (1 - es(t, 5.35, 5.6) * 0.85) });
       }
       const joy = es(t, 3.5, 3.66) * (1 - es(t, 4.02, 4.3));
       const hop = t > 3.5 && t < 3.98 ? Math.abs(Math.sin(((t - 3.5) * PI) / 0.16)) * 12 * (1 - seg(t, 3.5, 3.98)) : 0;
       const sway = es(t, 4.15, 4.4) * (1 - es(t, 5.3, 5.5));
-      const fall = es(t, 5.45, 5.78);
-      const kn = es(t, 5.7, 5.84);
+      // swipe stop: he has fallen to his knees, heart cracked, by 5.68 (he used to be mid-fall at 5.75)
+      const fall = es(t, 5.4, 5.6);
+      const kn = es(t, 5.56, 5.66);
       rockW.p.set({
         x: X.rock - 55, y: FEET - hop, s: 1.1, o: 1 - kn,
         armF: 8 + joy * 150 + Math.sin(t * 40) * 8 * joy - fall * 4, armB: 6 + joy * 140 + fall * 10,
@@ -629,16 +630,16 @@ export default {
         blink: blinkAt(time, 2),
       });
       rockK.p.set({ x: X.rock - 50, y: FEET, s: 1.1, o: kn, armF: 150, armB: 30, head: 24, lean: 8, blink: 1 });
-      const rh = { open: es(t, 3.5, 3.68), seed: es(t, 3.5, 3.6) * (1 - es(t, 5.5, 5.75) * 0.7), glow: es(t, 3.5, 3.6) * (1 - es(t, 5.4, 5.7)) * (1 + joy * 0.4), pulse: joy * Math.sin(time * 6) };
+      const rh = { open: es(t, 3.5, 3.68), seed: es(t, 3.5, 3.6) * (1 - es(t, 5.42, 5.62) * 0.7), glow: es(t, 3.5, 3.6) * (1 - es(t, 5.35, 5.58)) * (1 + joy * 0.4), pulse: joy * Math.sin(time * 6) };
       rockW.heart(rh);
-      rockK.heart({ ...rh, crack: es(t, 5.62, 5.8) });
+      rockK.heart({ ...rh, crack: es(t, 5.52, 5.66) });
       sparkles.forEach((sp) => {
         const k = bump(t, 3.52 + sp.d, 3.92 + sp.d);
         pose(sp.el, { x: sp.x + (sp.x - X.rock + 55) * k * 0.2, y: sp.y - k * 12, s: k * 1.2, r: t * 200 + sp.d * 900, o: k });
       });
       {
         const pop = es(t, 3.55, 3.76, ease.back);
-        const wilt = es(t, 5.34, 5.62);
+        const wilt = es(t, 5.3, 5.52);
         const rsw = Math.sin((t - 4) * PI * 3.2 + 0.6) * 9 * sway + (near('rock') ? Math.sin(time * 1.7) * 2 : 0) * (1 - wilt);
         pose(rockSprout, { x: rockRootX, y: 603, sy: pop, sx: 0.6 + 0.4 * pop, r: rsw + hot * 6 });
         fade(rockSprout.querySelector('.fresh'), 1 - wilt);
@@ -647,7 +648,7 @@ export default {
       // cross-section flap and shallow roots that hit the rock
       pose(flapRock, { x: 0, y: FLAP_B, sy: 1 - es(t, 4.04, 4.34) * 1.12, oy: FLAP_B });
       const rrv = seg(t, 4.3, 4.72);
-      rsRock.forEach((r) => fade(r.el, clamp((rrv - r.o) * 12) * (1 - es(t, 5.4, 5.7) * 0.5)));
+      rsRock.forEach((r) => fade(r.el, clamp((rrv - r.o) * 12) * (1 - es(t, 5.35, 5.6) * 0.5)));
       pose(bonk, { x: rockRootX + 3, y: 636, s: bump(t, 4.5, 4.78) * 1.6, r: t * 90, o: bump(t, 4.5, 4.78) });
       // harsh sun & wind
       pose(heatEl, { x: 0, y: 260 + ((t * 120 + (hot > 0 ? time * 20 : 0)) % 30), o: hot * 0.9 });

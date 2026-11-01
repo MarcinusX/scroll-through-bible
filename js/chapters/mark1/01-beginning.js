@@ -168,7 +168,7 @@ export default {
       const arrive = es(t, 3.0, 3.55);
       const mu = 0.55, my = ry(mu);
       let mx = lerp(300, bendX(mu) - 20, arrive);
-      const sweep = seg(t, 4.05, 4.85);
+      const sweep = seg(t, 4.05, 4.68);   // swipe stop: the road is swept clear by 4.7
       const sweeping = sweep > 0 && sweep < 1;
       mx += sweep * 40;
       const cry = es(t, 5.05, 5.35) * (1 - es(t, 6.0, 6.2));
@@ -187,9 +187,10 @@ export default {
 
       /* stones and a thorn roll off the road as he sweeps */
       OBST.forEach((o) => {
-        const k = es(t, 4.15 + o.i * 0.22, 4.5 + o.i * 0.22);
+        // swipe stop: every stone has rolled off by 4.7 and its puff has settled by the stop at 4.75
+        const k = es(t, 4.1 + o.i * 0.16, 4.38 + o.i * 0.16);
         pose(o.el, { x: o.x + k * o.dx, y: o.y - o.h * 0.45 - Math.sin(k * PI) * 18, r: k * (o.dx > 0 ? 300 : -300), ox: 0, oy: -o.h * 0.45 });
-        const pk = bump(t, 4.15 + o.i * 0.22, 4.7 + o.i * 0.22);
+        const pk = bump(t, 4.1 + o.i * 0.16, 4.47 + o.i * 0.16);
         pose(puffs[o.i], { x: o.x + k * o.dx * 0.6, y: o.y - 6, s: 0.4 + pk, o: pk * 0.7 });
       });
 

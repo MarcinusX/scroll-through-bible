@@ -142,17 +142,17 @@ export default {
       const hop = bump(t, 3.45, 3.75);
       crutchMan.set({ x: cmx, y: 770 - hop * 18, s: 0.95, flip: false, walk: cIn > 0 && cIn < 1 ? cmx * 0.04 : undefined, amt: 0.5, lean: 8 * (1 - drop), armF: 40 * (1 - drop) + drop * 60, armB: drop * 150, head: -drop * 8, blink: blinkAt(time, 8) });
       fade(crutchH, 1 - drop);
-      const fl = seg(t, 3.42, 3.95);
+      const fl = seg(t, 3.42, 3.68);   // swipe stop: the thrown crutch has landed by 3.7, not across Jesus' face
       pose(crutchFree, { x: cmx + 60 + fl * 120, y: 640 - Math.sin(fl * PI) * 170 + fl * 120, r: fl * 400, o: drop > 0 ? 1 - es(t, 3.9, 4.0) * 0.2 : 0 });
       const bIn = es(t, 1.3, 1.95);
       const bx = lerp(1720, 975, bIn);
-      const see = es(t, 3.62, 3.68);
-      const bArm = es(t, 3.7, 3.95);
+      const see = es(t, 3.52, 3.58);
+      const bArm = es(t, 3.58, 3.72);   // swipe stop: the blind man sees and lifts his arms by 3.72
       blind.set({ x: bx, y: 772, s: 0.95, flip: true, o: 1 - see, walk: bIn > 0 && bIn < 1 ? bx * 0.05 : undefined, armF: 50, head: 6, blink: 0 });
       seeing.set({ x: bx, y: 772, s: 0.95, flip: true, o: see, armF: 40 + bArm * 50, armB: bArm * 120, head: -bArm * 10, blink: blinkAt(time, 9) });
-      child.set({ x: bx + 70, y: 780, s: 0.6, flip: true, walk: bIn > 0 && bIn < 1 ? bx * 0.06 : undefined, armF: 70, armB: es(t, 3.7, 3.9) * 140, blink: blinkAt(time, 10) });
+      child.set({ x: bx + 70, y: 780, s: 0.6, flip: true, walk: bIn > 0 && bIn < 1 ? bx * 0.06 : undefined, armF: 70, armB: es(t, 3.58, 3.72) * 140, blink: blinkAt(time, 10) });
       const [ex, ey] = headAt(bx, 772, 0.95, true);
-      const sp = bump(t, 3.62, 4.2);
+      const sp = bump(t, 3.52, 4.1);
       pose(eyesSpark, { x: ex - 14, y: ey - 12, s: sp * 1.4, r: time * 60, o: sp });
 
       /* Jesus steps out of the lit door and heals */
@@ -164,7 +164,7 @@ export default {
       const [jhx, jhy] = headAt(DOOR, 712, 1.0);
       const hs = es(t, 5.2, 5.35, ease.back) * (1 - es(t, 5.85, 5.95));
       pose(hush, { x: jhx + 70, y: jhy - 80, s: hs, o: hs > 0 ? 1 : 0 });
-      const BURST = [[mx - 70, 630, 3.2], [650, 600, 3.42], [975, 600, 3.64], [560, 590, 4.1], [PH ? 1000 : 1060, 594, 4.2]];
+      const BURST = [[mx - 70, 630, 3.2], [650, 600, 3.42], [975, 600, 3.52], [560, 590, 4.1], [PH ? 1000 : 1060, 594, 4.2]];
       bursts.forEach((b, i) => { const k = bump(t, BURST[i][2], BURST[i][2] + 0.5); pose(b, { x: BURST[i][0], y: BURST[i][1], s: 0.4 + k * 0.9, r: time * 20, o: k * 0.9 }); });
 
       /* v34b/c: the shadows are driven out; they try to speak and are silenced */

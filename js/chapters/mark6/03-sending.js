@@ -100,7 +100,7 @@ export default {
       { el: item(`<g transform="translate(0 -8) scale(.9)">${bag(c)}</g>`, tr('torba', 'a bag')), x: 800, y: 230, on: 4.25, off: 4.95, x_: 4.5 },
       { el: item(`<g transform="translate(0 2) scale(1.1)">${purse(c)}</g>`, tr('pieniądze', 'money')), x: 1020, y: 250, on: 4.45, off: 4.95, x_: 4.7 },
       { el: item(`<g transform="translate(0 -4) scale(1.1)">${sandals(c)}</g>`, tr('sandały', 'sandals')), x: 640, y: 240, on: 5.05, off: 6.4, ok: true },
-      { el: item(`<g transform="translate(-10 0) scale(.62)">${tunic(c, C.sageRobe)}</g><g transform="translate(14 4) scale(.62)">${tunic(c, C.dustyBlue)}</g>`, tr('dwie suknie', 'two tunics')), x: 960, y: 240, on: 5.3, off: 6.4, x_: 5.55 },
+      { el: item(`<g transform="translate(-10 0) scale(.62)">${tunic(c, C.sageRobe)}</g><g transform="translate(14 4) scale(.62)">${tunic(c, C.dustyBlue)}</g>`, tr('dwie suknie', 'two tunics')), x: 960, y: 240, on: 5.2, off: 6.4, x_: 5.42 },   // swipe stop: crossed out, the spare tunic gone by 5.7
     ];
     ITEMS.forEach((it) => {
       it.mark = flies.add(`<g>${it.ok ? tick(c, 24) : crossX(c, 30)}</g>`);
@@ -174,8 +174,8 @@ export default {
         const mk = es(t, it.ok ? it.on + 0.3 : it.x_, (it.ok ? it.on + 0.3 : it.x_) + 0.15, ease.back);
         pose(it.mark, { x: it.x + (it.ok ? 30 : 0), y: lerp(-600, it.y, k) + (it.ok ? -30 : 0), s: mk, o: mk > 0.01 && k > 0.01 ? 1 : 0 });
       });
-      const sp = es(t, 5.6, 5.95);
-      pose(spare, { x: lerp(974, S.portrait ? 1060 : 1300, sp), y: 244 - Math.sin(sp * PI) * 80 - sp * (S.portrait ? 700 : 300), r: sp * 60, s: 0.62, o: t > 5.55 && sp < 1 ? 1 : 0 });
+      const sp = es(t, 5.45, 5.7);
+      pose(spare, { x: lerp(974, S.portrait ? 1060 : 1300, sp), y: 244 - Math.sin(sp * PI) * 80 - sp * (S.portrait ? 700 : 300), r: sp * 60, s: 0.62, o: t > 5.42 && sp < 1 ? 1 : 0 });
       twelve.forEach((m, i) => {
         const g = bump(t, 5.1 + (i % 6) * 0.04, 5.6);
         pose(sandalGlow[i], { x: m.x, y: m.y - 2, s: g, o: g });

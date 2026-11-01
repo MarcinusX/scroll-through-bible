@@ -115,7 +115,7 @@ export default {
 
       /* v45b — he sends the crowd away */
       const bless = bump(t, 1.05, 1.95);
-      const climb = es(t, 2.05, 2.75, (u) => u);
+      const climb = es(t, 2.05, 2.62, (u) => u);   // swipe stop: up and kneeling in prayer by 2.66 (stop 2.75)
       jesus.set({ x: 800 + es(t, 1.9, 2.05) * 60, y: Y, s: 1.0, flip: t < 0.9 || (t > 1.1 && t < 1.9) ? t < 0.9 : false, o: 1 - es(t, 2.02, 2.08), walk: t > 1.9 && t < 2.05 ? t * 60 : undefined, armF: 20 + bump(t, 0.1, 0.9) * 70 * 0 + bump(t, 0.1, 0.9) * 40, armB: 10 + bless * 150 + bump(t, 0.1, 0.9) * 90, blink: blinkAt(T) });
       CROWD.forEach((m) => {
         const go = es(t, 1.2 + m.d, 1.9 + m.d);
@@ -125,7 +125,7 @@ export default {
 
       /* v46 — up the mountain to pray */
       const [cx, cy, right] = alongPath(climb);
-      const kneel = es(t, 2.72, 2.78);
+      const kneel = es(t, 2.6, 2.66);
       jClimb.set({ x: cx, y: cy, s: lerp(0.55, 0.36, climb), flip: !right, o: es(t, 2.02, 2.08) * (1 - kneel), walk: climb > 0 && climb < 1 ? climb * 90 : undefined, blink: blinkAt(T) });
       jPray.set({ x: PEAK[0] - 4, y: PEAK[1] + 2, s: 0.36, flip: true, o: kneel, armF: 60, armB: 150, head: -16, blink: 0 });
       pose(prayGlow, { x: PEAK[0] - 6, y: PEAK[1] - 50, s: 0.6 + Math.sin(T * 1.5) * 0.05, o: kneel * 0.8 });

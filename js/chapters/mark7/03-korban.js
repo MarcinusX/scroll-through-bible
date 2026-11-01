@@ -118,7 +118,7 @@ export default {
 
       /* the tablets hang over everything; the fourth commandment glows */
       const tabK = es(t, -0.3, 0.3, ease.out);
-      const covered = es(t, 4.1, 4.9);
+      const covered = es(t, 4.05, 4.68);   // swipe stop: all twelve scrolls stuck over the tablets by 4.7 (stop 4.75)
       swing(tab, TAB.x, TAB.y - (1 - tabK) * 1150, T, 0.7, 0.6);
       fade(tabGlow, es(t, 0.25, 0.5) * (1 - es(t, 1.0, 1.2)) + bump(t, 1.1, 1.9) * 0.6 + es(t, 2.0, 2.3) * 0.35 * (1 - covered));
 
@@ -162,7 +162,7 @@ export default {
         const lead = j === 0;
         const offer = lead ? es(t, 2.2, 2.45) * (1 - es(t, 2.9, 3.1)) : 0;
         const stop = lead ? es(t, 3.3, 3.55) : 0;
-        const pass = bump(t, 4.05 + j * 0.2, 4.6 + j * 0.2);
+        const pass = bump(t, 4.05 + j * 0.12, 4.45 + j * 0.12);
         m.p.set({ x: m.x - stop * 40, y: FLOOR + (m.back ? -8 : 0), s: 0.9, flip: true, armF: offer * 80 + stop * 95 + pass * 110, armB: stop * 20 + pass * 60, head: -pass * 10, blink: blinkAt(T, m.seed) });
       });
       const [tx, ty] = hand(PHS[0].x, FLOOR, 0.9, true, 80);
@@ -180,7 +180,7 @@ export default {
 
       /* v13a — scrolls passed from hand to hand, stuck over the tablets */
       covers.forEach((cv) => {
-        const k = es(t, 4.1 + cv.i * 0.055, 4.45 + cv.i * 0.055);
+        const k = es(t, 4.05 + cv.i * 0.035, 4.28 + cv.i * 0.035);
         const from = PHS[cv.i % 3];
         const [fx0, fy0] = headAt(from.x, FLOOR, 0.9, true);
         const x = lerp(fx0, cv.to[0], k), y = lerp(fy0 - 40, cv.to[1] - (1 - tabK) * 1150, k) - Math.sin(k * PI) * 90;

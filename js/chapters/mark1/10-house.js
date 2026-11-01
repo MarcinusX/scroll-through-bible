@@ -107,7 +107,7 @@ export default {
 
       /* v30: the fever */
       const up = es(t, 3.42, 3.5);          // lying → sitting
-      const stand = es(t, 3.78, 3.86);      // sitting → standing
+      const stand = es(t, 3.62, 3.68);      // sitting → standing (swipe stop: she is up on her feet by 3.75)
       const hot = 1 - es(t, 4.05, 4.5);
       lying.set({ x: 1062 + DX, y: 648 + Math.sin(time * 2.2) * 0.8, s: 0.95, r: -90, o: 1 - up, armF: 10, armB: 0, head: 0 });
       fade(blanket, 1 - up);
@@ -126,7 +126,7 @@ export default {
       const go = es(t, 3.02, 3.38);
       const back = es(t, 4.95, 5.3);
       const jx = lerp(700, 830 + DX, go) - back * (PH ? 105 : 130);
-      const lift = es(t, 3.4, 3.85);
+      const lift = es(t, 3.4, 3.7);
       jesus.set({
         x: jx, y: FEET, s: 1.05, flip: back > 0 && back < 0.97,
         walk: (go > 0 && go < 1) || (back > 0 && back < 1) ? jx * 0.045 : undefined,

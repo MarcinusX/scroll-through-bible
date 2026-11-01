@@ -116,13 +116,14 @@ export default {
       const mouth = [DOLL.x + doll.P.mouth[0], dy + DOLL.h + 20 + doll.P.mouth[1]];
       const belly = [DOLL.x + doll.P.stomach[0], dy + DOLL.h + 20 + doll.P.stomach[1]];
       food.forEach((f) => {
-        const k = seg(t, 2.2 + f.i * 0.14, 2.6 + f.i * 0.14);
-        const inK = seg(t, 2.6 + f.i * 0.14, 2.8 + f.i * 0.14);
+        // swipe stop: all four are swallowed by 2.73 and the heart stays warm (stop 2.75)
+        const k = seg(t, 2.1 + f.i * 0.09, 2.36 + f.i * 0.09);
+        const inK = seg(t, 2.36 + f.i * 0.09, 2.46 + f.i * 0.09);
         const x = lerp(f.from[0], mouth[0], ease.io(k)), y = lerp(f.from[1], mouth[1], ease.io(k)) - Math.sin(k * PI) * 50;
         const px = inK > 0 ? lerp(mouth[0], belly[0], inK) : x, py = inK > 0 ? lerp(mouth[1], belly[1], inK) : y;
         pose(f.el, { x: px, y: py, s: 0.9 - inK * 0.5, r: (1 - k) * 30, o: k > 0 && inK < 1 ? 1 : 0 });
       });
-      const ok = es(t, 2.85, 3.0, ease.back) * (1 - es(t, 3.05, 3.2));
+      const ok = es(t, 2.6, 2.72, ease.back) * (1 - es(t, 3.05, 3.2));
       pose(okSpark, { x: DOLL.x + 70, y: dy + DOLL.h - 150, s: ok * 1.2, o: ok > 0.02 ? 1 : 0 });
       pose(hrt, { x: doll.P.heart[0], y: doll.P.heart[1], s: 1 + Math.sin(T * 3) * 0.04 * (1 - seg(t, 3, 3.3)) });
 
@@ -130,13 +131,14 @@ export default {
       const darken = es(t, 3.05, 3.3);
       fade(darkHeart, darken);
       out.forEach((o) => {
-        const k = es(t, 3.15 + o.i * 0.07, 3.55 + o.i * 0.07, ease.out);
-        const back_ = es(t, 3.7 + o.i * 0.02, 3.95);
+        // swipe stop: out, and back onto him as a stain, by 3.7 (stop 3.75)
+        const k = es(t, 3.1 + o.i * 0.04, 3.36 + o.i * 0.04, ease.out);
+        const back_ = es(t, 3.48 + o.i * 0.02, 3.7);
         const hxp = DOLL.x + doll.P.heart[0], hyp = dy + DOLL.h + 20 + doll.P.heart[1];
         const x = hxp + Math.cos(o.a) * o.d * k * (1 - back_ * 0.7), y = hyp + Math.sin(o.a) * o.d * 0.7 * k * (1 - back_ * 0.6) + back_ * 60;
         pose(o.el, { x, y, s: 0.5 + k * 0.5 - back_ * 0.4, r: Math.sin(T * 2 + o.i) * 8, o: k > 0.01 ? 1 - back_ : 0 });
       });
-      fade(stainG, es(t, 3.7, 4.0) * 0.8);
+      fade(stainG, es(t, 3.48, 3.7) * 0.8);
 
       /* v16 — ears to hear */
       ears.forEach((e, i) => {

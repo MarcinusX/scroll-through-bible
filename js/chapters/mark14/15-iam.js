@@ -116,13 +116,14 @@ export default {
       const hpK = [[0.1, [SEATX, HALL]], [0.6, [JX + 100, HALL]], [5.9, [JX + 100, HALL]], [6.3, [JX + 150, HALL]]];
       const [hx, hy] = kf(t, hpK, ease.sine);
       const torn = es(t, 5.1, 5.35);
+      const tornDown = es(t, 5.85, 6.05);   // swipe stop: his hands still at the torn robe at x.75
       const toCouncil = es(t, 7.05, 7.3);
       hpSit.set({ x: SEATX, y: HALL - 16, s: 0.74, flip: true, o: 1 - rise, armF: 30, blink: blinkAt(T, 3) });
       hp.set({
         x: hx, y: hy, s: 0.76, flip: toCouncil < 0.5, o: rise, walk: moving(t, hpK, 1) ? hx * 0.05 : undefined,
-        armF: 20 + bump(t, 0.5, 1.0) * 60 + es(t, 2.05, 2.3) * 40 * (1 - es(t, 2.9, 3.05)) + torn * 50 * (1 - es(t, 5.6, 5.9)) + bump(t, 6.05, 6.9) * 60 + toCouncil * 50,
-        armB: 10 + torn * 90 * (1 - es(t, 5.6, 5.9)) + toCouncil * 100 * (1 - es(t, 8.05, 8.3)) + bump(t, 6.05, 6.9) * 30,
-        head: -bump(t, 2.05, 2.9) * 6 + torn * 8 * (1 - toCouncil), lean: -torn * 6 * (1 - es(t, 5.6, 5.9)) + bump(t, 2.1, 2.9) * 6, blink: blinkAt(T, 3),
+        armF: 20 + bump(t, 0.5, 1.0) * 60 + es(t, 2.05, 2.3) * 40 * (1 - es(t, 2.9, 3.05)) + torn * 50 * (1 - tornDown) + bump(t, 6.05, 6.9) * 60 + toCouncil * 50,
+        armB: 10 + torn * 90 * (1 - tornDown) + toCouncil * 100 * (1 - es(t, 8.05, 8.3)) + bump(t, 6.05, 6.9) * 30,
+        head: -bump(t, 2.05, 2.9) * 6 + torn * 8 * (1 - toCouncil), lean: -torn * 6 * (1 - tornDown) + bump(t, 2.1, 2.9) * 6, blink: blinkAt(T, 3),
       });
       fade(hpAngry, es(t, 5.05, 5.3));
       // the tear across his chest
@@ -130,8 +131,8 @@ export default {
       vis(tear.l, { x: chx - torn * 12, y: chy, s: 1.05, r: -torn * 22, o: rise > 0.5 ? torn > 0.01 ? 1 : 0 : 0 });
       vis(tear.r, { x: chx + torn * 12, y: chy, s: 1.05, r: torn * 22, o: rise > 0.5 ? torn > 0.01 ? 1 : 0 : 0 });
       tear.bits.forEach((b, i) => {
-        const k = es(t, 5.15 + i * 0.04, 5.8 + i * 0.04);
-        vis(b, { x: chx + (i - 1.5) * 18 + k * (i - 1.5) * 30, y: chy + 20 + k * 150 - Math.sin(k * PI) * 40, r: k * 300 * (i % 2 ? 1 : -1), o: k > 0 && k < 1 ? 1 : 0 });
+        const k = es(t, 5.15 + i * 0.04, 5.55 + i * 0.04);   // swipe stop: the scraps fall to his feet and are gone before x.75
+        vis(b, { x: chx + (i - 1.5) * 18 + k * (i - 1.5) * 30, y: chy + 20 + k * 110 - Math.sin(k * PI) * 40, r: k * 300 * (i % 2 ? 1 : -1), o: k > 0 && k < 1 ? 1 : 0 });
       });
 
       /* Jesus: silent; "I am" */
@@ -190,13 +191,14 @@ export default {
       smP.forEach((p, i) => {
         const side = i % 2 ? 1 : -1;
         const x0 = side * (90 + Math.floor(i / 2) * 90);
-        const hit = i < 3 ? bump(t, 9.5 + i * 0.12, 9.85 + i * 0.12) : bump(t, 10.2 + (i - 3) * 0.15, 10.55 + (i - 3) * 0.15);
+        // swipe stop: the servants' blows (v65b) land around x.75
+        const hit = i < 3 ? bump(t, 9.5 + i * 0.12, 9.85 + i * 0.12) : bump(t, 10.35 + (i - 3) * 0.15, 10.85 + (i - 3) * 0.15);
         const on = i < 3 ? es(t, 9.2, 9.4) : es(t, 10.05, 10.25);
         p.set({ x: x0 * 1.1, y: 262, s: 0.84, flip: side > 0, o: on, armF: 30 + hit * 90, armB: 20 + hit * 60, lean: hit * 8, head: -hit * 6 });
       });
       fade(sGlow, 0.8 - bump(t, 10.1, 10.9) * 0.3 * (0.5 + 0.5 * Math.sin(T * 9)));
       prophesy.forEach((p, i) => {
-        const k = es(t, 9.55 + i * 0.2, 9.75 + i * 0.2, ease.back) * (1 - es(t, 10.9, 11.05));
+        const k = es(t, 9.5 + i * 0.12, 9.7 + i * 0.12, ease.back) * (1 - es(t, 10.9, 11.05));   // swipe stop: both «Prophesy!» up by x.75
         vis(p, { x: JX - 20 + (i ? 140 : -150), y: 160 + i * 20, s: k * 0.9, r: i ? 6 : -6, o: k > 0.01 ? 1 : 0 });
       });
 

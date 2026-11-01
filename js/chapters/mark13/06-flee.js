@@ -147,7 +147,7 @@ export default {
 
     return (t, time) => {
       const T = time;
-      const cold = es(t, 5.0, 5.35) * (1 - es(t, 5.6, 5.95));
+      const cold = es(t, 5.0, 5.35) * (1 - es(t, 5.45, 5.7));   // swipe stop: the prayer is answered, winter hauled away by 5.7 (was 5.95)
       sk.blend(SKY, WINTER, cold);
       pose(sunEl, { x: 1230, y: 170 + cold * 40, r: Math.sin(T * 0.7), o: 1 - cold * 0.6 });
 
@@ -195,7 +195,7 @@ export default {
       pray.p.set({ x: 920, y: 704, s: 0.9, flip: true, armB: pr * 150, armF: pr * 70, head: -pr * 12, o: pr > 0.01 ? 1 : 0, blink: blinkAt(T, pray.seed) });
       pose(prayUp, { x: 916, y: 560, o: pr * es(t, 5.4, 5.6) * (1 - es(t, 5.9, 6)) });
       wcl.forEach((cl) => {
-        const down = es(t, 4.95 + cl.i * 0.08, 5.3 + cl.i * 0.08, ease.out), up = es(t, 5.55, 5.9, ease.in);
+        const down = es(t, 4.95 + cl.i * 0.08, 5.3 + cl.i * 0.08, ease.out), up = es(t, 5.42, 5.68, ease.in);
         pose(cl.el, { x: cl.x, y: lerp(-400, cl.y, down) - up * 600, r: (1 - down) * 4 + up * 4 * (cl.i ? 1 : -1), o: down > 0.01 ? 1 : 0 });
       });
       snow.fade(cold);

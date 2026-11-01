@@ -91,7 +91,7 @@ export default {
       const jx = t < 2 ? lerp(240, 780, inK) + drive * 60 : t < 3 ? lerp(840, 870, es(t, 2.0, 2.4)) + es(t, 2.3, 2.6) * 60 : lerp(930, 700, es(t, 2.95, 3.15)) + es(t, 3.9, 4.2) * 110;
       const jflip = t > 2.95 && t < 3.95;
       const moving_ = (inK > 0 && inK < 1) || (t > 2.0 && t < 2.6) || (t > 2.95 && t < 3.15) || (t > 3.9 && t < 4.2);
-      const sweep = bump(t, 1.1, 1.8);
+      const sweep = es(t, 1.1, 1.35) * (1 - es(t, 1.86, 1.98));   // swipe stop: still driving them out at 1.75 (was a bump ending at 1.8)
       const push = Math.max(bump(t, 2.05, 2.45), bump(t, 2.27, 2.67), bump(t, 3.05, 3.45));
       const stop = es(t, 4.25, 4.45);
       jesus.set({

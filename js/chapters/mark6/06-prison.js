@@ -121,18 +121,18 @@ export default {
       /* v17a — seized, bound, locked in */
       const jKeys = [[-0.3, -120], [0.5, 490 + DX]];
       const jx = kf(t, jKeys);
-      const sitK = es(t, 0.62, 0.68);
+      const sitK = es(t, 0.54, 0.6);   // swipe stop: sat in the cell, the guards out and the bars down by 0.72 (stop 0.75)
       john.set({ x: jx, y: CELL.floor - 4, s: 0.94, o: 1 - sitK, walk: moving(t, jKeys) ? jx * 0.05 : undefined, armF: 40, armB: 36, head: 6, lean: 3, blink: blinkAt(T, 2) });
       const talk = bump(t, 2.05, 2.95);
       const preach = bump(t, 5.05, 5.95);
       johnSit.set({ x: 500 + DX + es(t, 2.0, 2.2) * 60 * (1 - es(t, 2.9, 3.2)) + es(t, 5.0, 5.2) * 70, y: CELL.floor - 4, s: 0.94, o: sitK, armF: 40 + talk * 40 + preach * 30, armB: 36 + talk * 110 + preach * 40, head: -talk * 6 + Math.sin(T * 0.6) * 2, blink: blinkAt(T, 2) });
       pose(holy, { x: 520 + DX, y: CELL.floor - 100, s: 0.6 + es(t, 4.05, 4.4) * 0.6, o: es(t, 4.05, 4.4) * 0.7 * (1 - es(t, 5.0, 5.3) * 0.4) });
       guards.forEach((g, i) => {
-        const gx = kf(t, [[-0.3, -60 - i * 160], [0.5, 570 + DX - i * 150], [0.62, 570 + DX - i * 150], [0.9, 700 + i * 30]]);
+        const gx = kf(t, [[-0.3, -60 - i * 160], [0.5, 570 + DX - i * 150], [0.54, 570 + DX - i * 150], [0.72, 700 + i * 30]]);
         const post = es(t, 3.9, 4.2);
-        g.set({ x: t < 0.9 ? gx : lerp(700 + i * 30, 690 + i * 520, post) + (i ? 0 : es(t, 4.95, 5.2) * 190), y: Y + 6 + i * 4, s: 0.94, flip: t > 0.62 && t < 0.9, o: i === 1 ? 1 - es(t, 0.9, 1.0) * (1 - post) : 1, walk: (t > -0.3 && t < 0.5) || (t > 0.62 && t < 0.9) ? gx * 0.05 + i : undefined, armF: 30 + (t < 0.5 ? 30 : 0), blink: blinkAt(T, 5 + i) });
+        g.set({ x: t < 0.9 ? gx : lerp(700 + i * 30, 690 + i * 520, post) + (i ? 0 : es(t, 4.95, 5.2) * 190), y: Y + 6 + i * 4, s: 0.94, flip: t > 0.54 && t < 0.72, o: i === 1 ? 1 - es(t, 0.9, 1.0) * (1 - post) : 1, walk: (t > -0.3 && t < 0.5) || (t > 0.54 && t < 0.72) ? gx * 0.05 + i : undefined, armF: 30 + (t < 0.5 ? 30 : 0), blink: blinkAt(T, 5 + i) });
       });
-      const drop = es(t, 0.66, 0.8, ease.in);
+      const drop = es(t, 0.58, 0.7, ease.in);
       pose(barsEl, { x: CL.x0 + 10, y: CELL.top - (1 - drop) * (CELL.floor - CELL.top + 80), o: drop > 0.01 ? 1 : 0 });
 
       /* Herod in his hall: orders the arrest, weds Herodias, turns from John's words, blocks her, listens */

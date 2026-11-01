@@ -87,7 +87,7 @@ export default {
 
       // beat 0: he calls the three out of the group; beat 1: they climb the zig-zag path
       const call = es(t, 0.2, 0.45);
-      const climb = seg(t, 1.02, 1.95);
+      const climb = seg(t, 1.02, 1.7);   // swipe stop: they reach the top by 1.7 (stop 1.75)
       const [jx0, jy0] = [640, FOOT + 2];
       if (climb <= 0) {
         jesus.set({ x: jx0, y: jy0, s: 0.66, flip: t < 0.9, armF: call * 70 * (1 - es(t, 0.8, 0.95)) + es(t, 0.9, 1) * 40, armB: 10, head: -call * 4, blink: blinkAt(T, 1) });
@@ -111,11 +111,11 @@ export default {
         const on = es(t, 0.45 + i * 0.08, 0.65 + i * 0.08, ease.back) * (1 - es(t, 1.02, 1.12));
         pose(tags[i], { x: (d.cx ?? d.xe) + 4, y: FOOT - 176 + Math.sin(T * 1.3 + i) * 2, s: on, o: on });
       });
-      pose(summitGlow, { x: 900, y: 190, s: 0.6 + es(t, 1.7, 2) * 0.6, o: es(t, 1.6, 2) * 0.8 });
+      pose(summitGlow, { x: 900, y: 190, s: 0.6 + es(t, 1.45, 1.7) * 0.6, o: es(t, 1.4, 1.7) * 0.8 });
 
-      S.cam.z = 1 + es(t, 1.1, 1.95) * 0.12;
-      S.cam.y = 20 - es(t, 1.05, 1.95) * 170;
-      S.cam.x = es(t, 1.05, 1.95) * 50;
+      S.cam.z = 1 + es(t, 1.1, 1.7) * 0.12;
+      S.cam.y = 20 - es(t, 1.05, 1.7) * 170;
+      S.cam.x = es(t, 1.05, 1.7) * 50;
     };
   },
 };

@@ -87,16 +87,17 @@ export default {
     return (t, time) => {
       const T = time;
       /* the sky: dusk → night (three nights) → dawn */
-      const night = es(t, 3.02, 3.25) * (1 - es(t, 3.72, 3.95));
-      const dawn = es(t, 3.72, 3.95);
+      // swipe stop: three nights pass and the sun is up again by 3.7 (stop 3.75) — "after three days he will rise"
+      const night = es(t, 3.02, 3.2) * (1 - es(t, 3.45, 3.62));
+      const dawn = es(t, 3.45, 3.62);
       if (dawn > 0) sk.blend(NIGHT, DAWN, dawn); else sk.blend(DUSK, NIGHT, night * 0.9 + es(t, 0, 2.8) * 0.2);
       starL.fade(night);
       swing(sunDown, SUNX, 330 + es(t, 0, 3.1) * 400, T, 1, 0.6);
       moons.forEach((m) => {
-        const on = es(t, 3.18 + m.i * 0.16, 3.3 + m.i * 0.16, ease.back) * (1 - es(t, 3.7, 3.85));
+        const on = es(t, 3.1 + m.i * 0.09, 3.2 + m.i * 0.09, ease.back) * (1 - es(t, 3.42, 3.54));
         swing(m.el, m.x, lerp(-1000, 170, on), T, 1, 0.6, m.i);
       });
-      const up = es(t, 3.75, 4.1, ease.out);
+      const up = es(t, 3.45, 3.7, ease.out);
       swing(risingSun, 1000, lerp(620, 300, up), T, 0.8, 0.5, 4);
       pose(dawnRays, { x: 1000, y: lerp(620, 300, up), s: 0.5 + up * 0.6, r: t * 6, o: up * (1 - es(t, 4.4, 4.9) * 0.6) });
 
@@ -107,7 +108,7 @@ export default {
       const hush = bump(t, 1.1, 1.95);
       jesus.set({ x: walkX, y: ROAD, s: 0.9, o: 1 - es(t, 2.08, 2.14), walk: walking ? walkX * 0.05 : undefined, amt: 0.8, armF: 12 + hush * 30, head: -2 + hush * 4, blink: blinkAt(T, 1) });
       const teach = es(t, 2.1, 2.4) * (1 - es(t, 4.1, 4.3));
-      jSit.set({ x: 800, y: ROAD - 16, s: 0.98, o: es(t, 2.08, 2.14), armF: 20 + teach * (30 + Math.sin(T * 1.4) * 12) + es(t, 3.05, 3.3) * 20 * (1 - es(t, 3.7, 3.9)) + es(t, 3.75, 4) * 70 * (1 - es(t, 4.3, 4.6)), armB: 10 + teach * 20 + es(t, 3.75, 4) * 90 * (1 - es(t, 4.3, 4.6)), head: -2 + es(t, 3.1, 3.4) * 8 * (1 - es(t, 3.7, 3.9)) - es(t, 3.75, 4) * 6, blink: blinkAt(T, 1) });
+      jSit.set({ x: 800, y: ROAD - 16, s: 0.98, o: es(t, 2.08, 2.14), armF: 20 + teach * (30 + Math.sin(T * 1.4) * 12) + es(t, 3.05, 3.3) * 20 * (1 - es(t, 3.42, 3.58)) + es(t, 3.45, 3.65) * 70 * (1 - es(t, 4.3, 4.6)), armB: 10 + teach * 20 + es(t, 3.45, 3.65) * 90 * (1 - es(t, 4.3, 4.6)), head: -2 + es(t, 3.1, 3.4) * 8 * (1 - es(t, 3.42, 3.58)) - es(t, 3.45, 3.65) * 6, blink: blinkAt(T, 1) });
       const SPOTS = PH ? SPOTS_P : SPOTS_L;
       DIS.forEach((d, i) => {
         const trail = walkX - 70 - i * (PH ? 32 : 58);
@@ -120,7 +121,7 @@ export default {
         const pose_ = {
           x: x + backOff, y: ROAD + (i % 2) * 6 - settle * 4 + (sits ? 10 : -8) * settle, s: 0.84 + (i % 3) * 0.02, flip: settle > 0.5 ? side > 0 : false,
           walk: (t < 1.95 || (settle > 0 && settle < 1)) ? x * 0.05 + i : undefined, amt: 0.8,
-          head: -4 + fear * 12 - es(t, 3.1, 3.5) * 4 * (1 - es(t, 3.7, 3.9)), armF: 10 + bump(t, 4.3, 4.9) * (i === 0 ? 50 : 0) + (i % 3 === 0 ? es(t, 3.8, 4) * 30 * (1 - fear) : 0), lean: fear * 4, blink: blinkAt(T, d.seed),
+          head: -4 + fear * 12 - es(t, 3.1, 3.4) * 4 * (1 - es(t, 3.42, 3.58)), armF: 10 + bump(t, 4.3, 4.9) * (i === 0 ? 50 : 0) + (i % 3 === 0 ? es(t, 3.5, 3.68) * 30 * (1 - fear) : 0), lean: fear * 4, blink: blinkAt(T, d.seed),
         };
         d.p.set({ ...pose_, o: 1 - seated });
         d.q.set({ ...pose_, walk: undefined, o: seated });
@@ -137,9 +138,9 @@ export default {
       const pl = es(t, 2.1, 2.35, ease.back) * (1 - es(t, 4.05, 4.3));
       swing(handPlate, 640, lerp(-1000, 250, pl), T, 1, 0.7, 2);
       pose(handsEl, { x: 0, y: -es(t, 2.3, 2.8) * 34 });
-      const dark = es(t, 3.05, 3.3) * (1 - es(t, 3.75, 3.95));
+      const dark = es(t, 3.05, 3.2) * (1 - es(t, 3.45, 3.62));
       fade(plShade, dark * 0.75);
-      pose(lightFig, { x: 0, y: -es(t, 3.75, 4) * 16, s: 1 + es(t, 3.75, 4) * 0.08 });
+      pose(lightFig, { x: 0, y: -es(t, 3.45, 3.65) * 16, s: 1 + es(t, 3.45, 3.65) * 0.08 });
 
       S.cam.x = kf(t, [[0, -30], [1.5, 20], [2.2, 0]]);
       S.cam.z = 1.03 + es(t, 2.1, 2.6) * 0.06;

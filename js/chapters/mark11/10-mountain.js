@@ -147,8 +147,9 @@ export default {
 
       /* v25 — forgive: the knot between Andrew and Thomas comes undone; they embrace */
       const inPair = es(t, 3.95, 4.3);
-      const untie = es(t, 4.5, 4.85);
-      const hug = es(t, 4.8, 5.1);
+      // swipe stop: the knot is undone and they embrace by 4.7 (was 4.85 / 5.1, after the stop at 4.75)
+      const untie = es(t, 4.32, 4.55);
+      const hug = es(t, 4.5, 4.7);
       PAIR.forEach((p) => {
         const dir = p.i ? 1 : -1;
         const x = p.x + dir * (1 - inPair) * 360 - dir * hug * 26;
@@ -158,8 +159,8 @@ export default {
       const kx = KX, ky = GROUND - 104;
       const loose = untie;
       pose(knot, { x: kx, y: ky, s: 1 - loose, r: loose * 90, o: seg(t, 3.9, 4.0) * (1 - loose) });
-      pose(ropeL, { x: kx - loose * 10, y: ky + loose * 30, r: -loose * 50, o: seg(t, 3.9, 4.0) * (1 - es(t, 4.8, 5.0)) });
-      pose(ropeR, { x: kx + loose * 10, y: ky + loose * 30, r: loose * 50, o: seg(t, 3.9, 4.0) * (1 - es(t, 4.8, 5.0)) });
+      pose(ropeL, { x: kx - loose * 10, y: ky + loose * 30, r: -loose * 50, o: seg(t, 3.9, 4.0) * (1 - es(t, 4.52, 4.68)) });
+      pose(ropeR, { x: kx + loose * 10, y: ky + loose * 30, r: loose * 50, o: seg(t, 3.9, 4.0) * (1 - es(t, 4.52, 4.68)) });
       pose(embraceGlow, { x: KX, y: GROUND - 100, s: 1, o: hug * 0.8 * (1 - heaven * 0.3) });
 
       /* v25b — the Father in heaven forgives: dark scraps float away and turn to light */

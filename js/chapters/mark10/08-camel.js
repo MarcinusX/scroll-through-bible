@@ -133,7 +133,8 @@ export default {
       const push = bump(t, 4.35, 4.65);
       const bounce = es(t, 4.6, 4.8, ease.back) * (1 - es(t, 8.1, 8.2));
       // beat 8: lifted in light, shrinks, floats through the eye and lands on the other side
-      const lift = es(t, 8.15, 8.45), through = es(t, 8.45, 8.65), land = es(t, 8.65, 8.9);
+      // swipe stop: through the eye and landed by 8.68 (stop 8.75)
+      const lift = es(t, 8.1, 8.3), through = es(t, 8.3, 8.47), land = es(t, 8.47, 8.68);
       const nose = NOSE;
       let cx = lerp(1500, NX + nose, walkIn) - push * 14 + bounce * BOUNCE, cy = GY;
       let cs = CS0;
@@ -149,7 +150,7 @@ export default {
       pose(heaven, { x: NX - 60, y: -60, s: 0.7 + up * 0.3, r: t * 6, o: up * 0.55 });
       sparks.forEach((sp, i) => {
         const k = T ? (T * 0.5 + i / 6) % 1 : 0.4;
-        pose(sp, { x: NX - 150 + i * 36, y: GY - 60 - k * 120 - (i % 2) * 30, s: 0.7, o: es(t, 8.65, 8.9) * Math.sin(k * Math.PI) });
+        pose(sp, { x: NX - 150 + i * 36, y: GY - 60 - k * 120 - (i % 2) * 30, s: 0.7, o: es(t, 8.47, 8.68) * Math.sin(k * Math.PI) });
       });
 
       S.cam.x = es(t, 3.9, 4.3) * 60 * (1 - es(t, 5, 5.4)) + es(t, 7.9, 8.3) * 50;

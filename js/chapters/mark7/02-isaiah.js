@@ -175,24 +175,24 @@ export default {
 
       /* v8 — the tablets set aside; the Pharisees hold on to their heap of scrolls */
       const tabK = es(t, 4.0, 4.35, ease.out);
-      const aside = es(t, 4.45, 4.95);
+      const aside = es(t, 4.4, 4.68);   // swipe stop: the tablets set aside and the heap hung up by 4.7 (stop 4.75)
       const tx = lerp(JX, P ? 1020 : 1120, aside), ty = 170 - (1 - tabK) * 1150 + aside * 40;
       pose(tab, { x: tx, y: ty + Math.sin(T * 0.8) * 2, r: aside * 16 + Math.sin(T * 0.7) * 0.6 });
       fade(tabGlow, tabK * (1 - aside) * 0.9);
       pose(tab.querySelector('.obj'), { s: 1 - aside * 0.22, o: tabK > 0.01 ? 1 - aside * 0.25 : 0 });
-      const pileK = es(t, 4.5, 4.9, ease.back);
+      const pileK = es(t, 4.42, 4.66, ease.back);
       const pileX = lerp(P ? 620 : 560, PILE, es(t, 5.1, 5.6));
       pose(pile, { x: pileX, y: 300 - (1 - pileK) * 1150 + aside * 0 + Math.sin(T * 0.8 + 1) * 2, o: pileK > 0.01 ? 1 : 0 });
 
       /* v9 — "full well do you set aside": more scrolls pile up in front of the tablets */
       extra.forEach((e) => {
-        const k = es(t, 5.25 + e.i * 0.06, 5.55 + e.i * 0.06, ease.out);
+        const k = es(t, 5.15 + e.i * 0.04, 5.35 + e.i * 0.04, ease.out);   // swipe stop: all ten landed by 5.71
         pose(e.el, { x: PILE + e.x * 0.9, y: lerp(-80, 270 - (e.i % 3) * 22 - Math.floor(e.i / 3) * 14, k), r: e.r, o: k > 0.01 ? 1 : 0 });
       });
 
       S.cam.z = 1 + es(t, 0.0, 0.8) * 0.03 + es(t, 1.9, 2.4) * 0.03 - es(t, 4.0, 4.4) * 0.03;
       S.cam.y = -es(t, 1.1, 1.6) * 40 + es(t, 4.0, 4.4) * 10;
-      S.cam.x = es(t, 4.4, 5.0) * 30;
+      S.cam.x = es(t, 4.38, 4.7) * 30;
     };
   },
 };

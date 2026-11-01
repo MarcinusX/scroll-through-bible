@@ -6,6 +6,9 @@ other books were drawn the same way, so expect the same amount. Matthew followed
 (559 repairs in 28 chapters, 1765 beats), Luke on 2026-10-03 (516 repairs in 24 chapters, 1731 beats).
 Mark followed on 2026-10-04 in three passes (a first repair, a second pass, and a final check of the chapters
 whose second pass had never been looked at — it found 56 more leftovers), with eight desktop faults fixed on the way.
+Once swipe mode arrived (one swipe, one sentence, the reader stopping at x.75), Matthew, Luke and then Mark (2026-11-01,
+87 stops in 16 chapters) were swiped through stop by stop with `tools/swipe.mjs`, and every stop whose moment was
+unfinished, undone or already moving on was retimed inside its beat.
 
 ## What goes wrong on a phone
 
