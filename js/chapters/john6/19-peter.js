@@ -75,13 +75,13 @@ export default {
       const [jhx, jhy] = headAt(JX, JY, 1.08, false);
       slips.forEach((s) => {
         const k = es(t, 1.05 + s.i * 0.05, 1.4 + s.i * 0.05);
-        const lit = es(t, 1.4 + s.i * 0.04, 1.6 + s.i * 0.04);
+        const lit = es(t, 1.36 + s.i * 0.03, 1.52 + s.i * 0.03);   // swipe stop: every word is alight by 1.64
         const a = s.i / 5 * PI * 2 + T * 0.3;
         const x = jhx + Math.cos(a) * 100 * k, y = jhy - 20 + Math.sin(a) * 60 * k;
         pose(s.el, { x, y, r: Math.sin(a) * 10, o: seg(t, 1.05, 1.1) * (1 - lit) * (1 - es(t, 1.95, 2.1)) });
         pose(s.l, { x, y, s: 0.6 + lit * 0.5, o: lit * (1 - es(t, 1.95, 2.1)) });
       });
-      drawRing(ring, es(t, 1.4, 1.8));
+      drawRing(ring, es(t, 1.36, 1.66));   // swipe stop: the ring is closed by 1.66 (was 1.8)
       pose(ring, { x: jhx, y: jhy - 20, sy: 0.6, r: 0, o: seg(t, 1.4, 1.45) * (1 - es(t, 1.95, 2.1)) });
       const wk = es(t, 1.2, 1.5, ease.out) * (1 - es(t, 1.95, 2.1));
       pose(words, { x: JX, y: lerp(-500, 190, wk), r: Math.sin(T * 0.8), o: wk > 0.01 ? 1 : 0 });
@@ -117,7 +117,8 @@ export default {
 
       /* v71a — Judas, son of Simon Iscariot */
       const tk = es(t, 5.05, 5.4, ease.out);
-      pose(jTag, { x: J.x - (PH ? 62 : 10), y: lerp(-500, 470, tk), r: Math.sin(T * 0.9) * 2, o: tk > 0.01 ? 1 : 0 });
+      pose(jTag, { x: J.x - (PH ? 135 : 10),   // swipe stop (phone): Judas' name hangs clear of the thread at 5.75
+         y: lerp(-500, 470, tk), r: Math.sin(T * 0.9) * 2, o: tk > 0.01 ? 1 : 0 });
 
       const bless = es(t, 3.05, 3.35) * (1 - es(t, 4.1, 4.3));
       jesus.set({ x: JX, y: JY, s: 1.08, flip: false, armF: 20 + bump(t, 0.2, 1.0) * 20 + bump(t, 2.1, 2.95) * 50 + bless * 70, armB: 10 + bless * 110 + bump(t, 2.1, 2.95) * 40, head: es(t, 4.1, 4.4) * 8 * (1 - es(t, 6.2, 6.6) * 0.5), blink: blinkAt(T, 1) });

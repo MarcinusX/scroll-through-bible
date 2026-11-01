@@ -142,17 +142,17 @@ export default {
         vpose(h.el, { x: h.x, y: h.y, s: k, o: seg(t, 2.05 + h.i * 0.028, 2.1 + h.i * 0.028) });
       });
       risers.forEach((r) => {
-        const k = es(t, 2.55 + r.i * 0.02, 2.95 + r.i * 0.02);
+        const k = es(t, 2.32 + r.i * 0.01, 2.58 + r.i * 0.01);   // swipe stop: the ring of stars has risen by 2.71
         const a = r.a + k * 0.6;
         const x = GX + Math.cos(a) * (GR + 70) * k, y = GY + Math.sin(a) * (GR + 70) * k * 0.95;
         vpose(r.el, { x, y, s: 0.5 + k * 0.6 + 0 * T, o: k > 0 ? Math.min(1, k * 3) : 0 });
       });
 
       /* v17a — not to condemn: the storm cloud comes, and is sent back without striking */
-      const cin = es(t, 3.05, 3.45), cout = es(t, 3.6, 4.0, ease.in);
+      const cin = es(t, 3.05, 3.35), cout = es(t, 3.42, 3.68, ease.in);   // swipe stop: the storm cloud is sent away by 3.68
       const cx = lerp(1350, CLX, cin) + cout * 500;
       hangAt(cloudEl, cx, 220 - cout * 60, T, cin > 0 && cout < 1 ? 1 - cout * 0.5 : 0, 1.5, 1.2, 3);
-      fade(bolt, bump(t, 3.3, 3.6) * 0.5);
+      fade(bolt, bump(t, 3.2, 3.42) * 0.5);
 
       /* v17b — saved through Him: the ring of light and the dawn */
       const ring = es(t, 4.15, 4.55, ease.back);

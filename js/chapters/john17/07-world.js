@@ -88,14 +88,14 @@ export default {
       const bend = wind * 24 * (T ? 1 + Math.sin(T * 5) * 0.25 : 1);
       D.forEach((m, i) => {
         const d = Math.abs(m.x - JX) / 400;
-        const u = es(t, 0.45 + d * 0.3, 0.8 + d * 0.3);
+        const u = es(t, 0.4 + d * 0.12, 0.58 + d * 0.12);   // swipe stop: every lantern is lit from the word by 0.74
         const [x, y] = arcAt([JHand[0] + 6, JHand[1] - 10], [m.lx, m.ly - 20], -90, u);
         vis(sparks[i], { x, y, o: u > 0.01 && u < 0.98 ? 1 : 0 });
-        const lit = 0.45 + es(t, 0.75 + d * 0.3, 0.9 + d * 0.3) * 0.55;
-        const leap = bump(t, 0.75 + d * 0.3, 1.2 + d * 0.3);
+        const lit = 0.45 + es(t, 0.55 + d * 0.12, 0.62 + d * 0.12) * 0.55;
+        const leap = bump(t, 0.55 + d * 0.12, 1.0 + d * 0.12);
         lampK(m, lit, leap * 0.8 - wind * 0.2, (m.x < JX ? 1 : -1) * bend);
         const [hx, hy] = headOf(m);
-        const sk = es(t, 4.1 + d * 0.3, 4.4 + d * 0.3, ease.back);
+        const sk = es(t, 4.1 + d * 0.2, 4.35 + d * 0.2, ease.back);   // swipe stop: every star is out by 4.55
         vis(starsE[i], { x: hx, y: hy - 34 * m.s + (T ? Math.sin(T * 1.5 + i) * 2 : 0), r: T * 10, s: sk, o: sk > 0.01 ? 1 : 0 });
         fade(m.sad, cold * 0.9);
         put(m, T, { head: -6 + cold * 16 - bump(t, 2.05, 3.0) * 20 - es(t, 4.1, 4.5) * 8, armF: 14 + cold * 26, armB: 6 + cold * 30 });

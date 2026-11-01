@@ -58,7 +58,7 @@ export default {
       const tk = es(t, 2.05, 2.4, ease.out) * (1 - es(t, 2.95, 3.15, ease.in));
       swing(tag, 706, 470 - (1 - tk) * 700, tk > 0.001 ? T : 0, 1.2, 0.8);
       fade(tag, tk > 0.001 ? 1 : 0);
-      const cf = seg(t, 2.55, 2.8);
+      const cf = seg(t, 2.4, 2.64);   // swipe stop: the coin is in the chest by 2.64
       vis(coin, { x: lerp(650, CHX[0], cf), y: lerp(DC.FLOOR - 150, DC.FLOOR + 14 - 106 * 0.85, cf) - Math.sin(cf * PI) * 40, r: cf * 360, o: cf > 0 && cf < 1 ? 1 : 0 });
       /* v20b — the guards come, and stop; the hour has not come */
       const gIn = es(t, 3.0, 3.35);
@@ -78,7 +78,7 @@ export default {
       const talk = Math.max(bump(t, 1.05, 1.95), bump(t, 2.1, 2.95));
       K.set(T, {
         j: { armF: 16 + talk * 30 + bump(t, 1.2, 1.9) * 20, armB: 10 + bump(t, 1.2, 1.9) * 140, head: -bump(t, 1.2, 1.9) * 10, flip: t > 2.05 && t < 2.95 },
-        lisF: (m) => ({ head: -4 - bump(t, 1.2, 1.9) * 6, armF: 14 + (m.i === 3 ? bump(t, 2.35, 2.75) * 80 : 0) }),
+        lisF: (m) => ({ head: -4 - bump(t, 1.2, 1.9) * 6, armF: 14 + (m.i === 3 ? bump(t, 2.2, 2.6) * 80 : 0) }),
         leadF: (m) => {
           const i = m.i;
           const h = i === 0 ? 0 : i === 1 ? -look * 22 : i === 2 ? look * 10 : -look * 12;

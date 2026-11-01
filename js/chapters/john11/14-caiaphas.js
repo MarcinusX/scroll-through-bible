@@ -68,8 +68,8 @@ export default {
       vis(tag, { x: 820, y: 330 - (1 - tk) * 420, r: Math.sin(T * 0.8) * 1.4, o: tk > 0.01 ? 1 : 0 });
 
       /* v50 — one man, for the people */
-      const bk = es(t, 1.05, 1.4, ease.out) * (1 - es(t, 2.95, 3.2, ease.in));
-      const tilt = es(t, 1.45, 1.85) * 14;
+      const bk = es(t, 1.02, 1.32, ease.out) * (1 - es(t, 2.95, 3.2, ease.in));
+      const tilt = es(t, 1.35, 1.68) * 14;   // swipe stop: the beam has tipped by 1.68
       const by = 250 - (1 - bk) * 520;
       const [[lx, ly], [rx, ry]] = bal.set(800, by, tilt, bk > 0.01 ? 1 : 0);
       const lit = es(t, 2.2, 2.5);
@@ -86,14 +86,14 @@ export default {
       /* v52 — the scattered gathered into one */
       const dk = es(t, 3.0, 3.3) * (1 - es(t, 4.05, 4.3) * 0.5);
       dark.fade(dk);
-      const gather = es(t, 3.35, 3.85, ease.io);
+      const gather = es(t, 3.3, 3.6, ease.io);   // swipe stop: the scattered lights are one light by 3.7
       const fadeAll = 1 - es(t, 4.05, 4.3);
       lights.forEach((l) => {
         const k = es(t, 3.0 + l.i * 0.012, 3.2 + l.i * 0.012);
         const wob = Math.sin(T * 1.3 + l.ph) * 10 * (1 - gather);
-        vis(l.el, { x: lerp(l.x0 + wob, 800, gather), y: lerp(l.y0 + Math.cos(T + l.ph) * 8 * (1 - gather), 330, gather), s: 0.8 + Math.sin(T * 3 + l.ph) * 0.1, o: k * fadeAll * (1 - es(t, 3.8, 3.95) * 0.8) });
+        vis(l.el, { x: lerp(l.x0 + wob, 800, gather), y: lerp(l.y0 + Math.cos(T + l.ph) * 8 * (1 - gather), 330, gather), s: 0.8 + Math.sin(T * 3 + l.ph) * 0.1, o: k * fadeAll * (1 - es(t, 3.56, 3.68) * 0.8) });
       });
-      const ol = es(t, 3.75, 3.95) * fadeAll;
+      const ol = es(t, 3.52, 3.68) * fadeAll;
       vis(oneLight, { x: 800, y: 330, s: 0.8 + ol * 0.4, r: T * 3, o: ol });
 
       /* v53 — they decide to kill Him: the seal */

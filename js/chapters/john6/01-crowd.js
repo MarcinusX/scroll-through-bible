@@ -147,10 +147,10 @@ export default {
       const blessK = es(t, 5.1, 5.45);
       jS.set({ x: KX, y: hfn(KX) + 8, s: 0.82, flip: false, o: sitK, armF: 20 + blessK * 50, armB: 10 + blessK * 30, head: -blessK * 4, blink: blinkAt(T, 1) });
       dis.forEach((d) => {
-        const k = es(t, 4.1 + d.i * 0.04, 4.62 + d.i * 0.03);
+        const k = es(t, 4.1 + d.i * 0.03, 4.5 + d.i * 0.025);   // swipe stop: all six disciples have walked up and sat down by 4.72 (was 4.84)
         const sx = KX + d.dx;
         const x = lerp(P ? 1050 + d.i * 10 : 1200 + d.i * 30, sx, k);
-        const sk_ = es(t, 4.66 + d.i * 0.02, 4.74 + d.i * 0.02);
+        const sk_ = es(t, 4.58 + d.i * 0.015, 4.64 + d.i * 0.015);
         const turn = sx > KX;
         d.w.set({ x, y: hfn(x) + 10, s: 0.74, flip: true, walk: k > 0 && k < 1 ? x * 0.07 + d.i : undefined, o: onShore * (1 - sk_), blink: blinkAt(T, d.seed) });
         d.s.set({ x: sx, y: hfn(sx) + 12, s: 0.74, flip: turn, o: sk_, armF: 20 + (d.i % 2) * 20, armB: 10, head: turn ? 4 : -4, blink: blinkAt(T, d.seed) });

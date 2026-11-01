@@ -91,10 +91,10 @@ export default {
 
       /* v24a — the door opens; the path climbs to it */
       const dk = es(t, 0.05, 0.35) * (1 - es(t, 2.9, 3.2));
-      const open = es(t, 0.35, 0.8);
+      const open = es(t, 0.3, 0.6);   // swipe stop: the door is open and the steps drawn by 0.7
       vis(doorBack, { x: DOOR[0], y: DOOR[1], o: dk });
       vis(leaf, { x: DOOR[0] - 46, y: DOOR[1], sx: 1 - open * 0.86, o: dk });
-      drawPath(stepsP, es(t, 0.5, 0.95));
+      drawPath(stepsP, es(t, 0.4, 0.7));
       fade(steps, 1 - es(t, 2.8, 3.1));
       /* v24b — glory streams out on their faces */
       const gl = es(t, 1.05, 1.45) * (1 - es(t, 2.8, 3.1));
@@ -107,7 +107,7 @@ export default {
 
       /* v25a — the world has not known You: mist */
       mistL.fade(dim + es(t, 4.1, 4.5) * 0.35 * (1 - es(t, 6.05, 6.5)));
-      mistL.shift(-120 + es(t, 3.0, 3.8) * 120, 0);
+      mistL.shift(-120 + es(t, 3.0, 3.6) * 120, 0);   // swipe stop: the mist has settled by 3.6
       /* v25b — I have known You: the beam */
       const bk = es(t, 4.05, 4.35) * (1 - es(t, 5.9, 6.2));
       vis(beam, { x: JX, y: RY + 40, sy: Math.max(1, bk * (JH[1] - 50 - RY)), o: bk });
@@ -124,12 +124,12 @@ export default {
       /* v26a — the Name, made known and still to be made known: its light runs far away */
       const nk = es(t, 6.05, 6.35, ease.out) * (1 - es(t, 6.95, 7.2, ease.in));
       lower(name, nk, JX, 318, { len: 600, r: T ? Math.sin(T * 0.7) * 0.8 : 0 });
-      drawPath(farP, es(t, 6.3, 6.85));
+      drawPath(farP, es(t, 6.3, 6.68));   // swipe stop: the Name's light has run all the way by 6.68
       fade(far, 1 - es(t, 7.0, 7.3));
       farSparks.forEach((el, i) => {
         const u = ((T * 0.18 + i * 0.2) % 1);
         const p = FAR[Math.round(u * 30)];
-        vis(el, { x: p[0], y: p[1], s: 1 - u * 0.6, o: t > 6.85 && t < 7.1 ? Math.sin(u * PI) : 0 });
+        vis(el, { x: p[0], y: p[1], s: 1 - u * 0.6, o: t > 6.68 && t < 7.1 ? Math.sin(u * PI) : 0 });
       });
 
       /* v26b — the close: asleep under the stars, hearts of light, the great heart over the world */
@@ -146,7 +146,7 @@ export default {
         z.p.set({ x: z.x, y: z.y, s: z.s, flip: z.flip, o: sleep, head: 16 + (i % 3) * 5, armF: 10, armB: 4 });
         lampK(m, 0.85 - sleep * 0.3);
         const [cx, cy] = chestOf(m);
-        const k = es(t, 7.3 + (i % 5) * 0.05, 7.55 + (i % 5) * 0.05, ease.back);
+        const k = es(t, 7.25 + (i % 5) * 0.04, 7.45 + (i % 5) * 0.04, ease.back);   // swipe stop: every heart is lit by 7.61
         vis(hearts[i], { x: cx + (m.flip ? -3 : 3), y: cy + 8, s: k * m.s * (1 + (T ? Math.sin(T * 2 + i) * 0.04 : 0)), o: k > 0.01 ? 1 : 0 });
       });
 
@@ -156,7 +156,7 @@ export default {
         armB: PRAY.armB + es(t, 7.1, 7.5) * 20,
       });
 
-      S.cam.x = kf(t, [[0, 0], [2, 0], [2.4, 20], [3, 20], [3.5, 0], [6.2, 0], [6.8, 30], [7.1, 0]]);
+      S.cam.x = kf(t, [[0, 0], [2, 0], [2.4, 20], [3, 20], [3.5, 0], [6.2, 0], [6.6, 30], [6.9, 30], [7.1, 0]]);
       S.cam.y = kf(t, [[0, -50], [1, -60], [2, -50], [3, -30], [4, -40], [5, -10], [6, -30], [7, -30], [8, -50]]);
       S.cam.z = kf(t, [[0, 1.0], [1, 1.02], [2, 1.0], [3, 0.98], [4, 1.02], [5, 1.06], [6, 1.0], [7, 1.0], [8, 0.96]]);
     };

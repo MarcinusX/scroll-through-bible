@@ -79,17 +79,17 @@ export default {
         // His thread to each (v12b)
         th(i, JX + 6, JY - 110, cx, cy, lk * 0.7);
         // His love given: a small light goes into each one's hands (v13b)
-        const u = es(t, 3.2 + i * 0.02, 3.55 + i * 0.02);
+        const u = es(t, 3.18 + i * 0.015, 3.45 + i * 0.015);   // swipe stop: every light is in its hands by 3.6
         const hx = x + (flip ? -30 : 30) * m.s, hy = m.y - 120 * m.s;
         vis(lights[i], { x: lerp(JX + 38, hx, u), y: lerp(JY - 128, hy, u) - Math.sin(u * PI) * 60, s: 0.7 + u * 0.4, o: u > 0 ? 1 - es(t, 4.4, 4.7) * 0.5 : 0 });
-        vis(glows[i], { x: hx, y: hy, s: 0.6 + es(t, 3.5, 3.8) * 0.6, o: es(t, 3.5 + i * 0.02, 3.8) * (1 - es(t, 4.6, 5) * 0.4) });
+        vis(glows[i], { x: hx, y: hy, s: 0.6 + es(t, 3.42, 3.68) * 0.6, o: es(t, 3.42 + i * 0.015, 3.68) * (1 - es(t, 4.6, 5) * 0.4) });
         placeM(m, T, { x, flip, walk: draw > 0 && draw < 1 ? draw * 14 + i : undefined, head: -es(t, 0.1, 0.4) * 12 * (1 - turn) + (partner ? bump(t, 1.2, 1.95) * 6 : -bump(t, 1.2, 1.95) * 6),
           armF: (partner ? bump(t, 1.25, 1.95) * 70 : 0) + es(t, 3.35, 3.6) * 55 * (1 - es(t, 4.1, 4.3) * 0.4) + draw * 20 });
       });
       PAIRS.forEach(([a, b], j) => {
         const A = byK[a], B = byK[b];
         const mx = (A.x + B.x) / 2, my = Math.min(A.y - 150 * A.s, B.y - 150 * B.s) - 10;
-        const k = es(t, 1.3 + j * 0.08, 1.55 + j * 0.08, ease.back) * (1 - es(t, 2.0, 2.2));
+        const k = es(t, 1.28 + j * 0.06, 1.48 + j * 0.06, ease.back) /* swipe stop: every pair's heart is up by 1.66 */ * (1 - es(t, 2.0, 2.2));
         vis(pairHearts[j], { x: mx, y: my - bump(t, 1.3, 2.1) * 12, s: k, o: k > 0.01 ? 1 : 0 });
         th(ms.length + j, A.x, A.y - 100 * A.s, B.x, B.y - 100 * B.s, lk * 0.6);
       });

@@ -57,9 +57,9 @@ export default {
       /* v31 — they snatch up stones */
       const bend = (i) => bump(t, 0.2 + (i % 3) * 0.08, 0.6 + (i % 3) * 0.08);
       const grab = (i) => es(t, 0.4 + (i % 3) * 0.08, 0.5 + (i % 3) * 0.08);
-      const raise = es(t, 0.55, 0.85);
+      const raise = es(t, 0.5, 0.7);   // swipe stop: the stones are up by 0.7
       /* v32a — the works hung on threads of light */
-      const pk = (i) => es(t, 1.15 + i * 0.1, 1.45 + i * 0.1, ease.out);
+      const pk = (i) => es(t, 1.1 + i * 0.07, 1.35 + i * 0.07, ease.out);   // swipe stop: all five works hang still by 1.63
       const off = es(t, 3.9, 4.15, ease.in);
       attr(threadsEl, 'opacity', Math.min(1, pk(0) * 1.2) * (1 - off));
       /* v32b — which one? */

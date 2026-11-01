@@ -63,7 +63,7 @@ export default {
       const away = es(t, 2.05, 2.4);
       D.forEach((m, i) => {
         const d = Math.abs(i - 5) / 5;
-        const u = es(t, 0.1 + i * 0.04, 0.6 + i * 0.04, ease.out);
+        const u = es(t, 0.08 + i * 0.025, 0.4 + i * 0.025, ease.out);   // swipe stop: every name has risen by 0.65
         const mid = [JX + (TAGS[i][0] - JX) * 1.9, TAGS[i][1] + 150 + (i % 2) * 26];
         const [x0, y0] = arcAt(hands, mid, -30, u);
         const x = lerp(x0, TAGS[i][0], gather), y = lerp(y0, TAGS[i][1], gather);
@@ -91,12 +91,12 @@ export default {
         const d = Math.abs(m.x - JX) / 400;
         const k = es(t, 3.05 + d * 0.2, 3.35 + d * 0.2);
         vis(glows[i], { x: cx, y: cy, s: m.s, o: k });
-        back(i, [cx, cy - 20], [JX, JY - 110], -60, es(t, 3.3 + d * 0.15, 3.65 + d * 0.15), 0.8);
+        back(i, [cx, cy - 20], [JX, JY - 110], -60, es(t, 3.25 + d * 0.12, 3.5 + d * 0.12), 0.8);   // swipe stop: every ray is back in Him by 3.62
         put(m, T, { head: -10 - bump(t, 0.1, 1.9) * 8 - k * 4, armF: 14 + k * 20 });
         lampK(m, 0.85);
       });
       flames(1, T);
-      vis(jGlow, { x: JX, y: JY - 100, s: 0.8 + es(t, 3.5, 3.9) * 0.8, o: 0.4 + es(t, 3.5, 3.9) * 0.6 });
+      vis(jGlow, { x: JX, y: JY - 100, s: 0.8 + es(t, 3.45, 3.7) * 0.8, o: 0.4 + es(t, 3.45, 3.7) * 0.6 });
 
       /* Jesus kneels, arms lifted */
       const raise = es(t, 0.0, 0.3);

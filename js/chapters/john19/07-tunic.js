@@ -61,8 +61,8 @@ export default {
 
       /* v23a — the garments in four parts, one for each soldier */
       const show = es(t, 0.05, 0.3);
-      const split = es(t, 0.4, 0.6);
-      const go = es(t, 0.6, 0.95);
+      const split = es(t, 0.3, 0.45);
+      const go = es(t, 0.45, 0.68);   // swipe stop: each soldier has his part by x.7
       q.forEach((el, i) => {
         const [sx, sy] = [[-1, -1], [1, -1], [-1, 1], [1, 1]][i];
         const s = sols[[0, 3, 1, 2][i]];
@@ -74,10 +74,10 @@ export default {
 
       /* the soldiers */
       const pull = bump(t, 3.05, 3.4);
-      const throwK = bump(t, 3.45, 3.8);
+      const throwK = bump(t, 3.32, 3.66);
       const cheer = es(t, 5.1, 5.35);
       sols.forEach((m) => {
-        const get = bump(t, 0.7 + m.i * 0.05, 1.0 + m.i * 0.05);
+        const get = bump(t, 0.55 + m.i * 0.04, 0.9 + m.i * 0.04);
         const lift = m.i === 1 ? es(t, 1.05, 1.3) * (1 - es(t, 1.95, 2.1)) + cheer * 1 : 0;
         const talk = (m.i === 2 ? bump(t, 3.05, 3.6) : 0);
         m.p.set({ x: m.x, y: m.y, s: 0.9, flip: m.f, armF: 30 + get * 50 + lift * 110 + (m.i === 1 || m.i === 2 ? pull * 40 : 0) + (m.i === 0 ? throwK * 60 : 0), armB: 10 + lift * 60 + talk * 90, head: -get * 4 + 6 - lift * 10, blink: blinkAt(T, m.i + 2) });
@@ -90,7 +90,7 @@ export default {
       /* v23c — the plate: woven from the top down */
       const pk = es(t, 2.05, 2.35) * (1 - es(t, 2.95, 3.15));
       pose(plate, { x: ph ? 975 : 1010, y: lerp(-500, 140, pk), s: ph ? 0.75 : 0.85, r: Math.sin(T * 0.6) * 0.6, o: pk > 0.01 ? 1 : 0 });
-      const wv = es(t, 2.2, 2.9, (x) => x);
+      const wv = es(t, 2.15, 2.66, (x) => x);   // swipe stop: woven to the bottom by x.66
       const n = rows.length;
       rows.forEach((r, i) => fade(r, Math.min(1, Math.max(0, wv * n - i))));
       const cur = Math.min(n - 1, Math.floor(wv * n));
@@ -99,7 +99,7 @@ export default {
       const nt = es(t, 3.1, 3.3, ease.back) * (1 - es(t, 3.85, 4.0));
       const [thx, thy] = headAt(900, 692, 0.9, true, 62);
       pose(noTear, { x: thx - 20, y: thy - 20, s: nt, o: nt > 0.02 ? 1 : 0 });
-      const roll = es(t, 3.5, 3.95), settle = es(t, 5.05, 5.4);
+      const roll = es(t, 3.38, 3.7), settle = es(t, 5.05, 5.4);   // swipe stop: the dice are down by x.7
       const air = (1 - roll);
       pose(d0, { x: lerp(-190, -12, roll), y: -Math.sin(roll * Math.PI) * 70 * (1 - settle) + (1 - roll) * -40, r: roll * 520 * (1 - settle) + settle * 0 });
       pose(d1, { x: lerp(-170, 14, roll), y: -Math.sin(roll * Math.PI) * 50 * (1 - settle) + (1 - roll) * -60, r: roll * -380 * (1 - settle) });

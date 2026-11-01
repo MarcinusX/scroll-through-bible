@@ -72,12 +72,12 @@ export default {
     return (t, time) => {
       const T = time;
       /* sky & sun: two days pass in v6b */
-      const sa = -0.9 + es(t, 5.05, 5.9, ease.sine) * PI * 4;
+      const sa = -0.9 + es(t, 5.05, 5.68, ease.sine) * PI * 4;   // swipe stop: both days have passed by 5.7
       const sx = 800 + Math.cos(sa) * 560, sy = 640 + Math.sin(sa) * 470;
       const night = Math.min(1, Math.max(0, (Math.sin(sa) + 0.3) / 0.45));
       set.sk.blend(DAY, NIGHT, night * 0.9);
       pose(set.sunEl, { x: sx, y: sy, r: Math.sin(T * 0.6) * 1.5 });
-      const dayPh = seg(t, 5.05, 5.9) * 2;
+      const dayPh = seg(t, 5.05, 5.68) * 2;
       pose(set.cl, { x: 560 + Math.sin(T * 0.1) * 20 + dayPh * 120, y: 150, r: Math.sin(T * 0.5) * 1 });
 
       /* v4a — the messenger arrives, kneels, gives the letter */
@@ -130,7 +130,7 @@ export default {
       days.forEach((d) => {
         const k = es(t, 5.0, 5.2, ease.out) * (1 - es(t, 5.95, 6.0));
         vis(d.el, { x: 720 + d.i * 160, y: 310 - (1 - k) * 420, r: Math.sin(T * 0.7 + d.i) * 2, o: k > 0.01 ? 1 : 0 });
-        if (d.lit) d.lit.setAttribute('opacity', es(t, 5.3 + d.i * 0.42, 5.4 + d.i * 0.42).toFixed(2));
+        if (d.lit) d.lit.setAttribute('opacity', es(t, 5.25 + d.i * 0.32, 5.35 + d.i * 0.32).toFixed(2));
       });
 
       /* the disciples */

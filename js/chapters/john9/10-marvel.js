@@ -121,12 +121,12 @@ export default {
         const k = ((T * 0.5 + r.i / 4) % 1);
         vis(r.el, { x: PX - 150 + 300 * 0.34, y: PY + 190 - 70 - k * 80, s: 0.8 + k * 0.5, o: pk > 0.95 ? Math.sin(k * PI) : 0 });
       });
-      const sk = seg(t, 2.4, 2.95);
+      const sk = seg(t, 2.35, 2.68);   // swipe stop: the sinner's prayer has sunk away by 2.68
       vis(sink, { x: PX + 90, y: PY + 70 + sk * 90, r: sk * 90, o: pk > 0.95 ? 1 - sk : 0 });
 
       /* v32 — the scroll of the ages unrolls */
       const ak = es(t, 3.08, 3.3, ease.out) * (1 - es(t, 3.92, 4.12, ease.in));
-      const un = es(t, 3.25, 3.75);
+      const un = es(t, 3.2, 3.62);   // swipe stop: the scroll of the ages is open by 3.62
       const AX = 820 - SW / 2, AY = 150 - (1 - ak) * 700;
       pose(sc, { sx: Math.max(0.01, un) });
       vis(ages, { x: AX, y: AY, o: ak > 0.01 ? 1 : 0 });

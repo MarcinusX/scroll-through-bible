@@ -92,7 +92,7 @@ export default {
       const [hx, hy] = headAt(PX, SEAT, 0.88, false, 62);
       const b1 = es(t, 0.1, 0.3, ease.back) * (1 - es(t, 0.95, 1.1));
       const b2 = es(t, 3.05, 3.2, ease.back);
-      const drop = es(t, 3.4, 3.8, ease.in);
+      const drop = es(t, 3.8, 3.97, ease.in);   // swipe stop: "Pokaż nam Ojca" still hangs there at 3.75, folded away after
       vis(say, { x: hx + 40, y: hy - 30 + drop * 120, s: (b1 + b2 * (1 - drop * 0.6)) * 0.9, r: drop * 40, sy: 1 - drop * 0.7, o: Math.max(b1, b2 * (1 - drop)) > 0.01 ? Math.max(b1, b2 * (1 - drop)) : 0 });
       const qk = es(t, 1.2, 1.4, ease.back) * (1 - es(t, 1.92, 2.05));
       vis(q, { x: hx - 30, y: hy - 120, s: qk * 0.7, o: qk > 0.01 ? 1 : 0 });

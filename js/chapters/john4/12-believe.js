@@ -54,7 +54,7 @@ export default {
     return (t, time) => {
       const T = time;
       /* v40b — two days: night, day, night, day */
-      const cyc = seg(t, 3.05, 3.95);
+      const cyc = seg(t, 3.05, 3.7);   // swipe stop: the two nights are over and it is day by 3.7
       const night = Math.max(bump(cyc, 0.02, 0.48), bump(cyc, 0.52, 0.98));
       const dusk0 = 0;
       nightL.fade(night * 0.85);
@@ -65,7 +65,7 @@ export default {
       swing(moonEl, 560, 170 + (1 - night) * 500, night > 0.001 ? T : 0, 1, 0.6, 1);
       fade(moonEl, night > 0.001 ? 1 : 0);
       days.forEach((d, i) => {
-        const k = es(t, 3.2 + i * 0.4, 3.35 + i * 0.4, ease.back) * (1 - es(t, 4.05, 4.3, ease.in));
+        const k = es(t, 3.2 + i * 0.3, 3.35 + i * 0.3, ease.back) * (1 - es(t, 4.05, 4.3, ease.in));
         swing(d, 700 + i * 200, 250 - (1 - k) * 600, k > 0.001 ? T : 0, 1.4, 0.8, i);
         fade(d, k > 0.001 ? 1 : 0);
       });

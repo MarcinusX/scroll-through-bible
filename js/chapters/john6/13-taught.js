@@ -95,7 +95,7 @@ export default {
       pose(scrollG, { x: SX, y: lerp(-500, SY, sk), sy: Math.max(0.02, un), o: sk > 0.01 ? 1 : 0 });
       pose(rodB, { x: SX, y: lerp(-500, SY, sk) + V.h * un, o: sk > 0.01 ? 1 : 0 });
       /* the light above; v45b — the Father's voice in rings */
-      const rk = es(t, 0.4, 0.8) * (1 - es(t, 2.05, 2.4) * 0.6) + es(t, 2.9, 3.2) * 0.4;
+      const rk = es(t, 0.35, 0.62) * (1 - es(t, 2.05, 2.4) * 0.6) + es(t, 2.9, 3.2) * 0.4;
       pose(rad, { x: JX, y: 170, s: 0.8 + rk * 0.2, r: T * 3, o: Math.min(1, rk) });
       rings.forEach((r, i) => {
         const on = es(t, 1.05, 1.2) * (1 - es(t, 1.85, 2.0));
@@ -103,14 +103,14 @@ export default {
         pose(r, { x: JX, y: 190 + k * 180, s: 0.6 + k * 4, sy: 0.6 + k * 2, o: on * (1 - k) });
       });
       cong.forEach((m, i) => {
-        const lit = es(t, 0.6 + (i % 4) * 0.08, 0.85 + (i % 4) * 0.08);
+        const lit = es(t, 0.4 + (i % 4) * 0.06, 0.55 + (i % 4) * 0.06);   // swipe stop: every listener's light is lit by 0.73 (was 1.09)
         const [hx, hy] = headAt(m.x, m.y, m.s, m.x > JX, 62);
         pose(lights[i], { x: hx, y: hy - 40 + Math.sin(T * 1.4 + i) * 2, s: lit * 0.9, o: lit * (1 - es(t, 2.0, 2.3) * 0.5) });
         m.p.set({ x: m.x, y: m.y, s: m.s, flip: m.x > JX, armF: 20 + lit * 20, armB: bump(t, 1.1, 1.9) * (i % 3 ? 0 : 80), head: -lit * 8 - bump(t, 2.1, 2.9) * 6, blink: blinkAt(T, m.seed) });
       });
       COME.forEach((m) => {
         const up = es(t, 1.2 + m.i * 0.06, 1.28 + m.i * 0.06);
-        const k = es(t, 1.3 + m.i * 0.06, 1.85);
+        const k = es(t, 1.3 + m.i * 0.06, 1.68);   // swipe stop: both have come to Him by 1.68 (was 1.85)
         const tx = JX + (m.i ? 160 : -160);
         const x = lerp(m.x, tx, k), y = lerp(690, FEET + 10, k);
         m.si.set({ x: m.x, y: 690, s: 0.9, flip: m.x > JX, o: 1 - up, armF: 30, head: -8, blink: blinkAt(T, m.seed) });
@@ -118,8 +118,8 @@ export default {
       });
 
       /* v46 — no one has seen the Father except the One who is from God */
-      const down = es(t, 2.05, 2.45, ease.out);
-      const part = es(t, 2.5, 2.85);
+      const down = es(t, 2.05, 2.38, ease.out);
+      const part = es(t, 2.4, 2.68);   // swipe stop: the clouds have parted on the light by 2.68 (was 2.85)
       bankL.shift(-part * 110 * (1 - es(t, 3.9, 4.2)) - es(t, 3.9, 4.2) * 900, lerp(-800, 0, down));
       bankR.shift(part * 110 * (1 - es(t, 3.9, 4.2)) + es(t, 3.9, 4.2) * 900, lerp(-800, 0, down));
       pose(gap, { x: JX, y: 170, o: part * 0.5 * (1 - es(t, 3.9, 4.2)) });
@@ -142,7 +142,7 @@ export default {
       /* v49 — your fathers ate the manna in the wilderness, and they died */
       const pk = es(t, 5.05, 5.35, ease.out);
       pose(plate, { x: MX, y: lerp(-500, 300, pk), r: Math.sin(T * 0.8) * 1, o: pk > 0.01 ? 1 : 0 });
-      if (grey) grey.setAttribute('opacity', String(es(t, 5.4, 5.8) * 0.55));
+      if (grey) grey.setAttribute('opacity', String(es(t, 5.35, 5.65) * 0.55));   // swipe stop: the manna picture has gone grey by 5.65
       /* v50 — the bread that comes down from heaven, that whoever eats of it may not die */
       const come = es(t, 6.05, 6.5);
       pose(loafL, { x: lerp(JX, 960, come), y: lerp(330, 420, come), s: 0.9 - come * 0.3, o: bk > 0.01 ? 1 : 0 });

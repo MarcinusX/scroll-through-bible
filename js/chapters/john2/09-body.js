@@ -56,9 +56,10 @@ export default {
       tint.fade(0.34 * (1 - es(t, 1.0, 1.5)) + 0.08);
 
       /* v21 — the outline lifts off the sanctuary and closes round Him */
-      const lift = es(t, 0.1, 0.35);
-      const fly = es(t, 0.3, 0.75);
-      const become = es(t, 0.7, 0.95);
+      // swipe stop: the outline has closed round Him and become His figure by 0.7
+      const lift = es(t, 0.08, 0.28);
+      const fly = es(t, 0.25, 0.55);
+      const become = es(t, 0.5, 0.7);
       const ox = 800, oy = lerp(IW - lift * 30, FLOOR + 16, fly), os = lerp(1.3, 1.16, fly);
       pose(outline, { x: ox, y: oy, s: os, o: lift * (1 - become) });
       sil.set({ x: 800, y: FLOOR + 22, s: 1.12 + 0.05 * become, o: become * 0.9 });

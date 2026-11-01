@@ -58,7 +58,7 @@ export default {
       ringsDown(560, 230, bump(t, 1.3, 1.95), T, { dir: 1, s0: 0.6, spread: 1.2 });
       /* v48 — the tags flung, falling short */
       tags.forEach((el, i) => {
-        const k = seg(t, 2.25 + i * 0.12, 2.75 + i * 0.12);
+        const k = seg(t, 2.15 + i * 0.1, 2.55 + i * 0.1);   // swipe stop: both tags have fallen short by 2.65
         const x = lerp(1000 - i * 20, 880 - i * 30, k), y = lerp(DC.FLOOR - 230 - i * 20, DC.FLOOR - 10 + i * 8, k * k) - Math.sin(k * PI) * 60;
         vis(el, { x, y, r: k * (i ? -40 : 30) + Math.sin(k * 8) * 10 * (1 - k), o: k > 0 ? 1 - es(t, 3.6, 3.9) : 0 });
       });
@@ -74,10 +74,10 @@ export default {
       vis(scr, { x: hx + 4, y: hy - 6, s: 0.6, o: kk });
       const fx0 = keeper.x + 6, fy0 = keeper.y - 250;
       vis(flame, { x: fx0, y: fy0 + (T ? Math.sin(T * 2) * 2 : 0), s: kk, o: kk > 0.01 ? 1 : 0 });
-      const wk = seg(t, 5.35, 5.8);
+      const wk = seg(t, 5.3, 5.66);   // swipe stop: the wind has passed and the ring is closed round the flame by 5.68
       vis(wind, { x: lerp(200, 700, wk), y: fy0 - 40, o: wk > 0 && wk < 1 ? Math.sin(wk * PI) : 0 });
       vis(ring, { x: fx0, y: fy0, o: kk });
-      drawRing(ring, es(t, 5.5, 5.95));
+      drawRing(ring, es(t, 5.4, 5.68));
 
       const open = bump(t, 0.1, 0.95);
       const honour = bump(t, 3.1, 3.95);
@@ -89,7 +89,7 @@ export default {
         leadF: (m) => {
           const seek = bump(t, 0.3, 0.95);
           const aside = bump(t, 1.2, 1.95);
-          const fling = m.i < 2 ? bump(t, 2.15 + m.i * 0.12, 2.6 + m.i * 0.12) : 0;
+          const fling = m.i < 2 ? bump(t, 2.05 + m.i * 0.1, 2.5 + m.i * 0.1) : 0;
           return { flip: !(aside > 0.5 && m.i % 2), head: seek * 12 * (m.i % 2 ? 1 : -1), armF: 20 + seek * 30 + fling * 110, armB: 10 + fling * 40, angry: 0.4 + bump(t, 2.05, 2.95) * 0.6 };
         },
       });

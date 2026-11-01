@@ -77,7 +77,7 @@ export default {
       if (tw <= 0) set.sk.blend(GOLDEN, DUSK, dusk); else set.sk.blend(DUSK, TWILIGHT, tw);
       set.update(t, T, { sunX: 1180, sunY: lerp(250, 520, es(t, 0.3, 5.8)), glow: 0.5 + dusk * 0.5 });
       /* v40a — He comes to where John baptised; the memory */
-      const walk = es(t, 0.05, 0.95);
+      const walk = es(t, 0.05, 0.7);   // swipe stop: He has arrived at the place by 0.7
       const sit = es(t, 1.3, 1.4);
       const jx = lerp(260, 790, walk);
       jWalk.set({ x: jx, y: 732, s: 1.02, walk: walk > 0 && walk < 1 ? jx * 0.07 : undefined, o: 1 - sit, armF: 12, blink: blinkAt(T, 1) });
@@ -106,15 +106,16 @@ export default {
       vis(fire, { x: 890, y: 736, s: 0.6 + fk * 0.4 + (T ? Math.sin(T * 8) * 0.04 : 0), sy: 1 + (T ? Math.sin(T * 11) * 0.06 : 0), o: fk });
       /* v41a — many came; v41b — "John did no sign"; v42 — many believed */
       folk.forEach((m) => {
-        const k = es(t, 2.05 + (m.i % 4) * 0.12, 2.8 + (m.i % 4) * 0.08);
+        const kEnd = 2.45 + (m.i % 4) * 0.06;   // swipe stop: all have come and sat down by 2.69
+        const k = es(t, 2.04 + (m.i % 4) * 0.07, kEnd);
         const x = lerp(m.from[0], m.to[0], k), y = lerp(m.from[1], m.to[1], k);
         const faceL = m.to[0] > 800;
-        const sat = m.sit ? es(t, 2.85 + m.i * 0.02, 2.95 + m.i * 0.02) : 0;
+        const sat = m.sit ? es(t, kEnd, kEnd + 0.06) : 0;
         const speak = m.i === 2 ? bump(t, 3.05, 4.9) : 0;
         const lookUp = es(t, 3.2, 3.5) * (1 - es(t, 5.1, 5.4));
         m.st.set({ x, y, s: m.s, flip: faceL, walk: k > 0 && k < 1 ? x * 0.07 : undefined, o: k > 0.001 ? 1 - sat : 0, armF: 14 + speak * 40, armB: 8 + speak * 60, head: -lookUp * 14, blink: blinkAt(T, m.seed) });
         if (m.sit) m.sit.set({ x: m.to[0], y: m.to[1], s: m.s, flip: faceL, o: sat, armF: 30, head: -lookUp * 10 - 4, blink: blinkAt(T, m.seed + 1) });
-        const lk = es(t, 5.15 + m.i * 0.07, 5.4 + m.i * 0.07);
+        const lk = es(t, 5.1 + m.i * 0.05, 5.3 + m.i * 0.05);   // swipe stop: all eight lights lit by 5.65
         const hy2 = m.to[1] - (m.sit ? 150 : 210) * m.s;
         vis(lights[m.i], { x: m.to[0] + (faceL ? -6 : 6), y: hy2 - 20 + (T ? Math.sin(T * 2 + m.i) * 3 : 0), s: 0.8 + lk * 0.3, o: lk });
       });

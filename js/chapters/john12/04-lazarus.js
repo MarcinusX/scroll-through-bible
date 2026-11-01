@@ -54,16 +54,16 @@ export default {
       const T = time;
       set.update(t, T, { sunY: 150, sunO: 1, moonO: 0, starsO: 0, night: es(t, 2, 2.4) * 0.12 * (1 - es(t, 3.2, 3.8)), door: 0.3, tomb: es(t, 1.2, 1.5) * (1 - es(t, 2.1, 2.4)) });
       /* v9a — the crowd hears and comes */
-      const arrive = (m, i) => es(t, 0.15 + (i % 5) * 0.08, 0.8 + (i % 5) * 0.06, ease.out);
+      const arrive = (m, i) => es(t, 0.1 + (i % 5) * 0.06, 0.45 + (i % 5) * 0.06, ease.out);   // swipe stop: the whole crowd has come by 0.69
       const pointAt = es(t, 1.15, 1.4) * (1 - es(t, 2.0, 2.2));
       crowd.forEach((m, i) => {
         const k = arrive(m, i);
-        const believe = i === 3 || i === 2 || i === 6 || i === 5 ? es(t, 3.1 + i * 0.05, 3.5 + i * 0.05) : 0;
+        const believe = i === 3 || i === 2 || i === 6 || i === 5 ? es(t, 3.05 + i * 0.03, 3.35 + i * 0.03) : 0;   // swipe stop: crossed over and lit by 3.63
         const x = lerp(m.x - 420, m.x, k) + believe * (i < 4 ? 70 : 60);
         m.cx = x;
         const lookLaz = i % 2 ? pointAt : 0;
         place(m, T, { x, walk: (k > 0 && k < 1) || (believe > 0 && believe < 1) ? x * 0.06 + i : undefined, armF: 10 + lookLaz * 80 + bump(t, 1.1, 1.9) * (i % 2 ? 0 : 20), armB: bump(t, 0.2, 0.9) * (i === 2 ? 60 : 0), head: -4 - lookLaz * 4 + believe * -4 + es(t, 2.1, 2.5) * (1 - believe) * 6 });
-        const lk = es(t, 3.3 + i * 0.05, 3.5 + i * 0.05, ease.back) * (believe > 0 ? 1 : 0);
+        const lk = es(t, 3.3 + i * 0.03, 3.45 + i * 0.03, ease.back) * (believe > 0 ? 1 : 0);
         const [hx, hy] = headAt(x, m.y, m.s, false);
         vis(lights[i], { x: hx, y: hy - 38 * m.s + (T ? Math.sin(T * 2 + i) * 2 : 0), s: lk, o: lk > 0.01 ? 1 : 0 });
       });
@@ -82,7 +82,7 @@ export default {
       vis(plotEl, { x: PX, y: PY - (1 - pk) * 700, r: pk > 0.01 && T ? Math.sin(T * 0.6) * 0.6 : 0, o: pk > 0.001 ? 1 : 0 });
       const sk = es(t, 2.45, 2.6, ease.back) * (1 - es(t, 3.0, 3.25));
       vis(seal, { x: PX - 160 + 196, y: PY - (1 - pk) * 700 + 134, s: sk, o: sk > 0.01 ? 1 : 0 });
-      const creep = es(t, 2.3, 2.9) * (1 - es(t, 3.2, 3.9) * 0.6);
+      const creep = es(t, 2.25, 2.65) *   /* swipe stop: the shadow has crept up by 2.65 */ (1 - es(t, 3.2, 3.9) * 0.6);
       vis(shadow, { x: 1500, y: G + 30, sx: 0.2 + creep * 0.85, o: creep > 0.01 ? 1 : 0 });
       S.cam.x = kf(t, [[0, -30], [1, 10], [1.9, 40], [2.3, 120], [3.0, 100], [3.4, 20], [4, 30]]);
       S.cam.y = kf(t, [[0, 0], [2.0, 0], [2.4, -40], [3.2, 0]]);

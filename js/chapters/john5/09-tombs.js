@@ -101,7 +101,7 @@ export default {
       swing(moonEl, 420, 150 + dawnK * 80, Tm, 1, 0.6);
       pose(dawn, { x: DAWNX, y: lerp(560, 320, dawnK), r: Tm * 2, s: 0.6 + dawnK * 0.4 });
       fade(dawn, dawnK);
-      const dim = es(t, 4.0, 4.4) * (1 - es(t, 6.6, 6.95) * 0.5);
+      const dim = es(t, 4.0, 4.4) * (1 - es(t, 6.4, 6.68) * 0.5);
       dimL.fade(dim * 0.6);
       fade(path, es(t, 2.05, 2.4) * 0.45);
 
@@ -117,7 +117,7 @@ export default {
       });
       const empty = es(t, 4.05, 4.4) * (1 - es(t, 5.0, 5.2));
       const listen = es(t, 5.05, 5.3) * (1 - es(t, 5.9, 6.1));
-      const go = es(t, 6.2, 6.9, ease.sine);
+      const go = es(t, 6.2, 6.66, ease.sine);   // swipe stop: Jesus has walked into the light by 6.66 (was 6.9)
       const jx = lerp(JX, 900, go);
       jesus.set({ x: jx, y: F + 12, s: 1.06, flip: false, walk: go > 0 && go < 1 ? jx * 0.07 : undefined, armF: 20 + calm * 60 + speak * 50 + empty * 50 + listen * 20, armB: 10 + calm * 100 + speak * 60 + empty * 60, head: -empty * 18 - listen * 14 - go * 10, blink: blinkAt(Tm, 1) });
       const [jhx, jhy] = headAt(jx, F + 12, 1.06, false);
@@ -134,8 +134,9 @@ export default {
         pose(tb.stone, { x: tb.x + dx, y: tb.y - TH * 0.4 * tb.s, s: tb.s, r: open * 120 });
         vis(tb.glow, { x: tb.x, y: tb.y - TH * 0.34 * tb.s, s: 1 + Math.sin(Tm * 2 + tb.i) * 0.03, o: wake * (1 - (tb.good ? es(t, 2.9, 3.2) : 0)) });
         vis(tb.rim, { x: tb.x, y: tb.y - TH * 0.4 * tb.s, s: 1 + Math.sin(Tm * 2 + tb.i) * 0.05, o: wake * (1 - open) });
-        const out = tb.good ? es(t, 2.3 + tb.i * 0.04, 2.6 + tb.i * 0.04) : es(t, 3.3, 3.6);
-        const climb = tb.good ? es(t, 2.55 + tb.i * 0.05, 3.2 + tb.i * 0.05, ease.sine) : 0;
+        // swipe stop: the good have stepped out and stand at their tombs by 2.7 (were mid-climb); they climb into the dawn after the stop, gone by 3.25
+        const out = tb.good ? es(t, 2.3 + tb.i * 0.04, 2.6 + tb.i * 0.02) : es(t, 3.3, 3.6);
+        const climb = tb.good ? es(t, 2.8 + tb.i * 0.02, 3.15 + tb.i * 0.02, ease.sine) : 0;
         const fx = lerp(tb.x, DAWNX - 10, climb), fy = lerp(tb.y + 2, 350, climb);
         tb.fig.set({ x: fx, y: fy, s: tb.s * 0.45 * (1 - climb * 0.35), flip: tb.good ? false : tb.x > 800, walk: climb > 0 && climb < 1 ? fx * 0.2 : undefined, armB: tb.good ? 30 + out * 100 : 5, armF: tb.good ? 40 + out * 60 : 5, head: tb.good ? -out * 10 : 22 * out, blink: 0, o: seg(out, 0, 0.3) * (1 - seg(climb, 0.8, 1)) });
       });
@@ -148,13 +149,14 @@ export default {
       const [pl] = bal.set(ph ? 975 : 1040, 190 - (1 - bk) * 460, sway, bk > 0.01 ? 1 : 0);
       vis(ok, { x: ph ? 975 : 1040, y: 196 - (1 - bk) * 460, s: es(t, 5.55, 5.7, ease.back), o: bk > 0.01 && t > 5.55 ? 1 : 0 });
       /* v30c — not my own will */
-      const wk = es(t, 6.03, 6.2, ease.back) * (1 - es(t, 6.7, 6.95, ease.in));
-      vis(willT, { x: 620 - es(t, 6.7, 6.95) * 160, y: 300 - es(t, 6.7, 6.95) * 380, r: Math.sin(Tm * 0.8) * 2, o: wk > 0.01 ? 1 : 0 });
-      vis(willX, { x: 620 - es(t, 6.7, 6.95) * 160, y: 316 - es(t, 6.7, 6.95) * 380, s: es(t, 6.25, 6.35), o: wk > 0.01 && t > 6.25 ? 1 : 0 });
+      // swipe stop: 'my will', crossed out, has flown off by 6.68 (was still flying at 6.75)
+      const wk = es(t, 6.03, 6.2, ease.back) * (1 - es(t, 6.45, 6.68, ease.in));
+      vis(willT, { x: 620 - es(t, 6.45, 6.68) * 160, y: 300 - es(t, 6.45, 6.68) * 380, r: Math.sin(Tm * 0.8) * 2, o: wk > 0.01 ? 1 : 0 });
+      vis(willX, { x: 620 - es(t, 6.45, 6.68) * 160, y: 316 - es(t, 6.45, 6.68) * 380, s: es(t, 6.25, 6.35), o: wk > 0.01 && t > 6.25 ? 1 : 0 });
 
-      S.cam.x = kf(t, [[0, 40], [1.0, 20], [2.0, 0], [3.0, 60], [3.5, -20], [4.2, 0], [5.3, 40], [6.9, 60]]);
-      S.cam.y = kf(t, [[0, 20], [1.0, 0], [2.0, -60], [3.0, -60], [4.2, 20], [5.3, -20], [6.9, -20]]);
-      S.cam.z = kf(t, [[0, 1.08], [1.0, 1.02], [2.0, 1.04], [3.5, 1.06], [4.2, 1.14], [5.3, 1.06], [6.9, 1.1]]);
+      S.cam.x = kf(t, [[0, 40], [1.0, 20], [2.0, 0], [3.0, 60], [3.5, -20], [4.2, 0], [5.3, 40], [6.7, 60]]);
+      S.cam.y = kf(t, [[0, 20], [1.0, 0], [2.0, -60], [3.0, -60], [4.2, 20], [5.3, -20], [6.7, -20]]);
+      S.cam.z = kf(t, [[0, 1.08], [1.0, 1.02], [2.0, 1.04], [3.5, 1.06], [4.2, 1.14], [5.3, 1.06], [6.7, 1.1]]);
     };
   },
 };

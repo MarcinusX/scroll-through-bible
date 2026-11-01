@@ -139,10 +139,10 @@ export default {
         const k = seg(t, 1.4 + sm.i * 0.1, 2.0 + sm.i * 0.1);
         vis(sm.el, { x: AX + Math.sin(k * 5 + sm.i) * 16 + k * 20, y: 300 - (1 - altIn) * 700 + 20 - k * 150, s: 0.7 + k * 1.3, o: altIn > 0.01 && k > 0 && k < 1 ? Math.min(1, (1 - k) * 2.5) * altIn : 0 });
       });
-      const dark = es(t, 1.15, 1.8) * (1 - es(t, 4.05, 4.5));
+      const dark = es(t, 1.12, 1.6) * (1 - es(t, 4.05, 4.5));   // swipe stop: the storm clouds are in by 1.65
       P.sky.blend(NIGHT, STORM, dark);
       clouds.forEach((cl) => {
-        const k = es(t, 1.1 + cl.i * 0.07, 1.8 + cl.i * 0.07) * (1 - es(t, 4.05 + cl.i * 0.03, 4.5 + cl.i * 0.03));
+        const k = es(t, 1.1 + cl.i * 0.05, 1.45 + cl.i * 0.05) * (1 - es(t, 4.05 + cl.i * 0.03, 4.5 + cl.i * 0.03));
         vis(cl.el, { x: lerp(cl.x0, cl.x1, k), y: cl.y, s: 1, o: 1 });
       });
       fade(P.moon, 1 - dark * 0.7);
@@ -150,14 +150,14 @@ export default {
       /* v3 — the plates, veiled */
       const pl = es(t, 2.0, 2.3, ease.out) * (1 - es(t, 2.95, 3.2, ease.in));
       plates.forEach((p, i) => vis(p.el, { x: p.x, y: 250 - (1 - pl) * 700, r: T ? Math.sin(T * 0.8 + i) * 1.2 : 0, o: pl > 0.01 ? 1 : 0 }));
-      const vk = es(t, 2.35, 2.75);
+      const vk = es(t, 2.3, 2.65);   // swipe stop: the veil is drawn by 2.65
       vis(veil, { x: lerp(-300, 480, vk), y: 262 - (1 - pl) * 700, o: pl > 0.01 && vk > 0.01 ? 1 : 0 });
 
       /* v4a — sparks into every lantern */
       const hk = bump(t, 3.0, 3.9);
       sparks.forEach(({ m, el }, i) => {
         const d = Math.abs(m.x - JX);
-        const k = es(t, 3.2 + d * 0.0006, 3.55 + d * 0.0006);
+        const k = es(t, 3.15 + d * 0.0004, 3.45 + d * 0.0004);   // swipe stop: every lantern has its spark by 3.6 and has flared by 3.67
         const [hx, hy] = hand(JX, J.y, J.s, false, 20 + hk * 60);
         const [lx, ly] = hand(m.x, m.y, m.s, m.flip, m.arm);
         vis(el, { x: lerp(hx, lx, k), y: lerp(hy, ly + 22, k) - Math.sin(k * PI) * 90, s: 1 - k * 0.3, o: k > 0.01 && k < 0.99 ? 1 : 0 });
@@ -171,7 +171,7 @@ export default {
       const worry = es(t, 0.35, 0.6) * (1 - es(t, 3.3, 3.7));
       D.forEach((m, i) => {
         const d = Math.abs(m.x - JX);
-        const flare = es(t, 3.5 + d * 0.0006, 3.65 + d * 0.0006);
+        const flare = es(t, 3.42 + d * 0.0004, 3.52 + d * 0.0004);
         lampK(m, 0.85 - dark * 0.3 + flare * (0.45 - es(t, 3.9, 4.3) * 0.3) + es(t, 4.1, 4.5) * 0.3, 0, T);
         fade(m.sad, worry);
         const up = es(t, 4.1, 4.4);

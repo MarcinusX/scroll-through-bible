@@ -75,8 +75,8 @@ export default {
         fade(m.el, d < 0.98 ? 1 : 0);
       });
       /* v31a: these are written — the pages fill */
-      const wr = es(t, 1.3, 1.8);
-      attr(linesL, 'opacity', wr); attr(linesR, 'opacity', es(t, 1.5, 1.95));
+      const wr = es(t, 1.3, 1.62);   // swipe stop: both pages written by x.7
+      attr(linesL, 'opacity', wr); attr(linesR, 'opacity', es(t, 1.42, 1.7));
       /* v31b: so that you may believe — the book turns to us */
       const lift = es(t, 2.05, 2.5);
       const pourK = es(t, 3.05, 3.6);

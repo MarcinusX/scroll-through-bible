@@ -99,22 +99,23 @@ export default {
       const speak = bump(t, 2.0, 4.0);
       jesus.set({ x: 800, y: FLOOR + 16, s: 1.06, armF: 20 + speak * 60 + es(t, 3.2, 3.5) * 30 * (1 - es(t, 3.9, 4.1)), armB: 10 + es(t, 2.1, 2.4) * 110 * (1 - es(t, 2.9, 3.1)) + es(t, 3.3, 3.6) * 130 * (1 - es(t, 3.95, 4.1)), head: -speak * 5, blink: blinkAt(T, 2) });
       const show = es(t, 1.9, 2.15, ease.out) * (1 - es(t, 4.0, 4.25, ease.in));
-      const fallK = es(t, 2.3, 2.85, ease.in) * (1 - es(t, 3.3, 3.9, ease.io));
+      // swipe stop: the Temple lies in pieces by 2.62 and stands again, shining, by 3.7
+      const fallK = es(t, 2.2, 2.62, ease.in) * (1 - es(t, 3.25, 3.62, ease.io));
       const lift = (1 - show) * -520;
       blocks.forEach((b) => {
         const f = Math.min(1, Math.max(0, fallK * 1.3 - (b.y / -200) * 0.3));
         pose(b.el, { x: MX + b.x + b.fx * f, y: MY + b.y + lift + (b.fy - b.y) * f - Math.sin(f * PI) * 30, r: b.fr * f, o: show > 0.02 ? 1 : 0 });
       });
       puffs.forEach((p, i) => {
-        const k = seg(t, 2.6 + i * 0.06, 3.0 + i * 0.06);
-        pose(p, { x: MX + (i - 1) * 120, y: FLOOR - 40 - k * 30, s: 0.5 + k * 1.3, o: bump(t, 2.6 + i * 0.06, 3.0 + i * 0.06) * 0.8 });
+        const k = seg(t, 2.4 + i * 0.05, 2.7 + i * 0.05);
+        pose(p, { x: MX + (i - 1) * 120, y: FLOOR - 40 - k * 30, s: 0.5 + k * 1.3, o: bump(t, 2.4 + i * 0.05, 2.7 + i * 0.05) * 0.8 });
       });
       days.forEach((d) => {
         const on = es(t, 3.05 + d.i * 0.14, 3.18 + d.i * 0.14);
         fade(d.lit, on);
         pose(d.el, { x: MX - 120 + d.i * 120, y: 190 - (1 - es(t, 2.95, 3.15, ease.out) * (1 - es(t, 3.95, 4.2))) * (UP - 100), r: Math.sin(T + d.i) * 2 });
       });
-      const shine = es(t, 3.75, 3.95) * show;
+      const shine = es(t, 3.5, 3.7) * show;
       pose(outline, { x: MX, y: MY + lift, o: shine, s: 1 + shine * 0.02 });
       pose(mGlow, { x: MX, y: MY - 100 + lift, s: 0.6 + shine * 0.6, o: shine });
 

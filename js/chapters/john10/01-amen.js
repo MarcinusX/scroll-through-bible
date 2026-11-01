@@ -45,7 +45,7 @@ export default {
       const talk = bump(t, 1.08, 1.95);
       const ak = [0, 1].map((i) => es(t, 1.15 + i * 0.18, 1.45 + i * 0.18, ease.out));
       amen.forEach((el, i) => { swing(el, [690, 910][i], 300 - (1 - ak[i]) * 700, ak[i] > 0.001 ? T : 0, 1.4, 0.9, i * 2); fade(el, ak[i] > 0.001 ? 1 : 0); });
-      const pk = es(t, 1.5, 1.95, ease.out);
+      const pk = es(t, 1.42, 1.68, ease.out);   // swipe stop: the plate (and the camera) have settled by 1.7
       vis(plate, { x: 800, y: lerp(-420, 110, pk), o: pk > 0.001 ? 1 : 0 });
       K.set(T, {
         j: { armF: 14 + speak * 36, armB: 8 + speak * 120, head: -4 * speak },
@@ -55,8 +55,8 @@ export default {
       });
       rings(DC.JX + 8, DC.FLOOR - 170, talk, T, { dir: 1, s0: 0.7, spread: 1.8 });
       S.cam.x = 0;
-      S.cam.y = kf(t, [[0, 20], [1, 10], [1.9, -80]]);
-      S.cam.z = kf(t, [[0, 1.0], [1, 1.1], [1.9, 1.04]]);
+      S.cam.y = kf(t, [[0, 20], [1, 10], [1.7, -80]]);
+      S.cam.z = kf(t, [[0, 1.0], [1, 1.1], [1.7, 1.04]]);
     };
   },
 };

@@ -43,7 +43,7 @@ export default {
       const walkK = es(t, 0.3, 1.45, ease.out);
       const jx = lerp(250, 790, walkK);
       const walking = walkK > 0 && walkK < 0.995;
-      const greet = es(t, 1.55, 1.75);
+      const greet = es(t, 1.5, 1.68);   // swipe stop: the greeting is done by 1.7
       jesus.set({ x: jx, y: G + 4, s: 1.0, walk: walking ? jx * 0.055 : undefined, armF: 14 + greet * 30, armB: 8 + greet * 120, head: -2 + greet * 3, blink: blinkAt(T) });
       disc.forEach((p, i) => {
         const x = jx - 230 + i * 78 - (1 - walkK) * 20 * i;
@@ -68,7 +68,7 @@ export default {
       fade(tagLaz, lk > 0.001 ? 1 : 0);
       /* "whom Jesus raised": golden footprints from the tomb to him */
       steps.forEach((el, i) => {
-        const k = es(t, 1.52 + i * 0.03, 1.6 + i * 0.03);
+        const k = es(t, 1.45 + i * 0.025, 1.52 + i * 0.025);   // swipe stop: the whole golden trail is lit by 1.72
         vis(el, { x: stepPts[i][0], y: stepPts[i][1], r: -12, s: 0.9, o: k * 0.9 });
       });
 

@@ -62,12 +62,12 @@ export default {
       attr(threadL, 'd', `M${PX} ${PY + 162}L${PX} ${lerp(PY + 162, 480, th).toFixed(1)}`);
       attr(threadL, 'opacity', th > 0.01 && pk > 0.5 ? 0.8 : 0);
       /* stones come into two hands; His words bounce off */
-      const stK = Math.max(es(t, 0.55, 0.75) * (1 - es(t, 1.0, 1.2)), es(t, 4.1, 4.35) * (1 - es(t, 5.0, 5.2)));
+      const stK = Math.max(es(t, 0.45, 0.65) * (1 - es(t, 1.0, 1.2)), es(t, 4.1, 4.35) * (1 - es(t, 5.0, 5.2)));
       slips.forEach((el, i) => {
-        const k = seg(t, 0.55 + i * 0.08, 0.9 + i * 0.08);
+        const k = seg(t, 0.3 + i * 0.06, 0.52 + i * 0.06);   // swipe stop: every word has bounced off and lies at their feet by 0.7
         const x = k < 0.6 ? lerp(DC.JX + 30, 940, k / 0.6) : lerp(940, 900 - i * 20, (k - 0.6) / 0.4);
         const y = k < 0.6 ? lerp(DC.FLOOR - 180, DC.FLOOR - 170, k / 0.6) : lerp(DC.FLOOR - 170, DC.FLOOR - 10, (k - 0.6) / 0.4);
-        vis(el, { x, y, r: k * 160, o: k > 0 && k < 1 ? 1 : 0 });
+        vis(el, { x, y, r: k * 160, o: k > 0 ? 1 - es(t, 1.0, 1.2) : 0 });   // they lie there until the stones go
       });
       /* v38 — light over Him, shadow over them; v41a — deeper */
       const rk = es(t, 1.1, 1.4, ease.out) * (1 - es(t, 2.0, 2.2) * 0.6);

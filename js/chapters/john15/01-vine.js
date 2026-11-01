@@ -72,13 +72,13 @@ export default {
         const a = es(t, 0.15 + m.i * 0.02, 0.95 + m.i * 0.004, ease.out);
         const look = es(t, 1.2, 1.5) * (1 - es(t, 4.7, 5));
         placeM(m, T, { x: lerp(from, m.x, a), walk: a > 0 && a < 1 ? a * 20 + m.i : undefined, head: -look * (m.s < 0.85 ? 10 : 14) + bump(t, 3.1, 3.9) * 6,
-          armF: bump(t, 4.55 + m.i * 0.02, 5) * 40 });
+          armF: bump(t, 4.4 + m.i * 0.02, 5) * 40 });
       });
       lampsAll(ms, 0.75 + bump(t, 1.2, 2) * 0.25);
       /* v1a — the vine grows up behind Him */
-      const grow = es(t, 1.08, 1.85);
-      const ripe = es(t, 4.55, 4.9);
-      const fruit = es(t, 3.05, 3.35) * 0.62 + es(t, 4.5, 4.85) * 0.5;
+      const grow = es(t, 1.08, 1.7);   // swipe stop: the vine has grown by 1.7
+      const ripe = es(t, 4.4, 4.68);   // swipe stop: pruned and ripe by 4.7
+      const fruit = es(t, 3.05, 3.35) * 0.62 + es(t, 4.38, 4.66) * 0.5;
       vine.set({ o: grow > 0 ? 1 : 0, grow, sap: es(t, 1.6, 2.2), fruit, ripe, glow: es(t, 1.1, 1.5) * (0.9 - bump(t, 3, 4) * 0.3), T });
       beads(T, es(t, 2.0, 2.2) * (1 - es(t, 3.0, 3.2)));
       const wk = es(t, 1.25, 1.5, ease.out) * (1 - es(t, 2.05, 2.3, ease.in));
@@ -94,19 +94,19 @@ export default {
       dry.set({ x: dsx + lx, y: dsy + ly, r: l1 * -8 - l2 * 10, o: dryO, grow: 1, dry: 1, fruit: 0 });
       /* the vinedresser's hook of light, on a golden thread from the light above:
          v1b it comes down and tends the crown; v2a it catches the dry branch and lifts it away; v2b it prunes */
-      const pr = seg(t, 4.12, 4.6);
+      const pr = seg(t, 4.1, 4.42);   // swipe stop: the pruning is done by 4.42 and the cut shoots have fallen by 4.62
       const stop = Math.min(shoots.length - 1, Math.floor(pr * shoots.length));
       const s0 = shoots[stop];
       const sw = T ? Math.sin(T * 1.3) * 5 : 0;
       let hx = kf(t, [[2.1, 800], [2.5, 860], [2.95, 900], [3.15, 740], [3.3, dsx - 110], [4.0, dsx - 110]]) + lx;
       let hy = kf(t, [[2.1, 120], [2.5, 236], [2.95, 226], [3.15, 200], [3.3, dsy - 64]]) + ly;
       if (t > 4.02) { hx = s0.x - 50; hy = s0.y - 6 - bump((pr * shoots.length) % 1, 0, 1) * 12; }
-      const hookO = es(t, 2.12, 2.3) * (1 - es(t, 3.9, 4.0)) + es(t, 4.02, 4.12) * (1 - es(t, 4.66, 4.8));
+      const hookO = es(t, 2.12, 2.3) * (1 - es(t, 3.9, 4.0)) + es(t, 4.02, 4.12) * (1 - es(t, 4.45, 4.58));
       vis(hook, { x: hx + sw * (t < 4 ? 1 : 0), y: hy, r: t > 4.02 ? -14 + Math.sin(pr * PI * shoots.length * 2) * 14 : -6 + (T ? Math.sin(T * 1.1) * 4 : 0), o: hookO });
       th(0, 800, 110, hx + sw * (t < 4 ? 1 : 0), hy, hookO * 0.8);
       shoots.forEach((sh) => {
-        const a0 = 4.12 + ((sh.j + 0.8) / shoots.length) * 0.48;
-        const f = es(t, a0, a0 + 0.3, ease.in);
+        const a0 = 4.1 + ((sh.j + 0.8) / shoots.length) * 0.32;
+        const f = es(t, a0, a0 + 0.2, ease.in);
         vis(sh.el, { x: sh.x + f * 20, y: sh.y + f * 170, r: sh.r + f * 90, o: es(t, 1.8, 1.9) * (1 - f) });
       });
       S.cam.x = kf(t, [[0, 0], [3, 0], [3.4, -40], [3.95, -30], [4.15, 60], [4.6, 60], [5, 30]]);

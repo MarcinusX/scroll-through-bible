@@ -77,8 +77,8 @@ export default {
       });
       flames(1, T, { boost: es(t, 1.1, 1.6) });
       idols.forEach((d, i) => {
-        const f = es(t, 1.45 + i * 0.08, 1.85 + i * 0.08, ease.in);
-        vis(d.el, { x: d.x + f * (i % 2 ? 30 : -30), y: d.y + f * 520, r: f * (i % 2 ? 50 : -60), o: (1 - es(t, 1.7 + i * 0.08, 1.9 + i * 0.08)) });
+        const f = es(t, 1.3 + i * 0.06, 1.55 + i * 0.06, ease.in);   // swipe stop: every idol has fallen by 1.73
+        vis(d.el, { x: d.x + f * (i % 2 ? 30 : -30), y: d.y + f * 520, r: f * (i % 2 ? 50 : -60), o: (1 - es(t, 1.45 + i * 0.06, 1.6 + i * 0.06)) });
         vis(d.str, { x: d.x, y: d.y - f * 900, o: 1 - f });
       });
 

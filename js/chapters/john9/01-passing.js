@@ -75,7 +75,7 @@ export default {
       const JK = [[1.0, -120], [1.6, G.JX]];
       const jx = kf(t, JK, ease.out);
       const jw = moving(t, JK, 1);
-      const see = es(t, 1.5, 1.75);
+      const see = es(t, 1.45, 1.68);   // swipe stop: He has seen him, the tag is down, by 1.7
       const raise = bump(t, 3.05, 3.95);
       jesus.set({ x: jx, y: G.FLOOR + 8, s: 1.02, walk: jw ? jx * 0.07 : undefined, armF: 16 + see * 26 - raise * 10, armB: 8 + es(t, 2.1, 2.4) * 10, head: see * 8 - es(t, 2.2, 2.5) * 10, blink: blinkAt(T, 1) });
       const [hx, hy] = headAt(G.BEGX, G.FLOOR + 4 + 62, 1, true);
@@ -83,7 +83,7 @@ export default {
 
       /* the disciples follow; v2a — they ask; v2b — they point from plate to plate */
       dis.forEach((d) => {
-        const keys = [[1.05 + d.i * 0.06, -230 - d.i * 70], [1.66 + d.i * 0.06, 690 - d.i * 64], [2.1, 690 - d.i * 64], [2.5, 704 - d.i * 60]];
+        const keys = [[1.0 + d.i * 0.05, -230 - d.i * 70], [1.52 + d.i * 0.05, 690 - d.i * 64], [2.1, 690 - d.i * 64], [2.5, 704 - d.i * 60]];   // swipe stop: all three in place by 1.62
         const x = kf(t, keys, ease.out);
         const w = moving(t, keys, 1);
         const pointA = d.i === 0 ? bump(t, 3.1, 3.95) : 0;
@@ -97,7 +97,7 @@ export default {
       vis(ask, { x: ph + 30, y: pv - 44, s: ak, o: ak > 0.01 ? 1 : 0 });
 
       /* the tag: "blind from birth" */
-      const tk = es(t, 1.45, 1.85, ease.out) * (1 - es(t, 2.9, 3.15, ease.in));
+      const tk = es(t, 1.4, 1.7, ease.out) * (1 - es(t, 2.9, 3.15, ease.in));
       drop(tag, G.BEGX + 10, 360, tk, T, { amp: 1.2 });
 
       /* v2b — the two plates, each with a dark scrap, and a question between */

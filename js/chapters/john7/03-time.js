@@ -95,7 +95,7 @@ export default {
 
       /* the brothers: listen, then pick up their things and set off (v8a) */
       const ready = es(t, 4.05, 4.12);
-      const leave = es(t, 4.35, 4.95, ease.in);
+      const leave = es(t, 4.25, 4.66, ease.in);   // swipe stop: the brothers have gone off to the feast by 4.66 (was mid-way at 4.75)
       bros.forEach((b) => {
         const x = BX[b.i] + leave * (560 + b.i * 20);
         const calm = bump(t, 2.05, 3.0);

@@ -74,18 +74,18 @@ export default {
       const sk = seg(t, 0.16, 0.36);
       vis(spit, { x: khx + 26 + sk * 22, y: khy + 18 + sk * sk * 120, o: sk > 0 && sk < 1 ? 1 : 0 });
       const lx = KX + 50, ly = G.FLOOR + 10;
-      const grow = es(t, 0.4, 0.9);
+      const grow = es(t, 0.4, 0.7);   // swipe stop: the clay is made by 0.7
       const [fx_, fy_] = hand(kx, G.FLOOR + 6, 1.02, false, aF, jl, DY.kneel);
       pose(lump, { x: lx, y: ly, s: 0.1 + grow * 0.9 - es(t, 1.05, 1.3) * 0.35, o: grow > 0.02 ? 1 : 0 });
       dustD.forEach((d) => {
         const k = t > 0.45 && t < 0.95 ? ((T * 1.2 + d.i / 6) % 1) : 0;
         vis(d.el, { x: lx + Math.cos(d.a) * k * 30, y: ly - 6 + Math.sin(d.a) * k * 24, o: k ? (1 - k) * 0.9 : 0 });
       });
-      const carry = t > 1.05 && t < 1.8;
+      const carry = t > 1.05 && t < 1.55;
       vis(pinch, { x: fx_, y: fy_ - 3, o: carry ? 1 : 0 });
 
       /* the man: sits, face lifted; the clay on his eyes; gets up with his stick (v7) */
-      const on = es(t, 1.55, 1.75);
+      const on = es(t, 1.45, 1.62);   // swipe stop: the clay is on his eyes by 1.62
       const rise = es(t, 2.55, 2.62);
       const [mhx, mhy] = headAt(G.BEGX, G.FLOOR + 4, 1, true, DY.sit);
       vis(touch, { x: mhx - 12, y: mhy - 2, s: bump(t, 1.5, 1.95) * 1.2, r: T * 40, o: t > 1.5 && t < 1.95 ? 1 : 0 });
@@ -104,9 +104,9 @@ export default {
       });
 
       /* v7 — the tag comes down with the name; it turns over: "which means: Sent" */
-      const tk = es(t, 2.15, 2.5, ease.out);
+      const tk = es(t, 2.1, 2.38, ease.out);
       drop(tag, P ? 1010 : 1080, 330, tk, T, { amp: 1.1 });   // phone: the whole tag inside the screen
-      const fl = es(t, 2.55, 2.8);
+      const fl = es(t, 2.4, 2.62);   // swipe stop: the tag has turned to 'Posłany' by 2.62
       const sx = Math.cos(fl * PI);
       pose(flipper, { sx: Math.max(0.02, Math.abs(sx)) });
       fade(nS, sx > 0 ? 1 : 0); fade(mS, sx > 0 ? 0 : 1);

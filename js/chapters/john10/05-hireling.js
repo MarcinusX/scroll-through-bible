@@ -75,7 +75,7 @@ export default {
       const htk = es(t, 0.1, 0.4, ease.out) * (1 - es(t, 0.8, 1.0, ease.in));
       swing(tagH, 1060, 300 - (1 - htk) * 700, htk > 0.001 ? T : 0, 1.2, 0.8);
       fade(tagH, htk > 0.001 ? 1 : 0);
-      const creep = es(t, 0.3, 0.85);
+      const creep = es(t, 0.3, 0.68);   // swipe stop: the wolf has crept up and the hired man has seen it by 0.7
       const leap = es(t, 2.1, 2.45);
       const away = es(t, 2.55, 2.95, ease.in);
       const wtk = es(t, 0.4, 0.7, ease.out) * (1 - es(t, 0.95, 1.1, ease.in));
@@ -89,12 +89,12 @@ export default {
       pose(w, { x: wx, y: wy - (trot ? Math.abs(Math.sin(T * 10)) * 4 : 0), s: 1.3, sx: flip ? -1 : 1, r: wr, o: creep > 0.001 && away < 0.98 ? 1 : 0 });
       pose(wHd, { x: 40, y: -52, r: creep < 1 ? 8 : -6 + bump(t, 1.2, 2) * 10 });
       pose(wTl, { x: -40, y: -46, r: (trot ? Math.sin(T * 8) * 8 : 0) + leap * -10, ox: -40, oy: -46 });
-      const sees = es(t, 0.65, 0.8);
+      const sees = es(t, 0.55, 0.68);
       const up = es(t, 1.08, 1.15);
       const run = es(t, 1.15, 1.9, ease.in);
       hireSit.set({ x: 1060, y: 644, s: 1.0, flip: sees < 0.5, armF: 40 + (T ? Math.sin(T * 3) * 6 : 0) * (1 - sees), armB: 10 + sees * 60, head: 8 - sees * 16, o: 1 - up, blink: sees > 0.5 ? 0 : blinkAt(T, 3) });
       hireRun.set({ x: lerp(1060, 1420, run), y: 650, s: 1.0, flip: false, walk: run > 0 && run < 1 ? T * 16 : undefined, amt: 1.6, lean: 12 * (run > 0 ? 1 : 0), armF: 50, armB: 60, head: -6, o: up * (run < 0.98 ? 1 : 0), blink: 0 });
-      const bk = es(t, 0.7, 0.8, ease.back) * (1 - es(t, 1.3, 1.45));
+      const bk = es(t, 0.58, 0.68, ease.back) * (1 - es(t, 1.3, 1.45));
       vis(bangH, { x: 1110, y: 420, s: bk * 1.4, o: bk > 0.01 ? 1 : 0 });
       vis(dropped, { x: lerp(1030, 1000, es(t, 1.1, 1.3)), y: 656, r: lerp(10, 84, es(t, 1.1, 1.35, ease.in)), o: up > 0.01 ? 1 : 0 });
       /* v12c — the wolf snatches and scatters them */
@@ -104,8 +104,8 @@ export default {
         const [dx, dy] = DIR[i];
         let x = m.x + dx * scat * SCAT, y = m.y + dy * scat * 50;
         const hop = scat > 0 && scat < 1 ? Math.abs(Math.sin(T * 13 + i)) * 5 : 0;
-        const graze = (1 - es(t, 0.7, 0.9)) * (i % 2 ? 1 : 0.4);
-        const look = es(t, 0.75, 1.0) * (1 - scat);
+        const graze = (1 - es(t, 0.55, 0.7)) * (i % 2 ? 1 : 0.4);
+        const look = es(t, 0.6, 0.72) * (1 - scat);
         m.r.set({ x, y, s: m.lamb ? 0.8 : 0.94, flip: scat > 0.05 ? dx < 0 : x > 800, head: graze * 32 - look * 12 + (i % 3 === 0 ? bump(t, 3.2, 3.9) * -18 : 0), hop, o: m.lamb ? (leap > 0.9 ? 0 : 1) : 1 });
       });
       // the lamb in the wolf's jaws
@@ -120,7 +120,7 @@ export default {
       vis(glint, { x: FX + 12, y: hf(FX) - 62, s: 0.8 + (T ? Math.sin(T * 5) * 0.2 : 0), o: far * es(t, 3.2, 3.4) });
       qs.forEach((el, i) => {
         const m = flock[[0, 2, 4][i]];
-        const k = es(t, 3.35 + i * 0.1, 3.55 + i * 0.1, ease.back);
+        const k = es(t, 3.32 + i * 0.07, 3.5 + i * 0.07, ease.back);   // swipe stop: all three ? up by 3.64
         vis(el, { x: m.x + DIR[m.i][0] * scat * SCAT + 20, y: m.y + DIR[m.i][1] * scat * 50 - 90, s: k * 0.8, o: k > 0.01 ? 1 : 0 });
       });
       S.cam.x = S.portrait

@@ -76,20 +76,20 @@ export default {
       pose(ascEl, { x: P ? 965 : 1000, y: lerp(-500, 260, ak), r: Math.sin(T * 0.8), o: ak > 0.01 ? 1 : 0 });
       pose(riseEl, { y: -es(t, 2.3, 2.9) * 40 });
       /* v63a — the Spirit gives life: a dove passes, the sprig bursts into leaf */
-      const fly = es(t, 3.05, 3.7, (u) => u);
+      const fly = es(t, 3.05, 3.6, (u) => u);   // swipe stop: the dove has passed and the sprig is in flower by 3.7 (was 3.9)
       pose(dv, { x: lerp(300, 1300, fly), y: 420 - Math.sin(fly * PI) * 120, s: 1.1, o: fly > 0 && fly < 1 ? 1 : 0 });
       if (fly > 0 && fly < 1) flapWings(dv, T || t * 20, 34, 7);
       leaves.forEach((lf) => {
-        const k = es(t, 3.35 + lf.i * 0.04, 3.55 + lf.i * 0.04, ease.back);
+        const k = es(t, 3.28 + lf.i * 0.03, 3.44 + lf.i * 0.03, ease.back);
         pose(lf.el, { x: lf.x, y: lf.y, s: k, o: k > 0.01 ? 1 : 0 });
       });
-      const bk = es(t, 3.7, 3.9, ease.back);
+      const bk = es(t, 3.52, 3.68, ease.back);
       pose(bloom, { x: 674, y: FEET - 118, s: bk, o: bk > 0.01 ? 1 : 0 });
       /* v63b — My words are spirit and life */
       const [jhx, jhy] = headAt(JX, FEET, 1.08, false);
       slips.forEach((s) => {
-        const k = es(t, 4.05 + s.i * 0.06, 4.45 + s.i * 0.06);
-        const turn = es(t, 4.4 + s.i * 0.05, 4.6 + s.i * 0.05);
+        const k = es(t, 4.05 + s.i * 0.04, 4.4 + s.i * 0.04);   // swipe stop: every word has turned to light by 4.7 (was 4.85)
+        const turn = es(t, 4.38 + s.i * 0.04, 4.5 + s.i * 0.04);
         const x = jhx + 30 + Math.cos(s.a) * k * 260, y = jhy + Math.sin(s.a) * k * 180 - k * 40;
         pose(s.el, { x, y, r: k * 30, o: seg(t, 4.05, 4.1) * (1 - turn) });
         pose(s.l, { x, y, s: 0.5 + turn * 0.6, o: turn * (0.8 + Math.sin(T * 2 + s.i) * 0.2) });

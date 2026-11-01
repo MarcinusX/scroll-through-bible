@@ -95,17 +95,17 @@ export default {
       /* v32b — "my Father gives you the true bread from heaven" */
       const rk = es(t, 3.2, 3.45) * (1 - es(t, 5.05, 5.3) * 0.6);
       pose(rad, { x: JX, y: 170, s: 0.8 + rk * 0.3, r: T * 3, o: rk });
-      const desc = es(t, 3.4, 4.6, ease.io);
+      const desc = es(t, 3.4, 4.45, ease.io);   // swipe stop: the bread has come down into Him and the world is alight by 4.7 (was 5.05)
       const [jhx, jhy] = headAt(JX, FEET, 1.06, false);
-      const into = es(t, 4.45, 4.65);
+      const into = es(t, 4.35, 4.5);
       pose(bread, { x: JX + 4, y: lerp(230, jhy + 10, desc), s: 1 - into * 0.6, r: Math.sin(T) * 4, o: seg(t, 3.35, 3.45) * (1 - into) });
       /* v33 — the bread of God comes down and gives life to the world */
-      const life = es(t, 4.5, 4.8);
+      const life = es(t, 4.42, 4.66);
       pose(jGlow, { x: JX, y: FEET - 130, s: 0.6 + life * 0.8, o: 0.2 + life * 0.7 });
-      const wk = es(t, 4.4, 4.7, ease.out);
+      const wk = es(t, 4.35, 4.62, ease.out);
       pose(world, { x: WX, y: lerp(-500, 260, wk), r: Math.sin(T * 0.7) * 2, o: wk > 0.01 ? 1 : 0 });
       sparks.forEach((sp, i) => {
-        const k = es(t, 4.6 + i * 0.05, 4.8 + i * 0.05);
+        const k = es(t, 4.45 + i * 0.03, 4.57 + i * 0.03);
         const a = (i / 6) * PI * 2 + T * 0.5;
         pose(sp, { x: WX + Math.cos(a) * 80, y: 260 + Math.sin(a) * 80, s: k * 0.8, r: T * 40, o: k * (0.7 + Math.sin(T * 3 + i) * 0.3) });
       });

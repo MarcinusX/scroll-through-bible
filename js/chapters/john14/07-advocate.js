@@ -74,11 +74,12 @@ export default {
       vis(above, { x: 800, y: 240, s: 0.6 + es(t, 1.1, 1.4) * 0.4, o: es(t, 1.1, 1.35) * (1 - es(t, 2.05, 2.4)) });
       // the dove's flight
       let dx = 800, dy = 150, face = 1;
-      const d1 = es(t, 1.35, 1.85, ease.inOut);
+      const d1 = es(t, 1.35, 1.7, ease.inOut);   // swipe stop: the dove has come down by 1.7
       dx = 800; dy = lerp(230, 470, d1);
-      const row = seg(t, 2.05, 2.75);
+      const row = seg(t, 2.05, 2.62);   // swipe stop: the dove has passed every lamp by 2.62
       if (row > 0) { dx = lerp(420, 1180, ease.io(row)) * (row < 0.08 ? row / 0.08 : 1) + (row < 0.08 ? 800 * (1 - row / 0.08) : 0); dy = 510 + Math.sin(row * PI * 6) * 14; }
-      const toWin = es(t, 3.02, 3.4, ease.inOut), back = es(t, 3.6, 3.95, ease.inOut), home = es(t, 4.05, 4.4, ease.inOut);
+      const toWin = es(t, 3.02, 3.4, ease.inOut), back = es(t, 3.5, 3.7, ease.inOut), home = es(t, 4.05, 4.4, ease.inOut);
+      // swipe stop: shut out, the dove is back over the table by 3.7
       if (t > 2.75) { dx = lerp(1180, 1070, toWin); dy = lerp(510, 430, toWin); }
       if (back > 0) { dx = lerp(1070, 960, back); dy = lerp(430, 470, back) - Math.sin(back * PI) * 30; face = -1; }
       if (home > 0) { dx = lerp(960, 800, home); dy = lerp(470, 440, home); face = -1; }
@@ -88,7 +89,7 @@ export default {
       if (dvo > 0.01) flapWings(dvBird, T || t * 3, 30, 7);
       /* v16b — a lamp kindles beside each of them and stays */
       lamps.forEach((l, i) => {
-        const k = es(t, 2.08 + ((l.m.x - 420) / 760) * 0.62, 2.16 + ((l.m.x - 420) / 760) * 0.62);
+        const k = es(t, 2.08 + ((l.m.x - 420) / 760) * 0.5, 2.16 + ((l.m.x - 420) / 760) * 0.5);
         pose(l.el, { x: l.x, y: TOP - 1, s: 0.9, sx: l.m.flip ? -1 : 1 });
         lightLamp(l.el, k * (1 - es(t, 4.1, 4.5) * 0.4), T, i);
         // v17b — their flames go into their hearts
@@ -116,7 +117,7 @@ export default {
         const d = Math.abs(m.x - 800);
         const handOn = es(t, 0.12 + d * 0.0006, 0.3 + d * 0.0006) * (1 - es(t, 0.95, 1.15));
         const watchDove = es(t, 1.4, 1.7) * (1 - es(t, 2.9, 3.1));
-        const toWindow = es(t, 3.05, 3.3) * (1 - es(t, 3.6, 3.9));
+        const toWindow = es(t, 3.05, 3.3) * (1 - es(t, 3.5, 3.7));
         sitAt(m, SEAT, T, { armF: 36 - handOn * 20 + es(t, 4.3, 4.6) * 10, armB: 14, head: -watchDove * 12 - toWindow * 4 + es(t, 4.3, 4.6) * 4, flip: toWindow > 0.5 && m.x < 1000 ? false : m.flip });
       });
 

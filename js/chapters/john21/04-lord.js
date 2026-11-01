@@ -72,7 +72,7 @@ export default {
       if (D.mistL) { D.mistL.fade(0.45 * (1 - es(t, 0.2, 0.7))); D.mistL.shift(60 + es(t, 0.2, 0.8) * 200, 0); }
 
       /* the boat: heeling with the net, then coming in */
-      const come = es(t, 4.05, 4.9);
+      const come = es(t, 4.05, 4.68);   // swipe stop: the boat is in, with its net, by x.7
       const bx = lerp(B0.x, B1.x, come), by = lerp(B0.y, B1.y, come), bs = lerp(B0.s, B1.s, come);
       const leapK = es(t, 3.05, 3.3);
       const rockA = Math.sin(T * 1.1) * 1.2 + 5 + bump(t, 3.05, 3.4) * -6;

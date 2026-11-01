@@ -148,10 +148,11 @@ export default {
       vpose(earP, { x: HX + 130, y: jhy - 60, s: es(t, 3.2, 3.45, ease.back) * (1 - su), o: seg(t, 3.2, 3.25) * (1 - su) });
       voice(jhx, jhy + 4, bump(t, 3.05, 3.9) + bump(t, 6.05, 6.95), T, { spread: 2 });
       slips.forEach((sl) => {
-        const k = seg(t, 4.05 + sl.i * 0.05, 4.45 + sl.i * 0.05), fall = es(t, 4.45 + sl.i * 0.05, 4.8 + sl.i * 0.05, ease.in);
+        // swipe stop: every slip has fallen (one is caught) by 4.65
+        const k = seg(t, 4.05 + sl.i * 0.03, 4.35 + sl.i * 0.03), fall = es(t, 4.35 + sl.i * 0.03, 4.6 + sl.i * 0.03, ease.in);
         const tgt = PEOPLE[sl.i % 6];
         const x = lerp(jhx, tgt.x, ease.out(k)), y = lerp(jhy, GY - 190, ease.out(k)) - Math.sin(k * PI) * 60 + fall * 180;
-        const keep = sl.i === 2 && t > 4.7;   // the one that is caught (v33)
+        const keep = sl.i === 2 && t > 4.42;   // the one that is caught (v33)
         vpose(sl.el, { x: keep ? sealer.x - 50 : x, y: keep ? GY - 120 : y, r: fall * 80 + sl.i * 10, s: 1.5, o: k > 0 ? (keep ? 1 - es(t, 5.3, 5.4) : 1 - es(t, 4.8, 5.0)) : 0 });
       });
 

@@ -100,7 +100,7 @@ export default {
       /* b4 — chosen: a star over each of the Twelve */
       stars.forEach(({ m, el }) => {
         const d = Math.abs(m.x - JX) / 62;
-        const k = es(t, 4.1 + d * 0.07, 4.3 + d * 0.07, ease.back) * (1 - es(t, 4.95, 5.15));
+        const k = es(t, 4.05 + d * 0.05, 4.22 + d * 0.05, ease.back)   /* swipe stop: a star over every one by ~4.6 */ * (1 - es(t, 4.95, 5.15));
         const [hx, hy] = headAt(m.x, SEAT, m.s, m.flip, 62);
         vis(el, { x: hx, y: hy - 42, s: k * 0.9, r: t * 60, o: k > 0.01 ? 1 : 0 });
       });
@@ -121,7 +121,7 @@ export default {
       vis(pA, { x: 610, y: Y - (1 - ak) * 700, r: T ? Math.sin(T * 0.8) * 1 : 0, o: ak > 0.01 ? 1 : 0 });
       vis(pB, { x: JX, y: Y - (1 - bk) * 700, r: T ? Math.sin(T * 0.8 + 1) * 1 : 0, o: bk > 0.01 ? 1 : 0 });
       vis(pC, { x: 990, y: Y - (1 - cc) * 700, r: T ? Math.sin(T * 0.8 + 2) * 1 : 0, o: cc > 0.01 ? 1 : 0 });
-      const k1 = es(t, 7.45, 7.75), k2 = es(t, 8.45, 8.75);
+      const k1 = es(t, 7.4, 7.65), k2 = es(t, 8.4, 8.65);   // swipe stop: each gold link is drawn by x.65
       vis(l1, { x: 668, y: Y, sx: Math.max(0.02, k1), o: k1 > 0.01 ? 1 : 0 });
       vis(l2, { x: 858, y: Y, sx: Math.max(0.02, k2), o: k2 > 0.01 ? 1 : 0 });
 

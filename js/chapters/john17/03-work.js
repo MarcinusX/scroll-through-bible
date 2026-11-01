@@ -66,12 +66,12 @@ export default {
       P.update(T);
 
       /* v4a — glory on the earth: the trail lights up, light rises from it */
-      const tk = es(t, 0.1, 0.75);
+      const tk = es(t, 0.1, 0.65);   // swipe stop: the whole trail is lit by 0.66
       drawPath(trailP, tk);
       const TR = 1 - es(t, 2.1, 2.5);
       fade(trail, TR);
       STOPS.forEach(([x, y], i) => {
-        const on = es(t, 0.15 + i * 0.08, 0.3 + i * 0.08) * (1 - es(t, 1.1 + i * 0.07, 1.3 + i * 0.07));
+        const on = es(t, 0.12 + i * 0.07, 0.24 + i * 0.07) * (1 - es(t, 1.1 + i * 0.07, 1.3 + i * 0.07));
         vis(flares[i], { x, y, s: 0.6 + on * 0.6, o: on });
       });
       vis(upR, { x: 0, y: 0, o: bump(t, 0.5, 1.15) });
@@ -79,23 +79,23 @@ export default {
       /* v4b — the seven signs rise and hang in an arc; the line joins them */
       const lift = es(t, 2.05, 2.55, ease.in);
       signs.forEach((el, i) => {
-        const u = es(t, 1.05 + i * 0.07, 1.4 + i * 0.07, ease.out);
+        const u = es(t, 1.05 + i * 0.05, 1.3 + i * 0.05, ease.out);   // swipe stop: all seven signs hang in their arc, lit and joined, by 1.7
         const [ax, ay] = ARC[i];
         const x = lerp(STOPS[i][0], ax, u), y = lerp(STOPS[i][1], ay, u) - Math.sin(u * PI) * 40;
         const gy = lerp(y, 150, lift), gx = lerp(x, JX + (ax - JX) * 0.15, lift);
         const glow = el.__g || (el.__g = el.querySelector('.sg'));
-        fade(glow, es(t, 1.45 + i * 0.04, 1.6 + i * 0.04));
+        fade(glow, es(t, 1.3 + i * 0.04, 1.42 + i * 0.04));
         vis(el, { x: gx, y: gy + (T ? Math.sin(T * 1.2 + i) * 2 : 0), s: (0.5 + u * 0.5) * (1 - lift * 0.7), o: u > 0.01 ? 1 - es(t, 2.35, 2.6) : 0 });
       });
-      drawPath(doneP, es(t, 1.55, 1.9));
+      drawPath(doneP, es(t, 1.4, 1.7));
       fade(done, 1 - es(t, 2.0, 2.2));
 
       /* v5a — glorify Me with Yourself: the light comes down and grows; the world starts to fold away */
-      const fold = es(t, 2.3, 3.4);
+      const fold = es(t, 2.3, 2.7);   // swipe stop: the world has folded away (no half-faded Eleven) by 2.7
       P.fold(fold);
-      dL.fade(1 - es(t, 2.4, 3.0));
+      dL.fade(1 - es(t, 2.35, 2.65));
       dL.shift(0, fold * 370);   // with the ground they sit on
-      fx.fade(1 - es(t, 2.3, 2.8));
+      fx.fade(1 - es(t, 2.3, 2.6));
       fx.shift(0, fold * 370);
       flames(1, T);
       D.forEach((m) => { put(m, T, { head: -12 - es(t, 1.1, 1.5) * 6 }); lampK(m, 0.85 * (1 - fold)); });
@@ -109,7 +109,7 @@ export default {
       vis(great, { x: JX, y: 300, s: 0.6 + gk * 0.4, r: t * 6, o: gk });
       const fk = es(t, 3.15, 3.5, ease.back);
       vis(flame, { x: JX, y: 300 + 48, s: fk * 0.9 * (1 + (T ? Math.sin(T * 3) * 0.02 : 0)), o: fk > 0.01 ? 1 : 0 });
-      const rk = es(t, 3.3, 3.8);
+      const rk = es(t, 3.3, 3.68);   // swipe stop: the ring is closed by 3.68
       vis(ring, { x: JX, y: 330, sy: 1.18, r: -T * 2, o: rk > 0.01 ? 1 : 0 });
       drawRing(ring, rk);
       vis(jGlow, { x: JX, y: JY - 110, s: 0.8 + gk * 0.6, o: 0.3 + gk * 0.5 });

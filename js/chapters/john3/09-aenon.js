@@ -121,7 +121,7 @@ export default {
       /* v22a — the road into Judea */
       const JK = [[-0.2, [-120, 610]], [0.8, [640, 640]], [1.05, [800, RIV]]];
       const [jx, jy] = kf(t, JK, ease.sine);
-      const pour = bump(t, 1.35, 1.8);
+      const pour = es(t, 1.3, 1.45) * (1 - es(t, 1.84, 1.97));   // swipe stop: the water is still pouring at 1.75
       jesus.set({ x: jx, y: jy, s: 1, walk: moving(t, JK, 1) ? jx * 0.05 : undefined, armF: 20 + pour * 80 + es(t, 1.05, 1.2) * 20, armB: 10 + pour * 20, head: pour * 8, blink: blinkAt(T, 2) });
       fade(S.$('shA'), es(t, 1.0, 1.1));
       disc.forEach((d) => {
@@ -136,7 +136,7 @@ export default {
       kneeler.set({ x: lerp(1040, 900, kin), y: RIV, s: 0.95, flip: true, o: kin, head: 10 + pour * 8, armF: 50, armB: 40, blink: blinkAt(T, 4) });
       const [px, py] = hand(jx, jy, 1, false, 20 + pour * 80);
       const fall = (T * 1.6) % 1;
-      vpose(pourA, { x: px + 12 + fall * 8, y: py + 8 + fall * 44, o: seg(t, 1.45, 1.5) * (1 - seg(t, 1.72, 1.78)) });
+      vpose(pourA, { x: px + 12 + fall * 8, y: py + 8 + fall * 44, o: seg(t, 1.45, 1.5) * (1 - seg(t, 1.84, 1.9)) });
 
       /* v23 — John at Aenon; many springs */
       springs.forEach((sp) => vpose(sp.jet, { x: 0, y: -45, sy: (0.4 + es(t, 2.2 + sp.i * 0.05, 2.5 + sp.i * 0.05) * 0.6) * (1 + Math.sin(T * 7 + sp.i) * 0.07), o: es(t, 2.2 + sp.i * 0.05, 2.3 + sp.i * 0.05) }));

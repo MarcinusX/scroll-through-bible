@@ -73,13 +73,13 @@ export default {
       runV(rhx - 14, rhy + 4, bump(t, 0.4, 1.0), T, { dir: -1 });
       /* v13a — branches from the palms; they run out */
       const pick = (m) => es(t, 1.05 + (m.i % 4) * 0.06, 1.25 + (m.i % 4) * 0.06);
-      const run = (m) => es(t, 1.3 + (m.i % 5) * 0.05, 1.85 + (m.i % 5) * 0.03, ease.io);
+      const run = (m) => es(t, 1.25 + (m.i % 5) * 0.04, 1.6 + (m.i % 5) * 0.025, ease.io);   // swipe stop: they have run out to meet Him by 1.7
       const cry = es(t, 2.05, 2.3);
       const high = es(t, 3.05, 3.4);
       crowd.forEach((m, j) => {
         const pk = pick(m), rn = run(m);
         const x = lerp(m.x0, m.x1, rn);
-        const turn = es(t, 0.45 + j * 0.03, 0.6 + j * 0.03);
+        const turn = es(t, 0.4 + j * 0.03, 0.5 + j * 0.03);
         fade(m.fr, pk);
         const wave = Math.sin(t * 11 + j * 1.7) * 16 * cry;
         m.p.set({
@@ -89,7 +89,7 @@ export default {
         });
       });
       /* Jesus comes */
-      const jk = es(t, 1.2, 1.95, ease.out);
+      const jk = es(t, 1.15, 1.7, ease.out);
       const jx = lerp(1420, 900, jk);
       const walking = jk > 0 && jk < 0.995;
       jesus.set({ x: jx, y: G + 12, s: 1.02, flip: true, walk: walking ? jx * 0.055 : undefined, armF: 14 + es(t, 2.1, 2.4) * 40 + high * 20, armB: 10 + high * 60, head: -2 - high * 4, blink: blinkAt(T) });

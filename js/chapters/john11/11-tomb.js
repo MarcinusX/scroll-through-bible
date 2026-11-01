@@ -69,31 +69,31 @@ export default {
       const point = es(t, 2.05, 2.3) * (1 - es(t, 2.9, 3.1));
       const turn = es(t, 5.05, 5.3) * (1 - es(t, 5.5, 5.7));
       jesus.set({ x: jx, y: F + 12, s: 1.04, walk: moving(t, JK) ? jx * 0.1 : undefined, armF: 14 + point * 76 + turn * 40, armB: 8 + turn * 30, head: es(t, 0.6, 0.9) * (1 - es(t, 1.8, 2.0)) * 8 - point * 4, blink: blinkAt(T, 1) });
-      const moved = es(t, 0.45, 0.75) * (1 - es(t, 1.4, 1.6));
+      const moved = es(t, 0.4, 0.65) * (1 - es(t, 1.4, 1.6));   // swipe stop: He stands at the tomb, moved, with everyone arrived by 0.7
       vis(jHeart, { x: jx + 4, y: F + 12 - 118, s: moved * (1 + Math.sin(T * 7) * 0.06), o: moved > 0.01 ? 1 : 0 });
       rings(jx + 4, F + 12 - 118, moved, T, { spread: 2.6, speed: 0.35 });
       MO.forEach((m) => {
-        const K = [[0.1 + m.i * 0.06, m.x - 380], [0.9 + m.i * 0.06, m.x]];
+        const K = [[0.05 + m.i * 0.05, m.x - 380], [0.6 + m.i * 0.05, m.x]];
         const x = kf(t, K, ease.out);
-        m.p.set({ x, y: F + 6 + (m.i % 2) * 10, s: 0.9, walk: moving(t, K) ? x * 0.1 : undefined, armF: 12 + es(t, 5.6, 5.9) * 30, head: 10 - es(t, 5.6, 5.9) * 14, blink: blinkAt(T, m.i + 6) });
+        m.p.set({ x, y: F + 6 + (m.i % 2) * 10, s: 0.9, walk: moving(t, K) ? x * 0.1 : undefined, armF: 12 + es(t, 5.45, 5.7) * 30, head: 10 - es(t, 5.45, 5.7) * 14, blink: blinkAt(T, m.i + 6) });
       });
       disc.forEach((d) => {
-        const K = [[0.05 + d.i * 0.05, d.x - 380], [0.8 + d.i * 0.05, d.x]];
+        const K = [[0.05 + d.i * 0.05, d.x - 380], [0.6 + d.i * 0.05, d.x]];
         const x = kf(t, K, ease.out);
-        d.p.set({ x, y: d.y, s: 0.92, walk: moving(t, K) ? x * 0.1 : undefined, armF: 10, head: 4 - es(t, 5.6, 5.9) * 10, blink: blinkAt(T, d.i + 4) });
+        d.p.set({ x, y: d.y, s: 0.92, walk: moving(t, K) ? x * 0.1 : undefined, armF: 10, head: 4 - es(t, 5.45, 5.7) * 10, blink: blinkAt(T, d.i + 4) });
       });
-      const MYK = [[0, 300], [0.75, 700]];
+      const MYK = [[0, 300], [0.65, 700]];
       const myx = kf(t, MYK, ease.out);
       my.set({ x: myx, y: F + 14, s: 0.95, walk: moving(t, MYK) ? myx * 0.1 : undefined, armF: 30, armB: 20, head: 12, blink: blinkAt(T, 4) });
 
       /* Peter and Andrew go to the stone — and roll it away */
-      const PK = [[2.25, 660], [2.75, 930]], AK = [[2.3, 600], [2.8, 880]];
-      const push = es(t, 5.4, 5.78, ease.io);
-      const back = es(t, 5.8, 6.0, ease.io);
-      const px = t < 2.25 ? 660 : kf(t, PK) + push * 120 - back * 190, ax = t < 2.3 ? 600 : kf(t, AK) + push * 120 - back * 200;
+      const PK = [[2.2, 660], [2.6, 930]], AK = [[2.25, 600], [2.65, 880]];   // swipe stop: Peter and Andrew are at the stone by 2.65
+      const push = es(t, 5.3, 5.6, ease.io);   // swipe stop: the stone is rolled away by 5.6 and the two have stepped back by 5.72
+      const back = es(t, 5.6, 5.72, ease.io);
+      const px = t < 2.2 ? 660 : kf(t, PK) + push * 120 - back * 190, ax = t < 2.25 ? 600 : kf(t, AK) + push * 120 - back * 200;
       const stepping = (push > 0 && push < 1) || (back > 0 && back < 1);
-      peter.set({ x: px, y: F + 16, s: 0.94, flip: back > 0.02 && back < 0.98, walk: moving(t, PK) || stepping ? px * 0.1 : undefined, armF: 14 + es(t, 5.3, 5.42) * 80 * (1 - back), armB: 8 + es(t, 5.3, 5.42) * 70 * (1 - back), lean: es(t, 5.3, 5.42) * 12 * (1 - es(t, 5.78, 5.85)), blink: blinkAt(T, 7) });
-      andrew.set({ x: ax, y: F + 4, s: 0.9, flip: back > 0.02 && back < 0.98, walk: moving(t, AK) || stepping ? ax * 0.1 : undefined, armF: 14 + es(t, 5.3, 5.42) * 80 * (1 - back), armB: 8 + es(t, 5.3, 5.42) * 70 * (1 - back), lean: es(t, 5.3, 5.42) * 12 * (1 - es(t, 5.78, 5.85)), blink: blinkAt(T, 8) });
+      peter.set({ x: px, y: F + 16, s: 0.94, flip: back > 0.02 && back < 0.98, walk: moving(t, PK) || stepping ? px * 0.1 : undefined, armF: 14 + es(t, 5.2, 5.3) * 80 * (1 - back), armB: 8 + es(t, 5.2, 5.3) * 70 * (1 - back), lean: es(t, 5.2, 5.3) * 12 * (1 - es(t, 5.58, 5.64)), blink: blinkAt(T, 7) });
+      andrew.set({ x: ax, y: F + 4, s: 0.9, flip: back > 0.02 && back < 0.98, walk: moving(t, AK) || stepping ? ax * 0.1 : undefined, armF: 14 + es(t, 5.2, 5.3) * 80 * (1 - back), armB: 8 + es(t, 5.2, 5.3) * 70 * (1 - back), lean: es(t, 5.2, 5.3) * 12 * (1 - es(t, 5.58, 5.64)), blink: blinkAt(T, 8) });
       pose(stone, { x: DOOR.x + push * 175, y: SY, r: push * 150 });
 
       /* v38b — a cave, and a stone */
@@ -118,7 +118,7 @@ export default {
       });
 
       /* v40 — "you will see the glory of God"; the stone is taken away */
-      const fk = es(t, 5.02, 5.25, ease.back) * (1 - es(t, 5.45, 5.6));
+      const fk = es(t, 5.02, 5.25, ease.back) * (1 - es(t, 5.85, 5.98));   // swipe stop: the glory plate still hangs at 5.75
       vis(faithP, { x: 870, y: 330 - (1 - fk) * 520, r: Math.sin(T * 0.8) * 1.5, o: fk > 0.01 ? 1 : 0 });
 
       // phone: the camera goes on to the cave, so the stone, its labels, the four days and the open door are in view

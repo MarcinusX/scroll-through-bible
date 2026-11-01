@@ -106,20 +106,20 @@ export default {
       tl.shift(0, (1 - hk) * 240);
       tl.fade(hk);
       TB.forEach((b) => {
-        const open = es(t, 2.05 + b.i * 0.08, 2.4 + b.i * 0.08, ease.io);
+        const open = es(t, 2.05 + b.i * 0.06, 2.35 + b.i * 0.06, ease.io);   // swipe stop: every stone rolled, every light risen by 2.7
         pose(b.stone, { x: b.x + open * b.w * 1.05, y: b.y - b.w * 0.56 + 2, r: open * 160 });
         attr(b.glow, 'opacity', open);
         pose(b.glow, { x: b.x, y: b.y });
-        const rise = es(t, 2.3 + b.i * 0.08, 2.95 + b.i * 0.08, ease.out);
+        const rise = es(t, 2.15 + b.i * 0.06, 2.4 + b.i * 0.06, ease.out);
         const hov = Math.sin(T * 1.2 + b.i) * 6;
         vis(b.soul, { x: b.x + Math.sin(T * 0.7 + b.i) * 8 * rise, y: b.y - b.h * 0.4 - rise * (110 + (b.i % 3) * 30) + hov * rise, s: 0.6 + rise * 0.6, o: rise * (1 - calm * 0.4) });
       });
 
       /* seeds sprout (v25c) and bloom (v26a) */
-      fl.forEach((f) => growFlower(f.el, es(t, 2.2 + f.i * 0.04, 2.9 + f.i * 0.04) * 0.55 + es(t, 3.05 + f.i * 0.04, 3.55 + f.i * 0.04) * 0.45, f.h));
+      fl.forEach((f) => growFlower(f.el, es(t, 2.15 + f.i * 0.03, 2.4 + f.i * 0.03) * 0.55 + es(t, 3.05 + f.i * 0.03, 3.4 + f.i * 0.03) * 0.45, f.h)   /* swipe stop: sprouted by 2.67, in bloom by 3.67 */);
 
       /* the ring without end */
-      const rk = es(t, 3.1, 3.75);
+      const rk = es(t, 3.1, 3.6);   // swipe stop: the ring is closed by 3.6
       drawRing(ring, rk);
       vis(ring, { x: 800, y: 560, r: T * 3, o: rk > 0 ? 1 - es(t, 4.0, 4.35) : 0 });
 

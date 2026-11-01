@@ -77,7 +77,8 @@ export default {
       /* v32 — the food they do not know */
       const dk = es(t, 1.05, 1.4, ease.out);
       const lid = es(t, 3.05, 3.3);
-      swing(dish, 610, 470 - (1 - dk) * 650 - es(t, 3.9, 4.3) * 700, T * dk, 1.2, 0.7);
+      // swipe stop (phone): the dish hangs clear of the left edge
+      swing(dish, S.portrait ? 655 : 610, 470 - (1 - dk) * 650 - es(t, 3.9, 4.3) * 700, T * dk, 1.2, 0.7);
       fade(dish, dk > 0.001 && t < 4.3 ? 1 : 0);
       fade(dGlow, dk * (0.5 + 0.3 * Math.sin(T * 2)) + lid * 0.5);
       pose(dLid, { y: -lid * 50, r: -lid * 30, x: -lid * 20 });

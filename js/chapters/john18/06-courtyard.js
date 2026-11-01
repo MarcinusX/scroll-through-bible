@@ -90,26 +90,26 @@ export default {
       });
       // John: follows, is known, goes in; comes back for Peter; stays near the steps
       const OW = S.portrait ? 160 : 110;                                     // phone: the two wait nearer the gate
-      const oK = [[-0.5, [-330, YARD]], [1.0, [OW, YARD + 4]], [1.9, [OW, YARD + 4]], [2.8, [520, YARD + 4]], [4.05, [520, YARD + 4]], [4.35, [MX + 50, YARD + 4]], [4.8, [MX + 50, YARD + 4]], [5.6, [830, YARD + 2]]];
+      const oK = [[-0.5, [-330, YARD]], [1.0, [OW, YARD + 4]], [1.9, [OW, YARD + 4]], [2.8, [520, YARD + 4]], [3.95, [520, YARD + 4]], [4.2, [MX + 50, YARD + 4]], [4.8, [MX + 50, YARD + 4]], [5.6, [830, YARD + 2]]];
       const [ox, oy] = kf(t, oK, ease.sine);
-      const oBack = (t > 4.05 && t < 4.8);
-      johnP.set({ x: ox, y: oy, s: 0.9, flip: oBack, o: 1, walk: moving(t, oK, 1) ? ox * 0.06 : undefined, armF: 18 + bump(t, 4.35, 4.75) * 50, armB: 8, head: bump(t, 1.2, 1.9) * -4, blink: blinkAt(T, 1) });
+      const oBack = (t > 3.95 && t < 4.8);   // swipe stop: back at the door by 4.2, so Peter is in by x.7
+      johnP.set({ x: ox, y: oy, s: 0.9, flip: oBack, o: 1, walk: moving(t, oK, 1) ? ox * 0.06 : undefined, armF: 18 + bump(t, 4.2, 4.7) * 50, armB: 8, head: bump(t, 1.2, 1.9) * -4, blink: blinkAt(T, 1) });
       // Peter: behind John; stops outside; is let in; at the fire
       // he waits in the street clear of the gate pillar (OUT); phone: close behind the other disciple, so both are in view
       const PW = S.portrait ? 95 : -40, OUT = 130;
-      const pK = [[-0.5, [S.portrait ? -370 : -420, YARD]], [1.0, [PW, YARD + 6]], [2.3, [PW, YARD + 6]], [2.95, [OUT, YARD + 6]], [4.5, [OUT, YARD + 6]], [4.95, [PIN, YARD + 6]], [7.0, [PIN, YARD + 6]], [7.4, [470, YARD + 8]], [8.0, [470, YARD + 8]], [8.45, [FIRE - 64, YARD + 12]]];
+      const pK = [[-0.5, [S.portrait ? -370 : -420, YARD]], [1.0, [PW, YARD + 6]], [2.3, [PW, YARD + 6]], [2.95, [OUT, YARD + 6]], [4.35, [OUT, YARD + 6]], [4.68, [PIN, YARD + 6]], [7.0, [PIN, YARD + 6]], [7.4, [470, YARD + 8]], [8.0, [470, YARD + 8]], [8.45, [FIRE - 64, YARD + 12]]];
       const [px, py] = kf(t, pK, ease.sine);
-      const alone = es(t, 3.05, 3.4) * (1 - es(t, 4.5, 4.7));
+      const alone = es(t, 3.05, 3.4) * (1 - es(t, 4.35, 4.55));
       const deny = es(t, 6.05, 6.25) * (1 - es(t, 6.9, 7.05));
       const warm = es(t, 8.35, 8.6);
-      peter.set({ x: px, y: py, s: 0.92, flip: t > 4.95 && t < 7.0, walk: moving(t, pK, 1) ? px * 0.06 : undefined, armF: 18 + deny * 60 + warm * 56, armB: 8 + deny * 70 + warm * 40, head: alone * 8 - deny * 8 * (T ? Math.sin(T * 8) : 1) + warm * 6, lean: warm * 4, blink: blinkAt(T, 3) });
+      peter.set({ x: px, y: py, s: 0.92, flip: t > 4.7 && t < 7.0, walk: moving(t, pK, 1) ? px * 0.06 : undefined, armF: 18 + deny * 60 + warm * 56, armB: 8 + deny * 70 + warm * 40, head: alone * 8 - deny * 8 * (T ? Math.sin(T * 8) : 1) + warm * 6, lean: warm * 4, blink: blinkAt(T, 3) });
       fade(pSad, alone + es(t, 6.9, 7.2) * 0.8);
       // the door: open for them, shut on Peter, open again
-      const shut = es(t, 3.05, 3.35) * (1 - es(t, 4.4, 4.7));
+      const shut = es(t, 3.05, 3.35) * (1 - es(t, 4.25, 4.45));   // swipe stop: the door opens by 4.45, Peter inside by 4.68
       pose(G.door, { x: G.doorX, y: G.doorY, sx: 0.15 + shut * 0.85 });
       // the girl at the door
       const lift = es(t, 5.05, 5.3) * (1 - es(t, 6.9, 7.1));
-      maid.set({ x: MX, y: YARD + 2, s: 0.86, flip: t < 4.9 || t > 7.2, armF: 50 + lift * 40, armB: 6, head: -lift * 5 + bump(t, 1.2, 1.9) * 6 + bump(t, 4.4, 4.8) * 8, lean: lift * 5, blink: blinkAt(T, 8) });
+      maid.set({ x: MX, y: YARD + 2, s: 0.86, flip: t < 4.9 || t > 7.2, armF: 50 + lift * 40, armB: 6, head: -lift * 5 + bump(t, 1.2, 1.9) * 6 + bump(t, 4.2, 4.7) * 8, lean: lift * 5, blink: blinkAt(T, 8) });
       pose(mFl, { x: 35, y: -16, sy: 1 + (T ? Math.sin(T * 7) * 0.1 : 0) });
 
       /* v18 — the servants light the fire and warm themselves */
@@ -130,7 +130,7 @@ export default {
       const kn = es(t, 1.1, 1.4, ease.out) * (1 - es(t, 1.9, 2.1, ease.in));
       vis(known, { x: S.portrait ? 170 : 110, y: 450 - (1 - kn) * 700, r: T ? Math.sin(T * 0.9) * 1.4 : 0, o: kn > 0.01 ? 1 : 0 });
       const [ohx, ohy] = headAt(ox, oy, 0.9, oBack);
-      const tk = es(t, 4.4, 4.55, ease.back) * (1 - es(t, 4.75, 4.85));
+      const tk = es(t, 4.22, 4.37, ease.back) * (1 - es(t, 4.75, 4.85));
       vis(talk, { x: ohx - 12, y: ohy - 20, s: tk, o: tk > 0.01 ? 1 : 0 });
       const [mhx, mhy] = headAt(MX, YARD + 2, 0.86, false);
       const ak = es(t, 5.12, 5.32, ease.back) * (1 - es(t, 5.9, 6.0));

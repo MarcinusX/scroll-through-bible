@@ -37,7 +37,7 @@ export default {
       W.R.stars.fade(0.6);
 
       /* where He kneels: Andrew (b0–b1a), John (b1b), then He rises and walks to Peter (b2) */
-      const toJohn = es(t, 1.5, 1.68);
+      const toJohn = es(t, 1.8, 1.92);   // swipe stop: He is still wiping Andrew's feet with the towel at 1.75; John after the stop
       const up = es(t, 2.05, 2.12), down = es(t, 2.6, 2.66);
       const walk = seg(t, 2.12, 2.6);
       const xA = A.x + K, xJ = JO.x + K, xP = P.x + K;
@@ -45,7 +45,7 @@ export default {
       const wx = lerp(xJ, xP, ease.io(walk));
       const hop = Math.sin(toJohn * PI) * 10;
       // hands: pour & wash (dip), wipe (rub)
-      const washA = bump(t, 0.12, 0.9), wipeA = bump(t, 1.05, 1.45), washJ = bump(t, 1.7, 1.98);
+      const washA = bump(t, 0.12, 0.9), wipeA = es(t, 1.05, 1.2) * (1 - es(t, 1.76, 1.82)), washJ = bump(t, 1.9, 2.05);
       const washing = Math.max(washA, washJ);
       const dip = washing * (0.5 + 0.5 * Math.sin(t * PI * 10));
       const rub = wipeA * Math.sin(t * PI * 12);
@@ -67,8 +67,8 @@ export default {
       vis(cloth, { x: hx, y: hy, r: 20 + rub * 10, o: wipeA > 0.05 ? 1 : 0 });
 
       /* the dust is washed off; the wet sheen, dried by the towel */
-      const cleanA = es(t, 0.35, 0.85), cleanJ = es(t, 1.72, 1.96);
-      fade(A.dust, 0.75 * (1 - cleanA)); fade(A.wet, 0.8 * cleanA * (1 - es(t, 1.1, 1.45)));
+      const cleanA = es(t, 0.35, 0.85), cleanJ = es(t, 1.92, 2.04);
+      fade(A.dust, 0.75 * (1 - cleanA)); fade(A.wet, 0.8 * cleanA * (1 - es(t, 1.1, 1.6)));
       fade(JO.dust, 0.75 * (1 - cleanJ)); fade(JO.wet, 0.8 * cleanJ);
 
       /* the row */
@@ -76,7 +76,7 @@ export default {
       row.forEach((m) => {
         let armF = 30, armB = 12, head = 0, lean = 0;
         const d = kx - m.x;
-        head = -4 + (m.k === 'andrew' ? -washA * 4 - wipeA * 6 : 0) + (m.k === 'john' ? bump(t, 1.6, 2.0) * -6 : 0);
+        head = -4 + (m.k === 'andrew' ? -washA * 4 - wipeA * 6 : 0) + (m.k === 'john' ? bump(t, 1.82, 2.05) * -6 : 0);
         if (m.k === 'peter') {
           head = -2 + es(t, 2.2, 2.6) * 6 - surprise * 10 + look * -4;
           armF = 30 + surprise * 70;
@@ -98,12 +98,12 @@ export default {
       /* b4 — now / later */
       const ck = es(t, 4.1, 4.4, ease.out);
       vis(card, { x: 780, y: 372 - (1 - ck) * 700, r: T ? Math.sin(T * 0.7) * 1.2 : 0, o: ck > 0.01 ? 1 : 0 });
-      pose(later, { sx: Math.max(0.03, es(t, 4.5, 4.85)) });
+      pose(later, { sx: Math.max(0.03, es(t, 4.45, 4.68)) });   // swipe stop: the "later" leaf is open by 4.68
 
       // phone: the disciple whose feet He washes stays in view with Him
       S.cam.x = S.portrait
-        ? kf(t, [[0, -860], [1.4, -850], [1.7, -450], [2.1, -450], [2.7, -60], [4, -60], [4.2, -40], [5, -30]])
-        : kf(t, [[0, -620], [1.4, -600], [1.7, -330], [2.1, -330], [2.7, -40], [4, -40], [4.2, -40], [5, -30]]);
+        ? kf(t, [[0, -860], [1.4, -850], [1.78, -850], [1.95, -450], [2.1, -450], [2.7, -60], [4, -60], [4.2, -40], [5, -30]])
+        : kf(t, [[0, -620], [1.4, -600], [1.78, -600], [1.95, -330], [2.1, -330], [2.7, -40], [4, -40], [4.2, -40], [5, -30]]);
       S.cam.y = kf(t, [[0, 230], [1.7, 230], [2.7, 230], [3.2, 220], [4.1, 200], [5, 200]]);
       S.cam.z = kf(t, [[0, 1.6], [1.7, 1.6], [2.7, 1.5], [3.2, 1.6], [4.1, 1.32], [5, 1.32]]);
     };

@@ -128,17 +128,17 @@ export default {
       });
       /* v36a — wages and sheaves for eternal life */
       sheaves.forEach((sh, i) => {
-        const k = es(t, 2.3 + i * 0.18, 2.45 + i * 0.18, ease.back);
+        const k = es(t, 2.25 + i * 0.12, 2.4 + i * 0.12, ease.back);   // swipe stop: sheaves stand and the wages have fallen by 2.69
         vis(sh, { x: 1000 + RS + i * 60, y: FLOOR + 24, s: k, o: k > 0.01 ? 1 - go * 0 : 0 });
-        fade(sh.querySelector('.sg'), es(t, 2.7, 2.95) * 0.9);
+        fade(sh.querySelector('.sg'), es(t, 2.5, 2.68) * 0.9);
       });
       coins.forEach((cn, i) => {
-        const k = seg(t, 2.5 + i * 0.1, 2.9 + i * 0.1);
+        const k = seg(t, 2.28 + i * 0.07, 2.55 + i * 0.07);
         vis(cn, { x: 1200 + RS + i * 40, y: 470 + k * 60 - Math.sin(k * PI) * 50, sx: Math.cos(k * 14), o: k > 0 && k < 1 ? 1 : 0 });
       });
       sparks.forEach((sp, i) => {
         const k = ((T * 0.4 + i / 5) % 1);
-        vis(sp, { x: 990 + RS + i * 30, y: FLOOR - 60 - k * 90, s: 0.5 + (1 - k) * 0.5, o: es(t, 2.7, 2.95) * (1 - es(t, 3.9, 4.1)) * Math.sin(k * PI) });
+        vis(sp, { x: 990 + RS + i * 30, y: FLOOR - 60 - k * 90, s: 0.5 + (1 - k) * 0.5, o: es(t, 2.5, 2.68) * (1 - es(t, 3.9, 4.1)) * Math.sin(k * PI) });
       });
       /* v36b — sower and reaper rejoice together */
       const sw = es(t, 3.05, 3.5, ease.out) * (1 - es(t, 5.0, 5.4));
@@ -147,7 +147,7 @@ export default {
       const hop = Math.abs(Math.sin(T * 5)) * 8 * joy;
       sower.set({ x: sx, y: FLOOR + 6 - hop, s: 1.0, flip: true, walk: sw > 0 && sw < 1 ? sx * 0.05 : undefined, armF: 20 + joy * 110, armB: 20 + joy * 40, o: sw > 0.01 ? 1 : 0, blink: blinkAt(T, 7) });
       hearts.forEach((h, i) => {
-        const k = es(t, 3.55 + i * 0.1, 3.75 + i * 0.1, ease.back) * (1 - es(t, 4.1, 4.3));
+        const k = es(t, 3.45 + i * 0.08, 3.62 + i * 0.08, ease.back) * (1 - es(t, 4.1, 4.3));   // swipe stop: both hearts are up by 3.7
         vis(h, { x: 1250 + RS + i * 50, y: 470 - k * 20 + Math.sin(T * 2 + i) * 4, s: k, o: k > 0.01 ? 1 : 0 });
       });
       /* v37 — one sows, another reaps */
@@ -157,13 +157,14 @@ export default {
         fade(p.el, k > 0.001 ? 1 : 0);
       });
       /* v38b — those who laboured before */
-      const ghost = es(t, 6.05, 6.35) * (1 - es(t, 6.55, 6.9) * 0.85);
+      const ghost = es(t, 6.05, 6.35) * (1 - es(t, 6.85, 7.0) * 0.85);   // swipe stop: those who laboured before are still there at 6.75
       olds.forEach((o) => o.p.set({ x: o.x, y: 640, s: 0.5, flip: o.x > 800, o: ghost * 0.85, armF: 60 + (ghost > 0.01 ? Math.sin(T + o.i) * 10 : 0), lean: 16, head: 10 }));
 
-      S.cam.y = kf(t, [[-0.5, 20], [0.5, -40], [1.05, -40], [1.5, -80], [2.0, 20], [3.0, 20], [4.0, -40], [5.0, 0], [6.0, -20]]);
-      S.cam.x = PH ? kf(t, [[-0.5, 0], [1.5, 40], [2.1, 370], [3.6, 370], [4.0, 0], [4.9, 0], [5.4, 360], [7, 360]])
-        : kf(t, [[-0.5, 0], [1.5, 40], [2.0, 110], [3.5, 110], [4.0, 0], [5.0, 60], [6.0, 30]]);
-      S.cam.z = PH ? 1.04 : kf(t, [[-0.5, 1.04], [0.5, 1.02], [1.5, 1.06], [2.0, 1.18], [3.5, 1.18], [4.0, 1.04], [6.0, 1.04]]);
+      // swipe stop: the camera stays on the sower and the reapers until 3.85, then turns back for v37
+      S.cam.y = kf(t, [[-0.5, 20], [0.5, -40], [1.05, -40], [1.5, -80], [2.0, 20], [3.85, 20], [4.2, -40], [5.0, 0], [6.0, -20]]);
+      S.cam.x = PH ? kf(t, [[-0.5, 0], [1.5, 40], [2.1, 370], [3.85, 370], [4.2, 0], [4.9, 0], [5.4, 360], [7, 360]])
+        : kf(t, [[-0.5, 0], [1.5, 40], [2.0, 110], [3.85, 110], [4.2, 0], [5.0, 60], [6.0, 30]]);
+      S.cam.z = PH ? 1.04 : kf(t, [[-0.5, 1.04], [0.5, 1.02], [1.5, 1.06], [2.0, 1.18], [3.85, 1.18], [4.2, 1.04], [6.0, 1.04]]);
     };
   },
 };

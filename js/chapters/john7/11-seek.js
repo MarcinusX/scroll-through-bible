@@ -88,16 +88,16 @@ export default {
       if (hk > 0 && hu < 1) pose(hg.el, { x: 640, y: hy2, r: Math.sin(T * 0.9) * 1.2, o: 1 }); else fade(hg.el, 0);
       hg.set(0.18 - seg(t, 1.3, 1.95) * 0.08, 1);
       vpose(shortT, { x: 640, y: hy2 + 74, o: hk > 0 && hu < 1 ? seg(t, 1.3, 1.4) : 0 });
-      const up = seg(t, 1.25, 1.75);
+      const up = seg(t, 1.2, 1.52);   // swipe stop: the stair is built and the door of light stands open, named, by 1.68 (the door came at 1.85)
       steps.forEach((el, i) => fade(el, es(up, i / STEPS, (i + 1) / STEPS) * (1 - es(t, 5.9, 6.1) * 0.6)));
-      const dk = es(t, 1.7, 1.85);
+      const dk = es(t, 1.5, 1.62);
       vpose(doorFrame, { x: DOOR[0], y: DOOR[1] + 6, o: dk });
       vpose(glo, { x: DOOR[0], y: DOOR[1] - 50, r: T * 2, s: 0.6 + dk * 0.3, o: dk * 0.8 });
       const shut = es(t, 2.45, 2.7);
       const open = 1 - shut;
       vpose(leafL, { x: DOOR[0] - 34, y: DOOR[1] + 6, sx: Math.max(0.12, 1 - open * 0.88), o: dk });
       vpose(leafR, { x: DOOR[0] + 34, y: DOOR[1] + 6, sx: Math.max(0.12, 1 - open * 0.88), o: dk });
-      vpose(goT, { x: DOOR[0], y: DOOR[1] + 30, o: es(t, 1.8, 1.9) * (1 - es(t, 2.0, 2.1)) });
+      vpose(goT, { x: DOOR[0], y: DOOR[1] + 30, o: es(t, 1.6, 1.68) * (1 - es(t, 2.0, 2.1)) });
 
       /* v34 — seeking with lanterns; not finding */
       const seek = es(t, 2.05, 2.15) * (1 - es(t, 2.95, 3.05));

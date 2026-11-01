@@ -67,7 +67,7 @@ export default {
       const tilt = -12 + bump(t, 2.4, 2.95) * 8;
       poseScales(sc, S.portrait ? 960 : 1000, 260 - (1 - sk) * 700, tilt, sk > 0.001 ? 1 : 0, 1, 110);
       /* v54a — self-made glory: nothing */
-      const fall = es(t, 3.45, 3.95, ease.in);
+      const fall = es(t, 3.35, 3.68, ease.in);   // swipe stop: the star lies spent on the ground by 3.68
       vis(star, { x: DC.JX + 70 + fall * 20, y: DC.FLOOR - 260 + fall * 250, sx: 1 - fall * 0.6, sy: 1 - fall * 0.8, r: fall * 120, o: t > 3.1 ? es(t, 3.1, 3.25) * (1 - es(t, 3.85, 3.98)) : 0 });
       /* v54b — the Father glorifies Him; v55 — the thread; the mist */
       const rk = es(t, 4.05, 4.4, ease.out);

@@ -91,8 +91,8 @@ export default {
       /* v19a — "Truly, truly, I tell you" — to the men at the door */
       const toDoor = es(t, 0.05, 0.3) * (1 - es(t, 0.9, 1.1)) + es(t, 4.1, 4.3) * 0.6;
       const watch = es(t, 1.1, 1.3) * (1 - es(t, 3.0, 3.2));
-      const work = seg(t, 2.1, 2.85);
-      const cut = t > 2.1 && t < 2.9 ? 1 : 0;
+      const work = seg(t, 2.1, 2.62);
+      const cut = t > 2.1 && t < 2.66 ? 1 : 0;   // swipe stop: the Son has put the chisel down by 2.66
       const love = es(t, 3.1, 3.4) * (1 - es(t, 4.05, 4.2));
       jesus.set({ x: 990, y: F - 8, s: 1.02, flip: toDoor < 0.5, armF: 20 + bump(t, 0.1, 0.95) * 50 + cut * (70 + Math.sin(work * PI * 8) * 8) + love * 40, armB: 10 + love * 50, head: watch * 10 + cut * 16 - love * 6, lean: cut * -6, blink: blinkAt(T, 1) });
       const [jhx, jhy] = headAt(990, F - 8, 1.02, false);
@@ -111,29 +111,29 @@ export default {
       });
 
       /* v19b — in the light the Father draws; v19c — the Son does likewise */
-      const draw = es(t, 1.15, 1.85, (x) => x);
+      const draw = es(t, 1.12, 1.58, (x) => x);   // swipe stop: the light dove is drawn and filled by 1.7 (was 1.85 / 2.0)
       attr(LDl, 'stroke-dashoffset', (1 - draw).toFixed(3));
-      attr(LDf, 'opacity', (es(t, 1.8, 2.0) * 0.55).toFixed(2));
+      attr(LDf, 'opacity', (es(t, 1.56, 1.7) * 0.55).toFixed(2));
       pose(lightDove, { x: LD.x, y: LD.y, s: DS });
       vis(benchGlow, { x: LD.x, y: BY - 30, o: 0.4 + lit * 0.6 });
-      const redo = es(t, 2.1, 2.8, (x) => x);
+      const redo = es(t, 2.1, 2.6, (x) => x);   // swipe stop: the wooden dove is carved and coloured by 2.7 (was 2.8 / 2.9)
       attr(WDl, 'stroke-dashoffset', (1 - redo).toFixed(3));
-      attr(WDf, 'opacity', es(t, 2.75, 2.9).toFixed(2));
+      attr(WDf, 'opacity', es(t, 2.58, 2.7).toFixed(2));
       pose(woodDove, { x: RD.x, y: RD.y, s: DS });
       // the spark traces the light dove (both times: first alone, then in step with the Son)
       const kS = t < 2.0 ? draw : redo;
-      const onS = (t > 1.15 && t < 1.9) || (t > 2.1 && t < 2.85) ? 1 : 0;
+      const onS = (t > 1.12 && t < 1.62) || (t > 2.1 && t < 2.64) ? 1 : 0;
       const Lt = lp.getTotalLength ? lp.getTotalLength() : 0;
       const pt = Lt ? lp.getPointAtLength(Lt * Math.min(0.999, kS)) : { x: 0, y: 0 };
       vis(sparkL, { x: LD.x + pt.x * DS, y: LD.y + pt.y * DS, s: 0.8 + Math.sin(T * 8) * 0.1, o: onS });
-      vis(chisel, { x: RD.x + pt.x * DS + 2, y: RD.y + pt.y * DS - 46, r: -12, o: t > 2.1 && t < 2.85 ? 1 : 0 });
-      vis(chip, { x: RD.x + pt.x * DS + 10, y: RD.y + pt.y * DS + 6 + ((T * 30) % 12), o: t > 2.1 && t < 2.85 ? 0.9 : 0 });
+      vis(chisel, { x: RD.x + pt.x * DS + 2, y: RD.y + pt.y * DS - 46, r: -12, o: t > 2.1 && t < 2.64 ? 1 : 0 });
+      vis(chip, { x: RD.x + pt.x * DS + 10, y: RD.y + pt.y * DS + 6 + ((T * 30) % 12), o: t > 2.1 && t < 2.64 ? 0.9 : 0 });
 
       /* v20a — the Father loves the Son and shows Him all He does */
       const hk = es(t, 3.05, 3.5, ease.io);
       vis(loveH, { x: lerp(600, jhx + 30, hk), y: lerp(330, jhy + 70, hk), s: 0.6 + bump(t, 3.05, 3.9) * 0.5, o: bump(t, 3.0, 4.0) });
       works.forEach((w) => {
-        const k = es(t, 3.2 + w.i * 0.14, 3.45 + w.i * 0.14, ease.back) * (1 - es(t, 4.0, 4.25));
+        const k = es(t, 3.15 + w.i * 0.11, 3.38 + w.i * 0.11, ease.back) * (1 - es(t, 4.0, 4.25));   // swipe stop: all four works hang still by 3.71 (was 3.87)
         vis(w.el, { x: 720 + w.i * 110, y: 190 + (w.i % 2) * 40 - (1 - k) * 440, r: Math.sin(T * 0.8 + w.i) * 2, o: k > 0.01 ? 1 : 0 });
       });
       /* v20b — greater works than these, that you may marvel */

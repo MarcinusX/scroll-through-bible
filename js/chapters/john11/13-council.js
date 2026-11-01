@@ -57,13 +57,13 @@ export default {
 
       /* v47b — many signs */
       signs.forEach((s) => {
-        const k = es(t, 1.05 + s.i * 0.07, 1.35 + s.i * 0.07, ease.back) * (1 - es(t, 1.95, 2.2));
+        const k = es(t, 1.05 + s.i * 0.06, 1.3 + s.i * 0.06, ease.back)   /* swipe stop: all seven signs hang by 1.66 */ * (1 - es(t, 1.95, 2.2));
         vis(s.el, { x: 800 + (s.i - 3) * 64, y: 250 - (1 - k) * 420 + (s.i % 2) * 14, r: Math.sin(T * 0.9 + s.i) * 3, o: k > 0.01 ? 1 : 0 });
       });
 
       /* v48a — all will believe: hearts over the crowd in the window */
       winHearts.forEach((h, i) => {
-        const k = es(t, 2.2 + i * 0.07, 2.45 + i * 0.07, ease.back) * (1 - es(t, 3.2, 3.5));
+        const k = es(t, 2.15 + i * 0.05, 2.35 + i * 0.05, ease.back)   /* swipe stop: every heart lit by 2.65 */ * (1 - es(t, 3.2, 3.5));
         vis(h, { x: 640 + i * 54, y: 500 - (i % 2) * 14 + Math.sin(T * 2 + i) * 3, s: k, o: k > 0.01 ? 1 : 0 });
       });
 

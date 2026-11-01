@@ -75,31 +75,31 @@ export default {
     return (t, time) => {
       const T = time;
       /* v18 — unbelieving; one of them fetches the parents through the door */
-      const open = es(t, 0.35, 0.55) * (1 - es(t, 1.05, 1.25));
+      const open = es(t, 0.28, 0.42) * (1 - es(t, 1.05, 1.25));
       hall.door(open, 0);
-      const inK = es(t, 0.45, 1.05, ease.out);
-      const fear = es(t, 0.6, 1.0) * 0.5 + bump(t, 6.05, 6.95) * 0.5 + es(t, 7.1, 7.5) * 0.4;
+      const inK = es(t, 0.36, 0.68, ease.out);   // swipe stop: the parents are in and the official back in his place by 0.72
+      const fear = es(t, 0.45, 0.72) * 0.5 + bump(t, 6.05, 6.95) * 0.5 + es(t, 7.1, 7.5) * 0.4;
       const shiver = (t > 6.05 && t < 6.95 ? Math.sin(T * 22) * 1.2 : 0);
-      const stepBack = es(t, 5.2, 5.7) * 30 + es(t, 8.2, 8.6) * 20;
+      const stepBack = es(t, 5.2, 5.6) * 30 + es(t, 8.2, 8.6) * 20;
       const ours = bump(t, 3.05, 3.95), dunno = bump(t, 4.05, 4.95), ask = bump(t, 5.05, 5.95), rep = bump(t, 8.05, 8.95);
       const fx_ = lerp(H.DOORX + 40, FX, inK) - stepBack, fy = lerp(H.BASE - 2, H.FLOOR + 6, inK), fs = lerp(0.8, 0.96, inK);
-      father.p.set({ x: fx_ + shiver, y: fy, s: fs, o: seg(t, 0.45, 0.52), walk: inK > 0.01 && inK < 0.99 ? fx_ * 0.06 : undefined, amt: 0.6, armF: 20 + ours * 60 + dunno * 40, armB: 10 + dunno * 50, head: 6 + dunno * 8 - ours * 4 + fear * 6, lean: 3 + fear * 3, blink: blinkAt(T, 1.3) });
+      father.p.set({ x: fx_ + shiver, y: fy, s: fs, o: seg(t, 0.36, 0.43), walk: inK > 0.01 && inK < 0.99 ? fx_ * 0.06 : undefined, amt: 0.6, armF: 20 + ours * 60 + dunno * 40, armB: 10 + dunno * 50, head: 6 + dunno * 8 - ours * 4 + fear * 6, lean: 3 + fear * 3, blink: blinkAt(T, 1.3) });
       fade(father.sad, Math.max(fear, dunno));
-      const mx_ = lerp(H.DOORX + 60, MOX, es(t, 0.55, 1.15, ease.out)) - stepBack, my = lerp(H.BASE - 2, H.FLOOR + 12, es(t, 0.55, 1.15, ease.out));
-      mother.p.set({ x: mx_ - shiver, y: my, s: lerp(0.78, 0.92, es(t, 0.55, 1.15)), o: seg(t, 0.55, 0.62), walk: t > 0.55 && t < 1.15 ? mx_ * 0.06 : undefined, amt: 0.5, armF: 40 + ours * 30 + ask * 50 + rep * 50, armB: 20 + dunno * 40, head: 6 + fear * 8 - ask * 6, blink: blinkAt(T, 2.1) });
+      const mx_ = lerp(H.DOORX + 60, MOX, es(t, 0.42, 0.72, ease.out)) - stepBack, my = lerp(H.BASE - 2, H.FLOOR + 12, es(t, 0.42, 0.72, ease.out));
+      mother.p.set({ x: mx_ - shiver, y: my, s: lerp(0.78, 0.92, es(t, 0.42, 0.72)), o: seg(t, 0.42, 0.49), walk: t > 0.42 && t < 0.72 ? mx_ * 0.06 : undefined, amt: 0.5, armF: 40 + ours * 30 + ask * 50 + rep * 50, armB: 20 + dunno * 40, head: 6 + fear * 8 - ask * 6, blink: blinkAt(T, 2.1) });
       fade(mother.sad, Math.max(fear, dunno) * 0.9);
       fade(mother.tear, bump(t, 6.2, 7.6) * 0.8);
-      const forward = es(t, 5.3, 5.8) * 36;
-      man.p.set({ x: MX + forward, y: H.FLOOR + 8, s: 1.02, flip: (t > 0.5 && t < 1.2) || (t > 3.0 && t < 3.9) || (t > 6.1 && t < 6.9), armF: 18 + ours * 20, armB: 10, head: -es(t, 5.3, 5.8) * 4, blink: blinkAt(T, 3) });
+      const forward = es(t, 5.25, 5.62) * 36;   // swipe stop: he has stepped forward by 5.62
+      man.p.set({ x: MX + forward, y: H.FLOOR + 8, s: 1.02, flip: (t > 0.5 && t < 1.2) || (t > 3.0 && t < 3.9) || (t > 6.1 && t < 6.9), armF: 18 + ours * 20, armB: 10, head: -es(t, 5.25, 5.62) * 4, blink: blinkAt(T, 3) });
       fade(man.sad, bump(t, 6.1, 7.0) * 0.7);
 
       offs.forEach((o) => {
-        const fetch = o.i === 4 ? bump(t, 0.2, 1.1) : 0;
+        const fetch = o.i === 4 ? bump(t, 0.12, 0.72) : 0;
         const point = o.i === 0 ? bump(t, 1.05, 1.95) : 0;
         const how = o.i === 2 ? bump(t, 2.05, 2.95) : 0;
         const shake = bump(t, 0.05, 0.6) * Math.sin(T * 7) * 5;
         const x = o.x - fetch * 180;
-        offSet(o, T, { x, flip: true, walk: fetch > 0.05 && fetch < 0.95 ? x * 0.07 : undefined, armF: 18 + fetch * 60 + point * 80 + how * 50, armB: 8 + (o.i === 4 ? bump(t, 0.5, 0.95) * 120 : 0), head: shake + point * -6 + es(t, 7.1, 7.5) * -4, lean: point * 4, angry: Math.max(bump(t, 0.05, 0.9), es(t, 6.1, 6.6) * 0.8, point) });
+        offSet(o, T, { x, flip: true, walk: fetch > 0.05 && fetch < 0.95 ? x * 0.07 : undefined, armF: 18 + fetch * 60 + point * 80 + how * 50, armB: 8 + (o.i === 4 ? bump(t, 0.3, 0.62) * 120 : 0), head: shake + point * -6 + es(t, 7.1, 7.5) * -4, lean: point * 4, angry: Math.max(bump(t, 0.05, 0.9), es(t, 6.1, 6.6) * 0.8, point) });
       });
 
       /* bubbles */

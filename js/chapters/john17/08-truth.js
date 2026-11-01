@@ -106,13 +106,14 @@ export default {
       D.forEach((m, i) => {
         const [cx, cy] = chestOf(m);
         const d = Math.abs(m.x - JX) / 400;
-        const g = Math.max(es(t, 0.3 + d * 0.3, 0.8 + d * 0.3) * (1 - es(t, 1.8, 2.2) * 0.7), es(t, 5.3 + d * 0.2, 5.6 + d * 0.2));
+        // swipe stop: every glow is lit by 0.7 (v17a) and by 5.6 (v19b)
+        const g = Math.max(es(t, 0.25 + d * 0.15, 0.55 + d * 0.15) * (1 - es(t, 1.8, 2.2) * 0.7), es(t, 5.25 + d * 0.15, 5.45 + d * 0.15));
         vis(glows[i], { x: cx, y: cy, s: m.s * (0.8 + g * 0.3), o: g });
-        flow(i, [JX, JY - 120], [cx, cy], -70, es(t, 5.05 + d * 0.2, 5.4 + d * 0.2), 0.85);
-        lampK(m, 0.8 + bump(t, 1.2, 2.0) * 0.2, bump(t, 1.2, 2.0) * 0.8 + es(t, 5.3 + d * 0.2, 5.6 + d * 0.2) * 0.4);
-        put(m, T, { head: -8 - bump(t, 0.1, 1.2) * 10 - bump(t, 2.1, 3.9) * 16, armF: 14 + es(t, 5.4, 5.8) * 20 });
+        flow(i, [JX, JY - 120], [cx, cy], -70, es(t, 5.05 + d * 0.15, 5.35 + d * 0.15), 0.85);
+        lampK(m, 0.8 + bump(t, 1.2, 2.0) * 0.2, bump(t, 1.2, 2.0) * 0.8 + es(t, 5.25 + d * 0.15, 5.45 + d * 0.15) * 0.4);
+        put(m, T, { head: -8 - bump(t, 0.1, 1.2) * 10 - bump(t, 2.1, 3.9) * 16, armF: 14 + es(t, 5.35, 5.6) * 20 });
       });
-      flames(1, T, { boost: es(t, 5.3, 5.8) * 0.5 });
+      flames(1, T, { boost: es(t, 5.3, 5.6) * 0.5 });
 
       const bow = es(t, 4.1, 4.5) * (1 - es(t, 5.1, 5.4));
       put(J, T, {

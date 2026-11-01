@@ -86,25 +86,25 @@ export default {
       const PY = lerp(-500, 320, pk);
       pose(pL, { x: PLX, y: PY, r: Math.sin(T * 0.8) * 1.2, o: pk > 0.01 ? 1 : 0 });
       pose(pR, { x: PRX, y: PY, r: Math.sin(T * 0.8 + 1) * 1.2, o: pk > 0.01 ? 1 : 0 });
-      const rot = es(t, 1.3, 1.7);
-      pose(stale, { x: PLX, y: PY + 16, o: pk > 0.01 ? (1 - rot) * (1 - es(t, 1.7, 1.8)) : 0 });
-      pose(staleGrey, { x: PLX, y: PY + 16, sx: 1 - es(t, 1.65, 1.85) * 0.6, sy: 1 - es(t, 1.65, 1.85) * 0.7, oy: 0, o: pk > 0.01 ? rot * (1 - es(t, 1.8, 1.9)) : 0 });
+      const rot = es(t, 1.28, 1.52);   // swipe stop: the perishing loaf has crumbled away and the lasting one is ringed by 1.7 (was 1.97)
+      pose(stale, { x: PLX, y: PY + 16, o: pk > 0.01 ? (1 - rot) * (1 - es(t, 1.5, 1.58)) : 0 });
+      pose(staleGrey, { x: PLX, y: PY + 16, sx: 1 - es(t, 1.48, 1.64) * 0.6, sy: 1 - es(t, 1.48, 1.64) * 0.7, oy: 0, o: pk > 0.01 ? rot * (1 - es(t, 1.6, 1.68)) : 0 });
       bits.forEach((b) => {
-        const k = es(t, 1.7 + b.i * 0.02, 1.95 + b.i * 0.02, ease.in);
+        const k = es(t, 1.5 + b.i * 0.015, 1.6 + b.i * 0.015, ease.in);
         pose(b.el, { x: PLX + b.dx, y: PY + 10 + k * 160, r: k * 180, s: 0.8, o: k > 0.01 && k < 0.98 ? (1 - k) : 0 });
       });
       const lk = es(t, 1.25, 1.5);
       pose(lightLoaf, { x: PRX, y: PY + 4, s: 0.6 + lk * 0.4, o: pk > 0.01 ? lk : 0 });
-      drawRing(ring, es(t, 1.35, 1.9));
+      drawRing(ring, es(t, 1.3, 1.68));
       pose(ring, { x: PRX, y: PY, r: t * 20, o: pk > 0.01 ? 1 : 0 });
 
       /* v27b — God the Father has set His seal on Him */
       const rk = es(t, 2.05, 2.3) * (1 - es(t, 3.0, 3.2)) + es(t, 4.05, 4.3) * (1 - es(t, 4.9, 5.1));
       pose(rad, { x: JX, y: 190, s: 0.8 + rk * 0.3, r: T * 3, o: rk });
-      const press = es(t, 2.3, 2.6, ease.in);
-      const lift = es(t, 2.65, 2.9, ease.out);
-      pose(seal, { x: JX + 6, y: lerp(230, JY - 118, press) - lift * 120, s: 1 - press * 0.3, o: es(t, 2.2, 2.3) * (1 - es(t, 2.85, 3.0)) });
-      const mk = es(t, 2.58, 2.66);
+      const press = es(t, 2.25, 2.48, ease.in);   // swipe stop: the seal is pressed, lifted and gone by 2.7, leaving its mark (was 3.0)
+      const lift = es(t, 2.52, 2.68, ease.out);
+      pose(seal, { x: JX + 6, y: lerp(230, JY - 118, press) - lift * 120, s: 1 - press * 0.3, o: es(t, 2.15, 2.25) * (1 - es(t, 2.6, 2.7)) });
+      const mk = es(t, 2.46, 2.52);
       pose(mark, { x: JX + 8, y: JY - 116, o: mk * (1 - es(t, 6.8, 7.0) * 0.4) });
       pose(beam, { x: JX, y: 190, o: (bump(t, 2.3, 3.0) + bump(t, 4.1, 4.95)) * 0.5 });
       pose(jGlow, { x: JX, y: JY - 150, s: 0.8 + bump(t, 2.5, 3.0) * 0.8 + bump(t, 4.1, 4.95) * 0.5, o: 0.3 + bump(t, 2.5, 3.0) * 0.6 + bump(t, 4.1, 4.95) * 0.5 });
@@ -118,7 +118,7 @@ export default {
       /* v29 — believe in Him whom He sent */
       hearts.forEach((h, i) => {
         const m = PEO[i];
-        const k = es(t, 4.3 + i * 0.05, 4.5 + i * 0.05, ease.back) * (1 - es(t, 5.0, 5.2) * (i % 3 ? 1 : 0.4));
+        const k = es(t, 4.25 + i * 0.03, 4.4 + i * 0.03, ease.back) * (1 - es(t, 5.0, 5.2) * (i % 3 ? 1 : 0.4));   // swipe stop: every heart is lit by 4.67 (was 4.85+)
         pose(h, { x: m.x + (m.x > JX ? -6 : 6), y: JY - 108 + Math.sin(T * 1.5 + i) * 3, s: k, o: k > 0.01 ? 1 : 0 });
       });
 

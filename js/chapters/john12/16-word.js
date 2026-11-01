@@ -62,11 +62,11 @@ export default {
       /* v47a — heard but not kept; I do not judge him */
       const speak = bump(t, 0.1, 0.9) + bump(t, 2.1, 2.9) * 0.6;
       slipsA.forEach((el, i) => {
-        const k = seg(t, 0.15 + i * 0.08, 0.55 + i * 0.08);
+        const k = seg(t, 0.12 + i * 0.06, 0.42 + i * 0.06);   // swipe stop: every slip has slid from his hands by 0.6
         const x = lerp(840, HX - 30, Math.min(1, k / 0.6)), y = k < 0.6 ? 500 - Math.sin((k / 0.6) * PI) * 50 : lerp(500, F + 4, (k - 0.6) / 0.4);
         vis(el, { x: x + i * 6, y, r: k * 180 + i * 30, o: k > 0 ? 1 - es(t, 1.9, 2.1) : 0 });
       });
-      place(hearer, T, { armF: 50 - es(t, 0.5, 0.8) * 30, head: 4 + es(t, 0.6, 0.9) * 8, armB: 10, o: 1 - es(t, 7.1, 7.6) * 0.6 });
+      place(hearer, T, { armF: 50 - es(t, 0.4, 0.6) * 30, head: 4 + es(t, 0.45, 0.65) * 8, armB: 10, o: 1 - es(t, 7.1, 7.6) * 0.6 });
       const bk = es(t, 0.45, 0.75, ease.out) * (1 - es(t, 0.8, 1.05, ease.in));
       swing(balance, 960, 250 - (1 - bk) * 700 + 0, bk > 0.001 ? T : 0, 1, 0.7);
       fade(balance, bk > 0.001 ? 1 : 0);
@@ -79,8 +79,8 @@ export default {
       place(scorner, T, { o: 1 - es(t, 7.1, 7.6) * 0.6, armF: 20 + push * 80, armB: push * 40, head: -push * 10 + es(t, 3.2, 3.5) * 10, flip: push > 0.3 && t > 2.6 });
       fade(scorner.angry, es(t, 2.1, 2.3) * (1 - es(t, 3.9, 4.1)));
       slipsB.forEach((el, i) => {
-        const k = seg(t, 2.1 + i * 0.07, 2.5 + i * 0.07);
-        const back = es(t, 2.55 + i * 0.03, 2.8 + i * 0.03);
+        const k = seg(t, 2.05 + i * 0.05, 2.35 + i * 0.05);   // swipe stop: all the pushed-back slips lie at his feet by 2.7
+        const back = es(t, 2.4 + i * 0.03, 2.58 + i * 0.03);
         const gather = es(t, 3.15, 3.5);
         const x0 = lerp(760, 600, k), y0 = 500 - Math.sin(k * PI) * 40;
         const x1 = lerp(x0, SX - 40 - i * (PT ? 20 : 30), back), y1 = lerp(y0, F + 4, back);
@@ -101,7 +101,7 @@ export default {
       const sk = es(t, 6.05, 6.4);
       vis(scrollL, { x: 800, y: 300, sy: Math.max(0.02, sk), o: sk > 0.02 ? 1 : 0 });
       vis(ring, { x: 800, y: 300, o: sk > 0.02 ? 1 : 0, r: T ? T * 3 : 0 });
-      drawRing(ring, es(t, 6.3, 6.85));
+      drawRing(ring, es(t, 6.3, 6.68));   // swipe stop: the ring of eternity is closed by 6.68
       /* v50b — a lamp in the dark */
       const dark = es(t, 7.1, 7.6);
       fin.fade(dark);

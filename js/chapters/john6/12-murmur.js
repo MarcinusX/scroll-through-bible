@@ -87,7 +87,7 @@ export default {
       /* v44a — no one can come unless the Father draws him */
       const rk = es(t, 4.05, 4.35) * (1 - es(t, 5.6, 5.9) * 0.5);
       pose(rad, { x: JX, y: 170, s: 0.8 + rk * 0.2, r: T * 3, o: rk });
-      const draw = es(t, 4.3, 4.95);
+      const draw = es(t, 4.28, 4.68);   // swipe stop: the three drawn by the Father have reached Him by 4.68 (was 4.95)
       DRAWN.forEach((d) => {
         const up = es(t, 4.2 + d.i * 0.05, 4.28 + d.i * 0.05);
         const tx = JX + [-190, 170, 250][d.i];

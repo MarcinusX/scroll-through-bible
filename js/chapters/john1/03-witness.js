@@ -101,14 +101,15 @@ export default {
       const turn = es(t, 2.1, 2.25);
       const pointA = es(t, 2.2, 2.5) * (1 - es(t, 3.1, 3.3)) + es(t, 4.1, 4.4);
       /* v8a: he is not the light — a halo comes to crown him; he shakes his head and sends it on */
-      const hk = es(t, 3.05, 3.45, ease.out);
-      const shake = bump(t, 3.4, 3.95) * Math.sin(seg(t, 3.4, 3.95) * PI * 6) * 12;
-      const away = es(t, 3.7, 4.2);
+      // swipe stop: the halo has come, he has shaken his head and sent it on to the Light by 3.72
+      const hk = es(t, 3.05, 3.3, ease.out);
+      const shake = bump(t, 3.28, 3.66) * Math.sin(seg(t, 3.28, 3.66) * PI * 6) * 12;
+      const away = es(t, 3.42, 3.72);
       john.set({
         x: jx, y: JY, s: 1.02, flip: turn < 0.5, o: seg(t, 0.18, 0.22),
         walk: walk > 0 && walk < 1 ? jx * 0.05 : undefined,
-        armF: 12 + greet * 60 + pointA * 88 + bump(t, 3.35, 3.9) * 50,
-        armB: greet * 120 + bump(t, 3.35, 3.9) * 70 + es(t, 4.2, 4.5) * 40,
+        armF: 12 + greet * 60 + pointA * 88 + bump(t, 3.28, 3.7) * 50,
+        armB: greet * 120 + bump(t, 3.28, 3.7) * 70 + es(t, 4.2, 4.5) * 40,
         head: shake - pointA * 6 + bump(t, 3.05, 3.35) * -10, blink: blinkAt(time),
       });
       pose(nameEl, { x: NX, y: lerp(-300, NY, es(t, 1.05, 1.4, ease.out)) - es(t, 2.9, 3.2, ease.in) * 800, r: Math.sin(t * 3.6) * 1.6, o: t > 1 && t < 3.3 ? 1 : 0 });
@@ -132,7 +133,7 @@ export default {
 
       /* the people come because of him (v7) and look where he points */
       people.forEach((m) => {
-        const k = es(t, 2.2 + m.delay * 0.3, 2.8 + m.delay * 0.3);
+        const k = es(t, 2.15 + m.delay * 0.15, 2.55 + m.delay * 0.15);   // swipe stop: every one has arrived by 2.7
         const x = lerp(m.from, m.x, k);
         const look = es(t, 2.6, 2.9) + es(t, 4.2, 4.5) * 0.5;
         m.p.set({ x, y: m.y, s: m.s, flip: m.x > LX ? true : false, o: seg(t, 2.15, 2.25), walk: k > 0 && k < 1 ? x * 0.05 : undefined, head: -look * 10, armF: es(t, 4.25, 4.6) * (m.i % 2 ? 70 : 20), armB: es(t, 4.25, 4.6) * (m.i % 2 ? 20 : 130), blink: blinkAt(time, m.seed) });

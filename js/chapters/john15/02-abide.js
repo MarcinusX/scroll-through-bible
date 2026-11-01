@@ -76,16 +76,16 @@ export default {
       });
       ms.forEach((m, i) => {
         const reach = Math.abs(m.x - JX) / 420;      // the stream reaches each disciple in turn
-        const wash = es(t, 0.1 + reach * 0.62, 0.3 + reach * 0.62);
+        const wash = es(t, 0.1 + reach * 0.45, 0.28 + reach * 0.45);   // swipe stop: the last of the dust is washed off by 0.73
         vis(dust[i], { x: m.x, y: m.y + wash * 60, s: m.s, o: (1 - wash) * (1 - es(t, 0.9, 1)) });
         const [hx, hy] = headOf(m);
-        vis(sparks[i], { x: hx + 16, y: hy - 18, s: 0.6 + bump(t, 0.2 + reach * 0.62, 0.8 + reach * 0.4) * 0.6, r: T * 20, o: bump(t, 0.2 + reach * 0.62, 1.0) });
+        vis(sparks[i], { x: hx + 16, y: hy - 18, s: 0.6 + bump(t, 0.2 + reach * 0.45, 0.8 + reach * 0.4) * 0.6, r: T * 20, o: bump(t, 0.2 + reach * 0.45, 1.0) });
         /* v4a — thread from the branch tip to the heart */
-        const k = es(t, 1.2 + i * 0.03, 1.5 + i * 0.03) * (1 - es(t, 3.0, 3.2) * 0.6);
+        const k = es(t, 1.15 + i * 0.02, 1.4 + i * 0.02) * (1 - es(t, 3.0, 3.2) * 0.6);   // swipe stop: every thread and heart is lit by 1.7
         const b = vine.branches[i];
         const hy2 = m.y - 104 * m.s;
         th(i, b.tip[0], b.tip[1] + 30, m.x + (m.flip ? -4 : 4) * m.s, hy2, k * 0.8);
-        vis(hearts[i], { x: m.x + (m.flip ? -4 : 4) * m.s, y: hy2, s: 0.7 + es(t, 1.3 + i * 0.03, 1.6 + i * 0.03, ease.back) * 0.4, o: k });
+        vis(hearts[i], { x: m.x + (m.flip ? -4 : 4) * m.s, y: hy2, s: 0.7 + es(t, 1.25 + i * 0.02, 1.5 + i * 0.02, ease.back) * 0.4, o: k });
         const look = es(t, 3.05, 3.3);
         placeM(m, T, { head: -look * 14 - bump(t, 2.1, 2.9) * (m.x > 900 ? 8 : 0), armF: bump(t, 1.3, 1.95) * 28 });
       });
@@ -97,15 +97,15 @@ export default {
       tb.beads(T, es(t, 1.3, 1.5) * (1 - es(t, 2.9, 3.1)), (r) => (r === spare ? 0 : 1));
       /* v4b — the spare branch comes loose and withers */
       const off = es(t, 2.1, 2.45);
-      const wither = es(t, 2.35, 2.85);
+      const wither = es(t, 2.3, 2.65);   // swipe stop: the cut branch has withered by 2.65
       vis(snap, { x: ssx + 4, y: ssy - 4, s: 0.6 + bump(t, 2.08, 2.4) * 0.8, o: bump(t, 2.08, 2.4) });
-      spare.set({ x: ssx + off * 56, y: ssy + off * 34, r: off * 12, grow: 1, sap: 1 - es(t, 2.12, 2.4), fruit: 1.5 * (1 - es(t, 2.4, 2.8)), ripe: 1, dry: wither });
+      spare.set({ x: ssx + off * 56, y: ssy + off * 34, r: off * 12, grow: 1, sap: 1 - es(t, 2.12, 2.4), fruit: 1.5 * (1 - es(t, 2.35, 2.62)), ripe: 1, dry: wither });
       vis(spot, { x: ssx + 110, y: ssy - 60, o: bump(t, 1.95, 3.05) });
       /* v4c — the picture */
       const pk = es(t, 3.05, 3.35, ease.out) * (1 - es(t, 3.92, 4.0));
       vis(plate, { x: 800, y: 96 - (1 - pk) * 520 + (T ? Math.sin(T * 0.9) * 2 : 0), o: pk > 0.001 ? 1 : 0 });
       if (pk > 0.001) {
-        const w = es(t, 3.15, 3.9);
+        const w = es(t, 3.15, 3.7);   // swipe stop: the lone walker has stopped by 3.7
         wander.set({ x: lerp(150, 360, w), y: PH - 24, s: 0.52, walk: w > 0 && w < 1 ? w * 26 : undefined, armB: 58, head: 4 });
         fade(wflame, 1 - es(t, 3.4, 3.7));
       }

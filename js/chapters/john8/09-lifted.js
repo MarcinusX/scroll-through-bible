@@ -55,7 +55,7 @@ export default {
       fade(tagQ, tk > 0.001 ? 1 : 0);
       /* v25b — words that fall at their feet */
       slips.forEach((el, i) => {
-        const k = seg(t, 1.15 + i * 0.1, 1.6 + i * 0.1);
+        const k = seg(t, 1.08 + i * 0.06, 1.45 + i * 0.06);   // swipe stop: the last word lies at their feet by 1.69
         const x = lerp(DC.JX + 30, 960 + i * 30, k), y = lerp(DC.FLOOR - 180, DC.FLOOR - 150, k) + (k > 0.7 ? (k - 0.7) / 0.3 * 170 : 0) - Math.sin(Math.min(1, k / 0.7) * PI) * 40;
         vis(el, { x, y, r: k * 200 + i * 30, o: k > 0 ? 1 - es(t, 2.0, 2.2) : 0 });
       });

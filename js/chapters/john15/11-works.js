@@ -79,8 +79,8 @@ export default {
         pj.set({ x: 110, y: fl, s: 0.66, armF: 50 + bump(t, 0.2, 0.9) * 40, armB: bump(t, 0.3, 0.9) * 60, blink: blinkAt(T, 1) });
         pls.forEach((p, i) => p.set({ x: 240 + i * 56, y: fl, s: 0.62, flip: true, armF: 50 * (1 - es(t, 1.2, 1.4)), head: es(t, 1.4, 1.7) * 10, blink: blinkAt(T, i + 2) }));
         exs.forEach((ex, i) => {
-          const f = es(t, 1.15 + i * 0.1, 1.6 + i * 0.1, ease.in);
-          pose(ex, { x: 240 + i * 56 - 24 - f * (180 + i * 40), y: fl - 88 - f * (60 + i * 20), r: f * 300 * (i % 2 ? 1 : -1), s: 1 - f * 0.3, o: 1 - es(t, 1.5 + i * 0.1, 1.7 + i * 0.1) });
+          const f = es(t, 1.12 + i * 0.08, 1.42 + i * 0.08, ease.in);   // swipe stop: every excuse is torn away by 1.66
+          pose(ex, { x: 240 + i * 56 - 24 - f * (180 + i * 40), y: fl - 88 - f * (60 + i * 20), r: f * 300 * (i % 2 ? 1 : -1), s: 1 - f * 0.3, o: 1 - es(t, 1.35 + i * 0.08, 1.5 + i * 0.08) });
         });
       }
       rings(800 - PW / 2 + 110 * 1 + 6, py + fl - 120, bump(t, 0.1, 0.95) * pk, T, { s0: 0.6, spread: 1.4 });

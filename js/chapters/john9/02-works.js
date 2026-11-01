@@ -64,15 +64,15 @@ export default {
     return (t, time) => {
       const T = time;
       /* the day goes: beat 3 sunset → dusk → night; beat 4 night stays, the light shines */
-      const dusk = es(t, 3.0, 3.55), night = es(t, 3.45, 3.95);
+      const dusk = es(t, 3.0, 3.45), night = es(t, 3.4, 3.7);   // swipe stop: night has fallen (stars, moon, dark) by 3.7
       if (night > 0) set.sk.blend(DUSK, NIGHTS, night);
       else if (dusk > 0) set.sk.blend(DAY, DUSK, dusk);
       else set.sk.set(...DAY);
-      const sunY = lerp(150, 620, es(t, 2.95, 3.7, ease.in));
-      set.update(T, { sunY, sunO: 1 - seg(t, 3.6, 3.75) });
-      set.starsL.fade(es(t, 3.5, 4.0));
-      if (set.moonEl) { drop(set.moonEl, MOON[0], MOON[1], es(t, 3.55, 4.1, ease.out), T, { amp: 0.8 }); }
-      nightL.fade(es(t, 3.2, 3.9) * (1 - es(t, 4.2, 4.7) * 0.45));
+      const sunY = lerp(150, 620, es(t, 2.95, 3.55, ease.in));
+      set.update(T, { sunY, sunO: 1 - seg(t, 3.45, 3.58) });
+      set.starsL.fade(es(t, 3.4, 3.7));
+      if (set.moonEl) { drop(set.moonEl, MOON[0], MOON[1], es(t, 3.4, 3.7, ease.out), T, { amp: 0.8 }); }
+      nightL.fade(es(t, 3.15, 3.65) * (1 - es(t, 4.2, 4.7) * 0.45));
       glowL.fade(es(t, 4.1, 4.6));
       pose(jGlow, { x: G.JX + 2, y: G.FLOOR - 120, s: 0.8 + es(t, 4.1, 4.7) * 0.5 });
 
@@ -97,18 +97,18 @@ export default {
 
       /* disciples listen; they look up at the dial, then close in as it grows dark */
       dis.forEach((d) => {
-        const x = 704 - d.i * 60 + es(t, 3.4, 3.9) * 14;
+        const x = 704 - d.i * 60 + es(t, 3.3, 3.65) * 14;
         d.p.set({ x, y: G.FLOOR + 12 - d.i * 6, s: 0.96 - d.i * 0.03, armF: 18 + bump(t, 1.2, 1.9) * (d.i === 0 ? 30 : 0), head: -bump(t, 2.1, 3.3) * 14 - es(t, 4.1, 4.5) * 6, blink: blinkAt(T, d.seed) });
       });
 
       /* v3a — the plates: scraps fall and crumble, the plates fly up */
-      const up1 = 1 - es(t, 0.55, 0.95, ease.in);
+      const up1 = 1 - es(t, 0.45, 0.7, ease.in);   // swipe stop: the plates are gone and the crumbs settled by 0.7
       drop(pl1, 960, 250, up1, T, { amp: 1.4, seed: 1 });
       drop(pl2, 610, 250, up1, T, { amp: 1.4, seed: 2 });
-      const fall = es(t, 0.2, 0.5, ease.in);
-      [960, 610].forEach((x, i) => vis(scr[i], { x, y: 386 + fall * 160, r: fall * (i ? -30 : 30), o: (1 - seg(t, 0.4, 0.52)) * (t > -0.5 ? 1 : 0) }));
+      const fall = es(t, 0.15, 0.4, ease.in);
+      [960, 610].forEach((x, i) => vis(scr[i], { x, y: 386 + fall * 160, r: fall * (i ? -30 : 30), o: (1 - seg(t, 0.35, 0.45)) * (t > -0.5 ? 1 : 0) }));
       crumbs.forEach((cr) => {
-        const k = seg(t, 0.45, 0.9);
+        const k = seg(t, 0.4, 0.68);
         const x0 = cr.side ? 610 : 960;
         vis(cr.el, { x: x0 + cr.dx * (1 + k * 2), y: 546 + k * 40 + cr.i * 3, r: k * 200, s: 1 - k * 0.6, o: k > 0 && k < 1 ? (1 - k) : 0 });
       });
@@ -120,7 +120,7 @@ export default {
       /* v4 — the day-dial: the little sun climbs, then runs down to the end of the day */
       const dk = es(t, 2.05, 2.4, ease.out) * (1 - es(t, 3.9, 4.15, ease.in));
       drop(dial, 800, 300, dk, T, { amp: 0.6 });
-      const hour = lerp(3, 7, es(t, 2.2, 2.9)) + es(t, 3.0, 3.75) * 5.6;
+      const hour = lerp(3, 7, es(t, 2.2, 2.68)) + es(t, 3.0, 3.6) * 5.6;   // swipe stop: the sun token at noon by 2.68, at the day's end by 3.6
       const [tx, ty] = hourAt(84, hour);
       vis(tok, { x: 800 + tx, y: 300 - (1 - dk) * 700 + ty, s: 1 - seg(hour, 11.6, 12.4) * 0.6, o: dk > 0.01 ? 1 - seg(hour, 11.9, 12.5) : 0 });
 

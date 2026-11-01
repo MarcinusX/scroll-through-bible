@@ -122,7 +122,7 @@ export default {
       /* v27 — John stands; what is given from heaven */
       const up = es(t, 3.1, 3.18);
       const recv = es(t, 4.05, 4.3) * (1 - es(t, 4.95, 5.1));
-      const wave = bump(t, 5.35, 5.95);
+      const wave = bump(t, 5.3, 5.7);
       const go = es(t, 6.05, 6.5);
       const jx = lerp(JBX, 850, go);
       johnSit.set({ x: JBX + 10, y: GY - 8, s: 1.05, flip: false, o: 1 - up, armF: 30, armB: 10, head: 4, blink: blinkAt(T, 5) });
@@ -135,8 +135,8 @@ export default {
 
       /* v28a — not the Messiah: the crown is waved away to the One on the hill */
       const [jhx, jhy] = headAt(jx, GY, 1.05, false);
-      const cd = es(t, 5.05, 5.35, ease.out), cf = es(t, 5.8, 6.25);
-      const ccx = lerp(jhx, HX, cf), ccy = lerp(lerp(-200, jhy - 90, cd), 400, cf) - Math.sin(cf * PI) * 120;
+      const cd = es(t, 5.05, 5.35, ease.out), cf = es(t, 5.42, 5.7);   // swipe stop: the crown has been waved on to the One on the hill by 5.7
+      const ccx = lerp(jhx, PH ? HX - 90 : HX, cf), ccy = lerp(lerp(-200, jhy - 90, cd), 400, cf) - Math.sin(cf * PI) * 120;
       hangAt(crownEl, ccx, ccy, T, cd > 0 ? 1 - es(t, 6.2, 6.3) : 0, 2, 1.2, 1);
       vpose(messT, { x: jhx - (PH ? 95 : 180), y: jhy - 70, s: es(t, 5.4, 5.6, ease.back), r: -3, o: seg(t, 5.4, 5.45) * (1 - es(t, 6.0, 6.1)) });
 
@@ -144,8 +144,9 @@ export default {
       vpose(sentT, { x: 930, y: 360, s: es(t, 6.35, 6.55, ease.back), r: 3, o: seg(t, 6.35, 6.4) });
 
       // phone: look further right (and from a little further away) whenever the One on the hill matters
-      const hillK = Math.max(es(t, 1.9, 2.4) * (1 - es(t, 3.0, 3.4)), es(t, 5.9, 6.4));
-      S.cam.x = PH ? lerp(-60, 190, hillK) : es(t, 1.9, 2.4) * 110 * (1 - es(t, 3.0, 3.4)) + es(t, 5.5, 6.2) * 90;
+      // swipe stop (phone): half-way there by 5.72, so John's «not the Messiah» and the crown on the hill are both in view
+      const hillK = Math.max(es(t, 1.9, 2.4) * (1 - es(t, 3.0, 3.4)), es(t, 5.42, 5.72) * 0.5 + es(t, 5.9, 6.4) * 0.5);
+      S.cam.x = PH ? lerp(-60, 190, hillK) : es(t, 1.9, 2.4) * 110 * (1 - es(t, 3.0, 3.4)) + es(t, 5.42, 5.75) * 90;
       S.cam.y = 20;
       S.cam.z = 1.08 + es(t, 3.9, 4.3) * 0.06 * (1 - es(t, 5.0, 5.3)) - (PH ? hillK * 0.08 : 0);
     };

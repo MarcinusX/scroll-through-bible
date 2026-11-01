@@ -80,7 +80,7 @@ export default {
       D.forEach((m, i) => {
         const [hx, hy] = headOf(at(m));
         const d = Math.abs(m.x0 - JX) / 400;
-        const u = es(t, 0.1 + d * 0.3, 0.55 + d * 0.3);
+        const u = es(t, 0.08 + d * 0.18, 0.42 + d * 0.18);   // swipe stop: every ring has reached its head by 0.6
         const x = lerp(JH[0], hx, u), y = lerp(JH[1] - 30, hy - 32 * m.s, u) - Math.sin(u * PI) * 80;
         vis(rings[i], { x, y: y + (T && u >= 1 ? Math.sin(T * 1.6 + i) * 1.5 : 0), s: 0.7 + u * 0.3, o: u > 0.01 ? 1 : 0 });
         m.ring = [x, y];
@@ -102,15 +102,15 @@ export default {
       D.forEach((m, i) => {
         const [cx, cy] = chestOf(at(m));
         const d = Math.abs(m.x0 - JX) / 400;
-        const k = es(t, 2.35 + d * 0.25, 2.7 + d * 0.25);
+        const k = es(t, 2.3 + d * 0.15, 2.52 + d * 0.15);   // swipe stop: every thread and heart is lit by 2.7
         love(i, [JC[0] + 4, JC[1] + 6], [cx, cy], -40, k, 0.8 * (1 - es(t, 5.1, 5.4) * 0.4));
-        const hk2 = es(t, 2.6 + d * 0.25, 2.8 + d * 0.25, ease.back);
+        const hk2 = es(t, 2.42 + d * 0.15, 2.55 + d * 0.15, ease.back);
         vis(hearts[i], { x: cx + (m.flip ? -3 : 3), y: cy + 6, s: hk2 * m.s, o: hk2 > 0.01 ? 1 : 0 });
       });
 
       /* the Eleven */
       D.forEach((m, i) => {
-        const reach = es(t, 3.5, 3.9);
+        const reach = es(t, 3.45, 3.7);   // swipe stop: drawn together, hands reaching, by 3.7
         m.p.set({ x: m.cx, y: m.cy, s: m.s, flip: m.flip, walk: walking ? m.cx * 0.07 : undefined, armF: 14 + reach * 50 * (i % 2 ? 1 : 0.6), armB: 6 + reach * 40, head: -8 - bump(t, 0.1, 1.0) * 10 - bump(t, 4.1, 4.9) * 0 - es(t, 5.1, 5.5) * 12, blink: 0 });
         pose(m.lamp, { x: m.cx + (m.flip ? -1 : 1) * 36 * m.s, y: m.cy + 2, s: 0.9 });
         lampK(m, 0.85, bump(t, 4.05, 4.7) * 0.4);
@@ -119,7 +119,7 @@ export default {
       /* v23c — the world may know: light streams to the city and its windows wake */
       const sk = es(t, 4.05, 4.45) * (1 - es(t, 5.2, 5.6) * 0.6);
       vis(stream, { x: 0, y: 0, o: sk });
-      wins.forEach((w, g) => fade(w, es(t, 4.3 + g * 0.1, 4.45 + g * 0.1)));
+      wins.forEach((w, g) => fade(w, es(t, 4.25 + g * 0.08, 4.38 + g * 0.08)));   // swipe stop: every window awake by 4.62
 
       /* v23d — loved as He is loved: the great heart */
       const gk = es(t, 5.05, 5.5, ease.out);

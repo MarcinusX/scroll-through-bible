@@ -50,9 +50,9 @@ export default {
 
     return (t, time) => {
       const T = time;
-      const dusk = es(t, 1.05, 1.9);
+      const dusk = es(t, 1.05, 1.7);   // swipe stop: dusk, His step, the open arms and the dome all done by 1.7
       if (dusk <= 0) set.sk.set(...GOLDEN); else set.sk.blend(GOLDEN, TWILIGHT, dusk);
-      set.update(T, { sunX: 1160, sunY: lerp(250, 470, es(t, 1.1, 1.95, ease.in)), glow: 0.8 });
+      set.update(T, { sunX: 1160, sunY: lerp(250, 470, es(t, 1.1, 1.7, ease.in)), glow: 0.8 });
       /* v11a — I am the good shepherd */
       const ak = es(t, 0.15, 0.45, ease.back) * (1 - es(t, 1.1, 1.3) * 0.0);
       vis(am, { x: 800, y: 210 - (1 - ak) * 80 - es(t, 1.05, 1.3) * 40, s: Math.min(1, ak), o: ak > 0.01 ? 1 - es(t, 1.1, 1.3) * 0.25 : 0 });
@@ -62,23 +62,23 @@ export default {
       const dk = es(t, 1.08, 1.6);
       nightL.shift(lerp(700, -430, dk), 0);
       nightL.fade(dk > 0.001 ? 0.9 : 0);
-      const step = es(t, 1.35, 1.65);
-      const wide = es(t, 1.45, 1.75);
+      const step = es(t, 1.3, 1.55);
+      const wide = es(t, 1.38, 1.6);
       const talk = Math.max(bump(t, 0.05, 0.95), bump(t, 1.05, 1.5));
       const jx = lerp(790, 870, step);
       jesus.set({ x: jx, y: 624 + step * 4, s: 1.12, flip: false, walk: step > 0 && step < 1 ? jx * 0.08 : undefined, armF: 22 + wide * 38, armB: 10 + talk * 20 + wide * 110, head: -3 + wide * -4, blink: blinkAt(T, 1) });
       rings(jx + 12, 624 - 186, talk, T, { dir: 1, s0: 0.7, spread: 1.7 });
-      const dm = es(t, 1.55, 1.85);
+      const dm = es(t, 1.45, 1.68);
       vis(dome, { x: 760, y: 660, s: 0.8 + dm * 0.2, o: dm });
       flock.forEach((m) => {
-        const hide = es(t, 1.4 + m.i * 0.02, 1.7 + m.i * 0.02);
+        const hide = es(t, 1.3 + m.i * 0.015, 1.52 + m.i * 0.015);
         const x = m.x - (m.fl ? hide * 80 : 0), y = m.y;
         const look = es(t, 0.1 + m.i * 0.04, 0.4 + m.i * 0.04);
         m.r.set({ x, y, s: m.lamb ? 0.8 : 0.96, flip: m.fl, head: -look * 14 + (m.i % 3 === 0 ? bump(t, 0.6, 1.0) * 26 : 0), hop: hide > 0 && hide < 1 ? Math.abs(Math.sin(T * 12 + m.i)) * 3 : 0 });
       });
-      S.cam.x = kf(t, [[0, 0], [1, 0], [1.8, 30]]);
-      S.cam.y = kf(t, [[0, -30], [1, -20], [1.8, 10]]);
-      S.cam.z = kf(t, [[0, 1.12], [1, 1.2], [1.8, 1.08]]);
+      S.cam.x = kf(t, [[0, 0], [1, 0], [1.7, 30]]);
+      S.cam.y = kf(t, [[0, -30], [1, -20], [1.7, 10]]);
+      S.cam.z = kf(t, [[0, 1.12], [1, 1.2], [1.7, 1.08]]);
     };
   },
 };

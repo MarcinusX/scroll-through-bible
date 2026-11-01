@@ -79,7 +79,7 @@ export default {
       const pk = es(t, 0.05, 0.45, ease.out) * (1 - es(t, 1.9, 2.2, ease.in));
       vis(plate, { x: JX, y: 330 - (1 - pk) * 700, r: T ? Math.sin(T * 0.7) * 1.2 : 0, o: pk > 0.01 ? 1 : 0 });
       hearts.forEach(({ m, el }, i) => {
-        const k = es(t, 0.5 + i * 0.04, 0.7 + i * 0.04, ease.back);
+        const k = es(t, 0.35 + i * 0.02, 0.5 + i * 0.02, ease.back);   // swipe stop: all eleven hearts lit by 0.7
         const [cx, cy] = chest(m);
         vis(el, { x: cx, y: cy, s: k * (1 + bump(t, 2.1, 2.9) * 0.3), o: k > 0.01 ? 1 : 0 });
       });
@@ -89,12 +89,12 @@ export default {
       vis(jHeart, { x: jcx, y: jcy, s: jk, o: jk > 0.01 ? 1 : 0 });
       eleven.forEach((m, i) => {
         const d = Math.abs(m.x - JX) / 400;
-        const k = es(t, 1.15 + d * 0.3, 1.4 + d * 0.3);
+        const k = es(t, 1.12 + d * 0.25, 1.32 + d * 0.25);
         const [cx, cy] = chest(m);
         toJ(i, jcx, jcy - 6, cx, cy, 60 + Math.abs(m.x - JX) * 0.22, k, 1 - es(t, 2.1, 2.5) * 0.5);
         const n = eleven[i + 1];
         if (n) {
-          const kk = es(t, 1.55 + i * 0.03, 1.8 + i * 0.03);
+          const kk = es(t, 1.42 + i * 0.015, 1.55 + i * 0.015);   // swipe stop: the chain of light goes round the table by 1.7
           const [nx, ny] = chest(n);
           chain(i, cx, cy, nx, ny, Math.abs(nx - cx) > 120 ? 50 : 22, kk, kk);
         } else chain(i, 0, 0, 0, 0, 0, 0, 0);

@@ -73,7 +73,7 @@ export default {
       vis(Q.dawnPlate, { x: plx, y: ply, o: 0 });
       const conv = [es(t, 2.45, 2.7), es(t, 5.45, 5.7), 0];
       MARKS.forEach(([dx, dy], i) => {
-        const mk = es(t, 1.55 + i * 0.1, 1.7 + i * 0.1, ease.back);
+        const mk = es(t, 1.48 + i * 0.06, 1.6 + i * 0.06, ease.back);   // swipe stop: all three dark marks are on the plate by x.72
         vis(Q.marks[i], { x: plx + dx, y: ply + dy, s: mk * (1 - conv[i]), r: 6, o: mk > 0.01 && conv[i] < 0.99 ? 1 : 0 });
         vis(Q.hearts[i], { x: plx + dx, y: ply + dy, s: conv[i] * (1 + bump(conv[i], 0.5, 1) * 0.3), o: conv[i] > 0.01 ? 1 : 0 });
       });

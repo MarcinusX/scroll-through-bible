@@ -49,15 +49,15 @@ export default {
       pose(dark, { x: lerp(1500, 1180, es(t, 3.0, 3.5)) - es(t, 5.1, 5.8) * 500, y: 230, o: es(t, 3.0, 3.2) * (1 - es(t, 5.5, 5.8)) });
       st.dim.fade(trouble * 0.8);
       /* v26a — He walks; they follow in His steps */
-      const w = es(t, 0.1, 0.8);
+      const w = es(t, 0.1, 0.62);   // swipe stop: He has walked on and they stand in His steps by 0.7
       const jx = lerp(1000, 800, w);
       const bow = es(t, 3.1, 3.4) * (1 - es(t, 3.95, 4.1));
       const look = es(t, 4.05, 4.3) * (1 - es(t, 5.05, 5.2));
       const resolve = es(t, 5.1, 5.45);
       jesus.set({ x: jx - resolve * 30, y: F + 8, s: 1.04, flip: true, walk: (w > 0 && w < 1) || (resolve > 0 && resolve < 1) ? jx * 0.055 + resolve * 6 : undefined, armF: 16 + bump(t, 1.1, 1.9) * 40 + bow * 20 + look * 60 + resolve * 40, armB: 10 + look * 120 + bump(t, 2.1, 2.8) * 30, head: -2 + bow * 14 - look * 16 - resolve * 4, lean: bow * 4, blink: bow > 0.5 ? 1 : blinkAt(T) });
-      steps.forEach((s) => { const k = es(t, 0.15 + s.i * 0.07, 0.3 + s.i * 0.07); vis(s.el, { x: s.x - 200 * 0 , y: s.y, o: k * (1 - trouble * 0.7) }); });
+      steps.forEach((s) => { const k = es(t, 0.12 + s.i * 0.06, 0.24 + s.i * 0.06); vis(s.el, { x: s.x - 200 * 0 , y: s.y, o: k * (1 - trouble * 0.7) }); });
       fol.forEach((m, i) => {
-        const k = es(t, 0.35 + i * 0.08, 0.95 + i * 0.05);
+        const k = es(t, 0.25 + i * 0.06, 0.62 + i * 0.04);
         const x = lerp(m.x, 890 + i * 70, k) + es(t, 1.05, 1.4) * -10 * (i === 0 ? 1 : 0);
         place(m, T, { x, walk: k > 0 && k < 1 ? x * 0.06 + i : undefined, armF: 10 + (i === 0 ? bump(t, 2.3, 2.9) * 30 : 0), head: -2 + (i === 0 ? es(t, 2.2, 2.5) * -8 * (1 - es(t, 2.95, 3.1)) : 0) + trouble * 6, blink: blinkAt(T, m.seed) });
         m.cx = x;

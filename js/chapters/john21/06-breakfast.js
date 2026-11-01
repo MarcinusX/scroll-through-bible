@@ -64,7 +64,8 @@ export default {
         const sd = seg(t, 0.3 + j * 0.045, 0.35 + j * 0.045);
         const bow = es(t, 2.1, 2.4) * (1 - es(t, 2.9, 3.1) * 0.6);
         const k = ORDER.indexOf(m.k);
-        const getB = es(t, 3.2 + k * 0.08, 3.3 + k * 0.08), getF = es(t, 4.1 + k * 0.08, 4.2 + k * 0.08);
+        const getB = es(t, 3.2 + k * 0.07, 3.3 + k * 0.07)   // swipe stop: the last one has his bread by x.72
+          , getF = es(t, 4.1 + k * 0.08, 4.2 + k * 0.08);
         const eat = getB * (1 - getF) + getF;
         const up = es(t, 5.1, 5.4);
         m.st.set({ x: m.x + (m.flip ? 30 : -30), y: m.y - 4, s: 0.9, flip: m.flip, o: 1 - sd, armF: 14, blink: blinkAt(T, m.seed) });
@@ -107,9 +108,9 @@ export default {
         const k = es(t, 5.05 + p.i * 0.12, 5.4 + p.i * 0.12, ease.out);
         const x = 640 + p.i * 160, y = lerp(-300, 330, k);
         vis(p.el, { x, y, r: T ? Math.sin(T * 0.8 + p.i) * 1.5 : 0, o: k > 0.01 ? 1 : 0 });
-        vis(p.num, { x: x + 38, y: y - 38, s: es(t, 5.3 + p.i * 0.12, 5.5 + p.i * 0.12, ease.back), o: k > 0.01 ? 1 : 0 });
+        vis(p.num, { x: x + 38, y: y - 38, s: es(t, 5.3 + p.i * 0.1, 5.48 + p.i * 0.1, ease.back), o: k > 0.01 ? 1 : 0 });
       });
-      const tk = es(t, 5.55, 5.8);
+      const tk = es(t, 5.48, 5.68);   // swipe stop: «the third time» is lit by x.7
       vis(third, { x: 960, y: 330, s: 0.9 + (T ? Math.sin(T * 2) * 0.05 : 0), o: tk * 0.9 });
 
       S.cam.x = kf(t, [[0, 0], [1, 0], [1.2, -20], [2, -10], [3, 0], [5, 0], [6, 10]]);

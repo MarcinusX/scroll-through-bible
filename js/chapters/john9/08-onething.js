@@ -83,7 +83,7 @@ export default {
       const T = time;
       hall.door(0, 0);
       /* v24a — called forward again */
-      const CK = [[-0.3, 560], [0.2, 560], [0.75, MX]];
+      const CK = [[-0.3, 560], [0.15, 560], [0.62, MX]];   // swipe stop: he stands before them by 0.62 (phone camera there by 0.68)
       const mx = kf(t, CK, ease.io);
       const mw = moving(t, CK, 1);
       const shrug = bump(t, 3.05, 3.95), one = es(t, 4.1, 4.4) * (1 - es(t, 4.9, 5.05)), toldK = bump(t, 6.05, 6.95), whyK = bump(t, 7.05, 7.95), disc = bump(t, 8.05, 8.95);
@@ -131,7 +131,7 @@ export default {
       drop(disciples, 820, 140, es(t, 8.12, 8.45, ease.out), T, { amp: 0.8 });
 
       // phone: the camera stays further right and wider, so the man and the whole bench are in view
-      S.cam.x = P ? kf(t, [[0, 200], [0.8, 340], [3.9, 340], [4.25, 160], [5, 160], [5.3, 340], [9, 340]])
+      S.cam.x = P ? kf(t, [[0, 200], [0.68, 340], [3.9, 340], [4.25, 160], [5, 160], [5.3, 340], [9, 340]])
         : kf(t, [[0, 40], [0.8, 60], [1.1, 140], [2, 140], [2.2, 120], [3, 60], [3.8, 40], [4.1, 0], [5, 0], [5.2, 120], [6, 120], [6.2, 60], [7, 60], [7.2, 20], [8, 20], [8.2, 60], [9, 60]]);
       S.cam.y = kf(t, [[0, 0], [1, 0], [1.2, -60], [1.9, -60], [2.2, 0], [4.0, 0], [4.25, -50], [5, -50], [5.2, 0], [7, 0], [7.2, -80], [8, -80], [8.2, -70], [9, -70]]);
       S.cam.z = P ? kf(t, [[0, 1], [4.0, 1], [4.25, 1.16], [5, 1.2], [5.3, 1], [9, 1]])

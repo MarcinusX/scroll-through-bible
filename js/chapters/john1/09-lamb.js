@@ -77,11 +77,11 @@ export default {
       pose(lambTag, { x: lx + 20, y: lerp(-500, 500, lt), r: Math.sin(t * 3.6) * 1.5, o: lt > 0.01 ? 1 : 0 });
       pose(globeEl, { x: GX, y: GY, r: Math.sin(time * 0.5) * 1.5, o: 1 });
       sins.forEach((sn, i) => {
-        const a = 1.35 + i * 0.06, k = es(t, a, a + 0.45, ease.in);
+        const a = 1.28 + i * 0.03, k = es(t, a, a + 0.25, ease.in);   // swipe stop: every sin has reached the Lamb by 1.68
         const sx = GX + sn.dx, sy = GY + sn.dy;
         const x = lerp(sx, lx, k) + Math.sin(k * PI) * 30, y = lerp(sy, BANK - 80, k) - Math.sin(k * PI) * 60;
         pose(sn.el, { x, y, r: k * 200 + i * 30, s: 1 - k * 0.6, o: k < 0.98 ? 1 : 0 });
-        const fk = bump(t, a + 0.38, a + 0.6);
+        const fk = bump(t, a + 0.18, a + 0.3);
         pose(flashes[i], { x: lx + (i % 3 - 1) * 20, y: BANK - 90 - (i % 2) * 20, s: fk, r: t * 200, o: fk });
       });
 
@@ -108,11 +108,11 @@ export default {
       pose(thoughtEl, { x: tx, y: ty, s: th, o: th > 0.01 ? 1 : 0 });
       pose(shadowCard, { x: tx + 16, y: ty - 58, s: th, sx: th * Math.max(0.001, 1 - flip * 2), o: th > 0.01 && flip < 0.5 ? 1 : 0 });
       pose(faceCard, { x: tx + 16, y: ty - 58, s: th, sx: th * Math.max(0.001, flip * 2 - 1), o: th > 0.01 && flip >= 0.5 ? 1 : 0 });
-      const it = es(t, 4.45, 4.75, ease.out);
+      const it = es(t, 4.4, 4.66, ease.out);   // swipe stop: the Israel plate hangs still by 4.66
       pose(israel, { x: 800, y: lerp(-500, 330, it), r: Math.sin(t * 3.2 + 1) * 1.4, o: it > 0.01 ? 1 : 0 });
 
       /* the people — all of Israel turns to look at Him */
-      const look = es(t, 4.4, 4.8);
+      const look = es(t, 4.38, 4.68);
       farPeople.forEach((m) => m.p.set({ x: m.x, y: m.y, s: m.s, flip: look > 0.5 ? m.x > JX : m.x > JOX, armF: look * (m.i % 2 ? 60 : 10), head: -look * 4, blink: blinkAt(time, m.seed) }));
       nearPeople.forEach((m) => m.p.set({ x: m.x, y: m.y, s: m.s, flip: m.x > JX, armF: look * (m.i % 2 ? 60 : 20), armB: look * (m.i % 2 ? 0 : 120), head: -look * 8, blink: blinkAt(time, m.seed) }));
 

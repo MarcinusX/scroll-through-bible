@@ -49,7 +49,7 @@ export default {
       const wk = es(t, 0.1, 0.35, ease.out) * (1 - es(t, 1.0, 1.2, ease.in));
       vis(word, { x: 800, y: 150 - (1 - wk) * 600 + (T ? Math.sin(T * 0.8) * 3 : 0), o: wk > 0.001 ? 1 : 0 });
       tags.forEach((g) => {
-        const k = es(t, 0.3 + g.i * 0.035, 0.5 + g.i * 0.035, ease.back) * (1 - es(t, 2.0, 2.2) * 0.6);
+        const k = es(t, 0.25 + g.i * 0.025, 0.42 + g.i * 0.025, ease.back)   /* swipe stop: every name tag is out by 0.67 */ * (1 - es(t, 2.0, 2.2) * 0.6);
         vis(g.el, { x: g.x, y: g.y, s: k, r: T ? Math.sin(T * 1.2 + g.i) * 4 * k : 0, o: k > 0.01 ? Math.min(1, k * 2) : 0 });
       });
       /* v5b — the sap runs, fruit comes out along every branch */
@@ -57,7 +57,7 @@ export default {
       vine.set({ grow: 1, sap, fruit: 1.05 + bump(t, 1.4, 2) * 0.1, ripe: 1, glow: 0.7 + bump(t, 1.1, 2.1) * 0.3 + es(t, 2.1, 2.4) * 0.3, T });
       tb.beads(T, es(t, 1.1, 1.3) * (1 - es(t, 2.0, 2.2) * 0.4));
       extra.forEach((e) => {
-        const k = es(t, 1.25 + e.i * 0.03 + e.j * 0.1, 1.45 + e.i * 0.03 + e.j * 0.1, ease.back);
+        const k = es(t, 1.2 + e.i * 0.02 + e.j * 0.08, 1.36 + e.i * 0.02 + e.j * 0.08, ease.back);   // swipe stop: all the fruit is out by 1.64
         vis(e.el, { x: e.x, y: e.y, s: k, o: k > 0.01 ? 1 : 0 });
       });
       ms.forEach((m, i) => {

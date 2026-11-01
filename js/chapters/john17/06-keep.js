@@ -101,7 +101,7 @@ export default {
       const pk = es(t, 0.1, 0.6) * (1 - es(t, 1.0, 1.2) * 0.7) + es(t, 6.05, 6.35) * 0.7;
       drawPath(pathP, Math.min(1, es(t, 0.1, 0.6) + es(t, 6.0, 6.1)));
       fade(path, pk);
-      const cl = t < 3 ? es(t, 0.3, 0.95) : es(t, 6.15, 6.8);
+      const cl = t < 3 ? es(t, 0.25, 0.68) : es(t, 6.12, 6.65);   // swipe stop: the spark has climbed to the light by 0.68 / 6.65
       const cp = PATH[Math.round(cl * 40)];
       vis(climber, { x: cp[0], y: cp[1], s: 1, o: cl > 0.01 && cl < 0.99 ? 1 : 0 });
 
@@ -133,7 +133,7 @@ export default {
         vis(sheepEls[i], { x: PX + x, y: PY + y - 4, s: 1.1, o: plk > 0.01 ? 1 - gone : 0 });
       });
       vis(hole, { x: PX + FLOCK[7][0], y: PY + FLOCK[7][1] + 2, o: plk > 0.01 ? es(t, 4.3, 4.7) : 0 });
-      fade(empty, es(t, 4.35, 4.8) * (1 - es(t, 7.0, 7.4) * 0.5));
+      fade(empty, es(t, 4.35, 4.68) * (1 - es(t, 7.0, 7.4) * 0.5));
       const sk = es(t, 5.05, 5.4, ease.out) * (1 - es(t, 5.95, 6.2, ease.in));
       lower(scroll, sk, 600, 290, { len: 700, r: T ? Math.sin(T * 0.6 + 1) : 0 });
       vis(line, { x: 600, y: 290 - (1 - sk) * 700 + 4, sx: es(t, 5.4, 5.7), o: sk > 0.01 ? 1 : 0 });
@@ -143,16 +143,16 @@ export default {
       D.forEach((m, i) => {
         const [cx, cy] = chestOf(m);
         const d = Math.abs(m.x - JX) / 400;
-        const k = es(t, 7.05 + d * 0.3, 7.6 + d * 0.3);
+        const k = es(t, 7.05 + d * 0.15, 7.4 + d * 0.15);   // swipe stop: every heart is full and has burst by 7.7
         vis(hearts[i], { x: cx + (m.flip ? -3 : 3), y: cy + 4, s: m.s * 1.1, o: es(t, 6.95, 7.1) });
         fillHeart(hearts[i], k);
-        const b = es(t, 7.55 + d * 0.3, 7.9 + d * 0.3);
+        const b = es(t, 7.35 + d * 0.15, 7.55 + d * 0.15);
         vis(burst[i], { x: cx + (i % 2 ? 10 : -10) * b, y: cy - 20 - b * 40, s: 1 - b * 0.5, o: b > 0.01 && b < 0.99 ? 1 : 0 });
-        const joy = es(t, 7.4, 7.8);
+        const joy = es(t, 7.3, 7.65);
         put(m, T, { head: -8 - bump(t, 0.2, 1.0) * 14 - joy * 8 - bump(t, 6.1, 6.9) * 10, armF: 14 + joy * 30, armB: 6 + joy * 50 * (i % 2) });
         lampK(m, 0.85, joy * 0.3);
       });
-      flames(1, T, { boost: es(t, 7.5, 7.9) * 0.6 });
+      flames(1, T, { boost: es(t, 7.4, 7.68) * 0.6 });
 
       put(J, T, { head: PRAY.head - bump(t, 0.2, 1.0) * 6 - bump(t, 6.1, 6.9) * 6 + bump(t, 3.1, 4.0) * 14, armF: PRAY.armF + bump(t, 1.1, 1.9) * 20, armB: PRAY.armB + bump(t, 1.1, 1.9) * 16 });
 

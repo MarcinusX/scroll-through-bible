@@ -74,14 +74,15 @@ export default {
       const start = [VX + 118, WY - 4];
       const bx = lerp(start[0], land[0], fly), by = lerp(start[1], land[1], fly) - Math.sin(fly * PI) * 90;
       /* v6b — withering: days pass (sun, moon), the leaves drop, the branch curls */
-      const days = seg(t, 1.05, 1.85);
-      const wz = es(t, 1.1, 1.8);
+      const days = seg(t, 1.05, 1.7);   // swipe stop: the days have passed and the branch has withered by 1.7
+      const wz = es(t, 1.1, 1.68);
       /* v6c — gathered into a bundle, thrown on the fire */
-      const walkIn = es(t, 2.02, 2.3), carry = es(t, 2.38, 2.62), throwK = es(t, 2.62, 2.72);
-      const gathered = es(t, 2.3, 2.38);
+      // swipe stop: the bundle is in the fire and burning by 2.7
+      const walkIn = es(t, 2.02, 2.25), carry = es(t, 2.32, 2.52), throwK = es(t, 2.52, 2.6);
+      const gathered = es(t, 2.25, 2.32);
       vis(branch, { x: bx, y: by, r: lerp(-30, 170, fly) + wz * 14, s: 1.45 - wz * 0.1, o: (1 - gathered) });
       lfs.forEach((l) => {
-        const d = es(t, 1.15 + l.i * 0.12, 1.4 + l.i * 0.12, ease.in);
+        const d = es(t, 1.12 + l.i * 0.1, 1.3 + l.i * 0.1, ease.in);
         pose(l.el, { x: l.x + d * (8 + l.i * 3), y: l.y + d * 40, r: d * 120 * (l.i % 2 ? 1 : -1), o: 1 - d });
       });
       pose(fruitEl, { x: 104, y: 6, s: 1 - es(t, 1.1, 1.5), o: 1 - es(t, 1.1, 1.5) });
@@ -91,10 +92,10 @@ export default {
       twigs.forEach((tw, i) => vis(tw, { x: SX + 110 + i * 22, y: GND - 2 - i * 3, r: i * 6 - 4, o: (1 - gathered) }));
       // the labourer walks in, stoops, lifts the bundle, carries it to the fire, throws it
       const wx = lerp(SX + W / 2 + 60, SX + 120, walkIn) + carry * (FX - 60 - SX - 120);
-      worker.set({ x: wx, y: GND + 2, s: 0.55, flip: true, walk: (walkIn > 0 && walkIn < 1) || (carry > 0 && carry < 1) ? T * 9 + t * 30 : undefined, lean: bump(t, 2.28, 2.42) * 22 - throwK * 10, armF: 20 + bump(t, 2.28, 2.42) * 20 + gathered * 50 + throwK * 60 * (1 - es(t, 2.8, 2.9)), armB: gathered * 40 });
-      vis(bundle, { x: wx - 34, y: GND - 50 - throwK * 30 + es(t, 2.72, 2.8) * 40, r: -8 + throwK * 20, s: 0.9, o: gathered * (1 - es(t, 2.74, 2.82)) });
+      worker.set({ x: wx, y: GND + 2, s: 0.55, flip: true, walk: (walkIn > 0 && walkIn < 1) || (carry > 0 && carry < 1) ? T * 9 + t * 30 : undefined, lean: bump(t, 2.23, 2.36) * 22 - throwK * 10, armF: 20 + bump(t, 2.23, 2.36) * 20 + gathered * 50 + throwK * 60 * (1 - es(t, 2.66, 2.74)), armB: gathered * 40 });
+      vis(bundle, { x: wx - 34, y: GND - 50 - throwK * 30 + es(t, 2.6, 2.66) * 40, r: -8 + throwK * 20, s: 0.9, o: gathered * (1 - es(t, 2.62, 2.68)) });
       // the fire takes it
-      const burn = es(t, 2.7, 2.85) * (1 - es(t, 2.98, 3.0) * 0.4);
+      const burn = es(t, 2.58, 2.7) * (1 - es(t, 2.98, 3.0) * 0.4);
       vis(fire, { x: FX, y: GND + 2, s: 0.35 + burn * 0.5, o: 0.45 + burn * 0.55 });
       tongues.forEach((tg, i) => pose(tg, { x: [-30, 22, -8, 14, -22, 2][i] * 0.5, y: -16, sy: 0.8 + (T ? Math.sin(T * 7 + i * 1.7) * 0.18 : 0) + burn * 0.2 }));
       sparks.forEach((sp, i) => {

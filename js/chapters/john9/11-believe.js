@@ -88,7 +88,7 @@ export default {
       kneel.p.set({ x: MANX - 16, y: G.FLOOR + 8, s: 1.02, flip: true, o: down, armF: 60 + es(t, 5.2, 5.5) * 20, armB: 40, head: 16 * es(t, 5.2, 5.5), lean: es(t, 5.2, 5.6) * 16, blink: 0 });
 
       /* v35b — the Son of Man */
-      drop(son, 860, 250, es(t, 1.45, 1.8, ease.out) * (1 - es(t, 2.05, 2.3, ease.in)), T, { amp: 1 });
+      drop(son, 860, 250, es(t, 1.4, 1.68, ease.out) * (1 - es(t, 2.05, 2.3, ease.in)), T, { amp: 1 }); // swipe stop: the Son of Man plate is down by 1.68
       /* v36 — who is He? */
       const [mhx, mhy] = headAt(MANX, G.FLOOR + 8, 1.02, true);
       const k2 = es(t, 2.15, 2.35, ease.back) * (1 - es(t, 2.92, 3.0));

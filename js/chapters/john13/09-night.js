@@ -84,24 +84,24 @@ export default {
       const bagGlow = bump(t, 1.1, 2.0);
       /* b3 — he rises, takes the bag and goes out */
       const up = es(t, 3.05, 3.12);
-      const walkK = seg(t, 3.12, 3.62);
+      const walkK = seg(t, 3.12, 3.48);   // swipe stop: he is out and the door shut by 3.72
       const DX = W.cx;
       const wx = lerp(JU.x, DX + 10, ease.io(walkK));
       const wy = lerp(SEAT - 8, FLOOR - 2, es(wx, 1150, 1290));
-      const inDoor = es(t, 3.6, 3.66);
+      const inDoor = es(t, 3.46, 3.5);
       JU.p.set({ x: JU.x, y: SEAT + (JU.i % 2) * 3, s: JU.s, flip: true, o: 1 - up, armF: 36, head: 14, blink: blinkAt(T, JU.seed) });
       fade(JU.sad, 0.6);
       vis(bag, { x: JU.x + 34, y: TOP - 30 - bagGlow * 4, s: 0.6 + bagGlow * 0.15, o: 1 - up });
       walker.set({ x: wx, y: wy, s: 0.9, flip: false, o: up * (1 - inDoor), walk: walkK > 0 && walkK < 1 ? wx * 0.05 : undefined, armF: 10, armB: 20, head: 6, blink: 0 });
-      const away = seg(t, 3.6, 3.9);
-      outFig.set({ x: DX + 10 + away * 20, y: FLOOR - 2 - away * 6, s: 0.9 - away * 0.12, flip: false, o: inDoor * (1 - es(t, 3.72, 3.9)), walk: away > 0 && away < 1 ? away * 8 : undefined, armF: 10, armB: 20 });
-      W.set(es(t, 3.4, 3.55) * (1 - es(t, 3.85, 3.98)));
+      const away = seg(t, 3.48, 3.66);
+      outFig.set({ x: DX + 10 + away * 20, y: FLOOR - 2 - away * 6, s: 0.9 - away * 0.12, flip: false, o: inDoor * (1 - es(t, 3.55, 3.66)), walk: away > 0 && away < 1 ? away * 8 : undefined, armF: 10, armB: 20 });
+      W.set(es(t, 3.3, 3.42) * (1 - es(t, 3.62, 3.72)));
 
       S.cam.x = S.portrait
-        ? kf(t, [[0, 0], [1.0, 0], [2.0, 60], [3.0, 60], [3.3, 420], [3.62, 1000], [4.0, 1000], [4.5, 120], [5, 100]])
-        : kf(t, [[0, 0], [1.0, 0], [2.0, 60], [3.0, 60], [3.3, 200], [3.62, 420], [4.0, 420], [4.5, 300], [5, 290]]);
-      S.cam.y = kf(t, [[0, 110], [1.0, 130], [2.0, 130], [3.0, 150], [3.62, 170], [4.0, 170], [4.5, 140]]);
-      S.cam.z = kf(t, [[0, 1.2], [1.0, 1.25], [2.0, 1.25], [3.0, 1.3], [3.62, 1.55], [4.0, 1.55], [4.5, 1.25], [5, 1.22]]);
+        ? kf(t, [[0, 0], [1.0, 0], [2.0, 60], [3.0, 60], [3.25, 420], [3.48, 1000], [4.0, 1000], [4.5, 120], [5, 100]])
+        : kf(t, [[0, 0], [1.0, 0], [2.0, 60], [3.0, 60], [3.25, 200], [3.48, 420], [4.0, 420], [4.5, 300], [5, 290]]);
+      S.cam.y = kf(t, [[0, 110], [1.0, 130], [2.0, 130], [3.0, 150], [3.48, 170], [4.0, 170], [4.5, 140]]);
+      S.cam.z = kf(t, [[0, 1.2], [1.0, 1.25], [2.0, 1.25], [3.0, 1.3], [3.48, 1.55], [4.0, 1.55], [4.5, 1.25], [5, 1.22]]);
     };
   },
 };

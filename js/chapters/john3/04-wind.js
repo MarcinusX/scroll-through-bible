@@ -120,7 +120,8 @@ export default {
       vpose(whence, { x: QX, y: 330 + Math.sin(T * 1.3) * 5, s: wk, r: -5, o: seg(t, 2.08, 2.12) * (1 - gone) });
       vpose(qL, { x: QX - 50, y: 270, s: wk * 0.9, r: Math.sin(T * 2) * 8, o: seg(t, 2.08, 2.12) * (1 - gone) });
       vpose(whither, { x: WX, y: 330 + Math.sin(T * 1.3 + 1) * 5, s: wk2, r: 5, o: seg(t, 2.45, 2.5) * (1 - gone) });
-      vpose(qR, { x: WX + 50, y: 270, s: wk2 * 0.9, r: Math.sin(T * 2 + 1) * 8, o: seg(t, 2.45, 2.5) * (1 - gone) });
+      // swipe stop (phone): the «dokąd?» question mark sits clear of the progress thread
+      vpose(qR, { x: WX + (S.portrait ? -15 : 50), y: S.portrait ? 250 : 270, s: wk2 * 0.9, r: Math.sin(T * 2 + 1) * 8, o: seg(t, 2.45, 2.5) * (1 - gone) });
 
       /* everyone born of the Spirit: little lights on the wind */
       seeds.forEach((sd) => {

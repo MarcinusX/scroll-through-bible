@@ -93,14 +93,14 @@ export default {
       pose(lanGlow, { x: bx - 212 * bs, y: by - 120 * bs, s: bs * (1 + Math.sin(T * 5) * 0.03), o: onL * 0.7 });
 
       /* v3d — the net: down, up empty, three times */
-      const hauls = [[1.1, 1.3], [1.3, 1.5], [1.5, 1.72]];
+      const hauls = [[1.05, 1.22], [1.22, 1.4], [1.4, 1.58]];   // swipe stop: three empty hauls, then the frown, all by x.7
       let down = 0;
       hauls.forEach(([a, b]) => { const u = seg(t, a, b); if (u > 0 && u < 1) { down = u < 0.3 ? ease.io(u / 0.3) : u < 0.8 ? 1 - ease.io((u - 0.3) / 0.5) : 0; } });
-      const netOn = seg(t, 1.1, 1.14) * (1 - seg(t, 1.96, 2.0));
+      const netOn = seg(t, 1.05, 1.09) * (1 - seg(t, 1.96, 2.0));
       const nx = bx + 236 * bs, ny = by - 150 * bs + down * 200 * bs;
       vis(net, { x: nx, y: ny, s: bs, r: Math.sin(T * 1.6) * 3, o: netOn * (1 - down * 0.85) });
       drips.forEach((d, i) => { const k = ((T * 1.6 + i * 0.33) % 1); pose(d, { x: -14 + i * 14, y: 90 + k * 26, o: (1 - k) * (1 - down) * netOn }); });
-      const tired = es(t, 1.3, 1.95);
+      const tired = es(t, 1.25, 1.7);
       const peer = es(t, 3.05, 3.3);
       B.crew.forEach((m) => {
         if (!m.p) return;
@@ -112,7 +112,7 @@ export default {
         });
         fade(m.sad, tired * (1 - es(t, 2.2, 2.5)) * 0.9);
       });
-      const fk = es(t, 1.72, 1.85, ease.back) * (1 - es(t, 2.0, 2.1));
+      const fk = es(t, 1.57, 1.7, ease.back) * (1 - es(t, 2.0, 2.1));
       vis(frown, { x: bx - 40, y: by - 190, s: fk, o: fk > 0.01 ? 1 : 0 });
 
       /* v4a — dawn: the shore rises in front; Jesus stands on it */

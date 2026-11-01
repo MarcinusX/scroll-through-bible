@@ -131,7 +131,7 @@ export default {
       fade(P.moon, 1 - dawn * 0.6);
       glowL.fade(dawn);
       way(es(t, 2.1, 2.65));
-      const lead = es(t, 2.2, 2.9);
+      const lead = es(t, 2.2, 2.65);   // swipe stop: the dove has led them up the way by 2.65
       const [wx, wy] = at(wayPts, 0.2 + lead * 0.8);
       const hov = es(t, 3.0, 3.3);
       const dx = lerp(wx, 1000, hov), dy = lerp(wy - 50, 360, hov);

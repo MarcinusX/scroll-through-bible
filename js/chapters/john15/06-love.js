@@ -65,29 +65,29 @@ export default {
       const fa = es(t, 0.05, 0.3) * (1 - es(t, 1.2, 1.5)) + bump(t, 3.0, 4.2);
       vis(rad, { x: 800, y: 124, s: 1 + (T ? Math.sin(T * 1.3) * 0.02 : 0), o: Math.min(1, fa) });
       vis(cone, { x: 800, y: 124, o: Math.min(1, fa) * (0.7 + bump(t, 3.1, 3.9) * 0.5) });
-      const hd = es(t, 0.12, 0.45, ease.io);
-      vis(bigHeart, { x: 800, y: lerp(150, 600, hd), s: 1 - es(t, 0.45, 0.6) * 0.5 + bump(t, 0.42, 0.62) * 0.2, o: es(t, 0.1, 0.2) * (1 - es(t, 1.2, 1.4) * 0.6) });
+      const hd = es(t, 0.1, 0.35, ease.io);   // swipe stop: the love has reached every heart by 0.73
+      vis(bigHeart, { x: 800, y: lerp(150, 600, hd), s: 1 - es(t, 0.35, 0.45) * 0.5 + bump(t, 0.32, 0.48) * 0.2, o: es(t, 0.1, 0.2) * (1 - es(t, 1.2, 1.4) * 0.6) });
       /* v11b — the cup of joy fills and runs over into theirs */
       const cupIn = es(t, 4.05, 4.35, ease.out) * (1 - es(t, 5.95, 6));
-      const fill = es(t, 5.05, 5.4);
+      const fill = es(t, 5.05, 5.3);   // swipe stop: the cup has run over into every cup by 5.68
       vis(cup, { x: 800, y: lerp(-200, 470, es(t, 4.05, 4.35, ease.out)) + (T ? Math.sin(T * 0.9) * 3 : 0), o: cupIn > 0.001 ? 1 : 0 });
       attr(level, 'y', (lerp(-36, -70 * K, fill)).toFixed(1));
-      attr(brim, 'opacity', es(t, 5.3, 5.42));
+      attr(brim, 'opacity', es(t, 5.22, 5.32));
       ms.forEach((m, i) => {
         const [cx, cy] = chest(m);
-        const hs = es(t, 0.5 + i * 0.03, 0.85 + i * 0.03);
-        vis(hearts[i], { x: lerp(806, cx, hs), y: lerp(590, cy, hs) - Math.sin(hs * PI) * 80, s: 0.8 + es(t, 0.8 + i * 0.03, 0.95 + i * 0.03, ease.back) * 0.3, o: hs > 0 ? (1 - es(t, 2.0, 2.2) * 0.5) : 0 });
+        const hs = es(t, 0.38 + i * 0.015, 0.56 + i * 0.015);
+        vis(hearts[i], { x: lerp(806, cx, hs), y: lerp(590, cy, hs) - Math.sin(hs * PI) * 80, s: 0.8 + es(t, 0.5 + i * 0.015, 0.58 + i * 0.015, ease.back) * 0.3, o: hs > 0 ? (1 - es(t, 2.0, 2.2) * 0.5) : 0 });
         /* v10a — a scroll at each one's heart */
         const sc = es(t, 2.1 + i * 0.03, 2.4 + i * 0.03, ease.back);
         vis(scrolls[i], { x: cx + (m.flip ? -8 : 8), y: cy + 4, r: m.flip ? 24 : -24, s: sc * 0.72, o: sc > 0.01 ? (1 - es(t, 3.9, 4.1)) : 0 });
         /* v11b — pour into their cups */
-        const po = seg(t, 5.4 + (i % 6) * 0.03, 5.62 + (i % 6) * 0.03);
+        const po = seg(t, 5.3 + (i % 6) * 0.025, 5.48 + (i % 6) * 0.025);
         const [px, py] = handP(m);
         vis(pours[i], { x: lerp(800, px, po), y: lerp(470 - 70 * K, py - 22, po) - Math.sin(po * PI) * 90, o: po > 0 && po < 1 ? 1 : 0 });
         const cupK = es(t, 5.0, 5.2);
         vis(cups[i], { x: px, y: py, s: m.s * 1.1, o: cupK });
-        attr(cupWine[i], 'opacity', es(t, 5.55 + (i % 6) * 0.03, 5.65 + (i % 6) * 0.03));
-        vis(joys[i], { x: px + 4, y: py - 40, r: T * 40, s: 0.5 + bump(t, 5.6, 6) * 0.7, o: bump(t, 5.6 + (i % 5) * 0.02, 6.0) });
+        attr(cupWine[i], 'opacity', es(t, 5.45 + (i % 6) * 0.025, 5.55 + (i % 6) * 0.025));
+        vis(joys[i], { x: px + 4, y: py - 40, r: T * 40, s: 0.5 + bump(t, 5.5, 6) * 0.7, o: bump(t, 5.5 + (i % 5) * 0.02, 6.0) });
         placeM(m, T, { head: -es(t, 0, 0.3) * 10 * (1 - es(t, 2, 2.2)) - bump(t, 3.05, 3.95) * 8 - es(t, 4.1, 4.4) * 12,
           armF: bump(t, 0.6 + i * 0.03, 1.4) * 30 + es(t, 2.2, 2.4) * 40 * (1 - es(t, 3.9, 4.1)) + es(t, 5.0, 5.2) * 58 });
       });

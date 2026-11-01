@@ -166,15 +166,15 @@ export default {
         walk: off > 0 && off < 1 ? off * 30 + f.i : undefined,
         armF: f.i === 0 ? bump(t, 0.95, 1.4) * 90 : 20, armB: 10, head: f.i === 1 ? -lean * 8 : lean * 6, lean: (f.i ? -1 : 1) * lean * 5, blink: blinkAt(T, f.seed),
       }));
-      const wk = es(t, 1.3, 1.45, ease.back) * (1 - es(t, 1.7, 1.8));
+      const wk = es(t, 1.3, 1.45, ease.back) * (1 - es(t, 1.85, 1.95));   // swipe stop: the whisper still hangs at 1.75, and has reached Him by 1.72
       vis(whisper, { x: FX + 90, y: 560, s: wk, o: wk > 0.01 ? 1 : 0 });
       rings.forEach((r, i) => {
-        const k = seg(t, 1.5 + i * 0.07, 1.85 + i * 0.07);
+        const k = seg(t, 1.38 + i * 0.05, 1.62 + i * 0.05);
         vis(r, { x: lerp(FX + 120, JX - 10, k), y: lerp(590, 580, k), s: 0.8 + k * 0.4, o: k > 0 && k < 1 ? 1 - k * 0.4 : 0 });
       });
 
       /* v2 — He does not baptize: His disciples do */
-      const hear = es(t, 1.8, 1.95);
+      const hear = es(t, 1.6, 1.72);
       const leave = es(t, 3.05, 3.9, ease.in);
       const jx = lerp(JX, 1320, leave);
       jesus.set({

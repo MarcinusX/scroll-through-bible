@@ -102,14 +102,14 @@ export default {
       fade(lampGl, truth * 0.9);
       vis(tree, { x: TX, y: FL + 6, s: 0.2 + life * 0.8, sy: 1, o: life > 0.01 ? 1 : 0 });
       // three sparks converge into Him
-      const conv = seg(t, 0.72, 0.92);
+      const conv = seg(t, 0.52, 0.72);   // swipe stop: the three sparks have reached Him by 0.72
       const heart = [JX + 2, FL - 128];
       [[JX, FL + 40], [LX + 33, FL - 170], [TX, FL - 115]].forEach(([x, y], i) => {
         const k = ease.io(seg(conv, i * 0.12, 0.6 + i * 0.12));
         vis(sparks[i], { x: lerp(x, heart[0], k), y: lerp(y, heart[1], k) - Math.sin(k * PI) * 60, s: 1, o: k > 0 && k < 1 ? 1 : 0 });
         thr(i, x, y, lerp(x, heart[0], k), lerp(y, heart[1], k), 60, k > 0 ? (1 - es(t, 1.0, 1.2)) * 0.6 : 0);
       });
-      const shine = es(t, 0.85, 1.0) * (1 - es(t, 1.1, 1.3) * 0.4) + es(t, 3.1, 3.4) * 0.3;
+      const shine = es(t, 0.62, 0.74) * (1 - es(t, 1.1, 1.3) * 0.4) + es(t, 3.1, 3.4) * 0.3;
       vis(halo, { x: JX + 2, y: FL - 150, s: 0.8 + shine * 0.8, o: 0.4 + shine * 0.6 });
 
       /* v6b — the doors open on the Father's light; travellers come through Him */
@@ -118,11 +118,11 @@ export default {
       pose(leafL, { x: JX - 150, y: FL, sx: 1 - open * 0.88 });
       pose(leafR, { x: JX + 150, y: FL, sx: 1 - open * 0.88 });
       pilgrims.forEach((m, i) => {
-        const u = seg(t, 1.08 + i * 0.1, 1.62 + i * 0.1);
+        const u = seg(t, 1.06 + i * 0.06, 1.42 + i * 0.06);   // swipe stop: the last traveller has gone through by 1.6
         const x = JX + m.side * lerp(250 - i * 26, 40, ease.out(u)), y = lerp(960, FL + 8, ease.out(u)), s = lerp(0.8, 0.42, u);
         const gone = seg(u, 0.85, 1);
         m.p.set({ x, y, s, flip: m.side > 0, o: (u > 0 ? 1 : 0) * (1 - gone), walk: u > 0 && u < 1 ? t * 26 + i : undefined, blink: blinkAt(T, i) });
-        const r = seg(t, 1.55 + i * 0.1, 1.85 + i * 0.1);
+        const r = seg(t, 1.36 + i * 0.06, 1.54 + i * 0.06);   // ... and its light has risen by 1.72
         vis(souls[i], { x: JX + m.side * 40 * (1 - r), y: lerp(FL - 40, 400, ease.out(r)), s: 1 - r * 0.4, o: r > 0 && r < 1 ? 1 : 0 });
       });
 

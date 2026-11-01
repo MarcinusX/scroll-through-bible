@@ -62,7 +62,7 @@ export default {
       /* v14 — He finds the young donkey and sits on it */
       const go = es(t, 0.08, 0.4);
       const mount = es(t, 0.46, 0.53);
-      const ride = es(t, 2.05, 2.9, ease.io);
+      const ride = es(t, 2.05, 2.7, ease.io);   // swipe stop: He has ridden up to her by 2.7
       const cx = lerp(1010, 800, ride);
       const walkC = ride > 0 && ride < 1 ? cx * 0.05 : undefined;
       jesus.set({ x: lerp(900, 950, go), y: G + 10, s: 1.02, flip: false, o: 1 - mount, walk: go > 0 && go < 1 ? t * 30 : undefined, armF: 14 + bump(t, 0.3, 0.5) * 60, blink: blinkAt(T) });
@@ -80,16 +80,16 @@ export default {
       });
       vis(halo, { x: cx - 10, y: G - 250, s: bless, o: bless * (T ? 0.85 + Math.sin(T * 2) * 0.1 : 0.9) });
       /* "as it is written" — the scroll unrolls */
-      const un = es(t, 0.55, 0.95);
+      const un = es(t, 0.45, 0.65);   // swipe stop: "as it is written" stands on the open scroll by 0.7
       const sy = S.portrait ? 50 : 100, sx = S.portrait ? 820 : 840;   // phone: the scroll hangs clear of her name tag
       pose(rodT, { x: sx, y: sy });
       pose(scSheet, { x: sx, y: sy, sy: Math.max(0.01, un), o: un > 0.01 ? 1 : 0 });
       pose(rodB, { x: sx, y: sy + un * sc.h, o: 1 });
       const txt = (el, a) => pose(el, { x: sx, y: sy, o: es(t, a, a + 0.2) * (un > 0.95 ? 1 : 0) });
-      txt(l0, 0.85); txt(l1, 1.1); txt(l2, 2.08); txt(l3, 2.3);
+      txt(l0, 0.5); txt(l1, 1.1); txt(l2, 2.08); txt(l3, 2.3);
       /* v15a — the Daughter of Zion: afraid, then at peace */
       const zIn = es(t, 1.02, 1.3, ease.out);
-      const calm = es(t, 1.45, 1.8);
+      const calm = es(t, 1.4, 1.68);   // swipe stop: her hands are down by 1.7
       const welcome = es(t, 2.3, 2.7);
       zion.set({ x: ZX, y: RD.WT + 6, s: 0.8, flip: false, o: zIn, armF: 150 * (1 - calm) + 20 * calm + welcome * 60, armB: 140 * (1 - calm) + 20 * calm + welcome * 110, head: 10 * (1 - calm) - welcome * 6, lean: (1 - calm) * 6 + (T ? Math.sin(T * 14) * 1.4 * (1 - calm) * zIn : 0), blink: calm < 0.5 ? 1 : blinkAt(T, 8) });
       vis(zGlow, { x: ZX, y: RD.WT - 110, s: 0.7 + welcome * 0.8, o: zIn * (0.3 + calm * 0.3 + welcome * 0.4) });

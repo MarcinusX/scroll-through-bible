@@ -69,7 +69,7 @@ export default {
       J.update(t, time);
 
       /* v19a: John's testimony — baptising in the Jordan */
-      const pour = bump(t, 0.2, 0.8);
+      const pour = es(t, 0.2, 0.4) * (1 - es(t, 0.84, 0.97));   // swipe stop: the water is still pouring at 0.75
       const wet = es(t, 1.0, 1.3);
       /* v19b: they come down from Jerusalem, then stand on the bank */
       far.forEach((f) => {
@@ -77,21 +77,21 @@ export default {
         const [x, y, dir] = along(J.PATH, u);
         f.p.set({ x, y: y + 2, s: 0.13, flip: dir < 0, o: u > 0 && u < 1 ? 1 : 0, walk: u * 60 });
       });
-      const arrive = es(t, 1.45, 1.8);
+      const arrive = es(t, 1.4, 1.65);   // swipe stop: the envoys stand on the bank by 1.65
       DEL.forEach((d) => {
         const x = lerp(d.x - 520, d.x, arrive);
-        const askA = d.i === 0 ? bump(t, 1.7, 2.1) * 60 + es(t, 5.1, 5.35) * (1 - es(t, 5.7, 5.9)) * 100 : 0;
+        const askA = d.i === 0 ? bump(t, 1.45, 2.1) * 60 + es(t, 5.1, 5.35) * (1 - es(t, 5.7, 5.9)) * 100 : 0;
         const writeA = d.i === 2 ? es(t, 5.3, 5.5) * 40 : 0;
         const lean = d.i === 1 ? bump(t, 3.05, 3.5) * 8 + bump(t, 6.05, 6.5) * 8 : 0;
         d.p.set({
           x, y: BANK + (d.i % 2) * 6, s: d.s, flip: d.i === 0 && es(t, 5.1, 5.25) > 0.5 && t < 5.75,
-          o: seg(t, 1.43, 1.47), walk: arrive > 0 && arrive < 1 ? x * 0.05 : undefined,
+          o: seg(t, 1.38, 1.42), walk: arrive > 0 && arrive < 1 ? x * 0.05 : undefined,
           armF: 12 + askA + writeA + (d.i === 1 ? bump(t, 3.05, 3.5) * 70 + bump(t, 4.05, 4.4) * 60 + es(t, 6.05, 6.3) * 70 : 0),
           armB: d.i === 3 ? bump(t, 4.05, 4.5) * 40 : 0, head: -6 + lean, lean, blink: blinkAt(time, d.i),
         });
       });
       const [ax, ay] = headAt(DEL[0].x, BANK, 1, false);
-      pose(askEl, { x: ax + 40, y: ay - 18, s: es(t, 1.72, 1.92, ease.back), o: seg(t, 1.7, 1.75) * (1 - seg(t, 2.1, 2.2)) });
+      pose(askEl, { x: ax + 40, y: ay - 18, s: es(t, 1.52, 1.68, ease.back), o: seg(t, 1.5, 1.55) * (1 - seg(t, 2.1, 2.2)) });   // swipe stop: «Kto ty jesteś?» is full size by 1.68
 
       /* John: out of the water to face them; hand on his chest; shaking his head at each plate */
       const turn = es(t, 1.5, 1.7);
@@ -105,7 +105,7 @@ export default {
       kneeler.set({ x: jx + 100 + es(t, 1.1, 1.5) * 400, y: WADE, s: 1, flip: true, o: 1 - es(t, 1.35, 1.5), head: 10 + pour * 6, armF: 60 - pour * 30, armB: 40, blink: blinkAt(time, 4) });
       const [px, py] = hand(jx, WADE, 1.05, false, 30 + pour * 80);
       const fall = time ? (time * 1.6) % 1 : 0.5;
-      pose(pourEl, { x: px + 12 + fall * 10, y: py + 6 + fall * 50, o: seg(t, 0.35, 0.45) * (1 - seg(t, 0.7, 0.78)) });
+      pose(pourEl, { x: px + 12 + fall * 10, y: py + 6 + fall * 50, o: seg(t, 0.35, 0.45) * (1 - seg(t, 0.84, 0.9)) });
       fbPeople.forEach((m) => m.p.set({ x: m.x, y: m.y, s: m.s, flip: m.x > JX, head: es(t, 1.5, 1.8) * 6, armF: bump(t, 2.3, 3) * 20, blink: blinkAt(time, m.seed) }));
 
       /* v20, v21: the plates — each crossed out */

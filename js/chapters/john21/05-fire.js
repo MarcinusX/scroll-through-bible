@@ -69,12 +69,12 @@ export default {
       M.forEach((m) => {
         const a = 0.02 + m.i * 0.05;
         let keys = [[a, m.x + 260], [a + 0.5, m.x]];
-        if (m.k === 'peter') keys = [[a, m.x + 260], [a + 0.5, m.x], [3.05, m.x], [3.3, PT ? 1190 : 1250], [3.45, PT ? 1190 : 1250], [3.95, PT ? 1130 : 1180]];
+        if (m.k === 'peter') keys = [[a, m.x + 260], [a + 0.5, m.x], [3.05, m.x], [3.22, PT ? 1190 : 1250], [3.3, PT ? 1190 : 1250], [3.68, PT ? 1130 : 1180]]   // swipe stop: the net is up the sand by x.7;
         const x = kf(t, keys);
         const walking = moving(t, keys);
         const isP = m.k === 'peter';
-        const hauling = isP ? es(t, 3.4, 3.5) * (1 - es(t, 3.95, 4.05)) : 0;
-        const flip = walking ? kf(t + 0.02, keys) < x : isP ? (t > 3.05 && t < 3.45 ? false : true) : true;
+        const hauling = isP ? es(t, 3.26, 3.34) * (1 - es(t, 3.95, 4.05)) : 0;
+        const flip = walking ? kf(t + 0.02, keys) < x : isP ? (t > 3.05 && t < 3.3 ? false : true) : true;
         m.p.set({
           x, y: GY + (m.i % 2) * 8, s: 0.9, flip,
           walk: walking ? x * 0.06 : undefined,
@@ -104,12 +104,12 @@ export default {
       vis(bring, { x: jx + 24, y: jy - 22, s: bk, o: bk > 0.01 ? 1 : 0 });
 
       /* v11a — Peter drags the net up the sand */
-      const drag = es(t, 3.45, 3.95);
+      const drag = es(t, 3.3, 3.68);
       const nx = lerp(N0[0], NET1[0], drag), ny = lerp(N0[1], NET1[1], drag);
       const ns = lerp(0.62, 0.86, drag);
       vis(net, { x: nx, y: ny, s: ns, o: 1 });
       const px = P.cx, [hx, hy] = [px + 30, GY - 90];
-      const rk = es(t, 3.3, 3.45) * 1;
+      const rk = es(t, 3.2, 3.3) * 1;
       vis(rope, { x: nx, y: ny, sx: Math.hypot(hx - nx, hy - ny), r: Math.atan2(hy - ny, hx - nx) * 180 / PI, o: rk * (1 - es(t, 4.0, 4.1)) });
 
       /* v11b — counted: 153 */

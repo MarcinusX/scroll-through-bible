@@ -111,7 +111,7 @@ export default {
       const wake = es(t, 1.05, 1.5);
       small.forEach((s) => pose(s.glow, { x: s.x, y: s.y - 60 * s.sc, s: s.sc * seg(t, 1.05 + s.i * 0.06, 1.25 + s.i * 0.06), o: seg(t, 1.05 + s.i * 0.06, 1.25 + s.i * 0.06) }));
       COMERS.forEach((m) => {
-        const k = es(t, 1.2 + m.i * 0.05, 1.8 + m.i * 0.05);
+        const k = es(t, 1.12 + m.i * 0.03, 1.58 + m.i * 0.03);   // swipe stop: the whole camp has gathered by 1.7
         const x = lerp(m.from, m.x, k);
         const see = es(t, 2.05, 2.4);
         const kneel = es(t, 3.2, 3.5) * (m.i % 2);

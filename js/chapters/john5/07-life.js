@@ -106,7 +106,7 @@ export default {
       /* v22 — the empty throne; the scales idle beside it, then given to the Son */
       const th = es(t, 2.05, 2.4, ease.out);
       vis(throne, { x: 800, y: lerp(-100, 380, th), s: 1, o: th > 0.01 ? 1 : 0 });
-      const bx = lerp(ph ? 1005 : 1080, 880, scales), by = lerp(190, 330, scales);
+      const bx = lerp(ph ? 955 : 1080, 880, scales), by = lerp(190, 330, scales);   // swipe stop (phone): the idle scales hang clear of the thread at 2.75
       const sway = t > 3.6 ? Math.sin((t - 3.6) * 6) * 5 * Math.max(0, 1 - (t - 3.6) * 1.5) : 0;
       bal.set(bx, by - (1 - es(t, 2.2, 2.55, ease.out)) * 480, sway, t > 2.15 ? 1 : 0);
 

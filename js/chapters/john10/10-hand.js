@@ -90,12 +90,12 @@ export default {
       snowL.shift(Math.sin(T * 0.4) * 30, ((T * 40) % 300) - 150);
       /* v27a — they hear His voice; He knows them (their names shine) */
       const talk = Math.max(bump(t, 0.05, 0.95), bump(t, 2.05, 2.9), bump(t, 4.05, 4.9), bump(t, 7.05, 7.95));
-      const walk = es(t, 1.08, 1.9);
+      const walk = es(t, 1.08, 1.7);   // swipe stop: He and the flock that follows Him are in place by 1.72
       const jx = lerp(700, 800, walk);
       /* v28b — the cold gust */
-      const gk = es(t, 3.05, 3.9);
+      const gk = es(t, 3.05, 3.7);   // swipe stop: the gust has blown through and they stand again by 3.75
       gust.shift(lerp(-1400, 1600, gk), 0);
-      gust.fade(bump(t, 3.05, 3.95));
+      gust.fade(bump(t, 3.05, 3.75));
       /* v28c … v30 — the hand, the greater light, one */
       const hk = es(t, 4.1, 4.45, ease.out);
       const HX = 800, HY = 330 - (1 - hk) * 700;
@@ -117,20 +117,20 @@ export default {
       rings(jx + 6, F - 178, talk * 0.9, T, { s0: 0.8, spread: 1.8 });
       flock.forEach((m, i) => {
         const hear = es(t, 0.15 + i * 0.05, 0.4 + i * 0.05);
-        const fol = es(t, 1.1 + i * 0.04, 1.95);
+        const fol = es(t, 1.1 + i * 0.04, 1.72);
         // following: those on the left fall in behind Him, those on the right come round
         const tx = [600, 660, 720, 880, 940, 1000][i], ty = [712, 726, 708, 712, 726, 708][i];
         const x = lerp(m.x - 80, tx, fol), y = lerp(m.y, ty, fol);
-        const gather = es(t, 4.2, 4.8);
+        const gather = es(t, 4.2, 4.65);
         const gx = lerp(x, x + (800 - x) * 0.25, gather);
-        const bent = bump(t, 3.2, 3.9);
+        const bent = bump(t, 3.15, 3.72);
         m.r.set({ x: gx, y, s: 0.9, flip: gx > jx, head: -hear * 16 + bent * 20, hop: fol > 0 && fol < 1 ? Math.abs(Math.sin(T * 12 + i)) * 3 : 0, tag: es(t, 0.35 + i * 0.06, 0.55 + i * 0.06) * (1 - es(t, 1.9, 2.1)) });
-        const lk = es(t, 2.2 + i * 0.07, 2.45 + i * 0.07);
+        const lk = es(t, 2.15 + i * 0.06, 2.35 + i * 0.06);   // swipe stop: all six lights lit by 2.65
         vis(lights[i], { x: gx + (gx > jx ? -14 : 14), y: y - 78 + (T ? Math.sin(T * 2 + i) * 3 : 0), s: 0.9 + lk * 0.3 - bent * 0.1, o: lk });
       });
       tracks.forEach((el, k) => {
         const i = k % 6, n = Math.floor(k / 6);
-        const fol = es(t, 1.1 + i * 0.04, 1.95);
+        const fol = es(t, 1.1 + i * 0.04, 1.72);
         const x = lerp(SH[i][0] - 80, [600, 660, 720, 880, 940, 1000][i], Math.min(1, (n + 1) / 3)) - 20;
         const y = lerp(SH[i][1], [712, 726, 708, 712, 726, 708][i], Math.min(1, (n + 1) / 3)) + 2;
         pose(el, { x, y, o: fol > (n + 1) / 3 ? 0.8 : 0 });

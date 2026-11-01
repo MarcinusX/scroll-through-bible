@@ -102,7 +102,7 @@ export default {
       const mx = lerp(PAN.x + 300, PAN.x - 20, wIn);
       wMini.set({ x: mx, y: G2 + 4, s: 0.5, flip: t < 3.6 || t > 4.05, o: on, walk: wIn > 0 && wIn < 1 ? mx * 0.08 : undefined, armF: 30 + beckon * 90, armB: 20 + beckon * 120, head: -beckon * 6, blink: blinkAt(T, 3) });
       town.forEach((f) => {
-        const k = es(t, 3.45 + f.i * 0.07, 3.75 + f.i * 0.07);
+        const k = es(t, 3.3 + f.i * 0.03, 3.52 + f.i * 0.03);   // swipe stop: the townsfolk have all gathered by 3.67
         const look = es(t, 5.1, 5.3);
         f.p.set({ x: PAN.x + lerp(f.from, f.x, k), y: G2 - 2 + k * 6 + (f.i % 2) * 4, s: 0.44, flip: f.x > -20 ? true : false, o: on * k, armF: bump(t, 4.3, 4.9) * 40, head: look * (f.i % 2 ? 10 : -10), blink: blinkAt(T, f.seed) });
       });

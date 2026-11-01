@@ -57,13 +57,13 @@ export default {
         const [hx0, hy0] = headOf(m);
         const cx = m.x + (m.flip ? -4 : 4) * m.s, cy = m.y - 104 * m.s;
         /* v7a — a word flies from Him into each heart */
-        const w = es(t, 0.1 + i * 0.04, 0.5 + i * 0.04);
+        const w = es(t, 0.08 + i * 0.025, 0.4 + i * 0.025);   // swipe stop: every word is in its heart by 0.73
         vis(words[i], { x: lerp(JX + 4, cx, w), y: lerp(JY - 190, cy, w) - Math.sin(w * PI) * 70, r: (1 - w) * 30, s: 1 - w * 0.4, o: w > 0 && w < 1 ? 1 : 0 });
-        const h = es(t, 0.45 + i * 0.04, 0.6 + i * 0.04, ease.back);
+        const h = es(t, 0.36 + i * 0.025, 0.48 + i * 0.025, ease.back);
         /* v7b — hands lift, a light rises to the Father and a gift comes back down */
         const pray = es(t, 1.05 + (i % 3) * 0.04, 1.25 + (i % 3) * 0.04) * (1 - es(t, 2.0, 2.2));
-        const up = seg(t, 1.2 + i * 0.02, 1.55 + i * 0.02);
-        const down = seg(t, 1.55 + i * 0.02, 1.85 + i * 0.02);
+        const up = seg(t, 1.15 + i * 0.015, 1.4 + i * 0.015);   // swipe stop: every gift is back in its hands by 1.73
+        const down = seg(t, 1.4 + i * 0.015, 1.58 + i * 0.015);
         const [hx, hy] = [m.x + (m.flip ? -30 : 30) * m.s, m.y - 150 * m.s];
         vis(ups[i], { x: lerp(hx, 800 + (hx - 800) * 0.15, ease.io(up)), y: lerp(hy, 150, ease.io(up)), s: 1 - up * 0.4, o: up > 0 && up < 1 ? 1 : 0 });
         vis(gifts[i], { x: lerp(800 + (hx - 800) * 0.15, hx, ease.io(down)), y: lerp(150, hy - 8, ease.io(down)), r: T * 30, s: 0.6 + down * 0.4, o: down > 0 ? (1 - es(t, 2.2, 2.5)) : 0 });

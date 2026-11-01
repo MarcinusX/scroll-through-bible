@@ -71,24 +71,24 @@ export default {
       /* v26a — the light above; the dove comes down past Him */
       vis(above, { x: 800, y: 180, s: 0.7 + es(t, 1.05, 1.3) * 0.3, o: es(t, 1.05, 1.3) * (1 - es(t, 2.6, 2.9) * 0.5) });
       const d1 = es(t, 1.2, 1.75, ease.inOut);
-      const sweep = seg(t, 2.05, 2.65);
+      const sweep = seg(t, 2.05, 2.5);   // swipe stop: the dove has passed all the scrolls by 2.5 and settled by 2.7
       let dx = lerp(800, 860, d1), dy = lerp(170, 520, d1) - Math.sin(d1 * PI) * 30, face = 1;
       if (t > 1.75) { const u = es(t, 1.75, 2.05, ease.inOut); dx = lerp(860, 430, u); dy = lerp(520, 400, u) - Math.sin(u * PI) * 40; face = -1; }
       if (sweep > 0) { dx = lerp(430, 1190, ease.io(sweep)); dy = 390 + Math.sin(sweep * PI * 5) * 16; face = 1; }
-      if (t > 2.65) { const u = es(t, 2.65, 2.9, ease.inOut); dx = lerp(1190, 1080, u); dy = lerp(390, 360, u); face = -1; }
+      if (t > 2.5) { const u = es(t, 2.5, 2.7, ease.inOut); dx = lerp(1190, 1080, u); dy = lerp(390, 360, u); face = -1; }
       const dvo = es(t, 1.15, 1.3);
       vis(dv, { x: dx, y: dy + (T ? Math.sin(T * 2.2) * 3 : 0), s: 0.9, sx: face, o: dvo });
       if (dvo > 0.01) flapWings(bird, T || t * 3, 30, 7);
       /* v26b — each scroll the dove passes opens and shines; the words go to their minds */
       scrolls.forEach((sc) => {
-        const k = es(t, 2.08 + ((sc.x - 430) / 760) * 0.55, 2.16 + ((sc.x - 430) / 760) * 0.55);
+        const k = es(t, 2.06 + ((sc.x - 430) / 760) * 0.42, 2.12 + ((sc.x - 430) / 760) * 0.42);
         const sw = T ? Math.sin(T * 0.9 + sc.i) * 2 : 0;
         pose(sc.rolled, { x: sc.x, y: sc.y, r: sw, s: 1 - k * 0.3, o: 1 - k });
         vis(sc.open, { x: sc.x, y: sc.y, r: sw, sx: 0.2 + k * 0.8, s: 1, o: k > 0.01 ? 1 : 0 });
       });
       others.forEach((m, i) => {
         const near = scrolls.reduce((a, b) => (Math.abs(b.x - m.x) < Math.abs(a.x - m.x) ? b : a));
-        const k = es(t, 2.35 + ((near.x - 430) / 760) * 0.5, 2.6 + ((near.x - 430) / 760) * 0.5, ease.inOut);
+        const k = es(t, 2.13 + ((near.x - 430) / 760) * 0.4, 2.27 + ((near.x - 430) / 760) * 0.4, ease.inOut);   // swipe stop: every word has reached its mind by 2.67
         const [hx, hy] = headAt(m.x, SEAT, m.s, m.flip, 62);
         vis(minds[i], { x: lerp(near.x, hx, k), y: lerp(near.y + 20, hy - 40, k), s: 1, o: k > 0.01 ? 1 : 0 });
       });

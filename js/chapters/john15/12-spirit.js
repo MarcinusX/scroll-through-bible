@@ -60,16 +60,16 @@ export default {
       vis(cone, { x: 800, y: 118, o: fa * (0.7 + bump(t, 1.05, 2) * 0.3) });
       vis(rays, { x: 800, y: 118, r: t * 4, s: 0.6 + es(t, 2.05, 2.5) * 0.4, o: es(t, 2.05, 2.4) * 0.9 });
       // the dove: out of the light (v26a), down the beam (v26b), circling over Him (v26c), resting above
-      const out = es(t, 0.3, 0.8), down = es(t, 1.05, 1.8), circ = seg(t, 2.05, 2.8);
+      const out = es(t, 0.3, 0.8), down = es(t, 1.05, 1.8), circ = seg(t, 2.05, 2.55);   // swipe stop: the dove has circled and come to rest by 2.7
       let dx = lerp(800, 860, out), dy = lerp(118, 200, out);
       dx = lerp(dx, 820, down); dy = lerp(dy, 380, down);
       if (circ > 0) { const a = -PI / 2 + circ * PI * 2; dx = lerp(820, 800 + Math.cos(a) * 110, Math.min(1, circ * 4)); dy = lerp(380, 400 + Math.sin(a) * 34, Math.min(1, circ * 4)); }
-      const rest = es(t, 2.8, 3.0);
+      const rest = es(t, 2.55, 2.7);
       dx = lerp(dx, 800, rest); dy = lerp(dy, 410, rest);
       vis(dv, { x: dx, y: dy + (T ? Math.sin(T * 2) * 4 : 0), s: lerp(0.4, 1.1, out), o: es(t, 0.3, 0.45) });
       if (T) flapWings(dvInner, T, 30, circ > 0 && circ < 1 ? 9 : 6);
       vis(ring, { x: 800, y: 412, o: es(t, 2.2, 2.4) });
-      drawRing(ring.firstElementChild, es(t, 2.2, 2.8));
+      drawRing(ring.firstElementChild, es(t, 2.2, 2.65));
       /* the vine glows again behind Him (v26c) */
       const vg = es(t, 2.1, 2.7);
       vine.set({ o: 1, grow: 1, sap: 0.2 + vg * 0.8, fruit: 1.05, ripe: 1, glow: 0.3 + vg * 0.7, T });

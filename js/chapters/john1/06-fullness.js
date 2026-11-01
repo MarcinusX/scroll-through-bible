@@ -142,11 +142,11 @@ export default {
         armF: 14 + es(t, 2.1, 2.4) * 40 + open * 50 - es(t, 3.9, 4.1) * 30, armB: 10 + es(t, 2.1, 2.4) * 40 + open * 90 - es(t, 3.9, 4.1) * 30,
         head: -es(t, 6.05, 6.3) * 10 + es(t, 7.1, 7.4) * 10, blink: blinkAt(time, 2),
       });
-      const ring = seg(t, 1.55, 1.95);
+      const ring = seg(t, 1.5, 1.7);   // swipe stop: the ring round Him is closed by 1.7
       drawRing(ringEl, ease.io(ring));
       pose(ringEl, { x: JX, y: PY - 110, s: 1 + ring * 0.1, r: t * 12, o: (ring > 0 ? 1 : 0) * (1 - es(t, 2.05, 2.4) * 0.7) * (1 - es(t, 3.9, 4.2)) });
       const shine = Math.max(es(t, 2.1, 2.5) * (1 - es(t, 3.9, 4.2)) * 0.7, es(t, 5.05, 5.4) * (1 - es(t, 6.0, 6.3)) * 0.8, es(t, 7.1, 7.5));
-      pose(jGlow, { x: JX, y: PY - 110, s: 0.6 + shine * 0.9, o: Math.max(seg(t, 1.6, 2.0) * 0.4, shine) });
+      pose(jGlow, { x: JX, y: PY - 110, s: 0.6 + shine * 0.9, o: Math.max(seg(t, 1.5, 1.7) * 0.4, shine) });
       pose(jRays, { x: JX, y: PY - 110, s: 0.4 + shine * 0.8, r: t * 4, o: es(t, 7.2, 7.6) * 0.9 });
 
       /* v18a: no one has ever seen God — a cloud comes down; v18b: it parts over the Son */
