@@ -79,7 +79,7 @@ export default {
       const low = 1 - es(t, 3.05, 3.4) * 0.5 + es(t, 4.1, 4.5) * 0.5;
       R.update(T, low);
       /* v28a — the shadow walks away and comes back */
-      const away = es(t, 0.08, 0.5, ease.inOut), back = es(t, 0.55, 0.95, ease.inOut);
+      const away = es(t, 0.06, 0.36, ease.inOut), back = es(t, 0.4, 0.7, ease.inOut);   // swipe stop: the shadow is back by 0.7
       const d = away * (1 - back);
       const sx = 770 + d * 110, sy = 462 - d * 50, ss = 0.72 * (1 - d * 0.72);
       fade(screen, es(t, 0.02, 0.12) * (1 - es(t, 0.95, 1.1)));
@@ -89,7 +89,7 @@ export default {
       vis(above, { x: 800, y: 210, s: 0.7 + gl * 0.5 + (T ? Math.sin(T * 1.1) * 0.01 : 0), o: gl + es(t, 5.1, 5.35) * (1 - es(t, 6.1, 6.3)) * 0.8 });
       vis(path, { x: 800, y: 590, sx: 0.5 + gl * 0.5, o: gl * 0.8 });
       joys.forEach(({ m, el }, i) => {
-        const k = es(t, 1.35 + i * 0.03, 1.5 + i * 0.03);
+        const k = es(t, 1.3 + i * 0.025, 1.42 + i * 0.025);   // swipe stop: every joy is up by 1.67
         const [hx, hy] = headAt(m.x, SEAT, m.s, m.flip, 62);
         const rise = seg(t, 1.35 + i * 0.03, 2.0);
         vis(el, { x: hx + Math.sin(rise * 6 + i) * 8, y: hy - 40 - rise * 60, s: 0.8, r: T ? T * 30 : t * 90, o: k * (1 - es(t, 1.85, 2.0)) });
@@ -118,7 +118,7 @@ export default {
       R.wall.shift(0, -lift * 260); R.wall.fade(1 - lift);
       R.roofs.fade(1 - lift); R.lampL.fade(1 - lift); R.dim.fade(1 - lift); R.floor.fade(1 - lift * 0.9);
       tabL.fade(1 - es(t, 6.1, 6.3)); hiL.fade(1 - lift); fade(cushion, 1 - es(t, 6.1, 6.25));
-      const walk = es(t, 6.2, 6.85, ease.inOut);
+      const walk = es(t, 6.2, 6.68, ease.inOut);   // swipe stop: everyone is out on the road by 6.7
       const [jhx, jhy] = [800, 730 - 128 * 1.04];
       vis(jHeart, { x: jhx + 2, y: jhy, s: es(t, 5.15, 5.35, ease.back), o: es(t, 5.15, 5.25) * (1 - es(t, 6.0, 6.1)) });
       thr(0, jhx + 2, jhy, 800, 230, 20, es(t, 5.2, 5.5) * (1 - es(t, 6.0, 6.1)) * 0.8);
@@ -138,7 +138,7 @@ export default {
         const isJ = m.k === 'jesus';
         const on = isJ ? rise : all;
         const n = isJ ? -1 : queue.indexOf(m);
-        const w = isJ ? walk : es(t, 6.22 + n * 0.015, 6.88, ease.inOut);
+        const w = isJ ? walk : es(t, 6.22 + n * 0.012, 6.7, ease.inOut);
         const u = isJ ? 1 : 1 - 0.082 * (n + 1);
         const tx = lerp(560, 1030, u), ty = lerp(748, 590, u);
         const x = lerp(m.x, tx, w), y = lerp(730 + (m.i % 2) * 4, ty, w);
@@ -148,9 +148,9 @@ export default {
         m.p.set({ x, y, s, flip: isJ || w > 0.97 ? false : !dirRight, o: on, armF: isJ ? 20 + es(t, 5.1, 5.4) * 40 + es(t, 6.05, 6.3) * 60 * (1 - walk * 0.5) : 70, armB: isJ ? 10 + es(t, 5.1, 5.4) * (1 - es(t, 6.0, 6.2)) * 120 : 12, head: isJ ? -es(t, 5.1, 5.4) * (1 - es(t, 6.0, 6.2)) * 14 : -4, walk: moving ? t * 30 + m.i : undefined, blink: blinkAt(T, m.seed) });
       });
 
-      S.cam.x = kf(t, [[0, 0], [6.3, 0], [7, 110]]);
-      S.cam.y = kf(t, [[0, 20], [1, 0], [1.4, -60], [2, -40], [3, 20], [4, 20], [5, 0], [5.4, -30], [6.2, 0], [7, -50]]);
-      S.cam.z = kf(t, [[0, 1.12], [1, 1.06], [1.4, 1.0], [2.2, 1.04], [3, 1.12], [4, 1.14], [5, 1.08], [6.2, 1.04], [7, 1.1]]);
+      S.cam.x = kf(t, [[0, 0], [6.3, 0], [6.7, 110], [7, 110]]);
+      S.cam.y = kf(t, [[0, 20], [1, 0], [1.4, -60], [2, -40], [3, 20], [4, 20], [5, 0], [5.4, -30], [6.2, 0], [6.7, -50], [7, -50]]);
+      S.cam.z = kf(t, [[0, 1.12], [1, 1.06], [1.4, 1.0], [2.2, 1.04], [3, 1.12], [4, 1.14], [5, 1.08], [6.2, 1.04], [6.7, 1.1], [7, 1.1]]);
     };
   },
 };

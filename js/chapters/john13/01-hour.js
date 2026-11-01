@@ -91,7 +91,7 @@ export default {
       vis(glass.el, { x: gx, y: gy, r: T ? Math.sin(T * 0.8) * 1 : 0, o: gk > 0.01 ? 1 : 0 });
       vis(gString, { x: gx, y: gy, o: gk > 0.01 ? 1 : 0 });
       vis(hourTag, { x: gx, y: gy + 82, o: gk > 0.01 ? es(t, 2.3, 2.5) : 0 });
-      const level = 1 - es(t, 2.3, 2.95, (x) => x);
+      const level = 1 - es(t, 2.3, 2.68, (x) => x);   // swipe stop: the hourglass has run out by 2.68
       glass.set(level, level > 0.02 ? 1 : 0);
       const radK = Math.max(es(t, 2.2, 2.6) * (1 - es(t, 3.0, 3.3) * 0.7) * (1 - es(t, 4.0, 4.3)), es(t, 6.05, 6.4));
       vis(rad, { x: JX, y: RY, s: 0.8 + radK * 0.25, o: radK });
@@ -102,8 +102,8 @@ export default {
       const hk = es(t, 3.05, 3.35, ease.back) * (1 - es(t, 4.1, 4.4));
       vis(heartEl, { x: heartAt[0], y: heartAt[1] + (T ? Math.sin(T * 1.4) * 3 : 0), s: 0.2 + hk * 0.8 + (T ? Math.sin(T * 2.2) * 0.03 * hk : 0), o: hk > 0.01 ? 1 : 0 });
       order.forEach(({ m, d }, i) => {
-        const a = 3.2 + (d / 380) * 0.45;
-        const k = es(t, a, a + 0.18) * (1 - es(t, 4.1, 4.35));
+        const a = 3.15 + Math.min(1, d / 450) * 0.35;   // swipe stop: the threads reach the very ends of the table by 3.65
+        const k = es(t, a, a + 0.15) * (1 - es(t, 4.1, 4.35));
         const [cx, cy] = chest(m);
         const judas = m.k === 'judas';
         const o = k * (judas ? 1 - es(t, 5.3, 5.7) * 0.75 : 1);
@@ -135,7 +135,7 @@ export default {
       });
       pose(hush, { x: JU.x + 10, y: SEAT - 100, s: 0.4 + eye * 0.8, o: eye });
       fade(hush, eye);
-      const ck = es(t, 5.3, 5.8);
+      const ck = es(t, 5.25, 5.65);   // swipe stop: the shadow at Judas' heart is whole by 5.65
       const [jcx, jcy] = chest(JU);
       vis(curl, { x: jcx - 2, y: jcy + 4, s: 0.3 + ck * 0.7, o: ck * 0.9 * (1 - es(t, 6.0, 6.2)) });
       jShadow.set({ x: JU.x + 26, y: SEAT - 6, s: JU.s * (1.2 + eye * 0.5), flip: true, head: eye * 16 });
@@ -147,7 +147,7 @@ export default {
       const wk = es(t, 6.15, 6.45, ease.back);
       vis(world, { x: JX + 34, y: TOP - 34 - (1 - wk) * 60, s: wk * 0.9, r: T ? T * 8 : 0, o: wk > 0.01 ? 1 : 0 });
       vis(handGlow, { x: JX + 34, y: TOP - 34, o: wk * 0.9 });
-      const lk = seg(t, 6.3, 6.95);
+      const lk = seg(t, 6.25, 6.68);   // swipe stop: the ring from God to God is closed by 6.68
       vis(loop, { x: JX, y: RY + 10, o: lk > 0 ? 1 - es(t, 7.0, 7.2) * 0.4 : 0 });
       attr(loopP, 'stroke-dashoffset', (LOOP_LEN * (1 - lk)).toFixed(1));
       const a = -PI / 2 + lk * PI * 2;

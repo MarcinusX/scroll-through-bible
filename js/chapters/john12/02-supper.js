@@ -60,7 +60,7 @@ export default {
 
       /* v2a — the supper is laid */
       dishes.forEach((d) => {
-        const k = es(t, 0.15 + d.i * 0.07, 0.4 + d.i * 0.07, ease.back);
+        const k = es(t, 0.12 + d.i * 0.06, 0.32 + d.i * 0.06, ease.back);   // swipe stop: every dish is on the table by 0.68
         vis(d.el, { x: d.x, y: TOP - 4 - (1 - k) * 240, o: k > 0.01 ? 1 : 0 });
       });
       /* v2b — Martha serves; Lazarus at the table with Him */

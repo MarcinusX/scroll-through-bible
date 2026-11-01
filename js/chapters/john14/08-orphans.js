@@ -87,18 +87,18 @@ export default {
       const kneel = es(t, 1.45, 1.52) * (1 - es(t, 2.02, 2.09));
       const up = es(t, 2.02, 2.09);
       const lit = es(t, 1.55, 1.7);
-      const childStands = es(t, 1.78, 1.85);
+      const childStands = es(t, 1.62, 1.68);   // swipe stop: the child is up and reaching by 1.75
       lightLamp(lampC, lit, T, 1);
       fade(childSad, 1 - es(t, 1.4, 1.6));
       pose(lampC, { x: HX + 80, y: G + 2, s: 1.1 });
       fade(winGlow, es(t, 1.6, 1.8));
       childSit.set({ x: HX + 40, y: G + 2, s: 0.6, o: 1 - childStands, armF: 30 + lit * 10, armB: 20, head: 14 * (1 - come) - come * 6, lean: 6 * (1 - come), blink: blinkAt(T, 3) });
       const cx = lerp(HX + 50, 724, es(t, 2.05, 2.4));
-      childUp.set({ x: cx, y: G + 4, s: 0.58, o: childStands, armF: 40 + es(t, 1.85, 2.0) * 30, armB: 10, head: -12, walk: es(t, 2.05, 2.4) > 0 && es(t, 2.05, 2.4) < 1 ? t * 30 : undefined, blink: blinkAt(T, 3) });
+      childUp.set({ x: cx, y: G + 4, s: 0.58, o: childStands, armF: 40 + es(t, 1.66, 1.74) * 30, armB: 10, head: -12, walk: es(t, 2.05, 2.4) > 0 && es(t, 2.05, 2.4) < 1 ? t * 30 : undefined, blink: blinkAt(T, 3) });
       /* v18b — He comes with a lamp and kneels */
       const jx = lerp(1260, 740, come);
       jWalk.set({ x: jx, y: G + 6, s: 1.02, flip: true, o: (t > 1 ? 1 : 0) * (1 - kneel) * (1 - up), walk: come > 0 && come < 1 ? t * 26 : undefined, armF: 60, blink: blinkAt(T) });
-      jKneel.set({ x: 740, y: G + 6, s: 1.02, flip: true, o: kneel, armF: 60 + lit * 10, armB: 10 + es(t, 1.72, 1.9) * 40, head: 8, blink: blinkAt(T) });
+      jKneel.set({ x: 740, y: G + 6, s: 1.02, flip: true, o: kneel, armF: 60 + lit * 10, armB: 10 + es(t, 1.58, 1.72) * 40, head: 8, blink: blinkAt(T) });
       const jxs = lerp(740, JX, es(t, 2.05, 2.4));
       const see = es(t, 3.05, 3.35);
       jStand.set({ x: jxs, y: G + 6, s: 1.08, flip: t < 2.5, o: up, armF: 14 + es(t, 2.05, 2.3) * 16 + see * 40 * (1 - es(t, 4.1, 4.3)), armB: 10 + see * 60 + es(t, 4.1, 4.3) * 110, head: -2, walk: es(t, 2.05, 2.4) > 0 && es(t, 2.05, 2.4) < 1 ? t * 30 : undefined, blink: blinkAt(T) });

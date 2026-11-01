@@ -128,13 +128,13 @@ export default {
       greyMan.set({ ...common, o: 1 - col });
       man.set({ ...common, o: col });
       slips.forEach((s) => {
-        const k = seg(t, 0.15 + s.i * 0.14, 0.5 + s.i * 0.14);
+        const k = seg(t, 0.12 + s.i * 0.1, 0.42 + s.i * 0.1);   // swipe stop: the last word has reached him by 0.72
         vis(s.el, { x: lerp(jhx - 20, 540, k), y: lerp(jhy, F - 170, k) - Math.sin(k * PI) * 70, r: Math.sin(T * 3 + s.i) * 8, s: 0.6 + (1 - k) * 0.3, o: k > 0 && k < 1 ? 1 : 0 });
       });
       const [mhx, mhy] = headAt(mx, F + 8, 1, false);
-      vis(heartL, { x: mx + 6, y: F - 108, s: es(t, 0.6, 0.8, ease.back), o: es(t, 0.6, 0.65) });
-      drawRing(ring, es(t, 0.7, 1.0));
-      vis(ring, { x: mx, y: F - 100, sy: 1, o: t > 0.7 ? 1 : 0 });
+      vis(heartL, { x: mx + 6, y: F - 108, s: es(t, 0.45, 0.6, ease.back), o: es(t, 0.45, 0.5) });
+      drawRing(ring, es(t, 0.5, 0.72));   // swipe stop: the ring of eternal life is closed round him by 0.72 (was 1.0)
+      vis(ring, { x: mx, y: F - 100, sy: 1, o: t > 0.5 ? 1 : 0 });
 
       /* v24b — no judgment: the scales hang over the grey path; he passes by */
       const bk = es(t, 0.95, 1.2, ease.out) * (1 - es(t, 2.0, 2.2));

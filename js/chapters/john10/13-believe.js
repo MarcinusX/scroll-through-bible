@@ -59,11 +59,11 @@ export default {
         const up = es(t, 2.0, 2.3, ease.in);
         swing(f.el, f.x, 240 - (1 - k) * 700 - up * 700, k > 0.001 ? T : 0, 1.3, 0.8, f.i);
         fade(f.el, k > 0.001 && up < 0.99 ? 1 : 0);
-        fade(f.fu, es(t, 1.15 + f.i * 0.15, 1.35 + f.i * 0.15));
+        fade(f.fu, es(t, 1.1 + f.i * 0.12, 1.28 + f.i * 0.12));   // swipe stop: all four works lit by 1.64
       });
       /* v38b — the Father in Me and I in the Father */
-      const ck = es(t, 2.1, 2.4);
-      const join = es(t, 2.35, 2.85);
+      const ck = es(t, 2.08, 2.3);
+      const join = es(t, 2.28, 2.65);   // swipe stop: the two circles are one by 2.65
       const cy = F - 150;
       vis(cA, { x: lerp(620, 800, join), y: lerp(300, cy, join), s: 0.8 + join * 0.3, o: ck * (1 - es(t, 3.0, 3.3)) });
       vis(cB, { x: lerp(980, 800, join), y: cy, s: 1, o: ck * (1 - es(t, 3.0, 3.3)) });

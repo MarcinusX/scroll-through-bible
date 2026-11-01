@@ -103,7 +103,7 @@ export default {
       own.forEach((m, i) => {
         let [x, y] = [m.x, m.y];
         // in the one flock they gather in front
-        const g = es(t, 5.05 + i * 0.03, 5.5 + i * 0.03);
+        const g = es(t, 5.05 + i * 0.02, 5.42 + i * 0.02);   // swipe stop: one flock in one ring by 5.62
         if (g > 0) { const [ox, oy] = ONE[i % ONE.length]; x = lerp(x, ox, g); y = lerp(y, oy, g); }
         const look = es(t, 0.2 + i * 0.05, 0.45 + i * 0.05);
         const sleep = lie * (i % 2 ? 1 : 0.5);
@@ -120,7 +120,7 @@ export default {
       // the far folds' lamps, and their sheep coming down
       const zoomOut = es(t, 3.05, 3.5);
       FAR.forEach((f, fi) => vis(lamps[fi], { x: f.x + 28 * f.sc, y: f.y - 40 * f.sc, s: 0.6 + zoomOut * 0.4, o: zoomOut * (1 - one * 0.7) }));
-      farEls.forEach((el) => fade(el, 1 - es(t, 5.3, 5.8)));
+      farEls.forEach((el) => fade(el, 1 - es(t, 5.25, 5.6)));
       others.forEach((m, k) => {
         const f = m.f;
         const hx0 = f.x + (m.j - 1) * 26 * f.sc, hy0 = f.y - 8 * f.sc;
@@ -139,7 +139,7 @@ export default {
       swing(tagOne, 800, 200 - (1 - onek) * 700, onek > 0.001 ? T : 0, 1.2, 0.8, 1);
       fade(tagOne, onek > 0.001 ? 1 : 0);
       vis(ring, { x: 800, y: 690, o: one > 0.01 ? 1 : 0 });
-      drawRing(ring, es(t, 5.2, 5.8));
+      drawRing(ring, es(t, 5.2, 5.6));
       S.cam.x = kf(t, [[0, 0], [2, 0], [3, 0]]);
       S.cam.y = kf(t, [[0, 20], [1, -60], [2, 10], [3, 20], [3.5, -40], [5, -10], [6, -20]]);
       S.cam.z = kf(t, [[0, 1.26], [1, 1.12], [2, 1.26], [3, 1.22], [3.5, 0.98], [5, 1.0], [6, 1.06]]);

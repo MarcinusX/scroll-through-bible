@@ -64,9 +64,9 @@ export default {
       });
 
       /* b1 — He lays aside His garments: the mantle comes off, is folded and laid on the table */
-      const fold = bump(t, 1.1, 1.75);
+      const fold = bump(t, 1.1, 1.68);
       const [mhx, mhy] = hand(JX, SY - (1 - up) * 40, 1.02, false, 40 + fold * 30);
-      const lay = es(t, 1.45, 1.8);
+      const lay = es(t, 1.4, 1.68);   // swipe stop: the mantle lies folded on the table by 1.68
       const mx = lerp(mhx + 4, 734, lay), my = lerp(mhy + 8, TOP, lay);
       vis(mantle, { x: mx, y: my, s: 1, o: off });
 
@@ -81,8 +81,8 @@ export default {
       /* b3 — He girds Himself */
       const tie = bump(t, 3.05, 3.7);
       /* b4 — the ewer: He pours water into the basin */
-      const pourA = es(t, 4.05, 4.25) * (1 - es(t, 4.8, 4.95));
-      const tilt = es(t, 4.15, 4.3) * (1 - es(t, 4.75, 4.9));
+      const pourA = es(t, 4.05, 4.25) * (1 - es(t, 4.62, 4.74));   // swipe stop: the basin is full and the ewer set upright by 4.72
+      const tilt = es(t, 4.15, 4.3) * (1 - es(t, 4.6, 4.72));
       const armJ = 30 + reach * 40 + take * (1 - es(t, 3.1, 3.3)) * 30 + tie * -12 + pourA * 12;
       const armBJ = 14 + tie * 30 + fold * 60 + pourA * 20;
       const base = { x: JX, y: SY - (1 - up) * 40, s: 1.02, flip: false, head: 6 + tie * 10 + pourA * 12 - (1 - up) * 4, blink: blinkAt(T), lean: tie * 3 + pourA * 6 };
@@ -100,10 +100,10 @@ export default {
       const flow = tilt > 0.6 ? 1 : 0;
       const sl = Math.max(4, TOP - 18 - lip[1]);
       vis(stream, { x: lip[0], y: lip[1], sy: sl / 60, o: flow });
-      const lvl = es(t, 4.3, 4.8);
+      const lvl = es(t, 4.3, 4.62);
       vis(water, { x: BX, y: TOP - bas.h + 2 + (1 - lvl) * 5, sx: 0.6 + lvl * 0.4, sy: 0.5 + lvl * 0.5, oy: -bas.h + 2, o: lvl > 0.01 ? 1 : 0 });
       vis(drops, { x: BX, y: TOP - bas.h, s: 0.6 + ((t * 3) % 1) * 0.5, o: flow * 0.8 });
-      const g2 = bump(t, 4.7, 5.0);
+      const g2 = bump(t, 4.55, 4.95);
       vis(glint2, { x: BX + 18, y: TOP - 30, s: 0.3 + g2, r: t * 90, o: g2 });
 
       S.cam.x = kf(t, [[0, 0], [1.0, 0], [1.5, -30], [2.0, 30], [3.0, 10], [4.0, 50]]);

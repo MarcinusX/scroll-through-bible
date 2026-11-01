@@ -109,7 +109,7 @@ export default {
       /* v10a: He moves through the world that was made through Him */
       const drift = es(t, 1.05, 1.9);
       /* v11a: He comes to His own — to their doors; v11b the doors close */
-      const toDoors = seg(t, 3.02, 3.9);
+      const toDoors = seg(t, 3.02, 3.7);   // swipe stop: the light rests at the last door by 3.7
       /* v12a: two doors open again */
       let lx = 800, ly = lerp(-120, 560, down);
       lx += Math.sin(drift * PI * 2) * 180 * (1 - seg(t, 1.9, 2.2));
@@ -163,7 +163,7 @@ export default {
         const x = lerp(hx0, b.x, out);
         const lift = es(t, 6.05, 6.4);
         const kneel = 0;
-        const born = es(t, 7.5, 7.85);
+        const born = es(t, 7.42, 7.7);
         b.p.set({ x, y: PY - (1 - out) * 50, s: b.s * (0.7 + out * 0.3), flip: b.flip, o: seg(t, 5.18 + b.i * 0.1, 5.24 + b.i * 0.1), walk: out > 0 && out < 1 ? x * 0.06 : undefined, armF: out * 60 + lift * 50, armB: lift * 40, head: -10 - lift * 10, blink: blinkAt(time, 4 + b.i) });
         const [px, py] = hand(x, PY, b.s, b.flip, out * 60 + lift * 50);
         const kin = es(t, 5.5 + b.i * 0.1, 5.8 + b.i * 0.1, ease.back);
@@ -178,13 +178,14 @@ export default {
 
       /* v13: not of blood, nor of flesh, nor of a man's will — each plate is crossed out; born of God */
       PLATES.forEach((p) => {
-        const a = 7.02 + p.i * 0.16;
-        const dn = es(t, a, a + 0.18, ease.out), cr = es(t, a + 0.16, a + 0.26, ease.back), up = es(t, 7.55, 7.8, ease.in);
+        // swipe stop: the plates are crossed out and gone, and the light from God has come down, by 7.7
+        const a = 7.02 + p.i * 0.1;
+        const dn = es(t, a, a + 0.18, ease.out), cr = es(t, a + 0.16, a + 0.26, ease.back), up = es(t, 7.52, 7.7, ease.in);
         const y = lerp(-500, 250, dn) - up * 800;
         pose(p.el, { x: p.x, y, r: Math.sin(t * 3.6 + p.i) * 1.5, o: dn > 0.01 ? 1 : 0 });
         pose(p.cross, { x: p.x, y, s: cr, o: cr > 0.01 ? 1 : 0 });
       });
-      const born = es(t, 7.5, 7.85);
+      const born = es(t, 7.42, 7.7);
       pose(godL, { x: 800, y: lerp(-300, 180, born), s: 1, o: born });
       pose(fromAbove, { o: born * 0.35 });
 

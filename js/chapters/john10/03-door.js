@@ -97,7 +97,7 @@ export default {
       /* v6 — they did not understand */
       const qk = (i) => es(t, 0.25 + i * 0.12, 0.45 + i * 0.12, ease.back) * (1 - es(t, 0.95, 1.1));
       /* v7a — He speaks again and goes to the gate; v7b — I am the door */
-      const go = es(t, 1.2, 1.95);
+      const go = es(t, 1.15, 1.66);   // swipe stop: He stands in the gateway by 1.66
       const jx = lerp(930, 800, go), jy = lerp(700, 606, go);
       const talk = Math.max(bump(t, 1.05, 1.95), bump(t, 2.05, 2.95), bump(t, 4.05, 4.95), bump(t, 8.05, 8.95));
       const door = es(t, 2.3, 2.7);
@@ -108,7 +108,7 @@ export default {
       const glow = door * (0.7 + bump(t, 4.0, 5.0) * 0.4 + es(t, 8.1, 8.5) * 0.6) * (1 - bump(t, 7.1, 8.1) * 0.6);
       vis(doorGlow, { x: 800, y: 540, s: 0.8 + glow * 0.5 + es(t, 8.1, 8.6) * 1.2, o: Math.min(1, glow) });
       vis(doorRays, { x: 800, y: 530, s: 0.7 + glow * 0.3 + es(t, 8.1, 8.6) * 0.9, o: Math.min(1, glow) * 0.8 });
-      const ak = es(t, 2.35, 2.65, ease.back) * (1 - es(t, 3.0, 3.2)) + bump(t, 4.05, 4.95);
+      const ak = es(t, 2.35, 2.65, ease.back) * (1 - es(t, 3.0, 3.2)) + es(t, 4.05, 4.3, ease.back) * (1 - es(t, 4.88, 5.0));   // swipe stop: the second I AM is full size at 4.75 (it was shrinking)
       vis(am, { x: 800, y: 250 - (1 - Math.min(1, ak)) * 60, s: Math.min(1, ak), o: ak > 0.01 ? 1 : 0 });
       /* v8 — the ones before: shadows over the wall; the sheep turn away */
       const sh = es(t, 3.1, 3.4) * (1 - es(t, 3.8, 4.0));
@@ -119,8 +119,8 @@ export default {
       });
       const away = es(t, 3.3, 3.55) * (1 - es(t, 3.9, 4.1));
       /* v9b — one goes in through Him; v9c — in and out, and pasture */
-      const enter = es(t, 5.1, 5.8);
-      const outK = es(t, 6.05, 6.7);
+      const enter = es(t, 5.1, 5.6);   // swipe stop: the sheep is through the gate by 5.6
+      const outK = es(t, 6.05, 6.55);   // swipe stop: in, out and grazing on the found pasture by 6.68
       inside.forEach((s) => {
         const i = s.i;
         let [x, y] = s.home;
@@ -133,7 +133,7 @@ export default {
           fl = outK > 0.5 ? (i === 0) : x > 800;
           moving = outK > 0 && outK < 1;
         }
-        const graze = es(t, 6.5, 6.8) * (i < 2 ? 1 : 0.4) * (1 - es(t, 7.2, 7.4)) + es(t, 8.7, 8.95) * 0.6;
+        const graze = es(t, 6.45, 6.68) * (i < 2 ? 1 : 0.4) * (1 - es(t, 7.2, 7.4)) + es(t, 8.7, 8.95) * 0.6;
         s.r.set({ x, y, s: y > 600 ? 0.94 : 0.84, flip: away > 0.5 ? !fl : fl, head: -bump(t, 2.3, 2.9) * 10 + away * 26 + graze * 34, hop: moving ? Math.abs(Math.sin(T * 12 + i)) * 3 : 0 });
       });
       outside.forEach((s) => {
@@ -145,7 +145,7 @@ export default {
           const P = [S0, [760, 660], [800, 612], [808, 560], [884, 540]];
           const u = enter * (1 - outK * 0.0);
           [x, y] = polyAt(P, u);
-          const back = es(t, 6.2, 6.9);
+          const back = es(t, 6.15, 6.6);
           if (back > 0) [x, y] = polyAt([[884, 540], [808, 560], [800, 612], [760, 690], S0B], back);
           fl = back > 0 ? true : x > 880;
           moving = (enter > 0 && enter < 1) || (back > 0 && back < 1);
@@ -153,21 +153,21 @@ export default {
         }
         const fleeT = bump(t, 7.3, 8.1);
         if (i === 2) x += fleeT * (PT ? -50 : 60);
-        const graze = es(t, 6.5, 6.8) * (1 - es(t, 7.2, 7.4)) + es(t, 8.7, 8.95);
+        const graze = es(t, 6.45, 6.68) * (1 - es(t, 7.2, 7.4)) + es(t, 8.7, 8.95);
         s.r.set({ x, y, s: sc, flip: fl, head: away * 26 + graze * 34 - fleeT * 12, hop: moving || (i === 2 && fleeT > 0.1 && fleeT < 0.9) ? Math.abs(Math.sin(T * 12 + i)) * 3 : 0 + bump(t, 8.5, 9) * Math.abs(Math.sin(T * 7 + i)) * 6, o });
       });
       const sk = es(t, 5.45, 5.65) * (1 - es(t, 6.1, 6.3));
       vis(saved, { x: 896, y: 540, s: 0.9 + sk * 0.3, o: sk });
       /* the meadow: pasture found (v9c), threatened (v10a), abundant (v10b) */
-      const found = es(t, 6.3, 6.8);
-      const droop = es(t, 7.35, 7.8) * (1 - es(t, 8.15, 8.4));
-      const bloom = es(t, 8.2, 8.8, ease.back);
+      const found = es(t, 6.25, 6.62);
+      const droop = es(t, 7.3, 7.62) * (1 - es(t, 8.15, 8.4));   // swipe stop: the meadow has wilted by 7.62
+      const bloom = es(t, 8.15, 8.6, ease.back);   // swipe stop: the meadow is in full flower by 8.6
       clumps.forEach((m) => {
-        const base = m.i < 7 ? found : bloom * es(t, 8.2 + (m.i - 7) * 0.05, 8.5 + (m.i - 7) * 0.05);
+        const base = m.i < 7 ? found : bloom * es(t, 8.15 + (m.i - 7) * 0.03, 8.4 + (m.i - 7) * 0.03);
         const k = Math.min(1.25, base + (m.i < 7 ? bloom * 0.25 : 0));
         vis(m.el, { x: m.x, y: m.y, s: m.s * k, sy: 1 - droop * 0.55, o: k > 0.01 ? 1 - droop * 0.35 : 0 });
       });
-      const cr = es(t, 7.15, 7.7) * (1 - es(t, 8.1, 8.5));
+      const cr = es(t, 7.12, 7.6) * (1 - es(t, 8.1, 8.5));
       vis(creep, { x: lerp(1500, 1050, cr), y: 760, s: 1, o: cr });
       /* v10a — the thief */
       const th = es(t, 7.1, 7.5) * (1 - es(t, 8.1, 8.45));

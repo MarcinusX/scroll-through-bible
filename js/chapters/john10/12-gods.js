@@ -65,8 +65,8 @@ export default {
       W.update(T, { lit: 1, snow: 1 });
       snowF.update(T, 0.8);
       /* v34 — the scroll comes down and unrolls; the words */
-      const dn = es(t, 0.15, 0.5, ease.out);
-      const un = es(t, 0.5, 0.9);
+      const dn = es(t, 0.12, 0.4, ease.out);
+      const un = es(t, 0.38, 0.66);   // swipe stop: the scroll is down and open by 0.66
       const up = es(t, 4.05, 4.4, ease.in);
       const SY = 150 - (1 - dn) * 700 - up * 700;
       vis(scrollEl, { x: 800, y: SY, o: dn > 0.001 && up < 0.99 ? 1 : 0 });
@@ -81,11 +81,12 @@ export default {
       /* v36a — consecrated and sent into the world; "You blaspheme" */
       const bk = es(t, 4.1, 4.5) * (1 - es(t, 5.6, 5.9) * 0.4);
       vis(beam, { x: 800, y: 130, o: bk });
-      attr(path, 'stroke-dashoffset', 1 - es(t, 4.3, 4.7));
+      attr(path, 'stroke-dashoffset', 1 - es(t, 4.25, 4.55));
       attr(path, 'opacity', 1 - es(t, 5.3, 5.6));
-      const wk = es(t, 4.45, 4.7, ease.back) * (1 - es(t, 5.3, 5.5));
+      const wk = es(t, 4.4, 4.6, ease.back) * (1 - es(t, 5.3, 5.5));
       vis(world, { x: GX, y: GY, s: wk, o: wk > 0.01 ? 1 : 0 });
-      const bl = es(t, 4.7, 4.85, ease.back) * (1 - es(t, 5.3, 5.45));
+      const bl = es(t, 4.5, 4.65, ease.back)   // swipe stop: 'You blaspheme' is up by 4.65 (it used to land at 4.85)
+        * (1 - es(t, 5.3, 5.45));
       vis(blas, { x: BLX, y: 440, s: bl * 1.35, o: bl > 0.01 ? 1 : 0 });
       /* v36b — "I am the Son of God" */
       const so = es(t, 5.15, 5.45, ease.back);
@@ -98,7 +99,7 @@ export default {
         const i = m.i;
         const faceL = m.x > 800;
         const look = es(t, 0.3, 0.7) * (1 - es(t, 4.0, 4.3));
-        const shout = i === 2 ? bump(t, 4.6, 5.4) : 0;
+        const shout = i === 2 ? bump(t, 4.45, 5.25) : 0;
         const aF = 20 + (1 - look * 0.4) * 90 + shout * 20;
         m.p.set({ x: m.x, y: m.y, s: m.s, flip: faceL, armF: aF, armB: 10 + shout * 110, head: -look * 16 + shout * -6, blink: blinkAt(T, m.seed) });
         mood(m, { angry: 0.45 + shout * 0.5 - look * 0.2 });

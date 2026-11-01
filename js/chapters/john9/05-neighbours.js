@@ -85,7 +85,7 @@ export default {
 
       /* neighbours: gather (v8), take sides (v9), lean in (v10), look around (v12) */
       nb.forEach((n) => {
-        const k = es(t, -0.2 + n.i * 0.06, 0.55 + n.i * 0.06, ease.out);
+        const k = es(t, -0.2 + n.i * 0.05, 0.45 + n.i * 0.05, ease.out);   // swipe stop: all five gathered by 0.65
         const x = lerp(n.from, NX[n.i], k);
         const walking = k > 0.02 && k < 0.98;
         const pointMat = n.i === 2 ? bump(t, 0.4, 0.98) : 0;
@@ -129,8 +129,8 @@ export default {
       /* v11 — the story in four cards */
       const xs = P ? [605, 735, 865, 995] : [650, 790, 930, 1070];   // phone: all four cards in view
       tiles.forEach((el, i) => {
-        const a = i < 3 ? 5.1 + i * 0.25 : 6.12;
-        const k = es(t, a, a + 0.3, ease.out) * (1 - es(t, 8.1 + i * 0.05, 8.5 + i * 0.05, ease.in));
+        const a = i < 3 ? 5.08 + i * 0.17 : 6.12;   // swipe stop: the first three cards hang still by 5.68
+        const k = es(t, a, a + 0.26, ease.out) * (1 - es(t, 8.1 + i * 0.05, 8.5 + i * 0.05, ease.in));
         drop(el, xs[i], 190, k, T, { amp: 1, seed: i });
       });
 

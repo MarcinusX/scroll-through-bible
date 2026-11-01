@@ -45,17 +45,17 @@ export default {
       swing(tag, 800, 250 - (1 - tg) * 600, tg > 0.001 ? T : 0, 1.2, 0.8); fade(tag, tg > 0.001 ? 1 : 0);
 
       const gust = es(t, 1.0, 1.25) * (1 - es(t, 1.45, 1.7));
-      const calm = es(t, 1.4, 1.75);
+      const calm = es(t, 1.4, 1.68);   // swipe stop: the gust has passed and every lamp burns bright again by 1.7
       const lift = bump(t, 1.3, 2.0);
       gusts.forEach((g) => {
-        const k = seg(t, 0.98 + g.i * 0.04, 1.55 + g.i * 0.04);
+        const k = seg(t, 0.98 + g.i * 0.03, 1.42 + g.i * 0.03);
         vis(g.el, { x: -200 + k * 1800, y: g.y + Math.sin(k * 6 + g.i) * 10, s: 1, o: k > 0 && k < 1 ? Math.sin(k * PI) : 0 });
       });
 
       D.forEach((m) => {
         const d = Math.abs(m.x - 800);
-        const w = gust * (1 - es(t, 1.4 + d * 0.0008, 1.6 + d * 0.0008));
-        const bright = es(t, 1.45 + d * 0.0008, 1.75 + d * 0.0008);
+        const w = gust * (1 - es(t, 1.36 + d * 0.0004, 1.5 + d * 0.0004));
+        const bright = es(t, 1.38 + d * 0.0004, 1.55 + d * 0.0004);
         lampK(m, 0.85 - w * 0.5 + bright * 0.15, w * 38, T);
         fade(m.sad, w * 0.9);
         put(m, T, { head: w * 12 - bright * 3, lean: -w * 3, armB: 8 + w * 40 });
@@ -63,7 +63,7 @@ export default {
       fade(J.sad, 0);
       put(J, T, { armF: 22 + lift * 30, armB: 12 + lift * 118, head: -lift * 4 });
 
-      const rk = seg(t, 1.38, 1.9);
+      const rk = seg(t, 1.3, 1.7);
       vis(ring, { x: 800, y: 600, s: 0.4 + rk * 3.2, sy: (0.4 + rk * 3.2) * 0.38, o: rk > 0 && rk < 1 ? (1 - rk) * (1 - rk) * 0.8 : 0 });
 
       S.cam.x = 0;

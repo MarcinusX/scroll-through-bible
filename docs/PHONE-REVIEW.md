@@ -9,6 +9,7 @@ whose second pass had never been looked at — it found 56 more leftovers), with
 Once swipe mode arrived (one swipe, one sentence, the reader stopping at x.75), Matthew, Luke and then Mark (2026-11-01,
 87 stops in 16 chapters) were swiped through stop by stop with `tools/swipe.mjs`, and every stop whose moment was
 unfinished, undone or already moving on was retimed inside its beat.
+John, the last book, followed the same day (2026-11-01, 342 stops in 21 chapters, 1637 stops swiped).
 
 ## What goes wrong on a phone
 

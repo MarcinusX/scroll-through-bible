@@ -81,7 +81,7 @@ export default {
       vis(done, { x: 620, y: 330, o: dk, r: T ? T * 5 : 0 });
       drawRing(done, 1);
       vis(again, { x: 980, y: 330, o: dk, r: T ? -T * 5 : 0 });
-      drawRing(again, es(t, 2.3, 2.85));
+      drawRing(again, es(t, 2.3, 2.65));   // swipe stop: the second ring is drawn by 2.65
       /* the crowd */
       const hear = es(t, 1.1, 1.4);
       left.forEach((m, i) => place(m, T, { armF: 20 + hear * 30 + (i === 1 ? bump(t, 3.1, 3.9) * 70 : 0) + bump(t, 5.2, 5.95) * 20, armB: hear * (i === 1 ? bump(t, 3.1, 3.9) * 140 : 20), head: -hear * 10 + bump(t, 1.2, 1.9) * 6 * (i % 2 ? -1 : 1), lean: -shake * 4 }));

@@ -103,7 +103,7 @@ export default {
         const a = (i / 11) * PI * 2 + T * 0.4;
         const home = [PL[0][0] + Math.cos(a) * 46, PL[0][1] - (1 - pk) * 700 + Math.sin(a) * 46];
         const dest = [PL[1][0] + Math.cos(a) * 50, PL[1][1] - (1 - pk) * 700 + Math.sin(a) * 50];
-        const u = es(t, 1.4 + i * 0.03, 1.75 + i * 0.03);
+        const u = es(t, 1.3 + i * 0.02, 1.5 + i * 0.02);   // swipe stop: every light has crossed to His plate by 1.7
         const [x, y] = arcAt(home, dest, -80 - (i % 3) * 20, u);
         vis(el, { x, y, o: pk > 0.05 ? pk : 0 });
       });
@@ -118,22 +118,22 @@ export default {
 
       /* v7 — all You gave Me is from You: gifts over Him, threads to the light */
       GIFTS.forEach(([x, y], i) => {
-        const g = es(t, 3.05 + i * 0.06, 3.35 + i * 0.06, ease.out) * (1 - es(t, 3.95, 4.2, ease.in));
+        const g = es(t, 3.05 + i * 0.05, 3.3 + i * 0.05, ease.out) * (1 - es(t, 3.95, 4.2, ease.in));
         lower(gifts[i], g, x, y, { len: 600, r: T ? Math.sin(T + i) * 2 : 0 });
-        const k = es(t, 3.35 + i * 0.06, 3.65 + i * 0.06) * (1 - es(t, 3.95, 4.1));
+        const k = es(t, 3.3 + i * 0.05, 3.5 + i * 0.05) * (1 - es(t, 3.95, 4.1));   // swipe stop: every gift's thread reaches the light by 3.65
         thr(i, [x, y - 24], [JX + (x - JX) * 0.2, RY + 40], -10, k, 0.9);
       });
 
       /* v8a — the words: from the light to Him, and on to each of them; v8b they receive them */
       down.forEach((el, i) => {
-        const u = es(t, 4.05 + i * 0.1, 4.4 + i * 0.1);
+        const u = es(t, 4.05 + i * 0.06, 4.3 + i * 0.06);
         const [x, y] = arcAt([JX, RY + 50], [JX + 20, JY - 150], (i - 1) * 60, u);
         vis(el, { x, y, r: u * 180, o: u > 0.01 && u < 0.98 ? 1 : 0 });
       });
       D.forEach((m, i) => {
         const [x, y] = hand(m.x, m.y, m.s, m.flip, 50, 0, 62);
         const d = Math.abs(m.x - JX) / 400;
-        const u = es(t, 4.4 + d * 0.25, 4.85 + d * 0.25);
+        const u = es(t, 4.3 + d * 0.15, 4.55 + d * 0.15);   // swipe stop: every word has reached its hands by 4.7
         const got = es(t, 5.1, 5.4);
         const [sx, sy] = arcAt(JC, [x, y - 10], -110, u);
         const hold = got * (1 - es(t, 6.9, 7.1));
@@ -153,7 +153,7 @@ export default {
         const d = Math.abs(m.x - JX) / 400;
         const k = es(t, 7.05 + d * 0.2, 7.35 + d * 0.2, ease.back);
         vis(hearts[i], { x: cx + (m.flip ? -4 : 4), y: cy + 6, s: k * m.s, o: k > 0.01 ? 1 : 0 });
-        beliefs(i, [cx, cy], JC, -40, es(t, 7.3 + d * 0.2, 7.6 + d * 0.2), 0.7);
+        beliefs(i, [cx, cy], JC, -40, es(t, 7.2 + d * 0.15, 7.45 + d * 0.15), 0.7);   // swipe stop: every heart is joined to Him by 7.6
       });
       vis(jGlow, { x: JX, y: JY - 120, s: 1, o: 0.3 + bump(t, 6.2, 7.0) * 0.5 + es(t, 7.3, 7.7) * 0.3 });
 

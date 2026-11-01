@@ -123,7 +123,7 @@ export default {
         const k = bump(t, 2.1 + (j.i % 6) * 0.07, 2.95);
         pose(j.el, { x: j.r.x + Math.sin(T * 2 + j.i) * 8, y: j.r.y - 60 * j.r.s - k * 26, s: k * (0.8 + j.r.r * 0.2), o: k > 0.02 ? 1 : 0 });
       });
-      pose(leftovers, { o: es(t, 2.6, 2.95) * (1 - es(t, 3.3, 4.2)) });
+      pose(leftovers, { o: es(t, 2.45, 2.7) * (1 - es(t, 3.3, 3.7)) });   // swipe stop: the leftovers lie there by 2.7 and are picked up by 3.7
 
       /* v12b — "Gather the pieces left over, so that nothing is lost" */
       const [jhx, jhy] = headAt(JX, JY, 1.06, false);
@@ -131,16 +131,16 @@ export default {
       pose(gather, { x: jhx + 26, y: jhy - 18, s: gk, o: gk > 0.01 ? 1 : 0 });
       DIS.forEach((d) => {
         const r = ROWS[d.row];
-        const go = es(t, 3.2 + d.i * 0.05, 3.55 + d.i * 0.05) * (1 - es(t, 4.4, 4.7));
+        const go = es(t, 3.2 + d.i * 0.05, 3.55 + d.i * 0.05) * (1 - es(t, 4.4, 4.62));   // swipe stop: back beside the baskets by 4.62
         const x0 = JX + d.side * (150 + d.i * 40);
         const x = lerp(x0, r.x + d.side * 20, go * 0.7);
         const vis = seg(t, 3.1, 3.2) * (1 - seg(t, 4.8, 4.9));
-        const walking = (t > 3.2 && t < 3.7) || (t > 4.4 && t < 4.75);
-        const stoop = bump(t, 3.6, 4.35);
+        const walking = (t > 3.2 && t < 3.7) || (t > 4.4 && t < 4.64);
+        const stoop = bump(t, 3.4, 4.0);
         d.p.set({ x, y: gfn(x) + 20 + (d.i % 2) * 6, s: 0.92, flip: walking ? (t < 4 ? d.side < 0 : d.side > 0) : d.side > 0, walk: walking ? x * 0.06 + d.i : undefined, armF: 70, armB: stoop * 60, lean: stoop * 14, o: vis, blink: blinkAt(T, d.seed) });
       });
       pick.forEach((p) => {
-        const k = es(t, 3.6 + (p.i % 7) * 0.06, 3.75 + (p.i % 7) * 0.06);
+        const k = es(t, 3.42 + (p.i % 7) * 0.03, 3.54 + (p.i % 7) * 0.03);   // swipe stop: every piece is gathered by 3.72 (was 4.11)
         const d = DIS[p.i % 4];
         const x = lerp(p.sx, ROWS[d.row].x + d.side * 20, k);
         pose(p.el, { x, y: lerp(sfn(p.sx) + 70, gfn(x) - 60, k) - Math.sin(k * PI) * 40, r: k * 200, o: k > 0.02 && k < 0.98 ? 1 : 0 });

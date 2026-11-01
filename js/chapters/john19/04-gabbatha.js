@@ -84,10 +84,10 @@ export default {
       pose(gl, { x: jx, y: PLAT - 100, s: 0.5 + kingK * 0.25, r: T * 1.5, o: jo * (0.06 + kingK * 0.35) });
 
       /* soldiers flank Him, then take Him (v16) */
-      const aK = [[7.2, [640, PLAT]], [7.8, [JX - 100, PLAT]], [8.1, [JX - 100, PLAT]], [8.9, [ph ? 520 : 230, PLAT]]]   // phone: still in view as they lead Him off;
-      const bK = [[7.2, [1180, PLAT]], [7.8, [JX + 110, PLAT]], [8.1, [JX + 110, PLAT]], [8.9, [ph ? 690 : 460, PLAT]]];
+      const aK = [[7.2, [640, PLAT]], [7.62, [JX - 100, PLAT]], [8.1, [JX - 100, PLAT]], [8.9, [ph ? 520 : 230, PLAT]]]   // phone: still in view as they lead Him off;
+      const bK = [[7.2, [1180, PLAT]], [7.62, [JX + 110, PLAT]], [8.1, [JX + 110, PLAT]], [8.9, [ph ? 690 : 460, PLAT]]];   // swipe stop: both at His sides, a hand on Him, by x.72
       const [ax, ay] = kf(t, aK), [bx, by] = kf(t, bK);
-      sols[0].set({ x: ax, y: ay, s: 0.84, flip: t > 7.85, walk: moving(t, aK) ? ax * 0.05 : undefined, armF: 34, armB: 8 + es(t, 7.75, 8.0) * 40, blink: blinkAt(T, 4), o: 1 - es(t, 8.75, 8.95) });
+      sols[0].set({ x: ax, y: ay, s: 0.84, flip: t > 7.65, walk: moving(t, aK) ? ax * 0.05 : undefined, armF: 34, armB: 8 + es(t, 7.55, 7.72) * 40, blink: blinkAt(T, 4), o: 1 - es(t, 8.75, 8.95) });
       sols[1].set({ x: bx, y: by, s: 0.84, flip: true, walk: moving(t, bK) ? bx * 0.05 : undefined, armF: 34, armB: 8, blink: blinkAt(T, 5), o: 1 - es(t, 8.75, 8.95) });
 
       /* v13b — the Pavement and its names */

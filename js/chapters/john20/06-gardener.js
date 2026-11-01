@@ -65,8 +65,8 @@ export default {
       const speak = bump(t, 2.02, 2.95) + bump(t, 3.02, 3.95);
       jesus.set({ x: GJ.x, y: GJ.y, s: 1.08, o: es(t, 0.15, 0.5), armF: 16 + speak * 34 + es(t, 5.1, 5.4) * 20, armB: 10 + speak * 30, head: 4, blink: blinkAt(T) });
       const turn = seg(t, 0.2, 0.28);
-      const away = seg(t, 5.7, 5.78);
-      const plead = es(t, 5.05, 5.3) * (1 - es(t, 5.65, 5.8));
+      const away = seg(t, 5.88, 5.94);   // swipe stop: her plea is still said, facing Him, at x.75
+      const plead = es(t, 5.05, 5.3) * (1 - es(t, 5.84, 5.95));
       const faceL = turn > 0.5 && away < 0.5;
       mary.set({ x: GM.x, y: GM.y, s: 1.02, flip: faceL, armF: faceL ? 22 + plead * 60 : 18, armB: faceL ? 14 + plead * 70 + bump(t, 1.1, 1.9) * 40 : 140, head: faceL ? -2 - plead * 6 : 12, lean: plead * 6 - (faceL ? 0 : 2), blink: blinkAt(T, 3) });
       fade(sad, 1); fade(tear, 1 - (faceL ? 0.5 : 0));
@@ -93,7 +93,7 @@ export default {
       pose(glint, { x: 1100, y: 590, s: gk * 1.2, r: T * 40, o: gk });
 
       /* v15d: "Sir, if you have carried Him away…" — then she turns back to the tomb */
-      const pk = es(t, 5.05, 5.25, ease.back) * (1 - es(t, 5.62, 5.72));
+      const pk = es(t, 5.05, 5.25, ease.back) * (1 - es(t, 5.84, 5.93));
       pose(plea, { x: mhx - 44, y: mhy - 34, s: pk, o: pk > 0.01 ? 1 : 0 });
 
       S.cam.x = 190 + es(t, 4, 4.4) * 50 * (1 - es(t, 5.6, 6));

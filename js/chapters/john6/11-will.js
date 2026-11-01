@@ -79,7 +79,7 @@ export default {
         const r = 150;
         let x = JX + Math.cos(a) * r, y = FEET - 150 + Math.sin(a) * r * 0.55;
         if (s === gone) {
-          const stray = bump(t, 1.5, 2.0);
+          const stray = bump(t, 1.3, 1.68);   // swipe stop: the straying light is back in the ring by 1.68 (it was furthest away at 1.75)
           x += stray * (P ? 190 : 330); y -= stray * 60;
         }
         /* v39b — raised up on the last day */
@@ -95,12 +95,12 @@ export default {
       const see = es(t, 3.05, 3.3);
       rings.forEach((r) => {
         const [hx, hy] = headAt(r.m.x, r.m.y, r.m.s, r.m.x > JX, 62);
-        const e = es(t, 3.05 + r.i * 0.06, 3.25 + r.i * 0.06, ease.back) * (1 - es(t, 3.5, 3.6));
+        const e = es(t, 3.05 + r.i * 0.05, 3.2 + r.i * 0.05, ease.back) * (1 - es(t, 3.38, 3.46));
         pose(eyes[r.i].el, { x: hx, y: hy - 42, s: e, o: e > 0.01 ? 1 : 0 });
-        const hk = es(t, 3.4 + r.i * 0.06, 3.6 + r.i * 0.06, ease.back) * (1 - es(t, 4.0, 4.1));
+        const hk = es(t, 3.3 + r.i * 0.04, 3.45 + r.i * 0.04, ease.back) * (1 - es(t, 4.0, 4.1));
         pose(hearts[r.i], { x: hx, y: hy - 42, s: hk, o: hk > 0.01 ? 1 : 0 });
-        drawRing(r.el, es(t, 3.5 + r.i * 0.06, 3.9 + r.i * 0.06));
-        pose(r.el, { x: hx, y: hy + 24, r: t * 30, o: seg(t, 3.5, 3.55) * (1 - es(t, 4.9, 5.0) * 0.5) });
+        drawRing(r.el, es(t, 3.38 + r.i * 0.04, 3.58 + r.i * 0.04));   // swipe stop: all four rings of eternal life are closed by 3.7 (was 4.08)
+        pose(r.el, { x: hx, y: hy + 24, r: t * 30, o: seg(t, 3.38, 3.43) * (1 - es(t, 4.9, 5.0) * 0.5) });
       });
 
       /* v40b — I will raise him up on the last day: they rise in the morning light */

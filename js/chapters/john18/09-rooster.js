@@ -90,7 +90,7 @@ export default {
       const ak = es(t, 1.12, 1.32, ease.back) * (1 - es(t, 1.9, 2.0));
       vis(ask, { x: rhx - 14, y: rhy - 18, s: ak, o: ak > 0.01 ? 1 : 0 });
       const tagIn = [es(t, 0.05, 0.35, ease.out), es(t, 2.1, 2.4, ease.out), es(t, 4.1, 4.4, ease.out)];
-      const tagOut = 1 - es(t, 5.4, 5.8, ease.in);
+      const tagOut = 1 - es(t, 5.3, 5.66, ease.in);   // swipe stop: the three «Nie jestem» are gone up by x.7, not mid-flight
       tags.forEach((el, i) => {
         const k = tagIn[i] * tagOut;
         vis(el, { x: pe.x - 150 + i * 116, y: 420 - i * 8 - (1 - k) * 700, r: T ? Math.sin(T * 1.1 + i) * 2 : 0, o: k > 0.01 ? (i === 0 ? 0.75 : 1) : 0 });

@@ -75,8 +75,8 @@ export default {
       const step = es(t, 0.05, 0.6, ease.sine);
       const raise = es(t, 1.05, 1.12);
       /* v53 — they leave, one by one */
-      const leave = (d) => es(t, 4.05 + d, 4.6 + d, ease.sine);
-      const nlv = es(t, 4.55, 4.95, ease.sine);
+      const leave = (d) => es(t, 4.05 + d * 0.8, 4.4 + d * 0.75, ease.sine);   // swipe stop: all have gone home, Nicodemus last, by 4.68 (was 4.95)
+      const nlv = es(t, 4.36, 4.68, ease.sine);
       const nx = lerp(COUNCIL.NX, NX1, step) + nlv * 250;
       const mocked = es(t, 2.1, 2.3) * (1 - es(t, 4.0, 4.2));
       const nicoArgs = { x: nx, y: F - 10 + step * 38, s: 0.98 + step * 0.06, flip: step > 0.97 && nlv < 0.02, walk: (step > 0 && step < 1) || (nlv > 0 && nlv < 1) ? nx * 0.05 : undefined, head: -bump(t, 0.2, 0.9) * 4 + mocked * 10 - nlv * 8, blink: blinkAt(T, 5) };
@@ -85,11 +85,13 @@ export default {
       const [nhx, nhy] = headAt(nx, F - 10 + step * 38, 0.98 + step * 0.06, step > 0.97 && nlv < 0.02);
       vpose(nameT, { x: nhx, y: nhy - 44, o: es(t, 0.3, 0.45) * (1 - es(t, 0.9, 1.0)) });
       const pk = es(t, 0.3, 0.6, ease.out), pu = es(t, 0.95, 1.1, ease.in);
-      hangAt(nightP, 1010, lerp(-300, 280, pk) - pu * 700, T, pk > 0 && pu < 1 ? 1 : 0, 1.2, 0.8, 1);
+      hangAt(nightP, S.portrait ? 960 : 1010,   // swipe stop (phone): the night-visit plate hangs clear of the thread
+         lerp(-300, 280, pk) - pu * 700, T, pk > 0 && pu < 1 ? 1 : 0, 1.2, 0.8, 1);
 
       /* v51 — does our Law condemn a man without hearing him? */
       const hk = es(t, 1.2, 1.5, ease.out), hu = es(t, 1.95, 2.1, ease.in);
-      hangAt(hearP, 1010, lerp(-300, 280, hk) - hu * 700, T, hk > 0 && hu < 1 ? 1 : 0, 1.2, 0.8, 2);
+      hangAt(hearP, S.portrait ? 960 : 1010,   // swipe stop (phone): clear of the thread
+         lerp(-300, 280, hk) - hu * 700, T, hk > 0 && hu < 1 ? 1 : 0, 1.2, 0.8, 2);
 
       /* the council answers (v52) and then leaves (v53) */
       const jeer = bump(t, 2.05, 2.95);
@@ -127,9 +129,9 @@ export default {
       const tk = es(t, 4.3, 4.6, ease.out);
       hangAt(homeT, 820, lerp(-300, 300, tk), T, tk > 0 ? 1 : 0, 1.2, 0.8, 3);
 
-      S.cam.x = 50 - es(t, 4.1, 4.95) * 10;
-      S.cam.y = 10 - es(t, 4.1, 4.95) * 30;
-      S.cam.z = 1.1 + es(t, 4.2, 4.95) * 0.12;
+      S.cam.x = 50 - es(t, 4.1, 4.68) * 10;
+      S.cam.y = 10 - es(t, 4.1, 4.68) * 30;
+      S.cam.z = 1.1 + es(t, 4.2, 4.68) * 0.12;
     };
   },
 };

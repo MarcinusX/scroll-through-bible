@@ -63,7 +63,7 @@ export default {
       });
       /* the shadows of the world rise on the ridge, then all point at Him */
       shadows.forEach((sh) => {
-        const up = es(t, 0.2 + sh.i * 0.03, 0.6 + sh.i * 0.03);
+        const up = es(t, 0.15 + sh.i * 0.02, 0.45 + sh.i * 0.02);   // swipe stop: every shadow is up on the ridge by 0.67
         const point = es(t, 1.2 + (sh.i % 4) * 0.05, 1.45 + (sh.i % 4) * 0.05) * (1 - es(t, 2.0, 2.2) * 0.6) + es(t, 3.4, 3.7) * 0.8;
         sh.p.set({ x: sh.x, y: sh.y + (1 - up) * 90, s: 0.34, flip: true, armF: point * 95, armB: bump(t, 3.5, 4) * 60, head: point * 6, o: up > 0.01 ? 1 : 0 });
       });

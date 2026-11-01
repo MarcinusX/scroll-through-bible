@@ -67,10 +67,10 @@ export default {
 
       /* v1a — He lifts His eyes; the radiance opens above */
       const lift = es(t, 1.1, 1.6);
-      const hk = es(t, 1.3, 1.85);
-      const flare = bump(t, 3.55, 4.05);
+      const hk = es(t, 1.25, 1.65);   // swipe stop: the radiance has opened by 1.65
+      const flare = bump(t, 3.35, 3.95);
       vis(high, { x: JX, y: RY - (1 - hk) * 60, s: (0.5 + hk * 0.5) * (1 + flare * 0.25), r: T * 1.5, o: hk });
-      const warm = es(t, 1.3, 1.9) * 0.55 + es(t, 3.05, 3.5) * 0.3;
+      const warm = es(t, 1.25, 1.7) * 0.55 + es(t, 3.05, 3.5) * 0.3;
       P.sky.blend(NIGHT, HOLY, warm);
 
       /* v1b — the hour has come: the hourglass runs out */
@@ -78,8 +78,8 @@ export default {
       const HX = 1010, HY = 300;
       vis(hg.el, { x: HX, y: HY - (1 - hIn) * 600, r: T ? Math.sin(T * 0.9) : 0, o: hIn > 0.01 ? 1 : 0 });
       vis(hgStr, { x: HX, y: HY - (1 - hIn) * 600, o: hIn > 0.01 ? 1 : 0 });
-      const lvl = 0.3 - es(t, 2.2, 2.75) * 0.3;
-      hg.set(Math.max(0.001, lvl), t > 2.2 && t < 2.78 ? 1 : 0);
+      const lvl = 0.3 - es(t, 2.2, 2.62) * 0.3;   // swipe stop: the hourglass has run out by 2.65
+      hg.set(Math.max(0.001, lvl), t > 2.2 && t < 2.65 ? 1 : 0);
 
       /* v1c — glory comes down on Him, and rises back to the Father */
       const b = es(t, 3.05, 3.4);
@@ -87,7 +87,7 @@ export default {
       const g = es(t, 3.25, 3.6, ease.out);
       vis(rays, { x: JX, y: JY - 120, s: 0.25 + g * 0.5, r: T * 3, o: g * 0.6 * (1 - es(t, 4.9, 5.2) * 0.5) });
       up.forEach((el, i) => {
-        const u = es(t, 3.45 + i * 0.07, 3.85 + i * 0.07);
+        const u = es(t, 3.28 + i * 0.04, 3.52 + i * 0.04);   // swipe stop: the glory has risen back to the Father by 3.68
         const [x, y] = arcAt([JX, JY - 170], [JX, RY + 30], (i - 2) * 50, u);
         vis(el, { x: x + (i - 2) * 10 * Math.sin(u * 3.14), y, s: 1 - u * 0.4, o: u > 0.01 && u < 0.99 ? 1 : 0 });
       });
@@ -95,20 +95,20 @@ export default {
       /* v2a — authority over every human being: the chain of people comes down, His light runs along it */
       const ch = es(t, 4.05, 4.45, ease.out) * (1 - es(t, 5.0, 5.35, ease.in));
       lower(chain, ch, JX, 300, { len: 700 });
-      const sw = es(t, 4.35, 4.95);
-      vis(sweep, { x: JX - 420 + sw * 840, y: 300, sx: 1.2, s: 1, o: bump(t, 4.35, 4.95) * ch });
+      const sw = es(t, 4.3, 4.68);   // swipe stop: His light has run the whole chain by 4.68
+      vis(sweep, { x: JX - 420 + sw * 840, y: 300, sx: 1.2, s: 1, o: bump(t, 4.3, 4.68) * ch });
 
       /* v2b — eternal life for those He was given */
       D.forEach((m, i) => {
         const [hx, hy] = headOf(m);
         const d = Math.abs(m.x - JX) / 400;
-        const u = es(t, 5.05 + d * 0.15, 5.45 + d * 0.15);
+        const u = es(t, 5.05 + d * 0.1, 5.35 + d * 0.1);   // swipe stop: every gift has arrived and its flame is lit by 5.6
         const [x, y] = arcAt(JC, [hx, hy - 30 * m.s], -90, u);
         vis(gift[i], { x, y, s: 1, o: u > 0.01 && u < 0.98 ? 1 : 0 });
-        const f = es(t, 5.4 + d * 0.15, 5.6 + d * 0.15, ease.back);
+        const f = es(t, 5.3 + d * 0.1, 5.48 + d * 0.1, ease.back);
         vis(flames[i], { x: hx, y: hy - 30 * m.s + (T ? Math.sin(T * 2 + i) * 1.5 : 0), s: f, o: f > 0.01 ? 1 : 0 });
-        const look = es(t, 1.2, 1.7) * 0.6 + es(t, 5.3, 5.7) * 0.4;
-        put(m, T, { head: -8 - look * 10, armF: 14 + es(t, 5.4 + d * 0.15, 5.7 + d * 0.15) * 30 });
+        const look = es(t, 1.2, 1.7) * 0.6 + es(t, 5.25, 5.55) * 0.4;
+        put(m, T, { head: -8 - look * 10, armF: 14 + es(t, 5.3 + d * 0.1, 5.55 + d * 0.1) * 30 });
         lampK(m, 0.85);
       });
 

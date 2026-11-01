@@ -123,12 +123,13 @@ export default {
       const [mhx, mhy] = hourAt(70 * 0.42, 7);
       vis(miniSun, { x: px + 150 + mhx, y: py + 230 + mhy, o: on * mk });
       /* v47a — the father comes to Cana and begs */
-      const arrive = es(t, 2.3, 2.9, ease.out);
-      const kneel = es(t, 2.88, 2.95);
+      // swipe stop: he has come and knelt to beg by 2.66
+      const arrive = es(t, 2.3, 2.62, ease.out);
+      const kneel = es(t, 2.6, 2.66);
       const ox = lerp(1500, 950, arrive);
       const rise = es(t, 6.8, 6.9) * 0;
       offStand.set({ x: ox, y: FLOOR + 4, s: 1.02, flip: true, o: (arrive > 0.01 ? 1 : 0) * (1 - kneel) + rise, walk: arrive > 0 && arrive < 1 ? ox * 0.06 : undefined, armF: 20, blink: blinkAt(T, 4) });
-      const beg = bump(t, 2.95, 3.9) * 0.5 + es(t, 5.05, 5.25) * (1 - es(t, 6.2, 6.4));
+      const beg = bump(t, 2.65, 3.9) * 0.5 + es(t, 5.05, 5.25) * (1 - es(t, 6.2, 6.4));
       offKneel.set({ x: 950, y: FLOOR + 6, s: 1.02, flip: true, o: kneel, armF: 60 + beg * 60 + es(t, 6.3, 6.5) * -20, armB: 40 + beg * 110, head: -6 - beg * 10 + es(t, 4.1, 4.4) * 8 * (1 - es(t, 5.0, 5.1)), lean: -6, blink: blinkAt(T, 4) });
       /* v48 — signs and wonders */
       stars.forEach((s, i) => {

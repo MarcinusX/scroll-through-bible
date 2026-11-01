@@ -76,12 +76,12 @@ export default {
       const [jhx, jhy] = headAt(MID.x, MID.y, MID.s, false);
       crew.forEach((m, i) => {
         const d = Math.abs(m.x - MID.x);
-        const k = es(t, 1.4 + d * 0.0005, 1.7 + d * 0.0005);
+        const k = es(t, 1.35 + d * 0.0002, 1.55 + d * 0.0002);   // swipe stop: every thread and flame reaches its man by x.7
         const flip = m.x > MID.x;
         const [hx, hy] = headAt(m.x, m.y, m.s, flip);
         const hxx = hx, hyy = hy + 70 * m.s;
         setThread(i, MID.x, MID.y - 110, lerp(MID.x, hxx, k), lerp(MID.y - 110, hyy, k), k * 0.8 * (1 - es(t, 2.2, 2.6)));
-        pose(flames[i], { x: hx, y: hy - 42 + (T ? Math.sin(T * 2 + i) * 1.2 : 0), s: es(t, 1.6 + d * 0.0005, 1.8 + d * 0.0005, ease.back), o: k > 0.02 ? 1 : 0 });
+        pose(flames[i], { x: hx, y: hy - 42 + (T ? Math.sin(T * 2 + i) * 1.2 : 0), s: es(t, 1.42 + d * 0.0002, 1.6 + d * 0.0002, ease.back), o: k > 0.02 ? 1 : 0 });
         const g = es(t, 3.3 + d * 0.0006, 3.6 + d * 0.0006);
         pose(glows[i], { x: hx, y: hy, s: 0.6 + g * 0.5, o: g * 0.8 });
         const breeze = bump(t, 2.1 + d * 0.0012, 2.9 + d * 0.0012);
@@ -103,13 +103,13 @@ export default {
       const pa = es(t, 4.02, 4.3, ease.back);
       const PA = { x: S.portrait ? 640 : 520, y: 360 }, PB = { x: S.portrait ? 960 : 1080, y: 360 };
       swing(plateA, PA.x, lerp(-800, PA.y, pa), pa > 0.001 ? T : 0, 1, 0.7);
-      const turn = es(t, 4.35, 4.6);
-      const free = es(t, 4.55, 4.9, ease.in);
+      const turn = es(t, 4.3, 4.48);
+      const free = es(t, 4.45, 4.7, ease.in);   // swipe stop: the cords are off by x.7
       pose(keyA, { x: PA.x - 40 + turn * 10, y: PA.y + 70, r: -30 + turn * 90, s: 0.8, o: pa > 0.01 ? 1 - es(t, 5.9, 6) : 0 });
       pose(crdA, { y: free * 90, r: free * 20, o: 1 - free });
       pose(glowA, { x: PA.x, y: PA.y, s: 0.5 + free * 0.7, o: free });
       spA.forEach((el, i) => {
-        const b = bump(t, 4.7 + i * 0.1, 5.3 + i * 0.1);
+        const b = bump(t, 4.55 + i * 0.08, 5.15 + i * 0.08);
         pose(el, { x: PA.x - 50 + i * 50, y: PA.y - 60 - (i % 2) * 20, s: b, r: T * 30, o: b });
       });
       /* v23b: retained — the knot stays tied */

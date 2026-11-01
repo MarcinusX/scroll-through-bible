@@ -125,7 +125,7 @@ export default {
       pose(rodTop, { x: SX, y: SY, r: Math.sin(T * 0.6) * 0.8 });
       pose(scrollSheet, { x: SX, y: SY, sy: Math.max(0.01, un), o: sc > 0.05 ? 1 : 0 });
       pose(rodBot, { x: SX, y: SY + un * V.h, o: sc > 0.05 ? 1 : 0 });
-      const lk = es(t, 2.45, 2.85);
+      const lk = es(t, 2.4, 2.66);   // swipe stop: the golden line reaches Jesus by 2.66 (was 2.85)
       const [jhx, jhy] = headAt(JX, JY, JS, false);
       attr(lnP, 'd', `M${SX + 170} ${SY + V.h * 0.5}Q${(SX + jhx) / 2 + 80} ${SY + 20} ${jhx + 6} ${jhy - 30}`);
       attr(lnP, 'stroke-dashoffset', (1 - lk).toFixed(3));

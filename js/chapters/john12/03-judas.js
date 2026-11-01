@@ -94,8 +94,8 @@ export default {
       const bx = 1300 + (turn > 0.5 ? 18 : -18), by = SEAT + 30 - 92;
       vis(bag, { x: bx, y: by, r: bump(t, 3.2, 3.7) * 10, s: 0.9, o: up * es(t, 2.9, 3.1) });
       slips.forEach((el, i) => {
-        const k = seg(t, 3.25 + i * 0.1, 3.55 + i * 0.1);
-        vis(el, { x: bx + k * 24 + i * 3, y: by + 44 + k * 26, r: k * 90, o: k > 0 && k < 1 ? 1 : 0 });
+        const k = seg(t, 3.2 + i * 0.08, 3.4 + i * 0.08);   // swipe stop: the stolen coins lie in his hand at the stop (gone by 4.0)
+        vis(el, { x: bx + k * 24 + i * 3, y: by + 44 + k * 26, r: k * 90, o: k > 0 ? 1 - es(t, 3.9, 4.0) : 0 });
       });
       const tk2 = es(t, 3.15, 3.35, ease.back) * (1 - es(t, 3.95, 4.1));
       vis(bagTag, { x: bx + (turn > 0.5 ? 50 : -50), y: by + 60, s: tk2, o: tk2 > 0.01 ? 1 : 0 });

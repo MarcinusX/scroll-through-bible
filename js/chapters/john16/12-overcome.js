@@ -105,9 +105,9 @@ export default {
       D.forEach((m) => {
         const [ax, ady, as] = AWAY[m.k];
         const d = Math.abs(m.x - JX);
-        const go = es(t, 2.05 + d * 0.0003, 2.7 + d * 0.0003, ease.in) * (1 - back);
+        const go = es(t, 2.05 + d * 0.0003, 2.55 + d * 0.0003, ease.in) * (1 - back);   // swipe stop: all have scattered by 2.67
         const x = lerp(m.x, ax, go), y = lerp(m.y, m.y + ady, go), s = m.s * lerp(1, as, go);
-        const moving = (t > 2.05 && t < 2.8) || (t > 6.25 && t < 6.7);
+        const moving = (t > 2.05 && t < 2.68) || (t > 6.25 && t < 6.7);
         const away = ax > m.x;
         const face = t > 2.05 && t < 6.25 ? !away : t >= 6.25 && t < 6.7 ? away : m.flip;
         lampK(m, 0.9 - night * 0.1 + dawn * 0.1, 0, T);

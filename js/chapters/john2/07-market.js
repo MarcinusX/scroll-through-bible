@@ -86,7 +86,7 @@ export default {
       const inK = es(t, 0.0, 0.7, ease.out);
       const look = Math.sin(seg(t, 0.6, 1.0) * PI * 2) * 10;
       /* v15a — the whip: swap to the puppet holding it */
-      const hasWhip = es(t, 1.72, 1.79) * (1 - es(t, 3.93, 4.0));
+      const hasWhip = es(t, 1.6, 1.67) * (1 - es(t, 3.93, 4.0));   // swipe stop: He holds the whip (no cross-fade) by 1.67
       /* v15b — driving out; v15c — coins and tables; v16 — the doves; the Father's house */
       const drive = es(t, 2.05, 2.85);
       const flipT = TABLES.map((_, i) => es(t, 3.2 + i * 0.25, 3.45 + i * 0.25, ease.in));

@@ -133,7 +133,7 @@ export default {
       lights.forEach((l, i) => {
         const [x, s, f] = who[i];
         const [hx, hy] = headAt(x, FLOOR, s, f);
-        const k = es(t, 5.55 + i * 0.05, 5.75 + i * 0.05, ease.back);
+        const k = es(t, 5.42 + i * 0.025, 5.56 + i * 0.025, ease.back);   // swipe stop: every one of the household has a light by 5.71
         vis(l, { x: hx, y: hy - 30 - s * 14 + Math.sin(T * 2 + i) * 2, s: k, o: k > 0.01 ? 1 : 0 });
       });
       /* v54 — the second sign */

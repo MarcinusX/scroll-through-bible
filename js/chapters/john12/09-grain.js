@@ -98,8 +98,8 @@ export default {
       const fy = fk < 0.45 ? lerp(hy + 4, GY, fk / 0.45) : lerp(GY, SY, ease.out((fk - 0.45) / 0.55));
       const fx0 = lerp(hx + 4, SX, Math.min(1, fk / 0.45));
       vis(fall, { x: fx0, y: fy, r: fk * 200, o: drop > 0 && fk < 1 ? 1 : 0 });
-      const dies = es(t, 1.05, 1.3);
-      const split = es(t, 1.25, 1.45);
+      const dies = es(t, 1.0, 1.2);   // swipe stop: dead, sprouted and a field of wheat by 1.7
+      const split = es(t, 1.15, 1.3);
       vis(seed, { x: SX, y: SY, r: -17, o: fk >= 1 ? 1 - split : 0, s: 1 + bump(t, 0.6, 0.95) * 0.1 });
       fade(seed.querySelector('circle'), 1 - dies);
       const ak = es(t, 0.55, 0.75) * (1 - es(t, 1.0, 1.15));
@@ -107,16 +107,16 @@ export default {
       /* v24b — it dies and bears much fruit */
       vis(halfA, { x: SX - split * 7, y: SY + split * 3, r: -17 - split * 30, o: split > 0.01 ? 1 - es(t, 1.8, 2.0) * 0.6 : 0 });
       vis(halfB, { x: SX + split * 7, y: SY + split * 3, r: -17 + split * 30, o: split > 0.01 ? 1 - es(t, 1.8, 2.0) * 0.6 : 0 });
-      roots.forEach((p, i) => drawPath(p, es(t, 1.3 + i * 0.03, 1.6 + i * 0.03)));
-      drawPath(shoot, es(t, 1.35, 1.55));
-      const grow = es(t, 1.5, 1.85);
+      roots.forEach((p, i) => drawPath(p, es(t, 1.2 + i * 0.03, 1.4 + i * 0.03)));
+      drawPath(shoot, es(t, 1.25, 1.4));
+      const grow = es(t, 1.35, 1.6);
       pose(mine, { x: SX, y: GY, o: grow > 0.01 ? 1 : 0 });
       pose(mineStem, { sy: Math.max(0.02, grow) });
-      pose(mineEar, { x: 0, y: -170 * grow, s: es(t, 1.7, 1.95) });
-      rows.forEach((L, i) => L.shift(0, (1 - es(t, 1.55 + i * 0.1, 1.95 + i * 0.05, ease.out)) * (160 + i * 30)));
-      const pk = es(t, 1.45, 1.7, ease.out) * (1 - es(t, 2.05, 2.25, ease.in));
+      pose(mineEar, { x: 0, y: -170 * grow, s: es(t, 1.45, 1.65) });
+      rows.forEach((L, i) => L.shift(0, (1 - es(t, 1.4 + i * 0.06, 1.6 + i * 0.05, ease.out)) * (160 + i * 30)));
+      const pk = es(t, 1.4, 1.62, ease.out) * (1 - es(t, 2.05, 2.25, ease.in));
       swing(tagP, S.portrait ? 620 : 560, 280 - (1 - pk) * 700, pk > 0.001 ? T : 0, 1.2, 0.8); fade(tagP, pk > 0.001 ? 1 : 0);
-      vis(glow, { x: SX, y: GY - 100, s: 0.5 + es(t, 1.6, 2) * 0.8, o: bump(t, 1.55, 2.3) * 0.8 });
+      vis(glow, { x: SX, y: GY - 100, s: 0.5 + es(t, 1.45, 1.7) * 0.8, o: bump(t, 1.4, 2.3) * 0.8 });
       /* v25a — clutching his life, he loses it */
       const inL = es(t, 2.0, 2.25);
       const crumble = es(t, 2.35, 2.62);

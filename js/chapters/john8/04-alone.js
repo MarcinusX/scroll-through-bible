@@ -37,7 +37,7 @@ export default {
       /* v9a — one by one, from the eldest: the stone falls, he turns and goes */
       K.acc.forEach((a) => {
         const n = ORDER.indexOf(a.i);
-        const t0 = 0.06 + n * 0.14;
+        const t0 = 0.04 + n * 0.1;   // swipe stop: the last stone is down by 0.62 and he is going at 0.75
         const drop = seg(t, t0, t0 + 0.08);
         const go = es(t, t0 + 0.07, t0 + 0.42, ease.in);
         const x = a.x + go * 520;

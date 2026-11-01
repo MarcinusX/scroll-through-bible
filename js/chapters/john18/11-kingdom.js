@@ -93,9 +93,10 @@ export default {
       /* v36 — the vision of a kingdom not of this world */
       const wo = es(t, 6.1, 6.5, ease.out);
       vis(world, { x: 800, y: lerp(-300, 400, wo), r: T ? Math.sin(T * 0.7) * 2 : 0, o: wo > 0.01 ? 1 : 0 });
-      const up = es(t, 8.1, 8.8, ease.in);
+      // swipe stop (phone): the kingdom has risen high and hangs there, whole, at x.75 (desktop: rises out as before)
+      const up = S.portrait ? es(t, 8.1, 8.6) * 300 / 520 : es(t, 8.1, 8.8, ease.in);
       const kk = es(t, 6.3, 6.7, ease.out);
-      vis(kingdom, { x: 1000, y: lerp(-200, 250, kk) - up * 520, s: 0.8 + kk * 0.2, r: T ? T * 3 : 0, o: kk > 0.01 ? 1 - es(t, 8.5, 8.9) : 0 });
+      vis(kingdom, { x: 1000, y: lerp(-200, 250, kk) - up * 520, s: 0.8 + kk * 0.2, r: T ? T * 3 : 0, o: kk > 0.01 ? 1 - (S.portrait ? es(t, 8.85, 8.98) : es(t, 8.5, 8.9)) : 0 });
       const tk = es(t, 6.35, 6.6, ease.out) * (1 - es(t, 6.95, 7.1, ease.in));
       vis(notW, { x: 1000, y: 380 - (1 - tk) * 800, r: T ? Math.sin(T * 0.9) * 1.2 : 0, o: tk > 0.01 ? 1 : 0 });
       ghosts.forEach((g) => {

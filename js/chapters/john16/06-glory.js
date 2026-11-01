@@ -69,19 +69,19 @@ export default {
       const hk = es(t, 0.45, 0.6) * (1 - es(t, 2.9, 3));
       vis(heartJ, { x: JX + 4, y: jhy, s: 1 + es(t, 1.2, 1.7) * 0.4, o: hk });
       // the dove: circles Him (v14 first half), carries a flame round the circle (v14 second half)
-      const circ = seg(t, 0.05, 0.55);
-      const carry = seg(t, 0.55, 0.95);
-      const give2 = seg(t, 2.1, 2.9);
+      const circ = seg(t, 0.05, 0.4);
+      const carry = seg(t, 0.4, 0.7);   // swipe stop: the flame has gone round every face by 0.72
+      const give2 = seg(t, 2.1, 2.6);   // swipe stop: every heart is lit by 2.67
       let dx, dy;
       const ring = (a) => [JX + Math.cos(a) * 335, GY - 250 + Math.sin(a) * 90];
       const H = [JX + 130, J.y - 280];
-      if (t < 0.55) { const a = -PI / 2 + circ * PI * 2.4; dx = JX + Math.cos(a) * 150; dy = J.y - 180 + Math.sin(a) * 60 - (1 - es(t, 0, 0.2)) * 400; }
+      if (t < 0.4) { const a = -PI / 2 + circ * PI * 2.4; dx = JX + Math.cos(a) * 150; dy = J.y - 180 + Math.sin(a) * 60 - (1 - es(t, 0, 0.2)) * 400; }
       else if (t < 0.97) { [dx, dy] = ring(PI * (1.05 + carry * 0.9)); }
       else if (t < 2.05) { const [ex, ey] = ring(PI * 1.95), k = es(t, 0.97, 1.3); dx = lerp(ex, H[0], k); dy = lerp(ey, H[1], k); }
       else { const [sx, sy] = ring(PI * 1.05), k = es(t, 2.02, 2.14), [rx, ry] = ring(PI * (1.05 + give2 * 0.9)); dx = lerp(lerp(H[0], sx, k), rx, give2 > 0 ? 1 : 0); dy = lerp(lerp(H[1], sy, k), ry, give2 > 0 ? 1 : 0); }
-      vis(dv, { x: dx, y: dy, s: 0.7, sx: t < 0.55 ? (Math.sin(-PI / 2 + circ * PI * 2.4) > 0 ? -1 : 1) : t > 0.97 && t < 2.14 ? -1 : 1, o: es(t, 0, 0.15) });
+      vis(dv, { x: dx, y: dy, s: 0.7, sx: t < 0.4 ? (Math.sin(-PI / 2 + circ * PI * 2.4) > 0 ? -1 : 1) : t > 0.97 && t < 2.14 ? -1 : 1, o: es(t, 0, 0.15) });
       flapWings(dv, t * 6 + T, 26, 3);
-      const ck = es(t, 0.5, 0.6) * (1 - es(t, 0.95, 1.0)) + es(t, 2.05, 2.15) * (1 - es(t, 2.9, 2.95));
+      const ck = es(t, 0.36, 0.44) * (1 - es(t, 0.95, 1.0)) + es(t, 2.05, 2.15) * (1 - es(t, 2.62, 2.68));
       vis(carried, { x: dx + 20, y: dy + 16, s: 0.8, o: ck });
 
       /* v15a — golden streams from the light above into Him */
@@ -95,8 +95,8 @@ export default {
       /* the Eleven — faces lit as the flame passes (v14), every heart lit (v15b) */
       D.forEach((m, i) => {
         const u = (m.x - 470) / 710;                         // round the circle, left → right
-        const seen = es(t, 0.6 + u * 0.33, 0.68 + u * 0.33);
-        const got = es(t, 2.15 + u * 0.7, 2.25 + u * 0.7);
+        const seen = es(t, 0.42 + u * 0.26, 0.48 + u * 0.26);
+        const got = es(t, 2.15 + u * 0.45, 2.22 + u * 0.45);
         const [hx, hy] = headAt(m.x, m.y, m.s, m.flip, 62);
         void hy;
         vis(faces[i].el, { x: hx, y: hy, s: 1, o: seen * 0.45 * (1 - got * 0.5) });

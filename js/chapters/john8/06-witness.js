@@ -75,11 +75,11 @@ export default {
       vis(cardEl, { x: CX, y: 250 - (1 - cardK) * 700, r: Math.sin(T * 0.8) * 1.2 * cardK, o: cardK > 0.001 ? 1 : 0 });
       const xf = es(t, 0.15, 0.55, ease.in);
       vis(xEl, { x: CX + xf * 30, y: 330 + xf * 420, s: 1.4, r: -8 + xf * 90, o: 1 - seg(t, 0.5, 0.55) });
-      const pin = es(t, 0.3, 0.7), pout = es(t, 0.6, 0.95);
+      const pin = es(t, 0.25, 0.5), pout = es(t, 0.45, 0.68);   // swipe stop: both paths drawn by 0.68
       drawPath(pathIn, pin); drawPath(pathOut, pout);
       arcL.fade(1 - es(t, 2.0, 2.3));
-      vis(tagFrom, { x: 705, y: 150, s: 1, r: -5, o: es(t, 0.45, 0.6) * (1 - es(t, 2.0, 2.3)) });
-      vis(tagTo, { x: 925, y: 150, s: 1, r: 5, o: es(t, 0.8, 0.95) * (1 - es(t, 2.0, 2.3)) });
+      vis(tagFrom, { x: 705, y: 150, s: 1, r: -5, o: es(t, 0.35, 0.48) * (1 - es(t, 2.0, 2.3)) });
+      vis(tagTo, { x: 925, y: 150, s: 1, r: 5, o: es(t, 0.58, 0.7) * (1 - es(t, 2.0, 2.3)) });   // swipe stop: 'dokąd idę' is up by 0.7
       /* v14b — the mist over them */
       const mk = es(t, 1.1, 1.4) * (1 - es(t, 2.0, 2.3));
       vis(mist, { x: 1060 + Math.sin(T * 0.5) * 6, y: 470, s: 0.6 + mk * 0.4, o: mk * 0.95 });
@@ -96,12 +96,12 @@ export default {
       const lt = es(t, 4.5, 4.65, ease.back) * (1 - es(t, 4.95, 5.2));
       vis(lawTick, { x: LX + 100, y: LY - 30, s: lt, o: lt > 0.01 ? 1 : 0 });
       /* v18 — "1" over Him, "2" over the light, a tick */
-      const k1 = es(t, 5.1, 5.4, ease.out), k2 = es(t, 5.35, 5.65, ease.out);
+      const k1 = es(t, 5.05, 5.32, ease.out), k2 = es(t, 5.25, 5.52, ease.out);
       swing(one, DC.JX, 300 - (1 - k1) * 700, k1 > 0.001 ? T : 0, 1, 0.8);
       fade(one, k1 > 0.001 ? 1 : 0);
       swing(two, DC.JX + 170, 165 - (1 - k2) * 700, k2 > 0.001 ? T : 0, 1, 0.8, 1);
       fade(two, k2 > 0.001 ? 1 : 0);
-      const tt = es(t, 5.65, 5.8, ease.back);
+      const tt = es(t, 5.5, 5.65, ease.back);   // swipe stop: the tick is full by 5.65
       vis(tk, { x: DC.JX + 90, y: 250, s: tt * 1.3, o: tt > 0.01 ? 1 : 0 });
 
       const talk = Math.max(bump(t, 0.05, 1.0), bump(t, 2.5, 3.0), bump(t, 3.1, 3.95), bump(t, 4.05, 4.95), bump(t, 5.05, 5.95));

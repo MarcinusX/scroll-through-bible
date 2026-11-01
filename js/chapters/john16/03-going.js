@@ -63,7 +63,7 @@ export default {
 
       /* v5a — the way and the light beyond */
       const wk = es(t, 0.15, 0.7);
-      way(wk, 0.9 - es(t, 5.6, 5.95) * 0.5);
+      way(wk, 0.9 - es(t, 5.4, 5.7) * 0.5);
       const lightUp = es(t, 0.35, 0.85, ease.out);
       vis(B.light, { x: RX, y: RY + 70 - lightUp * 110, s: 0.7 + lightUp * 0.3 + (T ? Math.sin(T * 1.2) * 0.02 : 0), o: lightUp });
 
@@ -75,17 +75,17 @@ export default {
       });
 
       /* v6 — stone hearts */
-      const sorrow = es(t, 2.1, 2.45) * (1 - es(t, 5.4, 5.8));
+      const sorrow = es(t, 2.1, 2.45) * (1 - es(t, 5.35, 5.65));
       hearts.forEach(({ m, el }, i) => {
         const k = es(t, 2.1 + (i % 5) * 0.05, 2.4 + (i % 5) * 0.05);
-        vis(el, { x: m.x + (m.flip ? -6 : 6), y: m.y - 112 * m.s + k * 6, s: 0.6 + k * 0.4, o: k * (1 - es(t, 5.4, 5.8)) });
+        vis(el, { x: m.x + (m.flip ? -6 : 6), y: m.y - 112 * m.s + k * 6, s: 0.6 + k * 0.4, o: k * (1 - es(t, 5.35, 5.65)) });
       });
 
       /* v7 — the light goes; the dove comes */
       const [hx0, hy0] = hand(JX, J.y, J.s, false, 70);
-      const go1 = es(t, 3.2, 3.9);                    // along the path to the ridge
-      const back = bump(t, 4.2, 4.9) * 0.25;          // lingers, even draws back a little
-      const over = es(t, 5.05, 5.35);                 // goes over
+      const go1 = es(t, 3.15, 3.68);   // swipe stop: the light has reached the ridge by 3.68                    // along the path to the ridge
+      const back = es(t, 4.2, 4.5) * (1 - es(t, 4.85, 5.05)) * 0.25;   // swipe stop: it hangs back, still, at 4.75          // lingers, even draws back a little
+      const over = es(t, 5.05, 5.25);   // swipe stop: the dove has come and lit every lantern by 5.72                 // goes over
       const u = go1 - back;
       const [ox, oy] = along(u);
       const onFront = go1 > 0.01 && over < 0.02;
@@ -93,18 +93,18 @@ export default {
       vis(B.orbB, { x: RX + over * 30, y: RY - 14 + over * 90, s: 0.9, o: over > 0.02 && over < 0.98 ? 1 : 0 });
       // the far, grey dove that cannot come yet
       const wait = es(t, 4.1, 4.4) * (1 - es(t, 5.0, 5.2));
-      const rise = es(t, 5.25, 5.55);
-      vis(B.doveB, { x: RX + 60, y: RY + 40 - wait * 60 - rise * 50, s: 0.8, sx: -1, o: Math.max(wait * 0.7, rise * (1 - es(t, 5.5, 5.56))) });
+      const rise = es(t, 5.18, 5.35);
+      vis(B.doveB, { x: RX + 60, y: RY + 40 - wait * 60 - rise * 50, s: 0.8, sx: -1, o: Math.max(wait * 0.7, rise * (1 - es(t, 5.33, 5.38))) });
       if (wait > 0.01 || rise > 0.01) flapWings(B.doveB, t * 4, 20, 7);
       // the dove of light comes over and circles above them
-      const come = es(t, 5.5, 5.9);
-      const circ = seg(t, 5.8, 6.0);
+      const come = es(t, 5.3, 5.55);
+      const circ = seg(t, 5.5, 5.65);
       const dx = lerp(RX + 60, JX + Math.cos(circ * PI * 1.2) * 180, come), dy = lerp(RY - 100, 330 + Math.sin(circ * PI * 1.2) * 30, come);
       vis(doveF, { x: dx, y: dy, s: 0.8, sx: -1, o: come > 0.01 ? 1 : 0 });
       if (come > 0.01) flapWings(doveF, t * 6 + T, 28, 3);
       flames.forEach(({ m, el }, i) => {
         const d = Math.abs(m.x - JX);
-        const k = es(t, 5.7 + d * 0.0005, 5.9 + d * 0.0005);
+        const k = es(t, 5.5 + d * 0.0003, 5.62 + d * 0.0003);
         const [lx, ly] = hand(m.x, m.y, m.s, m.flip, m.arm);
         vis(el, { x: lerp(dx, lx, k), y: lerp(dy, ly + 18, k), s: 0.6 + (1 - k) * 0.4, o: k > 0.02 && k < 0.98 ? 1 : 0 });
       });
@@ -112,8 +112,8 @@ export default {
       /* people */
       D.forEach((m) => {
         const d = Math.abs(m.x - JX);
-        const lit = es(t, 5.85 + d * 0.0005, 5.95 + d * 0.0005);
-        const look = es(t, 0.3, 0.7) * (1 - es(t, 1.05, 1.3)) + es(t, 3.2, 3.6) * (1 - es(t, 5.0, 5.3)) * 0.8 + es(t, 5.5, 5.8);
+        const lit = es(t, 5.58 + d * 0.0002, 5.64 + d * 0.0002);
+        const look = es(t, 0.3, 0.7) * (1 - es(t, 1.05, 1.3)) + es(t, 3.2, 3.6) * (1 - es(t, 5.0, 5.3)) * 0.8 + es(t, 5.3, 5.55);
         lampK(m, 0.85 - sorrow * 0.35 + lit * 0.3, 0, T);
         fade(m.sad, Math.max(sorrow, bump(t, 1.1, 2.0) * 0.6) * (1 - lit));
         fade(m.tear, sorrow * (m.i % 3 === 0 ? 1 : 0) * (1 - es(t, 3.2, 3.6)));
@@ -123,8 +123,8 @@ export default {
       fade(J.sad, sorrow * 0.5 * (1 - es(t, 3.0, 3.3)));
       put(J, T, { armF: 20 + point * 60 + bump(t, 2.1, 2.9) * 20, armB: 10 + bump(t, 5.1, 5.9) * 100, head: -point * 8 + bump(t, 1.1, 1.9) * 6 });
 
-      S.cam.x = kf(t, [[0, 0], [0.8, 30], [1.2, 0], [3, 0], [3.8, 40], [5.4, 40], [6, 0]]);
-      S.cam.y = kf(t, [[0, 0], [0.8, -30], [1.2, 0], [2.4, 20], [3.2, -20], [5.5, -40], [6, -10]]);
+      S.cam.x = kf(t, [[0, 0], [0.8, 30], [1.2, 0], [3, 0], [3.8, 40], [5.3, 40], [5.7, 0], [6, 0]]);
+      S.cam.y = kf(t, [[0, 0], [0.8, -30], [1.2, 0], [2.4, 20], [3.2, -20], [5.3, -40], [5.7, -10], [6, -10]]);
       S.cam.z = kf(t, [[0, 1.02], [2.5, 1.1], [3.2, 1.02], [6, 1.04]]);
     };
   },

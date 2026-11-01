@@ -78,8 +78,8 @@ export default {
       /* v1a — walking through Galilee */
       const w1 = es(t, 0.7, 1.85, ease.sine);
       /* v1b — He stops at the signpost, looks, and turns back */
-      const look = es(t, 2.05, 2.25) * (1 - es(t, 2.72, 2.85));
-      const back = es(t, 2.72, 2.85);
+      const look = es(t, 2.05, 2.25) * (1 - es(t, 2.52, 2.64));
+      const back = es(t, 2.52, 2.64);   // swipe stop: He has turned His back on Judea by 2.64 (was mid-turn at 2.75)
       const w2 = es(t, 2.85, 3.6, ease.sine);
       walkers.forEach((m) => {
         const lag = [0, 96, 180, 262][m.i];
@@ -91,7 +91,7 @@ export default {
         const flip = back > 0.5;
         m.p.set({
           x, y: RY + (m.i % 2) * 6, s: m.i ? 0.94 : 1, flip, walk: moving ? x * 0.055 + m.i : undefined,
-          armF: m.i === 0 ? bump(t, 2.1, 2.7) * 50 + bump(t, 3.5, 3.95) * 40 : 0, head: m.i === 0 ? -look * 6 : bump(t, 2.1, 2.7) * -4, blink: blinkAt(T, m.seed),
+          armF: m.i === 0 ? bump(t, 2.1, 2.55) * 50 + bump(t, 3.5, 3.95) * 40 : 0, head: m.i === 0 ? -look * 6 : bump(t, 2.1, 2.7) * -4, blink: blinkAt(T, m.seed),
         });
       });
       const gk = es(t, 1.0, 1.3, ease.out), gu = es(t, 1.9, 2.1, ease.in);

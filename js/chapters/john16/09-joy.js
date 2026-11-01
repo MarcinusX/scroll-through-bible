@@ -90,22 +90,22 @@ export default {
         const hx = m.x + (m.flip ? -6 : 6), hy = m.y - 112 * m.s;
         const sIn = es(t, 0.1 + (i % 5) * 0.05, 0.4 + (i % 5) * 0.05);
         const d = Math.abs(m.x - JX);
-        const w = es(t, 1.2 + d * 0.0006, 1.45 + d * 0.0006, ease.back);
-        const fall = es(t, 1.2 + d * 0.0006, 1.55 + d * 0.0006);
+        const w = es(t, 1.2 + d * 0.0005, 1.42 + d * 0.0005, ease.back);   // swipe stop: every stone heart has fallen by 1.67
+        const fall = es(t, 1.2 + d * 0.0005, 1.48 + d * 0.0005);
         vis(stones[i].el, { x: hx + fall * 10, y: hy + fall * 90, r: fall * 40, s: 0.6 + sIn * 0.4, o: sIn * (1 - fall) });
         vis(hearts[i].el, { x: hx, y: hy + (T ? Math.sin(T * 2 + i) * 1 : 0), s: w * (1 + (m === TH ? bump(t, 2.35, 2.6) * 0.2 : 0)), o: w > 0.01 ? 1 : 0 });
       });
-      const reach = es(t, 2.05, 2.35) * (1 - es(t, 2.6, 3.0) * 0.8);
+      const reach = es(t, 2.05, 2.3) * (1 - es(t, 2.45, 2.68) * 0.8);   // swipe stop: the grasping hand is beaten back and gone by 2.7
       const thx = TH.x - 6, thy = TH.y - 112 * TH.s;
-      vis(grab, { x: lerp(S.portrait ? 1270 : 1420, thx + 60, reach), y: lerp(740, thy + 70, reach), r: -55, s: 1, o: es(t, 2.0, 2.1) * (1 - es(t, 2.9, 3.0)) });
-      const gk = seg(t, 2.3, 2.85);
+      vis(grab, { x: lerp(S.portrait ? 1270 : 1420, thx + 60, reach), y: lerp(740, thy + 70, reach), r: -55, s: 1, o: es(t, 2.0, 2.1) * (1 - es(t, 2.6, 2.7)) });
+      const gk = seg(t, 2.25, 2.6);
       vis(guard, { x: thx, y: thy, s: 0.6 + gk * 1.2, o: gk > 0 && gk < 1 ? (1 - gk) : 0 });
 
       /* v23a — no more questions: they turn to sparks */
       qs.forEach(({ m, el, sp }, i) => {
         const [hx, hy] = headAt(m.x, m.y, m.s, m.flip);
         const qin = es(t, 3.0 + (i % 4) * 0.04, 3.2 + (i % 4) * 0.04);
-        const turn = es(t, 3.35 + (i % 5) * 0.05, 3.55 + (i % 5) * 0.05);
+        const turn = es(t, 3.3 + (i % 5) * 0.04, 3.45 + (i % 5) * 0.04);   // swipe stop: every question is a spark by 3.61
         vis(el, { x: hx, y: hy - 52, s: 0.55, o: qin * (1 - turn) });
         vis(sp, { x: hx, y: hy - 56 - turn * 30, s: 0.6 + turn * 0.6, o: turn * (1 - es(t, 3.8, 4.0)) });
       });
@@ -116,10 +116,10 @@ export default {
       prayers.forEach(({ m, i, a, b, gift }) => {
         const [ox, oy] = hand(m.x, m.y, m.s, m.flip, 150);
         const u = (i % 6) * 0.04;
-        const up1 = es(t, 4.15 + u, 4.6 + u);
+        const up1 = es(t, 4.12 + u * 0.6, 4.4 + u * 0.6);   // swipe stop: every prayer has gone up and its gift come back by 4.72
         const top = [JX + (m.x - JX) * 0.12, 150];
         vis(a, { x: lerp(ox, top[0], up1), y: lerp(oy - 10, top[1], up1) - Math.sin(up1 * PI) * 30, s: 0.9 - up1 * 0.4, o: up1 > 0.01 && up1 < 0.98 ? 1 : 0 });
-        const down = es(t, 4.55 + u, 4.9 + u);
+        const down = es(t, 4.4 + u * 0.6, 4.6 + u * 0.6);
         vis(gift, { x: lerp(top[0], ox, down), y: lerp(top[1], oy - 10, down), s: 0.8 + (1 - down) * 0.4, o: down > 0.01 ? 1 - es(t, 5.2, 5.4) * 0.7 : 0 });
         const up2 = es(t, 6.1 + u, 6.45 + u);
         vis(b, { x: lerp(ox, JX, up2), y: lerp(oy - 10, CUPY - 60, up2) - Math.sin(up2 * PI) * 50, s: 0.9 - up2 * 0.4, o: up2 > 0.01 && up2 < 0.98 ? 1 : 0 });
@@ -142,7 +142,7 @@ export default {
       /* people */
       D.forEach((m) => {
         const d = Math.abs(m.x - JX);
-        const glad = es(t, 1.25 + d * 0.0006, 1.5 + d * 0.0006);
+        const glad = es(t, 1.25 + d * 0.0005, 1.45 + d * 0.0005);
         const pray = es(t, 4.05, 4.3) * (1 - es(t, 5.1, 5.3)) + es(t, 6.0, 6.2);
         const scared = m === TH ? bump(t, 2.05, 2.7) : 0;
         lampK(m, 0.8 + glad * 0.2, 0, T);

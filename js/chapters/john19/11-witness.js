@@ -83,17 +83,17 @@ export default {
       pose(eye, { x: hx - 70, y: hy - 90, s: ek, o: ek > 0.02 ? 1 : 0 });
       const pgk = es(t, 0.35, 0.6, ease.back) * (1 - es(t, 1.9, 2.1));
       pose(page, { x: hx + 90, y: hy - 70, s: pgk, r: -3, o: pgk > 0.02 ? 1 : 0 });
-      const sk = es(t, 0.6, 0.8, ease.back);
+      const sk = es(t, 0.5, 0.68, ease.back);   // swipe stop: the seal of truth is on the page by x.7
       pose(seal, { x: 34, y: 26, s: 1.6 - sk * 0.6, o: sk > 0.01 ? 1 : 0 });
-      fade(st, es(t, 0.7, 0.85));
+      fade(st, es(t, 0.58, 0.7));
 
       /* v35b — "…that you also may believe": the light comes towards us */
       sparks.forEach((sp) => {
-        const k = es(t, 1.1 + sp.i * 0.12, 1.75 + sp.i * 0.12, (x) => x);
+        const k = es(t, 1.05 + sp.i * 0.06, 1.45 + sp.i * 0.06, (x) => x);   // swipe stop: every light has come to us by x.7
         const tx = [300, 520, 800, 1080, 1300][sp.i];
-        pose(sp.el, { x: lerp(lx + 5, tx, k), y: lerp(ly - 20, 820, k) - Math.sin(k * PI) * 120, s: 0.6 + k * 1.2, o: k > 0 && k < 1 ? Math.sin(k * PI) : 0 });
+        pose(sp.el, { x: lerp(lx + 5, tx, k), y: lerp(ly - 20, 820, k) - Math.sin(k * PI) * 120, s: 0.6 + k * 1.2, o: k > 0 ? (k < 0.5 ? Math.sin(k * PI) : 1) * (1 - es(t, 1.9, 2.1)) : 0 });   // they stay lit where they land until the sentence ends
       });
-      fls.forEach((f, i) => { const k = es(t, 1.35 + i * 0.06, 1.55 + i * 0.06); fade(f.f, k); fade(f.g, k * 0.9); pose(f.f, { x: 0, y: -6, sy: k * (1 + Math.sin(T * 8 + i) * 0.06), sx: k }); });
+      fls.forEach((f, i) => { const k = es(t, 1.25 + i * 0.05, 1.4 + i * 0.05); fade(f.f, k); fade(f.g, k * 0.9); pose(f.f, { x: 0, y: -6, sy: k * (1 + Math.sin(T * 8 + i) * 0.06), sx: k }); });
 
       /* v36 — "Not a bone of Him shall be broken" — the Passover lamb */
       const s1 = es(t, 2.05, 2.4) * (1 - es(t, 3.9, 4.2));

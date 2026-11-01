@@ -90,8 +90,8 @@ export default {
         fade(cl.el, 1 - clear);
       });
       /* v27b — the dove from His hands; a sprig to each */
-      const fly = seg(t, 1.1, 1.85);
-      const home = es(t, 1.85, 2.0);
+      const fly = seg(t, 1.1, 1.62);   // swipe stop: the dove has flown its round and settled by 1.72
+      const home = es(t, 1.62, 1.72);
       let dx = JX + 40, dy = 520, face = 1;
       // phone: the dove's flight and landing stay inside the narrow screen
       if (fly > 0) { const a = fly * PI * 2; dx = JX + Math.sin(a) * (S.portrait ? 280 : 330); dy = 440 - Math.sin(a * 0.5) * 60 + Math.cos(a) * 30; face = Math.cos(a) > 0 ? 1 : -1; }
@@ -101,16 +101,16 @@ export default {
       if (dvo > 0.01) flapWings(bird, T || t * 3, 28, 7);
       D.forEach((m, i) => {
         const order = [2, 1, 0, 3, 4, 5][i];
-        const k = es(t, 1.2 + order * 0.1, 1.35 + order * 0.1, ease.back);
+        const k = es(t, 1.18 + order * 0.08, 1.3 + order * 0.08, ease.back);   // swipe stop: every sprig given by 1.7
         const [hx, hy] = headAt(m.x, G, 0.9, m.flip, 62);
         vis(sprigs[i], { x: hx + (m.flip ? -30 : 30), y: hy + 50, s: 0.45 * k, r: m.flip ? 30 : -30, o: k > 0.01 ? 1 : 0 });
       });
       /* v27c — the world's standard flutters, then wilts and falls */
       const up = es(t, 2.02, 2.25, ease.out);
-      const wilt = es(t, 2.4, 2.85, ease.in);
-      vis(std, { x: 590, y: SH - 16 + (1 - up) * 300 + wilt * 60, r: -wilt * 14, o: up * (1 - es(t, 2.7, 2.95)) });
+      const wilt = es(t, 2.35, 2.62, ease.in);   // swipe stop: the standard has wilted and its coins fallen by 2.72
+      vis(std, { x: 590, y: SH - 16 + (1 - up) * 300 + wilt * 60, r: -wilt * 14, o: up * (1 - es(t, 2.82, 2.97)) });
       pose(banner, { x: 0, y: -250 + 15, sx: 1 - wilt * 0.2, sy: 1 - wilt * 0.55, r: (T ? Math.sin(T * 5) * 4 : Math.sin(t * 30) * 4) * (1 - wilt) + wilt * 18 });
-      coins.forEach((el, i) => { const k = seg(t, 2.45 + i * 0.05, 2.9 + i * 0.05); vis(el, { x: 590 + (i - 2) * 20 + k * (i - 2) * 20, y: SH - 170 + k * k * 220, r: k * 200, o: k > 0 && k < 1 ? 1 - k * 0.5 : 0 }); });
+      coins.forEach((el, i) => { const k = seg(t, 2.36 + i * 0.03, 2.6 + i * 0.03); vis(el, { x: 590 + (i - 2) * 20 + k * (i - 2) * 20, y: SH - 170 + k * k * 220, r: k * 200, o: k > 0 && k < 1 ? 1 - k * 0.5 : 0 }); });
       /* people */
       const give = es(t, 1.05, 1.3) * (1 - es(t, 2.0, 2.2) * 0.5);
       J.set({ x: JX, y: SH + 6, s: 1.12, armF: 16 + give * 60 + clear * 30, armB: 10 + give * 110 + clear * 60, head: -2, blink: blinkAt(T) });

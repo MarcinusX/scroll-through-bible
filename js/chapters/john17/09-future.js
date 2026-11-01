@@ -89,27 +89,27 @@ export default {
     return (t, time) => {
       const T = time;
       /* v20a — the camera draws back: the slope is the top of the world */
-      const back = es(t, 0.1, 0.95);
+      const back = es(t, 0.1, 0.7);   // swipe stop: the camera has drawn back by 0.7
       sk.blend(NIGHT, COSMOS, back);
       /* v20b — the word runs down both ways; later believers appear along it */
-      const rw = es(t, 1.05, 1.75);
+      const rw = es(t, 1.05, 1.6);   // swipe stop: the word has run both ways and every later believer stands by 1.7
       ribs.forEach((p) => drawPath(p, rw));
       ages.forEach((a, i) => {
         const u = i < 3 ? (590 - a.x) / (590 - 250) : (a.x - 1040) / (1290 - 1040);
-        const k = es(t, 1.05 + u * 0.7, 1.2 + u * 0.7, ease.back);
+        const k = es(t, 1.05 + u * 0.5, 1.18 + u * 0.5, ease.back);
         vis(a.el, { x: a.x, y: a.y, r: a.r, s: a.s * Math.max(0.01, k), o: k > 0.01 ? 1 : 0 });
-        vis(a.tag, { x: a.x + Math.sin((a.r * PI) / 180) * 70, y: a.y + 44, r: a.r * 0.6, s: 1, o: es(t, 1.15 + u * 0.7, 1.3 + u * 0.7) * (1 - es(t, 2.1, 2.4) * 0.6) });
+        vis(a.tag, { x: a.x + Math.sin((a.r * PI) / 180) * 70, y: a.y + 44, r: a.r * 0.6, s: 1, o: es(t, 1.1 + u * 0.48, 1.22 + u * 0.48) * (1 - es(t, 2.1, 2.4) * 0.6) });
         const [hx, hy] = [a.x - Math.sin((a.r * PI) / 180) * 70, a.y - Math.cos((a.r * PI) / 180) * 70];
-        ageThr(i, [hx, hy], [JX, JY9 - 130], -40, es(t, 4.1 + i * 0.05, 4.5 + i * 0.05), 0.9);
+        ageThr(i, [hx, hy], [JX, JY9 - 130], -40, es(t, 4.08 + i * 0.03, 4.4 + i * 0.03), 0.9);
       });
       /* v21a — countless lights; v21c — the threads join them into one */
-      globeLights(lights, es(t, 2.05, 2.8), es(t, 4.05, 4.7));
+      globeLights(lights, es(t, 2.05, 2.65), es(t, 4.05, 4.6));   // swipe stop: the lights are all out by 2.65 and joined by 4.6
       /* v21b — You in Me and I in You: the radiance comes down round Him */
       const dn = es(t, 3.05, 3.5);
-      const one = es(t, 4.4, 4.9);
+      const one = es(t, 4.3, 4.68);
       vis(high, { x: JX, y: lerp(250, JY9 - 118, dn), s: (1 + dn * 0.6) * (1 + one * 0.5), r: T * 1.5, o: 1 - dn * 0.35 });
       vis(great, { x: JX, y: lerp(250, JY9 - 118, dn), s: 0.6 + one * 0.5 + es(t, 5.1, 5.6) * 0.3, r: t * 4, o: 0.4 + dn * 0.3 + one * 0.3 });
-      const rk = es(t, 3.35, 3.8);
+      const rk = es(t, 3.3, 3.68);
       vis(ring, { x: JX, y: JY9 - 118, sy: 1.1, r: -T * 2, o: rk > 0.01 ? 1 : 0 });
       drawRing(ring, rk);
       vis(jGlow, { x: JX, y: JY9 - 110, s: 0.8 + dn * 0.6 + one * 0.6, o: 0.5 + dn * 0.5 });
@@ -121,8 +121,8 @@ export default {
       put(J, T, { head: PRAY.head - dn * 4, armF: PRAY.armF + es(t, 4.1, 4.5) * 10, armB: PRAY.armB + es(t, 4.1, 4.5) * 10 });
 
       S.cam.x = kf(t, [[0, 0], [1.2, 0], [1.9, 10], [2.2, 0]]);
-      S.cam.y = kf(t, [[0, 60], [0.95, 170], [2, 170], [3, 130], [4, 150], [5, 160], [6, 170]]);
-      S.cam.z = kf(t, [[0, 1.1], [0.95, 0.66], [2, 0.66], [3, 0.72], [4, 0.68], [5, 0.66], [6, 0.68]]);
+      S.cam.y = kf(t, [[0, 60], [0.7, 170], [2, 170], [3, 130], [4, 150], [5, 160], [6, 170]]);
+      S.cam.z = kf(t, [[0, 1.1], [0.7, 0.66], [2, 0.66], [3, 0.72], [4, 0.68], [5, 0.66], [6, 0.68]]);
     };
   },
 };

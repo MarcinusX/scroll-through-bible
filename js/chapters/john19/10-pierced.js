@@ -92,20 +92,20 @@ export default {
       const look = es(t, 4.4, 4.6) * (1 - es(t, 5.1, 5.3));
       const lower = es(t, 5.05, 5.3);
       const turnA = es(t, 5.2, 5.25);
-      const thrust = es(t, 6.05, 6.35) * (1 - es(t, 6.6, 6.9));
+      const thrust = es(t, 6.05, 6.3) * (1 - es(t, 6.85, 7.05));   // swipe stop: the spear still at His side at x.75
       const stay = bump(t, 3.05, 3.9);
       solA.set({ x: ax, y: ay, s: 0.34, flip: t > 4.0 ? turnA < 0.5 ? false : true : false, walk: moving(t, aK) ? ax * 0.2 : undefined, armF: 30 + stay * 40 + look * 20 - lower * 20, armB: 10 + lower * 50 * (1 - es(t, 5.6, 5.9)), head: -look * 18, blink: 0, o: es(t, 2.0, 2.15) });
       solB.set({ x: bx, y: by, s: 0.34, flip: true, walk: moving(t, bK) ? bx * 0.2 : undefined, armF: 30 + stay * 40 + thrust * 90, armB: 10, head: -look * 18 - thrust * 14, lean: -thrust * 10, blink: 0, o: es(t, 2.0, 2.15) });
       sides.forEach((sd, i) => {
-        const k = es(t, 3.25 + i * 0.25, 3.6 + i * 0.25);
+        const k = es(t, 3.2 + i * 0.2, 3.5 + i * 0.2);   // swipe stop: both heads sunk by x.7
         const u2 = sd.h / 240;
         pose(sd.hd, { x: 0, y: -sd.h + 52 * u2 - 2 * u2, r: (i ? 1 : -1) * k * 26 });
       });
       /* v34a — the spear: a flash of light hides it */
-      const fl = bump(t, 6.3, 6.75);
+      const fl = bump(t, 6.25, 6.98);   // swipe stop: the flash is still there at x.75
       pose(flash, { x: SX + 6, y: SY, s: 0.4 + fl * 1.2, r: T * 20, o: fl });
       /* v34b — blood and water: a stream of light and a stream of living water run down towards us */
-      const run = es(t, 6.5, 7.6, (x) => x);
+      const run = es(t, 7.02, 7.6, (x) => x);   // swipe stop: blood and water only in their own sentence (v34b)
       water.forEach((w) => { const k = Math.min(1, Math.max(0, (run - (w.u - 1 / 14)) * 14)); pose(w.el, { o: k, sy: 1 }); });
       light.forEach((w) => { const k = Math.min(1, Math.max(0, (run * 1.02 - (w.u - 1 / 14)) * 14)); fade(w.el, k * 0.9); });
 

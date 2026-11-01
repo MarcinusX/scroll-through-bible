@@ -87,11 +87,11 @@ export default {
       rings(jhx - 14, jhy + 6, bump(t, 5.1, 5.95), T, { dir: -1 });
       /* v23 — the hour has come */
       const hk = es(t, 5.05, 5.35, ease.out);
-      const level = 0.22 * (1 - es(t, 5.3, 5.75));
+      const level = 0.22 * (1 - es(t, 5.3, 5.6));   // swipe stop: the last grains are out, the tag and the radiance up by 5.7
       hg.set(880, 250 - (1 - hk) * 600, level, level > 0.005 ? 1 : 0, hk > 0.001 ? T : 0, hk > 0.001 ? 1 : 0);
-      const tg = es(t, 5.6, 5.85, ease.back);
+      const tg = es(t, 5.45, 5.68, ease.back);
       swing(hourTag, 1040, 230 - (1 - tg) * 600, tg > 0.001 ? T : 0, 1.2, 0.8); fade(hourTag, tg > 0.001 ? 1 : 0);
-      const glo = es(t, 5.55, 5.95);
+      const glo = es(t, 5.4, 5.7);
       pose(glowEl, { x: 880, y: 360, s: 0.4 + glo * 0.8, r: T ? T * 2 : 0, o: glo * 0.8 });
 
       // phone: the camera starts further left, with the Greeks, and follows the message to Jesus

@@ -80,10 +80,10 @@ export default {
         vis(el, { x, y, r: k * 160, o: k > 0 && k < 1 ? 1 : 0 });
       });
       /* v44 — the shadow screen */
-      const sc = es(t, 3.05, 3.4, ease.out) * (1 - es(t, 6.55, 6.9, ease.in));
+      const sc = es(t, 3.05, 3.4, ease.out) * (1 - es(t, 6.38, 6.65, ease.in));   // swipe stop: the darkened screen is gone by 6.65
       const dy = -(1 - sc) * 700;
       vis(screen, { x: SX, y: SCR.y + dy, o: sc > 0.001 ? 1 : 0 });
-      const dark = es(t, 6.2, 6.5);
+      const dark = es(t, 6.08, 6.35);
       vis(dim, { x: SX, y: SCR.y + dy, o: sc > 0.001 ? dark * 0.9 : 0 });
       const coil = es(t, 4.05, 4.6);
       const GX = SX - SCR.w / 2, GY = SCR.y + SCR.h - 26 + dy;

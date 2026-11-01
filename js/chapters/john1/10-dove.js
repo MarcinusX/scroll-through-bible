@@ -110,7 +110,7 @@ export default {
       pose(sDove, { x: 0, y: lerp(-160, -72, sd), o: 1 });
       flapWings(sDove.firstElementChild.firstElementChild, t * 6, 24 * (1 - sd) + 6, 7, -10);
       tgs.forEach((g, i) => {
-        const k = seg(t, 3.5 + i * 0.07, 3.85 + i * 0.07);
+        const k = seg(t, 3.3 + i * 0.05, 3.55 + i * 0.05);   // swipe stop: every tongue of fire has come down by 3.7
         pose(g, { x: [-60, -30, 30, 60][i] * (0.3 + k * 0.7), y: lerp(-20, 50, k), s: 0.4 + k * 0.6, o: k > 0 ? 1 - k * 0.2 : 0 });
       });
 

@@ -61,20 +61,20 @@ export default {
       swing(world, 800, 270 - (1 - gk) * 700, gk > 0.001 ? T : 0, 1 + tip, 0.8);
       fade(world, gk > 0.001 ? 1 : 0);
       /* v31b — the ruler cast out */
-      const throwK = es(t, 1.3, 1.9, ease.in);
+      const throwK = es(t, 1.15, 1.6, ease.in);   // swipe stop: the ruler is thrown off and gone by 1.6
       const rx = 800 + 10 - throwK * 700, ry = 270 - 64 - 4 + throwK * throwK * 300 - Math.sin(throwK * PI) * 120;
       vis(ruler, { x: rx - (1 - gk) * 0, y: ry - (1 - gk) * 700, r: -throwK * 260, s: 1 - throwK * 0.5, o: gk > 0.01 && throwK < 0.98 ? 1 - throwK * 0.4 : 0 });
       /* v32 — lifted up, He draws all */
       const pk = es(t, 2.05, 2.4, ease.out) * (1 - es(t, 4.0, 4.2, ease.in));
       const PX = 800, PY = 170 - (1 - pk) * 700;
       vis(plate, { x: PX, y: PY, r: pk > 0.01 && T ? Math.sin(T * 0.6) * 0.5 : 0, o: pk > 0.001 ? 1 : 0 });
-      const draw = es(t, 2.35, 2.8) * (1 - es(t, 3.95, 4.1));
+      const draw = es(t, 2.3, 2.6) * (1 - es(t, 3.95, 4.1));   // swipe stop: every thread reaches its person, all turned, by 2.7
       all.forEach((m, i) => {
         const [hx, hy] = headAt(m.x, m.y, m.s, m.flip);
-        const k = es(t, 2.35 + i * 0.03, 2.6 + i * 0.03);
+        const k = es(t, 2.3 + i * 0.03, 2.48 + i * 0.03);
         thr(i, PX, PY + 150, lerp(PX, hx, k), lerp(PY + 150, hy, k), draw * 0.8);
       });
-      const turn = es(t, 2.5, 2.8) * (1 - es(t, 3.95, 4.1));
+      const turn = es(t, 2.4, 2.65) * (1 - es(t, 3.95, 4.1));
       const bow = es(t, 3.1, 3.4) * (1 - es(t, 3.95, 4.1));
       left.forEach((m, i) => place(m, T, { head: -turn * 10 + bow * 10, armF: 20 + turn * 30 + bump(t, 5.1, 5.9) * (i === 1 ? 50 : 0), armB: turn * 20 }));
       right.forEach((m, i) => place(m, T, { head: -turn * 10 + bow * 10 + bump(t, 4.1, 4.9) * (i === 0 ? -4 : 0), armF: 20 + turn * 30 + (i === 0 ? bump(t, 4.1, 4.95) * 50 : 0) + (i === 1 ? bump(t, 5.1, 5.9) * 60 : 0) + (i === 2 ? bump(t, 6.1, 6.9) * 70 : 0), armB: turn * 20 + (i === 2 ? bump(t, 6.1, 6.9) * 60 : 0) }));

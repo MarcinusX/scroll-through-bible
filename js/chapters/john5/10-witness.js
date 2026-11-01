@@ -94,7 +94,7 @@ export default {
       /* v31 — witness about Himself alone: not true */
       const selfP = bump(t, 0.1, 0.95);
       const second = es(t, 1.1, 1.4);
-      const setAside = bump(t, 4.05, 4.9);
+      const setAside = bump(t, 4.05, 4.68);
       const open = es(t, 5.1, 5.4) * (1 - es(t, 5.95, 6.2));
       const up = es(t, 6.1, 6.4) * (1 - es(t, 7.0, 7.2));
       jesus.set({ x: JX, y: FLOOR + 12, s: 1.06, flip: false, armF: 20 + selfP * 50 + bump(t, 1.05, 1.9) * 40 + setAside * 80 + open * 60, armB: 10 + selfP * 20 + open * 70 + up * 100, head: -bump(t, 1.1, 2.0) * 8 - up * 12, blink: blinkAt(T, 1) });
@@ -110,7 +110,7 @@ export default {
 
       /* v33 — the envoys at the Jordan; John bears witness */
       const pk = es(t, 3.05, 3.4, ease.out);
-      const away = es(t, 4.2, 4.95, ease.in);
+      const away = es(t, 4.12, 4.62, ease.in);   // swipe stop: John's picture is set aside, off the stage, by 4.62 (was 4.95)
       vis(pic, { x: 800 + away * 700, y: 150 - (1 - pk) * 520 - away * 200, r: Math.sin(T * 0.5) * 0.6 + away * 12, o: pk > 0.01 && away < 0.99 ? 1 : 0 });
       vis(janT, { x: 640 + away * 700, y: 170 - (1 - pk) * 520 - away * 200, r: Math.sin(T * 0.7) * 2, o: pk > 0.01 ? 1 : 0 });
 

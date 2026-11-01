@@ -72,14 +72,14 @@ export default {
 
       /* b0 — their feet are washed: sparkles along the floor; b1 — the towel off, the mantle on, He reclines */
       feetSp.forEach(({ m, el }, i) => {
-        const k = bump(t, 0.1 + i * 0.05, 0.75 + i * 0.04);
+        const k = es(t, 0.1 + i * 0.03, 0.3 + i * 0.03) * (1 - es(t, 0.95, 1.1));   // swipe stop: every washed pair of feet sparkles at 0.75
         vis(el, { x: m.x + (m.flip ? -30 : 30), y: FLOOR - 8, s: 0.4 + k * 0.7, r: t * 90, o: k });
       });
-      const untie = es(t, 1.08, 1.15), dressed = es(t, 1.4, 1.47), sat = es(t, 1.72, 1.8);
-      const tw = es(t, 1.05, 1.3);
+      const untie = es(t, 1.05, 1.1), dressed = es(t, 1.33, 1.4), sat = es(t, 1.55, 1.62);   // swipe stop: dressed and reclining by 1.62
+      const tw = es(t, 1.0, 1.22);
       vis(towel, { x: lerp(JX + 30, JX + 26, tw), y: lerp(SY - 90, BY - 22, tw), r: -tw * 70, o: es(t, 1.05, 1.1) });
-      const reachM = bump(t, 1.2, 1.5);
-      const mk = es(t, 1.22, 1.4);
+      const reachM = bump(t, 1.12, 1.38);
+      const mk = es(t, 1.15, 1.32);
       vis(mantle, { x: lerp(734, JX + 20, mk), y: lerp(TOP, SY - 100, mk), o: 1 - dressed });
       const base = { x: JX, y: SY, s: 1.02, flip: false, head: 4, blink: blinkAt(T) };
       jG.set({ ...base, o: 1 - untie, armF: 20 + bump(t, 0.9, 1.15) * 20, armB: 10 + bump(t, 0.9, 1.15) * 30 });
@@ -107,7 +107,7 @@ export default {
 
       /* b3 — Teacher and Lord (so I am); b4 — they bow down to the basin */
       const wk = es(t, 3.05, 3.4, ease.out) * (1 - es(t, 4.95, 5.2));
-      const down = es(t, 4.15, 4.75);
+      const down = es(t, 4.15, 4.6);   // swipe stop: the words have bowed down to the basin by 4.6
       const glow = bump(t, 3.5, 4.1);
       [[wT, -110, 1], [wL, 110, -1]].forEach(([el, dx, sg], i) => {
         const x = JX + lerp(dx, dx * 0.62, down), y = lerp(420, BY - 60 - i * 0, down) - (1 - wk) * 700;

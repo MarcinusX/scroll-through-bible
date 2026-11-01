@@ -59,8 +59,8 @@ export default {
       const toJudas = es(t, 5.05, 5.3);
       // Peter
       pose(P.feet, { x: -22 * pull, o: 1 - pull });
-      fade(P.dust, 0.75 * (1 - es(t, 2.3, 2.9)));
-      fade(P.wet, 0.8 * es(t, 2.4, 2.9));
+      fade(P.dust, 0.75 * (1 - es(t, 2.25, 2.65)));   // swipe stop: Peter's feet are washed by 2.65
+      fade(P.wet, 0.8 * es(t, 2.3, 2.65));
       row.forEach((m) => {
         let armF = 30, armB = 12, head = -4, lean = 0, y = m.y;
         if (m.k === 'peter') {
@@ -89,7 +89,7 @@ export default {
       /* b1 — no part with Me: the thread parts; b2 — joined again */
       const pk = es(t, 1.05, 1.4, ease.out) * (1 - es(t, 2.85, 3.1, ease.in));
       vis(plate, { x: 770, y: 385 - (1 - pk) * 700, r: T ? Math.sin(T * 0.7) * 1.2 : 0, o: pk > 0.01 ? 1 : 0 });
-      const part = es(t, 1.45, 1.8) * (1 - es(t, 2.25, 2.5));
+      const part = es(t, 1.4, 1.65) *   /* swipe stop: the thread has parted by 1.65 */ (1 - es(t, 2.25, 2.5));
       pose(tl, { x: -16 - part * 8, y: -8 + part * 10, r: -part * 24, ox: -16, oy: -8, o: 1 - part * 0.45 });
       pose(trr, { x: 18 + part * 8, y: -6 + part * 10, r: part * 24, ox: 18, oy: -6, o: 1 - part * 0.45 });
       fade(pglow, es(t, 2.3, 2.6) * 0.9);
@@ -99,12 +99,12 @@ export default {
 
       /* b3 — clean all over: sparkles over Peter */
       pSp.forEach((sp, i) => {
-        const k = bump(t, 3.2 + i * 0.07, 3.9 + i * 0.05) + bump(t, 4.1, 4.9) * 0.6;
+        const k = bump(t, 3.2 + i * 0.07, 3.9 + i * 0.05) + es(t, 4.1, 4.35) * (1 - es(t, 4.95, 5.15)) * 0.6;
         vis(sp.el, { x: P.x + sp.dx, y: F + sp.dy, s: 0.3 + k * 0.9, r: t * 90 + i * 20, o: Math.min(1, k) });
       });
       /* b4 — you are clean (the others sparkle) but not all */
       others.forEach((o) => {
-        const k = bump(t, 4.1 + (o.i % 6) * 0.06, 4.85 + (o.i % 6) * 0.03);
+        const k = es(t, 4.1 + (o.i % 6) * 0.05, 4.35 + (o.i % 6) * 0.05) * (1 - es(t, 4.95, 5.15));   // swipe stop: the others still sparkle at 4.75
         vis(o.el, { x: o.x + 6, y: o.y, s: 0.3 + k * 0.8, r: t * 90, o: k });
       });
       /* b5 — He knew: Judas */

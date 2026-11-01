@@ -78,10 +78,10 @@ export default {
       const later = es(t, 3.05, 3.2);
       st.set({ x: MX - later * 20, y: FEET + 12, s: 0.98, flip: false, o: up, armF: 30 + es(t, 1.2, 1.5) * 60 - later * 30, armB: 20 + es(t, 1.2, 1.5) * 100 - later * 80, head: -8, blink: blinkAt(T, 3) });
       const [mhx, mhy] = headAt(MX, FEET + 12, 0.98, false, up > 0.5 ? 0 : 46);
-      const gk = es(t, 0.3, 0.6);
-      pose(gift, { x: lerp(JX - 30, MX + 10, gk), y: lerp(FEET - 70, mhy + 60, gk) - Math.sin(gk * PI) * 50, o: seg(t, 0.3, 0.35) * (1 - es(t, 0.95, 1.05)) });
-      drawRing(ring, es(t, 0.55, 0.95));
-      pose(ring, { x: MX + 4, y: mhy + 20, r: t * 30, o: seg(t, 0.55, 0.6) * (1 - es(t, 1.0, 1.15)) });
+      const gk = es(t, 0.25, 0.48);
+      pose(gift, { x: lerp(JX - 30, MX + 10, gk), y: lerp(FEET - 70, mhy + 60, gk) - Math.sin(gk * PI) * 50, o: seg(t, 0.25, 0.3) * (1 - es(t, 0.95, 1.05)) });
+      drawRing(ring, es(t, 0.45, 0.7));   // swipe stop: the ring of eternal life is closed by 0.7 (was 0.95)
+      pose(ring, { x: MX + 4, y: mhy + 20, r: t * 30, o: seg(t, 0.45, 0.5) * (1 - es(t, 1.0, 1.15)) });
       /* v54b — raised up on the last day */
       const lk = es(t, 1.05, 1.35, ease.out) * (1 - es(t, 1.95, 2.1));
       pose(last, { x: S.portrait ? 975 : 1060,   // phone: inside the screen, clear of the thread
@@ -111,7 +111,7 @@ export default {
       /* v57 — the living Father → the Son → the one who feeds on Him */
       const rk = es(t, 4.05, 4.35);
       pose(rad, { x: JX, y: 160, s: 0.8, r: T * 3, o: rk });
-      const c1 = es(t, 4.3, 4.8);
+      const c1 = es(t, 4.25, 4.66);   // swipe stop: the light runs from the Father to the Son by 4.66 (was 4.8)
       pose(chain1, { x: JX, y: 190, sy: (jhy - 30 - 190) * c1, o: c1 * 0.7 });
       const c2 = es(t, 5.1, 5.5);
       pose(chain2, { x: JX - 10, y: FEET - 120, sx: -(JX - 10 - MX) * c2, o: c2 * 0.7 });

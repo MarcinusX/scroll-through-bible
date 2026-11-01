@@ -64,7 +64,7 @@ export default {
       fade(beam, see * (0.9 - es(t, 5.1, 5.6) * 0.5));
 
       /* the women and the disciple */
-      const leave = es(t, 5.3, 5.95);
+      const leave = es(t, 5.3, 5.7);   // swipe stop: home reached and the window lit by x.7
       const mIn = es(t, -0.2, 0.4);
       const mx = lerp(686, 610, leave), jx0 = lerp(520, 598, es(t, 2.1, 2.5));
       const jx = lerp(lerp(jx0, 726, es(t, 5.05, 5.35)), 656, leave);
@@ -72,7 +72,7 @@ export default {
       const turnJ = t > 2.5 && t < 5.25 ? 0 : 1;
       const hug = es(t, 5.25, 5.45);
       const walkOn = leave > 0 && leave < 1;
-      john.p.set({ x: jx, y: GY + 2, s: 1, flip: t > 5.2, walk: (t > 2.1 && t < 2.5) || (t > 5.05 && t < 5.95) ? jx * 0.05 : undefined, amt: 0.6, armF: 10 + bump(t, 4.05, 4.9) * 30 + hug * 62, armB: 6, head: -see * 10 + bump(t, 4.05, 4.9) * 6 + hug * 14, blink: blinkAt(T, 3), o: es(t, 1.9, 2.1) });
+      john.p.set({ x: jx, y: GY + 2, s: 1, flip: t > 5.2, walk: (t > 2.1 && t < 2.5) || (t > 5.05 && t < 5.7) ? jx * 0.05 : undefined, amt: 0.6, armF: 10 + bump(t, 4.05, 4.9) * 30 + hug * 62, armB: 6, head: -see * 10 + bump(t, 4.05, 4.9) * 6 + hug * 14, blink: blinkAt(T, 3), o: es(t, 1.9, 2.1) });
       mary.p.set({ x: mx, y: GY, s: 1, flip: turnM > 0.5 || t > 5.25, walk: walkOn ? mx * 0.05 : undefined, amt: 0.5, armF: 20 + bump(t, 3.1, 3.9) * 30, armB: 10 + (1 - see) * 20 * mIn, head: -12 + see * 4 + turnM * 10, blink: blinkAt(T, 1), o: mIn });
       fade(mary.sad, 1); fade(mary.tear, mIn * (1 - see));
       const wIn = es(t, 1.05, 1.4);
@@ -98,13 +98,13 @@ export default {
       const p2 = es(t, 4.05, 4.4) * (1 - es(t, 4.95, 5.15));
       pose(pl2, { x: 800, y: lerp(-300, 150, p2), r: Math.sin(T * 0.7 + 1) * 0.6, o: p2 > 0.01 ? 1 : 0 });
       const hk = es(t, 4.2, 4.5, ease.back);
-      pose(hrt, { x: lerp(642, 610, leave), y: 470 - leave * 20, s: hk * (1 + Math.sin(T * 2) * 0.04), o: hk > 0.02 ? 1 - es(t, 5.7, 5.95) * 0.3 : 0 });
+      pose(hrt, { x: lerp(642, 610, leave), y: 470 - leave * 20, s: hk * (1 + Math.sin(T * 2) * 0.04), o: hk > 0.02 ? 1 - es(t, 5.5, 5.7) * 0.3 : 0 });
 
       /* v27b — to his own home: the window far off kindles */
-      const lit = es(t, 5.45, 5.85);
+      const lit = es(t, 5.4, 5.7);
       fade(win, lit); fade(wglow, lit * 0.9);
 
-      S.cam.x = -es(t, 2.0, 2.5) * 40 - es(t, 5.2, 5.9) * 20;
+      S.cam.x = -es(t, 2.0, 2.5) * 40 - es(t, 5.2, 5.7) * 20;
       S.cam.y = 10 - es(t, 2.9, 3.4) * 20;
       S.cam.z = 1.02 + es(t, 2.0, 2.5) * 0.05;
     };

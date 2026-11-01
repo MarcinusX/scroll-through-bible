@@ -64,7 +64,7 @@ export default {
       set.update(T, { sunY: 360 + es(t, 0, 4.5) * 200 });
 
       /* v39a — judgment: the globe, the dividing light */
-      const div = es(t, 0.3, 0.8);
+      const div = es(t, 0.25, 0.65);   // swipe stop: the dividing light is drawn and the Pharisees are down the steps by 0.66
       warmL.fade(div); coolL.fade(div);
       vis(line, { x: JX + 2, y: G.FLOOR - 10, sy: Math.max(0.01, div), o: div * (1 - es(t, 1.9, 2.3) * 0.6) });
       drop(world, JX, 200, es(t, 0.1, 0.5, ease.out) * (1 - es(t, 1.9, 2.2, ease.in)), T, { amp: 1 });
@@ -84,7 +84,7 @@ export default {
 
       /* the Pharisees: come down the steps (v39a), behind the glass (v39b), step to it (v40), "we see" (v41b) */
       phs.forEach((p) => {
-        const k = es(t, -0.2 + p.i * 0.12, 0.7 + p.i * 0.12, ease.out);
+        const k = es(t, -0.2 + p.i * 0.08, 0.5 + p.i * 0.08, ease.out);
         const x = lerp(1180 + p.i * 20, p.x, k);
         const up = seg(x, 1000, 1150);
         const y = lerp(G.FLOOR - 88, p.y, k);
@@ -94,7 +94,7 @@ export default {
         fade(p.angry, 0.3 + we * 0.5);
         fade(p.sad, ask * 0.5);
       });
-      const gk = es(t, 1.35, 1.75, ease.out);
+      const gk = es(t, 1.3, 1.62, ease.out);   // swipe stop: the glass hangs in front of them by 1.62
       drop(glass, 1030, 372, gk, T, { amp: 0.5 });
       const [p0x, p0y] = headAt(960 - 14, G.FLOOR + 6, 0.98, true);
       const k2 = es(t, 2.12, 2.32, ease.back) * (1 - es(t, 2.92, 3.0));

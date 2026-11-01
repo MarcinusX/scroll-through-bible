@@ -131,7 +131,7 @@ export default {
 
       /* v18b — B turns his back and goes, under his own small cloud */
       const bw = es(t, 1.15, 1.8);
-      const bx = lerp(960, PH ? 1075 : 1230, bw);
+      const bx = lerp(960, PH ? 1025 : 1230, bw);   // swipe stop (phone): he stops clear of the progress thread
       Bp.set({ x: bx, y: GY + 6, s: 0.98, flip: !(bw > 0), walk: bw > 0 && bw < 1 ? bx * 0.05 : undefined, armF: 10, head: bw > 0 ? 8 : 0, o: 1 - es(t, 2.5, 2.8), blink: blinkAt(T, 3) });
       const [bhx, bhy] = headAt(bx, GY + 6, 0.98, false);
       vpose(bCloud, { x: bhx, y: bhy - 48 + Math.sin(T * 1.5) * 3, s: es(t, 1.3, 1.6, ease.back), o: seg(t, 1.3, 1.35) * (1 - es(t, 2.5, 2.8)) });
@@ -156,11 +156,11 @@ export default {
 
       /* v20 — the evildoer hates the light: shields his eyes, hides his sack, slips inside and shuts the door */
       const gIn = es(t, 5.0, 5.3), shield = es(t, 5.3, 5.5) * (1 - es(t, 6.2, 6.4));
-      const gGo = es(t, 6.2, 6.7);
+      const gGo = es(t, 6.15, 6.5);   // swipe stop: he is inside and the door is shut by 6.68
       const gx = lerp(980, 1100, gIn) + gGo * 30;
-      G.p.set({ x: gx, y: GY - 18, s: 0.92, flip: !(gGo > 0), walk: (gIn > 0 && gIn < 1) || (gGo > 0 && gGo < 1) ? gx * 0.05 : undefined, armF: 30 + shield * 110, armB: 20 + es(t, 6.0, 6.2) * 20, head: shield * 16, lean: -shield * 6, o: seg(t, 4.95, 5.0) * (1 - es(t, 6.6, 6.8)), blink: blinkAt(T, 7) });
+      G.p.set({ x: gx, y: GY - 18, s: 0.92, flip: !(gGo > 0), walk: (gIn > 0 && gIn < 1) || (gGo > 0 && gGo < 1) ? gx * 0.05 : undefined, armF: 30 + shield * 110, armB: 20 + es(t, 6.0, 6.2) * 20, head: shield * 16, lean: -shield * 6, o: seg(t, 4.95, 5.0) * (1 - es(t, 6.45, 6.58)), blink: blinkAt(T, 7) });
       vpose(hateEl, { x: PH ? 1040 : 1060, y: GY - 300, s: es(t, 5.3, 5.5, ease.back), r: -4, o: seg(t, 5.3, 5.35) * (1 - es(t, 6.8, 7)) });
-      const shut = es(t, 6.65, 6.9);
+      const shut = es(t, 6.5, 6.68);
       vpose(door, { x: hx + 40, y: GY - 20, sx: 0.08 + shut * 0.92 });
 
       /* v21 — those who do the truth come to the light, and their works shine */

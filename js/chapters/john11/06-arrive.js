@@ -55,7 +55,7 @@ export default {
     for (let i = 0; i <= 14; i++) { const u = i / 14; dots += c.cut(c.circ(lerp(B[0], J[0], u), lerp(B[1], J[1], u) - Math.sin(u * PI) * 26, 4, 8), 0.2, 2); }
     lineP.setAttribute('d', dots);
 
-    const JK = [[0, 280], [0.8, 700]];
+    const JK = [[0, 280], [0.7, 700]];   // swipe stop: He has arrived by 0.7
     return (t, time) => {
       const T = time;
       pose(set.sunEl, { x: 1180, y: 150, r: Math.sin(T * 0.6) * 1.5 });
@@ -65,7 +65,7 @@ export default {
       const jx = kf(t, JK, ease.out);
       jesus.set({ x: jx, y: F + 12, s: 1.04, walk: moving(t, JK) ? jx * 0.1 : undefined, armF: 14 + es(t, 3.9, 4.3) * 50, armB: 8 + es(t, 3.9, 4.3) * 30, head: es(t, 2.1, 2.5) * 4, blink: blinkAt(T, 1) });
       disc.forEach((d) => {
-        const K = [[0, d.x - 420], [0.85 + d.i * 0.03, d.x]];
+        const K = [[0, d.x - 420], [0.6 + d.i * 0.02, d.x]];
         const x = kf(t, K, ease.out);
         d.p.set({ x, y: d.y, s: 0.92, walk: moving(t, K) ? x * 0.1 : undefined, armF: 10, head: es(t, 2.1, 2.5) * 6, blink: blinkAt(T, d.i + 4) });
       });
@@ -74,7 +74,7 @@ export default {
       days.forEach((d) => {
         const k = es(t, 0.3, 0.6, ease.out) * (1 - es(t, 1.0, 1.2));
         vis(d.el, { x: 800 + (d.i - 1.5) * 76, y: 420 - (1 - k) * 520, r: Math.sin(T * 0.8 + d.i) * 2, o: k > 0.01 ? 1 : 0 });
-        if (d.lit) d.lit.setAttribute('opacity', es(t, 0.45 + d.i * 0.1, 0.52 + d.i * 0.1).toFixed(2));
+        if (d.lit) d.lit.setAttribute('opacity', es(t, 0.4 + d.i * 0.07, 0.46 + d.i * 0.07)   /* swipe stop: day IV is lit by 0.67 */.toFixed(2));
       });
 
       /* v18 — Bethany … Jerusalem, about fifteen stadia */
@@ -87,16 +87,16 @@ export default {
 
       /* v19 — the mourners come from Jerusalem */
       MOURN.forEach((m) => {
-        const K = [[2.0 + m.i * 0.06, m.from], [2.55 + m.i * 0.06, m.x]];
+        const K = [[2.0 + m.i * 0.04, m.from], [2.4 + m.i * 0.04, m.x]];   // swipe stop: all have come and weep by 2.7
         const x = kf(t, K, ease.out);
-        const weep = es(t, 2.55 + m.i * 0.05, 2.8 + m.i * 0.05);
+        const weep = es(t, 2.38 + m.i * 0.03, 2.52 + m.i * 0.03);
         const turn = es(t, 3.2, 3.4);
         m.p.set({ x, y: m.y, s: 0.9, flip: m.f ? (t < 3.3 || m.i % 2 ? true : false) : false, walk: moving(t, K) ? x * 0.1 : undefined, armF: 10 + weep * (m.i % 3 === 0 ? 122 : 40), armB: 6 + weep * 20, head: weep * 16 - turn * (m.i % 2 ? 0 : 6), blink: blinkAt(T, m.i + 7), o: t > 2.0 ? 1 : 0 });
       });
 
       /* v20a — Martha hears and goes out to meet Him */
       const heard = es(t, 3.1, 3.35, ease.back) * (1 - es(t, 3.7, 3.85));
-      const MK = [[3.35, 1090], [3.95, 820]];
+      const MK = [[3.3, 1090], [3.7, 820]];   // swipe stop: Martha has met Him on the road by 3.7
       const mx = kf(t, MK);
       mt.set({ x: mx, y: F + 12, s: 0.98, flip: t > 3.2, walk: moving(t, MK) ? mx * 0.12 : undefined, amt: 1.3, lean: moving(t, MK) ? -5 : 0, armF: 20 + heard * 30 + es(t, 3.9, 4.2) * 40, armB: 10, head: -heard * 6 + es(t, 3.9, 4.2) * 6, blink: blinkAt(T, 2) });
       vis(news, { x: 1090 - 12, y: F + 12 - 210, s: heard, o: heard > 0.01 ? 1 : 0 });

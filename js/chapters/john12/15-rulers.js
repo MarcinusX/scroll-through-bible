@@ -116,9 +116,9 @@ export default {
       const wk = es(t, 6.05, 6.35, ease.out);
       swing(worldEl, 1010, 270 - (1 - wk) * 700, wk > 0.001 ? T : 0, 1.1, 0.7, 1);
       fade(worldEl, wk > 0.001 ? 1 : 0);
-      const fk = es(t, 6.3, 6.6);
+      const fk = es(t, 6.25, 6.5);   // swipe stop: the flame is in and the world alight by 6.65
       vis(flame, { x: lerp(jhx + 30, 1010, fk), y: lerp(jhy - 40, 270, fk) - Math.sin(fk * PI) * 80, s: 1 - fk * 0.4, o: fk > 0 && fk < 0.98 ? 1 : 0 });
-      const lit = es(t, 6.55, 6.8);
+      const lit = es(t, 6.45, 6.65);
       fade(worldEl.querySelector('.shade'), 1 - lit);
       fade(worldEl.querySelector('.lit'), lit);
 

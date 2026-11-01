@@ -54,12 +54,12 @@ export default {
       St.update(t, T, { lit: 0 });
 
       /* v11 — the leaders walk down the street looking for Him */
-      const walk = es(t, -0.2, 0.75, ease.sine);
+      const walk = es(t, -0.2, 0.6, ease.sine);   // swipe stop: they have stopped and asked «Where is He?» by 0.66 (the bubble only began at 0.72)
       const turn = es(t, 3.95, 4.15);          // v13 — they turn round; everyone falls silent
       phs.forEach((m) => {
         const x = lerp(-140 - m.i * 90, 700 + m.i * 96, walk);
-        const peer = m.i === 0 ? bump(t, 0.2, 0.6) : m.i === 2 ? bump(t, 0.5, 0.95) : 0;
-        const ask = m.i === 1 ? bump(t, 0.72, 1.6) : 0;
+        const peer = m.i === 0 ? bump(t, 0.15, 0.5) : m.i === 2 ? bump(t, 0.4, 0.95) : 0;
+        const ask = m.i === 1 ? bump(t, 0.52, 1.6) : 0;
         m.p.set({
           x, y: F + 16 + (m.i % 2) * 6, s: 1, flip: m.i === 0 ? (peer > 0.4 || turn > 0.5) : m.i === 2 ? turn < 0.5 && t > 1 : false,
           walk: walk > 0 && walk < 1 ? x * 0.05 + m.i : undefined, armF: 20 + ask * 60 + peer * 30, armB: 10 + ask * 30,
@@ -67,9 +67,9 @@ export default {
         });
       });
       const [qx, qy] = headAt(lerp(-140, 700, walk), F + 16, 1, false);
-      vpose(q, { x: qx + 40, y: qy - 50, s: es(t, 0.25, 0.4, ease.back) * 0.9, r: Math.sin(T * 2) * 6, o: seg(t, 0.25, 0.3) * (1 - es(t, 0.65, 0.75)) });
+      vpose(q, { x: qx + 40, y: qy - 50, s: es(t, 0.25, 0.4, ease.back) * 0.9, r: Math.sin(T * 2) * 6, o: seg(t, 0.25, 0.3) * (1 - es(t, 0.44, 0.52)) });
       const [wx, wy] = headAt(796, F + 22, 1, false);
-      vpose(where, { x: wx + 20, y: wy - 18, s: es(t, 0.72, 0.9, ease.back), o: seg(t, 0.72, 0.78) * (1 - es(t, 1.55, 1.7)) });
+      vpose(where, { x: wx + 20, y: wy - 18, s: es(t, 0.5, 0.66, ease.back), o: seg(t, 0.5, 0.56) * (1 - es(t, 1.55, 1.7)) });
 
       /* v12 — the murmuring crowd: little knots behind their hands */
       const mur = es(t, 1.2, 1.4) * (1 - es(t, 2.0, 2.1));

@@ -129,7 +129,7 @@ export default {
       /* v37a — the water-libation at the altar, the shofar, the waving lulav */
       const pourK = es(t, 0.15, 0.4) * (1 - es(t, 1.2, 1.4));
       const armP = 20 + pourK * 95;
-      const away = es(t, 1.3, 1.8, ease.sine);
+      const away = es(t, 1.25, 1.65, ease.sine);   // swipe stop: the priest and the Levite have stepped aside by 1.65
       pr.set({ x: PRX + away * 150, y: F - away * 34, s: 1 - away * 0.1, flip: away > 0 && away < 1, walk: away > 0 && away < 1 ? away * 12 : undefined, armF: armP, armB: 10, head: -pourK * 6, blink: blinkAt(T, 2) });
       const [phx, phy] = hand(PRX + away * 150, F - away * 34, 1 - away * 0.1, false, armP);
       fade(pitcher, 1 - away);
@@ -168,20 +168,20 @@ export default {
       const rise = es(t, 2.9, 3.25, ease.out);
       dryL.shift(0, (1 - rise) * 360);
       greenL.shift(0, (1 - rise) * 360);
-      const run = seg(t, 3.15, 3.7);
+      const run = seg(t, 3.12, 3.48);   // swipe stop: the rivers run, the slopes bloom and the streams flow from the believers by 3.7 (was 3.96)
       vpose(srcGlow, { x: 806, y: 560, s: 0.6 + es(t, 3.1, 3.3) * 0.6 + Math.sin(T * 2) * 0.04, o: es(t, 3.1, 3.3) * (1 - es(t, 5.3, 5.8) * 0.5) });
       [sL, sR].forEach((s) => s.els.forEach((el, k) => fade(el, es(run, k / 10, (k + 1) / 10))));
-      const bl = es(t, 3.55, 3.85);
+      const bl = es(t, 3.38, 3.6);
       greenL.fade(bl);
       blooms.forEach((b) => {
-        const k = es(t, 3.5 + b.d / 3000, 3.72 + b.d / 3000, ease.back);
+        const k = es(t, 3.36 + b.d / 5000, 3.52 + b.d / 5000, ease.back);
         if (k > 0) pose(b.el, { x: b.x, y: b.y, s: k, o: 1 }); else fade(b.el, 0);
       });
-      const hk = es(t, 3.62, 3.75, ease.back);
+      const hk = es(t, 3.42, 3.54, ease.back);
       const [ahx, ahy] = headAt(TA.x1, F + 12, 0.95, false), [bhx, bhy] = headAt(TB.x1, F + 14, 0.95, true);
-      vpose(heartA, { x: ahx + 4, y: ahy + 58, s: hk, o: seg(t, 3.62, 3.66) });
-      vpose(heartB, { x: bhx - 4, y: bhy + 58, s: hk, o: seg(t, 3.62, 3.66) });
-      const brun = seg(t, 3.68, 3.95);
+      vpose(heartA, { x: ahx + 4, y: ahy + 58, s: hk, o: seg(t, 3.42, 3.46) });
+      vpose(heartB, { x: bhx - 4, y: bhy + 58, s: hk, o: seg(t, 3.42, 3.46) });
+      const brun = seg(t, 3.5, 3.7);
       [bA, bB].forEach((s) => s.els.forEach((el, k) => fade(el, es(brun, k / 5, (k + 1) / 5))));
       drops.forEach((d) => {
         const s = d.i % 2 ? sR : sL;

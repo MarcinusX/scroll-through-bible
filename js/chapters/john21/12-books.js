@@ -140,12 +140,12 @@ export default {
       const pen = T ? Math.sin(T * 5) * 6 * writing : 0;
       const look = es(t, 0.1, 0.3) * (1 - es(t, 1.0, 1.1));
       john.set({ x: JN.x, y: JN.y, s: 0.95, flip: false, armF: 70 + writing * 10 + pen - look * 20, armB: 30 + look * 60, head: 6 * writing - look * 14 + es(t, 2.1, 2.3) * -6 * (1 - es(t, 2.8, 3)), lean: writing * 6, blink: blinkAt(T, 4) });
-      lines.forEach((el, i) => fade(el, es(t, 1.15 + i * 0.12, 1.25 + i * 0.12)));
+      lines.forEach((el, i) => fade(el, es(t, 1.12 + i * 0.1, 1.22 + i * 0.1)));
 
       /* v24a — the plates of what he saw; v24b — they go into the page */
       plates.forEach((p) => {
         const k = es(t, 0.1 + p.i * 0.1, 0.45 + p.i * 0.1, ease.out);
-        const into = es(t, 1.1 + p.i * 0.1, 1.45 + p.i * 0.1, ease.in);
+        const into = es(t, 1.05 + p.i * 0.07, 1.33 + p.i * 0.07, ease.in);   // swipe stop: all five are in the page by x.62
         const [sx, sy] = SPOTS[p.i];
         vis(p.el, { x: lerp(sx, DESK.x - 10, into), y: lerp(lerp(-300, sy, k), DESK.y - 90, into), s: 1 - into * 0.85, r: T ? Math.sin(T * 0.8 + p.i) * 2 : 0, o: k > 0.01 && into < 0.98 ? 1 : 0 });
       });

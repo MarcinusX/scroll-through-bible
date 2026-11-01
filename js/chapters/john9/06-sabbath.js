@@ -60,14 +60,14 @@ export default {
       /* v13 — the door opens, they bring him in; it closes behind them */
       const open = es(t, -0.1, 0.2) * (1 - es(t, 0.8, 1.0));
       hall.door(open, 0);
-      const inK = es(t, 0.08, 0.75, ease.out);
+      const inK = es(t, 0.08, 0.62, ease.out);   // swipe stop: he and the neighbours stand in the hall by 0.62
       const walkIn = inK > 0.01 && inK < 0.99;
       const mx = lerp(H.DOORX + 50, MX, inK), my = lerp(H.BASE - 2, H.FLOOR + 8, inK), ms = lerp(0.8, 1.02, inK);
       const tell = bump(t, 3.05, 3.95), proph = es(t, 8.1, 8.4);
       man.p.set({ x: mx, y: my, s: ms, o: seg(t, 0.06, 0.14), walk: walkIn ? mx * 0.07 : undefined, armF: 20 + tell * 60 + proph * 50, armB: 14 + tell * 30 + proph * 30, head: -proph * 10, blink: blinkAt(T, 3) });
       fade(man.angry, 0);
       nb.forEach((n) => {
-        const k = es(t, 0.02 + n.i * 0.08, 0.6 + n.i * 0.08, ease.out);
+        const k = es(t, 0.02 + n.i * 0.08, 0.54 + n.i * 0.08, ease.out);
         const back = es(t, 0.75, 1.1);
         const x = lerp(H.DOORX + 40 - n.i * 10, MX - 110 - n.i * 60, k) - back * (P ? 100 : 40);   // phone: they step right out of the picture
         const y = lerp(H.BASE - 2, H.FLOOR + 4 - n.i * 8, k), s = lerp(0.8, 0.96 - n.i * 0.03, k);

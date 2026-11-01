@@ -79,7 +79,7 @@ export default {
       // Judas: reaches, takes, eats; half rises
       const reach = es(t, 2.3, 2.5) * (1 - es(t, 2.9, 3.05));
       const eat = bump(t, 3.0, 3.35);
-      const rise = es(t, 4.4, 4.9);
+      const rise = es(t, 4.35, 4.68);   // swipe stop: Judas has half risen by 4.68
       const jud = { x: JU.x + rise * 8, y: SEAT + (JU.i % 2) * 3 - rise * 12, s: JU.s, flip: true, armF: 36 + reach * 28 + eat * 70, armB: 14 + rise * 20, head: 4 + fall * 16 - speak * 10 - rise * 4, lean: rise * 10, blink: blinkAt(T, JU.seed) };
       JU.p.set(jud);
       fade(JU.sad, fall * 0.6);

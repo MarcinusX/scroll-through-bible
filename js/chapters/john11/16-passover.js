@@ -79,7 +79,7 @@ export default {
 
       /* v55b — pilgrims come up and purify themselves */
       PIL.forEach((m) => {
-        const K = [[1.0 + m.i * 0.06, m.from], [1.6 + m.i * 0.06, m.x]];
+        const K = [[0.95 + m.i * 0.05, m.from], [1.45 + m.i * 0.05, m.x]];   // swipe stop: every pilgrim is in the court by 1.7
         const x = kf(t, K, ease.out);
         const look = es(t, 2.05 + m.i * 0.04, 2.3 + m.i * 0.04) * (1 - es(t, 4.05, 4.3));
         const turnAround = look > 0.2 && Math.sin(T * 0.7 + m.i * 1.3) > 0.4;

@@ -96,22 +96,23 @@ export default {
       fade(tagT, tk > 0.001 ? 1 : 0);
 
       /* the shepherd: v2 to the gate, v3a into the gateway, v3c out to the path, v4 ahead along it */
-      const come = es(t, 1.05, 1.75);
+      const come = es(t, 1.05, 1.6);   // swipe stop: the shepherd is at the gate, his tag down, by 1.65
       const into = es(t, 2.75, 3.1);
       const outS = es(t, 3.98, 4.3);
-      const dS = 90 + es(t, 5.05, 5.9) * 280 + es(t, 6.05, 6.9) * 40;
+      const dS = 90 + es(t, 5.05, 5.65) * 280 + es(t, 6.05, 6.9) * 40;
       let sx, sy, walking;
       if (t < 2.75) { sx = lerp(1340, 846, come); sy = lerp(716, 702, come); walking = come > 0 && come < 1; }
       else if (t < 3.98) { sx = lerp(846, 792, into); sy = lerp(702, 662, into); walking = into > 0 && into < 1; }
       else {
         const [px, py] = polyAt(OUT, dS / OUTLEN);
         sx = lerp(792, px, outS); sy = lerp(662, py, outS);
-        walking = (outS > 0 && outS < 1) || (t > 5.05 && t < 5.9) || (t > 6.05 && t < 6.9);
+        walking = (outS > 0 && outS < 1) || (t > 5.05 && t < 5.65) ||   // swipe stop: he stands at their head by 5.65
+         (t > 6.05 && t < 6.9);
       }
       const callL = bump(t, 3.15, 3.95), callN = bump(t, 4.05, 4.95);
       const lookBack = bump(t, 6.1, 6.95), turnS = es(t, 7.3, 7.5);
       shep.set({ x: sx, y: sy, s: 1.0, flip: !(lookBack > 0.4 || turnS > 0.5), walk: walking ? sx * 0.07 : undefined, armF: 22, armB: 10 + Math.max(callL, callN, lookBack * 0.9, bump(t, 7.4, 8) * 0.7) * 110, head: -Math.max(callL, callN) * 6, blink: blinkAt(T, 2) });
-      const stk = es(t, 1.45, 1.75, ease.out) * (1 - es(t, 2.1, 2.3, ease.in));
+      const stk = es(t, 1.38, 1.65, ease.out) * (1 - es(t, 2.1, 2.3, ease.in));
       swing(tagS, 900, 330 - (1 - stk) * 700, stk > 0.001 ? T : 0, 1.2, 0.8, 1);
       fade(tagS, stk > 0.001 ? 1 : 0);
       const facingR = lookBack > 0.4 || turnS > 0.5;
@@ -124,7 +125,8 @@ export default {
 
       /* v3c — each called by name */
       names.forEach((el, i) => {
-        const a = 4.08 + i * 0.13, k = es(t, a, a + 0.08, ease.back) * (1 - es(t, a + 0.2, a + 0.28));
+        const a = 4.06 + i * 0.1, k =   // swipe stop: the last name is called, and its sheep out, by 4.72
+           es(t, a, a + 0.08, ease.back) * (1 - es(t, a + 0.2, a + 0.28));
         vis(el, { x: sx - 30, y: sy - 214, s: k, o: k > 0.01 ? 1 : 0 });
       });
       /* v5 — the stranger */
@@ -135,22 +137,22 @@ export default {
       vis(strangerB, { x: STX - 50, y: 520, s: sb, o: sb > 0.01 ? 1 : 0 });
       rings2(STX - 22, 550, bump(t, 7.12, 7.7), T, { dir: -1, s0: 0.6, spread: 1.5 });
       const look = bump(t, 7.08, 7.45);
-      const flee = es(t, 7.38, 7.8, ease.out);
+      const flee = es(t, 7.35, 7.66, ease.out);   // swipe stop: the flock is round the shepherd by 7.66
 
       sheep.forEach((s) => {
         const i = s.i;
         const hear = es(t, 3.2 + i * 0.05, 3.45 + i * 0.05);
-        const called = es(t, 4.1 + i * 0.13, 4.24 + i * 0.13);
+        const called = es(t, 4.08 + i * 0.1, 4.22 + i * 0.1);
         const target = dS - 66 - i * 52;
         const pos = Math.max(0, LH[i] + target) * called;
         let [x, y, dir] = polyAt(PATHS[i], pos / TOT[i]);
-        const moving = called > 0 && pos > 1 && ((t > 4.1 && t < 5.2) || (t > 5.05 && t < 5.9) || (t > 6.05 && t < 6.9));
+        const moving = called > 0 && pos > 1 && ((t > 4.1 && t < 5.2) || (t > 5.05 && t < 5.65) || (t > 6.05 && t < 6.9));
         const hx = [-34, 16, 64, 108, 40, 90][i], hy = [-36, -42, -34, -16, -10, 2][i];
         const fx2 = lerp(x, sx + hx, flee), fy2 = lerp(y, sy + hy, flee);
         const hop = moving || (flee > 0 && flee < 1) ? Math.abs(Math.sin(T * 12 + i)) * 3 : 0;
         const faceR = look > 0.3 && flee < 0.3 ? true : flee >= 0.3 ? fx2 < sx : pos < 1 ? x < 788 : dir > 0;
         const inside = pos < LH[i] - 20;
-        s.r.set({ x: fx2, y: fy2, s: inside ? 0.86 : 0.9, flip: !faceR, head: -hear * 16 * (inside ? 1 : 0.3) - bump(t, 6.1, 6.9) * 16 - look * 10, hop, tag: es(t, 4.1 + i * 0.13, 4.2 + i * 0.13) });
+        s.r.set({ x: fx2, y: fy2, s: inside ? 0.86 : 0.9, flip: !faceR, head: -hear * 16 * (inside ? 1 : 0.3) - bump(t, 6.1, 6.9) * 16 - look * 10, hop, tag: es(t, 4.08 + i * 0.1, 4.18 + i * 0.1) });
         s.x = fx2; s.y = fy2;
       });
 

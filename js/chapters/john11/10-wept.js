@@ -112,7 +112,7 @@ export default {
       const [hx, hy] = headAt(800, F + 12, 1.04, false);
       vis(jHeart, { x: 800 + 4, y: F + 12 - 118, s: moved * (1 + Math.sin(T * 7) * 0.06), o: moved > 0.01 ? 1 : 0 });
       rings(800 + 4, F + 12 - 118, moved, T, { spread: 2.6, speed: 0.35 });
-      const wq = es(t, 2.6, 2.85, ease.back) * (1 - es(t, 3.2, 3.35));
+      const wq = es(t, 2.45, 2.7, ease.back)   /* swipe stop: the question has popped up by 2.7 */ * (1 - es(t, 3.2, 3.35));
       vis(where, { x: hx + 26, y: hy - 30, s: wq, o: wq > 0.01 ? 1 : 0 });
 
       /* v34 — "come and see" */

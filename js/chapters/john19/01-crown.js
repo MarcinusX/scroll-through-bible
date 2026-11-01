@@ -114,19 +114,20 @@ export default {
       sh.forEach((m) => {
         const inK = es(t, 2.05 + m.i * 0.07, 2.35 + m.i * 0.07);
         const x = lerp(m.x < JX ? SX0 - 70 : SX1 + 70, m.x, inK);
-        const weave = m.i === 1 ? bump(t, 2.3, 2.75) : 0;
-        const strike = bump(t, 5.08 + (m.i % 2) * 0.18 + (m.i > 1 ? 0.08 : 0), 5.5 + (m.i % 2) * 0.18 + (m.i > 1 ? 0.08 : 0));
+        const weave = m.i === 1 ? bump(t, 2.2, 2.6) : 0;
+        // swipe stop: the blows still fall at x.75 (the last two hands up)
+        const strike = bump(t, 5.3 + (m.i % 2) * 0.18 + (m.i > 1 ? 0.08 : 0), 5.72 + (m.i % 2) * 0.18 + (m.i > 1 ? 0.08 : 0));
         m.p.set({ x, y: FL, s: 0.95, flip: m.flip, walk: inK > 0 && inK < 1 ? x * 0.08 : undefined, armF: 30 + weave * 80 + salute * 60 + strike * 100, armB: 10 + salute * 140 + weave * 60, head: -salute * 6 + strike * 4, lean: strike * 6, o: inK > 0.01 ? 1 : 0 });
       });
       // thorns twisted into a ring on the screen
-      const tw = es(t, 2.3, 2.62);
-      pose(strands, { x: 760, y: 360, r: tw * 90, s: 1 - tw * 0.4, o: bump(t, 2.25, 2.6) });
-      pose(ringSh, { x: 760, y: 360, s: tw, r: tw * 40, o: tw > 0.05 ? 1 - es(t, 2.62, 2.8) : 0 });
+      const tw = es(t, 2.18, 2.45);
+      pose(strands, { x: 760, y: 360, r: tw * 90, s: 1 - tw * 0.4, o: bump(t, 2.13, 2.45) });
+      pose(ringSh, { x: 760, y: 360, s: tw, r: tw * 40, o: tw > 0.05 ? 1 - es(t, 2.45, 2.55) : 0 });
 
       /* v2a — the crown of thorns comes down onto His head */
       const [hx, hy] = headAt(JX, JY, JS, false);
-      const lay = es(t, 2.55, 2.88);
-      const crowned = es(t, 2.87, 2.93);
+      const lay = es(t, 2.4, 2.66);   // swipe stop: the crown is on His head by x.7
+      const crowned = es(t, 2.65, 2.7);
       pose(crownF, { x: hx, y: lerp(hy - 360, hy - 13 * JS, lay), s: JS, o: lay > 0.01 && crowned < 1 ? 1 : 0 });
       /* v2b — the purple cloak on its strings */
       const cl = es(t, 3.05, 3.6);

@@ -90,10 +90,10 @@ export default {
 
       /* Peter: looks at the linen, then at the rolled cloth; scratches his head at the Scripture */
       const toHead = es(t, 1.05, 1.4);
-      const out = es(t, 6.05, 6.9, ease.sine);
+      const out = es(t, 6.05, 6.62, ease.sine);   // swipe stop: both have reached the door by x.62 and are seen leaving at x.75
       const puzzled = bump(t, 5.1, 5.95);
       const px = PX - out * 330;
-      peter.set({ x: px, y: FLOOR, s: 1.02, flip: out > 0, o: 1 - es(t, 6.6, 6.9), walk: out > 0 && out < 1 ? px * 0.05 : undefined, amt: 0.8, lean: 6 * (1 - out), armF: 30 + lg * 20 * (1 - toHead) + toHead * 10, armB: 12 + puzzled * 150, head: 8 - toHead * 4 + puzzled * -8, blink: blinkAt(T, 1) });
+      peter.set({ x: px, y: FLOOR, s: 1.02, flip: out > 0, o: 1 - es(t, 6.85, 6.98), walk: out > 0 && out < 1 ? px * 0.05 : undefined, amt: 0.8, lean: 6 * (1 - out), armF: 30 + lg * 20 * (1 - toHead) + toHead * 10, armB: 12 + puzzled * 150, head: 8 - toHead * 4 + puzzled * -8, blink: blinkAt(T, 1) });
 
       /* v8a: the other disciple comes in — stooping under the lintel */
       const jOutK = es(t, 3.0, 3.35);
@@ -102,13 +102,13 @@ export default {
       jOut.set({ x: jOx, y: FLOOR - 2, s: 0.96, walk: jOutK > 0 && jOutK < 1 ? jOx * 0.05 : undefined, amt: 0.7, lean: jOutK * 18, armF: 20, armB: 10, o: seg(t, 3.0, 3.05) * (1 - seg(t, 3.3, 3.34)) });
       const see = es(t, 4.05, 4.4);
       const jx = lerp(DOOR_X + 10, JX, jIn) - out * 230;
-      john.set({ x: jx, y: FLOOR + 4, s: 1.0, flip: out > 0.02, o: seg(t, 3.3, 3.34) * (1 - es(t, 6.75, 6.98)), walk: (jIn > 0 && jIn < 1) || (out > 0 && out < 1) ? jx * 0.05 : undefined, amt: 0.8, lean: (1 - jIn) * 20 + see * -4 * (1 - out), armF: 24 + see * 30 * (1 - out), armB: 12 + see * 14, head: -see * 10 * (1 - out) + bump(t, 5.1, 5.9) * 6, blink: blinkAt(T, 4) });
+      john.set({ x: jx, y: FLOOR + 4, s: 1.0, flip: out > 0.02, o: seg(t, 3.3, 3.34) * (1 - es(t, 6.85, 6.98)), walk: (jIn > 0 && jIn < 1) || (out > 0 && out < 1) ? jx * 0.05 : undefined, amt: 0.8, lean: (1 - jIn) * 20 + see * -4 * (1 - out), armF: 24 + see * 30 * (1 - out), armB: 12 + see * 14, head: -see * 10 * (1 - out) + bump(t, 5.1, 5.9) * 6, blink: blinkAt(T, 4) });
 
       /* v8b: he saw and believed — a light in his heart */
       const bel = es(t, 4.25, 4.6);
       const [fx0, fy0] = bodyAt(jx, FLOOR + 4, 1.0, out > 0.02, 6, -104);
-      pose(faith, { x: fx0, y: fy0 + (T ? Math.sin(T * 2) * 1.2 : 0), s: bel * (1 + bump(t, 4.3, 4.8) * 0.4), o: bel > 0.01 ? 1 - es(t, 6.7, 6.95) : 0 });
-      pose(rays, { x: fx0, y: fy0, s: 0.4 + bel * 0.8, r: T * 6, o: bel * 0.8 * (1 - es(t, 5.0, 5.4) * 0.5) * (1 - es(t, 6.6, 6.9)) });
+      pose(faith, { x: fx0, y: fy0 + (T ? Math.sin(T * 2) * 1.2 : 0), s: bel * (1 + bump(t, 4.3, 4.8) * 0.4), o: bel > 0.01 ? 1 - es(t, 6.45, 6.65) : 0 });
+      pose(rays, { x: fx0, y: fy0, s: 0.4 + bel * 0.8, r: T * 6, o: bel * 0.8 * (1 - es(t, 5.0, 5.4) * 0.5) * (1 - es(t, 6.4, 6.6)) });
       pose(warm, { x: fx0 + 200, y: fy0, s: 0.4 + bel * 0.6, o: bel * 0.7 });
 
       /* v9: the Scripture they did not yet understand */
@@ -121,7 +121,8 @@ export default {
       pose(q, { x: phx + 10, y: phy - 60, s: qq * 1.1, o: qq > 0.01 ? 1 : 0 });
 
       // phone: from v8 on the camera moves over to the two disciples and the doorway
-      S.cam.x = lerp(150, 190, es(t, 0, 1)) - (S.portrait ? es(t, 2.9, 3.4) * 380 : es(t, 2.9, 3.4) * 60 + es(t, 6, 6.8) * 80);
+      S.cam.x = lerp(150, 190, es(t, 0, 1)) - (S.portrait ? es(t, 2.9, 3.4) * 380 + es(t, 6.0, 6.6) * 200 :   // swipe stop (phone): follows them to the door
+         es(t, 2.9, 3.4) * 60 + es(t, 6, 6.8) * 80);
       S.cam.y = 20 - es(t, 1.0, 1.3) * 30 * (1 - es(t, 2.9, 3.3)) - es(t, 4.9, 5.2) * 30 * (1 - es(t, 6, 6.3));
       S.cam.z = (1.08 + es(t, 3.9, 4.4) * 0.08 * (1 - es(t, 4.9, 5.2))) * (S.portrait ? 0.92 : 1);
     };

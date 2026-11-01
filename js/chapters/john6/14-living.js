@@ -70,7 +70,7 @@ export default {
       const [mx, my] = headAt(m.x, m.y, m.s, m.x > JX, 62);
       const gk = es(t, 1.05, 1.4);
       pose(gift, { x: lerp(LX, mx, gk), y: lerp(LY, my + 30, gk) - Math.sin(gk * PI) * 60, s: 1, o: seg(t, 1.05, 1.1) * (1 - es(t, 1.9, 2.1)) });
-      drawRing(ring, es(t, 1.35, 1.8));
+      drawRing(ring, es(t, 1.32, 1.66));   // swipe stop: the ring is closed by 1.66 (was 1.8)
       pose(ring, { x: mx, y: my + 20, r: t * 30, o: seg(t, 1.35, 1.4) * (1 - es(t, 1.95, 2.1)) });
       /* v51c — My flesh, for the life of the world */
       const wl = es(t, 2.05, 2.4, ease.out) * (1 - es(t, 2.95, 3.1));

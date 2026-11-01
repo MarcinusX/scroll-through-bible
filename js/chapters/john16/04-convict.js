@@ -98,18 +98,18 @@ export default {
       });
 
       /* v10 — the small Jesus walks into the light */
-      const w = es(t, 2.2, 2.85);
+      const w = es(t, 2.15, 2.6);   // swipe stop: He has gone into the light by 2.7
       const [mx, my] = [lerp(-30, 22, w), lerp(40, -20, w)];
-      mini.set({ x: mx, y: my, s: 0.2 - w * 0.06, o: 1 - es(t, 2.7, 2.9), walk: w > 0 && w < 1 ? w * 16 : undefined, armF: 10 });
+      mini.set({ x: mx, y: my, s: 0.2 - w * 0.06, o: 1 - es(t, 2.55, 2.7), walk: w > 0 && w < 1 ? w * 16 : undefined, armF: 10 });
 
       /* v11 — the dark crown cracks and falls */
       const p3 = plates[2];
       const cy0 = p3.y - 12;
-      const crack = es(t, 3.25, 3.4);
-      const fall = es(t, 3.35, 3.95, ease.in);
+      const crack = es(t, 3.2, 3.3);   // swipe stop: the crown has cracked and fallen by 3.66
+      const fall = es(t, 3.28, 3.62, ease.in);
       vis(crown, { x: PX[2], y: cy0, s: 0.6, o: es(t, 0.9, 1.1) * (crack < 1 ? 1 : 0) });
-      vis(crownL, { x: PX[2] - 3 - fall * 50, y: cy0 + fall * 520, s: 0.6, r: -fall * 80, o: crack >= 1 ? 1 - es(t, 3.85, 3.95) : 0 });
-      vis(crownR, { x: PX[2] + 3 + fall * 70, y: cy0 + fall * 540, s: 0.6, r: fall * 110, o: crack >= 1 ? 1 - es(t, 3.85, 3.95) : 0 });
+      vis(crownL, { x: PX[2] - 3 - fall * 50, y: cy0 + fall * 520, s: 0.6, r: -fall * 80, o: crack >= 1 ? 1 - es(t, 3.58, 3.66) : 0 });
+      vis(crownR, { x: PX[2] + 3 + fall * 70, y: cy0 + fall * 540, s: 0.6, r: fall * 110, o: crack >= 1 ? 1 - es(t, 3.58, 3.66) : 0 });
 
       /* people look up */
       D.forEach((m) => {

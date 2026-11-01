@@ -109,11 +109,11 @@ export default {
       const lv = es(t, 4.28, 4.4, ease.back);
       loaves.forEach((l) => pose(l.el, { x: CX + (l.i - 2.5) * 30, y: 336 - (l.i % 2) * 6, s: lv, o: lv > 0.01 ? 1 - es(t, 4.4 + l.i * 0.03, 4.46 + l.i * 0.03) * 0.75 : 0 }));
       crumbs.forEach((cb, i) => {
-        const a = 4.38 + i * 0.025, k = es(t, a, a + 0.14);
+        const a = 4.34 + i * 0.015, k = es(t, a, a + 0.12);   // swipe stop: every crumb has landed and every '?' is up by 4.66 (was 4.82)
         const got = i % 4 === 1;
         const g = cb.g, gy = sfn(g.x) + g.dy - 36;
         pose(cb.el, { x: lerp(CX, g.x + (JX - g.x) * 0.08, k), y: lerp(336, gy, k) - Math.sin(k * PI) * 60, s: 0.8, r: k * 200, o: got && k > 0 ? 1 : 0 });
-        const q = es(t, 4.52 + i * 0.015, 4.62 + i * 0.015, ease.back);
+        const q = es(t, 4.44 + i * 0.01, 4.54 + i * 0.01, ease.back);
         pose(qs[i], { x: g.x + (JX - g.x) * 0.08, y: gy - 14, s: got ? 0 : q * 0.9, r: Math.sin(T * 2 + i) * 8, o: !got && q > 0.01 ? 1 : 0 });
       });
 

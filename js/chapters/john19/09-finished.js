@@ -51,8 +51,8 @@ export default {
       N.sk.blend(J19.gold, J19.still, es(t, 5.05, 5.9) * 0.75);
 
       /* v28a — all is accomplished: the ring of light closes */
-      pts.forEach((p, i) => { const k = es(t, 0.1 + i * 0.05, 0.2 + i * 0.05); pose(p, { x: Math.cos(-PI / 2 + (i / 12) * PI * 2) * 64, y: Math.sin(-PI / 2 + (i / 12) * PI * 2) * 64, s: 0.5 + k * 0.5, o: k * (1 - still * 0.8) }); });
-      fade(ringLine, es(t, 0.7, 0.9) * (1 - still * 0.8));
+      pts.forEach((p, i) => { const k = es(t, 0.1 + i * 0.04, 0.2 + i * 0.04); pose(p, { x: Math.cos(-PI / 2 + (i / 12) * PI * 2) * 64, y: Math.sin(-PI / 2 + (i / 12) * PI * 2) * 64, s: 0.5 + k * 0.5, o: k * (1 - still * 0.8) }); });
+      fade(ringLine, es(t, 0.52, 0.68) * (1 - still * 0.8));   // swipe stop: the ring of light is closed by x.68
       pose(ring, { x: HX, y: HY + 4, r: T * 3 * A });
       /* v28b — "I thirst" */
       const th = es(t, 1.1, 1.4) * (1 - es(t, 1.95, 2.15));

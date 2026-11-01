@@ -81,15 +81,15 @@ export default {
       /* v17a — the heart comes down; He kneels and lays the flame down */
       const hk = es(t, 0.1, 0.55) * (1 - es(t, 0.8, 0.95));
       vis(heart, { x: 800, y: lerp(160, JY - 240, es(t, 0.1, 0.6)), s: 0.8 + hk * 0.3, o: hk });
-      const kneel = es(t, 0.45, 0.55) * (1 - es(t, 1.45, 1.55));
-      const down = es(t, 0.55, 0.9);
-      const rise = es(t, 1.45, 1.9);
+      const kneel = es(t, 0.42, 0.5) * (1 - es(t, 1.45, 1.55));
+      const down = es(t, 0.5, 0.7);   // swipe stop: the flame is laid down by 0.7
+      const rise = es(t, 1.45, 1.68);   // swipe stop: the flame is taken up again by 1.68
       /* v18a — no one takes it: the hands reach and stop */
-      const reach = es(t, 2.1, 2.5, ease.out) * (1 - es(t, 2.7, 2.95, ease.in));
+      const reach = es(t, 2.1, 2.5, ease.out) * (1 - es(t, 2.8, 2.98, ease.in));   // swipe stop: the hands still stopped short at 2.75
       const offer = es(t, 2.35, 2.6) * (1 - es(t, 2.9, 3.1));
       /* v18b — lay down / take again, once more */
       const arcK = es(t, 3.05, 3.35, ease.out) * (1 - es(t, 3.95, 4.15, ease.in));
-      const u = es(t, 3.3, 3.9);
+      const u = es(t, 3.3, 3.68);   // swipe stop: the token has gone round the arc by 3.68
       const ta = PI + u * PI;
       const again = bump(t, 3.3, 3.6) * 0.8;
       /* v18c — the sealed scroll */

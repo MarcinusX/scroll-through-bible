@@ -78,16 +78,17 @@ export default {
       const sw = Math.sin(T * 0.8) * 1.2;
       hangAt(plateEl, PX, py, T, pk > 0 && pUp < 1 ? 1 : 0, 1.2, 0.8);
       const on = pk > 0 && pUp < 1 ? 1 : 0;
-      const bm = es(t, 1.25, 1.5);
+      // swipe stop: the flower has opened under its crown and the kingdom tag hangs by 1.68
+      const bm = es(t, 1.2, 1.4);
       vpose(beamEl, { x: PX, y: py - 92, sx: 0.3 + bm * 0.7, o: on * bm });
-      const open = es(t, 1.45, 1.75, ease.back);
+      const open = es(t, 1.35, 1.55, ease.back);
       vpose(budEl, { x: PX, y: py + 40, o: on });
       vpose(petL, { r: -open * 55 }); vpose(petR, { r: open * 55 });
       vpose(core, { y: -open * 14, o: open });
-      const ck = es(t, 1.65, 1.95, ease.back);
+      const ck = es(t, 1.45, 1.68, ease.back);
       vpose(crownEl, { x: PX, y: py - 58, s: ck * 0.9, r: sw, o: on * ck });
-      vpose(kTag, { x: PX, y: py + 122, s: es(t, 1.7, 1.9, ease.back), o: on * es(t, 1.7, 1.8) });
-      vpose(upTag, { x: PH ? PX - 125 : PX + 120, y: py - 80, r: PH ? -8 : 8, s: es(t, 1.3, 1.5, ease.back), o: on * es(t, 1.3, 1.4) });
+      vpose(kTag, { x: PX, y: py + 122, s: es(t, 1.5, 1.68, ease.back), o: on * es(t, 1.5, 1.6) });
+      vpose(upTag, { x: PH ? PX - 125 : PX + 120, y: py - 80, r: PH ? -8 : 8, s: es(t, 1.25, 1.42, ease.back), o: on * es(t, 1.25, 1.35) });
 
       /* Nicodemus: "How?" */
       const puzzle = es(t, 2.05, 2.3);

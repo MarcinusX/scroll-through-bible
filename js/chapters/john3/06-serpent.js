@@ -103,16 +103,16 @@ export default {
       hangAt(tagM, 560, lerp(-300, 330, mk) - es(t, 1.0, 1.2) * 700, T, mk > 0 && t < 1.25 ? 1 : 0, 1.2, 0.8, 1);
 
       /* the bitten look up, rise; the snakes slide away */
-      const look = es(t, 0.5, 0.7);
+      const look = es(t, 0.4, 0.55);
       folk.forEach((f) => {
-        const rise = es(t, 0.72 + f.i * 0.03, 0.8 + f.i * 0.03);
+        const rise = es(t, 0.55 + f.i * 0.02, 0.6 + f.i * 0.02);   // swipe stop: every bitten one is up (no cross-fade left) by 0.7
         const toCross = es(t, 2.05, 2.35);
         const dir = f.x < POLE ? false : true;
         f.lie.set({ x: f.x, y: GY + 12, s: f.s, flip: dir, o: 1 - rise, head: 16 - look * 30, lean: (dir ? -1 : 1) * (8 - look * 8), armF: 20 + look * 30, armB: 50 - look * 20, blink: blinkAt(T, f.seed) });
         const faceCross = f.x > CX ? true : false;
-        f.up.set({ x: f.x, y: GY + 12, s: f.s, flip: toCross > 0.5 ? faceCross : dir, o: rise, head: -10 - toCross * 8, armF: 30 + bump(t, 0.8, 1.2) * 60 + toCross * 50, armB: 20 + toCross * 90 * (f.i % 2), blink: blinkAt(T, f.seed) });
-        const away = es(t, 0.75, 1.2);
-        vpose(f.snake, { x: f.x + (dir ? -40 : 40) * f.s + (dir ? 1 : -1) * away * -260 * 0 + (f.x < 800 ? -away * 300 : away * 300), y: GY + 16, sx: f.x < 800 ? -0.9 : 0.9, sy: 0.9, o: 1 - es(t, 1.0, 1.2) });
+        f.up.set({ x: f.x, y: GY + 12, s: f.s, flip: toCross > 0.5 ? faceCross : dir, o: rise, head: -10 - toCross * 8, armF: 30 + bump(t, 0.62, 1.1) * 60 + toCross * 50, armB: 20 + toCross * 90 * (f.i % 2), blink: blinkAt(T, f.seed) });
+        const away = es(t, 0.55, 0.72);   // swipe stop: the snakes have slid away by 0.72
+        vpose(f.snake, { x: f.x + (dir ? -40 : 40) * f.s + (dir ? 1 : -1) * away * -260 * 0 + (f.x < 800 ? -away * 300 : away * 300), y: GY + 16, sx: f.x < 800 ? -0.9 : 0.9, sy: 0.9, o: 1 - es(t, 0.62, 0.72) });
         const [hx, hy] = headAt(f.x, GY + 12, f.s, false);
         const lk = es(t, 2.2 + f.i * 0.06, 2.45 + f.i * 0.06, ease.back);
         vpose(f.light, { x: hx, y: hy - 44 + Math.sin(T * 2 + f.i) * 3, s: lk, o: seg(t, 2.2 + f.i * 0.06, 2.25 + f.i * 0.06) });

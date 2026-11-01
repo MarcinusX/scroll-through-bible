@@ -90,11 +90,11 @@ export default {
       const [hx, hy] = hand(JQ.x, JQ.y, 1.0, false, 20 + 60, 0);
       vis(staffGift, { x: lerp(hx, PQ.x + 16, gk), y: lerp(hy + 10, PQ.y - 80, gk), r: lerp(-10, 18, gk), s: 0.96, o: t > 3.05 && gk < 1 ? 1 : 0 });
       flock.forEach((f) => {
-        const a = f.i < 3 ? -1 : 3.3 + (f.i - 3) * 0.12;
-        const k = a < 0 ? 1 : es(t, a, a + 0.5, ease.out);
+        const a = f.i < 3 ? -1 : 3.22 + (f.i - 3) * 0.08;   // swipe stop: the flock is gathered round Peter by x.72
+        const k = a < 0 ? 1 : es(t, a, a + 0.42, ease.out);
         const x = lerp(f.from[0], f.to[0], k), y = lerp(f.from[1], f.to[1], k);
         const going = k > 0 && k < 1;
-        const near = es(t, 3.4, 3.9);
+        const near = es(t, 3.35, 3.68);
         f.rig.set({ x: x + (f.i < 3 ? (PQ.x + 40 + f.i * 30 - x) * near * 0.3 : 0), y, s: f.lamb ? 1.0 : 1.1, flip: f.from[0] > 800, head: going ? Math.sin(T * 8) * 4 : -8 + (T ? Math.sin(T * 0.8 + f.i) * 4 : 0), hop: going ? Math.abs(Math.sin(x * 0.05)) * 6 : 0, o: k > 0.001 ? 1 : 0 });
       });
       const fdk = es(t, 3.1, 3.3, ease.back);

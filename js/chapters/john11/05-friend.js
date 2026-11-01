@@ -97,9 +97,9 @@ export default {
       /* v15a — heart windows open: that you may believe */
       wins.forEach((w, i) => {
         const d = disc[i];
-        const k = es(t, 5.1 + i * 0.06, 5.35 + i * 0.06, ease.back) * (1 - es(t, 5.95, 6.15));
+        const k = es(t, 5.05 + i * 0.05, 5.3 + i * 0.05, ease.back) * (1 - es(t, 5.95, 6.15));
         vis(w, { x: d.x, y: d.y - 250 * d.s - (1 - k) * 420, r: Math.sin(T + i) * 2, o: k > 0.01 ? 1 : 0 });
-        openWindow(w, es(t, 5.4 + i * 0.05, 5.6 + i * 0.05), 15);
+        openWindow(w, es(t, 5.3 + i * 0.04, 5.45 + i * 0.04), 15);   // swipe stop: every heart-window is open by 5.65
       });
 
       /* v15b — "Let us go to him": Jesus turns to Judea */

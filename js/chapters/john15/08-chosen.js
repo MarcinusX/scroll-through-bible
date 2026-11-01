@@ -85,11 +85,11 @@ export default {
       const pk = es(t, 0.05, 0.35, ease.out) * (1 - es(t, 1.9, 2.1, ease.in));
       vis(plate, { x: 800, y: 108 - (1 - pk) * 620 + (T ? Math.sin(T * 0.9) * 2 : 0), o: pk > 0.001 ? 1 : 0 });
       if (pk > 0.001) {
-        const open = es(t, 1.08, 1.25), rise = es(t, 1.22, 1.5, ease.in), inK = es(t, 1.4, 1.8);
+        const open = es(t, 1.08, 1.25), rise = es(t, 1.22, 1.5, ease.in), inK = es(t, 1.38, 1.65);   // swipe stop: the friend is inside by 1.65
         pose(door, { x: doorX, y: fl - doorH, sx: 1 - open * 0.85 });
         pose(facade, { y: -rise * (PH + 20) });
         ps.set({ x: lerp(150, doorX + 60, inK), y: fl, s: 0.62, walk: inK > 0 && inK < 1 ? inK * 16 : undefined, armF: 60 * (1 - es(t, 1.35, 1.45)), head: -4 });
-        pj.set({ x: doorX + 140, y: fl, s: 0.62, flip: true, armF: bump(t, 1.2, 1.9) * 90 + es(t, 1.7, 1.9) * 60, armB: bump(t, 1.2, 1.9) * 60 });
+        pj.set({ x: doorX + 140, y: fl, s: 0.62, flip: true, armF: bump(t, 1.2, 1.9) * 90 + es(t, 1.55, 1.7) * 60, armB: bump(t, 1.2, 1.9) * 60 });
         pose(pa, { x: lerp(150, doorX + 60, inK) + es(t, 1.2, 1.45) * 20, y: fl - es(t, 1.2, 1.45) * 130, r: es(t, 1.2, 1.45) * 60, s: 0.62, o: 1 - es(t, 1.3, 1.45) });
         pose(pq, { x: 170, y: fl - 140 + (T ? Math.sin(T * 2) * 2 : 0), s: 0.8, o: es(t, 0.3, 0.45) * (1 - es(t, 1.1, 1.25)) });
       }
@@ -98,7 +98,7 @@ export default {
       vis(rad, { x: 800, y: 128, s: 1 + (T ? Math.sin(T * 1.3) * 0.02 : 0), o: Math.min(1, fa * 1.4) });
       vis(cone, { x: 800, y: 128, o: Math.min(1, fa * 1.2) });
       /* v16a — He chooses each in turn */
-      const ch = seg(t, 2.1, 2.9);
+      const ch = seg(t, 2.08, 2.68);   // swipe stop: all eleven chosen by 2.68
       const ci = Math.min(10, Math.floor(ch * 11));
       const cm = ms.find((m) => m.k === CHOOSE[ci]);
       const pointing = ch > 0 && ch < 1;
@@ -116,18 +116,18 @@ export default {
         const off = es(t, 1.15 + (i % 4) * 0.04, 1.45 + (i % 4) * 0.04, ease.in);
         vis(aprons[i], { x: m.x + off * (m.flip ? 60 : -60), y: m.y - off * 260, sx: (m.flip ? -1 : 1) * m.s, sy: m.s, s: m.s, r: off * (m.flip ? -50 : 50), o: es(t, 0.02, 0.12) * (1 - off) });
         /* words made known */
-        const w = es(t, 1.45 + i * 0.03, 1.8 + i * 0.03);
+        const w = es(t, 1.3 + i * 0.02, 1.52 + i * 0.02);   // swipe stop: every word has reached its hands by 1.72
         vis(slips[i], { x: lerp(JX, hx, w), y: lerp(JY - 190, m.y - 150 * m.s, w) - Math.sin(w * PI) * 60, r: (1 - w) * 20, o: w > 0 && w < 1 ? 1 : 0 });
         /* chosen */
         const ord = CHOOSE.indexOf(m.k);
-        const gk = es(t, 2.1 + (ord / 11) * 0.8, 2.2 + (ord / 11) * 0.8);
-        vis(glows[i], { x, y: m.y - 150 * m.s, s: 0.7 + bump(t, 2.1 + (ord / 11) * 0.8, 2.4 + (ord / 11) * 0.8) * 0.6, r: T * 20, o: gk * (1 - es(t, 3.0, 3.3) * 0.7) * (1 - draw) });
+        const gk = es(t, 2.08 + (ord / 11) * 0.6, 2.16 + (ord / 11) * 0.6);
+        vis(glows[i], { x, y: m.y - 150 * m.s, s: 0.7 + bump(t, 2.08 + (ord / 11) * 0.6, 2.32 + (ord / 11) * 0.6) * 0.6, r: T * 20, o: gk * (1 - es(t, 3.0, 3.3) * 0.7) * (1 - draw) });
         /* fruit in every hand, turning gold */
-        const fk = es(t, 3.2 + i * 0.03, 3.4 + i * 0.03, ease.back);
+        const fk = es(t, 3.15 + i * 0.02, 3.3 + i * 0.02, ease.back);   // swipe stop: every fruit is gold by 3.72
         vis(fruits[i], { x: hx, y: hy + 4, s: fk * m.s * 1.1, o: fk > 0.01 ? 1 : 0 });
-        attr(fruitGold[i], 'opacity', es(t, 3.6 + i * 0.02, 3.8 + i * 0.02));
+        attr(fruitGold[i], 'opacity', es(t, 3.4 + i * 0.02, 3.52 + i * 0.02));
         /* sealed prayers rise */
-        const up = seg(t, 4.2 + (i % 4) * 0.05, 4.72 + (i % 4) * 0.05);
+        const up = seg(t, 4.15 + (i % 4) * 0.04, 4.55 + (i % 4) * 0.04);   // swipe stop: the sealed prayers have reached the light by 4.67
         vis(seals[i], { x: lerp(hx, 800 + (hx - 800) * 0.2, ease.io(up)), y: lerp(hy - 30, 150, ease.io(up)), s: 1 - up * 0.3, o: up > 0 && up < 1 ? 1 : 0 });
         const lift = bump(t, 4.1, 4.95);
         placeM(m, T, { x, walk: draw > 0 && draw < 1 ? draw * 14 + i : undefined, head: -es(t, 0.1, 0.4) * 12 * (1 - es(t, 2, 2.2)) + (m.k === cm?.k && pointing ? -8 : 0) - lift * 12,

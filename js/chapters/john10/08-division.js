@@ -46,9 +46,9 @@ export default {
       /* v19 — His words; the division */
       const sk = es(t, 0.05, 0.3, ease.back) * (1 - es(t, 0.95, 1.15));
       vis(slip, { x: 800, y: 380, s: Math.min(1, sk), o: sk > 0.01 ? 1 : 0 });
-      const cr = es(t, 0.3, 0.8);
+      const cr = es(t, 0.25, 0.65);   // swipe stop: the crack is drawn and the two sides apart by 0.68
       attr(crack, 'stroke-dashoffset', 1 - cr);
-      const apart = es(t, 0.35, 0.85);
+      const apart = es(t, 0.3, 0.68);
       /* v20 — the many: possessed, mad; why listen? */
       const b1 = es(t, 1.08, 1.25, ease.back) * (1 - es(t, 1.9, 2.05));
       vis(bDemon, { x: 1060 + BX, y: 440, s: b1, o: b1 > 0.01 ? 1 : 0 });

@@ -113,7 +113,7 @@ export default {
       W.forEach((w) => {
         const prepared = Object.values(ROOM).includes(w.i);
         // the four wing windows and all rooms kindle faintly first (many rooms); the Eleven's rooms fully later
-        const faint = es(t, 0.3 + w.i * 0.03, 0.45 + w.i * 0.03);
+        const faint = es(t, 0.25 + w.i * 0.025, 0.37 + w.i * 0.025);   // swipe stop: the dome windows are lit by 0.72
         const mine = prepared ? es(t, 3.08 + (w.i - 4) * 0.055, 3.18 + (w.i - 4) * 0.055) : 1;
         const o = prepared ? faint * 0.72 + mine * 0.28 : faint;
         vis(w.el, { x: w.wx, y: w.wy, s: SC, o: o * (1 - dimmed * 0.5) });
@@ -171,7 +171,7 @@ export default {
       });
       // eleven small lights rise up the path to their rooms
       rise.forEach(({ m, el }, n) => {
-        const k = es(t, 4.5 + n * 0.03, 4.95 + n * 0.03, ease.inOut);
+        const k = es(t, 4.42 + n * 0.012, 4.6 + n * 0.012, ease.inOut);   // swipe stop: all eleven lights are in their windows by 4.72
         const w = W[ROOM[m.k]];
         const [px, py] = headAt(m.x, G, m.s, m.flip);
         const x = lerp(px, w.wx, k), y = lerp(py - 30, w.wy - 20, k) - Math.sin(k * PI) * 80;

@@ -54,7 +54,7 @@ export default {
 
     return (t, time) => {
       const T = time;
-      const low = es(t, 5.1, 5.8) * 0.45;
+      const low = es(t, 5.1, 5.65) * 0.45;
       T0.idle(t, T, low);
       R.stars.fade(0.9);
 
@@ -65,7 +65,7 @@ export default {
       const hand2chest = es(t, 2.3, 2.6) * (1 - es(t, 3.05, 3.2));
       const offer = es(t, 3.1, 3.4);
       const tremble = es(t, 4.2, 4.4);
-      const fall = es(t, 5.3, 5.8);
+      const fall = es(t, 5.25, 5.65);
       at.forEach((m) => {
         if (m.k === 'judas') { m.p.set({ o: 0 }); return; }
         if (m.k === 'jesus') {
@@ -87,7 +87,7 @@ export default {
       const pose2 = { x: P.x, y: PY, s: 0.9, flip: false, o: rise, armF: armFP, armB: 14 + offer * 60 * (1 - tremble) + hand2chest * 10, head: -8 * offer - hand2chest * 4 + fall * 18, lean: offer * 4 - fall * 3, blink: fall > 0.5 ? 0.8 : blinkAt(T, P.seed) };
       pUp.set(pose2);
       fade(pSad, es(t, 4.3, 4.6));
-      fade(pTear, es(t, 5.6, 5.9));
+      fade(pTear, es(t, 5.45, 5.68));
       const [phx, phy] = headAt(P.x, SEAT, P.s, false, 62);
       const qk = es(t, 0.1, 0.3, ease.back) * (1 - es(t, 0.85, 1.0));
       vis(ask, { x: phx + 12, y: phy - 26, s: qk * 0.9, o: qk > 0.01 ? 1 : 0 });
@@ -102,14 +102,14 @@ export default {
       /* b1 — the way: not now — later */
       const wk = es(t, 1.05, 1.4, ease.out) * (1 - es(t, 1.95, 2.2, ease.in));
       vis(way, { x: 730, y: 420 - (1 - wk) * 700, r: T ? Math.sin(T * 0.7) : 0, o: wk > 0.01 ? 1 : 0 });
-      laterSteps.forEach((el, i) => fade(el, es(t, 1.5 + i * 0.06, 1.6 + i * 0.06) * 0.8));
+      laterSteps.forEach((el, i) => fade(el, es(t, 1.42 + i * 0.04, 1.5 + i * 0.04) * 0.8));   // swipe stop: Peter's "later" footprints are all there by 1.7
 
       /* b5 — the rooster, three marks */
       const ck = es(t, 5.05, 5.35, ease.out);
       const cy = 330 - (1 - ck) * 700;
       vis(cock, { x: 760, y: cy, r: T ? Math.sin(T * 0.6) * 0.8 : 0, o: ck > 0.01 ? 1 : 0 });
       marks.forEach((el, i) => {
-        const k = es(t, 5.45 + i * 0.13, 5.55 + i * 0.13, ease.back);
+        const k = es(t, 5.38 + i * 0.1, 5.46 + i * 0.1, ease.back);   // swipe stop: three marks, the heart dimmed, Peter's tear by 5.68
         vis(el, { x: 760 - 66 + i * 12, y: cy + 34, s: k * 0.85, r: 8, o: k > 0.01 ? 1 : 0 });
       });
 

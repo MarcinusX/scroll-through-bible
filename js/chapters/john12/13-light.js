@@ -79,22 +79,22 @@ export default {
     return (t, time) => {
       const T = time;
       /* the light fades through the scene */
-      const dusk = es(t, 0, 3), night = es(t, 4.2, 5);
+      const dusk = es(t, 0, 3), night = es(t, 4.1, 4.7);
       if (night <= 0) sk.blend(SKY0, SKY1, dusk); else sk.blend(SKY1, SKY2, night);
       starL.fade(es(t, 1.5, 3) * 0.5 + night * 0.5);
       veil.fade(dusk * 0.6 + night * 0.4);
       swing(sunEl, 1140, 300 + es(t, 0.2, 2.6) * 330, T, 0.8, 0.6);
       swing(moonEl, 480, 160, T, 0.8, 0.6, 2); fade(moonEl, es(t, 3.8, 4.6));
       /* v35a — the light among you */
-      const leave = es(t, 4.1, 4.9);
+      const leave = es(t, 4.05, 4.6);   // swipe stop: He has gone and is hidden by 4.68
       const jx = lerp(800, 1085, leave), jy = lerp(G + 16, G - 70, leave), js = lerp(1.06, 0.55, leave);
-      jesus.set({ x: jx, y: jy, s: js, flip: false, o: 1 - es(t, 4.75, 4.95), walk: leave > 0 && leave < 1 ? t * 22 : undefined, armF: 16 + bump(t, 0.1, 0.9) * 40 + bump(t, 1.1, 1.9) * 60 + bump(t, 3.1, 3.9) * 50, armB: 10 + bump(t, 3.1, 3.9) * 100, head: -2, blink: blinkAt(T) });
-      vis(pool, { x: jx, y: jy - 110 * js, s: (0.6 + es(t, 0.1, 0.5) * 0.5) * js, o: 1 - es(t, 4.4, 4.95) });
+      jesus.set({ x: jx, y: jy, s: js, flip: false, o: 1 - es(t, 4.5, 4.68), walk: leave > 0 && leave < 1 ? t * 22 : undefined, armF: 16 + bump(t, 0.1, 0.9) * 40 + bump(t, 1.1, 1.9) * 60 + bump(t, 3.1, 3.9) * 50, armB: 10 + bump(t, 3.1, 3.9) * 100, head: -2, blink: blinkAt(T) });
+      vis(pool, { x: jx, y: jy - 110 * js, s: (0.6 + es(t, 0.1, 0.5) * 0.5) * js, o: 1 - es(t, 4.3, 4.68) });
       /* v35b — walk while you have the light */
       lamps.forEach((l) => { const k = es(t, 1.1 + l.i * 0.1, 1.25 + l.i * 0.1); vis(l.fl, { x: l.x, y: l.y, s: l.s * (1 + (T ? Math.sin(T * 8 + l.i) * 0.05 : 0)), o: k }); });
-      const creep = es(t, 1.2, 2.2, ease.out) * (1 - es(t, 3.05, 3.5) * 0.4) + night * 0.4;
+      const creep = es(t, 1.15, 1.7, ease.out)   /* swipe stop: the darkness has crept in and the people walk the lit path by 1.7 */ * (1 - es(t, 3.05, 3.5) * 0.4) + night * 0.4;
       darkL.shift(-900 + creep * (PT ? 900 : 820), 0);
-      const go = es(t, 1.2, 1.9);
+      const go = es(t, 1.15, 1.65);
       walkers.forEach((m, i) => {
         const x = m.x + (i < 3 ? go * 90 : 0);
         place(m, T, { x, walk: i < 3 && go > 0 && go < 1 ? x * 0.06 + i : undefined, head: -es(t, 3.1, 3.4) * 6 + leave * (i < 3 ? 0 : -4), armF: 16 + es(t, 3.1, 3.4) * 20 + leave * 30 * (i >= 3 ? 1 : 0), blink: blinkAt(T, m.seed) });

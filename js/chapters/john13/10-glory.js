@@ -71,7 +71,7 @@ export default {
       /* b1 — glorified: rays from Him; the radiance above answers */
       const gk = es(t, 1.1, 1.5) * (1 - es(t, 2.9, 3.2) * 0.8);
       vis(rays, { x: JX, y: SEAT - 110, s: 0.5 + gk * 0.5, o: gk * 0.85 });
-      const rk = es(t, 1.4, 1.8) * (1 - es(t, 3.0, 3.3));
+      const rk = es(t, 1.35, 1.68) *   /* swipe stop: the radiance above has answered by 1.68 */ (1 - es(t, 3.0, 3.3));
       vis(rad, { x: JX, y: 230, s: 0.8 + rk * 0.2, o: rk });
       vis(beam, { x: JX, y: 250, o: bump(t, 1.5, 2.95) * 0.9 });
       /* b2 — at once: the crown of light comes swiftly down */
@@ -104,9 +104,10 @@ export default {
       /* b4 — where I go you cannot come */
       const pk = es(t, 4.05, 4.4, ease.out);
       vis(pic, { x: JX, y: 250 - (1 - pk) * 700, r: T ? Math.sin(T * 0.6) * 0.6 : 0, o: pk > 0.01 ? 1 : 0 });
-      steps.forEach((el, i) => fade(el, es(t, 4.4 + i * 0.06, 4.5 + i * 0.06)));
+      steps.forEach((el, i) => fade(el, es(t, 4.35 + i * 0.04, 4.43 + i * 0.04)));   // swipe stop: the path of light is lit to the door by 4.67
 
-      S.cam.x = kf(t, [[0, S.portrait ? 1000 : 250], [0.9, S.portrait ? 900 : 200], [1.2, 0], [2, 0], [3, 0], [4, 0], [5, 0]]);
+      // swipe stop (phone): the camera leaves the shut door and is on Him by 0.62, as He lifts His head to speak
+      S.cam.x = S.portrait ? kf(t, [[0, 1000], [0.2, 1000], [0.62, 0], [2, 0], [3, 0], [4, 0], [5, 0]]) : kf(t, [[0, 250], [0.9, 200], [1.2, 0], [2, 0], [3, 0], [4, 0], [5, 0]]);
       S.cam.y = kf(t, [[0, 150], [0.9, 150], [1.2, 60], [2, 30], [3, 150], [4, 80], [5, 60]]);
       S.cam.z = kf(t, [[0, 1.3], [0.9, 1.35], [1.2, 1.15], [2, 1.2], [3, 1.5], [4, 1.2], [5, 1.2]]);
     };

@@ -92,8 +92,9 @@ export default {
       /* v11a — she lifts the bucket: "nothing to draw with"; the front falls away; down the shaft */
       const lift = bump(t, 0.05, 0.4);
       const toWell = es(t, 0.3, 0.42);
-      const down = es(t, 0.42, 0.95, ease.io);
-      const up = es(t, 1.45, 1.9);
+      // swipe stop: the bucket is at the bottom of the shaft by 0.7, and back up (the front closed again) by 1.72
+      const down = es(t, 0.42, 0.7, ease.io);
+      const up = es(t, 1.3, 1.6);
       const len = lerp(10, BOT - 76 - PUL, down) * (1 - up) + 10 * up;
       const point = es(t, 2.1, 2.35) * (1 - es(t, 3.0, 3.2));
       const back = es(t, 2.6, 2.8) * (1 - es(t, 3.0, 3.2));
@@ -101,22 +102,22 @@ export default {
         T, jF: 22 + bump(t, 1.95, 2.3) * 10, jB: 12, jH: -2 + point * -8,
         wF: 40 + lift * 60 + toWell * 20 * (1 - up) + point * 70 + es(t, 3.2, 3.5) * 30, wB: 20 + lift * 30 + back * 40, wH: -lift * 6 + point * -14 + back * 10, wLean: lift * 3,
       });
-      cover.fade(1 - es(t, 0.3, 0.55) + es(t, 1.9, 2.1));
-      W.fgL.fade(1 - es(t, 0.3, 0.45) + es(t, 1.85, 2.0));
+      cover.fade(1 - es(t, 0.3, 0.55) + es(t, 1.6, 1.72));
+      W.fgL.fade(1 - es(t, 0.3, 0.45) + es(t, 1.58, 1.7));
       const [hx, hy] = hand(G.wx, G.floor, 1.05, true, 40 + lift * 60);
-      const inShaft = t > 0.42 && t < 1.9;
-      const tw = toWell * (1 - es(t, 1.9, 2.0));
+      const inShaft = t > 0.42 && t < 1.65;
+      const tw = toWell * (1 - es(t, 1.62, 1.68));
       vis(bucket, { x: lerp(hx, SX, tw), y: lerp(hy + 4, PUL + 14, tw), s: 1.1, o: inShaft ? 0 : 1 });
       vis(bucketD, { x: SX, y: PUL + len, s: 1.1, o: inShaft ? 1 : 0 });
-      vis(rope, { x: SX, y: PUL, sy: len / 100, o: t > 0.35 && t < 1.95 ? 1 : 0 });
+      vis(rope, { x: SX, y: PUL, sy: len / 100, o: t > 0.35 && t < 1.7 ? 1 : 0 });
       vis(fill, { x: SX, y: PUL + len + 3, s: 1.1, o: inShaft && t > 1.25 ? 1 : 0 });
-      const sp = seg(t, 0.92, 1.4);
+      const sp = seg(t, 0.66, 1.0);
       vis(splash, { x: SX, y: BOT - 56, s: 0.4 + sp * 1.2, o: sp > 0 && sp < 1 ? 1 - sp : 0 });
       /* v11b — where then the living water? */
       const dk = es(t, 1.1, 1.3, ease.back) * (1 - es(t, 1.45, 1.6));
       vis(dq, { x: SX - 10, y: BOT - 160 + Math.sin(T * 2) * 4, s: dk, o: dk > 0.01 ? 1 : 0 });
       const [whx, why] = K.wHead();
-      const ak = es(t, 1.7, 1.9, ease.back) * (1 - es(t, 2.05, 2.15));
+      const ak = es(t, 1.55, 1.7, ease.back) * (1 - es(t, 2.05, 2.15));
       vis(ask, { x: whx - 16, y: why - 22, s: ak, o: ak > 0.01 ? 1 : 0 });
 
       /* v12 — Jacob's picture */
@@ -137,11 +138,11 @@ export default {
         pose(b.head, { r: 30 * es(t, 3.5, 3.6) * (0.6 + 0.4 * Math.sin(t * 20 + i)) });
       });
 
-      const follow = es(t, 0.42, 0.6) * (1 - es(t, 1.5, 1.85));
-      const camK = kf(t, [[-0.5, 40], [0.3, 60], [0.5, 200], [1.9, 40], [2.4, -20], [4, -20]]);
+      const follow = es(t, 0.42, 0.6) * (1 - es(t, 1.35, 1.6));
+      const camK = kf(t, [[-0.5, 40], [0.3, 60], [0.5, 200], [1.65, 40], [2.4, -20], [4, -20]]);
       S.cam.y = lerp(camK, Math.min((BOT - 150 - 470) / 0.55, (PUL + len - 500) / 0.55), follow);
-      S.cam.z = kf(t, [[-0.5, 1.12], [0.3, 1.2], [0.6, 1.1], [1.0, 1.22], [1.45, 1.26], [1.9, 1.14], [2.4, 1.04]]);
-      S.cam.x = kf(t, [[-0.5, 30], [0.5, 50], [1.9, 40], [2.4, 20]]);
+      S.cam.z = kf(t, [[-0.5, 1.12], [0.3, 1.2], [0.6, 1.1], [0.7, 1.22], [1.3, 1.26], [1.65, 1.14], [2.4, 1.04]]);
+      S.cam.x = kf(t, [[-0.5, 30], [0.5, 50], [1.65, 40], [2.4, 20]]);
     };
   },
 };

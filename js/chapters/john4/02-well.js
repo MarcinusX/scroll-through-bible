@@ -97,20 +97,20 @@ export default {
       });
 
       /* v7a — the woman comes down from the town with her jar */
-      const wk = [[1.9, 1500], [2.55, G.wx]];
+      const wk = [[1.9, 1500], [2.4, G.wx]];   // swipe stop: she has arrived, set her jar on the rim and taken the bucket by 2.72
       const wx = kf(t, wk, ease.out);
       const walking = moving(t, wk);
-      const down = es(t, 2.6, 2.85);         // she lifts the jar down onto the well's rim
+      const down = es(t, 2.42, 2.62);         // she lifts the jar down onto the well's rim
       const startle = es(t, 3.15, 3.35);
       W8.p.set({
         x: wx, y: G.floor, s: 1.05, flip: true, o: t > 1.9 ? 1 : 0, walk: walking ? wx * 0.035 : undefined,
-        armB: lerp(-150, 30, down) + bump(t, 2.7, 2.95) * 40, armF: bump(t, 2.65, 2.95) * 90 + es(t, 2.9, 3.1) * 40 + startle * 20,
+        armB: lerp(-150, 30, down) + bump(t, 2.48, 2.68) * 40, armF: bump(t, 2.45, 2.7) * 90 + es(t, 2.6, 2.72) * 40 + startle * 20,
         head: -startle * 10 + es(t, 3.6, 3.9) * 4, lean: -startle * 4, blink: blinkAt(T, 3),
       });
       const sh = jarOnShoulder(wx, G.floor, 1.05, true, walking ? -Math.abs(Math.cos(wx * 0.035)) * 3.5 : 0);
       const rim = { x: G.well + 44, y: G.floor - 48, s: 0.78, r: 0 };
       vis(W8.jar, { x: lerp(sh.x, rim.x, down), y: lerp(sh.y, rim.y, down) - Math.sin(down * PI) * 20, s: sh.s, r: lerp(sh.r, 0, down), o: t > 1.9 ? 1 : 0 });
-      const bk = es(t, 2.85, 3.05);
+      const bk = es(t, 2.58, 2.7);
       vis(bucket, { x: wx - 44, y: G.floor - 88 + (1 - bk) * 30, s: 1.1, o: bk });
 
       /* v7b — "Give me a drink" */

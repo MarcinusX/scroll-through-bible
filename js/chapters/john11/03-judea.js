@@ -67,7 +67,7 @@ export default {
       jesus.set({ x: 800, y: F + 12, s: 1.04, flip: true, armF: 20 + point * 70 + calm * 30, armB: 10 + calm * 20, head: -point * 4 + es(t, 2.1, 2.4) * 4, blink: blinkAt(T, 1), o: up });
 
       disc.forEach((d) => {
-        const K = [[0.3 + d.i * 0.05, d.x0], [0.9 + d.i * 0.05, d.x1]];
+        const K = [[0.25 + d.i * 0.04, d.x0], [0.5 + d.i * 0.04, d.x1]];   // swipe stop: all six have gathered round Him by 0.7
         const x = kf(t, K);
         const alarm = es(t, 2.05 + (d.i % 3) * 0.08, 2.35 + (d.i % 3) * 0.08) * (1 - es(t, 3.6, 3.95));
         const toJ = d.x1 < 800;

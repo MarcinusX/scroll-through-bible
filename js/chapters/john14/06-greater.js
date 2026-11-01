@@ -62,7 +62,8 @@ export default {
       lamps.forEach((l) => {
         const m = l.m, isJ = m.k === 'jesus';
         const hold = es(t, 0.05, 0.25);
-        const lit = isJ ? es(t, 0.15, 0.3) : es(t, 0.3 + l.d * 0.0011, 0.38 + l.d * 0.0011);
+        // swipe stop: the outermost lamps are lit by 0.7
+        const lit = isJ ? es(t, 0.15, 0.3) : es(t, 0.28 + l.d * 0.0009, 0.36 + l.d * 0.0009);
         const lift = isJ ? 70 : 40 + lit * 18;
         const [hx, hy] = hand(m.x, SEAT + (m.i % 2) * 3, m.s, m.flip, lift, 0, 62);
         l.lift = lift;
@@ -74,7 +75,7 @@ export default {
       const mk = es(t, 1.02, 1.3, ease.out) * (1 - es(t, 2.0, 2.3, ease.in));
       swing(map, MX, MY - (1 - mk) * 800, mk > 0.001 ? T : 0, 0.6, 0.6);
       fade(map, mk > 0.001 ? 1 : 0);
-      dots.forEach((d) => { const k = es(t, 1.3 + d.d * 0.0028, 1.4 + d.d * 0.0028, ease.back) * mk; vis(d.el, { x: d.x, y: d.y - (1 - mk) * 800, s: k, o: k > 0.01 ? 1 : 0 }); });
+      dots.forEach((d) => { const k = es(t, 1.28 + d.d * 0.0022, 1.38 + d.d * 0.0022, ease.back) * mk; /* swipe stop: every light on the map by 1.72 */ vis(d.el, { x: d.x, y: d.y - (1 - mk) * 800, s: k, o: k > 0.01 ? 1 : 0 }); });
       const up = es(t, 1.45, 1.8) * (1 - es(t, 2.05, 2.3)) + es(t, 3.05, 3.3) * 0.6 * (1 - es(t, 3.95, 4.2));
       vis(beam, { x: 800, y: 590, sx: 0.6 + up * 0.6, o: up });
       /* v13a — lanterns rise to Him; v13b glory */
@@ -82,10 +83,10 @@ export default {
       lanterns.forEach((ln, n) => {
         const m = ln.m;
         const [hx, hy] = hand(m.x, SEAT + (m.i % 2) * 3, m.s, m.flip, 58, 0, 62);
-        const k = es(t, 2.1 + ln.d * 0.0008, 2.6 + ln.d * 0.0008, ease.inOut);
+        const k = es(t, 2.1 + ln.d * 0.0005, 2.5 + ln.d * 0.0005, ease.inOut);   // swipe stop: every lantern has reached Him by 2.69
         const x = lerp(hx, heart[0] + (m.x < 800 ? -30 : 30), k), y = lerp(hy - 20, heart[1] - 60 - (n % 3) * 20, k) - Math.sin(k * PI) * 90;
         const o = es(t, 2.05, 2.15) * (1 - es(t, 3.0, 3.2));
-        vis(ln.el, { x, y, s: 1 + es(t, 2.6, 2.9) * 0.2 * (T ? 1 + Math.sin(T * 3 + n) * 0.1 : 1), r: T ? Math.sin(T * 1.5 + n) * 5 : 0, o });
+        vis(ln.el, { x, y, s: 1 + es(t, 2.45, 2.7) * 0.2 * (T ? 1 + Math.sin(T * 3 + n) * 0.1 : 1), r: T ? Math.sin(T * 1.5 + n) * 5 : 0, o });
       });
       const gk = es(t, 3.05, 3.4);
       vis(gloryEl, { x: 800, y: 580, s: 0.4 + gk * 0.6 + (T ? Math.sin(T * 0.5) * 0.01 : 0), r: t * 4, o: gk * 0.6 * (1 - es(t, 3.95, 4.2)) });

@@ -112,15 +112,15 @@ export default {
       const CLX = 730, CLY = gfn(CLX) + 22;
       pose(cl, { x: CLX, y: CLY, sx: es(t, 1.2, 1.35), o: seg(t, 1.2, 1.25) });
       loaves.forEach((l) => {
-        const k = es(t, 1.35 + l.i * 0.07, 1.47 + l.i * 0.07, ease.back);
+        const k = es(t, 1.35 + l.i * 0.04, 1.45 + l.i * 0.04, ease.back);   // swipe stop: five loaves by 1.61, then the fish
         pose(l.el, { x: CLX - 64 + l.i * 26, y: CLY - 4, s: k, o: k > 0.01 ? 1 : 0 });
       });
       fish.forEach((f) => {
-        const k = es(t, 1.72 + f.i * 0.07, 1.84 + f.i * 0.07, ease.back);
+        const k = es(t, 1.56 + f.i * 0.05, 1.66 + f.i * 0.05, ease.back);   // swipe stop: both fish are on the cloth by 1.71 (was 1.91)
         pose(f.el, { x: CLX + 70 + f.i * 4, y: CLY - 8 - f.i * 12, s: k, r: f.i ? -8 : 6, o: k > 0.01 ? 1 : 0 });
       });
       nums.forEach((n, i) => {
-        const a = i < 5 ? 1.38 + i * 0.07 : 1.75 + (i - 5) * 0.07;
+        const a = i < 5 ? 1.38 + i * 0.04 : 1.56 + (i - 5) * 0.05;   // swipe stop: loaves and fish are all numbered by 1.71
         const k = es(t, a, a + 0.1, ease.back) * (1 - es(t, 2.0, 2.15));
         const x = i < 5 ? CLX - 64 + i * 26 : CLX + 70 + (i - 5) * 26;
         pose(n, { x, y: CLY - 44, s: k, o: k > 0.01 ? 1 : 0 });

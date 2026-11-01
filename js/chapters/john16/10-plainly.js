@@ -85,7 +85,7 @@ export default {
       P.update(T);
       /* v25a — the figures behind the gauze */
       const gIn = es(t, -0.3, 0.1, ease.out);
-      const lift = es(t, 1.35, 1.8, ease.in);
+      const lift = es(t, 1.3, 1.62, ease.in);   // swipe stop: the gauze is gone by 1.62
       vis(gauze, { x: LX, y: 20 + (1 - gIn) * -700 - lift * 900, o: gIn > 0.01 && lift < 0.99 ? 1 : 0 });
       const lk = es(t, -0.1, 0.2);
       vis(light, { x: LX, y: LY, s: 0.7 + lift * 0.35 + (T ? Math.sin(T * 1.1) * 0.015 : 0), o: lk * (0.5 + lift * 0.5) });
@@ -95,13 +95,13 @@ export default {
         const y = GYs[p.i] - (1 - k) * 700 - up * 800;
         vis(p.el, { x: GX[p.i], y, s: S.portrait ? 0.9 : 1, r: T ? Math.sin(T * 0.9 + p.i) * 1.8 : 0, o: k > 0.01 && up < 0.99 ? 1 : 0 });
       });
-      const sky = es(t, 1.4, 1.9) * 0.4;
+      const sky = es(t, 1.35, 1.7) * 0.4;
       P.sky.blend(NIGHT, PREDAWN, sky);
 
       /* v26 — prayers go straight up */
       prayers.forEach(({ m, i, el }) => {
         const u = (i % 5) * 0.05;
-        const k = es(t, 2.2 + u, 2.75 + u);
+        const k = es(t, 2.15 + u * 0.6, 2.5 + u * 0.6);   // swipe stop: every prayer has reached the light by 2.62
         const [ox, oy] = hand(m.x, m.y, m.s, m.flip, 150);
         const tx = LX + (m.x - JX) * 0.15;
         vis(el, { x: lerp(ox, tx, k), y: lerp(oy - 12, LY + 30, k), s: 0.9 - k * 0.4, o: k > 0.01 && k < 0.97 ? 1 : 0 });
@@ -120,7 +120,7 @@ export default {
         const hx = m.x + (m.flip ? -6 : 6), hy = m.y - 112 * m.s;
         setThread(i, JX, GY - 112, lerp(JX, hx, k), lerp(GY - 112, hy, k), 10 + d * 0.04, k * 0.8);
       });
-      down(es(t, 3.5, 3.8), 0.9);
+      down(es(t, 3.45, 3.7), 0.9);   // swipe stop: the line of light reaches Him by 3.7
 
       /* people */
       D.forEach((m) => {

@@ -30,7 +30,8 @@ export default {
       set.update(t, T);
       /* v2b — the people come, He sits and teaches */
       K.crowd.forEach((m) => {
-        const k = es(t, 0.02 + m.i * 0.035, 0.42 + m.i * 0.035, ease.out);
+        const d = (m.i === 20 ? 8 : m.i) * 0.035;   // swipe stop: John (i 20) sits down with the others by 0.7, not at 1.1
+        const k = es(t, 0.02 + d, 0.42 + d, ease.out);
         const turn = es(t, 1.2, 1.5) * (m.ri === 0 ? 1 : 0);
         if (m.ri === 0) m.p.set({ x: lerp(m.x - 380, m.x, k), y: m.y, s: m.s, walk: k > 0 && k < 1 ? m.x * 0.05 + k * 20 : undefined, head: -turn * 4, blink: blinkAt(T, m.seed) });
         else m.p.set({ x: m.x, y: m.y + (1 - k) * 30, s: m.s, o: k, head: -4 + bump(t, 0.5, 1.0) * -4 + es(t, 4.1, 4.4) * -6, blink: blinkAt(T, m.seed) });

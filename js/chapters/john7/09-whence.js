@@ -105,7 +105,8 @@ export default {
         vpose(silent[i], { x: lhx - 24, y: lhy - 16, s: es(t, 1.2 + i * 0.06, 1.4 + i * 0.06, ease.back) * 0.8, o: seg(t, 1.2 + i * 0.06, 1.25 + i * 0.06) * (1 - es(t, 1.95, 2.05)) });
       });
       const mk = es(t, 2.1, 2.4, ease.out), mu = es(t, 2.95, 3.1, ease.in);
-      hangAt(messiah, ph(1090, 1030), lerp(-300, 330, mk) - mu * 700, T, mk > 0 && mu < 1 ? 1 : 0, 1.2, 0.9, 2);
+      hangAt(messiah, ph(1090, 975),   // swipe stop (phone): the «Messiah?» plate hangs clear of the thread at 2.75
+         lerp(-300, 330, mk) - mu * 700, T, mk > 0 && mu < 1 ? 1 : 0, 1.2, 0.9, 2);
 
       /* v27 — Nazareth; and the clouds */
       const nk = es(t, 3.05, 3.35, ease.out) * (1 - es(t, 4.9, 5.05, ease.in)) + es(t, 5.3, 5.6, ease.out) * (1 - es(t, 5.95, 6.1, ease.in));

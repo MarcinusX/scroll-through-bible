@@ -112,7 +112,8 @@ export default {
       pose(netOnBoat, { x: BOAT[0] - 40, y: BOAT[1] - 52 });
 
       tags.forEach((g) => {
-        const k = es(t, 3.05 + g.i * 0.14, 3.35 + g.i * 0.14, ease.back) * (1 - es(t, 4.05, 4.35, ease.in));
+        const k = es(t, 3.05 + g.i * 0.1, 3.3 + g.i * 0.1, ease.back)   // swipe stop: every name hangs still by x.7
+           * (1 - es(t, 4.05, 4.35, ease.in));
         vis(g.el, { x: g.x, y: lerp(-200, GY - 262 - (g.i % 2) * tagStep, k), r: T ? Math.sin(T * 0.9 + g.i) * 2 : 0, o: k > 0.01 ? 1 : 0 });
       });
 

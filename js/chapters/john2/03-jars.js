@@ -65,7 +65,7 @@ export default {
 
     // pouring plan: servant 0 fills jars 0,1,2; servant 1 fills 5,4,3
     const ORDER = [[0, 1, 2], [5, 4, 3]];
-    const P0 = 3.05, PD = 0.3;
+    const P0 = 3.05, PD = 0.21;   // swipe stop: all six jars are filled to the brim by 3.66
 
     return (t, time) => {
       const T = time;
@@ -114,7 +114,7 @@ export default {
         }
         // v8: servant 1 (at jar 4) dips; then both carry it away to the right
         const dipK = i === 1 ? bump(t, 4.1, 4.62) : 0;
-        const leave = es(t, 5.05 + i * 0.1, 5.75 + i * 0.1, ease.in);
+        const leave = es(t, 5.1 + i * 0.08, 6.05 + i * 0.05, ease.in);   // swipe stop: at 5.75 the two are still in view, carrying the cup
         x += leave * (i ? 520 : 1100);
         walking = walking || (leave > 0 && leave < 1);
         const flip = leave > 0.02 ? false : i === 1;
@@ -135,7 +135,7 @@ export default {
           const inJar = bump(t, 4.15, 4.6);
           pose(dip, { x: hx, y: hy + inJar * 26, r: flip ? 20 : -20, o: es(t, 4.02, 4.12) * (1 - es(t, 4.72, 4.8)) });
           fade(dip.querySelector('.wine'), es(t, 4.4, 4.5));
-          pose(cupB, { x: hx, y: hy - 6, s: 1, o: es(t, 4.72, 4.8) * (1 - seg(t, 5.7, 5.8)) });
+          pose(cupB, { x: hx, y: hy - 6, s: 1, o: es(t, 4.72, 4.8) * (1 - seg(t, 5.95, 6.0)) });
         }
       });
 

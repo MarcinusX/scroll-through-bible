@@ -87,8 +87,8 @@ export default {
       /* v10b — the words come down into Him and go out to them */
       vis(above, { x: JX, y: 150, s: 0.9 + (T ? Math.sin(T) * 0.02 : 0), o: es(t, 1.02, 1.2) * (1 - es(t, 2.1, 2.4)) });
       slips.forEach((el, i) => {
-        const dn = es(t, 1.1 + i * 0.04, 1.42 + i * 0.04, ease.inOut);
-        const out = es(t, 1.45 + i * 0.05, 1.8 + i * 0.05, ease.inOut);
+        const dn = es(t, 1.04 + i * 0.03, 1.28 + i * 0.03, ease.inOut);
+        const out = es(t, 1.3 + i * 0.03, 1.58 + i * 0.03, ease.inOut);   // swipe stop: every word has reached its listener by 1.73
         const d = D[i];
         const [dx, dy] = headAt(d.x, G, 0.9, d.flip, 62);
         const hx = HEART[0] + 30, hy = HEART[1] + 10;
@@ -114,7 +114,7 @@ export default {
       J.set({ x: JX, y: FL, s: 1.1, armF: 16 + bump(t, 0.1, 0.95) * 30 + bump(t, 1.45, 1.95) * 60 + bump(t, 2.1, 2.9) * 20 + open * 50 + es(t, 4.1, 4.4) * 40, armB: 10 + bump(t, 1.05, 1.45) * 150 + bump(t, 2.1, 2.9) * 30 + open * 120, head: -bump(t, 1.05, 1.45) * 10, blink: blinkAt(T) });
       D.forEach((m) => {
         const lookUp = bump(t, 1.05, 1.5) + es(t, 2.1, 2.4) * (1 - es(t, 4.1, 4.4));
-        m.p.set({ x: m.x, y: G, s: 0.9, flip: m.flip, armF: 30 + es(t, 4.4, 4.7) * 40, armB: 12 + es(t, 1.7 + m.i * 0.05, 1.9 + m.i * 0.05) * (1 - es(t, 2.4, 2.8)) * 60, head: -lookUp * 12 - open * 4, lean: open * 3, blink: blinkAt(T, m.seed) });
+        m.p.set({ x: m.x, y: G, s: 0.9, flip: m.flip, armF: 30 + es(t, 4.4, 4.7) * 40, armB: 12 + es(t, 1.45 + m.i * 0.025, 1.62 + m.i * 0.025) * (1 - es(t, 2.4, 2.8)) * 60, head: -lookUp * 12 - open * 4, lean: open * 3, blink: blinkAt(T, m.seed) });
       });
 
       S.cam.x = 0;

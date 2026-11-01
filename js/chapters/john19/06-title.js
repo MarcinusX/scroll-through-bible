@@ -65,14 +65,14 @@ export default {
       const bk = es(t, -0.2, 0.25);
       const by = BY - (1 - bk) * 600;
       pose(board, { x: BX, y: by + Math.sin(T * 0.6) * 1.5, s: BS, r: Math.sin(T * 0.5) * 0.4 });
-      const wr = (i) => es(t, 0.15 + i * 0.22, 0.35 + i * 0.22);
+      const wr = (i) => es(t, 0.12 + i * 0.17, 0.28 + i * 0.17);   // swipe stop: three lines written by 0.62, the copy on the cross by 0.7
       lines.forEach((l, i) => fade(l, wr(i)));
-      const writing = t > 0.1 && t < 0.85;
-      const li = Math.min(2, Math.floor(Math.max(0, t - 0.15) / 0.22));
-      const lk = Math.min(1, Math.max(0, t - 0.15 - li * 0.22) / 0.22);
+      const writing = t > 0.1 && t < 0.62;
+      const li = Math.min(2, Math.floor(Math.max(0, t - 0.12) / 0.17));
+      const lk = Math.min(1, Math.max(0, t - 0.12 - li * 0.17) / 0.17);
       const u = li === 0 ? BW / 2 - 40 - lk * (BW - 80) : -BW / 2 + 40 + lk * (BW - 80);
       pose(pen, { x: BX + u * BS, y: by + (BH / 3) * (li + 0.6) * BS, o: writing ? 1 : 0, r: -10 });
-      const fly = es(t, 0.6, 0.95);
+      const fly = es(t, 0.48, 0.7);
       const fx0 = PX - 10, fy0 = RY - 150, tx = GOL.x, ty = GOL.top - GOL.H + 12;
       pose(flyer, { x: lerp(fx0, tx, fly), y: lerp(fy0, ty, fly) - Math.sin(fly * Math.PI) * 160, s: 1 - fly * 0.1, r: (1 - fly) * 20, o: fly > 0 && fly < 1 ? 1 : 0 });
       pose(mini, { x: tx, y: ty, s: 0.9, o: fly >= 1 ? 1 : 0 });
@@ -102,7 +102,7 @@ export default {
       });
 
       /* v21 — the chief priests hurry to Pilate */
-      const prK = (i) => [[4.0 + i * 0.1, [150 - i * 80, RY + 6]], [4.8 + i * 0.1, [PRX - i * PRD, RY + 6]]];
+      const prK = (i) => [[4.0 + i * 0.08, [150 - i * 80, RY + 6]], [4.55 + i * 0.08, [PRX - i * PRD, RY + 6]]];   // swipe stop: both at Pilate, speaking, by x.7
       pr.forEach((p, i) => {
         const k = prK(i), [x, y] = kf(t, k);
         const hold = es(t, 5.05, 5.3) * (1 - es(t, 6.2, 6.4));

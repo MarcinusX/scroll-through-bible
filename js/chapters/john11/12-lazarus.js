@@ -89,8 +89,8 @@ export default {
       const tk = es(t, 0.3, 0.7) * (1 - es(t, 2.9, 3.1));
       if (tk > 0.01) threadP.setAttribute('d', c.ribbon([[hx - 20, hy - 16], [lerp(hx - 20, 800, 0.5) + Math.sin(T) * 4, lerp(hy, 160, 0.5)], [lerp(hx - 20, 800, Math.min(1, tk * 1.2)), lerp(hy, 160, Math.min(1, tk * 1.2))]], 2.4));
       pose(thread, { o: tk });
-      const sd = es(t, 2.2, 2.75, ease.in);
-      vis(star, { x: lerp(800, jx + 2, sd), y: lerp(160, F + 12 - 175, sd), s: 1 + (1 - sd) * 0.5, r: T * 40, o: sd > 0.01 && sd < 0.99 ? 1 : 0 });
+      const sd = es(t, 2.15, 2.6, ease.in);   // swipe stop: the star has come down to Him by 2.6 and rests there at the stop
+      vis(star, { x: lerp(800, jx + 2, sd), y: lerp(160, F + 12 - 175, sd), s: 1 + (1 - sd) * 0.5, r: T * 40, o: sd > 0.01 ? 1 - es(t, 2.85, 3.0) : 0 });
 
       /* the crowd: look up; wonder; hearts; two slip away */
       const up = es(t, 2.2, 2.5) * (1 - es(t, 3.0, 3.2));
@@ -112,33 +112,33 @@ export default {
         const kk = on > 0.01 ? k : 0;
         vis(r.el, { x: lerp(mx0 + 24, DOOR.x - 10, kk), y: lerp(my0 + 6, DOOR.y - 90, kk), s: 0.5 + kk * 1.4, o: on * (1 - kk * 0.8) * (kk > 0.02 ? 1 : 0) });
       });
-      attr(set.caveGlow, 'opacity', es(t, 4.35, 4.9) * (1 - es(t, 8.5, 9.5) * 0.6));
+      attr(set.caveGlow, 'opacity', es(t, 4.3, 4.68) *   /* swipe stop: the cave is full of light by 4.7 */ (1 - es(t, 8.5, 9.5) * 0.6));
 
       /* v44a — he comes out, bound, into the light */
-      const walkOut = es(t, 5.05, 5.45, ease.io);
-      const swap = seg(t, 5.42, 5.47);
+      const walkOut = es(t, 5.02, 5.3, ease.io);   // swipe stop: he is out in the light by 5.68
+      const swap = seg(t, 5.28, 5.32);
       const hopIn = Math.abs(Math.sin(walkOut * PI * 3)) * 5;
       pose(inside, { x: DOOR.x, y: lerp(DOOR.y - 26, DOOR.y, walkOut) - hopIn, s: lerp(0.72, 0.9, walkOut), o: (t > 5.0 ? 1 : 0) * (1 - swap) });
-      const come = es(t, 5.45, 5.9, ease.out);
+      const come = es(t, 5.3, 5.68, ease.out);
       const hop = Math.abs(Math.sin(come * PI * 3)) * 7 * (1 - come * 0.3);
       const bx = lerp(DOOR.x, LX, come), by = lerp(DOOR.y, F + 6, come) - hop;
       const unbind = es(t, 7.2, 7.7);
-      const freeK = seg(t, 7.62, 7.7);
+      const freeK = seg(t, 7.45, 7.52);   // swipe stop: unbound, smiling and held by his sisters by 7.7
       pose(outBody, { x: bx, y: by, s: 0.95, r: Math.sin(come * PI * 6) * 2 * (1 - come), o: swap * (1 - freeK) });
-      const clothUp = es(t, 7.25, 7.8, ease.out);
-      pose(outCloth, { x: bx + clothUp * 60, y: by - clothUp * 150, s: 0.95, r: clothUp * 40, o: swap * (1 - es(t, 7.7, 7.95)) });
+      const clothUp = es(t, 7.1, 7.5, ease.out);
+      pose(outCloth, { x: bx + clothUp * 60, y: by - clothUp * 150, s: 0.95, r: clothUp * 40, o: swap * (1 - es(t, 7.45, 7.6)) });
       vis(freedGlow, { x: LX, y: F - 90, s: 0.8 + come * 0.3, o: swap * (0.8 - freeK * 0.3) * (1 - es(t, 9, 10) * 0.5) });
-      const smile = es(t, 7.7, 8.0);
+      const smile = es(t, 7.5, 7.7);
       freed.set({ x: LX, y: F + 6, s: 0.95, flip: true, armF: 20 + smile * 40, armB: 10 + smile * 60, head: -smile * 6, blink: blinkAt(T, 9), o: freeK });
       bands.forEach((b) => {
-        const k = es(t, 7.2 + b.i * 0.04, 7.75 + b.i * 0.04, ease.out);
+        const k = es(t, 7.1 + b.i * 0.03, 7.4 + b.i * 0.03, ease.out);
         const a = (b.i / 9) * PI * 2 + 0.4;
         vis(b.el, { x: LX + Math.cos(a) * (10 + k * 110), y: F - 20 - b.i * 14 + Math.sin(a) * k * 70 - k * 50, r: k * 200 * (b.i % 2 ? 1 : -1), s: 0.8 + k * 0.3, o: k > 0.01 && k < 0.99 ? 1 - k * 0.6 : 0 });
       });
 
       /* the sisters: hold back, then run to him */
-      const run = es(t, 7.35, 7.85);
-      const hug = es(t, 7.8, 8.1);
+      const run = es(t, 7.15, 7.5);
+      const hug = es(t, 7.5, 7.7);
       const mtx = lerp(700, LX - 62, run), myx = lerp(640, LX + 62, run);
       mt.set({ x: mtx, y: F + 10, s: 0.98, flip: false, walk: run > 0 && run < 1 ? mtx * 0.12 : undefined, armF: 20 + wonder * 40 + hug * 70, armB: 10 + hug * 50, head: -wonder * 6 + hug * 4, lean: hug * 6, blink: blinkAt(T, 2) });
       my.set({ x: myx, y: F + 14, s: 0.96, flip: run > 0.85, walk: run > 0 && run < 1 ? myx * 0.12 : undefined, armF: 30 + wonder * 30 + hug * 60, armB: 20 + hug * 50, head: 8 - wonder * 10, lean: hug * 6, blink: blinkAt(T, 4) });
@@ -149,7 +149,7 @@ export default {
 
       /* v45 — many believed */
       hearts.forEach((h) => {
-        const k = es(t, 8.15 + h.j * 0.07, 8.4 + h.j * 0.07, ease.back) * (h.m.i < 2 ? 0 : 1);
+        const k = es(t, 8.1 + h.j * 0.04, 8.3 + h.j * 0.04, ease.back)   /* swipe stop: every heart lit by 8.62 */ * (h.m.i < 2 ? 0 : 1);
         const x = h.m.x, y = (h.m.y || F) - 225;
         vis(h.el, { x, y: y + Math.sin(T * 2 + h.j) * 3, s: k, o: k > 0.01 ? 1 : 0 });
       });

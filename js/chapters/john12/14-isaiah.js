@@ -77,7 +77,7 @@ export default {
       });
       const blindK = es(t, 5.1, 5.45);
       folk.forEach((m, i) => {
-        const fold = es(t, 0.4 + i * 0.04, 0.7 + i * 0.04);
+        const fold = es(t, 0.3 + i * 0.03, 0.5 + i * 0.03);   // swipe stop: every arm folded by 0.68
         const glance = i === 3 ? bump(t, 2.2, 2.9) : 0;
         m.p.set({ x: m.x, y: m.y, s: m.s, flip: glance > 0.5 ? true : false, armF: 20 + fold * 30, armB: 10 + fold * 30, head: -2 + blindK * 6 + (i % 2 ? 2 : -2), blink: blinkAt(T, m.seed) });
         fade(m.band, blindK);
@@ -95,7 +95,7 @@ export default {
       const ik = es(t, 1.2, 1.5, ease.out) * (1 - es(t, 1.95, 2.15, ease.in));
       swing(tagI, IX, (PT ? 418 : 400) - (1 - ik) * 700, ik > 0.001 ? T : 0, 1.2, 0.8); fade(tagI, ik > 0.001 ? 1 : 0);
       /* v38b — "who has believed our report?" */
-      const s1 = es(t, 1.4, 1.75) * (1 - es(t, 3.95, 4.1));
+      const s1 = es(t, 1.35, 1.65) *   /* swipe stop: the scroll is open by 1.65 */ (1 - es(t, 3.95, 4.1));
       vis(scroll1, { x: PT ? 655 : 640, y: PT ? 300 : 360, sy: Math.max(0.02, s1), o: s1 > 0.02 ? 1 : 0 });
       const [ihx, ihy] = headAt(ix, F + 6, 1, false);
       rings(ihx + 14, ihy + 4, bump(t, 2.05, 2.95), T, { dir: 1, spread: 3.4 });

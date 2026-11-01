@@ -55,7 +55,7 @@ export default {
       cur.set(es(t, 0.05, 0.85), T);
       R.update(T, 0.7 + es(t, 1.1, 1.8) * 0.3);
       const k1 = es(t, 1.1, 1.7);                   // calm
-      const god = es(t, 2.05, 2.4), me = es(t, 2.45, 2.85);
+      const god = es(t, 2.05, 2.4), me = es(t, 2.4, 2.68);   // swipe stop: "believe also in Me" is finished by 2.7
       // the tag hangs during the cover, then flies out
       const tg = es(t, 0.3, 0.8, ease.out) * (1 - es(t, 1.0, 1.3, ease.in));
       swing(tag, 800, 250 - (1 - tg) * 600, tg > 0.001 ? T : 0, 1.2, 0.8); fade(tag, tg > 0.001 ? 1 : 0);
@@ -72,7 +72,7 @@ export default {
           return;
         }
         const d = Math.abs(m.x - 800);
-        const calm = es(t, 1.15 + d * 0.0012, 1.35 + d * 0.0012);
+        const calm = es(t, 1.12 + d * 0.0009, 1.32 + d * 0.0009);   // swipe stop: every face is calm by 1.66
         fade(m.sad, 1 - calm);
         const look = god * (1 - me);
         sitAt(m, SEAT, T, { armF: 30 + me * 10, armB: 12, head: 10 * (1 - calm) - look * 12 + me * 2, lean: (1 - calm) * 2 });
@@ -80,7 +80,7 @@ export default {
 
       /* the troubled clouds tremble, then melt away from the middle outwards */
       clouds.forEach(({ m, el, d }, i) => {
-        const gone = es(t, 1.15 + d * 0.0012, 1.4 + d * 0.0012);
+        const gone = es(t, 1.12 + d * 0.0009, 1.37 + d * 0.0009);   // swipe stop: the outermost clouds are gone by 1.71
         const [hx, hy] = headAt(m.x, SEAT, m.s, m.flip, 62);
         const tremble = (1 - gone) * Math.sin(t * 40 + i * 2) * 1.6;
         vis(el, { x: hx + tremble, y: hy - 30 - gone * 40, s: (0.9 + (i % 3) * 0.08) * (1 - gone * 0.5), o: (1 - gone) * es(t, 0.2, 0.6) });
@@ -92,10 +92,10 @@ export default {
       /* believe also in Me: threads to their hearts, a small flame on each */
       others.forEach((m, i) => {
         const d = Math.abs(m.x - 800);
-        const k = es(t, 2.45 + d * 0.0005, 2.7 + d * 0.0005);
+        const k = es(t, 2.4 + d * 0.0003, 2.58 + d * 0.0003);   // swipe stop: every thread has reached its heart by 2.7
         const hx = m.x + (m.flip ? -4 : 4), hy = SEAT - 70 * m.s;
         setThread(i, 800, 624, lerp(800, hx, k), lerp(624, hy, k), -(8 + d * 0.05), k * 0.85);
-        vis(flames[i], { x: hx, y: hy + (T ? Math.sin(T * 2 + i) * 1.2 : 0), s: es(t, 2.6 + d * 0.0005, 2.8 + d * 0.0005, ease.back), o: k > 0.02 ? 1 : 0 });
+        vis(flames[i], { x: hx, y: hy + (T ? Math.sin(T * 2 + i) * 1.2 : 0), s: es(t, 2.46 + d * 0.0003, 2.59 + d * 0.0003, ease.back), o: k > 0.02 ? 1 : 0 });
       });
 
       S.cam.x = 0;

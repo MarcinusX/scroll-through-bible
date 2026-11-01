@@ -59,8 +59,8 @@ export default {
     return (t, time) => {
       const T = time;
       W.sk.blend(WINTER, WINTER_DUSK, es(t, 2, 7) * 0.45);
-      /* v22 — the feast in winter: the lamps kindled one by one */
-      W.update(T, { lit: (i) => es(t, 0.15 + i * 0.045, 0.3 + i * 0.045), snow: 1 });
+      /* v22 — the feast in winter: the lamps kindled one by one (swipe stop: all sixteen lit by 0.7) */
+      W.update(T, { lit: (i) => es(t, 0.1 + i * 0.032, 0.22 + i * 0.032), snow: 1 });
       snowF.update(T, 0.9);
       const tf = es(t, 0.1, 0.4, ease.out) * (1 - es(t, 0.9, 1.1, ease.in));
       swing(tagF, 800, 210 - (1 - tf) * 700, tf > 0.001 ? T : 0, 1.2, 0.7);
@@ -77,8 +77,8 @@ export default {
       pose(qPend, { x: 800, y: 250 - (1 - qk) * 700, r: qk > 0.01 ? Math.sin((T || t * 3) * 2.2) * 16 : 0, o: qk > 0.001 ? 1 : 0 });
       const ck = es(t, 3.1, 3.3, ease.back) * (1 - es(t, 3.9, 4.05));
       /* v25a — I told you: the slip falls at their folded arms */
-      const sl = es(t, 4.15, 4.6);
-      const fall = es(t, 4.6, 4.9, ease.in);
+      const sl = es(t, 4.1, 4.42);
+      const fall = es(t, 4.42, 4.66, ease.in);   // swipe stop: the slip lies at their folded arms by 4.66
       vis(slip, { x: lerp(830, 990, sl), y: lerp(540, 560, sl) + fall * 130, r: fall * 30, s: 1, o: sl > 0.01 ? 1 - es(t, 4.8, 4.95) : 0 });
       const fold = es(t, 4.4, 4.6);
       /* v25b — the works bear witness */

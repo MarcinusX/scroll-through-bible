@@ -110,7 +110,7 @@ export default {
         const x = lerp(1500 + m.i * 60, ph(1110, 1086) + m.i * ph(76, 62), pin);
         m.p.set({ x, y: F - 30 + m.i * 4, s: 0.92, flip: true, walk: pin > 0 && pin < 1 ? x * 0.05 : undefined, armF: 20 + bump(t, 5.35, 5.9) * 70 * (m.i ? 0 : 1), armB: 10, head: 4, blink: blinkAt(T, m.seed), o: pin > 0 ? 1 : 0 });
       });
-      const march = es(t, 5.25, 5.8, ease.sine);
+      const march = es(t, 5.2, 5.64, ease.sine);   // swipe stop: the officers have marched in by 5.64 and the tag hangs still by 5.66
       offs.forEach((m) => {
         const x = lerp(1560 + m.i * 90, m.x, march);
         const mv = march > 0 && march < 1;
@@ -118,7 +118,7 @@ export default {
         const [shx, shy] = hand(x, F + 10 + (m.i % 2) * 6, 0.98, true, 40 + (mv ? -Math.sin(x * 0.05 + m.i) * 14 : 0));
         vpose(m.sp, { x: shx, y: shy, s: 0.98, r: -4, o: march > 0 ? 1 : 0 });
       });
-      const sk = es(t, 5.5, 5.75, ease.out);
+      const sk = es(t, 5.42, 5.66, ease.out);
       hangAt(sentT, ph(1060, 1010), lerp(-300, 330, sk), T, sk > 0 ? 1 : 0, 1.3, 0.9, 3);
 
       S.cam.x = bump(t, 4.9, 6.4) * 40;
