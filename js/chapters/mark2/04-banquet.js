@@ -90,6 +90,8 @@ export default {
 
     /* the table and everyone at it */
     const tabL = S.layer({ par: 0.55, sh: 5 });
+    // the light of the call shines on the wall behind the guests, not over them (laid first; it uses no scissors)
+    const halo = tabL.add(`<g opacity="0"><circle r="260" fill="url(#halo-glow)"/></g>`);
     const BACK = [[600, 0.8], [668, 0.82], [736, 0.8], [872, 0.8], [940, 0.82], [1010, 0.8], [1080, 0.78]].map(([x, s], i) => ({ x, s, i, y: 648, from: 1215, d: i * 0.06, seed: c.rr(0, 9), sick: i === 1 || i === 4 || i === 6, p: S.puppet(tabL.add(person(c, townsfolk(c)))) }));
     const TC = (extra) => townsfolk(c, { man: true, mantle: c.pick([C.ochre, C.clayMantle, C.jesusMantle]), ...extra });
     const GUESTS = [
@@ -124,7 +126,6 @@ export default {
       for (let j = 0; j < 2; j++) scraps.push({ g, j, gi, el: fx.add(`<g>${scrap(c, c.rr(8, 11))}</g>`), sp: fx.add(`<g>${spark(c, 8)}</g>`), dx: c.rr(-10, 10), dy: c.rr(40, 80), r: c.rr(0, 360), drift: c.rr(-40, 40) });
     });
     const plate = hanging(fx, `${plateDisc(c, 58, C.cream, C.teal2)}<g transform="translate(-18 52) scale(1.1)">${physicianKit(c)}</g>`, { x: 800, y: 330, len: 700 });
-    const halo = fx.add(`<g opacity="0"><circle r="260" fill="url(#halo-glow)"/></g>`);
 
     /* foreground */
     const fg = S.layer({ par: 0.9, sh: 6 });

@@ -91,7 +91,8 @@ export default {
       /* v23a — raised to heaven, brought down to Hades */
       const up = es(t, 0.05, 0.3, ease.out);
       const down = es(t, 0.34, 0.66);
-      const cy = CY - up * 400 + down * 560;
+      // swipe stop: by 0.66 the town has gone down out of sight into the pit (at 560 its walls and tower still stood in it)
+    const cy = CY - up * 400 + down * 740;
       pose(cap, { x: CX, y: cy });
       pose(capTag, { x: CX, y: cy + 12, o: 1 - seg(down, 0.3, 0.5) });
       pose(pillar, { x: CX, y: CY - up * 400 + 4, sy: 1, o: up * (1 - es(t, 0.38, 0.5)) });

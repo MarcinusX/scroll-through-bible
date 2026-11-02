@@ -37,7 +37,11 @@ export default {
     const gid = S.id('up');
     S.defs(`<linearGradient id="${gid}" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#fff6dc" stop-opacity=".7"/><stop offset="1" stop-color="#fff6dc" stop-opacity="0"/></linearGradient>`);
     const beam = glL.add(`<g><path d="${c.poly([[-30, 0], [30, 0], [70, -600], [-70, -600]])}" fill="url(#${gid})"/></g>`);
-    const gloryEl = glL.add(`<g opacity=".55">${glory(c, 300, 24)}</g>`);
+    // the burst shines from behind Him above the table only: its lower rays used to fan out over the floor in front
+    // of the table, as if drawn over the seated disciples
+    const gcl = S.id('gcl');
+    S.defs(`<clipPath id="${gcl}"><rect x="-2000" y="-2000" width="5000" height="${2000 + TOP + 12}"/></clipPath>`);
+    const gloryEl = glL.add(`<g clip-path="url(#${gcl})"><g opacity=".55">${glory(c, 300, 24)}</g></g>`).firstElementChild;
 
     const seatL = S.layer({ par: 0.52, sh: 5 });
     const at = seatEleven(S, seatL);
